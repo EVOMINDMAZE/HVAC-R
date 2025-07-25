@@ -290,7 +290,7 @@ export function CascadeCycle() {
             <CardContent className="p-6">
               <div className="text-center mb-6">
                 <div className="text-4xl font-bold text-green-600 mb-2">
-                  {result.overallCOP.toFixed(2)}
+                  {result.overallCOP?.toFixed(2) || "N/A"}
                 </div>
                 <Badge variant="secondary" className="text-lg px-4 py-2">
                   Overall System COP
