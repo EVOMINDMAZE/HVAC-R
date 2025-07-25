@@ -1,7 +1,7 @@
 import express from 'express';
 import { stripe, createCheckoutSession, createCustomerPortalSession, getCustomerSubscription } from '../utils/stripe.js';
 import { userDb, billingDb, ensureDbInitialized } from '../database/index.js';
-import { authenticateToken } from '../utils/auth.js';
+import { authenticateToken } from './auth.js';
 
 const router = express.Router();
 
