@@ -16,7 +16,7 @@ export function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { signIn } = useSupabaseAuth();
+  const { signIn, signInWithGoogle } = useSupabaseAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
 
