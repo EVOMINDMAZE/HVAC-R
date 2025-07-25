@@ -150,6 +150,30 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const refreshSession = async () => {
+    if (!supabase) return;
+
+    try {
+      const { data: { session }, error } = await supabase.auth.refreshSession();
+
+      if (error) {
+        console.warn('Session refresh failed:', error.message);
+        // If refresh fails, sign out
+        await supabase.auth.signOut();
+        setSession(null);
+        setUser(null);
+      } else {
+        setSession(session);
+        setUser(session?.user ?? null);
+      }
+    } catch (err) {
+      console.error('Error refreshing session:', err);
+      await supabase.auth.signOut();
+      setSession(null);
+      setUser(null);
+    }
+  };
+
   const value = {
     user,
     session,
