@@ -138,6 +138,18 @@ export function CascadeCycle() {
         throw new Error(data.error);
       }
       setResult(data.data);
+
+      // Save calculation to history
+      addCalculation({
+        type: 'Cascade Cycle',
+        parameters: {
+          ltCycle: formData.ltCycle,
+          htCycle: formData.htCycle,
+          cascadeHeatExchangerDT: formData.cascadeHeatExchangerDT
+        },
+        results: data.data,
+        name: `Cascade: ${formData.ltCycle.refrigerant}/${formData.htCycle.refrigerant}`
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Calculation failed");
     } finally {
