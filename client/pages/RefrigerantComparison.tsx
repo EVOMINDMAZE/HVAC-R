@@ -356,7 +356,7 @@ export function RefrigerantComparison() {
                           {metric.label}
                           {metric.unit && <span className="text-sm text-gray-500 ml-1">({metric.unit})</span>}
                         </td>
-                        {(result.results || result.data?.results || result.data || []).map((refrigerantResult, index) => (
+                        {result.results.map((refrigerantResult, index) => (
                           <td
                             key={refrigerantResult.refrigerant || index}
                             className={`p-3 text-center ${
