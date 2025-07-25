@@ -325,6 +325,7 @@ export function StandardCycle() {
         <ApiServiceStatus />
         <StandardCycleContent />
       </div>
+      <Footer />
     </div>
   );
 }
