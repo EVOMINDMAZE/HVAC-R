@@ -29,12 +29,31 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // Get initial session
+    // Get initial session with error handling
     const getInitialSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setSession(session);
-      setUser(session?.user ?? null);
-      setIsLoading(false);
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+
+        // Handle invalid refresh token error
+        if (error && error.message.includes('Invalid Refresh Token')) {
+          console.warn('Invalid refresh token detected, clearing session');
+          await supabase.auth.signOut();
+          setSession(null);
+          setUser(null);
+          setIsLoading(false);
+          return;
+        }
+
+        setSession(session);
+        setUser(session?.user ?? null);
+      } catch (err: any) {
+        console.error('Error getting session:', err);
+        // Clear session on any auth error
+        setSession(null);
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     getInitialSession();
