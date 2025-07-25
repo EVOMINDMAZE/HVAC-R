@@ -100,6 +100,8 @@ export function useStripeCheckout() {
         throw new Error('No access token available');
       }
 
+      console.log('Making API call to create-checkout-session with:', { priceId, hasToken: !!token });
+
       const response = await fetch('/api/billing/create-checkout-session', {
         method: 'POST',
         headers: {
@@ -108,6 +110,9 @@ export function useStripeCheckout() {
         },
         body: JSON.stringify({ priceId }),
       });
+
+      console.log('API response status:', response.status);
+      console.log('API response ok:', response.ok);
 
       if (!response.ok) {
         throw new Error('Failed to create checkout session');
