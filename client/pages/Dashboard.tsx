@@ -11,17 +11,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Calculator,
   History as HistoryIcon,
-  User,
-  Settings,
   TrendingUp,
   FileText,
   Plus,
   Clock,
   BarChart3
 } from "lucide-react";
-import { StandardCycle } from "./StandardCycle";
-import { RefrigerantComparison } from "./RefrigerantComparison";
-import { CascadeCycle } from "./CascadeCycle";
+
+// Import calculation components - these are used ONLY within dashboard tabs
+import { StandardCycleContent } from "./StandardCycleContent";
+import { RefrigerantComparisonContent } from "./RefrigerantComparisonContent"; 
+import { CascadeCycleContent } from "./CascadeCycleContent";
 import { History } from "./History";
 
 function QuickStats() {
@@ -257,15 +257,15 @@ export function Dashboard() {
           </TabsContent>
           
           <TabsContent value="standard" className="space-y-6">
-            <StandardCycle />
+            <StandardCycleContent />
           </TabsContent>
           
           <TabsContent value="comparison" className="space-y-6">
-            <RefrigerantComparison />
+            <RefrigerantComparisonContent />
           </TabsContent>
           
           <TabsContent value="cascade" className="space-y-6">
-            <CascadeCycle />
+            <CascadeCycleContent />
           </TabsContent>
           
           <TabsContent value="history" className="space-y-6">
