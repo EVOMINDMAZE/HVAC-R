@@ -199,10 +199,9 @@ export function RefrigerantComparison() {
   };
 
   const getBestValueIndex = (metricKey: string) => {
-    const resultData = result?.results || result?.data?.results || result?.data || [];
-    if (!resultData.length) return -1;
+    if (!result?.results?.length) return -1;
 
-    const values = resultData.map(r => {
+    const values = result.results.map(r => {
       // Handle different API response structures
       const value = (r as any)[metricKey] || (r as any).performance?.[metricKey];
       return typeof value === 'number' ? value : null;
@@ -214,7 +213,7 @@ export function RefrigerantComparison() {
       ? Math.max(...values)
       : Math.min(...values);
 
-    return resultData.findIndex(r => {
+    return result.results.findIndex(r => {
       const value = (r as any)[metricKey] || (r as any).performance?.[metricKey];
       return value === bestValue;
     });
