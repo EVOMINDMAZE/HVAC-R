@@ -21,22 +21,29 @@ export function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const { signup } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords don't match");
+      setError("Passwords don't match");
       return;
     }
-    
+
     setLoading(true);
-    
-    // TODO: Implement actual registration
-    setTimeout(() => {
+
+    try {
+      await signup(formData);
+      navigate("/dashboard");
+    } catch (err) {
+      setError("Registration failed. Please try again.");
+    } finally {
       setLoading(false);
-      // Redirect to dashboard
-      window.location.href = "/dashboard";
-    }, 2000);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
