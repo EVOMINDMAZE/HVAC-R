@@ -50,6 +50,12 @@ export function Profile() {
   const { uploadAvatar, removeAvatar, uploading } = useFileUpload();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmNewPassword: ''
+  });
+  const [passwordLoading, setPasswordLoading] = useState(false);
 
   // Initialize user state with real data when available, fallback to mock
   const initialUser = authUser ? {
