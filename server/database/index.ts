@@ -86,11 +86,106 @@ export function initializeDatabase() {
       db.exec(schema);
     }
 
+    // Initialize prepared statements after tables are created
+    initializePreparedStatements();
+
     console.log('Database initialized successfully');
   } catch (error) {
     console.error('Failed to initialize database:', error);
     console.log('Continuing without database initialization...');
   }
+}
+
+function initializePreparedStatements() {
+  // User operations
+  userDb.create = db.prepare(`
+    INSERT INTO users (email, password_hash, first_name, last_name, company, role, phone)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `);
+
+  userDb.findByEmail = db.prepare(`
+    SELECT * FROM users WHERE email = ?
+  `);
+
+  userDb.findById = db.prepare(`
+    SELECT * FROM users WHERE id = ?
+  `);
+
+  userDb.update = db.prepare(`
+    UPDATE users
+    SET first_name = ?, last_name = ?, company = ?, role = ?, phone = ?, location = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
+  `);
+
+  userDb.updateSubscription = db.prepare(`
+    UPDATE users
+    SET subscription_plan = ?, subscription_status = ?, trial_ends_at = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
+  `);
+
+  // Session operations
+  sessionDb.create = db.prepare(`
+    INSERT INTO user_sessions (user_id, token, expires_at)
+    VALUES (?, ?, ?)
+  `);
+
+  sessionDb.findByToken = db.prepare(`
+    SELECT s.*, u.* FROM user_sessions s
+    JOIN users u ON s.user_id = u.id
+    WHERE s.token = ? AND s.expires_at > CURRENT_TIMESTAMP
+  `);
+
+  sessionDb.deleteByToken = db.prepare(`
+    DELETE FROM user_sessions WHERE token = ?
+  `);
+
+  sessionDb.deleteExpired = db.prepare(`
+    DELETE FROM user_sessions WHERE expires_at <= CURRENT_TIMESTAMP
+  `);
+
+  // Calculation operations
+  calculationDb.create = db.prepare(`
+    INSERT INTO calculations (user_id, type, name, notes, parameters, results)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `);
+
+  calculationDb.findByUserId = db.prepare(`
+    SELECT * FROM calculations
+    WHERE user_id = ?
+    ORDER BY created_at DESC
+  `);
+
+  calculationDb.findById = db.prepare(`
+    SELECT * FROM calculations WHERE id = ? AND user_id = ?
+  `);
+
+  calculationDb.update = db.prepare(`
+    UPDATE calculations
+    SET name = ?, notes = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ? AND user_id = ?
+  `);
+
+  calculationDb.delete = db.prepare(`
+    DELETE FROM calculations WHERE id = ? AND user_id = ?
+  `);
+
+  calculationDb.countByUserId = db.prepare(`
+    SELECT COUNT(*) as count FROM calculations WHERE user_id = ?
+  `);
+
+  calculationDb.countByUserIdAndMonth = db.prepare(`
+    SELECT COUNT(*) as count FROM calculations
+    WHERE user_id = ? AND created_at >= date('now', 'start of month')
+  `);
+
+  // Subscription plan operations
+  planDb.getAll = db.prepare(`
+    SELECT * FROM subscription_plans WHERE is_active = TRUE ORDER BY price_monthly ASC
+  `);
+
+  planDb.findByName = db.prepare(`
+    SELECT * FROM subscription_plans WHERE name = ?
+  `);
 }
 
 // Database utility functions
