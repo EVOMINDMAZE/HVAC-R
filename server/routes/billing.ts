@@ -49,7 +49,7 @@ router.post('/create-checkout-session', authenticateSupabaseToken, async (req, r
 });
 
 // Create customer portal session
-router.post('/create-portal-session', authenticateToken, async (req, res) => {
+router.post('/create-portal-session', authenticateSupabaseToken, async (req, res) => {
   try {
     const customerId = req.user.stripe_customer_id;
 
