@@ -329,11 +329,7 @@ export function RefrigerantComparison() {
         </CardContent>
       </Card>
 
-      {result && (
-        result.results || // Direct results array
-        (result.data && Array.isArray(result.data)) || // Data array
-        (result.data && result.data.results) // Nested results
-      ) && (
+      {result && result.results && Array.isArray(result.results) && result.results.length > 0 && (
         <Card className="bg-white shadow-lg border-green-200">
           <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
             <CardTitle className="text-xl">Comparison Results</CardTitle>
