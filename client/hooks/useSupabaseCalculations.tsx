@@ -48,60 +48,25 @@ export function useSupabaseCalculations() {
       console.log('Successfully fetched calculations:', data?.length || 0, 'items');
       setCalculations(data || []);
     } catch (error: any) {
-      // Defensive logging to prevent further errors
-      try {
-        console.error('Error fetching calculations:', error);
-        console.log('Error type:', typeof error);
-        if (error && typeof error === 'object') {
-          console.log('Error keys:', Object.keys(error));
-          try {
-            console.log('Error stringified:', JSON.stringify(error, null, 2));
-          } catch (jsonError) {
-            console.log('Error stringifying error object:', jsonError);
-            console.log('Error toString:', error.toString());
-          }
-        }
-      } catch (loggingError) {
-        console.error('Error while logging original error:', loggingError);
-      }
+      // Use robust error logging
+      logError('fetchCalculations', error);
 
-      // Better error message handling with defensive checks
+      // Extract readable error message
       let errorMessage = 'Unknown error occurred';
 
-      try {
-        if (!supabase) {
-          errorMessage = 'Database service not configured. Please set up your Supabase credentials.';
-        } else if (error && typeof error === 'object') {
-          // Check for specific error codes
-          if (error.code === 'PGRST116' || error.code === '42P01') {
-            errorMessage = 'The calculations table does not exist in your Supabase database. Please create it first.';
-          } else if (error.message && typeof error.message === 'string') {
-            errorMessage = error.message;
-          } else if (error.error_description && typeof error.error_description === 'string') {
-            errorMessage = error.error_description;
-          } else if (error.details && typeof error.details === 'string') {
-            errorMessage = error.details;
-          } else if (error.hint && typeof error.hint === 'string') {
-            errorMessage = error.hint;
-          } else if (error.code) {
-            errorMessage = `Database error (${error.code}). Please check your Supabase configuration.`;
-          } else {
-            // Try to convert the object to a readable string
-            try {
-              const errorStr = JSON.stringify(error);
-              errorMessage = `Database error: ${errorStr.length > 100 ? errorStr.substring(0, 100) + '...' : errorStr}`;
-            } catch {
-              errorMessage = 'Database connection error. Please check your Supabase configuration.';
-            }
-          }
-        } else if (typeof error === 'string') {
-          errorMessage = error;
-        } else {
-          errorMessage = 'Database connection error. Please check your Supabase configuration.';
+      if (!supabase) {
+        errorMessage = 'Database service not configured. Please set up your Supabase credentials.';
+      } else {
+        errorMessage = extractErrorMessage(error);
+
+        // Add context for common issues
+        if (error?.code === 'PGRST116' || error?.code === '42P01') {
+          errorMessage = 'The calculations table does not exist in your Supabase database. Please create it first.';
+        } else if (errorMessage.includes('Invalid API key') || errorMessage.includes('unauthorized')) {
+          errorMessage = 'Invalid Supabase credentials. Please check your API key and URL.';
+        } else if (errorMessage.includes('relation') && errorMessage.includes('does not exist')) {
+          errorMessage = 'The calculations table does not exist. Please create it in your Supabase database.';
         }
-      } catch (processingError) {
-        console.error('Error processing error message:', processingError);
-        errorMessage = 'Database connection error. Please check your Supabase configuration.';
       }
 
       addToast({
