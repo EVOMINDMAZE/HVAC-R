@@ -129,8 +129,24 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
     if (!supabase) {
       return { error: { message: 'Supabase not configured' } as any };
     }
-    const { error } = await supabase.auth.updateUser(updates);
-    return { error };
+
+    try {
+      const { error } = await supabase.auth.updateUser(updates);
+
+      // Handle refresh token errors
+      if (error && error.message.includes('Invalid Refresh Token')) {
+        console.warn('Invalid refresh token during user update, signing out');
+        await supabase.auth.signOut();
+        setSession(null);
+        setUser(null);
+        return { error: { message: 'Session expired, please sign in again' } as any };
+      }
+
+      return { error };
+    } catch (err: any) {
+      console.error('Error updating user:', err);
+      return { error: err };
+    }
   };
 
   const value = {
