@@ -136,57 +136,42 @@ export function CascadeCycle() {
     setError(null);
 
     try {
-      const response = await fetch("https://simulateon-backend.onrender.com/calculate-cascade", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          lt_cycle: {
-            refrigerant: formData.ltCycle.refrigerant,
-            evap_temp_c: Number(formData.ltCycle.evaporatorTemp) || 0,
-            cond_temp_c: Number(formData.ltCycle.condenserTemp) || 0,
-            superheat_c: Number(formData.ltCycle.superheat) || 0,
-            subcooling_c: Number(formData.ltCycle.subcooling) || 0,
-          },
-          ht_cycle: {
-            refrigerant: formData.htCycle.refrigerant,
-            evap_temp_c: Number(formData.htCycle.evaporatorTemp) || 0,
-            cond_temp_c: Number(formData.htCycle.condenserTemp) || 0,
-            superheat_c: Number(formData.htCycle.superheat) || 0,
-            subcooling_c: Number(formData.htCycle.subcooling) || 0,
-          },
-          cascade_hx_delta_t_c: Number(formData.cascadeHeatExchangerDT) || 0,
-        }),
-      });
+      // Call external calculation API
+      const data = await apiClient.calculateCascadeCycle(formData);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
       if (data.error) {
         throw new Error(data.error);
       }
+
       setResult(data.data);
 
-      // Save calculation to history
-      addCalculation({
-        type: 'Cascade Cycle',
-        parameters: {
-          ltCycle: formData.ltCycle,
-          htCycle: formData.htCycle,
-          cascadeHeatExchangerDT: formData.cascadeHeatExchangerDT
-        },
-        results: data.data,
-        name: `Cascade: ${formData.ltCycle.refrigerant}/${formData.htCycle.refrigerant}`
-      });
+      // Save calculation to backend
+      try {
+        await addCalculation({
+          type: 'Cascade Cycle',
+          parameters: {
+            ltCycle: formData.ltCycle,
+            htCycle: formData.htCycle,
+            cascadeHeatExchangerDT: formData.cascadeHeatExchangerDT
+          },
+          results: data.data,
+          name: `Cascade: ${formData.ltCycle.refrigerant}/${formData.htCycle.refrigerant}`
+        });
 
-      addToast({
-        type: 'success',
-        title: 'Cascade Analysis Complete',
-        description: `${formData.ltCycle.refrigerant}/${formData.htCycle.refrigerant} cascade system analysis completed`
-      });
+        addToast({
+          type: 'success',
+          title: 'Cascade Analysis Complete',
+          description: `${formData.ltCycle.refrigerant}/${formData.htCycle.refrigerant} cascade system analysis completed and saved`
+        });
+      } catch (saveError: any) {
+        addToast({
+          type: 'warning',
+          title: 'Cascade Analysis Complete',
+          description: saveError.message.includes('Upgrade required')
+            ? saveError.message
+            : `Analysis completed but could not be saved`
+        });
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Calculation failed";
       setError(errorMessage);
