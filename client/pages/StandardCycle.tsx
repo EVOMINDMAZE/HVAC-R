@@ -91,49 +91,45 @@ export function StandardCycle() {
     setError(null);
 
     try {
-      const response = await fetch("https://simulateon-backend.onrender.com/calculate-standard", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          refrigerant: formData.refrigerant,
-          evap_temp_c: Number(formData.evaporatorTemp) || 0,
-          cond_temp_c: Number(formData.condenserTemp) || 0,
-          superheat_c: Number(formData.superheat) || 0,
-          subcooling_c: Number(formData.subcooling) || 0,
-        }),
-      });
+      // Call external calculation API
+      const data = await apiClient.calculateStandardCycle(formData);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
       if (data.error) {
         throw new Error(data.error);
       }
+
       setResult(data.data);
 
-      // Save calculation to history
-      addCalculation({
-        type: 'Standard Cycle',
-        parameters: {
-          refrigerant: formData.refrigerant,
-          evaporatorTemp: formData.evaporatorTemp,
-          condenserTemp: formData.condenserTemp,
-          superheat: formData.superheat,
-          subcooling: formData.subcooling
-        },
-        results: data.data,
-        name: `${formData.refrigerant} Standard Cycle`
-      });
+      // Save calculation to backend
+      try {
+        await addCalculation({
+          type: 'Standard Cycle',
+          parameters: {
+            refrigerant: formData.refrigerant,
+            evaporatorTemp: formData.evaporatorTemp,
+            condenserTemp: formData.condenserTemp,
+            superheat: formData.superheat,
+            subcooling: formData.subcooling
+          },
+          results: data.data,
+          name: `${formData.refrigerant} Standard Cycle`
+        });
 
-      addToast({
-        type: 'success',
-        title: 'Calculation Complete',
-        description: `${formData.refrigerant} standard cycle analysis completed successfully`
-      });
+        addToast({
+          type: 'success',
+          title: 'Calculation Complete',
+          description: `${formData.refrigerant} standard cycle analysis completed and saved successfully`
+        });
+      } catch (saveError: any) {
+        // Show results even if save fails
+        addToast({
+          type: 'warning',
+          title: 'Calculation Complete',
+          description: saveError.message.includes('Upgrade required')
+            ? saveError.message
+            : `${formData.refrigerant} calculation completed but could not be saved`
+        });
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Calculation failed";
       setError(errorMessage);
