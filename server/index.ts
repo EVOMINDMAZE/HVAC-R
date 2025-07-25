@@ -18,7 +18,7 @@ import {
   cancelSubscription,
   createPaymentIntent
 } from "./routes/subscriptions.ts";
-import billingRoutes from "./routes/billing.ts";
+import billingRoutes from "./routes/billing.js";
 
 export function createServer() {
   const app = express();
