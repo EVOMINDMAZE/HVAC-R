@@ -44,7 +44,8 @@ const refrigerantOptions = [
   { value: "R32", label: "R-32" },
 ];
 
-export function StandardCycle() {
+// Content component for use within Dashboard tabs (no header)
+export function StandardCycleContent() {
   const [formData, setFormData] = useState<StandardCycleFormData>({
     refrigerant: "",
     evaporatorTemp: -10,
@@ -129,9 +130,7 @@ export function StandardCycle() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <Header variant="dashboard" />
-      <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+    <div className="space-y-6">
       <Card className="bg-white shadow-lg border-blue-200 animate-fade-in hover-lift">
         <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
           <CardTitle className="text-xl">Standard Refrigeration Cycle</CardTitle>
@@ -311,6 +310,17 @@ export function StandardCycle() {
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+// Standalone page component with header for direct access
+export function StandardCycle() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <Header variant="dashboard" />
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <StandardCycleContent />
       </div>
     </div>
   );
