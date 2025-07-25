@@ -270,7 +270,7 @@ export function StandardCycle() {
             </CardContent>
           </Card>
 
-          {result.statePoints && result.statePoints.length > 0 && (
+          {(result.statePoints || result.state_points) && (result.statePoints || result.state_points).length > 0 && (
             <Card className="bg-white shadow-lg border-blue-200">
               <CardHeader className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
                 <CardTitle className="text-xl">State Points</CardTitle>
