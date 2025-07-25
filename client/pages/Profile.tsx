@@ -215,15 +215,31 @@ export function Profile() {
                         {user.firstName.charAt(0)}{user.lastName.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
-                    <Button
-                      size="sm"
-                      className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0"
-                      variant="secondary"
-                    >
-                      <Camera className="h-4 w-4" />
-                    </Button>
+                    <div className="absolute -bottom-2 -right-2">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleAvatarUpload}
+                        className="hidden"
+                        id="avatar-upload"
+                        disabled={uploading}
+                      />
+                      <label htmlFor="avatar-upload">
+                        <Button
+                          size="sm"
+                          className="rounded-full w-8 h-8 p-0 cursor-pointer"
+                          variant="secondary"
+                          disabled={uploading}
+                          asChild
+                        >
+                          <span>
+                            <Camera className="h-4 w-4" />
+                          </span>
+                        </Button>
+                      </label>
+                    </div>
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <h3 className="text-xl font-semibold text-gray-900">
                       {user.firstName} {user.lastName}
                     </h3>
@@ -231,6 +247,17 @@ export function Profile() {
                     <p className="text-sm text-gray-500">
                       Member since {new Date(user.joinedDate).toLocaleDateString()}
                     </p>
+                    {user.avatar && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleAvatarRemove}
+                        disabled={uploading}
+                        className="mt-2 text-red-600 border-red-300 hover:bg-red-50"
+                      >
+                        Remove Photo
+                      </Button>
+                    )}
                   </div>
                 </div>
 
