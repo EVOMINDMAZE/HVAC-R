@@ -115,22 +115,34 @@ export function useStripeCheckout() {
       console.log('API response ok:', response.ok);
 
       if (!response.ok) {
-        throw new Error('Failed to create checkout session');
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('API Error Response:', errorData);
+        throw new Error(errorData.error || `HTTP ${response.status}: Failed to create checkout session`);
       }
 
-      const { sessionId } = await response.json();
-      
+      const responseData = await response.json();
+      console.log('API Response data:', responseData);
+
+      const { sessionId } = responseData;
+
+      if (!sessionId) {
+        throw new Error('No session ID received from server');
+      }
+
       const stripe = await stripePromise;
       if (!stripe) {
         throw new Error('Stripe not loaded');
       }
 
+      console.log('Redirecting to Stripe checkout with sessionId:', sessionId);
       const { error } = await stripe.redirectToCheckout({ sessionId });
-      
+
       if (error) {
+        console.error('Stripe checkout error:', error);
         throw new Error(error.message);
       }
     } catch (err: any) {
+      console.error('Checkout session error:', err);
       setError(err.message);
     } finally {
       setLoading(false);
