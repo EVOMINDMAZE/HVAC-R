@@ -77,7 +77,7 @@ class ApiClient {
   }
 
   private async request<T>(
-    endpoint: string, 
+    endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
     try {
@@ -86,7 +86,22 @@ class ApiClient {
         ...options
       });
 
-      const data = await response.json();
+      // Clone the response to avoid "body stream already read" error
+      const responseClone = response.clone();
+      let data;
+
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        // If JSON parsing fails, try to get text content
+        const textContent = await responseClone.text();
+        console.error('Failed to parse JSON response:', textContent);
+        return {
+          success: false,
+          error: 'Invalid response format',
+          details: 'Server returned invalid JSON'
+        };
+      }
 
       if (!response.ok) {
         return {
