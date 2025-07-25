@@ -288,7 +288,7 @@ export function StandardCycle() {
                       </tr>
                     </thead>
                     <tbody>
-                      {result.statePoints.map((point, index) => (
+                      {(result.statePoints || result.state_points).map((point, index) => (
                         <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
                           <td className="p-3 font-medium text-blue-600">{point.name}</td>
                           <td className="p-3">{point.temperature?.toFixed(1) || "N/A"}</td>
