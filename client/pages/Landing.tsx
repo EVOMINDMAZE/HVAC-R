@@ -11,6 +11,10 @@ export function Landing() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       <Header variant="landing" />
 
+      <div className="max-w-7xl mx-auto px-4 pt-4">
+        <SupabaseStatus />
+      </div>
+
       {/* Hero Section */}
       <section className="max-w-7xl mx-auto px-4 py-20">
         <div className="text-center mb-16">
