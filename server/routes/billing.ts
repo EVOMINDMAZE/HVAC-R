@@ -68,7 +68,7 @@ router.post('/create-portal-session', authenticateSupabaseToken, async (req, res
 });
 
 // Get subscription details
-router.get('/subscription', authenticateToken, async (req, res) => {
+router.get('/subscription', authenticateSupabaseToken, async (req, res) => {
   try {
     const customerId = req.user.stripe_customer_id;
 
