@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { ToastProvider } from "@/hooks/useToast";
 import { Landing } from "@/pages/Landing";
 import { SignIn } from "@/pages/SignIn";
 import { SignUp } from "@/pages/SignUp";
