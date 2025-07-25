@@ -17,6 +17,7 @@ import { Blog } from "@/pages/Blog";
 import { Contact } from "@/pages/Contact";
 import { Documentation } from "@/pages/Documentation";
 import { HelpCenter } from "@/pages/HelpCenter";
+import { ApiDocs } from "@/pages/ApiDocs";
 import NotFound from "@/pages/NotFound";
 
 // Protected Route Component
@@ -97,6 +98,7 @@ function AppRoutes() {
       <Route path="/blog" element={<Blog />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/documentation" element={<Documentation />} />
+      <Route path="/api-docs" element={<ApiDocs />} />
       <Route path="/help-center" element={<HelpCenter />} />
 
       {/* Protected routes */}
