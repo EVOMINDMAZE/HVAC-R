@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/useToast";
 import { apiClient } from "@/lib/api";
+import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -233,7 +234,9 @@ export function RefrigerantComparison() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <Header variant="dashboard" />
+      <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
       <Card className="bg-white shadow-lg border-blue-200">
         <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
           <CardTitle className="text-xl">Refrigerant Comparison</CardTitle>
@@ -393,6 +396,7 @@ export function RefrigerantComparison() {
           </CardContent>
         </Card>
       )}
+      </div>
     </div>
   );
 }

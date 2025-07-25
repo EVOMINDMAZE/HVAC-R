@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/useToast";
 import { apiClient } from "@/lib/api";
+import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -249,7 +250,9 @@ export function CascadeCycle() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <Header variant="dashboard" />
+      <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <CycleForm
           title="Low-Temperature Cycle"
@@ -417,6 +420,7 @@ export function CascadeCycle() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
