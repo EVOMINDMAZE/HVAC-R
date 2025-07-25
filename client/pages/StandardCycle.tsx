@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useToast } from "@/hooks/useToast";
 import { apiClient } from "@/lib/api";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { ApiServiceStatus } from "@/components/ApiServiceStatus";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
