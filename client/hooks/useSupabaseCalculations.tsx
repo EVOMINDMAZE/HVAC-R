@@ -215,7 +215,7 @@ export function useSupabaseCalculations() {
 
   // Fetch calculations when user changes
   useEffect(() => {
-    if (user) {
+    if (user && supabase) {
       fetchCalculations();
     } else {
       setCalculations([]);
