@@ -34,7 +34,7 @@ export function createServer() {
   // Middleware
   app.use(cors({
     origin: process.env.NODE_ENV === 'production'
-      ? ['https://your-domain.com']
+      ? ['https://173ba54839db44079504686aa5642124-7d4f8c681adb406aa7578b14f.fly.dev']
       : ['http://localhost:8080', 'http://localhost:3000'],
     credentials: true
   }));
