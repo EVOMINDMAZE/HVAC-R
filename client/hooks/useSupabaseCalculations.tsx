@@ -34,10 +34,22 @@ export function useSupabaseCalculations() {
       if (error) throw error;
       setCalculations(data || []);
     } catch (error: any) {
-      console.error('Error fetching calculations:', error);
-      console.log('Error type:', typeof error);
-      console.log('Error keys:', Object.keys(error || {}));
-      console.log('Error stringified:', JSON.stringify(error, null, 2));
+      // Defensive logging to prevent further errors
+      try {
+        console.error('Error fetching calculations:', error);
+        console.log('Error type:', typeof error);
+        if (error && typeof error === 'object') {
+          console.log('Error keys:', Object.keys(error));
+          try {
+            console.log('Error stringified:', JSON.stringify(error, null, 2));
+          } catch (jsonError) {
+            console.log('Error stringifying error object:', jsonError);
+            console.log('Error toString:', error.toString());
+          }
+        }
+      } catch (loggingError) {
+        console.error('Error while logging original error:', loggingError);
+      }
 
       // Better error message handling
       let errorMessage = 'Unknown error occurred';
