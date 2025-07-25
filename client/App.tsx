@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { SupabaseAuthProvider, useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { ToastProvider } from "@/hooks/useToast";
 import { Landing } from "@/pages/Landing";
 import { Features } from "@/pages/Features";
