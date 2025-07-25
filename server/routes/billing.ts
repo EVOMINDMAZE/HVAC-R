@@ -19,24 +19,8 @@ router.post('/create-checkout-session', authenticateSupabaseToken, async (req, r
       return res.status(400).json({ error: 'Price ID is required' });
     }
 
-    // Check if user already has a Stripe customer ID
-    let customerId = req.user.stripe_customer_id;
-
-    // Create customer if doesn't exist
-    if (!customerId) {
-      const customer = await stripe.customers.create({
-        email: userEmail,
-        metadata: {
-          userId: userId.toString(),
-        },
-      });
-      customerId = customer.id;
-
-      // Update user with Stripe customer ID
-      userDb.updateStripeInfo.run(customerId, null, userId);
-    }
-
-    const session = await createCheckoutSession(priceId, customerId);
+    // Create checkout session with customer email (Stripe will create/find customer)
+    const session = await createCheckoutSession(priceId, undefined, userEmail);
 
     res.json({ 
       sessionId: session.id,
