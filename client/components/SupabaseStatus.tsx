@@ -25,7 +25,24 @@ export function SupabaseStatus() {
               VITE_SUPABASE_ANON_KEY=your-anon-key
             </code>
           </li>
-          <li>Create the calculations table in your Supabase database</li>
+          <li>Create the calculations table in your Supabase database:
+            <code className="block mt-1 p-2 bg-orange-100 rounded text-xs">
+              CREATE TABLE calculations (<br/>
+              &nbsp;&nbsp;id UUID DEFAULT gen_random_uuid() PRIMARY KEY,<br/>
+              &nbsp;&nbsp;user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,<br/>
+              &nbsp;&nbsp;created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),<br/>
+              &nbsp;&nbsp;calculation_type TEXT NOT NULL,<br/>
+              &nbsp;&nbsp;inputs JSONB NOT NULL,<br/>
+              &nbsp;&nbsp;results JSONB NOT NULL,<br/>
+              &nbsp;&nbsp;name TEXT<br/>
+              );<br/>
+              <br/>
+              ALTER TABLE calculations ENABLE ROW LEVEL SECURITY;<br/>
+              <br/>
+              CREATE POLICY "Users can manage their own calculations"<br/>
+              ON calculations FOR ALL USING (auth.uid() = user_id);
+            </code>
+          </li>
         </ol>
         <p className="text-sm">
           You can still use all calculation features - only saving and authentication are disabled.
