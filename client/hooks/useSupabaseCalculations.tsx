@@ -99,7 +99,7 @@ export function useSupabaseCalculations() {
 
   // Delete a calculation
   const deleteCalculation = async (id: string): Promise<boolean> => {
-    if (!user) return false;
+    if (!user || !supabase) return false;
 
     try {
       const { error } = await supabase
@@ -133,7 +133,7 @@ export function useSupabaseCalculations() {
 
   // Update calculation name/notes
   const updateCalculation = async (id: string, updates: { name?: string }): Promise<boolean> => {
-    if (!user) return false;
+    if (!user || !supabase) return false;
 
     try {
       const { error } = await supabase
@@ -145,8 +145,8 @@ export function useSupabaseCalculations() {
       if (error) throw error;
 
       // Update local state
-      setCalculations(prev => 
-        prev.map(calc => 
+      setCalculations(prev =>
+        prev.map(calc =>
           calc.id === id ? { ...calc, ...updates } : calc
         )
       );
