@@ -176,25 +176,25 @@ export function Landing() {
             <div>
               <h4 className="font-semibold mb-4">Product</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><Link to="#" className="hover:text-white">Features</Link></li>
-                <li><Link to="#" className="hover:text-white">Pricing</Link></li>
-                <li><Link to="#" className="hover:text-white">API</Link></li>
+                <li><Link to="/features" className="hover:text-white">Features</Link></li>
+                <li><Link to="/pricing" className="hover:text-white">Pricing</Link></li>
+                <li><Link to="/documentation" className="hover:text-white">API</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Support</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><Link to="#" className="hover:text-white">Documentation</Link></li>
-                <li><Link to="#" className="hover:text-white">Help Center</Link></li>
-                <li><Link to="#" className="hover:text-white">Contact</Link></li>
+                <li><Link to="/documentation" className="hover:text-white">Documentation</Link></li>
+                <li><Link to="/help-center" className="hover:text-white">Help Center</Link></li>
+                <li><Link to="/contact" className="hover:text-white">Contact</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><Link to="#" className="hover:text-white">About</Link></li>
-                <li><Link to="#" className="hover:text-white">Blog</Link></li>
-                <li><Link to="#" className="hover:text-white">Careers</Link></li>
+                <li><Link to="/about" className="hover:text-white">About</Link></li>
+                <li><Link to="/blog" className="hover:text-white">Blog</Link></li>
+                <li><Link to="/contact" className="hover:text-white">Careers</Link></li>
               </ul>
             </div>
           </div>
