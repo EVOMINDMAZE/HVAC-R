@@ -17,31 +17,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check if user is authenticated on app load
+  // This auth hook is deprecated - using Supabase auth instead
+  // Disabled automatic auth check to prevent API calls to non-existent backend
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem('simulateon_token');
-        if (token) {
-          const response = await apiClient.getCurrentUser();
-          if (response.success && response.data) {
-            setUser(response.data.user);
-          } else {
-            // Invalid token, clear storage
-            localStorage.removeItem('simulateon_token');
-            localStorage.removeItem('simulateon_user');
-          }
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        localStorage.removeItem('simulateon_token');
-        localStorage.removeItem('simulateon_user');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkAuth();
+    console.warn('Old useAuth hook is deprecated. Use useSupabaseAuth instead.');
+    setIsLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
