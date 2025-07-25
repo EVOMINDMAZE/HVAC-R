@@ -4,21 +4,25 @@ import jwt from 'jsonwebtoken';
 // Supabase JWT verification middleware
 export const authenticateSupabaseToken: RequestHandler = async (req, res, next) => {
   try {
+    console.log('Auth middleware called for:', req.path);
     const token = req.headers.authorization?.replace('Bearer ', '');
-    
+
     if (!token) {
-      return res.status(401).json({ 
-        error: 'Authentication required' 
+      console.log('No token provided');
+      return res.status(401).json({
+        error: 'Authentication required'
       });
     }
 
     // Decode the Supabase JWT token without verification for now
     // In production, you should verify the JWT signature using Supabase JWT secret
     const decoded = jwt.decode(token) as any;
-    
+    console.log('Decoded token:', decoded ? 'valid' : 'invalid');
+
     if (!decoded || !decoded.sub) {
-      return res.status(401).json({ 
-        error: 'Invalid token' 
+      console.log('Invalid token structure');
+      return res.status(401).json({
+        error: 'Invalid token'
       });
     }
 
