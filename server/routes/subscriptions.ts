@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { planDb, userDb } from "../database/index.js";
+import { planDb, userDb } from "../database/index.ts";
 
 export const getSubscriptionPlans: RequestHandler = async (req, res) => {
   try {
