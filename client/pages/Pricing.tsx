@@ -137,7 +137,17 @@ export function Pricing() {
       return;
     }
 
-    if (planName === currentPlan) {
+    if (planName === 'free') {
+      addToast({
+        type: 'info',
+        title: 'Free Plan',
+        description: 'You are already on the free plan'
+      });
+      return;
+    }
+
+    const userCurrentPlan = subscription?.plan || 'free';
+    if (planName === userCurrentPlan) {
       addToast({
         type: 'info',
         title: 'Already Subscribed',
@@ -147,24 +157,29 @@ export function Pricing() {
     }
 
     try {
-      const response = await apiClient.updateSubscription(planName, billingCycle);
-      if (response.success) {
-        addToast({
-          type: 'success',
-          title: 'Subscription Updated',
-          description: response.data.message
-        });
-        setCurrentPlan(planName);
-        // Refresh user data
-        window.location.reload();
-      } else {
-        throw new Error(response.error);
+      // Get the appropriate Stripe price ID
+      let priceId = '';
+
+      if (planName === 'professional') {
+        priceId = billingCycle === 'yearly'
+          ? STRIPE_PRICE_IDS.PROFESSIONAL_YEARLY
+          : STRIPE_PRICE_IDS.PROFESSIONAL_MONTHLY;
+      } else if (planName === 'enterprise') {
+        priceId = billingCycle === 'yearly'
+          ? STRIPE_PRICE_IDS.ENTERPRISE_YEARLY
+          : STRIPE_PRICE_IDS.ENTERPRISE_MONTHLY;
       }
+
+      if (!priceId) {
+        throw new Error('Invalid plan selected');
+      }
+
+      await createCheckoutSession(priceId);
     } catch (error: any) {
       addToast({
         type: 'error',
         title: 'Subscription Failed',
-        description: error.message || 'Failed to update subscription'
+        description: error.message || 'Failed to start subscription process'
       });
     }
   };
