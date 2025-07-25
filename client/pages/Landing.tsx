@@ -8,27 +8,7 @@ import { Link } from "react-router-dom";
 export function Landing() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-blue-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <Calculator className="h-8 w-8 text-blue-600" />
-            <h1 className="text-2xl font-bold text-blue-900">Simulateon</h1>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Link to="/signin">
-              <Button variant="ghost" className="text-blue-600 hover:text-blue-700">
-                Sign In
-              </Button>
-            </Link>
-            <Link to="/signup">
-              <Button className="bg-blue-600 hover:bg-blue-700">
-                Get Started Free
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      <Header variant="landing" />
 
       {/* Hero Section */}
       <section className="max-w-7xl mx-auto px-4 py-20">
