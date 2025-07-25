@@ -340,7 +340,7 @@ export function RefrigerantComparison() {
                 <thead>
                   <tr className="border-b-2 border-gray-200">
                     <th className="text-left p-3 font-semibold text-gray-700 bg-gray-50">Performance Metric</th>
-                    {(result.results || result.data?.results || result.data || []).map((refrigerantResult, index) => (
+                    {result.results.map((refrigerantResult, index) => (
                       <th key={refrigerantResult.refrigerant || index} className="text-center p-3 font-semibold text-blue-600 bg-blue-50">
                         {refrigerantResult.refrigerant || `Refrigerant ${index + 1}`}
                       </th>
