@@ -63,6 +63,7 @@ export function RefrigerantComparison() {
   const [result, setResult] = useState<ComparisonResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { addCalculation } = useCalculationHistory();
 
   const handleInputChange = (field: keyof Omit<ComparisonFormData, 'refrigerants'>, value: number) => {
     setFormData(prev => ({
