@@ -95,6 +95,20 @@ export function StandardCycle() {
         throw new Error(data.error);
       }
       setResult(data.data);
+
+      // Save calculation to history
+      addCalculation({
+        type: 'Standard Cycle',
+        parameters: {
+          refrigerant: formData.refrigerant,
+          evaporatorTemp: formData.evaporatorTemp,
+          condenserTemp: formData.condenserTemp,
+          superheat: formData.superheat,
+          subcooling: formData.subcooling
+        },
+        results: data.data,
+        name: `${formData.refrigerant} Standard Cycle`
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Calculation failed");
     } finally {
