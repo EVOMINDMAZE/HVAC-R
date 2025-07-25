@@ -58,11 +58,23 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
 
     getInitialSession();
 
-    // Listen for auth changes
+    // Listen for auth changes with error handling
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
+      async (event, session) => {
+        // Handle token refresh errors
+        if (event === 'TOKEN_REFRESHED' && !session) {
+          console.warn('Token refresh failed, user will be signed out');
+        }
+
+        // Handle sign out event or invalid sessions
+        if (event === 'SIGNED_OUT' || !session) {
+          setSession(null);
+          setUser(null);
+        } else {
+          setSession(session);
+          setUser(session.user);
+        }
+
         setIsLoading(false);
       }
     );
