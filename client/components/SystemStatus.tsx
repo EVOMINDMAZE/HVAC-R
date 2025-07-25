@@ -5,7 +5,7 @@ import { AlertTriangle, CheckCircle, Info } from "lucide-react";
 export function SystemStatus() {
   // Check if we're in development mode and if APIs are configured
   const hasExternalAPI = true; // External calculation API is always available
-  const hasInternalAPI = !!process.env.VITE_API_BASE_URL; // Internal API depends on env var
+  const hasInternalAPI = !!import.meta.env.VITE_API_BASE_URL; // Internal API depends on env var
   
   // Only show status if there are issues to report
   if (hasExternalAPI && hasInternalAPI) {

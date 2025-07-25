@@ -128,7 +128,7 @@ export function ApiTester() {
   // Temporarily disabled to avoid automatic API calls that might cause JSON parsing errors
   return null;
 
-  if (process.env.NODE_ENV === 'production') {
+  if (import.meta.env.MODE === 'production') {
     return null; // Don't show in production
   }
 

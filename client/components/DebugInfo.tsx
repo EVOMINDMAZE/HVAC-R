@@ -6,7 +6,7 @@ export function DebugInfo() {
   const { user, session, isAuthenticated } = useSupabaseAuth();
 
   // Only show in development
-  if (process.env.NODE_ENV === 'production') {
+  if (import.meta.env.MODE === 'production') {
     return null;
   }
 
@@ -22,7 +22,7 @@ export function DebugInfo() {
         <div><strong>User Email:</strong> {user?.email || 'None'}</div>
         <div><strong>Session:</strong> {session ? '✓ Active' : '✗ None'}</div>
         <div><strong>Supabase URL:</strong> {import.meta.env.VITE_SUPABASE_URL || 'Not set'}</div>
-        <div><strong>Environment:</strong> {process.env.NODE_ENV}</div>
+        <div><strong>Environment:</strong> {import.meta.env.MODE}</div>
       </CardContent>
     </Card>
   );
