@@ -55,6 +55,7 @@ export function StandardCycle() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { addCalculation } = useCalculationHistory();
+  const { addToast } = useToast();
 
   const handleInputChange = (field: keyof StandardCycleFormData, value: string | number) => {
     setFormData(prev => ({
