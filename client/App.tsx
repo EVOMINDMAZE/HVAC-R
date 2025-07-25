@@ -121,11 +121,11 @@ function AppRoutes() {
 function App() {
   return (
     <ToastProvider>
-      <AuthProvider>
+      <SupabaseAuthProvider>
         <BrowserRouter>
           <AppRoutes />
         </BrowserRouter>
-      </AuthProvider>
+      </SupabaseAuthProvider>
     </ToastProvider>
   );
 }
