@@ -4,6 +4,7 @@ import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { Header } from "@/components/Header";
 import { SupabaseStatus } from "@/components/SupabaseStatus";
+import { DebugInfo } from "@/components/DebugInfo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
