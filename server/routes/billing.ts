@@ -18,13 +18,12 @@ router.post('/test-checkout', (req, res) => {
 });
 
 // Create checkout session
-router.post('/create-checkout-session', async (req, res) => {
+router.post('/create-checkout-session', authenticateSupabaseToken, async (req, res) => {
   try {
     console.log('Checkout session request received:', req.body);
     const { priceId } = req.body;
-    // Mock user data for testing
-    const userId = 'test-user-id';
-    const userEmail = 'test@example.com';
+    const userId = req.user.id;
+    const userEmail = req.user.email;
 
     console.log('User info:', { userId, userEmail, priceId });
 
@@ -33,11 +32,26 @@ router.post('/create-checkout-session', async (req, res) => {
       return res.status(400).json({ error: 'Price ID is required' });
     }
 
-    // For testing, just return a mock response
-    res.json({
-      sessionId: 'test-session-id',
-      url: 'https://checkout.stripe.com/test'
-    });
+    // Check if Stripe is configured
+    const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+    if (!stripeSecretKey) {
+      console.log('Stripe not configured');
+      return res.status(500).json({ error: 'Payment processing not configured. Please contact support.' });
+    }
+
+    // Dynamically import and use Stripe
+    try {
+      const { createCheckoutSession } = await import('../utils/stripe.js');
+      const session = await createCheckoutSession(priceId, undefined, userEmail);
+
+      res.json({
+        sessionId: session.id,
+        url: session.url
+      });
+    } catch (stripeError: any) {
+      console.error('Stripe error:', stripeError);
+      return res.status(500).json({ error: 'Failed to create checkout session. Please try again.' });
+    }
   } catch (error: any) {
     console.error('Error creating checkout session:', error);
     res.status(500).json({ error: error.message });
