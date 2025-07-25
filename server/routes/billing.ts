@@ -18,6 +18,43 @@ router.post('/test-checkout', (req, res) => {
   res.json({ message: 'Test checkout route works!', body: req.body });
 });
 
+// Test Stripe configuration without auth
+router.get('/test-stripe-config', async (req, res) => {
+  try {
+    const hasStripeKey = !!process.env.STRIPE_SECRET_KEY;
+    const hasPublishableKey = !!process.env.VITE_STRIPE_PUBLISHABLE_KEY;
+    const priceIds = {
+      professional_monthly: process.env.VITE_STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID || 'not-set',
+      professional_yearly: process.env.VITE_STRIPE_PROFESSIONAL_YEARLY_PRICE_ID || 'not-set',
+      enterprise_monthly: process.env.VITE_STRIPE_ENTERPRISE_MONTHLY_PRICE_ID || 'not-set',
+      enterprise_yearly: process.env.VITE_STRIPE_ENTERPRISE_YEARLY_PRICE_ID || 'not-set',
+    };
+
+    // Test Stripe import
+    let stripeImportError = null;
+    try {
+      const { createCheckoutSession } = await import('../utils/stripe.js');
+      console.log('Stripe utilities imported successfully');
+    } catch (error: any) {
+      stripeImportError = error.message;
+      console.error('Stripe import error:', error);
+    }
+
+    res.json({
+      message: 'Stripe configuration test',
+      config: {
+        hasStripeSecretKey: hasStripeKey,
+        hasPublishableKey: hasPublishableKey,
+        priceIds,
+        stripeImportError
+      }
+    });
+  } catch (error: any) {
+    console.error('Stripe config test error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Create checkout session
 router.post('/create-checkout-session', authenticateSupabaseToken, async (req, res) => {
   try {
