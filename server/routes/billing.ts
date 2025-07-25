@@ -16,11 +16,15 @@ router.get('/test', (req, res) => {
 // Create checkout session
 router.post('/create-checkout-session', authenticateSupabaseToken, async (req, res) => {
   try {
+    console.log('Checkout session request received:', req.body);
     const { priceId } = req.body;
     const userId = req.user.id;
     const userEmail = req.user.email;
 
+    console.log('User info:', { userId, userEmail, priceId });
+
     if (!priceId) {
+      console.log('Missing price ID');
       return res.status(400).json({ error: 'Price ID is required' });
     }
 
