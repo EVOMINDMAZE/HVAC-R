@@ -63,6 +63,18 @@ export function initializeDatabase() {
           FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
         );
 
+        CREATE TABLE IF NOT EXISTS subscription_plans (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT UNIQUE NOT NULL,
+          display_name TEXT NOT NULL,
+          price_monthly DECIMAL(10,2) NOT NULL,
+          price_yearly DECIMAL(10,2) NOT NULL,
+          calculations_limit INTEGER NOT NULL,
+          features TEXT NOT NULL,
+          is_active BOOLEAN DEFAULT TRUE,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+
         INSERT OR REPLACE INTO subscription_plans (name, display_name, price_monthly, price_yearly, calculations_limit, features) VALUES
         ('free', 'Free', 0.00, 0.00, 10, '["Basic calculations", "Email support"]'),
         ('professional', 'Professional', 29.99, 299.99, 500, '["All calculation types", "Priority support", "Export capabilities"]'),
