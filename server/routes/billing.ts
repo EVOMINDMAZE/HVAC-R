@@ -64,6 +64,12 @@ router.post('/create-portal-session', authenticateSupabaseToken, async (req, res
   try {
     const userEmail = req.user.email;
 
+    // Check if Stripe is configured
+    const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+    if (!stripeSecretKey) {
+      return res.status(500).json({ error: 'Payment processing not configured. Please contact support.' });
+    }
+
     // Find customer by email
     const customers = await stripe.customers.list({
       email: userEmail,
