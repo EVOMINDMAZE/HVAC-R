@@ -178,7 +178,7 @@ export function Landing() {
               <ul className="space-y-2 text-sm text-gray-400">
                 <li><Link to="/features" className="hover:text-white">Features</Link></li>
                 <li><Link to="/pricing" className="hover:text-white">Pricing</Link></li>
-                <li><Link to="/documentation" className="hover:text-white">API</Link></li>
+                <li><Link to="/api-docs" className="hover:text-white">API</Link></li>
               </ul>
             </div>
             <div>
