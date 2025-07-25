@@ -250,6 +250,42 @@ export function Profile() {
     }
   };
 
+  const handlePreferencesSave = async () => {
+    if (!authUser) {
+      addToast({
+        type: 'error',
+        title: 'Not Authenticated',
+        description: 'Please sign in to save preferences'
+      });
+      return;
+    }
+
+    setPreferencesLoading(true);
+    try {
+      const { error } = await updateUser({
+        data: {
+          preferences: JSON.stringify(preferences)
+        }
+      });
+
+      if (error) throw error;
+
+      addToast({
+        type: 'success',
+        title: 'Preferences Saved',
+        description: 'Your preferences have been updated successfully'
+      });
+    } catch (error: any) {
+      addToast({
+        type: 'error',
+        title: 'Save Failed',
+        description: error.message || 'Failed to save preferences'
+      });
+    } finally {
+      setPreferencesLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
