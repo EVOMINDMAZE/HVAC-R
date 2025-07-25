@@ -4,7 +4,7 @@ import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { Header } from "@/components/Header";
 import { SupabaseStatus } from "@/components/SupabaseStatus";
-import { DebugInfo } from "@/components/DebugInfo";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -195,7 +195,6 @@ export function Dashboard() {
       <Header variant="dashboard" />
       
       <main className="max-w-7xl mx-auto px-4 py-8">
-        <DebugInfo />
         <SupabaseStatus />
         <QuickStats />
         
