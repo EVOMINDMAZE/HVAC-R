@@ -137,6 +137,22 @@ function initializePreparedStatements() {
     WHERE id = ?
   `);
 
+  userDb.updateStripeInfo = db.prepare(`
+    UPDATE users
+    SET stripe_customer_id = ?, stripe_subscription_id = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
+  `);
+
+  userDb.findByStripeCustomerId = db.prepare(`
+    SELECT * FROM users WHERE stripe_customer_id = ?
+  `);
+
+  userDb.updatePreferences = db.prepare(`
+    UPDATE users
+    SET preferences = ?, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
+  `);
+
   // Session operations
   sessionDb.create = db.prepare(`
     INSERT INTO user_sessions (user_id, token, expires_at)
