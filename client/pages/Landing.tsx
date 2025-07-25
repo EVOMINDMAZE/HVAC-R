@@ -15,12 +15,16 @@ export function Landing() {
             <h1 className="text-2xl font-bold text-blue-900">Simulateon</h1>
           </div>
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" className="text-blue-600 hover:text-blue-700">
-              Sign In
-            </Button>
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              Get Started Free
-            </Button>
+            <Link to="/signin">
+              <Button variant="ghost" className="text-blue-600 hover:text-blue-700">
+                Sign In
+              </Button>
+            </Link>
+            <Link to="/signup">
+              <Button className="bg-blue-600 hover:bg-blue-700">
+                Get Started Free
+              </Button>
+            </Link>
           </div>
         </div>
       </header>
