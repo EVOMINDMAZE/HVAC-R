@@ -162,6 +162,68 @@ export function Profile() {
     }
   };
 
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!authUser) {
+      addToast({
+        type: 'error',
+        title: 'Not Authenticated',
+        description: 'Please sign in to change your password'
+      });
+      return;
+    }
+
+    if (passwordForm.newPassword !== passwordForm.confirmNewPassword) {
+      addToast({
+        type: 'error',
+        title: 'Password Mismatch',
+        description: 'New passwords do not match'
+      });
+      return;
+    }
+
+    if (passwordForm.newPassword.length < 6) {
+      addToast({
+        type: 'error',
+        title: 'Password Too Short',
+        description: 'Password must be at least 6 characters long'
+      });
+      return;
+    }
+
+    setPasswordLoading(true);
+    try {
+      const { error } = await updateUser({
+        data: {
+          password: passwordForm.newPassword
+        }
+      });
+
+      if (error) throw error;
+
+      addToast({
+        type: 'success',
+        title: 'Password Updated',
+        description: 'Your password has been changed successfully'
+      });
+
+      setPasswordForm({
+        currentPassword: '',
+        newPassword: '',
+        confirmNewPassword: ''
+      });
+    } catch (error: any) {
+      addToast({
+        type: 'error',
+        title: 'Password Change Failed',
+        description: error.message || 'Failed to change password'
+      });
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
