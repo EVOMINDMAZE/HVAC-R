@@ -35,12 +35,19 @@ router.post('/create-checkout-session', authenticateSupabaseToken, async (req, r
 // Create customer portal session
 router.post('/create-portal-session', authenticateSupabaseToken, async (req, res) => {
   try {
-    const customerId = req.user.stripe_customer_id;
+    const userEmail = req.user.email;
 
-    if (!customerId) {
-      return res.status(400).json({ error: 'No Stripe customer found' });
+    // Find customer by email
+    const customers = await stripe.customers.list({
+      email: userEmail,
+      limit: 1
+    });
+
+    if (customers.data.length === 0) {
+      return res.status(400).json({ error: 'No Stripe customer found. Please make a purchase first.' });
     }
 
+    const customerId = customers.data[0].id;
     const returnUrl = `${process.env.CLIENT_URL || 'http://localhost:3000'}/profile`;
     const session = await createCustomerPortalSession(customerId, returnUrl);
 
