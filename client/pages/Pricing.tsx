@@ -160,6 +160,9 @@ export function Pricing() {
       // Get the appropriate Stripe price ID
       let priceId = '';
 
+      console.log('Available Stripe Price IDs:', STRIPE_PRICE_IDS);
+      console.log('Selected plan:', planName, 'Billing cycle:', billingCycle);
+
       if (planName === 'professional') {
         priceId = billingCycle === 'yearly'
           ? STRIPE_PRICE_IDS.PROFESSIONAL_YEARLY
@@ -170,6 +173,8 @@ export function Pricing() {
           : STRIPE_PRICE_IDS.ENTERPRISE_MONTHLY;
       }
 
+      console.log('Selected price ID:', priceId);
+
       if (!priceId) {
         throw new Error('Invalid plan selected');
       }
@@ -177,6 +182,7 @@ export function Pricing() {
       console.log('Attempting to create checkout session with priceId:', priceId);
       await createCheckoutSession(priceId);
     } catch (error: any) {
+      console.error('Subscription error:', error);
       addToast({
         type: 'error',
         title: 'Subscription Failed',
