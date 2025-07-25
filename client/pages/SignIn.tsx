@@ -20,6 +20,28 @@ export function SignIn() {
   const { addToast } = useToast();
   const navigate = useNavigate();
 
+  const handleGoogleSignIn = async () => {
+    try {
+      setLoading(true);
+      const { error } = await signInWithGoogle();
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      // The redirect will handle navigation
+    } catch (err: any) {
+      const errorMsg = err.message || "Google sign in failed. Please try again.";
+      setError(errorMsg);
+      addToast({
+        type: 'error',
+        title: 'Google Sign In Failed',
+        description: errorMsg
+      });
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -27,7 +49,7 @@ export function SignIn() {
 
     try {
       const { user, error: signInError } = await signIn(formData.email, formData.password);
-      
+
       if (signInError) {
         throw new Error(signInError.message);
       }
