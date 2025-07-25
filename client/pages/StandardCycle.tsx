@@ -66,7 +66,24 @@ export function StandardCycle() {
 
   const handleCalculate = async () => {
     if (!formData.refrigerant) {
-      setError("Please select a refrigerant");
+      const errorMsg = "Please select a refrigerant";
+      setError(errorMsg);
+      addToast({
+        type: 'warning',
+        title: 'Missing Information',
+        description: errorMsg
+      });
+      return;
+    }
+
+    if (formData.evaporatorTemp >= formData.condenserTemp) {
+      const errorMsg = "Evaporator temperature must be lower than condenser temperature";
+      setError(errorMsg);
+      addToast({
+        type: 'warning',
+        title: 'Invalid Parameters',
+        description: errorMsg
+      });
       return;
     }
 
