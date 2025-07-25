@@ -22,6 +22,7 @@ import {
 function QuickStats() {
   const { user } = useSupabaseAuth();
   const { calculations } = useSupabaseCalculations();
+  const navigate = useNavigate();
 
   // Calculate real stats from user's calculations
   const totalCalculations = calculations.length;
@@ -42,55 +43,100 @@ function QuickStats() {
     ? "Unlimited"
     : stats?.subscription.remaining?.toString() || "0";
 
+  const usagePercentage = Math.min((monthlyCalculations / 10) * 100, 100);
+  const isNearLimit = usagePercentage > 70;
+  const isAtLimit = monthlyCalculations >= 10;
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-      <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-blue-100 text-sm">Total Calculations</p>
-              <p className="text-2xl font-bold">{stats?.totalCalculations || 0}</p>
+    <div className="space-y-6">
+      {/* Usage Warning Banner */}
+      {isNearLimit && (
+        <Card className={`border-2 ${isAtLimit ? 'border-red-500 bg-red-50' : 'border-yellow-500 bg-yellow-50'}`}>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className={`w-3 h-3 rounded-full ${isAtLimit ? 'bg-red-500' : 'bg-yellow-500'}`}></div>
+                <div>
+                  <p className={`font-semibold ${isAtLimit ? 'text-red-800' : 'text-yellow-800'}`}>
+                    {isAtLimit ? 'Monthly Limit Reached!' : 'Approaching Monthly Limit'}
+                  </p>
+                  <p className={`text-sm ${isAtLimit ? 'text-red-600' : 'text-yellow-600'}`}>
+                    {isAtLimit
+                      ? 'Upgrade now to continue your calculations and unlock unlimited access'
+                      : `You've used ${monthlyCalculations}/10 calculations this month. Upgrade for unlimited access.`
+                    }
+                  </p>
+                </div>
+              </div>
+              <Button
+                className={isAtLimit ? 'bg-red-600 hover:bg-red-700' : 'bg-yellow-600 hover:bg-yellow-700'}
+                onClick={() => navigate('/pricing')}
+              >
+                Upgrade Now
+              </Button>
             </div>
-            <Calculator className="h-8 w-8 text-blue-200" />
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
-      <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-purple-100 text-sm">This Month</p>
-              <p className="text-2xl font-bold">{stats?.monthlyCalculations || 0}</p>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-blue-100 text-sm">Total Calculations</p>
+                <p className="text-2xl font-bold">{stats?.totalCalculations || 0}</p>
+                <p className="text-blue-200 text-xs mt-1">All time</p>
+              </div>
+              <Calculator className="h-8 w-8 text-blue-200" />
             </div>
-            <FileText className="h-8 w-8 text-purple-200" />
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-green-100 text-sm">Plan Remaining</p>
-              <p className="text-2xl font-bold">{remainingText}</p>
+        <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-purple-100 text-sm">This Month</p>
+                <p className="text-2xl font-bold">{stats?.monthlyCalculations || 0}/10</p>
+                <div className="w-full bg-purple-300 rounded-full h-2 mt-2">
+                  <div
+                    className="bg-white rounded-full h-2 transition-all duration-300"
+                    style={{ width: `${usagePercentage}%` }}
+                  ></div>
+                </div>
+              </div>
+              <FileText className="h-8 w-8 text-purple-200" />
             </div>
-            <TrendingUp className="h-8 w-8 text-green-200" />
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-orange-100 text-sm">Current Plan</p>
-              <p className="text-xl font-bold capitalize">Free</p>
+        <Card className={`bg-gradient-to-r ${stats.subscription.remaining <= 2 ? 'from-red-500 to-red-600' : 'from-green-500 to-green-600'} text-white`}>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-green-100 text-sm">Remaining</p>
+                <p className="text-2xl font-bold">{remainingText}</p>
+                <p className="text-green-200 text-xs mt-1">This month</p>
+              </div>
+              <TrendingUp className="h-8 w-8 text-green-200" />
             </div>
-            <BarChart3 className="h-8 w-8 text-orange-200" />
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white cursor-pointer hover:from-orange-600 hover:to-orange-700 transition-all duration-200" onClick={() => navigate('/pricing')}>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-orange-100 text-sm">Current Plan</p>
+                <p className="text-xl font-bold capitalize">Free</p>
+                <p className="text-orange-200 text-xs mt-1">Click to upgrade</p>
+              </div>
+              <BarChart3 className="h-8 w-8 text-orange-200" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
