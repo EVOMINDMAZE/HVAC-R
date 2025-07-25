@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useSupabaseAuth } from './useSupabaseAuth';
 import { useToast } from './useToast';
+import { extractErrorMessage, logError } from '@/lib/errorUtils';
 
 export interface Calculation {
   id: string;
