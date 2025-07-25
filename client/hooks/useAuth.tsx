@@ -1,14 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useToast } from './useToast';
-
-interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  company?: string;
-  role?: string;
-}
+import { apiClient, User } from '@/lib/api';
 
 interface AuthContextType {
   user: User | null;
@@ -16,7 +7,8 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (userData: any) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,13 +21,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // Check localStorage for auth token or user data
-        const savedUser = localStorage.getItem('simulateon_user');
-        if (savedUser) {
-          setUser(JSON.parse(savedUser));
+        const token = localStorage.getItem('simulateon_token');
+        if (token) {
+          const response = await apiClient.getCurrentUser();
+          if (response.success && response.data) {
+            setUser(response.data.user);
+          } else {
+            // Invalid token, clear storage
+            localStorage.removeItem('simulateon_token');
+            localStorage.removeItem('simulateon_user');
+          }
         }
       } catch (error) {
         console.error('Auth check failed:', error);
+        localStorage.removeItem('simulateon_token');
+        localStorage.removeItem('simulateon_user');
       } finally {
         setIsLoading(false);
       }
@@ -45,55 +45,63 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
+    const response = await apiClient.signIn({ email, password });
+
+    if (!response.success || !response.data) {
+      throw new Error(response.error || 'Login failed');
+    }
+
+    const { user: userData, token } = response.data;
+
+    setUser(userData);
+    localStorage.setItem('simulateon_token', token);
+    localStorage.setItem('simulateon_user', JSON.stringify(userData));
+  };
+
+  const signup = async (userData: {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    company?: string;
+    role?: string;
+    phone?: string;
+  }) => {
+    const response = await apiClient.signUp(userData);
+
+    if (!response.success || !response.data) {
+      throw new Error(response.error || 'Signup failed');
+    }
+
+    const { user: newUser, token } = response.data;
+
+    setUser(newUser);
+    localStorage.setItem('simulateon_token', token);
+    localStorage.setItem('simulateon_user', JSON.stringify(newUser));
+  };
+
+  const logout = async () => {
     try {
-      // TODO: Replace with actual API call
-      const mockUser: User = {
-        id: '1',
-        firstName: 'John',
-        lastName: 'Doe',
-        email: email,
-        company: 'HVAC Solutions Inc.',
-        role: 'Senior HVAC Engineer'
-      };
-
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      setUser(mockUser);
-      localStorage.setItem('simulateon_user', JSON.stringify(mockUser));
-      localStorage.setItem('simulateon_token', 'mock-jwt-token');
+      await apiClient.signOut();
     } catch (error) {
-      throw new Error('Login failed');
+      console.error('Logout error:', error);
+    } finally {
+      setUser(null);
+      localStorage.removeItem('simulateon_token');
+      localStorage.removeItem('simulateon_user');
     }
   };
 
-  const signup = async (userData: any) => {
+  const refreshUser = async () => {
     try {
-      // TODO: Replace with actual API call
-      const newUser: User = {
-        id: Date.now().toString(),
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        email: userData.email,
-        company: userData.company,
-        role: userData.role
-      };
-
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      setUser(newUser);
-      localStorage.setItem('simulateon_user', JSON.stringify(newUser));
-      localStorage.setItem('simulateon_token', 'mock-jwt-token');
+      const response = await apiClient.getCurrentUser();
+      if (response.success && response.data) {
+        setUser(response.data.user);
+        localStorage.setItem('simulateon_user', JSON.stringify(response.data.user));
+      }
     } catch (error) {
-      throw new Error('Signup failed');
+      console.error('Failed to refresh user:', error);
     }
-  };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('simulateon_user');
-    localStorage.removeItem('simulateon_token');
   };
 
   const value = {
@@ -102,7 +110,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isLoading,
     login,
     signup,
-    logout
+    logout,
+    refreshUser
   };
 
   return (
