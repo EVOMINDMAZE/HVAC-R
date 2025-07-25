@@ -298,23 +298,7 @@ export function Dashboard() {
           </TabsContent>
           
           <TabsContent value="history" className="space-y-6">
-            <Card className="bg-white shadow-lg border-blue-200">
-              <CardHeader className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
-                <CardTitle>Calculation History</CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="text-center py-12">
-                  <History className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Full History Coming Soon</h3>
-                  <p className="text-gray-600 mb-6">
-                    We're building a comprehensive calculation history with search, filters, and export options.
-                  </p>
-                  <Button variant="outline">
-                    Request Early Access
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <History />
           </TabsContent>
         </Tabs>
       </main>
