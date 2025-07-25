@@ -4,6 +4,7 @@ import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { Header } from "@/components/Header";
 import { SupabaseStatus } from "@/components/SupabaseStatus";
+import { ApiServiceStatus } from "@/components/ApiServiceStatus";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -213,6 +214,7 @@ export function Dashboard() {
       
       <main className="max-w-7xl mx-auto px-4 py-8">
         <SupabaseStatus />
+        <ApiServiceStatus />
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-5 mb-8 bg-white border border-blue-200">
