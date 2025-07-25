@@ -233,7 +233,7 @@ export function StandardCycle() {
 
       {result && (
         <div className="space-y-6">
-          <Card className="bg-white shadow-lg border-green-200">
+          <Card className="bg-white shadow-lg border-green-200 animate-slide-up hover-glow">
             <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
               <CardTitle className="text-xl">Performance Summary</CardTitle>
             </CardHeader>
