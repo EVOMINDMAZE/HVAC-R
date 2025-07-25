@@ -82,8 +82,11 @@ class ApiClient {
   ): Promise<ApiResponse<T>> {
     try {
       const requestOptions = {
-        headers: this.getAuthHeaders(),
-        ...options
+        ...options,
+        headers: {
+          ...this.getAuthHeaders(),
+          ...(options.headers || {})
+        }
       };
 
       const response = await fetch(`${API_BASE_URL}${endpoint}`, requestOptions);
