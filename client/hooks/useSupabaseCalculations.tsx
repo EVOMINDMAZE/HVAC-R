@@ -35,10 +35,21 @@ export function useSupabaseCalculations() {
       setCalculations(data || []);
     } catch (error: any) {
       console.error('Error fetching calculations:', error);
+
+      // Better error message handling
+      let errorMessage = 'Unknown error occurred';
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (!supabase) {
+        errorMessage = 'Database service not configured';
+      }
+
       addToast({
         type: 'error',
         title: 'Failed to Load Calculations',
-        description: error.message
+        description: errorMessage
       });
     } finally {
       setIsLoading(false);
