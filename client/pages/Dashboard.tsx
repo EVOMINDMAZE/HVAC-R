@@ -129,15 +129,15 @@ function RecentCalculations() {
                     <Calculator className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900">{calc.name || calc.type}</h4>
+                    <h4 className="font-semibold text-gray-900">{calc.name || calc.calculation_type}</h4>
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                       <Clock className="h-3 w-3" />
-                      <span>{new Date(calc.timestamp).toLocaleDateString()}</span>
+                      <span>{new Date(calc.created_at).toLocaleDateString()}</span>
                     </div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <Badge variant="secondary">{calc.type}</Badge>
+                  <Badge variant="secondary">{calc.calculation_type}</Badge>
                 </div>
               </div>
             ))}
