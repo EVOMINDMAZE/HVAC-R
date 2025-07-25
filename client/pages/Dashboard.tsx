@@ -4,7 +4,6 @@ import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { Header } from "@/components/Header";
 import { SupabaseStatus } from "@/components/SupabaseStatus";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -158,7 +157,7 @@ function RecentCalculations() {
   );
 }
 
-function QuickActions() {
+function QuickActions({ setActiveTab }: { setActiveTab: (tab: string) => void }) {
   return (
     <Card className="bg-white shadow-lg border-blue-200">
       <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
@@ -168,21 +167,37 @@ function QuickActions() {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-4">
-        <Button className="w-full justify-start" variant="outline">
+        <Button 
+          className="w-full justify-start" 
+          variant="outline"
+          onClick={() => setActiveTab('standard')}
+        >
           <Calculator className="h-4 w-4 mr-2" />
           New Standard Cycle
         </Button>
-        <Button className="w-full justify-start" variant="outline">
+        <Button 
+          className="w-full justify-start" 
+          variant="outline"
+          onClick={() => setActiveTab('comparison')}
+        >
           <TrendingUp className="h-4 w-4 mr-2" />
           Compare Refrigerants
         </Button>
-        <Button className="w-full justify-start" variant="outline">
+        <Button 
+          className="w-full justify-start" 
+          variant="outline"
+          onClick={() => setActiveTab('cascade')}
+        >
           <BarChart3 className="h-4 w-4 mr-2" />
           Cascade Analysis
         </Button>
-        <Button className="w-full justify-start" variant="outline">
+        <Button 
+          className="w-full justify-start" 
+          variant="outline"
+          onClick={() => setActiveTab('history')}
+        >
           <FileText className="h-4 w-4 mr-2" />
-          Load Project
+          View History
         </Button>
       </CardContent>
     </Card>
@@ -190,15 +205,16 @@ function QuickActions() {
 }
 
 export function Dashboard() {
+  const [activeTab, setActiveTab] = useState("overview");
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Header variant="dashboard" />
       
       <main className="max-w-7xl mx-auto px-4 py-8">
         <SupabaseStatus />
-        <QuickStats />
         
-        <Tabs defaultValue="overview" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-5 mb-8 bg-white border border-blue-200">
             <TabsTrigger 
               value="overview" 
@@ -231,11 +247,12 @@ export function Dashboard() {
               History
             </TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="overview" className="space-y-6">
+            <QuickStats />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <RecentCalculations />
-              <QuickActions />
+              <QuickActions setActiveTab={setActiveTab} />
             </div>
           </TabsContent>
           
