@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
-import { userDb, sessionDb, User } from "../database/index.js";
-import { AuthUtils } from "../utils/auth.js";
+import { userDb, sessionDb, User } from "../database/index.ts";
+import { AuthUtils } from "../utils/auth.ts";
 
 interface SignUpRequest {
   email: string;
