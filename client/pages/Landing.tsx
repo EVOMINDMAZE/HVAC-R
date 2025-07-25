@@ -161,10 +161,12 @@ export function Landing() {
             Join thousands of engineers using Simulateon for their refrigeration calculations.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="secondary" className="text-lg px-8 py-4">
-              Start Free Trial
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
+            <Link to="/signup">
+              <Button size="lg" variant="secondary" className="text-lg px-8 py-4">
+                Start Free Trial
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
             <Button size="lg" variant="outline" className="text-lg px-8 py-4 bg-transparent border-white text-white hover:bg-white hover:text-blue-600">
               Contact Sales
             </Button>
