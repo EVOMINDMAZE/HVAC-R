@@ -37,10 +37,10 @@ export function Pricing() {
 
   useEffect(() => {
     fetchPlans();
-    if (user) {
-      setCurrentPlan(user.subscription_plan);
+    if (subscription) {
+      setCurrentPlan(subscription.plan);
     }
-  }, [user]);
+  }, [subscription]);
 
   // Fallback subscription plans data when API is unavailable
   const fallbackPlans: SubscriptionPlan[] = [
