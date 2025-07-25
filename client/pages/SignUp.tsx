@@ -24,6 +24,7 @@ export function SignUp() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { signup } = useAuth();
+  const { addToast } = useToast();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,7 +32,13 @@ export function SignUp() {
     setError("");
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords don't match");
+      const errorMsg = "Passwords don't match";
+      setError(errorMsg);
+      addToast({
+        type: 'warning',
+        title: 'Password Mismatch',
+        description: errorMsg
+      });
       return;
     }
 
@@ -39,9 +46,20 @@ export function SignUp() {
 
     try {
       await signup(formData);
+      addToast({
+        type: 'success',
+        title: 'Welcome to Simulateon!',
+        description: 'Your account has been created successfully'
+      });
       navigate("/dashboard");
     } catch (err) {
-      setError("Registration failed. Please try again.");
+      const errorMsg = "Registration failed. Please try again.";
+      setError(errorMsg);
+      addToast({
+        type: 'error',
+        title: 'Registration Failed',
+        description: errorMsg
+      });
     } finally {
       setLoading(false);
     }
