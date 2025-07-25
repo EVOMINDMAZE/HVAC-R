@@ -15,6 +15,7 @@ export function SignIn() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { login } = useAuth();
+  const { addToast } = useToast();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,9 +25,20 @@ export function SignIn() {
 
     try {
       await login(email, password);
+      addToast({
+        type: 'success',
+        title: 'Welcome back!',
+        description: 'You have successfully signed in to Simulateon'
+      });
       navigate("/dashboard");
     } catch (err) {
-      setError("Invalid email or password");
+      const errorMsg = "Invalid email or password";
+      setError(errorMsg);
+      addToast({
+        type: 'error',
+        title: 'Sign In Failed',
+        description: errorMsg
+      });
     } finally {
       setLoading(false);
     }
