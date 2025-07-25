@@ -1,16 +1,11 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { Header } from "@/components/Header";
-import { SupabaseStatus } from "@/components/SupabaseStatus";
-import { ApiServiceStatus } from "@/components/ApiServiceStatus";
-import { ApiTester } from "@/components/ApiTester";
 import { SystemStatus } from "@/components/SystemStatus";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Calculator,
   History as HistoryIcon,
@@ -18,14 +13,11 @@ import {
   FileText,
   Plus,
   Clock,
-  BarChart3
+  BarChart3,
+  Crown,
+  Zap,
+  Target
 } from "lucide-react";
-
-// Import calculation components - these are used ONLY within dashboard tabs
-import { StandardCycleContent } from "./StandardCycleContent";
-import { RefrigerantComparisonContent } from "./RefrigerantComparisonContent"; 
-import { CascadeCycleContent } from "./CascadeCycleContent";
-import { History } from "./History";
 
 function QuickStats() {
   const { user } = useSupabaseAuth();
