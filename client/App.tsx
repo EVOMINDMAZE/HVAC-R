@@ -9,6 +9,9 @@ import { SignUp } from "@/pages/SignUp";
 import { Dashboard } from "@/pages/Dashboard";
 import { Profile } from "@/pages/Profile";
 import { History } from "@/pages/History";
+import { StandardCycle } from "@/pages/StandardCycle";
+import { RefrigerantComparison } from "@/pages/RefrigerantComparison";
+import { CascadeCycle } from "@/pages/CascadeCycle";
 import NotFound from "@/pages/NotFound";
 
 // Protected Route Component
@@ -108,6 +111,30 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <History />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/standard-cycle"
+        element={
+          <ProtectedRoute>
+            <StandardCycle />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/refrigerant-comparison"
+        element={
+          <ProtectedRoute>
+            <RefrigerantComparison />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/cascade-cycle"
+        element={
+          <ProtectedRoute>
+            <CascadeCycle />
           </ProtectedRoute>
         }
       />
