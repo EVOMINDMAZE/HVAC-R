@@ -72,6 +72,9 @@ export function createServer() {
   app.post("/api/subscriptions/cancel", authenticateToken, cancelSubscription);
   app.post("/api/subscriptions/payment-intent", authenticateToken, createPaymentIntent);
 
+  // Billing routes (Stripe)
+  app.use("/api/billing", billingRoutes);
+
   // Error handling middleware
   app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
     console.error('Server error:', err);
