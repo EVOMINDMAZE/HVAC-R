@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { SupabaseAuthProvider, useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { ToastProvider } from "@/hooks/useToast";
+import "@/utils/authErrorHandler"; // Import to setup global error handling
 import { Landing } from "@/pages/Landing";
 import { Features } from "@/pages/Features";
 import { Pricing } from "@/pages/Pricing";
