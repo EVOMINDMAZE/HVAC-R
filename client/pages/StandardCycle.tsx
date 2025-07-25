@@ -56,7 +56,7 @@ export function StandardCycle() {
   const handleInputChange = (field: keyof StandardCycleFormData, value: string | number) => {
     setFormData(prev => ({
       ...prev,
-      [field]: value
+      [field]: field === 'refrigerant' ? value : (Number(value) || 0)
     }));
   };
 
@@ -68,7 +68,7 @@ export function StandardCycle() {
 
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch("https://simulateon-backend.onrender.com/calculate-standard", {
         method: "POST",
@@ -77,10 +77,10 @@ export function StandardCycle() {
         },
         body: JSON.stringify({
           refrigerant: formData.refrigerant,
-          evap_temp_c: formData.evaporatorTemp,
-          cond_temp_c: formData.condenserTemp,
-          superheat_c: formData.superheat,
-          subcooling_c: formData.subcooling,
+          evap_temp_c: Number(formData.evaporatorTemp) || 0,
+          cond_temp_c: Number(formData.condenserTemp) || 0,
+          superheat_c: Number(formData.superheat) || 0,
+          subcooling_c: Number(formData.subcooling) || 0,
         }),
       });
 
