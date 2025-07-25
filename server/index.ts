@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import { initializeDatabase, sessionDb } from "./database/index.js";
+import { ensureDbInitialized, sessionDb } from "./database/index.js";
 import { signUp, signIn, signOut, getCurrentUser, authenticateToken } from "./routes/auth.js";
 import {
   saveCalculation,
