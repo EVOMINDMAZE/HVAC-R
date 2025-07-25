@@ -161,8 +161,20 @@ export function RefrigerantComparison() {
         results: data.data,
         name: `Comparison: ${formData.refrigerants.join(', ')}`
       });
+
+      addToast({
+        type: 'success',
+        title: 'Comparison Complete',
+        description: `Successfully compared ${formData.refrigerants.length} refrigerants`
+      });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Comparison failed");
+      const errorMessage = err instanceof Error ? err.message : "Comparison failed";
+      setError(errorMessage);
+      addToast({
+        type: 'error',
+        title: 'Comparison Failed',
+        description: errorMessage
+      });
     } finally {
       setLoading(false);
     }
