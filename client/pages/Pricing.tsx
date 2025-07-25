@@ -38,14 +38,85 @@ export function Pricing() {
     }
   }, [user]);
 
+  // Fallback subscription plans data when API is unavailable
+  const fallbackPlans: SubscriptionPlan[] = [
+    {
+      id: 1,
+      name: 'free',
+      display_name: 'Free',
+      price_monthly: 0,
+      price_yearly: 0,
+      calculations_limit: 10,
+      features: [
+        '10 calculations per month',
+        'Standard cycle analysis',
+        'Basic refrigerant comparison',
+        'Email support',
+        'Basic results export'
+      ],
+      is_active: true
+    },
+    {
+      id: 2,
+      name: 'professional',
+      display_name: 'Professional',
+      price_monthly: 29,
+      price_yearly: 290,
+      calculations_limit: 500,
+      features: [
+        '500 calculations per month',
+        'All calculation tools',
+        'Advanced refrigerant database',
+        'Cascade system analysis',
+        'Priority email support',
+        'Detailed PDF reports',
+        'Data export (CSV, Excel)',
+        'Calculation history',
+        'API access (basic)'
+      ],
+      is_active: true,
+      savings: 22
+    },
+    {
+      id: 3,
+      name: 'enterprise',
+      display_name: 'Enterprise',
+      price_monthly: 99,
+      price_yearly: 990,
+      calculations_limit: -1, // Unlimited
+      features: [
+        'Unlimited calculations',
+        'All professional features',
+        'Custom refrigerant properties',
+        'Batch processing',
+        'Full API access',
+        'Phone support',
+        'Custom integrations',
+        'Team collaboration',
+        'Advanced analytics',
+        'Custom reporting',
+        'SLA guarantee'
+      ],
+      is_active: true,
+      savings: 18
+    }
+  ];
+
   const fetchPlans = async () => {
     try {
       const response = await apiClient.getSubscriptionPlans();
       if (response.success && response.data) {
         setPlans(response.data);
+      } else {
+        // Use fallback data if API fails
+        console.warn('API failed, using fallback subscription plans');
+        setPlans(fallbackPlans);
       }
     } catch (error) {
       console.error('Error fetching plans:', error);
+      // Use fallback data when API is unavailable
+      console.warn('Using fallback subscription plans due to API error');
+      setPlans(fallbackPlans);
     } finally {
       setLoading(false);
     }
