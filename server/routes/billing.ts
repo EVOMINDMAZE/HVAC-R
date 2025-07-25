@@ -8,6 +8,11 @@ const router = express.Router();
 // Ensure database is initialized
 ensureDbInitialized();
 
+// Test route to verify billing routes are working
+router.get('/test', (req, res) => {
+  res.json({ message: 'Billing routes are working!' });
+});
+
 // Create checkout session
 router.post('/create-checkout-session', authenticateSupabaseToken, async (req, res) => {
   try {
