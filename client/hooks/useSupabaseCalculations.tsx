@@ -144,10 +144,21 @@ export function useSupabaseCalculations() {
       return true;
     } catch (error: any) {
       console.error('Error deleting calculation:', error);
+
+      // Better error message handling
+      let errorMessage = 'Unknown error occurred';
+      if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (!supabase) {
+        errorMessage = 'Database service not configured';
+      }
+
       addToast({
         type: 'error',
         title: 'Failed to Delete Calculation',
-        description: error.message
+        description: errorMessage
       });
       return false;
     }
