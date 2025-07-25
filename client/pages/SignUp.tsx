@@ -218,6 +218,12 @@ export function SignUp() {
                 </Label>
               </div>
 
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+                  <p className="text-red-700 text-sm">{error}</p>
+                </div>
+              )}
+
               <Button
                 type="submit"
                 className="w-full bg-blue-600 hover:bg-blue-700"
