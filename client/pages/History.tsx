@@ -292,12 +292,14 @@ export function History() {
               Calculation details and results
             </DialogDescription>
           </DialogHeader>
-          
+
           {selectedCalculation && (
             <CalculationDetailsModal calculation={selectedCalculation} />
           )}
         </DialogContent>
       </Dialog>
+
+      <Footer />
     </div>
   );
 }
