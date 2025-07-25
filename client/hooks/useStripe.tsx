@@ -43,12 +43,23 @@ export function useSubscription() {
       });
 
       if (!response.ok) {
+        // Check for auth-related errors
+        if (response.status === 401) {
+          AuthErrorHandler.handleAuthError(new Error('Unauthorized - invalid token'));
+          return;
+        }
         throw new Error('Failed to fetch subscription');
       }
 
       const data = await response.json();
       setSubscription(data);
     } catch (err: any) {
+      // Handle auth errors specifically
+      if (err.message.includes('Invalid Refresh Token') ||
+          err.message.includes('Unauthorized')) {
+        AuthErrorHandler.handleAuthError(err);
+        return;
+      }
       setError(err.message);
     } finally {
       setLoading(false);
