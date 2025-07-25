@@ -293,7 +293,7 @@ export function CascadeCycle() {
             <CardContent className="p-6">
               <div className="text-center mb-6">
                 <div className="text-4xl font-bold text-green-600 mb-2">
-                  {result.overallCOP?.toFixed(2) || "N/A"}
+                  {result.performance?.overallCOP?.toFixed(2) || "N/A"}
                 </div>
                 <Badge variant="secondary" className="text-lg px-4 py-2">
                   Overall System COP
@@ -303,19 +303,19 @@ export function CascadeCycle() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="text-center p-4 bg-purple-50 rounded-lg">
                   <div className="text-2xl font-semibold text-purple-600">
-                    {result.totalWorkInput?.toFixed(1) || "N/A"} kW
+                    {result.performance?.totalWorkInput?.toFixed(1) || "N/A"} kW
                   </div>
                   <div className="text-sm text-purple-500 mt-1">Total Work Input</div>
                 </div>
                 <div className="text-center p-4 bg-blue-50 rounded-lg">
                   <div className="text-2xl font-semibold text-blue-600">
-                    {result.systemEfficiency?.toFixed(1) || "N/A"}%
+                    {result.performance?.systemEfficiency?.toFixed(1) || "N/A"}%
                   </div>
                   <div className="text-sm text-blue-500 mt-1">System Efficiency</div>
                 </div>
                 <div className="text-center p-4 bg-indigo-50 rounded-lg">
                   <div className="text-2xl font-semibold text-indigo-600">
-                    {result.cascadeTemperature?.toFixed(1) || "N/A"}°C
+                    {result.performance?.cascadeTemperature?.toFixed(1) || "N/A"}°C
                   </div>
                   <div className="text-sm text-indigo-500 mt-1">Cascade Temperature</div>
                 </div>
