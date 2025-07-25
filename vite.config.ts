@@ -29,17 +29,12 @@ function expressPlugin(): Plugin {
     name: "express-plugin",
     apply: "serve", // Only apply during development (serve mode)
     configureServer(server) {
-      // Dynamically import the server to avoid top-level database initialization
-      server.middlewares.use('/api', async (req, res, next) => {
-        try {
-          const { createServer } = await import("./server/index.ts");
-          const app = createServer();
-          app(req, res, next);
-        } catch (error) {
-          console.error('Server error:', error);
-          res.statusCode = 500;
-          res.end('Internal Server Error');
-        }
+      // Import server dynamically to avoid database initialization during config
+      import("./server/index.ts").then(({ createServer }) => {
+        const app = createServer();
+        server.middlewares.use(app);
+      }).catch(error => {
+        console.error('Failed to start server:', error);
       });
     },
   };
