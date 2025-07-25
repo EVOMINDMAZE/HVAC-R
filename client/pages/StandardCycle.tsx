@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useCalculationHistory } from "@/hooks/useCalculationHistory";
+import { useState } from "react";
 import { useToast } from "@/hooks/useToast";
 import { apiClient } from "@/lib/api";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
+import { SaveCalculation } from "@/components/SaveCalculation";
 
 interface StandardCycleFormData {
   refrigerant: string;
@@ -55,7 +55,7 @@ export function StandardCycle() {
   const [result, setResult] = useState<StandardCycleResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { addCalculation } = useCalculationHistory();
+  const [calculationData, setCalculationData] = useState<{ inputs: any; results: any } | null>(null);
   const { addToast } = useToast();
 
   const handleInputChange = (field: keyof StandardCycleFormData, value: string | number) => {
@@ -100,37 +100,18 @@ export function StandardCycle() {
       }
 
       setResult(data.data);
+      
+      // Store data for saving
+      setCalculationData({
+        inputs: formData,
+        results: data
+      });
 
-      // Save calculation to backend
-      try {
-        await addCalculation({
-          type: 'Standard Cycle',
-          parameters: {
-            refrigerant: formData.refrigerant,
-            evaporatorTemp: formData.evaporatorTemp,
-            condenserTemp: formData.condenserTemp,
-            superheat: formData.superheat,
-            subcooling: formData.subcooling
-          },
-          results: data.data,
-          name: `${formData.refrigerant} Standard Cycle`
-        });
-
-        addToast({
-          type: 'success',
-          title: 'Calculation Complete',
-          description: `${formData.refrigerant} standard cycle analysis completed and saved successfully`
-        });
-      } catch (saveError: any) {
-        // Show results even if save fails
-        addToast({
-          type: 'warning',
-          title: 'Calculation Complete',
-          description: saveError.message.includes('Upgrade required')
-            ? saveError.message
-            : `${formData.refrigerant} calculation completed but could not be saved`
-        });
-      }
+      addToast({
+        type: 'success',
+        title: 'Calculation Complete',
+        description: `${formData.refrigerant} standard cycle analysis completed successfully`
+      });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Calculation failed";
       setError(errorMessage);
@@ -213,11 +194,11 @@ export function StandardCycle() {
             </div>
           </div>
 
-          <div className="mt-6">
+          <div className="mt-6 flex gap-4">
             <Button 
               onClick={handleCalculate} 
               disabled={loading || !formData.refrigerant}
-              className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg"
             >
               {loading ? (
                 <>
@@ -228,6 +209,15 @@ export function StandardCycle() {
                 "Calculate"
               )}
             </Button>
+            
+            {calculationData && (
+              <SaveCalculation
+                calculationType="Standard Cycle"
+                inputs={calculationData.inputs}
+                results={calculationData.results}
+                disabled={loading}
+              />
+            )}
           </div>
 
           {error && (
