@@ -49,10 +49,11 @@ export function StandardCycle() {
     superheat: 5,
     subcooling: 5,
   });
-  
+
   const [result, setResult] = useState<StandardCycleResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { addCalculation } = useCalculationHistory();
 
   const handleInputChange = (field: keyof StandardCycleFormData, value: string | number) => {
     setFormData(prev => ({
