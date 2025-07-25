@@ -198,5 +198,12 @@ export const planDb = {
   `)
 };
 
-// Initialize database on import
-initializeDatabase();
+// Initialize database lazily when first needed
+let dbInitialized = false;
+
+export function ensureDbInitialized() {
+  if (!dbInitialized) {
+    initializeDatabase();
+    dbInitialized = true;
+  }
+}
