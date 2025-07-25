@@ -66,6 +66,20 @@ function DashboardHeader() {
 }
 
 function QuickStats() {
+  const { calculations } = useCalculationHistory();
+
+  const thisMonth = calculations.filter(calc => {
+    const calcDate = new Date(calc.timestamp);
+    const now = new Date();
+    return calcDate.getMonth() === now.getMonth() && calcDate.getFullYear() === now.getFullYear();
+  }).length;
+
+  const avgCOP = calculations.length > 0
+    ? calculations
+        .filter(calc => calc.results?.performance?.cop || calc.results?.performance?.overallCOP)
+        .reduce((sum, calc) => sum + (calc.results.performance.cop || calc.results.performance.overallCOP || 0), 0) / calculations.length
+    : 0;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
       <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
@@ -73,19 +87,19 @@ function QuickStats() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-blue-100 text-sm">Total Calculations</p>
-              <p className="text-2xl font-bold">24</p>
+              <p className="text-2xl font-bold">{calculations.length}</p>
             </div>
             <Calculator className="h-8 w-8 text-blue-200" />
           </div>
         </CardContent>
       </Card>
-      
+
       <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-purple-100 text-sm">Projects Saved</p>
-              <p className="text-2xl font-bold">8</p>
+              <p className="text-purple-100 text-sm">This Month</p>
+              <p className="text-2xl font-bold">{thisMonth}</p>
             </div>
             <FileText className="h-8 w-8 text-purple-200" />
           </div>
@@ -96,8 +110,8 @@ function QuickStats() {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-green-100 text-sm">Avg COP Improvement</p>
-              <p className="text-2xl font-bold">12%</p>
+              <p className="text-green-100 text-sm">Average COP</p>
+              <p className="text-2xl font-bold">{avgCOP.toFixed(1)}</p>
             </div>
             <TrendingUp className="h-8 w-8 text-green-200" />
           </div>
@@ -108,8 +122,8 @@ function QuickStats() {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-orange-100 text-sm">This Month</p>
-              <p className="text-2xl font-bold">6</p>
+              <p className="text-orange-100 text-sm">Different Types</p>
+              <p className="text-2xl font-bold">{new Set(calculations.map(c => c.type)).size}</p>
             </div>
             <BarChart3 className="h-8 w-8 text-orange-200" />
           </div>
