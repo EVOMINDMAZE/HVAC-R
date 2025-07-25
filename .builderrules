@@ -1,3 +1,5 @@
+Never use mock data. Always build the app as a fully functional with real sync everywhere
+
 1. General Style and Layout
 Theme: Use a clean, professional, and modern design. The target audience is engineers, so clarity and readability are more important than flashy animations. Use a light theme with a white or very light gray background.
 
