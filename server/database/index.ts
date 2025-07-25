@@ -330,6 +330,13 @@ export const planDb = {
   findByName: null as any
 };
 
+// Billing operations
+export const billingDb = {
+  createEvent: null as any,
+  findEventById: null as any,
+  markEventProcessed: null as any
+};
+
 // Initialize database lazily when first needed
 let dbInitialized = false;
 
