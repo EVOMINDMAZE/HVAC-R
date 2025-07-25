@@ -309,6 +309,8 @@ export function Dashboard() {
           <ValueProposition />
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }
