@@ -250,92 +250,34 @@ export const userDb = {
 
 // Session operations
 export const sessionDb = {
-  create: db.prepare(`
-    INSERT INTO user_sessions (user_id, token, expires_at)
-    VALUES (?, ?, ?)
-  `),
-  
-  findByToken: db.prepare(`
-    SELECT s.*, u.* FROM user_sessions s
-    JOIN users u ON s.user_id = u.id
-    WHERE s.token = ? AND s.expires_at > CURRENT_TIMESTAMP
-  `),
-  
-  deleteByToken: db.prepare(`
-    DELETE FROM user_sessions WHERE token = ?
-  `),
-  
-  deleteExpired: db.prepare(`
-    DELETE FROM user_sessions WHERE expires_at <= CURRENT_TIMESTAMP
-  `)
+  create: null as any,
+  findByToken: null as any,
+  deleteByToken: null as any,
+  deleteExpired: null as any
 };
 
 // Calculation operations
 export const calculationDb = {
-  create: db.prepare(`
-    INSERT INTO calculations (user_id, type, name, notes, parameters, results)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `),
-  
-  findByUserId: db.prepare(`
-    SELECT * FROM calculations 
-    WHERE user_id = ? 
-    ORDER BY created_at DESC
-  `),
-  
-  findById: db.prepare(`
-    SELECT * FROM calculations WHERE id = ? AND user_id = ?
-  `),
-  
-  update: db.prepare(`
-    UPDATE calculations 
-    SET name = ?, notes = ?, updated_at = CURRENT_TIMESTAMP
-    WHERE id = ? AND user_id = ?
-  `),
-  
-  delete: db.prepare(`
-    DELETE FROM calculations WHERE id = ? AND user_id = ?
-  `),
-  
-  countByUserId: db.prepare(`
-    SELECT COUNT(*) as count FROM calculations WHERE user_id = ?
-  `),
-  
-  countByUserIdAndMonth: db.prepare(`
-    SELECT COUNT(*) as count FROM calculations 
-    WHERE user_id = ? AND created_at >= date('now', 'start of month')
-  `)
+  create: null as any,
+  findByUserId: null as any,
+  findById: null as any,
+  update: null as any,
+  delete: null as any,
+  countByUserId: null as any,
+  countByUserIdAndMonth: null as any
 };
 
 // Usage tracking operations
 export const usageDb = {
-  track: db.prepare(`
-    INSERT INTO usage_tracking (user_id, calculation_type)
-    VALUES (?, ?)
-  `),
-  
-  getMonthlyUsage: db.prepare(`
-    SELECT COUNT(*) as count FROM usage_tracking 
-    WHERE user_id = ? AND created_at >= date('now', 'start of month')
-  `),
-  
-  getUsageByType: db.prepare(`
-    SELECT calculation_type, COUNT(*) as count 
-    FROM usage_tracking 
-    WHERE user_id = ? 
-    GROUP BY calculation_type
-  `)
+  track: null as any,
+  getMonthlyUsage: null as any,
+  getUsageByType: null as any
 };
 
 // Subscription plan operations
 export const planDb = {
-  getAll: db.prepare(`
-    SELECT * FROM subscription_plans WHERE is_active = TRUE ORDER BY price_monthly ASC
-  `),
-  
-  findByName: db.prepare(`
-    SELECT * FROM subscription_plans WHERE name = ?
-  `)
+  getAll: null as any,
+  findByName: null as any
 };
 
 // Initialize database lazily when first needed
