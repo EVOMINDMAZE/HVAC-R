@@ -184,6 +184,7 @@ export function Dashboard() {
       <Header variant="dashboard" />
       
       <main className="max-w-7xl mx-auto px-4 py-8">
+        <SupabaseStatus />
         <QuickStats />
         
         <Tabs defaultValue="overview" className="w-full">
