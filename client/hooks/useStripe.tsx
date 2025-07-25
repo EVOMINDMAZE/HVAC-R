@@ -142,16 +142,23 @@ export function useStripeCheckout() {
 export function useCustomerPortal() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { session } = useSupabaseAuth();
 
   const openCustomerPortal = async () => {
     try {
       setLoading(true);
       setError(null);
 
+      const token = session?.access_token;
+
+      if (!token) {
+        throw new Error('No access token available');
+      }
+
       const response = await fetch('/api/billing/create-portal-session', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${token}`,
         },
       });
 
