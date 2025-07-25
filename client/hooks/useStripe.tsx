@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { stripePromise } from '@/lib/stripe';
 import { useSupabaseAuth } from './useSupabaseAuth';
+import { AuthErrorHandler } from '@/utils/authErrorHandler';
 
 interface Subscription {
   id: string;
