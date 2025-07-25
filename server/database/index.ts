@@ -78,6 +78,17 @@ export function initializeDatabase() {
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
 
+        CREATE TABLE IF NOT EXISTS billing_events (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          stripe_event_id TEXT UNIQUE NOT NULL,
+          event_type TEXT NOT NULL,
+          customer_id TEXT,
+          subscription_id TEXT,
+          data TEXT NOT NULL,
+          processed BOOLEAN DEFAULT FALSE,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+
         INSERT OR REPLACE INTO subscription_plans (name, display_name, price_monthly, price_yearly, calculations_limit, features) VALUES
         ('free', 'Free', 0.00, 0.00, 10, '["Basic calculations", "Email support"]'),
         ('professional', 'Professional', 29.99, 299.99, 500, '["All calculation types", "Priority support", "Export capabilities"]'),
