@@ -96,6 +96,16 @@ router.get('/subscription', authenticateSupabaseToken, async (req, res) => {
   try {
     const userEmail = req.user.email;
 
+    // Check if Stripe is configured
+    const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+    if (!stripeSecretKey) {
+      return res.json({
+        subscription: null,
+        plan: 'free',
+        status: 'active'
+      });
+    }
+
     // Find customer by email
     const customers = await stripe.customers.list({
       email: userEmail,
@@ -114,7 +124,7 @@ router.get('/subscription', authenticateSupabaseToken, async (req, res) => {
     const subscription = await getCustomerSubscription(customerId);
 
     if (!subscription) {
-      return res.json({ 
+      return res.json({
         subscription: null,
         plan: 'free',
         status: 'active'
@@ -127,10 +137,10 @@ router.get('/subscription', authenticateSupabaseToken, async (req, res) => {
 
     // Map price IDs to plan names (these should match your Stripe price IDs)
     const priceIdToPlan: { [key: string]: string } = {
-      [process.env.STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID || '']: 'professional',
-      [process.env.STRIPE_PROFESSIONAL_YEARLY_PRICE_ID || '']: 'professional_yearly',
-      [process.env.STRIPE_ENTERPRISE_MONTHLY_PRICE_ID || '']: 'enterprise',
-      [process.env.STRIPE_ENTERPRISE_YEARLY_PRICE_ID || '']: 'enterprise_yearly',
+      [process.env.VITE_STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID || '']: 'professional',
+      [process.env.VITE_STRIPE_PROFESSIONAL_YEARLY_PRICE_ID || '']: 'professional_yearly',
+      [process.env.VITE_STRIPE_ENTERPRISE_MONTHLY_PRICE_ID || '']: 'enterprise',
+      [process.env.VITE_STRIPE_ENTERPRISE_YEARLY_PRICE_ID || '']: 'enterprise_yearly',
     };
 
     if (priceId && priceIdToPlan[priceId]) {
