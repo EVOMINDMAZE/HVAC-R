@@ -146,30 +146,11 @@ export interface SubscriptionPlan {
 
 // User operations
 export const userDb = {
-  create: db.prepare(`
-    INSERT INTO users (email, password_hash, first_name, last_name, company, role, phone)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `),
-  
-  findByEmail: db.prepare(`
-    SELECT * FROM users WHERE email = ?
-  `),
-  
-  findById: db.prepare(`
-    SELECT * FROM users WHERE id = ?
-  `),
-  
-  update: db.prepare(`
-    UPDATE users 
-    SET first_name = ?, last_name = ?, company = ?, role = ?, phone = ?, location = ?, updated_at = CURRENT_TIMESTAMP
-    WHERE id = ?
-  `),
-  
-  updateSubscription: db.prepare(`
-    UPDATE users 
-    SET subscription_plan = ?, subscription_status = ?, trial_ends_at = ?, updated_at = CURRENT_TIMESTAMP
-    WHERE id = ?
-  `)
+  create: null as any,
+  findByEmail: null as any,
+  findById: null as any,
+  update: null as any,
+  updateSubscription: null as any
 };
 
 // Session operations
