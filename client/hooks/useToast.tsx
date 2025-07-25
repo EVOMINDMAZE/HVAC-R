@@ -20,7 +20,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const addToast = (toast: Omit<Toast, 'id'>) => {
-    const id = Date.now().toString();
+    // Generate a more unique ID by combining timestamp with random number
+    const id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const newToast = { ...toast, id };
     
     setToasts(prev => [...prev, newToast]);
