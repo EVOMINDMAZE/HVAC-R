@@ -250,11 +250,11 @@ export function RefrigerantComparison() {
               </div>
             </div>
 
-            <div>
-              <Button 
-                onClick={handleCompare} 
+            <div className="flex gap-4">
+              <Button
+                onClick={handleCompare}
                 disabled={loading || formData.refrigerants.length === 0}
-                className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg"
               >
                 {loading ? (
                   <>
@@ -265,6 +265,15 @@ export function RefrigerantComparison() {
                   "Compare"
                 )}
               </Button>
+
+              {calculationData && (
+                <SaveCalculation
+                  calculationType="Refrigerant Comparison"
+                  inputs={calculationData.inputs}
+                  results={calculationData.results}
+                  disabled={loading}
+                />
+              )}
             </div>
 
             {error && (
