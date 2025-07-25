@@ -45,8 +45,8 @@ export function Profile() {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
 
-  // Use real user data when available, fallback to mock
-  const user = authUser ? {
+  // Initialize user state with real data when available, fallback to mock
+  const initialUser = authUser ? {
     id: authUser.id,
     firstName: authUser.user_metadata?.first_name || authUser.email?.split('@')[0] || "User",
     lastName: authUser.user_metadata?.last_name || "",
@@ -61,6 +61,8 @@ export function Profile() {
     calculationsUsed: 0,
     calculationsLimit: 10
   } : mockUser;
+
+  const [user, setUser] = useState(initialUser);
 
   const handleSave = async () => {
     setLoading(true);
