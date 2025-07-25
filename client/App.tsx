@@ -83,6 +83,8 @@ function AppRoutes() {
           </PublicRoute>
         }
       />
+      <Route path="/features" element={<Features />} />
+      <Route path="/pricing" element={<Pricing />} />
 
       {/* Protected routes */}
       <Route
