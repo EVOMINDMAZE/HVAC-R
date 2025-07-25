@@ -73,6 +73,19 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
     return { user: data.user, error };
   };
 
+  const signInWithGoogle = async () => {
+    if (!supabase) {
+      return { error: { message: 'Supabase not configured' } as any };
+    }
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`
+      }
+    });
+    return { error };
+  };
+
   const signOut = async () => {
     if (!supabase) {
       return { error: { message: 'Supabase not configured' } as any };
