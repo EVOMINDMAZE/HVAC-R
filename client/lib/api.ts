@@ -84,6 +84,16 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
+    // Return mock failure when no backend server is configured
+    if (!API_BASE_URL) {
+      console.warn('No backend API server configured - returning mock failure');
+      return {
+        success: false,
+        error: 'Backend API not configured',
+        details: 'No internal API server is currently configured. Using fallback data where available.'
+      };
+    }
+
     try {
       const requestOptions = {
         ...options,
