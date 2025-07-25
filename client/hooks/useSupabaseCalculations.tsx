@@ -107,15 +107,23 @@ export function useSupabaseCalculations() {
       return data;
     } catch (error: any) {
       console.error('Error saving calculation:', error);
+      console.log('Error type:', typeof error);
+      console.log('Error keys:', Object.keys(error || {}));
 
       // Better error message handling
       let errorMessage = 'Unknown error occurred';
-      if (error?.message) {
+      if (!supabase) {
+        errorMessage = 'Database service not configured';
+      } else if (error?.message) {
         errorMessage = error.message;
+      } else if (error?.error_description) {
+        errorMessage = error.error_description;
+      } else if (error?.details) {
+        errorMessage = error.details;
       } else if (typeof error === 'string') {
         errorMessage = error;
-      } else if (!supabase) {
-        errorMessage = 'Database service not configured';
+      } else if (error?.toString && typeof error.toString === 'function') {
+        errorMessage = error.toString();
       }
 
       addToast({
