@@ -349,7 +349,7 @@ export function Pricing() {
 
                 <Button
                   onClick={() => handleSubscribe(plan.name)}
-                  disabled={plan.name === currentPlan}
+                  disabled={plan.name === currentPlan || checkoutLoading}
                   className={`w-full ${
                     plan.name === currentPlan
                       ? 'bg-gray-400 cursor-not-allowed'
