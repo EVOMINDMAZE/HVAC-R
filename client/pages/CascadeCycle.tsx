@@ -72,6 +72,7 @@ export function CascadeCycle() {
   const [result, setResult] = useState<CascadeResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { addCalculation } = useCalculationHistory();
 
   const handleCycleInputChange = (
     cycle: 'ltCycle' | 'htCycle',
