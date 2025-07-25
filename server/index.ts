@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { ensureDbInitialized, sessionDb } from "./database/index.js";
-import { signUp, signIn, signOut, getCurrentUser, authenticateToken } from "./routes/auth.js";
+import { signUp, signIn, signOut, getCurrentUser, authenticateToken } from "./routes/auth.ts";
 import {
   saveCalculation,
   getCalculations,
@@ -10,14 +10,14 @@ import {
   updateCalculation,
   deleteCalculation,
   getUserStats
-} from "./routes/calculations.js";
+} from "./routes/calculations.ts";
 import {
   getSubscriptionPlans,
   getCurrentSubscription,
   updateSubscription,
   cancelSubscription,
   createPaymentIntent
-} from "./routes/subscriptions.js";
+} from "./routes/subscriptions.ts";
 
 export function createServer() {
   const app = express();
