@@ -244,76 +244,23 @@ function ValueProposition() {
 }
 
 export function Dashboard() {
-  const [activeTab, setActiveTab] = useState("overview");
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Header variant="dashboard" />
-      
+
       <main className="max-w-7xl mx-auto px-4 py-8">
         <SystemStatus />
-        <SupabaseStatus />
-        <ApiTester />
-        <ApiServiceStatus />
-        
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-8 bg-white border border-blue-200">
-            <TabsTrigger 
-              value="overview" 
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
-            >
-              Overview
-            </TabsTrigger>
-            <TabsTrigger 
-              value="standard" 
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
-            >
-              Standard Cycle
-            </TabsTrigger>
-            <TabsTrigger 
-              value="comparison" 
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
-            >
-              Refrigerant Comparison
-            </TabsTrigger>
-            <TabsTrigger 
-              value="cascade" 
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
-            >
-              Cascade Cycle
-            </TabsTrigger>
-            <TabsTrigger 
-              value="history" 
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
-            >
-              History
-            </TabsTrigger>
-          </TabsList>
 
-          <TabsContent value="overview" className="space-y-6">
-            <QuickStats />
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <RecentCalculations />
-              <QuickActions setActiveTab={setActiveTab} />
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="standard" className="space-y-6">
-            <StandardCycleContent />
-          </TabsContent>
-          
-          <TabsContent value="comparison" className="space-y-6">
-            <RefrigerantComparisonContent />
-          </TabsContent>
-          
-          <TabsContent value="cascade" className="space-y-6">
-            <CascadeCycleContent />
-          </TabsContent>
-          
-          <TabsContent value="history" className="space-y-6">
-            <History />
-          </TabsContent>
-        </Tabs>
+        <div className="space-y-8">
+          <QuickStats />
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <RecentCalculations />
+            <QuickActions />
+          </div>
+
+          <ValueProposition />
+        </div>
       </main>
     </div>
   );
