@@ -102,8 +102,8 @@ function QuickStats() {
 
 function RecentCalculations() {
   const navigate = useNavigate();
-  // Simplified without backend for now
-  const recentCalculations: any[] = [];
+  const { calculations } = useSupabaseCalculations();
+  const recentCalculations = calculations.slice(0, 5);
 
   return (
     <Card className="bg-white shadow-lg border-blue-200">
