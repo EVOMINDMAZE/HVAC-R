@@ -358,7 +358,9 @@ export function Pricing() {
                       : 'bg-gray-800 hover:bg-gray-900'
                   } text-white py-3`}
                 >
-                  {plan.name === currentPlan ? (
+                  {checkoutLoading ? (
+                    'Processing...'
+                  ) : plan.name === currentPlan ? (
                     'Current Plan'
                   ) : plan.name === 'free' ? (
                     'Get Started Free'
