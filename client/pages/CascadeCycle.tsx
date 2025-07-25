@@ -180,8 +180,20 @@ export function CascadeCycle() {
         results: data.data,
         name: `Cascade: ${formData.ltCycle.refrigerant}/${formData.htCycle.refrigerant}`
       });
+
+      addToast({
+        type: 'success',
+        title: 'Cascade Analysis Complete',
+        description: `${formData.ltCycle.refrigerant}/${formData.htCycle.refrigerant} cascade system analysis completed`
+      });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Calculation failed");
+      const errorMessage = err instanceof Error ? err.message : "Calculation failed";
+      setError(errorMessage);
+      addToast({
+        type: 'error',
+        title: 'Cascade Analysis Failed',
+        description: errorMessage
+      });
     } finally {
       setLoading(false);
     }
