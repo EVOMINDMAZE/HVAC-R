@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { Calculator, User } from "lucide-react";
+import { Calculator, User, Menu, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
+import { useState } from "react";
 
 interface HeaderProps {
   variant?: 'landing' | 'dashboard';
@@ -12,6 +13,7 @@ export function Header({ variant = 'landing' }: HeaderProps) {
   const { user, isAuthenticated, signOut } = useSupabaseAuth();
   const navigate = useNavigate();
   const { addToast } = useToast();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleSignOut = async () => {
     try {
@@ -39,20 +41,62 @@ export function Header({ variant = 'landing' }: HeaderProps) {
       <div className="bg-white shadow-sm border-b border-blue-200">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-blue-900">Simulateon</h1>
-              <p className="text-blue-600 mt-1">
-                Welcome back, {user?.email?.split('@')[0] || "Engineer"}
-              </p>
+            <div className="flex items-center space-x-8">
+              <div>
+                <Link to="/dashboard">
+                  <h1 className="text-3xl font-bold text-blue-900 cursor-pointer hover:text-blue-700">
+                    Simulateon
+                  </h1>
+                </Link>
+                <p className="text-blue-600 mt-1">
+                  Welcome back, {user?.email?.split('@')[0] || "Engineer"}
+                </p>
+              </div>
+
+              {/* Desktop Navigation */}
+              <nav className="hidden md:flex items-center space-x-6">
+                <Link
+                  to="/dashboard"
+                  className="text-gray-600 hover:text-blue-600 font-medium"
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  to="/standard-cycle"
+                  className="text-gray-600 hover:text-blue-600 font-medium"
+                >
+                  Standard Cycle
+                </Link>
+                <Link
+                  to="/refrigerant-comparison"
+                  className="text-gray-600 hover:text-blue-600 font-medium"
+                >
+                  Comparison
+                </Link>
+                <Link
+                  to="/cascade-cycle"
+                  className="text-gray-600 hover:text-blue-600 font-medium"
+                >
+                  Cascade
+                </Link>
+                <Link
+                  to="/history"
+                  className="text-gray-600 hover:text-blue-600 font-medium"
+                >
+                  History
+                </Link>
+              </nav>
             </div>
+
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-gray-600 hidden md:block">
                 {user?.email}
               </span>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => navigate("/profile")}
+                className="hidden md:flex"
               >
                 <User className="h-4 w-4 mr-2" />
                 Profile
@@ -61,11 +105,93 @@ export function Header({ variant = 'landing' }: HeaderProps) {
                 variant="outline"
                 size="sm"
                 onClick={handleSignOut}
+                className="hidden md:flex"
               >
                 Sign Out
               </Button>
+
+              {/* Mobile menu button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="md:hidden"
+              >
+                {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </Button>
             </div>
           </div>
+
+          {/* Mobile Navigation */}
+          {isMobileMenuOpen && (
+            <div className="md:hidden mt-4 pt-4 border-t border-gray-200">
+              <nav className="flex flex-col space-y-4">
+                <Link
+                  to="/dashboard"
+                  className="text-gray-600 hover:text-blue-600 font-medium"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  to="/standard-cycle"
+                  className="text-gray-600 hover:text-blue-600 font-medium"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Standard Cycle
+                </Link>
+                <Link
+                  to="/refrigerant-comparison"
+                  className="text-gray-600 hover:text-blue-600 font-medium"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Comparison
+                </Link>
+                <Link
+                  to="/cascade-cycle"
+                  className="text-gray-600 hover:text-blue-600 font-medium"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Cascade
+                </Link>
+                <Link
+                  to="/history"
+                  className="text-gray-600 hover:text-blue-600 font-medium"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  History
+                </Link>
+                <div className="flex items-center space-x-2 pt-4 border-t border-gray-200">
+                  <span className="text-sm text-gray-600">{user?.email}</span>
+                </div>
+                <div className="flex space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      navigate("/profile");
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="flex-1"
+                  >
+                    <User className="h-4 w-4 mr-2" />
+                    Profile
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      handleSignOut();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="flex-1"
+                  >
+                    Sign Out
+                  </Button>
+                </div>
+              </nav>
+            </div>
+          )}
         </div>
       </div>
     );
