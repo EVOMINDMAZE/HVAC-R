@@ -81,37 +81,30 @@ class ApiClient {
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
     try {
-      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      const requestOptions = {
         headers: this.getAuthHeaders(),
         ...options
-      });
+      };
 
-      // Clone the response to avoid "body stream already read" error
-      const responseClone = response.clone();
-      let data;
-
-      try {
-        data = await response.json();
-      } catch (jsonError) {
-        // If JSON parsing fails, try to get text content
-        const textContent = await responseClone.text();
-        console.error('Failed to parse JSON response:', textContent);
-        return {
-          success: false,
-          error: 'Invalid response format',
-          details: 'Server returned invalid JSON'
-        };
-      }
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, requestOptions);
 
       if (!response.ok) {
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch {
+          errorData = { error: `HTTP ${response.status}: ${response.statusText}` };
+        }
+
         return {
           success: false,
-          error: data.error || 'Request failed',
-          details: data.details,
-          upgradeRequired: data.upgradeRequired
+          error: errorData.error || 'Request failed',
+          details: errorData.details,
+          upgradeRequired: errorData.upgradeRequired
         };
       }
 
+      const data = await response.json();
       return data;
     } catch (error) {
       console.error('API request failed:', error);
