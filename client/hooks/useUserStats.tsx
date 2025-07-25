@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from './useAuth';
-import { apiClient, UserStats } from '@/lib/api';
+import { useSupabaseAuth } from './useSupabaseAuth';
+import { UserStats } from '@/lib/api';
 
 export function useUserStats() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useSupabaseAuth();
   const [stats, setStats] = useState<UserStats | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,14 +19,20 @@ export function useUserStats() {
   const fetchStats = async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
-      const response = await apiClient.getUserStats();
-      if (response.success && response.data) {
-        setStats(response.data);
-      } else {
-        setError(response.error || 'Failed to fetch statistics');
-      }
+      // Return mock stats since we're not using the old backend
+      const mockStats: UserStats = {
+        totalCalculations: 0,
+        monthlyCalculations: 0,
+        usageByType: [],
+        subscription: {
+          plan: 'Free',
+          limit: 10,
+          remaining: 10
+        }
+      };
+      setStats(mockStats);
     } catch (err) {
       setError('Failed to fetch statistics');
       console.error('Error fetching user stats:', err);
