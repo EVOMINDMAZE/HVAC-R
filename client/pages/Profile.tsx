@@ -49,6 +49,8 @@ export function Profile() {
   const navigate = useNavigate();
   const { addToast } = useToast();
   const { uploadAvatar, removeAvatar, uploading } = useFileUpload();
+  const { subscription, loading: subscriptionLoading } = useSubscription();
+  const { openCustomerPortal, loading: portalLoading } = useCustomerPortal();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
   const [passwordForm, setPasswordForm] = useState({
