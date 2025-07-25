@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { Header } from "@/components/Header";
 import { SupabaseStatus } from "@/components/SupabaseStatus";
 import { Button } from "@/components/ui/button";
