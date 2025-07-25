@@ -174,6 +174,7 @@ export function Pricing() {
         throw new Error('Invalid plan selected');
       }
 
+      console.log('Attempting to create checkout session with priceId:', priceId);
       await createCheckoutSession(priceId);
     } catch (error: any) {
       addToast({
