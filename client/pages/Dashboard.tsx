@@ -156,7 +156,7 @@ function RecentCalculations() {
     <Card className="bg-white shadow-lg border-blue-200">
       <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
         <CardTitle className="flex items-center">
-          <History className="h-5 w-5 mr-2" />
+          <HistoryIcon className="h-5 w-5 mr-2" />
           Recent Calculations
         </CardTitle>
       </CardHeader>
