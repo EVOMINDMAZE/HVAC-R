@@ -122,52 +122,44 @@ export function RefrigerantComparison() {
     setError(null);
 
     try {
-      const response = await fetch("https://simulateon-backend.onrender.com/compare-refrigerants", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          refrigerants: formData.refrigerants,
-          cycle_params: {
-            refrigerant: "placeholder",
-            evap_temp_c: Number(formData.evaporatorTemp) || 0,
-            cond_temp_c: Number(formData.condenserTemp) || 0,
-            superheat_c: Number(formData.superheat) || 0,
-            subcooling_c: Number(formData.subcooling) || 0,
-          },
-        }),
-      });
+      // Call external calculation API
+      const data = await apiClient.compareRefrigerants(formData);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
       if (data.error) {
         throw new Error(data.error);
       }
+
       setResult(data.data);
 
-      // Save calculation to history
-      addCalculation({
-        type: 'Refrigerant Comparison',
-        parameters: {
-          refrigerants: formData.refrigerants,
-          evaporatorTemp: formData.evaporatorTemp,
-          condenserTemp: formData.condenserTemp,
-          superheat: formData.superheat,
-          subcooling: formData.subcooling
-        },
-        results: data.data,
-        name: `Comparison: ${formData.refrigerants.join(', ')}`
-      });
+      // Save calculation to backend
+      try {
+        await addCalculation({
+          type: 'Refrigerant Comparison',
+          parameters: {
+            refrigerants: formData.refrigerants,
+            evaporatorTemp: formData.evaporatorTemp,
+            condenserTemp: formData.condenserTemp,
+            superheat: formData.superheat,
+            subcooling: formData.subcooling
+          },
+          results: data.data,
+          name: `Comparison: ${formData.refrigerants.join(', ')}`
+        });
 
-      addToast({
-        type: 'success',
-        title: 'Comparison Complete',
-        description: `Successfully compared ${formData.refrigerants.length} refrigerants`
-      });
+        addToast({
+          type: 'success',
+          title: 'Comparison Complete',
+          description: `Successfully compared ${formData.refrigerants.length} refrigerants and saved to history`
+        });
+      } catch (saveError: any) {
+        addToast({
+          type: 'warning',
+          title: 'Comparison Complete',
+          description: saveError.message.includes('Upgrade required')
+            ? saveError.message
+            : `Comparison completed but could not be saved`
+        });
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Comparison failed";
       setError(errorMessage);
