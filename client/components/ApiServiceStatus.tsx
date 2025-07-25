@@ -24,9 +24,9 @@ export function ApiServiceStatus() {
   const checkServiceHealth = async (service: ServiceStatus): Promise<ServiceStatus> => {
     const startTime = Date.now();
     try {
-      // Use a simple OPTIONS request to check if service is responding
+      // Use a simple HEAD request to check if service is responding (no body parsing needed)
       const response = await fetch(`https://simulateon-backend.onrender.com${service.endpoint}`, {
-        method: 'OPTIONS',
+        method: 'HEAD',
         headers: {
           'Content-Type': 'application/json',
         }
