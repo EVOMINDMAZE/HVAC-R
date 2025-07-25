@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 
 export function Pricing() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useSupabaseAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
