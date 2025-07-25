@@ -66,7 +66,7 @@ export function RefrigerantComparison() {
   const handleInputChange = (field: keyof Omit<ComparisonFormData, 'refrigerants'>, value: number) => {
     setFormData(prev => ({
       ...prev,
-      [field]: value
+      [field]: Number(value) || 0
     }));
   };
 
@@ -87,7 +87,7 @@ export function RefrigerantComparison() {
 
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch("https://simulateon-backend.onrender.com/compare-refrigerants", {
         method: "POST",
@@ -97,10 +97,10 @@ export function RefrigerantComparison() {
         body: JSON.stringify({
           refrigerants: formData.refrigerants,
           cycle_params: {
-            evap_temp_c: formData.evaporatorTemp,
-            cond_temp_c: formData.condenserTemp,
-            superheat_c: formData.superheat,
-            subcooling_c: formData.subcooling,
+            evap_temp_c: Number(formData.evaporatorTemp) || 0,
+            cond_temp_c: Number(formData.condenserTemp) || 0,
+            superheat_c: Number(formData.superheat) || 0,
+            subcooling_c: Number(formData.subcooling) || 0,
           },
         }),
       });
