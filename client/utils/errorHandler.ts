@@ -49,14 +49,39 @@ export function setupGlobalErrorHandler() {
     try {
       return originalJSONParse.call(this, text, reviver);
     } catch (error) {
+      // Get stack trace to identify source
+      const stack = error instanceof Error ? error.stack : '';
+      const isFromExternalAPI = stack.includes('simulateon-backend.onrender.com') ||
+                               stack.includes('calculate-standard') ||
+                               stack.includes('compare-refrigerants') ||
+                               stack.includes('calculate-cascade');
+      const isFromInternalAPI = stack.includes('api.ts') && !isFromExternalAPI;
+
       console.error('🚨 JSON.parse FAILED:', {
         error: error instanceof Error ? error.message : 'Unknown error',
+        source: isFromExternalAPI ? 'External Calculation API' :
+                isFromInternalAPI ? 'Internal Backend API' : 'Unknown',
         textPreview: typeof text === 'string' ? text.substring(0, 200) : 'Not a string',
         textLength: typeof text === 'string' ? text.length : 'N/A',
         isHTML: typeof text === 'string' && (text.includes('<!doctype') || text.includes('<html')),
-        stack: error instanceof Error ? error.stack : 'No stack',
+        isProbablyErrorPage: typeof text === 'string' && (
+          text.includes('<!doctype') ||
+          text.includes('<html') ||
+          text.includes('<title>Error</title>') ||
+          text.includes('404') ||
+          text.includes('500')
+        ),
+        stack: stack,
         timestamp: new Date().toISOString()
       });
+
+      // Provide user-friendly error based on source
+      if (isFromExternalAPI) {
+        console.warn('💡 This appears to be from the external calculation API. Check if the API server is returning HTML error pages.');
+      } else if (isFromInternalAPI) {
+        console.warn('💡 This appears to be from the internal backend API. Check if the API server is configured and running.');
+      }
+
       throw error; // Re-throw the error
     }
   };
