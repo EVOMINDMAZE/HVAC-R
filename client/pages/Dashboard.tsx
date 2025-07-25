@@ -21,37 +21,7 @@ import { StandardCycle } from "./StandardCycle";
 import { RefrigerantComparison } from "./RefrigerantComparison";
 import { CascadeCycle } from "./CascadeCycle";
 
-// Mock data for user calculations history
-const mockCalculations = [
-  {
-    id: 1,
-    type: "Standard Cycle",
-    refrigerant: "R-134a",
-    cop: 3.86,
-    createdAt: "2024-01-15T10:30:00Z",
-    parameters: {
-      evapTemp: -10,
-      condTemp: 40,
-      superheat: 5,
-      subcooling: 5
-    }
-  },
-  {
-    id: 2,
-    type: "Refrigerant Comparison",
-    refrigerants: ["R-410A", "R-32", "R-744"],
-    bestCOP: 4.12,
-    createdAt: "2024-01-14T15:45:00Z"
-  },
-  {
-    id: 3,
-    type: "Cascade System",
-    ltRefrigerant: "R-744",
-    htRefrigerant: "R-134a",
-    overallCOP: 2.95,
-    createdAt: "2024-01-13T09:15:00Z"
-  }
-];
+
 
 function DashboardHeader() {
   const { user, logout } = useAuth();
