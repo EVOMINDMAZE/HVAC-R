@@ -136,6 +136,26 @@ export function Profile() {
     setUser(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const { url } = await uploadAvatar(file);
+    if (url) {
+      setUser(prev => ({ ...prev, avatar: url }));
+    }
+
+    // Reset file input
+    event.target.value = '';
+  };
+
+  const handleAvatarRemove = async () => {
+    const { success } = await removeAvatar();
+    if (success) {
+      setUser(prev => ({ ...prev, avatar: '' }));
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Header */}
