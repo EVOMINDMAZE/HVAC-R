@@ -288,11 +288,11 @@ export function CascadeCycle() {
             </div>
           </div>
 
-          <div className="mt-6">
-            <Button 
-              onClick={handleCalculate} 
+          <div className="mt-6 flex gap-4">
+            <Button
+              onClick={handleCalculate}
               disabled={loading || !formData.ltCycle.refrigerant || !formData.htCycle.refrigerant}
-              className="w-full md:w-auto bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 text-lg"
+              className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 text-lg"
             >
               {loading ? (
                 <>
@@ -303,6 +303,15 @@ export function CascadeCycle() {
                 "Calculate Cascade"
               )}
             </Button>
+
+            {calculationData && (
+              <SaveCalculation
+                calculationType="Cascade Cycle"
+                inputs={calculationData.inputs}
+                results={calculationData.results}
+                disabled={loading}
+              />
+            )}
           </div>
 
           {error && (
