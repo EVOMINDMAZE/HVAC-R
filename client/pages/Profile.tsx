@@ -662,21 +662,54 @@ export function Profile() {
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold">Notifications</h3>
                   <div className="space-y-4">
-                    {[
-                      "Email notifications for calculation results",
-                      "Weekly usage summary",
-                      "Product updates and news",
-                      "Security alerts"
-                    ].map((notification, index) => (
-                      <div key={index} className="flex items-center justify-between">
-                        <span className="text-gray-700">{notification}</span>
-                        <input
-                          type="checkbox"
-                          defaultChecked={index < 2}
-                          className="rounded border-blue-300 text-blue-600 focus:ring-blue-500"
-                        />
-                      </div>
-                    ))}
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-700">Email notifications for calculation results</span>
+                      <input
+                        type="checkbox"
+                        checked={preferences.notifications.emailResults}
+                        onChange={(e) => setPreferences(prev => ({
+                          ...prev,
+                          notifications: { ...prev.notifications, emailResults: e.target.checked }
+                        }))}
+                        className="rounded border-blue-300 text-blue-600 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-700">Weekly usage summary</span>
+                      <input
+                        type="checkbox"
+                        checked={preferences.notifications.weeklyUsage}
+                        onChange={(e) => setPreferences(prev => ({
+                          ...prev,
+                          notifications: { ...prev.notifications, weeklyUsage: e.target.checked }
+                        }))}
+                        className="rounded border-blue-300 text-blue-600 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-700">Product updates and news</span>
+                      <input
+                        type="checkbox"
+                        checked={preferences.notifications.productUpdates}
+                        onChange={(e) => setPreferences(prev => ({
+                          ...prev,
+                          notifications: { ...prev.notifications, productUpdates: e.target.checked }
+                        }))}
+                        className="rounded border-blue-300 text-blue-600 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-700">Security alerts</span>
+                      <input
+                        type="checkbox"
+                        checked={preferences.notifications.securityAlerts}
+                        onChange={(e) => setPreferences(prev => ({
+                          ...prev,
+                          notifications: { ...prev.notifications, securityAlerts: e.target.checked }
+                        }))}
+                        className="rounded border-blue-300 text-blue-600 focus:ring-blue-500"
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -685,7 +718,13 @@ export function Profile() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="defaultUnits">Default Temperature Units</Label>
-                      <Select defaultValue="celsius">
+                      <Select
+                        value={preferences.defaultUnits.temperature}
+                        onValueChange={(value) => setPreferences(prev => ({
+                          ...prev,
+                          defaultUnits: { ...prev.defaultUnits, temperature: value }
+                        }))}
+                      >
                         <SelectTrigger className="border-blue-200 focus:border-blue-500">
                           <SelectValue />
                         </SelectTrigger>
@@ -699,7 +738,13 @@ export function Profile() {
 
                     <div className="space-y-2">
                       <Label htmlFor="defaultPressure">Default Pressure Units</Label>
-                      <Select defaultValue="kpa">
+                      <Select
+                        value={preferences.defaultUnits.pressure}
+                        onValueChange={(value) => setPreferences(prev => ({
+                          ...prev,
+                          defaultUnits: { ...prev.defaultUnits, pressure: value }
+                        }))}
+                      >
                         <SelectTrigger className="border-blue-200 focus:border-blue-500">
                           <SelectValue />
                         </SelectTrigger>
@@ -715,9 +760,31 @@ export function Profile() {
                 </div>
 
                 <div className="flex justify-end space-x-4">
-                  <Button variant="outline">Reset to Defaults</Button>
-                  <Button className="bg-orange-600 hover:bg-orange-700">
-                    Save Preferences
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setPreferences({
+                        notifications: {
+                          emailResults: true,
+                          weeklyUsage: true,
+                          productUpdates: false,
+                          securityAlerts: true
+                        },
+                        defaultUnits: {
+                          temperature: 'celsius',
+                          pressure: 'kpa'
+                        }
+                      });
+                    }}
+                  >
+                    Reset to Defaults
+                  </Button>
+                  <Button
+                    className="bg-orange-600 hover:bg-orange-700"
+                    onClick={handlePreferencesSave}
+                    disabled={preferencesLoading}
+                  >
+                    {preferencesLoading ? 'Saving...' : 'Save Preferences'}
                   </Button>
                 </div>
               </CardContent>
