@@ -195,6 +195,7 @@ export function Dashboard() {
       <Header variant="dashboard" />
       
       <main className="max-w-7xl mx-auto px-4 py-8">
+        <DebugInfo />
         <SupabaseStatus />
         <QuickStats />
         
