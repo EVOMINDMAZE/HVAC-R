@@ -28,6 +28,8 @@ export function Pricing() {
   const { user, isAuthenticated } = useSupabaseAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
+  const { createCheckoutSession, loading: checkoutLoading } = useStripeCheckout();
+  const { subscription } = useSubscription();
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
