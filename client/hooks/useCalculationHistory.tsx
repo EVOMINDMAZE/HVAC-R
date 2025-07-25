@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from './useAuth';
+import { apiClient, CalculationData } from '@/lib/api';
 
 export interface CalculationResult {
-  id: string;
+  id: number;
   type: 'Standard Cycle' | 'Refrigerant Comparison' | 'Cascade Cycle';
   timestamp: string;
   parameters: any;
@@ -13,89 +14,139 @@ export interface CalculationResult {
 
 interface CalculationHistory {
   calculations: CalculationResult[];
-  addCalculation: (calculation: Omit<CalculationResult, 'id' | 'timestamp'>) => void;
+  isLoading: boolean;
+  addCalculation: (calculation: Omit<CalculationResult, 'id' | 'timestamp'>) => Promise<boolean>;
   getCalculations: () => CalculationResult[];
-  getCalculationById: (id: string) => CalculationResult | undefined;
-  deleteCalculation: (id: string) => void;
-  updateCalculation: (id: string, updates: Partial<CalculationResult>) => void;
-  clearHistory: () => void;
+  getCalculationById: (id: number) => CalculationResult | undefined;
+  deleteCalculation: (id: number) => Promise<boolean>;
+  updateCalculation: (id: number, updates: { name?: string; notes?: string }) => Promise<boolean>;
+  refreshCalculations: () => Promise<void>;
 }
 
 export function useCalculationHistory(): CalculationHistory {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [calculations, setCalculations] = useState<CalculationResult[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Load calculations from localStorage on mount
+  // Load calculations from backend when user is authenticated
   useEffect(() => {
-    if (user?.id) {
-      const stored = localStorage.getItem(`simulateon_calculations_${user.id}`);
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          setCalculations(parsed);
-        } catch (error) {
-          console.error('Error loading calculation history:', error);
-        }
+    if (isAuthenticated && user) {
+      refreshCalculations();
+    } else {
+      setCalculations([]);
+    }
+  }, [isAuthenticated, user]);
+
+  const refreshCalculations = async () => {
+    if (!isAuthenticated) return;
+
+    setIsLoading(true);
+    try {
+      const response = await apiClient.getCalculations();
+      if (response.success && response.data) {
+        const formattedCalculations = response.data.map(calc => ({
+          ...calc,
+          timestamp: calc.created_at || new Date().toISOString()
+        }));
+        setCalculations(formattedCalculations);
       }
+    } catch (error) {
+      console.error('Error loading calculations:', error);
+    } finally {
+      setIsLoading(false);
     }
-  }, [user?.id]);
+  };
 
-  // Save calculations to localStorage whenever they change
-  useEffect(() => {
-    if (user?.id && calculations.length > 0) {
-      localStorage.setItem(
-        `simulateon_calculations_${user.id}`,
-        JSON.stringify(calculations)
-      );
+  const addCalculation = async (calculation: Omit<CalculationResult, 'id' | 'timestamp'>): Promise<boolean> => {
+    if (!isAuthenticated) return false;
+
+    try {
+      const response = await apiClient.saveCalculation({
+        type: calculation.type,
+        name: calculation.name,
+        notes: calculation.notes,
+        parameters: calculation.parameters,
+        results: calculation.results
+      });
+
+      if (response.success && response.data) {
+        const newCalculation = {
+          ...response.data,
+          timestamp: response.data.created_at || new Date().toISOString()
+        };
+        setCalculations(prev => [newCalculation, ...prev]);
+        return true;
+      } else if (response.upgradeRequired) {
+        // Handle upgrade required scenario
+        throw new Error(response.details || 'Upgrade required to continue');
+      }
+
+      return false;
+    } catch (error) {
+      console.error('Error saving calculation:', error);
+      throw error;
     }
-  }, [calculations, user?.id]);
-
-  const addCalculation = (calculation: Omit<CalculationResult, 'id' | 'timestamp'>) => {
-    const newCalculation: CalculationResult = {
-      ...calculation,
-      id: Date.now().toString(),
-      timestamp: new Date().toISOString()
-    };
-
-    setCalculations(prev => [newCalculation, ...prev]);
   };
 
   const getCalculations = () => {
     return calculations.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
   };
 
-  const getCalculationById = (id: string) => {
+  const getCalculationById = (id: number) => {
     return calculations.find(calc => calc.id === id);
   };
 
-  const deleteCalculation = (id: string) => {
-    setCalculations(prev => prev.filter(calc => calc.id !== id));
+  const deleteCalculation = async (id: number): Promise<boolean> => {
+    if (!isAuthenticated) return false;
+
+    try {
+      const response = await apiClient.deleteCalculation(id);
+      if (response.success) {
+        setCalculations(prev => prev.filter(calc => calc.id !== id));
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Error deleting calculation:', error);
+      return false;
+    }
   };
 
-  const updateCalculation = (id: string, updates: Partial<CalculationResult>) => {
-    setCalculations(prev => 
-      prev.map(calc => 
-        calc.id === id 
-          ? { ...calc, ...updates }
-          : calc
-      )
-    );
-  };
+  const updateCalculation = async (id: number, updates: { name?: string; notes?: string }): Promise<boolean> => {
+    if (!isAuthenticated) return false;
 
-  const clearHistory = () => {
-    setCalculations([]);
-    if (user?.id) {
-      localStorage.removeItem(`simulateon_calculations_${user.id}`);
+    try {
+      const response = await apiClient.updateCalculation(id, updates);
+      if (response.success && response.data) {
+        setCalculations(prev =>
+          prev.map(calc =>
+            calc.id === id
+              ? {
+                  ...calc,
+                  name: response.data!.name,
+                  notes: response.data!.notes,
+                  timestamp: response.data!.updated_at || calc.timestamp
+                }
+              : calc
+          )
+        );
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Error updating calculation:', error);
+      return false;
     }
   };
 
   return {
     calculations: getCalculations(),
+    isLoading,
     addCalculation,
     getCalculations,
     getCalculationById,
     deleteCalculation,
     updateCalculation,
-    clearHistory
+    refreshCalculations
   };
 }
