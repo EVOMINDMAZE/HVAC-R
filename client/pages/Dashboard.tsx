@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { SystemStatus } from "@/components/SystemStatus";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
