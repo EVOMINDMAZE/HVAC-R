@@ -87,17 +87,24 @@ export function useSubscription() {
 export function useStripeCheckout() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { session } = useSupabaseAuth();
 
   const createCheckoutSession = async (priceId: string) => {
     try {
       setLoading(true);
       setError(null);
 
+      const token = session?.access_token;
+
+      if (!token) {
+        throw new Error('No access token available');
+      }
+
       const response = await fetch('/api/billing/create-checkout-session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ priceId }),
       });
