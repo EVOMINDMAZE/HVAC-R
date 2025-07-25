@@ -117,6 +117,20 @@ export function RefrigerantComparison() {
         throw new Error(data.error);
       }
       setResult(data.data);
+
+      // Save calculation to history
+      addCalculation({
+        type: 'Refrigerant Comparison',
+        parameters: {
+          refrigerants: formData.refrigerants,
+          evaporatorTemp: formData.evaporatorTemp,
+          condenserTemp: formData.condenserTemp,
+          superheat: formData.superheat,
+          subcooling: formData.subcooling
+        },
+        results: data.data,
+        name: `Comparison: ${formData.refrigerants.join(', ')}`
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Comparison failed");
     } finally {
