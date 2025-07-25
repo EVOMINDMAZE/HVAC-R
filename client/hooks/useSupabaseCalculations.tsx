@@ -21,7 +21,7 @@ export function useSupabaseCalculations() {
 
   // Fetch user's calculations
   const fetchCalculations = async () => {
-    if (!user) return;
+    if (!user || !supabase) return;
 
     setIsLoading(true);
     try {
