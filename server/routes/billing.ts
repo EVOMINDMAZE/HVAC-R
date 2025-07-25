@@ -13,6 +13,12 @@ router.get('/test', (req, res) => {
   res.json({ message: 'Billing routes are working!' });
 });
 
+// Test route without auth to debug routing
+router.post('/test-checkout', (req, res) => {
+  console.log('Test checkout route called with body:', req.body);
+  res.json({ message: 'Test checkout route works!', body: req.body });
+});
+
 // Create checkout session
 router.post('/create-checkout-session', authenticateSupabaseToken, async (req, res) => {
   try {
