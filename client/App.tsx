@@ -5,6 +5,7 @@ import { SignIn } from "@/pages/SignIn";
 import { SignUp } from "@/pages/SignUp";
 import { Dashboard } from "@/pages/Dashboard";
 import { Profile } from "@/pages/Profile";
+import { History } from "@/pages/History";
 import NotFound from "@/pages/NotFound";
 
 // Protected Route Component
