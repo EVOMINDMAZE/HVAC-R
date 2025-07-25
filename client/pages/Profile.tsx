@@ -512,44 +512,80 @@ export function Profile() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
-                <div className="space-y-6">
-                  {/* Current Plan */}
-                  <div className="bg-blue-50 p-6 rounded-lg">
-                    <h3 className="text-lg font-semibold text-blue-900 mb-2">Current Plan: {user.plan}</h3>
-                    <p className="text-blue-700 mb-4">
-                      You have used {user.calculationsUsed} of {user.calculationsLimit} calculations this month.
-                    </p>
-                    <div className="w-full bg-blue-200 rounded-full h-2">
-                      <div 
-                        className="bg-blue-600 h-2 rounded-full" 
-                        style={{ width: `${(user.calculationsUsed / user.calculationsLimit) * 100}%` }}
-                      />
+{subscriptionLoading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                    <p className="text-gray-600 mt-2">Loading subscription details...</p>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {/* Current Plan */}
+                    <div className="bg-blue-50 p-6 rounded-lg">
+                      <h3 className="text-lg font-semibold text-blue-900 mb-2">
+                        Current Plan: {subscription?.plan || 'Free'}
+                      </h3>
+                      {subscription?.subscription ? (
+                        <div className="space-y-2">
+                          <p className="text-blue-700">
+                            Status: <span className="capitalize">{subscription.subscription.status}</span>
+                          </p>
+                          <p className="text-blue-700">
+                            ${subscription.subscription.amount}/{subscription.subscription.interval}
+                          </p>
+                          <p className="text-blue-700">
+                            Next billing: {new Date(subscription.subscription.current_period_end * 1000).toLocaleDateString()}
+                          </p>
+                          {subscription.subscription.cancel_at_period_end && (
+                            <p className="text-red-600 font-semibold">
+                              Subscription will cancel at the end of current period
+                            </p>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="text-blue-700">
+                          You have used {user.calculationsUsed} of {user.calculationsLimit} calculations this month.
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Billing Actions */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {subscription?.subscription ? (
+                        <Button
+                          onClick={openCustomerPortal}
+                          disabled={portalLoading}
+                          className="justify-start bg-blue-600 hover:bg-blue-700 text-white"
+                        >
+                          <CreditCard className="h-4 w-4 mr-2" />
+                          {portalLoading ? 'Loading...' : 'Manage Subscription'}
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => navigate('/pricing')}
+                          className="justify-start bg-blue-600 hover:bg-blue-700 text-white"
+                        >
+                          <CreditCard className="h-4 w-4 mr-2" />
+                          Upgrade Plan
+                        </Button>
+                      )}
+                      <Button variant="outline" className="justify-start">
+                        <Calendar className="h-4 w-4 mr-2" />
+                        View Billing History
+                      </Button>
+                    </div>
+
+                    <div className="border-t pt-6">
+                      <h4 className="font-semibold text-red-600 mb-2">Danger Zone</h4>
+                      <p className="text-gray-600 mb-4">
+                        Once you delete your account, there is no going back. Please be certain.
+                      </p>
+                      <Button variant="destructive">
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete Account
+                      </Button>
                     </div>
                   </div>
-
-                  {/* Billing Actions */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Button variant="outline" className="justify-start">
-                      <Download className="h-4 w-4 mr-2" />
-                      Download Invoice
-                    </Button>
-                    <Button variant="outline" className="justify-start">
-                      <Calendar className="h-4 w-4 mr-2" />
-                      View Billing History
-                    </Button>
-                  </div>
-
-                  <div className="border-t pt-6">
-                    <h4 className="font-semibold text-red-600 mb-2">Danger Zone</h4>
-                    <p className="text-gray-600 mb-4">
-                      Once you delete your account, there is no going back. Please be certain.
-                    </p>
-                    <Button variant="destructive">
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      Delete Account
-                    </Button>
-                  </div>
-                </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
