@@ -23,7 +23,7 @@ export function createServer() {
   const app = express();
 
   // Initialize database
-  initializeDatabase();
+  ensureDbInitialized();
 
   // Clean up expired sessions periodically
   setInterval(() => {
