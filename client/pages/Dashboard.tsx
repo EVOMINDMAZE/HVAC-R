@@ -24,47 +24,7 @@ import { History } from "./History";
 
 
 
-function DashboardHeader() {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
-
-  return (
-    <div className="bg-white shadow-sm border-b border-blue-200">
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-blue-900">Simulateon</h1>
-            <p className="text-blue-600 mt-1">
-              Welcome back, {user?.firstName || "Engineer"}
-            </p>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate("/profile")}
-            >
-              <User className="h-4 w-4 mr-2" />
-              Profile
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleLogout}
-            >
-              Sign Out
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function QuickStats() {
   const { stats, isLoading } = useUserStats();
