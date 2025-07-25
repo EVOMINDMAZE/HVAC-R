@@ -320,13 +320,44 @@ class ApiClient {
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
         const responseText = await response.text();
+        console.error('Non-JSON response received:', {
+          url: response.url,
+          status: response.status,
+          contentType,
+          responseText: responseText.substring(0, 500)
+        });
+
         if (responseText.includes('<!doctype') || responseText.includes('<html')) {
           throw new Error('API server returned HTML instead of JSON. The comparison service may be temporarily unavailable.');
         }
-        throw new Error(`API returned unexpected content type: ${contentType}`);
+        throw new Error(`API returned unexpected content type: ${contentType || 'unknown'}. Expected JSON but got: ${responseText.substring(0, 100)}...`);
       }
 
-      return await response.json();
+      // Additional safety: try to parse JSON with better error handling
+      try {
+        const responseText = await response.text();
+        console.log('API Response received:', {
+          url: response.url,
+          status: response.status,
+          contentType,
+          responseLength: responseText.length,
+          responsePreview: responseText.substring(0, 200)
+        });
+
+        if (!responseText) {
+          throw new Error('Empty response received from API');
+        }
+
+        if (responseText.trim().startsWith('<')) {
+          throw new Error('API returned HTML instead of JSON. The server may be returning an error page.');
+        }
+
+        return JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('JSON Parse Error:', parseError);
+        const responseText = await response.text().catch(() => 'Unable to read response');
+        throw new Error(`Failed to parse API response as JSON. Response: ${responseText.substring(0, 200)}...`);
+      }
     } catch (error) {
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error('Unable to connect to comparison service. Please check your internet connection.');
@@ -371,13 +402,44 @@ class ApiClient {
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
         const responseText = await response.text();
+        console.error('Non-JSON response received:', {
+          url: response.url,
+          status: response.status,
+          contentType,
+          responseText: responseText.substring(0, 500)
+        });
+
         if (responseText.includes('<!doctype') || responseText.includes('<html')) {
           throw new Error('API server returned HTML instead of JSON. The cascade calculation service may be temporarily unavailable.');
         }
-        throw new Error(`API returned unexpected content type: ${contentType}`);
+        throw new Error(`API returned unexpected content type: ${contentType || 'unknown'}. Expected JSON but got: ${responseText.substring(0, 100)}...`);
       }
 
-      return await response.json();
+      // Additional safety: try to parse JSON with better error handling
+      try {
+        const responseText = await response.text();
+        console.log('API Response received:', {
+          url: response.url,
+          status: response.status,
+          contentType,
+          responseLength: responseText.length,
+          responsePreview: responseText.substring(0, 200)
+        });
+
+        if (!responseText) {
+          throw new Error('Empty response received from API');
+        }
+
+        if (responseText.trim().startsWith('<')) {
+          throw new Error('API returned HTML instead of JSON. The server may be returning an error page.');
+        }
+
+        return JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('JSON Parse Error:', parseError);
+        const responseText = await response.text().catch(() => 'Unable to read response');
+        throw new Error(`Failed to parse API response as JSON. Response: ${responseText.substring(0, 200)}...`);
+      }
     } catch (error) {
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error('Unable to connect to cascade calculation service. Please check your internet connection.');
