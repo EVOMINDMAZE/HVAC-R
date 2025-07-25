@@ -121,34 +121,25 @@ export function useSupabaseCalculations() {
 
       return data;
     } catch (error: any) {
-      console.error('Error saving calculation:', error);
-      console.log('Error type:', typeof error);
-      console.log('Error keys:', Object.keys(error || {}));
-      console.log('Error stringified:', JSON.stringify(error, null, 2));
+      // Use robust error logging
+      logError('saveCalculation', error);
 
-      // Better error message handling
+      // Extract readable error message
       let errorMessage = 'Unknown error occurred';
+
       if (!supabase) {
         errorMessage = 'Database service not configured. Please set up your Supabase credentials.';
-      } else if (error?.code === 'PGRST116') {
-        errorMessage = 'The calculations table does not exist in your Supabase database. Please create it first.';
-      } else if (error?.code === '42P01') {
-        errorMessage = 'The calculations table does not exist. Please create the table in your Supabase database.';
-      } else if (error?.message) {
-        errorMessage = error.message;
-      } else if (error?.error_description) {
-        errorMessage = error.error_description;
-      } else if (error?.details) {
-        errorMessage = error.details;
-      } else if (error?.hint) {
-        errorMessage = error.hint;
-      } else if (typeof error === 'string') {
-        errorMessage = error;
-      } else if (error?.toString && typeof error.toString === 'function') {
-        errorMessage = error.toString();
       } else {
-        // Last resort - try to extract any meaningful information
-        errorMessage = `Database error: ${error?.code || 'Unknown'} - Please check your Supabase configuration`;
+        errorMessage = extractErrorMessage(error);
+
+        // Add context for common issues
+        if (error?.code === 'PGRST116' || error?.code === '42P01') {
+          errorMessage = 'The calculations table does not exist in your Supabase database. Please create it first.';
+        } else if (errorMessage.includes('Invalid API key') || errorMessage.includes('unauthorized')) {
+          errorMessage = 'Invalid Supabase credentials. Please check your API key and URL.';
+        } else if (errorMessage.includes('relation') && errorMessage.includes('does not exist')) {
+          errorMessage = 'The calculations table does not exist. Please create it in your Supabase database.';
+        }
       }
 
       addToast({
