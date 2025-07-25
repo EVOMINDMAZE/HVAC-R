@@ -37,21 +37,29 @@ export function useSupabaseCalculations() {
       console.error('Error fetching calculations:', error);
       console.log('Error type:', typeof error);
       console.log('Error keys:', Object.keys(error || {}));
+      console.log('Error stringified:', JSON.stringify(error, null, 2));
 
       // Better error message handling
       let errorMessage = 'Unknown error occurred';
       if (!supabase) {
-        errorMessage = 'Database service not configured';
+        errorMessage = 'Database service not configured. Please set up your Supabase credentials.';
+      } else if (error?.code === 'PGRST116') {
+        errorMessage = 'The calculations table does not exist in your Supabase database. Please create it first.';
       } else if (error?.message) {
         errorMessage = error.message;
       } else if (error?.error_description) {
         errorMessage = error.error_description;
       } else if (error?.details) {
         errorMessage = error.details;
+      } else if (error?.hint) {
+        errorMessage = error.hint;
       } else if (typeof error === 'string') {
         errorMessage = error;
       } else if (error?.toString && typeof error.toString === 'function') {
         errorMessage = error.toString();
+      } else {
+        // Last resort - try to extract any meaningful information
+        errorMessage = `Database error: ${error?.code || 'Unknown'} - Please check your Supabase configuration`;
       }
 
       addToast({
