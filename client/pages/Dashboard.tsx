@@ -68,19 +68,32 @@ function DashboardHeader() {
 }
 
 function QuickStats() {
-  const { calculations } = useCalculationHistory();
+  const { stats, isLoading } = useUserStats();
+  const { user } = useAuth();
 
-  const thisMonth = calculations.filter(calc => {
-    const calcDate = new Date(calc.timestamp);
-    const now = new Date();
-    return calcDate.getMonth() === now.getMonth() && calcDate.getFullYear() === now.getFullYear();
-  }).length;
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        {[...Array(4)].map((_, i) => (
+          <Card key={i} className="bg-gradient-to-r from-gray-400 to-gray-500 text-white">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-100 text-sm">Loading...</p>
+                  <div className="w-16 h-6 bg-gray-300 rounded animate-pulse"></div>
+                </div>
+                <div className="w-8 h-8 bg-gray-300 rounded animate-pulse"></div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
 
-  const avgCOP = calculations.length > 0
-    ? calculations
-        .filter(calc => calc.results?.performance?.cop || calc.results?.performance?.overallCOP)
-        .reduce((sum, calc) => sum + (calc.results.performance.cop || calc.results.performance.overallCOP || 0), 0) / calculations.length
-    : 0;
+  const remainingText = stats?.subscription.remaining === -1
+    ? "Unlimited"
+    : stats?.subscription.remaining?.toString() || "0";
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -89,7 +102,7 @@ function QuickStats() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-blue-100 text-sm">Total Calculations</p>
-              <p className="text-2xl font-bold">{calculations.length}</p>
+              <p className="text-2xl font-bold">{stats?.totalCalculations || 0}</p>
             </div>
             <Calculator className="h-8 w-8 text-blue-200" />
           </div>
@@ -101,7 +114,7 @@ function QuickStats() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-purple-100 text-sm">This Month</p>
-              <p className="text-2xl font-bold">{thisMonth}</p>
+              <p className="text-2xl font-bold">{stats?.monthlyCalculations || 0}</p>
             </div>
             <FileText className="h-8 w-8 text-purple-200" />
           </div>
@@ -112,8 +125,8 @@ function QuickStats() {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-green-100 text-sm">Average COP</p>
-              <p className="text-2xl font-bold">{avgCOP.toFixed(1)}</p>
+              <p className="text-green-100 text-sm">Plan Remaining</p>
+              <p className="text-2xl font-bold">{remainingText}</p>
             </div>
             <TrendingUp className="h-8 w-8 text-green-200" />
           </div>
@@ -124,8 +137,8 @@ function QuickStats() {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-orange-100 text-sm">Different Types</p>
-              <p className="text-2xl font-bold">{new Set(calculations.map(c => c.type)).size}</p>
+              <p className="text-orange-100 text-sm">Current Plan</p>
+              <p className="text-xl font-bold capitalize">{user?.subscription_plan || 'Free'}</p>
             </div>
             <BarChart3 className="h-8 w-8 text-orange-200" />
           </div>
