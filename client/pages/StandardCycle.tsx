@@ -130,7 +130,7 @@ export function StandardCycle() {
 
   return (
     <div className="space-y-6">
-      <Card className="bg-white shadow-lg border-blue-200">
+      <Card className="bg-white shadow-lg border-blue-200 animate-fade-in hover-lift">
         <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
           <CardTitle className="text-xl">Standard Refrigeration Cycle</CardTitle>
         </CardHeader>
