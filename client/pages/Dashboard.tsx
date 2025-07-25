@@ -134,6 +134,23 @@ function QuickStats() {
 }
 
 function RecentCalculations() {
+  const { calculations } = useCalculationHistory();
+  const navigate = useNavigate();
+  const recentCalculations = calculations.slice(0, 5);
+
+  const formatResultSummary = (calc: any) => {
+    switch (calc.type) {
+      case "Standard Cycle":
+        return `COP: ${calc.results?.performance?.cop?.toFixed(2) || "N/A"}`;
+      case "Refrigerant Comparison":
+        return `${calc.parameters?.refrigerants?.length || 0} refrigerants`;
+      case "Cascade Cycle":
+        return `Overall COP: ${calc.results?.performance?.overallCOP?.toFixed(2) || "N/A"}`;
+      default:
+        return "";
+    }
+  };
+
   return (
     <Card className="bg-white shadow-lg border-blue-200">
       <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
@@ -143,46 +160,42 @@ function RecentCalculations() {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6">
-        <div className="space-y-4">
-          {mockCalculations.map((calc) => (
-            <div key={calc.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Calculator className="h-5 w-5 text-blue-600" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">{calc.type}</h4>
-                  <div className="flex items-center space-x-2 text-sm text-gray-600">
-                    <Clock className="h-3 w-3" />
-                    <span>{new Date(calc.createdAt).toLocaleDateString()}</span>
+        {recentCalculations.length === 0 ? (
+          <div className="text-center py-8">
+            <Calculator className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">No calculations yet</h3>
+            <p className="text-gray-600 mb-4">Start by running your first calculation</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {recentCalculations.map((calc) => (
+              <div key={calc.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                <div className="flex items-center space-x-4">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <Calculator className="h-5 w-5 text-blue-600" />
                   </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">{calc.name || calc.type}</h4>
+                    <div className="flex items-center space-x-2 text-sm text-gray-600">
+                      <Clock className="h-3 w-3" />
+                      <span>{new Date(calc.timestamp).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <Badge variant="secondary">{calc.type}</Badge>
+                  <p className="text-sm text-gray-600 mt-1">{formatResultSummary(calc)}</p>
                 </div>
               </div>
-              <div className="text-right">
-                {calc.type === "Standard Cycle" && (
-                  <div>
-                    <Badge variant="secondary">{calc.refrigerant}</Badge>
-                    <p className="text-sm text-gray-600 mt-1">COP: {calc.cop}</p>
-                  </div>
-                )}
-                {calc.type === "Refrigerant Comparison" && (
-                  <div>
-                    <Badge variant="secondary">{calc.refrigerants?.length} refrigerants</Badge>
-                    <p className="text-sm text-gray-600 mt-1">Best COP: {calc.bestCOP}</p>
-                  </div>
-                )}
-                {calc.type === "Cascade System" && (
-                  <div>
-                    <Badge variant="secondary">Cascade</Badge>
-                    <p className="text-sm text-gray-600 mt-1">COP: {calc.overallCOP}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
         <div className="mt-6 text-center">
-          <Button variant="outline" className="w-full">
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => navigate("/history")}
+          >
             View All Calculations
           </Button>
         </div>
