@@ -246,7 +246,10 @@ export interface User {
   avatar_url?: string;
   subscription_plan: string;
   subscription_status: string;
+  stripe_customer_id?: string;
+  stripe_subscription_id?: string;
   trial_ends_at?: string;
+  preferences?: string;
   created_at: string;
   updated_at: string;
 }
