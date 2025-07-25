@@ -47,6 +47,7 @@ export function Profile() {
   const { user: authUser, updateUser } = useSupabaseAuth();
   const navigate = useNavigate();
   const { addToast } = useToast();
+  const { uploadAvatar, removeAvatar, uploading } = useFileUpload();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
 
