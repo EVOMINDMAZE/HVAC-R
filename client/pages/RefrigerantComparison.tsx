@@ -179,22 +179,39 @@ export function RefrigerantComparison() {
 
   const getValueForMetric = (result: RefrigerantResult, metricKey: string) => {
     // Handle different API response structures
-    let value = (result as any)[metricKey] || (result as any).performance?.[metricKey];
+    let value = (result as any)[metricKey];
 
-    // Map API response field names to expected field names
-    if (!value && metricKey === 'cop') {
-      value = (result as any).performance?.cop;
-    } else if (!value && metricKey === 'refrigerationEffect') {
-      value = (result as any).performance?.refrigeration_effect_kj_kg;
-    } else if (!value && metricKey === 'workInput') {
-      value = (result as any).performance?.work_of_compression_kj_kg;
-    } else if (!value && metricKey === 'heatRejection') {
-      // Calculate heat rejection as refrigeration effect + work input
-      const refEffect = (result as any).performance?.refrigeration_effect_kj_kg || 0;
-      const workInput = (result as any).performance?.work_of_compression_kj_kg || 0;
-      value = refEffect + workInput;
+    // If not found directly, try performance nested object
+    if (value === undefined && (result as any).performance) {
+      const perf = (result as any).performance;
+      switch (metricKey) {
+        case 'cop':
+          value = perf.cop;
+          break;
+        case 'refrigerationEffect':
+          value = perf.refrigeration_effect_kj_kg || perf.refrigeration_effect;
+          break;
+        case 'workInput':
+          value = perf.work_of_compression_kj_kg || perf.work_input;
+          break;
+        case 'heatRejection':
+          const refEffect = perf.refrigeration_effect_kj_kg || perf.refrigeration_effect || 0;
+          const workInput = perf.work_of_compression_kj_kg || perf.work_input || 0;
+          value = refEffect + workInput;
+          break;
+        case 'volumetricCapacity':
+          value = perf.volumetric_capacity || perf.volumetricCapacity;
+          break;
+        case 'dischargePressure':
+          value = perf.discharge_pressure || perf.dischargePressure;
+          break;
+        case 'suctionPressure':
+          value = perf.suction_pressure || perf.suctionPressure;
+          break;
+      }
     }
 
+    console.log(`Metric ${metricKey} for ${(result as any).refrigerant}:`, value);
     return typeof value === 'number' ? value.toFixed(metricKey === 'cop' ? 3 : 1) : "N/A";
   };
 
