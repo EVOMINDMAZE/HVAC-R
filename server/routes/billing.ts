@@ -6,7 +6,7 @@ import express from 'express';
 const router = express.Router();
 
 // Ensure database is initialized
-ensureDbInitialized();
+// ensureDbInitialized();
 
 // Test route to verify billing routes are working
 router.get('/test', (req, res) => {
