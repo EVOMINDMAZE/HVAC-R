@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { calculationDb, usageDb, planDb } from "../database/index.js";
+import { calculationDb, usageDb, planDb } from "../database/index.ts";
 
 interface SaveCalculationRequest {
   type: 'Standard Cycle' | 'Refrigerant Comparison' | 'Cascade Cycle';
