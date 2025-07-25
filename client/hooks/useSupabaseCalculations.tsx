@@ -21,17 +21,30 @@ export function useSupabaseCalculations() {
 
   // Fetch user's calculations
   const fetchCalculations = async () => {
-    if (!user || !supabase) return;
+    if (!user || !supabase) {
+      console.log('Skipping fetch - user or supabase not available:', { user: !!user, supabase: !!supabase });
+      return;
+    }
 
     setIsLoading(true);
     try {
+      console.log('Attempting to fetch calculations for user:', user.id);
+
+      // Test basic Supabase connection first
       const { data, error } = await supabase
         .from('calculations')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      console.log('Supabase response:', { data, error });
+
+      if (error) {
+        console.error('Supabase error object:', error);
+        throw error;
+      }
+
+      console.log('Successfully fetched calculations:', data?.length || 0, 'items');
       setCalculations(data || []);
     } catch (error: any) {
       // Defensive logging to prevent further errors
