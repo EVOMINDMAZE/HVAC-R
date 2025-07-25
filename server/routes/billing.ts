@@ -1,7 +1,7 @@
 import express from 'express';
-import { stripe, createCheckoutSession, createCustomerPortalSession, getCustomerSubscription } from '../utils/stripe.js';
-import { userDb, billingDb, ensureDbInitialized } from '../database/index.js';
-import { authenticateSupabaseToken } from '../utils/supabaseAuth.js';
+// import { stripe, createCheckoutSession, createCustomerPortalSession, getCustomerSubscription } from '../utils/stripe.js';
+// import { userDb, billingDb, ensureDbInitialized } from '../database/index.js';
+// import { authenticateSupabaseToken } from '../utils/supabaseAuth.js';
 
 const router = express.Router();
 
