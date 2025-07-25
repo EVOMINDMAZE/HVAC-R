@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -41,7 +43,9 @@ const mockUser = {
 };
 
 export function Profile() {
-  const { user: authUser } = useSupabaseAuth();
+  const { user: authUser, updateUser } = useSupabaseAuth();
+  const navigate = useNavigate();
+  const { addToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
 
@@ -64,12 +68,66 @@ export function Profile() {
 
   const [user, setUser] = useState(initialUser);
 
+  // Update local state when auth user changes
+  useEffect(() => {
+    if (authUser) {
+      setUser({
+        id: authUser.id,
+        firstName: authUser.user_metadata?.first_name || authUser.email?.split('@')[0] || "User",
+        lastName: authUser.user_metadata?.last_name || "",
+        email: authUser.email || "",
+        company: authUser.user_metadata?.company || "",
+        role: authUser.user_metadata?.role || "",
+        phone: authUser.phone || "",
+        location: authUser.user_metadata?.location || "",
+        avatar: authUser.user_metadata?.avatar_url || "",
+        joinedDate: authUser.created_at?.split('T')[0] || "2024-01-01",
+        plan: "Free",
+        calculationsUsed: 0,
+        calculationsLimit: 10
+      });
+    }
+  }, [authUser]);
+
   const handleSave = async () => {
+    if (!authUser) {
+      addToast({
+        type: 'error',
+        title: 'Not Authenticated',
+        description: 'Please sign in to save changes'
+      });
+      return;
+    }
+
     setLoading(true);
-    // TODO: Implement actual save
-    setTimeout(() => {
+    try {
+      // Update user metadata in Supabase
+      const { error } = await updateUser({
+        data: {
+          first_name: user.firstName,
+          last_name: user.lastName,
+          company: user.company,
+          role: user.role,
+          location: user.location,
+        }
+      });
+
+      if (error) throw error;
+
+      addToast({
+        type: 'success',
+        title: 'Profile Updated',
+        description: 'Your profile has been saved successfully'
+      });
+    } catch (error: any) {
+      addToast({
+        type: 'error',
+        title: 'Save Failed',
+        description: error.message || 'Failed to save profile changes'
+      });
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -82,7 +140,7 @@ export function Profile() {
       <div className="bg-white shadow-sm border-b border-blue-200">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" onClick={() => window.history.back()}>
+            <Button variant="ghost" onClick={() => navigate('/dashboard')}>
               ← Back to Dashboard
             </Button>
             <h1 className="text-3xl font-bold text-blue-900">Account Settings</h1>
