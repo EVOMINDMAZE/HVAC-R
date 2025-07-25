@@ -1,5 +1,6 @@
 import express from 'express';
 import { authenticateSupabaseToken } from '../utils/supabaseAuth.js';
+import { stripe, createCustomerPortalSession, getCustomerSubscription } from '../utils/stripe.js';
 
 const router = express.Router();
 
