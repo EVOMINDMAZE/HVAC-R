@@ -12,6 +12,7 @@ interface AuthContextType {
   signInWithGoogle: () => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<{ error: AuthError | null }>;
   updateUser: (updates: { data: any }) => Promise<{ error: AuthError | null }>;
+  refreshSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
