@@ -20,6 +20,7 @@ import {
 import { StandardCycle } from "./StandardCycle";
 import { RefrigerantComparison } from "./RefrigerantComparison";
 import { CascadeCycle } from "./CascadeCycle";
+import { History } from "./History";
 
 
 
