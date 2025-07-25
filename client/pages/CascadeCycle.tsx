@@ -99,7 +99,35 @@ export function CascadeCycle() {
 
   const handleCalculate = async () => {
     if (!formData.ltCycle.refrigerant || !formData.htCycle.refrigerant) {
-      setError("Please select refrigerants for both cycles");
+      const errorMsg = "Please select refrigerants for both cycles";
+      setError(errorMsg);
+      addToast({
+        type: 'warning',
+        title: 'Missing Information',
+        description: errorMsg
+      });
+      return;
+    }
+
+    if (formData.ltCycle.evaporatorTemp >= formData.ltCycle.condenserTemp) {
+      const errorMsg = "LT cycle: Evaporator temperature must be lower than condenser temperature";
+      setError(errorMsg);
+      addToast({
+        type: 'warning',
+        title: 'Invalid LT Cycle Parameters',
+        description: errorMsg
+      });
+      return;
+    }
+
+    if (formData.htCycle.evaporatorTemp >= formData.htCycle.condenserTemp) {
+      const errorMsg = "HT cycle: Evaporator temperature must be lower than condenser temperature";
+      setError(errorMsg);
+      addToast({
+        type: 'warning',
+        title: 'Invalid HT Cycle Parameters',
+        description: errorMsg
+      });
       return;
     }
 
