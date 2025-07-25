@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
 import { useFileUpload } from "@/hooks/useFileUpload";
+import { useSubscription, useCustomerPortal } from "@/hooks/useStripe";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
