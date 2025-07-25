@@ -187,54 +187,32 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  // Check if we've already processed this event
-  const existingEvent = billingDb.findEventById.get(event.id);
-  if (existingEvent && existingEvent.processed) {
-    return res.json({ received: true });
-  }
-
-  // Store the event
-  try {
-    billingDb.createEvent.run(
-      event.id,
-      event.type,
-      event.data.object.customer || null,
-      event.data.object.subscription || null,
-      JSON.stringify(event.data)
-    );
-  } catch (error) {
-    // Event might already exist, which is fine
-  }
-
   // Handle the event
   try {
     switch (event.type) {
       case 'checkout.session.completed':
-        await handleCheckoutCompleted(event.data.object);
+        console.log('Checkout session completed:', event.data.object.id);
         break;
 
       case 'customer.subscription.updated':
-        await handleSubscriptionUpdated(event.data.object);
+        console.log('Subscription updated:', event.data.object.id);
         break;
 
       case 'customer.subscription.deleted':
-        await handleSubscriptionDeleted(event.data.object);
+        console.log('Subscription deleted:', event.data.object.id);
         break;
 
       case 'invoice.payment_succeeded':
-        await handlePaymentSucceeded(event.data.object);
+        console.log('Payment succeeded for invoice:', event.data.object.id);
         break;
 
       case 'invoice.payment_failed':
-        await handlePaymentFailed(event.data.object);
+        console.log('Payment failed for invoice:', event.data.object.id);
         break;
 
       default:
         console.log(`Unhandled event type ${event.type}`);
     }
-
-    // Mark event as processed
-    billingDb.markEventProcessed.run(event.id);
   } catch (error) {
     console.error('Error processing webhook:', error);
     return res.status(500).json({ error: 'Webhook processing failed' });
@@ -242,84 +220,5 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
 
   res.json({ received: true });
 });
-
-// Webhook event handlers
-async function handleCheckoutCompleted(session: any) {
-  const customerId = session.customer;
-  const subscriptionId = session.subscription;
-
-  if (!customerId) return;
-
-  const user = userDb.findByStripeCustomerId.get(customerId);
-  if (!user) {
-    console.error('User not found for customer:', customerId);
-    return;
-  }
-
-  // Update user with subscription info
-  userDb.updateStripeInfo.run(customerId, subscriptionId, user.id);
-
-  // Fetch subscription details to determine plan
-  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-  const priceId = subscription.items.data[0]?.price.id;
-
-  let planName = 'professional'; // default
-
-  const priceIdToPlan: { [key: string]: string } = {
-    [process.env.STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID || '']: 'professional',
-    [process.env.STRIPE_PROFESSIONAL_YEARLY_PRICE_ID || '']: 'professional',
-    [process.env.STRIPE_ENTERPRISE_MONTHLY_PRICE_ID || '']: 'enterprise',
-    [process.env.STRIPE_ENTERPRISE_YEARLY_PRICE_ID || '']: 'enterprise',
-  };
-
-  if (priceId && priceIdToPlan[priceId]) {
-    planName = priceIdToPlan[priceId];
-  }
-
-  userDb.updateSubscription.run(planName, 'active', null, user.id);
-}
-
-async function handleSubscriptionUpdated(subscription: any) {
-  const customerId = subscription.customer;
-  const user = userDb.findByStripeCustomerId.get(customerId);
-  
-  if (!user) return;
-
-  const priceId = subscription.items.data[0]?.price.id;
-  let planName = 'professional';
-
-  const priceIdToPlan: { [key: string]: string } = {
-    [process.env.STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID || '']: 'professional',
-    [process.env.STRIPE_PROFESSIONAL_YEARLY_PRICE_ID || '']: 'professional',
-    [process.env.STRIPE_ENTERPRISE_MONTHLY_PRICE_ID || '']: 'enterprise',
-    [process.env.STRIPE_ENTERPRISE_YEARLY_PRICE_ID || '']: 'enterprise',
-  };
-
-  if (priceId && priceIdToPlan[priceId]) {
-    planName = priceIdToPlan[priceId];
-  }
-
-  userDb.updateSubscription.run(planName, subscription.status, null, user.id);
-}
-
-async function handleSubscriptionDeleted(subscription: any) {
-  const customerId = subscription.customer;
-  const user = userDb.findByStripeCustomerId.get(customerId);
-  
-  if (!user) return;
-
-  userDb.updateSubscription.run('free', 'cancelled', null, user.id);
-  userDb.updateStripeInfo.run(customerId, null, user.id);
-}
-
-async function handlePaymentSucceeded(invoice: any) {
-  // Payment succeeded - could send confirmation email here
-  console.log('Payment succeeded for invoice:', invoice.id);
-}
-
-async function handlePaymentFailed(invoice: any) {
-  // Payment failed - could send notification here
-  console.log('Payment failed for invoice:', invoice.id);
-}
 
 export default router;
