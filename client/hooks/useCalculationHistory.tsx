@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from './useAuth';
-import { apiClient, CalculationData } from '@/lib/api';
+import { useSupabaseAuth } from './useSupabaseAuth';
+import { useSupabaseCalculations } from './useSupabaseCalculations';
 
 export interface CalculationResult {
   id: number;
