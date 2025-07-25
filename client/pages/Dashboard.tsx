@@ -22,33 +22,15 @@ import { RefrigerantComparison } from "./RefrigerantComparison";
 import { CascadeCycle } from "./CascadeCycle";
 import { History } from "./History";
 
-
-
-
-
 function QuickStats() {
-  const { stats, isLoading } = useUserStats();
-  const { user } = useAuth();
+  const { user } = useSupabaseAuth();
 
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        {[...Array(4)].map((_, i) => (
-          <Card key={i} className="bg-gradient-to-r from-gray-400 to-gray-500 text-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-100 text-sm">Loading...</p>
-                  <div className="w-16 h-6 bg-gray-300 rounded animate-pulse"></div>
-                </div>
-                <div className="w-8 h-8 bg-gray-300 rounded animate-pulse"></div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    );
-  }
+  // Simplified stats without backend dependency for now
+  const stats = {
+    totalCalculations: 0,
+    monthlyCalculations: 0,
+    subscription: { plan: 'Free', remaining: 10 }
+  };
 
   const remainingText = stats?.subscription.remaining === -1
     ? "Unlimited"
@@ -97,7 +79,7 @@ function QuickStats() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-orange-100 text-sm">Current Plan</p>
-              <p className="text-xl font-bold capitalize">{user?.subscription_plan || 'Free'}</p>
+              <p className="text-xl font-bold capitalize">Free</p>
             </div>
             <BarChart3 className="h-8 w-8 text-orange-200" />
           </div>
@@ -108,22 +90,9 @@ function QuickStats() {
 }
 
 function RecentCalculations() {
-  const { calculations } = useCalculationHistory();
   const navigate = useNavigate();
-  const recentCalculations = calculations.slice(0, 5);
-
-  const formatResultSummary = (calc: any) => {
-    switch (calc.type) {
-      case "Standard Cycle":
-        return `COP: ${calc.results?.performance?.cop?.toFixed(2) || "N/A"}`;
-      case "Refrigerant Comparison":
-        return `${calc.parameters?.refrigerants?.length || 0} refrigerants`;
-      case "Cascade Cycle":
-        return `Overall COP: ${calc.results?.performance?.overallCOP?.toFixed(2) || "N/A"}`;
-      default:
-        return "";
-    }
-  };
+  // Simplified without backend for now
+  const recentCalculations: any[] = [];
 
   return (
     <Card className="bg-white shadow-lg border-blue-200">
@@ -158,7 +127,6 @@ function RecentCalculations() {
                 </div>
                 <div className="text-right">
                   <Badge variant="secondary">{calc.type}</Badge>
-                  <p className="text-sm text-gray-600 mt-1">{formatResultSummary(calc)}</p>
                 </div>
               </div>
             ))}
@@ -212,7 +180,7 @@ function QuickActions() {
 export function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <DashboardHeader />
+      <Header variant="dashboard" />
       
       <main className="max-w-7xl mx-auto px-4 py-8">
         <QuickStats />
