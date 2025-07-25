@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
+import { useStripeCheckout, useSubscription } from "@/hooks/useStripe";
+import { PLANS, STRIPE_PRICE_IDS } from "@/lib/stripe";
 import { apiClient, SubscriptionPlan } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
