@@ -24,20 +24,24 @@ export function ApiServiceStatus() {
   const checkServiceHealth = async (service: ServiceStatus): Promise<ServiceStatus> => {
     const startTime = Date.now();
     try {
+      // Use a simple OPTIONS request to check if service is responding
       const response = await fetch(`https://simulateon-backend.onrender.com${service.endpoint}`, {
-        method: 'HEAD', // Light request to check if service is responding
-        mode: 'no-cors' // Avoid CORS issues for health checks
+        method: 'OPTIONS',
+        headers: {
+          'Content-Type': 'application/json',
+        }
       });
-      
+
       const responseTime = Date.now() - startTime;
-      
+
       return {
         ...service,
-        status: 'online',
+        status: response.ok ? 'online' : 'offline',
         lastChecked: new Date(),
         responseTime
       };
     } catch (error) {
+      console.log(`Service ${service.name} health check failed:`, error);
       return {
         ...service,
         status: 'offline',
