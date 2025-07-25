@@ -143,35 +143,22 @@ export function CascadeCycle() {
         throw new Error(data.error);
       }
 
-      setResult(data.data);
+      // Handle different response structures from the API
+      const resultData = data.data || data;
+      console.log('Cascade API Response:', resultData); // Debug log
+      setResult(resultData);
 
-      // Save calculation to backend
-      try {
-        await addCalculation({
-          type: 'Cascade Cycle',
-          parameters: {
-            ltCycle: formData.ltCycle,
-            htCycle: formData.htCycle,
-            cascadeHeatExchangerDT: formData.cascadeHeatExchangerDT
-          },
-          results: data.data,
-          name: `Cascade: ${formData.ltCycle.refrigerant}/${formData.htCycle.refrigerant}`
-        });
+      // Store data for saving
+      setCalculationData({
+        inputs: formData,
+        results: data
+      });
 
-        addToast({
-          type: 'success',
-          title: 'Cascade Analysis Complete',
-          description: `${formData.ltCycle.refrigerant}/${formData.htCycle.refrigerant} cascade system analysis completed and saved`
-        });
-      } catch (saveError: any) {
-        addToast({
-          type: 'warning',
-          title: 'Cascade Analysis Complete',
-          description: saveError.message.includes('Upgrade required')
-            ? saveError.message
-            : `Analysis completed but could not be saved`
-        });
-      }
+      addToast({
+        type: 'success',
+        title: 'Cascade Analysis Complete',
+        description: `${formData.ltCycle.refrigerant}/${formData.htCycle.refrigerant} cascade system analysis completed`
+      });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Calculation failed";
       setError(errorMessage);
