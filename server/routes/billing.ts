@@ -61,16 +61,23 @@ router.post('/create-portal-session', authenticateSupabaseToken, async (req, res
 // Get subscription details
 router.get('/subscription', authenticateSupabaseToken, async (req, res) => {
   try {
-    const customerId = req.user.stripe_customer_id;
+    const userEmail = req.user.email;
 
-    if (!customerId) {
-      return res.json({ 
+    // Find customer by email
+    const customers = await stripe.customers.list({
+      email: userEmail,
+      limit: 1
+    });
+
+    if (customers.data.length === 0) {
+      return res.json({
         subscription: null,
         plan: 'free',
         status: 'active'
       });
     }
 
+    const customerId = customers.data[0].id;
     const subscription = await getCustomerSubscription(customerId);
 
     if (!subscription) {
