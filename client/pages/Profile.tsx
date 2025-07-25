@@ -41,9 +41,26 @@ const mockUser = {
 };
 
 export function Profile() {
-  const [user, setUser] = useState(mockUser);
+  const { user: authUser } = useSupabaseAuth();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
+
+  // Use real user data when available, fallback to mock
+  const user = authUser ? {
+    id: authUser.id,
+    firstName: authUser.user_metadata?.first_name || authUser.email?.split('@')[0] || "User",
+    lastName: authUser.user_metadata?.last_name || "",
+    email: authUser.email || "",
+    company: authUser.user_metadata?.company || "",
+    role: authUser.user_metadata?.role || "",
+    phone: authUser.phone || "",
+    location: authUser.user_metadata?.location || "",
+    avatar: authUser.user_metadata?.avatar_url || "",
+    joinedDate: authUser.created_at?.split('T')[0] || "2024-01-01",
+    plan: "Free",
+    calculationsUsed: 0,
+    calculationsLimit: 10
+  } : mockUser;
 
   const handleSave = async () => {
     setLoading(true);
