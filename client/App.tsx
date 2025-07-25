@@ -12,6 +12,11 @@ import { History } from "@/pages/History";
 import { StandardCycle } from "@/pages/StandardCycle";
 import { RefrigerantComparison } from "@/pages/RefrigerantComparison";
 import { CascadeCycle } from "@/pages/CascadeCycle";
+import { About } from "@/pages/About";
+import { Blog } from "@/pages/Blog";
+import { Contact } from "@/pages/Contact";
+import { Documentation } from "@/pages/Documentation";
+import { HelpCenter } from "@/pages/HelpCenter";
 import NotFound from "@/pages/NotFound";
 
 // Protected Route Component
@@ -88,6 +93,11 @@ function AppRoutes() {
       />
       <Route path="/features" element={<Features />} />
       <Route path="/pricing" element={<Pricing />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/blog" element={<Blog />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/documentation" element={<Documentation />} />
+      <Route path="/help-center" element={<HelpCenter />} />
 
       {/* Protected routes */}
       <Route
