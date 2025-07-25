@@ -65,14 +65,19 @@ export function ApiServiceStatus() {
   };
 
   useEffect(() => {
-    // Check services on mount
-    checkAllServices();
-    
-    // Set up periodic health checks every 5 minutes
-    const interval = setInterval(checkAllServices, 5 * 60 * 1000);
-    
-    return () => clearInterval(interval);
-  }, []);
+    // Don't check services automatically on mount to avoid initial errors
+    // User can manually trigger health checks when needed
+
+    // Set up periodic health checks every 10 minutes (only after manual trigger)
+    let interval: NodeJS.Timeout;
+    if (isVisible) {
+      interval = setInterval(checkAllServices, 10 * 60 * 1000);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isVisible]);
 
   // Don't show if all services are online
   if (!isVisible && !services.some(s => s.status === 'offline')) {
