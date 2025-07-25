@@ -77,10 +77,10 @@ export function StandardCycle() {
         },
         body: JSON.stringify({
           refrigerant: formData.refrigerant,
-          evaporator_temperature: formData.evaporatorTemp,
-          condenser_temperature: formData.condenserTemp,
-          superheat: formData.superheat,
-          subcooling: formData.subcooling,
+          evap_temp_c: formData.evaporatorTemp,
+          cond_temp_c: formData.condenserTemp,
+          superheat_c: formData.superheat,
+          subcooling_c: formData.subcooling,
         }),
       });
 
