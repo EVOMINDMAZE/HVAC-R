@@ -240,29 +240,29 @@ export function StandardCycle() {
             <CardContent className="p-6">
               <div className="text-center">
                 <div className="text-4xl font-bold text-green-600 mb-2">
-                  {result.performance?.cop?.toFixed(2) || "N/A"}
+                  {(result.performance?.cop || result.cop)?.toFixed(2) || "N/A"}
                 </div>
                 <Badge variant="secondary" className="text-lg px-4 py-2">
                   Coefficient of Performance (COP)
                 </Badge>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                 <div className="text-center p-4 bg-blue-50 rounded-lg">
                   <div className="text-2xl font-semibold text-blue-600">
-                    {result.performance?.refrigerationEffect?.toFixed(1) || "N/A"} kJ/kg
+                    {(result.performance?.refrigeration_effect || result.refrigeration_effect || result.performance?.refrigerationEffect)?.toFixed(1) || "N/A"} kJ/kg
                   </div>
                   <div className="text-sm text-blue-500 mt-1">Refrigeration Effect</div>
                 </div>
                 <div className="text-center p-4 bg-purple-50 rounded-lg">
                   <div className="text-2xl font-semibold text-purple-600">
-                    {result.performance?.workInput?.toFixed(1) || "N/A"} kJ/kg
+                    {(result.performance?.work_input || result.work_input || result.performance?.workInput)?.toFixed(1) || "N/A"} kJ/kg
                   </div>
                   <div className="text-sm text-purple-500 mt-1">Work Input</div>
                 </div>
                 <div className="text-center p-4 bg-orange-50 rounded-lg">
                   <div className="text-2xl font-semibold text-orange-600">
-                    {result.performance?.heatRejection?.toFixed(1) || "N/A"} kJ/kg
+                    {(result.performance?.heat_rejection || result.heat_rejection || result.performance?.heatRejection)?.toFixed(1) || "N/A"} kJ/kg
                   </div>
                   <div className="text-sm text-orange-500 mt-1">Heat Rejection</div>
                 </div>
