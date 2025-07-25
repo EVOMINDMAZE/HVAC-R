@@ -9,7 +9,7 @@ const router = express.Router();
 ensureDbInitialized();
 
 // Create checkout session
-router.post('/create-checkout-session', authenticateToken, async (req, res) => {
+router.post('/create-checkout-session', authenticateSupabaseToken, async (req, res) => {
   try {
     const { priceId } = req.body;
     const userId = req.user.id;
