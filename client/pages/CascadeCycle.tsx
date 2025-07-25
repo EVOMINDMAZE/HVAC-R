@@ -372,19 +372,19 @@ export function CascadeCycle() {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="text-gray-600">COP:</span>
-                    <span className="font-semibold ml-2">{(result.lt_cycle?.cop || result.ltCycle?.cop)?.toFixed(2) || "N/A"}</span>
+                    <span className="font-semibold ml-2">{result.lt_cycle_performance?.cop?.toFixed(3) || "N/A"}</span>
                   </div>
                   <div>
                     <span className="text-gray-600">Work Input:</span>
-                    <span className="font-semibold ml-2">{(result.lt_cycle?.work_input || result.ltCycle?.workInput)?.toFixed(1) || "N/A"} kJ/kg</span>
+                    <span className="font-semibold ml-2">{result.lt_cycle_performance?.work_of_compression_kj_kg?.toFixed(1) || "N/A"} kJ/kg</span>
                   </div>
                   <div>
                     <span className="text-gray-600">Refrigeration Effect:</span>
-                    <span className="font-semibold ml-2">{result.ltCycle?.refrigerationEffect?.toFixed(1) || "N/A"} kJ/kg</span>
+                    <span className="font-semibold ml-2">{result.lt_cycle_performance?.refrigeration_effect_kj_kg?.toFixed(1) || "N/A"} kJ/kg</span>
                   </div>
                   <div>
                     <span className="text-gray-600">Heat Rejection:</span>
-                    <span className="font-semibold ml-2">{result.ltCycle?.heatRejection?.toFixed(1) || "N/A"} kJ/kg</span>
+                    <span className="font-semibold ml-2">{((result.lt_cycle_performance?.refrigeration_effect_kj_kg || 0) + (result.lt_cycle_performance?.work_of_compression_kj_kg || 0)).toFixed(1) || "N/A"} kJ/kg</span>
                   </div>
                 </div>
               </CardContent>
