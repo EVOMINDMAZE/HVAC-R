@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useCalculationHistory } from "@/hooks/useCalculationHistory";
 import { useToast } from "@/hooks/useToast";
 import { apiClient } from "@/lib/api";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
+import { SaveCalculation } from "@/components/SaveCalculation";
 
 interface CycleData {
   refrigerant: string;
