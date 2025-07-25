@@ -24,8 +24,9 @@ router.post('/create-checkout-session', async (req, res) => {
   try {
     console.log('Checkout session request received:', req.body);
     const { priceId } = req.body;
-    const userId = req.user.id;
-    const userEmail = req.user.email;
+    // Mock user data for testing
+    const userId = 'test-user-id';
+    const userEmail = 'test@example.com';
 
     console.log('User info:', { userId, userEmail, priceId });
 
