@@ -1,18 +1,6 @@
 import express from 'express';
 import { authenticateSupabaseToken } from '../utils/supabaseAuth.js';
 
-// Import Stripe with error handling
-let stripe: any = null;
-let createCheckoutSession: any = null;
-
-try {
-  const stripeModule = await import('../utils/stripe.js');
-  stripe = stripeModule.stripe;
-  createCheckoutSession = stripeModule.createCheckoutSession;
-} catch (error) {
-  console.error('Failed to load Stripe:', error);
-}
-
 const router = express.Router();
 
 // Ensure database is initialized
