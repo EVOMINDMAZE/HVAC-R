@@ -272,7 +272,7 @@ export function Pricing() {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold text-gray-900 mb-6">
-            Choose Your 
+            Choose Your
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               {" "}Engineering Plan
             </span>
@@ -280,6 +280,24 @@ export function Pricing() {
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
             Professional HVAC&R calculations for every engineer. Start free, upgrade when you need more power.
           </p>
+
+          {/* Debug Info - Remove in production */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="bg-yellow-100 border border-yellow-400 rounded p-4 mb-8 max-w-4xl mx-auto">
+              <h3 className="font-bold text-yellow-800 mb-2">Debug Information</h3>
+              <div className="text-sm text-yellow-700">
+                <p><strong>Authentication:</strong> {isAuthenticated ? 'Signed In' : 'Not Signed In'}</p>
+                <p><strong>Current Plan:</strong> {currentPlan}</p>
+                <p><strong>Stripe Price IDs:</strong></p>
+                <ul className="list-disc ml-6">
+                  <li>Professional Monthly: {STRIPE_PRICE_IDS.PROFESSIONAL_MONTHLY}</li>
+                  <li>Professional Yearly: {STRIPE_PRICE_IDS.PROFESSIONAL_YEARLY}</li>
+                  <li>Enterprise Monthly: {STRIPE_PRICE_IDS.ENTERPRISE_MONTHLY}</li>
+                  <li>Enterprise Yearly: {STRIPE_PRICE_IDS.ENTERPRISE_YEARLY}</li>
+                </ul>
+              </div>
+            </div>
+          )}
 
           {/* Billing Toggle */}
           <div className="flex items-center justify-center mb-12">
