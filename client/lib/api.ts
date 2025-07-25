@@ -235,12 +235,27 @@ class ApiClient {
         }),
       });
 
+      // Check if response is ok
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        throw new Error(`API Error (${response.status}): ${response.statusText}. ${errorText.includes('<!doctype') || errorText.includes('<html') ? 'API server may be down or misconfigured.' : errorText}`);
+      }
+
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const responseText = await response.text();
+        if (responseText.includes('<!doctype') || responseText.includes('<html')) {
+          throw new Error('API server returned HTML instead of JSON. The calculation service may be temporarily unavailable.');
+        }
+        throw new Error(`API returned unexpected content type: ${contentType}`);
       }
 
       return await response.json();
     } catch (error) {
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        throw new Error('Unable to connect to calculation service. Please check your internet connection.');
+      }
       throw error;
     }
   }
@@ -264,12 +279,27 @@ class ApiClient {
         }),
       });
 
+      // Check if response is ok
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        throw new Error(`API Error (${response.status}): ${response.statusText}. ${errorText.includes('<!doctype') || errorText.includes('<html') ? 'API server may be down or misconfigured.' : errorText}`);
+      }
+
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const responseText = await response.text();
+        if (responseText.includes('<!doctype') || responseText.includes('<html')) {
+          throw new Error('API server returned HTML instead of JSON. The comparison service may be temporarily unavailable.');
+        }
+        throw new Error(`API returned unexpected content type: ${contentType}`);
       }
 
       return await response.json();
     } catch (error) {
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        throw new Error('Unable to connect to comparison service. Please check your internet connection.');
+      }
       throw error;
     }
   }
@@ -300,12 +330,27 @@ class ApiClient {
         }),
       });
 
+      // Check if response is ok
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        throw new Error(`API Error (${response.status}): ${response.statusText}. ${errorText.includes('<!doctype') || errorText.includes('<html') ? 'API server may be down or misconfigured.' : errorText}`);
+      }
+
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const responseText = await response.text();
+        if (responseText.includes('<!doctype') || responseText.includes('<html')) {
+          throw new Error('API server returned HTML instead of JSON. The cascade calculation service may be temporarily unavailable.');
+        }
+        throw new Error(`API returned unexpected content type: ${contentType}`);
       }
 
       return await response.json();
     } catch (error) {
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        throw new Error('Unable to connect to cascade calculation service. Please check your internet connection.');
+      }
       throw error;
     }
   }
