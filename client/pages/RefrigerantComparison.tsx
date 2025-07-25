@@ -132,7 +132,26 @@ export function RefrigerantComparison() {
       // Handle different response structures from the API
       const resultData = data.data || data;
       console.log('Comparison API Response:', resultData); // Debug log
-      setResult(resultData);
+      console.log('Full API Response:', data); // Additional debug
+
+      // Ensure we have a results array
+      let processedResult;
+      if (Array.isArray(resultData)) {
+        // If resultData is directly an array of results
+        processedResult = { results: resultData };
+      } else if (resultData.results && Array.isArray(resultData.results)) {
+        // If resultData has a results property that's an array
+        processedResult = resultData;
+      } else if (resultData.data && Array.isArray(resultData.data)) {
+        // If resultData has a data property that's an array
+        processedResult = { results: resultData.data };
+      } else {
+        // Fallback - assume the whole object is the result structure
+        processedResult = resultData;
+      }
+
+      console.log('Processed Result for Display:', processedResult);
+      setResult(processedResult);
 
       // Store data for saving
       setCalculationData({
