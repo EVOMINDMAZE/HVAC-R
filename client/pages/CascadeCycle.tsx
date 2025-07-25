@@ -332,19 +332,19 @@ export function CascadeCycle() {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="text-gray-600">COP:</span>
-                    <span className="font-semibold ml-2">{result.ltCycleResult?.cop?.toFixed(2) || "N/A"}</span>
+                    <span className="font-semibold ml-2">{result.ltCycle?.cop?.toFixed(2) || "N/A"}</span>
                   </div>
                   <div>
                     <span className="text-gray-600">Work Input:</span>
-                    <span className="font-semibold ml-2">{result.ltCycleResult?.workInput?.toFixed(1) || "N/A"} kJ/kg</span>
+                    <span className="font-semibold ml-2">{result.ltCycle?.workInput?.toFixed(1) || "N/A"} kJ/kg</span>
                   </div>
                   <div>
                     <span className="text-gray-600">Refrigeration Effect:</span>
-                    <span className="font-semibold ml-2">{result.ltCycleResult?.refrigerationEffect?.toFixed(1) || "N/A"} kJ/kg</span>
+                    <span className="font-semibold ml-2">{result.ltCycle?.refrigerationEffect?.toFixed(1) || "N/A"} kJ/kg</span>
                   </div>
                   <div>
                     <span className="text-gray-600">Heat Rejection:</span>
-                    <span className="font-semibold ml-2">{result.ltCycleResult?.heatRejection?.toFixed(1) || "N/A"} kJ/kg</span>
+                    <span className="font-semibold ml-2">{result.ltCycle?.heatRejection?.toFixed(1) || "N/A"} kJ/kg</span>
                   </div>
                 </div>
               </CardContent>
