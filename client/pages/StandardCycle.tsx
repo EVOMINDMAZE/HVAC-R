@@ -111,8 +111,20 @@ export function StandardCycle() {
         results: data.data,
         name: `${formData.refrigerant} Standard Cycle`
       });
+
+      addToast({
+        type: 'success',
+        title: 'Calculation Complete',
+        description: `${formData.refrigerant} standard cycle analysis completed successfully`
+      });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Calculation failed");
+      const errorMessage = err instanceof Error ? err.message : "Calculation failed";
+      setError(errorMessage);
+      addToast({
+        type: 'error',
+        title: 'Calculation Failed',
+        description: errorMessage
+      });
     } finally {
       setLoading(false);
     }
