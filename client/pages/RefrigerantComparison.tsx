@@ -85,7 +85,35 @@ export function RefrigerantComparison() {
 
   const handleCompare = async () => {
     if (formData.refrigerants.length === 0) {
-      setError("Please select at least one refrigerant");
+      const errorMsg = "Please select at least one refrigerant";
+      setError(errorMsg);
+      addToast({
+        type: 'warning',
+        title: 'Missing Selection',
+        description: errorMsg
+      });
+      return;
+    }
+
+    if (formData.refrigerants.length < 2) {
+      const errorMsg = "Please select at least 2 refrigerants for comparison";
+      setError(errorMsg);
+      addToast({
+        type: 'warning',
+        title: 'Insufficient Selection',
+        description: errorMsg
+      });
+      return;
+    }
+
+    if (formData.evaporatorTemp >= formData.condenserTemp) {
+      const errorMsg = "Evaporator temperature must be lower than condenser temperature";
+      setError(errorMsg);
+      addToast({
+        type: 'warning',
+        title: 'Invalid Parameters',
+        description: errorMsg
+      });
       return;
     }
 
