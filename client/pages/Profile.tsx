@@ -59,6 +59,19 @@ export function Profile() {
     confirmNewPassword: ''
   });
   const [passwordLoading, setPasswordLoading] = useState(false);
+  const [preferences, setPreferences] = useState({
+    notifications: {
+      emailResults: true,
+      weeklyUsage: true,
+      productUpdates: false,
+      securityAlerts: true
+    },
+    defaultUnits: {
+      temperature: 'celsius',
+      pressure: 'kpa'
+    }
+  });
+  const [preferencesLoading, setPreferencesLoading] = useState(false);
 
   // Initialize user state with real data when available, fallback to mock
   const initialUser = authUser ? {
