@@ -36,9 +36,15 @@ export function useSubscription() {
 
     try {
       setLoading(true);
+      const token = session?.access_token;
+
+      if (!token) {
+        throw new Error('No access token available');
+      }
+
       const response = await fetch('/api/billing/subscription', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${token}`,
         },
       });
 
