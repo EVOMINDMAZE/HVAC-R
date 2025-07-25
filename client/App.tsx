@@ -19,6 +19,7 @@ import { Contact } from "@/pages/Contact";
 import { Documentation } from "@/pages/Documentation";
 import { HelpCenter } from "@/pages/HelpCenter";
 import { ApiDocs } from "@/pages/ApiDocs";
+import { StripeDebug } from "@/pages/StripeDebug";
 import NotFound from "@/pages/NotFound";
 
 // Protected Route Component
