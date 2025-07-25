@@ -428,7 +428,7 @@ export function Profile() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 space-y-6">
-                <div className="space-y-4">
+                <form onSubmit={handlePasswordChange} className="space-y-4">
                   <h3 className="text-lg font-semibold">Change Password</h3>
                   <div className="grid gap-4">
                     <div className="space-y-2">
@@ -436,7 +436,13 @@ export function Profile() {
                       <Input
                         id="currentPassword"
                         type="password"
+                        value={passwordForm.currentPassword}
+                        onChange={(e) => setPasswordForm(prev => ({
+                          ...prev,
+                          currentPassword: e.target.value
+                        }))}
                         className="border-blue-200 focus:border-blue-500"
+                        required
                       />
                     </div>
                     <div className="space-y-2">
@@ -444,7 +450,14 @@ export function Profile() {
                       <Input
                         id="newPassword"
                         type="password"
+                        value={passwordForm.newPassword}
+                        onChange={(e) => setPasswordForm(prev => ({
+                          ...prev,
+                          newPassword: e.target.value
+                        }))}
                         className="border-blue-200 focus:border-blue-500"
+                        minLength={6}
+                        required
                       />
                     </div>
                     <div className="space-y-2">
@@ -452,14 +465,25 @@ export function Profile() {
                       <Input
                         id="confirmNewPassword"
                         type="password"
+                        value={passwordForm.confirmNewPassword}
+                        onChange={(e) => setPasswordForm(prev => ({
+                          ...prev,
+                          confirmNewPassword: e.target.value
+                        }))}
                         className="border-blue-200 focus:border-blue-500"
+                        minLength={6}
+                        required
                       />
                     </div>
                   </div>
-                  <Button className="bg-green-600 hover:bg-green-700">
-                    Update Password
+                  <Button
+                    type="submit"
+                    className="bg-green-600 hover:bg-green-700"
+                    disabled={passwordLoading}
+                  >
+                    {passwordLoading ? 'Updating...' : 'Update Password'}
                   </Button>
-                </div>
+                </form>
 
                 <div className="border-t pt-6">
                   <h3 className="text-lg font-semibold mb-4">Two-Factor Authentication</h3>
