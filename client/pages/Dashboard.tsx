@@ -26,12 +26,21 @@ import { History } from "./History";
 
 function QuickStats() {
   const { user } = useSupabaseAuth();
+  const { calculations } = useSupabaseCalculations();
 
-  // Simplified stats without backend dependency for now
+  // Calculate real stats from user's calculations
+  const totalCalculations = calculations.length;
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+  const monthlyCalculations = calculations.filter(calc => {
+    const calcDate = new Date(calc.created_at);
+    return calcDate.getMonth() === currentMonth && calcDate.getFullYear() === currentYear;
+  }).length;
+
   const stats = {
-    totalCalculations: 0,
-    monthlyCalculations: 0,
-    subscription: { plan: 'Free', remaining: 10 }
+    totalCalculations,
+    monthlyCalculations,
+    subscription: { plan: 'Free', remaining: Math.max(0, 10 - monthlyCalculations) }
   };
 
   const remainingText = stats?.subscription.remaining === -1
