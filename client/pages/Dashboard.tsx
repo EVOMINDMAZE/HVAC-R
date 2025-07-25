@@ -152,7 +152,9 @@ function RecentCalculations() {
   );
 }
 
-function QuickActions({ setActiveTab }: { setActiveTab: (tab: string) => void }) {
+function QuickActions() {
+  const navigate = useNavigate();
+
   return (
     <Card className="bg-white shadow-lg border-blue-200">
       <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
@@ -162,38 +164,80 @@ function QuickActions({ setActiveTab }: { setActiveTab: (tab: string) => void })
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-4">
-        <Button 
-          className="w-full justify-start" 
+        <Button
+          className="w-full justify-start"
           variant="outline"
-          onClick={() => setActiveTab('standard')}
+          onClick={() => navigate('/standard-cycle')}
         >
           <Calculator className="h-4 w-4 mr-2" />
           New Standard Cycle
         </Button>
-        <Button 
-          className="w-full justify-start" 
+        <Button
+          className="w-full justify-start"
           variant="outline"
-          onClick={() => setActiveTab('comparison')}
+          onClick={() => navigate('/refrigerant-comparison')}
         >
           <TrendingUp className="h-4 w-4 mr-2" />
           Compare Refrigerants
         </Button>
-        <Button 
-          className="w-full justify-start" 
+        <Button
+          className="w-full justify-start"
           variant="outline"
-          onClick={() => setActiveTab('cascade')}
+          onClick={() => navigate('/cascade-cycle')}
         >
           <BarChart3 className="h-4 w-4 mr-2" />
           Cascade Analysis
         </Button>
-        <Button 
-          className="w-full justify-start" 
+        <Button
+          className="w-full justify-start"
           variant="outline"
-          onClick={() => setActiveTab('history')}
+          onClick={() => navigate('/history')}
         >
           <FileText className="h-4 w-4 mr-2" />
           View History
         </Button>
+      </CardContent>
+    </Card>
+  );
+}
+
+function ValueProposition() {
+  const navigate = useNavigate();
+
+  return (
+    <Card className="bg-gradient-to-r from-blue-600 to-purple-700 text-white shadow-xl">
+      <CardContent className="p-8">
+        <div className="text-center">
+          <Crown className="h-12 w-12 text-yellow-300 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-4">Unlock Professional Features</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div className="text-center">
+              <Zap className="h-8 w-8 text-yellow-300 mx-auto mb-2" />
+              <h3 className="font-semibold">Unlimited Calculations</h3>
+              <p className="text-blue-100 text-sm">No monthly limits on your analysis</p>
+            </div>
+            <div className="text-center">
+              <Target className="h-8 w-8 text-yellow-300 mx-auto mb-2" />
+              <h3 className="font-semibold">Advanced Analytics</h3>
+              <p className="text-blue-100 text-sm">Detailed reports & optimization tips</p>
+            </div>
+            <div className="text-center">
+              <FileText className="h-8 w-8 text-yellow-300 mx-auto mb-2" />
+              <h3 className="font-semibold">Export & Share</h3>
+              <p className="text-blue-100 text-sm">PDF reports & team collaboration</p>
+            </div>
+          </div>
+          <div className="bg-white/10 rounded-lg p-4 mb-6">
+            <p className="text-lg font-semibold text-yellow-300">Save 20+ hours per month</p>
+            <p className="text-blue-100">Professional engineers save an average of $2,400/month in consulting time</p>
+          </div>
+          <Button
+            className="bg-yellow-400 hover:bg-yellow-500 text-purple-900 font-bold px-8 py-3"
+            onClick={() => navigate('/pricing')}
+          >
+            Upgrade Now - Start Free Trial
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
