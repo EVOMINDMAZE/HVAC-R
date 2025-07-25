@@ -101,7 +101,6 @@ export function StandardCycle() {
 
       // Handle different response structures from the API
       const resultData = data.data || data;
-      console.log('API Response:', resultData); // Debug log
       setResult(resultData);
       
       // Store data for saving

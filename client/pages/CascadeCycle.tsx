@@ -145,7 +145,6 @@ export function CascadeCycle() {
 
       // Handle different response structures from the API
       const resultData = data.data || data;
-      console.log('Cascade API Response:', resultData); // Debug log
       setResult(resultData);
 
       // Store data for saving

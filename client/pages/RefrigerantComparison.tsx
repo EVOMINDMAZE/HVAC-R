@@ -131,8 +131,6 @@ export function RefrigerantComparison() {
 
       // Handle different response structures from the API
       const resultData = data.data || data;
-      console.log('Comparison API Response:', resultData); // Debug log
-      console.log('Full API Response:', data); // Additional debug
 
       // Ensure we have a results array
       let processedResult;
@@ -150,7 +148,6 @@ export function RefrigerantComparison() {
         processedResult = resultData;
       }
 
-      console.log('Processed Result for Display:', processedResult);
       setResult(processedResult);
 
       // Store data for saving
@@ -211,7 +208,6 @@ export function RefrigerantComparison() {
       }
     }
 
-    console.log(`Metric ${metricKey} for ${(result as any).refrigerant}:`, value);
     return typeof value === 'number' ? value.toFixed(metricKey === 'cop' ? 3 : 1) : "N/A";
   };
 
