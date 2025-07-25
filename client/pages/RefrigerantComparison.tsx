@@ -129,37 +129,22 @@ export function RefrigerantComparison() {
         throw new Error(data.error);
       }
 
-      setResult(data.data);
+      // Handle different response structures from the API
+      const resultData = data.data || data;
+      console.log('Comparison API Response:', resultData); // Debug log
+      setResult(resultData);
 
-      // Save calculation to backend
-      try {
-        await addCalculation({
-          type: 'Refrigerant Comparison',
-          parameters: {
-            refrigerants: formData.refrigerants,
-            evaporatorTemp: formData.evaporatorTemp,
-            condenserTemp: formData.condenserTemp,
-            superheat: formData.superheat,
-            subcooling: formData.subcooling
-          },
-          results: data.data,
-          name: `Comparison: ${formData.refrigerants.join(', ')}`
-        });
+      // Store data for saving
+      setCalculationData({
+        inputs: formData,
+        results: data
+      });
 
-        addToast({
-          type: 'success',
-          title: 'Comparison Complete',
-          description: `Successfully compared ${formData.refrigerants.length} refrigerants and saved to history`
-        });
-      } catch (saveError: any) {
-        addToast({
-          type: 'warning',
-          title: 'Comparison Complete',
-          description: saveError.message.includes('Upgrade required')
-            ? saveError.message
-            : `Comparison completed but could not be saved`
-        });
-      }
+      addToast({
+        type: 'success',
+        title: 'Comparison Complete',
+        description: `Successfully compared ${formData.refrigerants.length} refrigerants`
+      });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Comparison failed";
       setError(errorMessage);
