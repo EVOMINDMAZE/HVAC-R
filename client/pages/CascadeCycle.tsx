@@ -81,7 +81,7 @@ export function CascadeCycle() {
       ...prev,
       [cycle]: {
         ...prev[cycle],
-        [field]: value
+        [field]: field === 'refrigerant' ? value : (Number(value) || 0)
       }
     }));
   };
@@ -89,7 +89,7 @@ export function CascadeCycle() {
   const handleCascadeDTChange = (value: number) => {
     setFormData(prev => ({
       ...prev,
-      cascadeHeatExchangerDT: value
+      cascadeHeatExchangerDT: Number(value) || 0
     }));
   };
 
@@ -101,7 +101,7 @@ export function CascadeCycle() {
 
     setLoading(true);
     setError(null);
-    
+
     try {
       const response = await fetch("https://simulateon-backend.onrender.com/calculate-cascade", {
         method: "POST",
@@ -111,19 +111,19 @@ export function CascadeCycle() {
         body: JSON.stringify({
           lt_cycle: {
             refrigerant: formData.ltCycle.refrigerant,
-            evap_temp_c: formData.ltCycle.evaporatorTemp,
-            cond_temp_c: formData.ltCycle.condenserTemp,
-            superheat_c: formData.ltCycle.superheat,
-            subcooling_c: formData.ltCycle.subcooling,
+            evap_temp_c: Number(formData.ltCycle.evaporatorTemp) || 0,
+            cond_temp_c: Number(formData.ltCycle.condenserTemp) || 0,
+            superheat_c: Number(formData.ltCycle.superheat) || 0,
+            subcooling_c: Number(formData.ltCycle.subcooling) || 0,
           },
           ht_cycle: {
             refrigerant: formData.htCycle.refrigerant,
-            evap_temp_c: formData.htCycle.evaporatorTemp,
-            cond_temp_c: formData.htCycle.condenserTemp,
-            superheat_c: formData.htCycle.superheat,
-            subcooling_c: formData.htCycle.subcooling,
+            evap_temp_c: Number(formData.htCycle.evaporatorTemp) || 0,
+            cond_temp_c: Number(formData.htCycle.condenserTemp) || 0,
+            superheat_c: Number(formData.htCycle.superheat) || 0,
+            subcooling_c: Number(formData.htCycle.subcooling) || 0,
           },
-          cascade_heat_exchanger_dt: formData.cascadeHeatExchangerDT,
+          cascade_hx_delta_t_c: Number(formData.cascadeHeatExchangerDT) || 0,
         }),
       });
 
