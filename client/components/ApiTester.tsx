@@ -125,6 +125,9 @@ export function ApiTester() {
     setIsLoading(false);
   };
 
+  // Temporarily disabled to avoid automatic API calls that might cause JSON parsing errors
+  return null;
+
   if (process.env.NODE_ENV === 'production') {
     return null; // Don't show in production
   }
