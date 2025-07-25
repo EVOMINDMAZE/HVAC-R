@@ -20,7 +20,7 @@ router.post('/test-checkout', (req, res) => {
 });
 
 // Create checkout session
-router.post('/create-checkout-session', authenticateSupabaseToken, async (req, res) => {
+router.post('/create-checkout-session', async (req, res) => {
   try {
     console.log('Checkout session request received:', req.body);
     const { priceId } = req.body;
