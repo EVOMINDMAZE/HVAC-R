@@ -97,6 +97,7 @@ export function RefrigerantComparison() {
         body: JSON.stringify({
           refrigerants: formData.refrigerants,
           cycle_params: {
+            refrigerant: "placeholder",
             evap_temp_c: Number(formData.evaporatorTemp) || 0,
             cond_temp_c: Number(formData.condenserTemp) || 0,
             superheat_c: Number(formData.superheat) || 0,
