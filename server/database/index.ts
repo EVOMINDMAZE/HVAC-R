@@ -216,6 +216,20 @@ function initializePreparedStatements() {
   planDb.findByName = db.prepare(`
     SELECT * FROM subscription_plans WHERE name = ?
   `);
+
+  // Billing events operations
+  billingDb.createEvent = db.prepare(`
+    INSERT INTO billing_events (stripe_event_id, event_type, customer_id, subscription_id, data)
+    VALUES (?, ?, ?, ?, ?)
+  `);
+
+  billingDb.findEventById = db.prepare(`
+    SELECT * FROM billing_events WHERE stripe_event_id = ?
+  `);
+
+  billingDb.markEventProcessed = db.prepare(`
+    UPDATE billing_events SET processed = TRUE WHERE stripe_event_id = ?
+  `);
 }
 
 // Database utility functions
