@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useCalculationHistory } from "@/hooks/useCalculationHistory";
 import { useToast } from "@/hooks/useToast";
+import { apiClient } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
