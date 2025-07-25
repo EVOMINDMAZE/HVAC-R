@@ -110,7 +110,10 @@ export function RefrigerantComparison() {
       }
 
       const data = await response.json();
-      setResult(data);
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      setResult(data.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Comparison failed");
     } finally {
