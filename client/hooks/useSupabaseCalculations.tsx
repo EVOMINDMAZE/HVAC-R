@@ -52,11 +52,11 @@ export function useSupabaseCalculations() {
     results: any,
     name?: string
   ): Promise<Calculation | null> => {
-    if (!user) {
+    if (!user || !supabase) {
       addToast({
         type: 'error',
-        title: 'Authentication Required',
-        description: 'Please sign in to save calculations'
+        title: 'Service Unavailable',
+        description: !user ? 'Please sign in to save calculations' : 'Database service not configured'
       });
       return null;
     }
