@@ -25,7 +25,7 @@ export function useSubscription() {
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { isAuthenticated } = useSupabaseAuth();
+  const { isAuthenticated, session } = useSupabaseAuth();
 
   const fetchSubscription = async () => {
     if (!isAuthenticated) {
