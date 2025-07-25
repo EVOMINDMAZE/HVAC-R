@@ -110,6 +110,16 @@ export function Profile() {
         calculationsUsed: 0,
         calculationsLimit: 10
       });
+
+      // Load preferences from user metadata
+      if (authUser.user_metadata?.preferences) {
+        try {
+          const userPrefs = JSON.parse(authUser.user_metadata.preferences);
+          setPreferences(prev => ({ ...prev, ...userPrefs }));
+        } catch (error) {
+          console.warn('Failed to parse user preferences:', error);
+        }
+      }
     }
   }, [authUser]);
 
