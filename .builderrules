@@ -1,0 +1,85 @@
+1. General Style and Layout
+Theme: Use a clean, professional, and modern design. The target audience is engineers, so clarity and readability are more important than flashy animations. Use a light theme with a white or very light gray background.
+
+Layout: The main interface should be a single-page application using a tabbed layout. The default tab should be "Standard Cycle."
+
+Responsiveness: The layout must be fully responsive and work well on both desktop and mobile devices.
+
+2. API Integration (Most Important)
+All calculations are performed by a live backend API. All API calls must be HTTP POST requests with a Content-Type header of application/json.
+
+Base URL: https://simulateon-backend.onrender.com
+
+Endpoint 1: Standard Cycle Calculation
+URL: /calculate-standard
+
+Description: Used for the "Standard Cycle" tab.
+
+Request Body JSON Structure:
+
+{
+    "refrigerant": "R134a",
+    "evap_temp_c": -10,
+    "cond_temp_c": 45,
+    "superheat_c": 5,
+    "subcooling_c": 2
+}
+
+Endpoint 2: Refrigerant Comparison
+URL: /compare-refrigerants
+
+Description: Used for the "Refrigerant Comparison" tab.
+
+Request Body JSON Structure:
+
+{
+    "refrigerants": ["R134a", "R290"],
+    "cycle_params": {
+        "refrigerant": "placeholder",
+        "evap_temp_c": -10,
+        "cond_temp_c": 45,
+        "superheat_c": 5,
+        "subcooling_c": 2
+    }
+}
+
+Endpoint 3: Cascade Cycle Calculation
+URL: /calculate-cascade
+
+Description: Used for the "Cascade Cycle" tab.
+
+Request Body JSON Structure:
+
+{
+    "lt_cycle": {
+        "refrigerant": "R744",
+        "evap_temp_c": -50,
+        "cond_temp_c": -5,
+        "superheat_c": 3,
+        "subcooling_c": 2
+    },
+    "ht_cycle": {
+        "refrigerant": "R134a",
+        "evap_temp_c": 0,
+        "cond_temp_c": 40,
+        "superheat_c": 5,
+        "subcooling_c": 2
+    },
+    "cascade_hx_delta_t_c": 5.0
+}
+
+3. Component Behavior and Error Handling
+Loading State: When a user clicks a "Calculate" or "Compare" button, the button should be disabled, and a loading spinner or indicator should be displayed in the output area while waiting for the API response.
+
+Error Handling: The API will return an error in a JSON object like {"error": "Error message here"}. If this is received, you must display the error message to the user in a clean, user-friendly alert box or notification. Do not show the raw JSON error.
+
+Successful Response: A successful response will be in the format {"data": ...}. You should parse the data object and display its contents in the appropriate cards or tables.
+
+4. Code Generation Preferences
+Use modern JavaScript (ES6+) or TypeScript.
+
+Generate clean, readable code with clear variable names (e.g., evaporatorTemp instead of et).
+
+Use async/await for all API calls.
+
+Ensure all form inputs are validated to prevent sending empty or invalid data to the API.
