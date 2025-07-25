@@ -96,10 +96,12 @@ export function RefrigerantComparison() {
         },
         body: JSON.stringify({
           refrigerants: formData.refrigerants,
-          evaporator_temperature: formData.evaporatorTemp,
-          condenser_temperature: formData.condenserTemp,
-          superheat: formData.superheat,
-          subcooling: formData.subcooling,
+          cycle_params: {
+            evap_temp_c: formData.evaporatorTemp,
+            cond_temp_c: formData.condenserTemp,
+            superheat_c: formData.superheat,
+            subcooling_c: formData.subcooling,
+          },
         }),
       });
 
