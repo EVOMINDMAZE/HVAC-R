@@ -1,6 +1,10 @@
-const API_BASE_URL = process.env.NODE_ENV === 'production'
-  ? 'https://your-api-domain.com'
-  : '';
+// For now, disable internal API calls since there's no backend server configured
+// In production, this would point to your actual backend API
+const API_BASE_URL = process.env.VITE_API_BASE_URL || (
+  process.env.NODE_ENV === 'production'
+    ? '' // Disabled in production for now
+    : '' // Disabled in development for now
+);
 
 interface ApiResponse<T> {
   success: boolean;
