@@ -159,21 +159,46 @@ export function RefrigerantComparison() {
   };
 
   const getValueForMetric = (result: RefrigerantResult, metricKey: string) => {
-    const value = (result as any)[metricKey];
-    return typeof value === 'number' ? value.toFixed(metricKey === 'cop' ? 2 : 1) : "N/A";
+    // Handle different API response structures
+    let value = (result as any)[metricKey] || (result as any).performance?.[metricKey];
+
+    // Map API response field names to expected field names
+    if (!value && metricKey === 'cop') {
+      value = (result as any).performance?.cop;
+    } else if (!value && metricKey === 'refrigerationEffect') {
+      value = (result as any).performance?.refrigeration_effect_kj_kg;
+    } else if (!value && metricKey === 'workInput') {
+      value = (result as any).performance?.work_of_compression_kj_kg;
+    } else if (!value && metricKey === 'heatRejection') {
+      // Calculate heat rejection as refrigeration effect + work input
+      const refEffect = (result as any).performance?.refrigeration_effect_kj_kg || 0;
+      const workInput = (result as any).performance?.work_of_compression_kj_kg || 0;
+      value = refEffect + workInput;
+    }
+
+    return typeof value === 'number' ? value.toFixed(metricKey === 'cop' ? 3 : 1) : "N/A";
   };
 
   const getBestValueIndex = (metricKey: string) => {
-    if (!result?.results) return -1;
-    
-    const values = result.results.map(r => (r as any)[metricKey]).filter(v => typeof v === 'number');
+    const resultData = result?.results || result?.data?.results || result?.data || [];
+    if (!resultData.length) return -1;
+
+    const values = resultData.map(r => {
+      // Handle different API response structures
+      const value = (r as any)[metricKey] || (r as any).performance?.[metricKey];
+      return typeof value === 'number' ? value : null;
+    }).filter(v => v !== null);
+
     if (values.length === 0) return -1;
-    
+
     const bestValue = metricKey === 'cop' || metricKey === 'refrigerationEffect' || metricKey === 'volumetricCapacity'
       ? Math.max(...values)
       : Math.min(...values);
-    
-    return result.results.findIndex(r => (r as any)[metricKey] === bestValue);
+
+    return resultData.findIndex(r => {
+      const value = (r as any)[metricKey] || (r as any).performance?.[metricKey];
+      return value === bestValue;
+    });
   };
 
   return (
@@ -285,7 +310,11 @@ export function RefrigerantComparison() {
         </CardContent>
       </Card>
 
-      {result && result.results && result.results.length > 0 && (
+      {result && (
+        result.results || // Direct results array
+        (result.data && Array.isArray(result.data)) || // Data array
+        (result.data && result.data.results) // Nested results
+      ) && (
         <Card className="bg-white shadow-lg border-green-200">
           <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
             <CardTitle className="text-xl">Comparison Results</CardTitle>
@@ -296,9 +325,9 @@ export function RefrigerantComparison() {
                 <thead>
                   <tr className="border-b-2 border-gray-200">
                     <th className="text-left p-3 font-semibold text-gray-700 bg-gray-50">Performance Metric</th>
-                    {result.results.map((refrigerantResult) => (
-                      <th key={refrigerantResult.refrigerant} className="text-center p-3 font-semibold text-blue-600 bg-blue-50">
-                        {refrigerantResult.refrigerant}
+                    {(result.results || result.data?.results || result.data || []).map((refrigerantResult, index) => (
+                      <th key={refrigerantResult.refrigerant || index} className="text-center p-3 font-semibold text-blue-600 bg-blue-50">
+                        {refrigerantResult.refrigerant || `Refrigerant ${index + 1}`}
                       </th>
                     ))}
                   </tr>
@@ -312,12 +341,12 @@ export function RefrigerantComparison() {
                           {metric.label}
                           {metric.unit && <span className="text-sm text-gray-500 ml-1">({metric.unit})</span>}
                         </td>
-                        {result.results.map((refrigerantResult, index) => (
-                          <td 
-                            key={refrigerantResult.refrigerant} 
+                        {(result.results || result.data?.results || result.data || []).map((refrigerantResult, index) => (
+                          <td
+                            key={refrigerantResult.refrigerant || index}
                             className={`p-3 text-center ${
-                              index === bestIndex 
-                                ? 'bg-green-100 text-green-800 font-semibold' 
+                              index === bestIndex
+                                ? 'bg-green-100 text-green-800 font-semibold'
                                 : 'text-gray-700'
                             }`}
                           >

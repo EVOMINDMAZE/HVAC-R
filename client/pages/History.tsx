@@ -27,6 +27,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { CalculationDetailsModal } from "@/components/CalculationDetailsModal";
 
 export function History() {
   const { calculations, isLoading, deleteCalculation, updateCalculation } = useSupabaseCalculations();
@@ -292,35 +293,7 @@ export function History() {
           </DialogHeader>
           
           {selectedCalculation && (
-            <div className="space-y-4">
-              <div>
-                <h4 className="font-semibold mb-2">Calculation Type</h4>
-                <Badge className={getCalculationColor(selectedCalculation.calculation_type)}>
-                  {selectedCalculation.calculation_type}
-                </Badge>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold mb-2">Created</h4>
-                <p className="text-sm text-gray-600">
-                  {new Date(selectedCalculation.created_at).toLocaleString()}
-                </p>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold mb-2">Input Parameters</h4>
-                <pre className="bg-gray-100 p-3 rounded text-xs overflow-x-auto">
-                  {JSON.stringify(selectedCalculation.inputs, null, 2)}
-                </pre>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold mb-2">Results</h4>
-                <pre className="bg-gray-100 p-3 rounded text-xs overflow-x-auto">
-                  {JSON.stringify(selectedCalculation.results, null, 2)}
-                </pre>
-              </div>
-            </div>
+            <CalculationDetailsModal calculation={selectedCalculation} />
           )}
         </DialogContent>
       </Dialog>

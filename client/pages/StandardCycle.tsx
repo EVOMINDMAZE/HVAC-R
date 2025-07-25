@@ -240,7 +240,7 @@ export function StandardCycle() {
             <CardContent className="p-6">
               <div className="text-center">
                 <div className="text-4xl font-bold text-green-600 mb-2">
-                  {(result.performance?.cop || result.cop)?.toFixed(2) || "N/A"}
+                  {result.performance?.cop?.toFixed(3) || "N/A"}
                 </div>
                 <Badge variant="secondary" className="text-lg px-4 py-2">
                   Coefficient of Performance (COP)
@@ -250,19 +250,19 @@ export function StandardCycle() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                 <div className="text-center p-4 bg-blue-50 rounded-lg">
                   <div className="text-2xl font-semibold text-blue-600">
-                    {(result.performance?.refrigeration_effect || result.refrigeration_effect || result.performance?.refrigerationEffect)?.toFixed(1) || "N/A"} kJ/kg
+                    {result.performance?.refrigeration_effect_kj_kg?.toFixed(1) || "N/A"} kJ/kg
                   </div>
                   <div className="text-sm text-blue-500 mt-1">Refrigeration Effect</div>
                 </div>
                 <div className="text-center p-4 bg-purple-50 rounded-lg">
                   <div className="text-2xl font-semibold text-purple-600">
-                    {(result.performance?.work_input || result.work_input || result.performance?.workInput)?.toFixed(1) || "N/A"} kJ/kg
+                    {result.performance?.work_of_compression_kj_kg?.toFixed(1) || "N/A"} kJ/kg
                   </div>
                   <div className="text-sm text-purple-500 mt-1">Work Input</div>
                 </div>
                 <div className="text-center p-4 bg-orange-50 rounded-lg">
                   <div className="text-2xl font-semibold text-orange-600">
-                    {(result.performance?.heat_rejection || result.heat_rejection || result.performance?.heatRejection)?.toFixed(1) || "N/A"} kJ/kg
+                    {((result.performance?.refrigeration_effect_kj_kg || 0) + (result.performance?.work_of_compression_kj_kg || 0)).toFixed(1) || "N/A"} kJ/kg
                   </div>
                   <div className="text-sm text-orange-500 mt-1">Heat Rejection</div>
                 </div>
@@ -270,7 +270,7 @@ export function StandardCycle() {
             </CardContent>
           </Card>
 
-          {(result.statePoints || result.state_points) && (result.statePoints || result.state_points).length > 0 && (
+          {result.state_points && (
             <Card className="bg-white shadow-lg border-blue-200">
               <CardHeader className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
                 <CardTitle className="text-xl">State Points</CardTitle>
@@ -282,21 +282,25 @@ export function StandardCycle() {
                       <tr className="border-b border-gray-200">
                         <th className="text-left p-3 font-semibold text-gray-700">State Point</th>
                         <th className="text-left p-3 font-semibold text-gray-700">Temperature (°C)</th>
-                        <th className="text-left p-3 font-semibold text-gray-700">Pressure (kPa)</th>
-                        <th className="text-left p-3 font-semibold text-gray-700">Enthalpy (kJ/kg)</th>
-                        <th className="text-left p-3 font-semibold text-gray-700">Entropy (kJ/kg·K)</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {(result.statePoints || result.state_points).map((point, index) => (
-                        <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
-                          <td className="p-3 font-medium text-blue-600">{point.name}</td>
-                          <td className="p-3">{point.temperature?.toFixed(1) || "N/A"}</td>
-                          <td className="p-3">{point.pressure?.toFixed(1) || "N/A"}</td>
-                          <td className="p-3">{point.enthalpy?.toFixed(1) || "N/A"}</td>
-                          <td className="p-3">{point.entropy?.toFixed(3) || "N/A"}</td>
-                        </tr>
-                      ))}
+                      <tr className="border-b border-gray-100 hover:bg-gray-50">
+                        <td className="p-3 font-medium text-blue-600">1 - Compressor Inlet</td>
+                        <td className="p-3">{result.state_points["1_compressor_inlet"]?.temp_c?.toFixed(1) || "N/A"}</td>
+                      </tr>
+                      <tr className="border-b border-gray-100 hover:bg-gray-50">
+                        <td className="p-3 font-medium text-blue-600">2 - Compressor Outlet</td>
+                        <td className="p-3">{result.state_points["2_compressor_outlet"]?.temp_c?.toFixed(1) || "N/A"}</td>
+                      </tr>
+                      <tr className="border-b border-gray-100 hover:bg-gray-50">
+                        <td className="p-3 font-medium text-blue-600">3 - Expansion Valve Inlet</td>
+                        <td className="p-3">{result.state_points["3_expansion_valve_inlet"]?.temp_c?.toFixed(1) || "N/A"}</td>
+                      </tr>
+                      <tr className="border-b border-gray-100 hover:bg-gray-50">
+                        <td className="p-3 font-medium text-blue-600">4 - Evaporator Inlet</td>
+                        <td className="p-3">Vapor Quality: {result.state_points["4_evaporator_inlet"]?.vapor_quality?.toFixed(3) || "N/A"}</td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
