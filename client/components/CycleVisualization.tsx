@@ -345,6 +345,9 @@ export function CycleVisualization({
 
     // Draw component labels
     drawComponentLabels(ctx, pointsWithCoords, margin);
+
+    // Draw enhanced engineering data overlay
+    drawEngineeringOverlay(ctx, pointsWithCoords, margin, plotWidth, plotHeight);
   };
 
   const drawPlaceholder = (
