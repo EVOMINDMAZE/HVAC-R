@@ -547,11 +547,11 @@ export function EnhancedStandardCycleContent() {
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span>Mass Flow Rate:</span>
-                        <span className="font-mono">{formatValue(results.performance.mass_flow_rate_kg_s, 'kg/s', 4)}</span>
+                        <span className="font-mono">{formatValue(results.performance?.mass_flow_rate_kg_s, 'kg/s', 4)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Volumetric Flow Rate:</span>
-                        <span className="font-mono">{formatValue(results.performance.volumetric_flow_rate_m3_s, 'm³/s', 6)}</span>
+                        <span className="font-mono">{formatValue(results.performance?.volumetric_flow_rate_m3_s, 'm³/s', 6)}</span>
                       </div>
                     </div>
                   </div>
