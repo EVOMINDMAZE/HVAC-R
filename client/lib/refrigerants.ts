@@ -187,16 +187,16 @@ export function getRefrigerantById(id: string): RefrigerantProperties | undefine
 }
 
 export function validateOperatingConditions(
-  refrigerantId: string, 
-  tempC: number, 
+  refrigerantId: string,
+  tempC: number,
   quality?: number
 ): { valid: boolean; warnings: string[]; errors: string[] } {
   const refrigerant = getRefrigerantById(refrigerantId);
   if (!refrigerant) {
-    return { 
-      valid: false, 
-      warnings: [], 
-      errors: [`Unknown refrigerant: ${refrigerantId}`] 
+    return {
+      valid: false,
+      warnings: [],
+      errors: [`Unknown refrigerant: ${refrigerantId}`]
     };
   }
 
@@ -232,6 +232,62 @@ export function validateOperatingConditions(
     warnings,
     errors
   };
+}
+
+// Overloaded function for cycle parameters validation
+export function validateOperatingConditions(
+  refrigerant: RefrigerantProperties,
+  conditions: {
+    evaporatorTemp: number;
+    condenserTemp: number;
+    superheat: number;
+    subcooling: number;
+  }
+): string[] {
+  const warnings: string[] = [];
+
+  // Convert to Kelvin
+  const evapTempK = conditions.evaporatorTemp + 273.15;
+  const condTempK = conditions.condenserTemp + 273.15;
+
+  // Check evaporator temperature limits
+  if (evapTempK < refrigerant.limits.minTemp) {
+    warnings.push(`Evaporator temperature ${conditions.evaporatorTemp}°C is below minimum limit ${(refrigerant.limits.minTemp - 273.15).toFixed(1)}°C`);
+  }
+
+  // Check condenser temperature limits
+  if (condTempK > refrigerant.limits.maxTemp) {
+    warnings.push(`Condenser temperature ${conditions.condenserTemp}°C is above maximum limit ${(refrigerant.limits.maxTemp - 273.15).toFixed(1)}°C`);
+  }
+
+  // Check if approaching critical temperature
+  if (condTempK > (refrigerant.limits.criticalTemp - 20)) {
+    warnings.push(`Condenser temperature ${conditions.condenserTemp}°C is near critical temperature ${(refrigerant.limits.criticalTemp - 273.15).toFixed(1)}°C`);
+  }
+
+  // Special handling for CO2 (R744)
+  if (refrigerant.id === 'R744') {
+    if (condTempK > refrigerant.limits.criticalTemp) {
+      warnings.push(`R-744 (CO₂) condenser above critical temperature. Operating in transcritical mode.`);
+    }
+  }
+
+  // CoolProp support warnings
+  if (refrigerant.coolpropSupport === 'limited') {
+    warnings.push(`${refrigerant.name} has limited CoolProp support. Some properties may not be available.`);
+  } else if (refrigerant.coolpropSupport === 'none') {
+    warnings.push(`${refrigerant.name} is not supported by CoolProp. Calculations may fail.`);
+  }
+
+  // Check superheat and subcooling values
+  if (conditions.superheat < 0) {
+    warnings.push(`Negative superheat (${conditions.superheat}°C) may indicate wet compression`);
+  }
+  if (conditions.subcooling < 0) {
+    warnings.push(`Negative subcooling (${conditions.subcooling}°C) may indicate flash gas formation`);
+  }
+
+  return warnings;
 }
 
 export function getSuggestedOperatingRange(refrigerantId: string) {
