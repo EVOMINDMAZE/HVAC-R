@@ -850,7 +850,7 @@ export function EnhancedStandardCycleContent() {
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className="text-center py-8 text-muted-foreground">
                     No results available. Calculate a cycle first.
                   </div>
                 )}
@@ -919,7 +919,7 @@ export function EnhancedStandardCycleContent() {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className="text-center py-8 text-muted-foreground">
                     No results available. Calculate a cycle first.
                   </div>
                 )}
@@ -945,7 +945,7 @@ export function EnhancedStandardCycleContent() {
                   animationSpeed={animationState.animationSpeed}
                 />
               ) : (
-                <div className="text-center py-12 text-gray-500">
+                <div className="text-center py-12 text-muted-foreground">
                   Calculate a cycle to view equipment diagrams
                 </div>
               )}
