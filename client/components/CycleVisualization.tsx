@@ -2,7 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Play, Pause, RotateCcw, Zap, Thermometer, Gauge } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Play, Pause, RotateCcw, Zap, Thermometer, Gauge, BarChart3 } from "lucide-react";
 
 interface CyclePoint {
   id: string;
