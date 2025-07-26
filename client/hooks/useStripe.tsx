@@ -103,7 +103,8 @@ export function useStripeCheckout() {
 
       console.log('Making API call to create-checkout-session with:', { priceId, hasToken: !!token });
 
-      const response = await fetch('/api/billing/create-checkout-session', {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const response = await fetch(`${supabaseUrl}/functions/v1/billing/create-checkout-session`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
