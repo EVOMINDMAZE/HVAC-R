@@ -149,7 +149,24 @@ export function EnhancedStandardCycleContent() {
         throw new Error('Invalid response format');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
+
+      // Handle specific CoolProp errors for blend refrigerants
+      if (errorMessage.includes('Two-phase inputs not supported for pseudo-pure')) {
+        const refrigerantName = formData.refrigerant;
+        setError(
+          `CoolProp limitation: ${refrigerantName} is a blend refrigerant and two-phase calculations are not supported. ` +
+          'Try adjusting the superheat or subcooling values to avoid two-phase conditions, or use a pure refrigerant like R134a or R32.'
+        );
+      } else if (errorMessage.includes('PropsSI')) {
+        setError(
+          'CoolProp calculation error: The specified operating conditions may be outside the valid range for this refrigerant. ' +
+          'Please check your temperature and pressure values.'
+        );
+      } else {
+        setError(errorMessage);
+      }
+
       console.error('Calculation error:', err);
     } finally {
       setLoading(false);
