@@ -103,15 +103,23 @@ export const REFRIGERANT_DATABASE: RefrigerantProperties[] = [
     ozoneDepleteionPotential: 0,
     globalWarmingPotential: 1,
     safety: 'A1',
+    odp: 0,
+    gwp: 1,
+    safety_class: 'A1',
     applications: ['Transcritical Systems', 'Cascade Systems', 'Commercial Refrigeration'],
     limits: {
-      minTemp: 216.58,  // Triple point
-      maxTemp: 304.13,  // Critical temperature (transcritical above this)
-      minPressure: 517950,  // Triple point pressure
-      maxPressure: 15000000,  // Working limit
+      min_temp_c: -56.57,
+      max_temp_c: 30.98,
+      critical_temp_c: 30.98,
+      critical_pressure_kpa: 7377.3,
+      normal_boiling_point_c: -78.46,
+      minTemp: 216.58,
+      maxTemp: 304.13,
+      minPressure: 517950,
+      maxPressure: 15000000,
       criticalTemp: 304.1282,
       criticalPressure: 7377300,
-      normalBoilingPoint: 194.69  // Sublimation point
+      normalBoilingPoint: 194.69
     },
     coolpropSupport: 'full',
     description: 'Natural refrigerant for low-temperature and transcritical applications',
@@ -125,8 +133,16 @@ export const REFRIGERANT_DATABASE: RefrigerantProperties[] = [
     ozoneDepleteionPotential: 0,
     globalWarmingPotential: 3,
     safety: 'A3',
+    odp: 0,
+    gwp: 3,
+    safety_class: 'A3',
     applications: ['Domestic Refrigeration', 'Commercial Freezers', 'Heat Pumps'],
     limits: {
+      min_temp_c: -187.67,
+      max_temp_c: 122.85,
+      critical_temp_c: 96.74,
+      critical_pressure_kpa: 4251.2,
+      normal_boiling_point_c: -42.11,
       minTemp: 85.48,
       maxTemp: 396.0,
       minPressure: 0.00017,
@@ -147,8 +163,16 @@ export const REFRIGERANT_DATABASE: RefrigerantProperties[] = [
     ozoneDepleteionPotential: 0,
     globalWarmingPotential: 675,
     safety: 'A2L',
+    odp: 0,
+    gwp: 675,
+    safety_class: 'A2L',
     applications: ['Air Conditioning', 'Heat Pumps', 'Split Systems'],
     limits: {
+      min_temp_c: -136.81,
+      max_temp_c: 161.85,
+      critical_temp_c: 78.11,
+      critical_pressure_kpa: 5782.0,
+      normal_boiling_point_c: -51.65,
       minTemp: 136.34,
       maxTemp: 435.0,
       minPressure: 0.478,
@@ -169,17 +193,25 @@ export const REFRIGERANT_DATABASE: RefrigerantProperties[] = [
     ozoneDepleteionPotential: 0,
     globalWarmingPotential: 1387,
     safety: 'A1',
+    odp: 0,
+    gwp: 1387,
+    safety_class: 'A1',
     applications: ['Commercial Refrigeration', 'Transport Refrigeration'],
     limits: {
-      minTemp: 180.0,  // Estimated based on components
-      maxTemp: 400.0,  // Estimated safe operating range
+      min_temp_c: -93.0,
+      max_temp_c: 126.9,
+      critical_temp_c: 82.9,
+      critical_pressure_kpa: 3900.0,
+      normal_boiling_point_c: -45.0,
+      minTemp: 180.0,
+      maxTemp: 400.0,
       minPressure: 1000,
       maxPressure: 4000000,
-      criticalTemp: 356.0,  // Estimated
-      criticalPressure: 3900000,  // Estimated
-      normalBoilingPoint: 228.0  // Estimated
+      criticalTemp: 356.0,
+      criticalPressure: 3900000,
+      normalBoilingPoint: 228.0
     },
-    coolpropSupport: 'limited',  // This is why you're seeing N/A values
+    coolpropSupport: 'limited',
     description: 'Low-GWP blend for commercial refrigeration (Limited CoolProp support)',
     color: '#EC4899'
   },
@@ -191,8 +223,16 @@ export const REFRIGERANT_DATABASE: RefrigerantProperties[] = [
     ozoneDepleteionPotential: 0,
     globalWarmingPotential: 0,
     safety: 'B2L',
+    odp: 0,
+    gwp: 0,
+    safety_class: 'B2L',
     applications: ['Industrial Refrigeration', 'Large Cold Storage', 'Ice Rinks'],
     limits: {
+      min_temp_c: -77.65,
+      max_temp_c: 426.85,
+      critical_temp_c: 132.25,
+      critical_pressure_kpa: 11333.0,
+      normal_boiling_point_c: -33.33,
       minTemp: 195.495,
       maxTemp: 700.0,
       minPressure: 6090,
