@@ -2,9 +2,23 @@ import React, { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Play, Pause, RotateCcw, Zap, Thermometer, Gauge, BarChart3 } from "lucide-react";
+import {
+  Play,
+  Pause,
+  RotateCcw,
+  Zap,
+  Thermometer,
+  Gauge,
+  BarChart3,
+} from "lucide-react";
 
 interface CyclePoint {
   id: string;
@@ -30,23 +44,23 @@ const DIAGRAM_CONFIGS: Record<DiagramType, DiagramConfig> = {
   "P-h": {
     xAxis: { property: "enthalpy", label: "Enthalpy", unit: "kJ/kg" },
     yAxis: { property: "pressure", label: "Pressure", unit: "kPa" },
-    name: "Pressure-Enthalpy Diagram"
+    name: "Pressure-Enthalpy Diagram",
   },
   "T-s": {
     xAxis: { property: "entropy", label: "Entropy", unit: "kJ/kg·K" },
     yAxis: { property: "temperature", label: "Temperature", unit: "°C" },
-    name: "Temperature-Entropy Diagram"
+    name: "Temperature-Entropy Diagram",
   },
   "P-v": {
     xAxis: { property: "enthalpy", label: "Specific Volume", unit: "m³/kg" }, // Using enthalpy as placeholder
     yAxis: { property: "pressure", label: "Pressure", unit: "kPa" },
-    name: "Pressure-Volume Diagram"
+    name: "Pressure-Volume Diagram",
   },
   "T-v": {
     xAxis: { property: "enthalpy", label: "Specific Volume", unit: "m³/kg" }, // Using enthalpy as placeholder
     yAxis: { property: "temperature", label: "Temperature", unit: "°C" },
-    name: "Temperature-Volume Diagram"
-  }
+    name: "Temperature-Volume Diagram",
+  },
 };
 
 interface CycleVisualizationProps {
@@ -74,7 +88,12 @@ export function CycleVisualization({
   const [diagramType, setDiagramType] = useState<DiagramType>("P-h");
 
   // Calculate coordinates using actual thermodynamic data
-  const calculateCoordinates = (points: CyclePoint[], config: DiagramConfig, plotWidth: number, plotHeight: number) => {
+  const calculateCoordinates = (
+    points: CyclePoint[],
+    config: DiagramConfig,
+    plotWidth: number,
+    plotHeight: number,
+  ) => {
     if (!points || points.length === 0) return points;
 
     console.log("Calculating coordinates with real data for", diagramType);
@@ -84,7 +103,7 @@ export function CycleVisualization({
     const xValues: number[] = [];
     const yValues: number[] = [];
 
-    points.forEach(point => {
+    points.forEach((point) => {
       const xProp = config.xAxis.property;
       const yProp = config.yAxis.property;
 
@@ -115,7 +134,7 @@ export function CycleVisualization({
       const xPadding = xRange * 0.15;
       const yPadding = yRange * 0.15;
 
-      return points.map(point => {
+      return points.map((point) => {
         const xVal = point[config.xAxis.property] as number;
         const yVal = point[config.yAxis.property] as number;
 
@@ -124,10 +143,13 @@ export function CycleVisualization({
           : plotWidth / 2;
 
         const y = !isNaN(yVal)
-          ? plotHeight - ((yVal - yMin + yPadding) / (yRange + 2 * yPadding)) * plotHeight
+          ? plotHeight -
+            ((yVal - yMin + yPadding) / (yRange + 2 * yPadding)) * plotHeight
           : plotHeight / 2;
 
-        console.log(`Point ${point.id} mapped to canvas: (${x.toFixed(1)}, ${y.toFixed(1)})`);
+        console.log(
+          `Point ${point.id} mapped to canvas: (${x.toFixed(1)}, ${y.toFixed(1)})`,
+        );
         return { ...point, x, y };
       });
     } else {
@@ -148,9 +170,9 @@ export function CycleVisualization({
           y = plotHeight * positions[index].y;
         } else if (diagramType === "T-s") {
           const positions = [
-            { x: 0.4, y: 0.8 },  // Point 1 - Low T, medium s
+            { x: 0.4, y: 0.8 }, // Point 1 - Low T, medium s
             { x: 0.45, y: 0.2 }, // Point 2 - High T, medium s
-            { x: 0.3, y: 0.2 },  // Point 3 - High T, low s
+            { x: 0.3, y: 0.2 }, // Point 3 - High T, low s
             { x: 0.25, y: 0.8 }, // Point 4 - Low T, low s
           ];
           x = plotWidth * positions[index].x;
@@ -193,7 +215,7 @@ export function CycleVisualization({
 
     // Enable high-quality rendering
     ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
+    ctx.imageSmoothingQuality = "high";
 
     drawCycle(ctx, canvas.width, canvas.height);
   }, [cycleData, animationFrame, selectedPoint, diagramType]);
@@ -222,7 +244,12 @@ export function CycleVisualization({
     const config = DIAGRAM_CONFIGS[diagramType];
 
     // Calculate proper coordinates based on thermodynamic properties
-    const pointsWithCoords = calculateCoordinates(cycleData.points, config, plotWidth, plotHeight);
+    const pointsWithCoords = calculateCoordinates(
+      cycleData.points,
+      config,
+      plotWidth,
+      plotHeight,
+    );
 
     // Draw axes and grid
     drawAxes(ctx, margin, plotWidth, plotHeight, config);
@@ -350,7 +377,8 @@ export function CycleVisualization({
 
     // Enhanced axis labels
     ctx.fillStyle = "#1f2937";
-    ctx.font = "bold 16px 'Inter', -apple-system, BlinkMacSystemFont, sans-serif";
+    ctx.font =
+      "bold 16px 'Inter', -apple-system, BlinkMacSystemFont, sans-serif";
     ctx.textAlign = "center";
 
     // X-axis label
@@ -395,7 +423,7 @@ export function CycleVisualization({
       ctx.stroke();
 
       // Tick labels (simplified)
-      const value = (i / numTicks * 100).toFixed(0);
+      const value = ((i / numTicks) * 100).toFixed(0);
       ctx.fillText(value, x, margin + plotHeight + 25);
     }
 
@@ -409,7 +437,7 @@ export function CycleVisualization({
       ctx.stroke();
 
       // Tick labels (simplified)
-      const value = (i / numTicks * 100).toFixed(0);
+      const value = ((i / numTicks) * 100).toFixed(0);
       ctx.fillText(value, margin - 12, y + 4);
     }
   };
@@ -428,8 +456,12 @@ export function CycleVisualization({
 
     // Dome fill with gradient
     const gradient = ctx.createRadialGradient(
-      centerX, centerY - radiusY * 0.3, 0,
-      centerX, centerY, radiusY
+      centerX,
+      centerY - radiusY * 0.3,
+      0,
+      centerX,
+      centerY,
+      radiusY,
     );
     gradient.addColorStop(0, "rgba(59, 130, 246, 0.05)");
     gradient.addColorStop(1, "rgba(59, 130, 246, 0.02)");
@@ -465,12 +497,17 @@ export function CycleVisualization({
     if (points.length < 4) return;
 
     const colors = ["#dc2626", "#2563eb", "#059669", "#d97706"];
-    const processNames = ["Compression", "Condensation", "Expansion", "Evaporation"];
+    const processNames = [
+      "Compression",
+      "Condensation",
+      "Expansion",
+      "Evaporation",
+    ];
     const lineWidths = [5, 5, 5, 5];
 
     // Enable anti-aliasing for smooth lines
     ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
+    ctx.imageSmoothingQuality = "high";
 
     for (let i = 0; i < 4; i++) {
       const startPoint = points[i];
@@ -483,8 +520,10 @@ export function CycleVisualization({
       if (lineProgress > 0) {
         // Create gradient for the line
         const gradient = ctx.createLinearGradient(
-          margin + startPoint.x, margin + startPoint.y,
-          margin + endPoint.x, margin + endPoint.y
+          margin + startPoint.x,
+          margin + startPoint.y,
+          margin + endPoint.x,
+          margin + endPoint.y,
         );
         gradient.addColorStop(0, color);
         gradient.addColorStop(1, color + "cc"); // Add transparency
@@ -517,9 +556,12 @@ export function CycleVisualization({
 
         if (lineProgress === 1) {
           ctx.bezierCurveTo(
-            margin + controlX1, margin + controlY1,
-            margin + controlX2, margin + controlY2,
-            margin + endPoint.x, margin + endPoint.y
+            margin + controlX1,
+            margin + controlY1,
+            margin + controlX2,
+            margin + controlY2,
+            margin + endPoint.x,
+            margin + endPoint.y,
           );
         } else {
           ctx.lineTo(margin + currentX, margin + currentY);
@@ -541,13 +583,20 @@ export function CycleVisualization({
             margin + currentY,
             Math.atan2(deltaY, deltaX),
             color,
-            i
+            i,
           );
         }
 
         // Add process label
         if (lineProgress > 0.5) {
-          drawProcessLabel(ctx, startPoint, endPoint, margin, processNames[i], color);
+          drawProcessLabel(
+            ctx,
+            startPoint,
+            endPoint,
+            margin,
+            processNames[i],
+            color,
+          );
         }
       }
     }
@@ -621,7 +670,7 @@ export function CycleVisualization({
       midY - 10 - padding,
       textWidth + 2 * padding,
       20 + 2 * padding,
-      4
+      4,
     );
     ctx.fill();
     ctx.stroke();
@@ -694,13 +743,7 @@ export function CycleVisualization({
       ctx.lineWidth = 1;
 
       ctx.beginPath();
-      ctx.roundRect(
-        x - textWidth / 2 - 6,
-        labelY - 8,
-        textWidth + 12,
-        16,
-        4
-      );
+      ctx.roundRect(x - textWidth / 2 - 6, labelY - 8, textWidth + 12, 16, 4);
       ctx.fill();
       ctx.stroke();
 
@@ -727,15 +770,37 @@ export function CycleVisualization({
     margin: number,
   ) => {
     const components = [
-      { name: "Compressor", icon: "⚙️", position: { x: 0.15, y: 0.7 }, color: "#dc2626" },
-      { name: "Condenser", icon: "🌡️", position: { x: 0.5, y: 0.1 }, color: "#2563eb" },
-      { name: "Expansion Valve", icon: "🔻", position: { x: 0.85, y: 0.3 }, color: "#059669" },
-      { name: "Evaporator", icon: "❄️", position: { x: 0.5, y: 0.85 }, color: "#d97706" },
+      {
+        name: "Compressor",
+        icon: "⚙️",
+        position: { x: 0.15, y: 0.7 },
+        color: "#dc2626",
+      },
+      {
+        name: "Condenser",
+        icon: "🌡️",
+        position: { x: 0.5, y: 0.1 },
+        color: "#2563eb",
+      },
+      {
+        name: "Expansion Valve",
+        icon: "🔻",
+        position: { x: 0.85, y: 0.3 },
+        color: "#059669",
+      },
+      {
+        name: "Evaporator",
+        icon: "❄️",
+        position: { x: 0.5, y: 0.85 },
+        color: "#d97706",
+      },
     ];
 
     components.forEach((comp) => {
-      const x = margin + comp.position.x * (canvasRef.current!.width - 2 * margin);
-      const y = margin + comp.position.y * (canvasRef.current!.height - 2 * margin);
+      const x =
+        margin + comp.position.x * (canvasRef.current!.width - 2 * margin);
+      const y =
+        margin + comp.position.y * (canvasRef.current!.height - 2 * margin);
 
       // Component background
       ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
@@ -747,13 +812,7 @@ export function CycleVisualization({
       const textWidth = ctx.measureText(text).width;
 
       ctx.beginPath();
-      ctx.roundRect(
-        x - textWidth / 2 - 8,
-        y - 10,
-        textWidth + 16,
-        20,
-        6
-      );
+      ctx.roundRect(x - textWidth / 2 - 8, y - 10, textWidth + 16, 20, 6);
       ctx.fill();
       ctx.stroke();
 
@@ -786,7 +845,8 @@ export function CycleVisualization({
         (clickX - pointX) ** 2 + (clickY - pointY) ** 2,
       );
 
-      if (distance < 25) { // Increased click radius for better UX
+      if (distance < 25) {
+        // Increased click radius for better UX
         setSelectedPoint(selectedPoint === point.id ? null : point.id);
       }
     });
@@ -801,7 +861,8 @@ export function CycleVisualization({
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2">
           <Zap className="h-5 w-5" />
-          {DIAGRAM_CONFIGS[diagramType].name} - {cycleData?.refrigerant || "No Data"}
+          {DIAGRAM_CONFIGS[diagramType].name} -{" "}
+          {cycleData?.refrigerant || "No Data"}
         </CardTitle>
         <div className="flex gap-2">
           <Button
@@ -841,7 +902,10 @@ export function CycleVisualization({
             <BarChart3 className="h-4 w-4" />
             <Label htmlFor="diagram-type">Diagram Type:</Label>
           </div>
-          <Select value={diagramType} onValueChange={(value: DiagramType) => setDiagramType(value)}>
+          <Select
+            value={diagramType}
+            onValueChange={(value: DiagramType) => setDiagramType(value)}
+          >
             <SelectTrigger className="w-[200px]">
               <SelectValue placeholder="Select diagram type" />
             </SelectTrigger>
@@ -862,7 +926,7 @@ export function CycleVisualization({
               height={800}
               className="border rounded-lg cursor-pointer w-full shadow-lg bg-gradient-to-br from-gray-50 to-white"
               onClick={handleCanvasClick}
-              style={{ maxWidth: '100%', height: 'auto' }}
+              style={{ maxWidth: "100%", height: "auto" }}
             />
             <div className="mt-2 text-sm text-gray-600">
               Click on cycle points to see detailed properties
@@ -905,42 +969,67 @@ export function CycleVisualization({
                   {/* Quality if two-phase */}
                   {selectedPointData.quality !== undefined && (
                     <div className="p-2 bg-blue-50 rounded">
-                      <Badge variant="secondary" className="w-full justify-center">
-                        Vapor Quality: {(selectedPointData.quality * 100).toFixed(1)}%
+                      <Badge
+                        variant="secondary"
+                        className="w-full justify-center"
+                      >
+                        Vapor Quality:{" "}
+                        {(selectedPointData.quality * 100).toFixed(1)}%
                       </Badge>
                     </div>
                   )}
 
                   {/* Engineering Notes */}
                   <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                    <h4 className="font-semibold text-sm mb-2">Engineering Notes:</h4>
+                    <h4 className="font-semibold text-sm mb-2">
+                      Engineering Notes:
+                    </h4>
                     <ul className="text-xs space-y-1 text-gray-600">
                       {selectedPointData.id === "1" && (
                         <>
-                          <li>• Refrigerant exits evaporator as superheated vapor</li>
-                          <li>• Critical for preventing liquid slugging in compressor</li>
-                          <li>• Superheat should be 5-15°C for optimal performance</li>
+                          <li>
+                            • Refrigerant exits evaporator as superheated vapor
+                          </li>
+                          <li>
+                            • Critical for preventing liquid slugging in
+                            compressor
+                          </li>
+                          <li>
+                            • Superheat should be 5-15°C for optimal performance
+                          </li>
                         </>
                       )}
                       {selectedPointData.id === "2" && (
                         <>
-                          <li>• Highest temperature and pressure in the cycle</li>
-                          <li>• Compressor discharge temperature critical for oil life</li>
-                          <li>• Should not exceed refrigerant's maximum temperature</li>
+                          <li>
+                            • Highest temperature and pressure in the cycle
+                          </li>
+                          <li>
+                            • Compressor discharge temperature critical for oil
+                            life
+                          </li>
+                          <li>
+                            • Should not exceed refrigerant's maximum
+                            temperature
+                          </li>
                         </>
                       )}
                       {selectedPointData.id === "3" && (
                         <>
                           <li>• Subcooled liquid from condenser</li>
                           <li>• Subcooling improves cycle efficiency</li>
-                          <li>• Prevents flash gas formation at expansion valve</li>
+                          <li>
+                            • Prevents flash gas formation at expansion valve
+                          </li>
                         </>
                       )}
                       {selectedPointData.id === "4" && (
                         <>
                           <li>• Two-phase mixture after expansion</li>
                           <li>• Quality determines evaporator performance</li>
-                          <li>• Lower quality = more liquid = better heat transfer</li>
+                          <li>
+                            • Lower quality = more liquid = better heat transfer
+                          </li>
                         </>
                       )}
                     </ul>
@@ -953,7 +1042,8 @@ export function CycleVisualization({
                   <div className="text-center space-y-2">
                     <div className="text-4xl">👆</div>
                     <p className="text-muted-foreground">
-                      Click any cycle point to view detailed engineering properties
+                      Click any cycle point to view detailed engineering
+                      properties
                     </p>
                   </div>
                 </CardContent>
@@ -972,7 +1062,10 @@ export function CycleVisualization({
                       <span>Pressure Ratio:</span>
                       <span className="font-mono">
                         {cycleData.points[1] && cycleData.points[0]
-                          ? (cycleData.points[1].pressure / cycleData.points[0].pressure).toFixed(2)
+                          ? (
+                              cycleData.points[1].pressure /
+                              cycleData.points[0].pressure
+                            ).toFixed(2)
                           : "N/A"}
                       </span>
                     </div>
@@ -987,7 +1080,9 @@ export function CycleVisualization({
                     <div className="flex justify-between">
                       <span>Cycle Type:</span>
                       <span className="font-mono">
-                        {diagramType === "P-h" ? "Vapor Compression" : "Thermodynamic"}
+                        {diagramType === "P-h"
+                          ? "Vapor Compression"
+                          : "Thermodynamic"}
                       </span>
                     </div>
                   </div>
@@ -1007,12 +1102,21 @@ export function CycleVisualization({
                   className="w-full justify-start text-xs"
                   onClick={() => {
                     if (cycleData) {
-                      const csvData = cycleData.points.map((point, i) =>
-                        `Point ${i+1},${point.temperature},${point.pressure},${point.enthalpy},${point.entropy}`
-                      ).join('\n');
-                      const blob = new Blob(['Point,Temperature(°C),Pressure(kPa),Enthalpy(kJ/kg),Entropy(kJ/kg·K)\n' + csvData], { type: 'text/csv' });
+                      const csvData = cycleData.points
+                        .map(
+                          (point, i) =>
+                            `Point ${i + 1},${point.temperature},${point.pressure},${point.enthalpy},${point.entropy}`,
+                        )
+                        .join("\n");
+                      const blob = new Blob(
+                        [
+                          "Point,Temperature(°C),Pressure(kPa),Enthalpy(kJ/kg),Entropy(kJ/kg·K)\n" +
+                            csvData,
+                        ],
+                        { type: "text/csv" },
+                      );
                       const url = URL.createObjectURL(blob);
-                      const a = document.createElement('a');
+                      const a = document.createElement("a");
                       a.href = url;
                       a.download = `${cycleData.refrigerant}_cycle_data.csv`;
                       a.click();
@@ -1028,8 +1132,8 @@ export function CycleVisualization({
                   onClick={() => {
                     const canvas = canvasRef.current;
                     if (canvas) {
-                      const link = document.createElement('a');
-                      link.download = `${cycleData?.refrigerant || 'cycle'}_${diagramType}_diagram.png`;
+                      const link = document.createElement("a");
+                      link.download = `${cycleData?.refrigerant || "cycle"}_${diagramType}_diagram.png`;
                       link.href = canvas.toDataURL();
                       link.click();
                     }
@@ -1037,13 +1141,25 @@ export function CycleVisualization({
                 >
                   🖼️ Save Diagram
                 </Button>
-                <Button variant="outline" size="sm" className="w-full justify-start text-xs">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start text-xs"
+                >
                   📋 Copy Properties
                 </Button>
-                <Button variant="outline" size="sm" className="w-full justify-start text-xs">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start text-xs"
+                >
                   📐 Measure Tool
                 </Button>
-                <Button variant="outline" size="sm" className="w-full justify-start text-xs">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start text-xs"
+                >
                   🔍 Zoom to Fit
                 </Button>
               </CardContent>

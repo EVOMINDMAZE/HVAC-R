@@ -197,7 +197,7 @@ export function EnhancedStandardCycleContent() {
       // Log detailed structure for debugging
       if (calculationData.state_points) {
         console.log("=== STATE POINTS ANALYSIS ===");
-        Object.keys(calculationData.state_points).forEach(key => {
+        Object.keys(calculationData.state_points).forEach((key) => {
           const point = calculationData.state_points[key];
           console.log(`${key}:`, point);
           console.log(`  Properties available:`, Object.keys(point));
@@ -207,14 +207,17 @@ export function EnhancedStandardCycleContent() {
             pressure_kpa: point.pressure_kpa,
             pressure: point.pressure,
             enthalpy_kj_kg: point.enthalpy_kj_kg,
-            enthalpy: point.enthalpy
+            enthalpy: point.enthalpy,
           });
         });
       }
       if (calculationData.performance) {
         console.log("=== PERFORMANCE ANALYSIS ===");
         console.log("Performance object:", calculationData.performance);
-        console.log("Performance properties:", Object.keys(calculationData.performance));
+        console.log(
+          "Performance properties:",
+          Object.keys(calculationData.performance),
+        );
       }
 
       if (calculationData.state_points || calculationData.performance) {
@@ -291,17 +294,64 @@ export function EnhancedStandardCycleContent() {
   };
 
   // Enhanced helper function with comprehensive CoolProp property name fallbacks
-  const getPropertyValue = (obj: StatePoint | undefined, propertyNames: string[]): number | undefined => {
+  const getPropertyValue = (
+    obj: StatePoint | undefined,
+    propertyNames: string[],
+  ): number | undefined => {
     if (!obj) return undefined;
 
     // Common CoolProp property naming conventions
     const propertyMap: Record<string, string[]> = {
-      temperature: ["temp_c", "temperature_c", "temperature", "T", "T_K", "temp", "temp_celsius"],
-      pressure: ["pressure_kpa", "pressure", "P", "P_Pa", "press", "pressure_pa", "pressure_bar"],
-      enthalpy: ["enthalpy_kj_kg", "enthalpy", "H", "h", "specific_enthalpy", "enthalpy_specific"],
-      entropy: ["entropy_kj_kg_k", "entropy", "S", "s", "specific_entropy", "entropy_specific"],
-      density: ["density_kg_m3", "density", "D", "rho", "specific_volume", "volume_specific"],
-      quality: ["vapor_quality", "quality", "Q", "x", "dryness_fraction", "vapor_fraction"]
+      temperature: [
+        "temp_c",
+        "temperature_c",
+        "temperature",
+        "T",
+        "T_K",
+        "temp",
+        "temp_celsius",
+      ],
+      pressure: [
+        "pressure_kpa",
+        "pressure",
+        "P",
+        "P_Pa",
+        "press",
+        "pressure_pa",
+        "pressure_bar",
+      ],
+      enthalpy: [
+        "enthalpy_kj_kg",
+        "enthalpy",
+        "H",
+        "h",
+        "specific_enthalpy",
+        "enthalpy_specific",
+      ],
+      entropy: [
+        "entropy_kj_kg_k",
+        "entropy",
+        "S",
+        "s",
+        "specific_entropy",
+        "entropy_specific",
+      ],
+      density: [
+        "density_kg_m3",
+        "density",
+        "D",
+        "rho",
+        "specific_volume",
+        "volume_specific",
+      ],
+      quality: [
+        "vapor_quality",
+        "quality",
+        "Q",
+        "x",
+        "dryness_fraction",
+        "vapor_fraction",
+      ],
     };
 
     // First try the provided property names
@@ -315,7 +365,7 @@ export function EnhancedStandardCycleContent() {
 
     // Then try all possible variations based on the first property name
     const primaryProperty = propertyNames[0];
-    const baseProperty = primaryProperty.split('_')[0]; // Get base name (e.g., 'temp' from 'temp_c')
+    const baseProperty = primaryProperty.split("_")[0]; // Get base name (e.g., 'temp' from 'temp_c')
 
     // Check if we have extended mappings for this property type
     for (const [key, variations] of Object.entries(propertyMap)) {
@@ -323,29 +373,74 @@ export function EnhancedStandardCycleContent() {
         for (const variation of variations) {
           const value = obj[variation];
           if (value !== undefined && value !== null && !isNaN(value)) {
-            console.log(`Found value for ${variation} (fallback for ${primaryProperty}):`, value);
+            console.log(
+              `Found value for ${variation} (fallback for ${primaryProperty}):`,
+              value,
+            );
             return value;
           }
         }
       }
     }
 
-    console.log(`No value found for any variation of ${propertyNames[0]} in object:`, Object.keys(obj));
+    console.log(
+      `No value found for any variation of ${propertyNames[0]} in object:`,
+      Object.keys(obj),
+    );
     return undefined;
   };
 
   // Helper function for performance metrics with comprehensive fallbacks
-  const getPerformanceValue = (performanceObj: any, propertyNames: string[]): number | undefined => {
+  const getPerformanceValue = (
+    performanceObj: any,
+    propertyNames: string[],
+  ): number | undefined => {
     if (!performanceObj) return undefined;
 
     // Common performance metric naming conventions
     const performanceMap: Record<string, string[]> = {
-      cop: ["cop", "COP", "coefficient_of_performance", "performance_coefficient"],
-      cooling_capacity: ["cooling_capacity_kw", "cooling_capacity", "capacity", "Q_evap", "evaporator_load", "refrigeration_effect_kw"],
-      compressor_work: ["compressor_work_kw", "compressor_work", "work", "W_comp", "work_input", "work_of_compression_kj_kg"],
-      heat_rejection: ["heat_rejection_kw", "heat_rejection", "Q_cond", "condenser_load", "heat_rejected"],
-      mass_flow_rate: ["mass_flow_rate_kg_s", "mass_flow_rate", "mdot", "flow_rate", "mass_flow"],
-      volumetric_flow_rate: ["volumetric_flow_rate_m3_s", "volumetric_flow_rate", "volume_flow", "V_dot"]
+      cop: [
+        "cop",
+        "COP",
+        "coefficient_of_performance",
+        "performance_coefficient",
+      ],
+      cooling_capacity: [
+        "cooling_capacity_kw",
+        "cooling_capacity",
+        "capacity",
+        "Q_evap",
+        "evaporator_load",
+        "refrigeration_effect_kw",
+      ],
+      compressor_work: [
+        "compressor_work_kw",
+        "compressor_work",
+        "work",
+        "W_comp",
+        "work_input",
+        "work_of_compression_kj_kg",
+      ],
+      heat_rejection: [
+        "heat_rejection_kw",
+        "heat_rejection",
+        "Q_cond",
+        "condenser_load",
+        "heat_rejected",
+      ],
+      mass_flow_rate: [
+        "mass_flow_rate_kg_s",
+        "mass_flow_rate",
+        "mdot",
+        "flow_rate",
+        "mass_flow",
+      ],
+      volumetric_flow_rate: [
+        "volumetric_flow_rate_m3_s",
+        "volumetric_flow_rate",
+        "volume_flow",
+        "V_dot",
+      ],
     };
 
     // First try the provided property names
@@ -364,14 +459,20 @@ export function EnhancedStandardCycleContent() {
         for (const variation of variations) {
           const value = performanceObj[variation];
           if (value !== undefined && value !== null && !isNaN(value)) {
-            console.log(`Found performance value for ${variation} (fallback for ${primaryProperty}):`, value);
+            console.log(
+              `Found performance value for ${variation} (fallback for ${primaryProperty}):`,
+              value,
+            );
             return value;
           }
         }
       }
     }
 
-    console.log(`No performance value found for any variation of ${propertyNames[0]} in object:`, Object.keys(performanceObj));
+    console.log(
+      `No performance value found for any variation of ${propertyNames[0]} in object:`,
+      Object.keys(performanceObj),
+    );
     return undefined;
   };
 
@@ -381,44 +482,123 @@ export function EnhancedStandardCycleContent() {
           {
             id: "1",
             name: "Evaporator Outlet",
-            temperature: getPropertyValue(results.state_points?.["1_compressor_inlet"], ["temp_c", "temperature_c", "temperature"]) || 0,
-            pressure: getPropertyValue(results.state_points?.["1_compressor_inlet"], ["pressure_kpa", "pressure"]) || 0,
-            enthalpy: getPropertyValue(results.state_points?.["1_compressor_inlet"], ["enthalpy_kj_kg", "enthalpy"]) || 0,
-            entropy: getPropertyValue(results.state_points?.["1_compressor_inlet"], ["entropy_kj_kg_k", "entropy"]) || 0,
-            quality: getPropertyValue(results.state_points?.["1_compressor_inlet"], ["vapor_quality", "quality"]),
+            temperature:
+              getPropertyValue(results.state_points?.["1_compressor_inlet"], [
+                "temp_c",
+                "temperature_c",
+                "temperature",
+              ]) || 0,
+            pressure:
+              getPropertyValue(results.state_points?.["1_compressor_inlet"], [
+                "pressure_kpa",
+                "pressure",
+              ]) || 0,
+            enthalpy:
+              getPropertyValue(results.state_points?.["1_compressor_inlet"], [
+                "enthalpy_kj_kg",
+                "enthalpy",
+              ]) || 0,
+            entropy:
+              getPropertyValue(results.state_points?.["1_compressor_inlet"], [
+                "entropy_kj_kg_k",
+                "entropy",
+              ]) || 0,
+            quality: getPropertyValue(
+              results.state_points?.["1_compressor_inlet"],
+              ["vapor_quality", "quality"],
+            ),
             x: 0, // Will be calculated by CycleVisualization
             y: 0,
           },
           {
             id: "2",
             name: "Compressor Outlet",
-            temperature: getPropertyValue(results.state_points?.["2_compressor_outlet"], ["temp_c", "temperature_c", "temperature"]) || 0,
-            pressure: getPropertyValue(results.state_points?.["2_compressor_outlet"], ["pressure_kpa", "pressure"]) || 0,
-            enthalpy: getPropertyValue(results.state_points?.["2_compressor_outlet"], ["enthalpy_kj_kg", "enthalpy"]) || 0,
-            entropy: getPropertyValue(results.state_points?.["2_compressor_outlet"], ["entropy_kj_kg_k", "entropy"]) || 0,
-            quality: getPropertyValue(results.state_points?.["2_compressor_outlet"], ["vapor_quality", "quality"]),
+            temperature:
+              getPropertyValue(results.state_points?.["2_compressor_outlet"], [
+                "temp_c",
+                "temperature_c",
+                "temperature",
+              ]) || 0,
+            pressure:
+              getPropertyValue(results.state_points?.["2_compressor_outlet"], [
+                "pressure_kpa",
+                "pressure",
+              ]) || 0,
+            enthalpy:
+              getPropertyValue(results.state_points?.["2_compressor_outlet"], [
+                "enthalpy_kj_kg",
+                "enthalpy",
+              ]) || 0,
+            entropy:
+              getPropertyValue(results.state_points?.["2_compressor_outlet"], [
+                "entropy_kj_kg_k",
+                "entropy",
+              ]) || 0,
+            quality: getPropertyValue(
+              results.state_points?.["2_compressor_outlet"],
+              ["vapor_quality", "quality"],
+            ),
             x: 0,
             y: 0,
           },
           {
             id: "3",
             name: "Condenser Outlet",
-            temperature: getPropertyValue(results.state_points?.["3_expansion_valve_inlet"], ["temp_c", "temperature_c", "temperature"]) || 0,
-            pressure: getPropertyValue(results.state_points?.["3_expansion_valve_inlet"], ["pressure_kpa", "pressure"]) || 0,
-            enthalpy: getPropertyValue(results.state_points?.["3_expansion_valve_inlet"], ["enthalpy_kj_kg", "enthalpy"]) || 0,
-            entropy: getPropertyValue(results.state_points?.["3_expansion_valve_inlet"], ["entropy_kj_kg_k", "entropy"]) || 0,
-            quality: getPropertyValue(results.state_points?.["3_expansion_valve_inlet"], ["vapor_quality", "quality"]),
+            temperature:
+              getPropertyValue(
+                results.state_points?.["3_expansion_valve_inlet"],
+                ["temp_c", "temperature_c", "temperature"],
+              ) || 0,
+            pressure:
+              getPropertyValue(
+                results.state_points?.["3_expansion_valve_inlet"],
+                ["pressure_kpa", "pressure"],
+              ) || 0,
+            enthalpy:
+              getPropertyValue(
+                results.state_points?.["3_expansion_valve_inlet"],
+                ["enthalpy_kj_kg", "enthalpy"],
+              ) || 0,
+            entropy:
+              getPropertyValue(
+                results.state_points?.["3_expansion_valve_inlet"],
+                ["entropy_kj_kg_k", "entropy"],
+              ) || 0,
+            quality: getPropertyValue(
+              results.state_points?.["3_expansion_valve_inlet"],
+              ["vapor_quality", "quality"],
+            ),
             x: 0,
             y: 0,
           },
           {
             id: "4",
             name: "Expansion Valve Outlet",
-            temperature: getPropertyValue(results.state_points?.["4_evaporator_inlet"], ["temp_c", "temperature_c", "temperature"]) || 0,
-            pressure: getPropertyValue(results.state_points?.["4_evaporator_inlet"], ["pressure_kpa", "pressure"]) || 0,
-            enthalpy: getPropertyValue(results.state_points?.["4_evaporator_inlet"], ["enthalpy_kj_kg", "enthalpy"]) || 0,
-            entropy: getPropertyValue(results.state_points?.["4_evaporator_inlet"], ["entropy_kj_kg_k", "entropy"]) || 0,
-            quality: getPropertyValue(results.state_points?.["4_evaporator_inlet"], ["vapor_quality", "quality"]),
+            temperature:
+              getPropertyValue(results.state_points?.["4_evaporator_inlet"], [
+                "temp_c",
+                "temperature_c",
+                "temperature",
+              ]) || 0,
+            pressure:
+              getPropertyValue(results.state_points?.["4_evaporator_inlet"], [
+                "pressure_kpa",
+                "pressure",
+              ]) || 0,
+            enthalpy:
+              getPropertyValue(results.state_points?.["4_evaporator_inlet"], [
+                "enthalpy_kj_kg",
+                "enthalpy",
+              ]) || 0,
+            entropy:
+              getPropertyValue(results.state_points?.["4_evaporator_inlet"], [
+                "entropy_kj_kg_k",
+                "entropy",
+              ]) || 0,
+            quality: getPropertyValue(
+              results.state_points?.["4_evaporator_inlet"],
+              ["vapor_quality", "quality"],
+            ),
             x: 0,
             y: 0,
           },
@@ -440,7 +620,11 @@ export function EnhancedStandardCycleContent() {
         </p>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="space-y-6"
+      >
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="calculation" className="flex items-center gap-2">
             <Calculator className="h-4 w-4" />
@@ -453,7 +637,11 @@ export function EnhancedStandardCycleContent() {
           >
             <Eye className="h-4 w-4" />
             Visualization
-            {calculationComplete && <Badge variant="outline" className="ml-1">New</Badge>}
+            {calculationComplete && (
+              <Badge variant="outline" className="ml-1">
+                New
+              </Badge>
+            )}
           </TabsTrigger>
           <TabsTrigger
             value="results"
@@ -462,7 +650,11 @@ export function EnhancedStandardCycleContent() {
           >
             <FileText className="h-4 w-4" />
             Results
-            {calculationComplete && <Badge variant="default" className="ml-1">View</Badge>}
+            {calculationComplete && (
+              <Badge variant="default" className="ml-1">
+                View
+              </Badge>
+            )}
           </TabsTrigger>
           <TabsTrigger
             value="equipment"
@@ -471,7 +663,11 @@ export function EnhancedStandardCycleContent() {
           >
             <Wrench className="h-4 w-4" />
             Equipment
-            {calculationComplete && <Badge variant="outline" className="ml-1">New</Badge>}
+            {calculationComplete && (
+              <Badge variant="outline" className="ml-1">
+                New
+              </Badge>
+            )}
           </TabsTrigger>
         </TabsList>
 
@@ -500,8 +696,14 @@ export function EnhancedStandardCycleContent() {
                             {selectedRefrigerant.safety_class}
                           </Badge>
                         </TechTerm>
-                        <TechTerm term="gwp">GWP: {selectedRefrigerant.gwp}</TechTerm> |
-                        <TechTerm term="odp"> ODP: {selectedRefrigerant.odp}</TechTerm>
+                        <TechTerm term="gwp">
+                          GWP: {selectedRefrigerant.gwp}
+                        </TechTerm>{" "}
+                        |
+                        <TechTerm term="odp">
+                          {" "}
+                          ODP: {selectedRefrigerant.odp}
+                        </TechTerm>
                       </div>
                     </div>
                   )}
@@ -531,7 +733,9 @@ export function EnhancedStandardCycleContent() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="evap_temp">
-                      <TechTerm term="evaporator">Evaporator Temperature (°C)</TechTerm>
+                      <TechTerm term="evaporator">
+                        Evaporator Temperature (°C)
+                      </TechTerm>
                     </Label>
                     <Input
                       id="evap_temp"
@@ -549,7 +753,9 @@ export function EnhancedStandardCycleContent() {
                   </div>
                   <div>
                     <Label htmlFor="cond_temp">
-                      <TechTerm term="condenser">Condenser Temperature (°C)</TechTerm>
+                      <TechTerm term="condenser">
+                        Condenser Temperature (°C)
+                      </TechTerm>
                     </Label>
                     <Input
                       id="cond_temp"
@@ -667,7 +873,10 @@ export function EnhancedStandardCycleContent() {
                     <CheckCircle className="h-4 w-4 text-green-600" />
                     <AlertDescription className="text-green-800">
                       <div className="flex items-center justify-between">
-                        <span><strong>Calculation Complete!</strong> View your results in the tabs above.</span>
+                        <span>
+                          <strong>Calculation Complete!</strong> View your
+                          results in the tabs above.
+                        </span>
                         <Button
                           variant="outline"
                           size="sm"
@@ -686,10 +895,13 @@ export function EnhancedStandardCycleContent() {
             <Card>
               <CardHeader>
                 <CardTitle>
-                  <TechTerm term="coolprop_support">Real-time Validation</TechTerm>
+                  <TechTerm term="coolprop_support">
+                    Real-time Validation
+                  </TechTerm>
                 </CardTitle>
                 <CardDescription>
-                  Thermodynamic property verification and operating condition checks
+                  Thermodynamic property verification and operating condition
+                  checks
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -842,16 +1054,24 @@ export function EnhancedStandardCycleContent() {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
                         <div className="text-2xl font-bold text-primary">
-                          {formatValue(getPerformanceValue(results.performance, ["cop"]), "")}
+                          {formatValue(
+                            getPerformanceValue(results.performance, ["cop"]),
+                            "",
+                          )}
                         </div>
                         <div className="text-sm text-primary/80">
-                          <TechTerm term="cop">Coefficient of Performance</TechTerm>
+                          <TechTerm term="cop">
+                            Coefficient of Performance
+                          </TechTerm>
                         </div>
                       </div>
                       <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
                         <div className="text-2xl font-bold text-emerald-600">
                           {formatValue(
-                            getPerformanceValue(results.performance, ["cooling_capacity_kw", "cooling_capacity"]),
+                            getPerformanceValue(results.performance, [
+                              "cooling_capacity_kw",
+                              "cooling_capacity",
+                            ]),
                             "kW",
                           )}
                         </div>
@@ -862,7 +1082,10 @@ export function EnhancedStandardCycleContent() {
                       <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
                         <div className="text-2xl font-bold text-amber-600">
                           {formatValue(
-                            getPerformanceValue(results.performance, ["compressor_work_kw", "work_of_compression_kj_kg"]),
+                            getPerformanceValue(results.performance, [
+                              "compressor_work_kw",
+                              "work_of_compression_kj_kg",
+                            ]),
                             "kW",
                           )}
                         </div>
@@ -873,7 +1096,10 @@ export function EnhancedStandardCycleContent() {
                       <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg">
                         <div className="text-2xl font-bold text-rose-600">
                           {formatValue(
-                            getPerformanceValue(results.performance, ["heat_rejection_kw", "heat_rejection"]),
+                            getPerformanceValue(results.performance, [
+                              "heat_rejection_kw",
+                              "heat_rejection",
+                            ]),
                             "kW",
                           )}
                         </div>
@@ -888,7 +1114,10 @@ export function EnhancedStandardCycleContent() {
                         <span>Mass Flow Rate:</span>
                         <span className="font-mono">
                           {formatValue(
-                            getPerformanceValue(results.performance, ["mass_flow_rate_kg_s", "mass_flow_rate"]),
+                            getPerformanceValue(results.performance, [
+                              "mass_flow_rate_kg_s",
+                              "mass_flow_rate",
+                            ]),
                             "kg/s",
                             4,
                           )}
@@ -898,7 +1127,10 @@ export function EnhancedStandardCycleContent() {
                         <span>Volumetric Flow Rate:</span>
                         <span className="font-mono">
                           {formatValue(
-                            getPerformanceValue(results.performance, ["volumetric_flow_rate_m3_s", "volumetric_flow_rate"]),
+                            getPerformanceValue(results.performance, [
+                              "volumetric_flow_rate_m3_s",
+                              "volumetric_flow_rate",
+                            ]),
                             "m³/s",
                             6,
                           )}
@@ -947,28 +1179,82 @@ export function EnhancedStandardCycleContent() {
                         colorClass: "text-amber-600 border-l-amber-600",
                       },
                     ].map(({ point, label, colorClass }, index) => (
-                      <div key={index} className={`border rounded-lg p-3 border-l-4 ${colorClass.includes('border-l-') ? '' : 'border-l-gray-200'}`}>
-                        <div className={`font-medium mb-2 ${colorClass.split(' ')[0]}`}>
+                      <div
+                        key={index}
+                        className={`border rounded-lg p-3 border-l-4 ${colorClass.includes("border-l-") ? "" : "border-l-gray-200"}`}
+                      >
+                        <div
+                          className={`font-medium mb-2 ${colorClass.split(" ")[0]}`}
+                        >
                           {label}
                         </div>
                         <div className="grid grid-cols-2 gap-2 text-sm">
-                          <div>T: {formatValue(getPropertyValue(point, ["temp_c", "temperature_c", "temperature"]), "°C")}</div>
                           <div>
-                            P: {formatValue(getPropertyValue(point, ["pressure_kpa", "pressure"]), "kPa", 0)}
+                            T:{" "}
+                            {formatValue(
+                              getPropertyValue(point, [
+                                "temp_c",
+                                "temperature_c",
+                                "temperature",
+                              ]),
+                              "°C",
+                            )}
                           </div>
                           <div>
-                            <TechTerm term="enthalpy">h</TechTerm>: {formatValue(getPropertyValue(point, ["enthalpy_kj_kg", "enthalpy"]), "kJ/kg")}
+                            P:{" "}
+                            {formatValue(
+                              getPropertyValue(point, [
+                                "pressure_kpa",
+                                "pressure",
+                              ]),
+                              "kPa",
+                              0,
+                            )}
+                          </div>
+                          <div>
+                            <TechTerm term="enthalpy">h</TechTerm>:{" "}
+                            {formatValue(
+                              getPropertyValue(point, [
+                                "enthalpy_kj_kg",
+                                "enthalpy",
+                              ]),
+                              "kJ/kg",
+                            )}
                           </div>
                           <div>
                             <TechTerm term="entropy">s</TechTerm>:{" "}
-                            {formatValue(getPropertyValue(point, ["entropy_kj_kg_k", "entropy"]), "kJ/kg·K", 3)}
+                            {formatValue(
+                              getPropertyValue(point, [
+                                "entropy_kj_kg_k",
+                                "entropy",
+                              ]),
+                              "kJ/kg·K",
+                              3,
+                            )}
                           </div>
                           <div>
-                            ρ: {formatValue(getPropertyValue(point, ["density_kg_m3", "density"]), "kg/m³")}
+                            ρ:{" "}
+                            {formatValue(
+                              getPropertyValue(point, [
+                                "density_kg_m3",
+                                "density",
+                              ]),
+                              "kg/m³",
+                            )}
                           </div>
-                          {getPropertyValue(point, ["vapor_quality", "quality"]) !== undefined && (
+                          {getPropertyValue(point, [
+                            "vapor_quality",
+                            "quality",
+                          ]) !== undefined && (
                             <div>
-                              <TechTerm term="quality">x</TechTerm>: {formatValue((getPropertyValue(point, ["vapor_quality", "quality"]) || 0) * 100, "%")}
+                              <TechTerm term="quality">x</TechTerm>:{" "}
+                              {formatValue(
+                                (getPropertyValue(point, [
+                                  "vapor_quality",
+                                  "quality",
+                                ]) || 0) * 100,
+                                "%",
+                              )}
                             </div>
                           )}
                         </div>
