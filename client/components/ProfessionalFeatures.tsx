@@ -188,10 +188,10 @@ This report presents a comprehensive analysis of the refrigeration cycle perform
 
 ## Cost Analysis
 ${costData ? `
-- Annual Energy Cost: $${costData.annualEnergyCost.toFixed(0)}
-- Lifetime Energy Cost: $${costData.lifetimeEnergyCost.toFixed(0)}
-- Total Lifetime Cost: $${costData.totalLifetimeCost.toFixed(0)}
-- System Efficiency: ${costData.efficiency.toFixed(1)}%
+- Annual Energy Cost: $${costData.annualEnergyCost?.toFixed(0) || 'N/A'}
+- Lifetime Energy Cost: $${costData.lifetimeEnergyCost?.toFixed(0) || 'N/A'}
+- Total Lifetime Cost: $${costData.totalLifetimeCost?.toFixed(0) || 'N/A'}
+- System Efficiency: ${costData.efficiency?.toFixed(1) || 'N/A'}%
 ` : 'Cost analysis not available'}
 
 ## Sustainability Assessment
