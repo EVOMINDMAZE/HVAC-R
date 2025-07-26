@@ -23,6 +23,7 @@ import {
 function QuickStats() {
   const { user } = useSupabaseAuth();
   const { calculations } = useSupabaseCalculations();
+  const { subscription } = useSubscription();
   const navigate = useNavigate();
 
   // Calculate real stats from user's calculations
@@ -34,19 +35,27 @@ function QuickStats() {
     return calcDate.getMonth() === currentMonth && calcDate.getFullYear() === currentYear;
   }).length;
 
+  // Get real subscription data from Stripe
+  const plan = subscription?.plan || 'free';
+  const planDisplayName = plan.charAt(0).toUpperCase() + plan.slice(1).replace('_', ' ');
+  const isUnlimited = plan !== 'free';
+  const remaining = isUnlimited ? -1 : Math.max(0, 10 - monthlyCalculations);
+
   const stats = {
     totalCalculations,
     monthlyCalculations,
-    subscription: { plan: 'Free', remaining: Math.max(0, 10 - monthlyCalculations) }
+    subscription: { plan: planDisplayName, remaining }
   };
 
   const remainingText = stats?.subscription.remaining === -1
     ? "Unlimited"
     : stats?.subscription.remaining?.toString() || "0";
 
-  const usagePercentage = Math.min((monthlyCalculations / 10) * 100, 100);
-  const isNearLimit = usagePercentage > 70;
-  const isAtLimit = monthlyCalculations >= 10;
+  // Calculate usage based on plan limits
+  const monthlyLimit = isUnlimited ? monthlyCalculations : 10;
+  const usagePercentage = isUnlimited ? 0 : Math.min((monthlyCalculations / 10) * 100, 100);
+  const isNearLimit = !isUnlimited && usagePercentage > 70;
+  const isAtLimit = !isUnlimited && monthlyCalculations >= 10;
 
   return (
     <div className="space-y-6">
