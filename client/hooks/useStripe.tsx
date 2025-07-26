@@ -117,9 +117,22 @@ export function useStripeCheckout() {
       console.log('API response ok:', response.ok);
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-        console.error('API Error Response:', errorData);
-        throw new Error(errorData.error || `HTTP ${response.status}: Failed to create checkout session`);
+        let errorMessage = `HTTP ${response.status}: Failed to create checkout session`;
+        try {
+          const errorData = await response.json();
+          console.error('API Error Response:', errorData);
+          errorMessage = errorData.error || errorData.message || errorMessage;
+        } catch (parseError) {
+          // If we can't parse JSON, try to get text
+          try {
+            const errorText = await response.text();
+            console.error('API Error Text:', errorText);
+            errorMessage = errorText || errorMessage;
+          } catch (textError) {
+            console.error('Could not parse error response:', textError);
+          }
+        }
+        throw new Error(errorMessage);
       }
 
       const responseData = await response.json();
