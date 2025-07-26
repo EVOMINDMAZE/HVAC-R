@@ -179,7 +179,8 @@ export function EnhancedStandardCycleContent() {
 
       const responseData = await response.json();
 
-      console.log("API Response received:", responseData);
+      console.log("=== FULL API RESPONSE ===");
+      console.log(JSON.stringify(responseData, null, 2));
 
       if (!response.ok || responseData.error) {
         throw new Error(
@@ -190,15 +191,30 @@ export function EnhancedStandardCycleContent() {
       // Handle response format - could be direct data or wrapped in data property
       const calculationData = responseData.data || responseData;
 
+      console.log("=== CALCULATION DATA ===");
+      console.log(JSON.stringify(calculationData, null, 2));
+
       // Log detailed structure for debugging
       if (calculationData.state_points) {
-        console.log("State points structure:", calculationData.state_points);
+        console.log("=== STATE POINTS ANALYSIS ===");
         Object.keys(calculationData.state_points).forEach(key => {
-          console.log(`${key} properties:`, Object.keys(calculationData.state_points[key]));
+          const point = calculationData.state_points[key];
+          console.log(`${key}:`, point);
+          console.log(`  Properties available:`, Object.keys(point));
+          console.log(`  Sample values:`, {
+            temp_c: point.temp_c,
+            temperature_c: point.temperature_c,
+            pressure_kpa: point.pressure_kpa,
+            pressure: point.pressure,
+            enthalpy_kj_kg: point.enthalpy_kj_kg,
+            enthalpy: point.enthalpy
+          });
         });
       }
       if (calculationData.performance) {
-        console.log("Performance structure:", Object.keys(calculationData.performance));
+        console.log("=== PERFORMANCE ANALYSIS ===");
+        console.log("Performance object:", calculationData.performance);
+        console.log("Performance properties:", Object.keys(calculationData.performance));
       }
 
       if (calculationData.state_points || calculationData.performance) {
