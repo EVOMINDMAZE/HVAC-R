@@ -290,16 +290,47 @@ export function EnhancedStandardCycleContent() {
     return `${value.toFixed(decimals)} ${unit}`;
   };
 
-  // Helper function to safely extract property values with multiple possible names
+  // Enhanced helper function with comprehensive CoolProp property name fallbacks
   const getPropertyValue = (obj: StatePoint | undefined, propertyNames: string[]): number | undefined => {
     if (!obj) return undefined;
 
+    // Common CoolProp property naming conventions
+    const propertyMap: Record<string, string[]> = {
+      temperature: ["temp_c", "temperature_c", "temperature", "T", "T_K", "temp", "temp_celsius"],
+      pressure: ["pressure_kpa", "pressure", "P", "P_Pa", "press", "pressure_pa", "pressure_bar"],
+      enthalpy: ["enthalpy_kj_kg", "enthalpy", "H", "h", "specific_enthalpy", "enthalpy_specific"],
+      entropy: ["entropy_kj_kg_k", "entropy", "S", "s", "specific_entropy", "entropy_specific"],
+      density: ["density_kg_m3", "density", "D", "rho", "specific_volume", "volume_specific"],
+      quality: ["vapor_quality", "quality", "Q", "x", "dryness_fraction", "vapor_fraction"]
+    };
+
+    // First try the provided property names
     for (const name of propertyNames) {
       const value = obj[name];
       if (value !== undefined && value !== null && !isNaN(value)) {
+        console.log(`Found value for ${name}:`, value);
         return value;
       }
     }
+
+    // Then try all possible variations based on the first property name
+    const primaryProperty = propertyNames[0];
+    const baseProperty = primaryProperty.split('_')[0]; // Get base name (e.g., 'temp' from 'temp_c')
+
+    // Check if we have extended mappings for this property type
+    for (const [key, variations] of Object.entries(propertyMap)) {
+      if (primaryProperty.includes(key) || baseProperty.includes(key)) {
+        for (const variation of variations) {
+          const value = obj[variation];
+          if (value !== undefined && value !== null && !isNaN(value)) {
+            console.log(`Found value for ${variation} (fallback for ${primaryProperty}):`, value);
+            return value;
+          }
+        }
+      }
+    }
+
+    console.log(`No value found for any variation of ${propertyNames[0]} in object:`, Object.keys(obj));
     return undefined;
   };
 
