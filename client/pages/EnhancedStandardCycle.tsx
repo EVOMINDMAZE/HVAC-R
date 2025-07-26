@@ -888,7 +888,7 @@ export function EnhancedStandardCycleContent() {
                         <span>Mass Flow Rate:</span>
                         <span className="font-mono">
                           {formatValue(
-                            results.performance?.mass_flow_rate_kg_s,
+                            getPerformanceValue(results.performance, ["mass_flow_rate_kg_s", "mass_flow_rate"]),
                             "kg/s",
                             4,
                           )}
@@ -898,7 +898,7 @@ export function EnhancedStandardCycleContent() {
                         <span>Volumetric Flow Rate:</span>
                         <span className="font-mono">
                           {formatValue(
-                            results.performance?.volumetric_flow_rate_m3_s,
+                            getPerformanceValue(results.performance, ["volumetric_flow_rate_m3_s", "volumetric_flow_rate"]),
                             "m³/s",
                             6,
                           )}
