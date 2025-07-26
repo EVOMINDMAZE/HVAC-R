@@ -111,7 +111,8 @@ export function initializeDatabase() {
 }
 
 function initializePreparedStatements() {
-  // User operations
+  try {
+    // User operations
   userDb.create = db.prepare(`
     INSERT INTO users (email, password_hash, first_name, last_name, company, role, phone)
     VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -227,9 +228,13 @@ function initializePreparedStatements() {
     SELECT * FROM billing_events WHERE stripe_event_id = ?
   `);
 
-  billingDb.markEventProcessed = db.prepare(`
-    UPDATE billing_events SET processed = TRUE WHERE stripe_event_id = ?
-  `);
+    billingDb.markEventProcessed = db.prepare(`
+      UPDATE billing_events SET processed = TRUE WHERE stripe_event_id = ?
+    `);
+  } catch (error) {
+    console.error('Failed to initialize prepared statements:', error);
+    throw error;
+  }
 }
 
 // Database utility functions
