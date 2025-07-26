@@ -869,57 +869,120 @@ export function CycleVisualization({
             </div>
           </div>
 
-          {/* Properties Panel */}
+          {/* Engineering Properties Panel */}
           <div className="space-y-4">
             {selectedPointData ? (
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">
-                    Point {selectedPointData.name}
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-blue-500"></div>
+                    State {selectedPointData.id} - {selectedPointData.name}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Thermometer className="h-4 w-4 text-red-500" />
-                    <span>
-                      Temperature: {selectedPointData.temperature.toFixed(1)}°C
-                    </span>
+                <CardContent className="space-y-4">
+                  {/* Primary Properties */}
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Thermometer className="h-4 w-4 text-red-500" />
+                      <span className="font-mono">
+                        T: {selectedPointData.temperature.toFixed(2)}°C
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Gauge className="h-4 w-4 text-blue-500" />
+                      <span className="font-mono">
+                        P: {(selectedPointData.pressure / 1000).toFixed(1)} MPa
+                      </span>
+                    </div>
+                    <div className="font-mono">
+                      h: {selectedPointData.enthalpy.toFixed(1)} kJ/kg
+                    </div>
+                    <div className="font-mono">
+                      s: {selectedPointData.entropy.toFixed(3)} kJ/kg·K
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Gauge className="h-4 w-4 text-blue-500" />
-                    <span>
-                      Pressure: {(selectedPointData.pressure / 1000).toFixed(1)}{" "}
-                      kPa
-                    </span>
-                  </div>
-                  <div>
-                    <span>
-                      Enthalpy: {selectedPointData.enthalpy.toFixed(1)} kJ/kg
-                    </span>
-                  </div>
-                  <div>
-                    <span>
-                      Entropy: {selectedPointData.entropy.toFixed(3)} kJ/kg-K
-                    </span>
-                  </div>
+
+                  {/* Quality if two-phase */}
                   {selectedPointData.quality !== undefined && (
-                    <div>
-                      <Badge variant="secondary">
-                        Quality: {(selectedPointData.quality * 100).toFixed(1)}%
+                    <div className="p-2 bg-blue-50 rounded">
+                      <Badge variant="secondary" className="w-full justify-center">
+                        Vapor Quality: {(selectedPointData.quality * 100).toFixed(1)}%
                       </Badge>
                     </div>
                   )}
+
+                  {/* Engineering Notes */}
+                  <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                    <h4 className="font-semibold text-sm mb-2">Engineering Notes:</h4>
+                    <ul className="text-xs space-y-1 text-gray-600">
+                      {selectedPointData.id === "1" && (
+                        <>
+                          <li>• Refrigerant exits evaporator as superheated vapor</li>
+                          <li>• Critical for preventing liquid slugging in compressor</li>
+                          <li>• Superheat should be 5-15°C for optimal performance</li>
+                        </>
+                      )}
+                      {selectedPointData.id === "2" && (
+                        <>
+                          <li>• Highest temperature and pressure in the cycle</li>
+                          <li>• Compressor discharge temperature critical for oil life</li>
+                          <li>• Should not exceed refrigerant's maximum temperature</li>
+                        </>
+                      )}
+                      {selectedPointData.id === "3" && (
+                        <>
+                          <li>• Subcooled liquid from condenser</li>
+                          <li>• Subcooling improves cycle efficiency</li>
+                          <li>• Prevents flash gas formation at expansion valve</li>
+                        </>
+                      )}
+                      {selectedPointData.id === "4" && (
+                        <>
+                          <li>• Two-phase mixture after expansion</li>
+                          <li>• Quality determines evaporator performance</li>
+                          <li>• Lower quality = more liquid = better heat transfer</li>
+                        </>
+                      )}
+                    </ul>
+                  </div>
                 </CardContent>
               </Card>
             ) : (
               <Card>
                 <CardContent className="pt-6">
-                  <p className="text-gray-500 text-center">
-                    Select a point on the cycle to view its properties
-                  </p>
+                  <div className="text-center space-y-2">
+                    <div className="text-4xl">👆</div>
+                    <p className="text-muted-foreground">
+                      Click any cycle point to view detailed engineering properties
+                    </p>
+                  </div>
                 </CardContent>
               </Card>
             )}
+
+            {/* Engineering Tools */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Engineering Tools</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button variant="outline" size="sm" className="w-full justify-start">
+                  📊 Export Data to Excel
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start">
+                  🖨️ Print Technical Report
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start">
+                  📈 Compare with Standards
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start">
+                  ⚙️ System Optimization
+                </Button>
+                <Button variant="outline" size="sm" className="w-full justify-start">
+                  🧮 Component Sizing
+                </Button>
+              </CardContent>
+            </Card>
 
             {/* Process Legend */}
             <Card>
