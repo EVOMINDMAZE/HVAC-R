@@ -783,7 +783,11 @@ export function CycleVisualization({
           <Button
             variant="outline"
             size="sm"
-            onClick={onAnimationToggle}
+            onClick={() => {
+              if (onAnimationToggle) {
+                onAnimationToggle();
+              }
+            }}
             className="flex items-center gap-2"
           >
             {isAnimating ? (
@@ -796,7 +800,10 @@ export function CycleVisualization({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setAnimationFrame(0)}
+            onClick={() => {
+              setAnimationFrame(0);
+              setSelectedPoint(null);
+            }}
             className="flex items-center gap-2"
           >
             <RotateCcw className="h-4 w-4" />
