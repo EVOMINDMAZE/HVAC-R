@@ -17,7 +17,7 @@ import { Loader2, BarChart3, Eye, FileText, AlertTriangle } from "lucide-react";
 import { SaveCalculation } from "@/components/SaveCalculation";
 import { EnhancedRefrigerantSelector } from "@/components/EnhancedRefrigerantSelector";
 import { CycleVisualization } from "@/components/CycleVisualization";
-import { validateOperatingConditions, getRefrigerantById, REFRIGERANT_DATABASE } from "@/lib/refrigerants";
+import { validateCycleConditions, getRefrigerantById, REFRIGERANT_DATABASE } from "@/lib/refrigerants";
 
 interface ComparisonFormData {
   refrigerants: string[];
