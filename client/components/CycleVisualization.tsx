@@ -986,6 +986,171 @@ export function CycleVisualization({
     });
   };
 
+  const drawEngineeringOverlay = (
+    ctx: CanvasRenderingContext2D,
+    points: CyclePoint[],
+    margin: number,
+    plotWidth: number,
+    plotHeight: number,
+  ) => {
+    if (!cycleData || points.length < 4) return;
+
+    // Calculate cycle performance metrics
+    const point1 = points[0]; // Evaporator outlet
+    const point2 = points[1]; // Compressor outlet
+    const point3 = points[2]; // Condenser outlet
+    const point4 = points[3]; // Expansion outlet
+
+    // Engineering calculations
+    const compressionRatio = point2.pressure / point1.pressure;
+    const temperatureLift = point2.temperature - point1.temperature;
+    const refrigerationEffect = point1.enthalpy - point4.enthalpy;
+    const compressionWork = point2.enthalpy - point1.enthalpy;
+    const theoreticalCOP = refrigerationEffect / compressionWork;
+
+    // Draw performance metrics overlay
+    const overlayX = margin + plotWidth - 220;
+    const overlayY = margin + 20;
+
+    // Background for metrics
+    ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
+    ctx.strokeStyle = "rgba(59, 130, 246, 0.8)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(overlayX, overlayY, 200, 140, 8);
+    ctx.fill();
+    ctx.stroke();
+
+    // Title
+    ctx.fillStyle = "#1f2937";
+    ctx.font = "bold 14px 'Inter', sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText("Cycle Metrics", overlayX + 10, overlayY + 20);
+
+    // Metrics
+    ctx.font = "12px 'Inter', sans-serif";
+    const metrics = [
+      `Compression Ratio: ${compressionRatio.toFixed(2)}`,
+      `Temperature Lift: ${temperatureLift.toFixed(1)}°C`,
+      `Refrig. Effect: ${refrigerationEffect.toFixed(1)} kJ/kg`,
+      `Compression Work: ${compressionWork.toFixed(1)} kJ/kg`,
+      `Theoretical COP: ${theoreticalCOP.toFixed(2)}`,
+    ];
+
+    metrics.forEach((metric, index) => {
+      ctx.fillText(metric, overlayX + 10, overlayY + 45 + index * 18);
+    });
+
+    // Draw process arrows with values
+    drawProcessArrows(ctx, points, margin);
+
+    // Add thermodynamic property annotations
+    drawPropertyAnnotations(ctx, points, margin);
+  };
+
+  const drawProcessArrows = (
+    ctx: CanvasRenderingContext2D,
+    points: CyclePoint[],
+    margin: number,
+  ) => {
+    if (points.length < 4) return;
+
+    const processes = [
+      {
+        from: points[0],
+        to: points[1],
+        label: `ΔT: ${(points[1].temperature - points[0].temperature).toFixed(1)}°C`,
+        color: "#dc2626"
+      },
+      {
+        from: points[1],
+        to: points[2],
+        label: `ΔP: ${((points[1].pressure - points[2].pressure)/1000).toFixed(1)}MPa`,
+        color: "#2563eb"
+      },
+      {
+        from: points[2],
+        to: points[3],
+        label: `ΔH: ${(points[2].enthalpy - points[3].enthalpy).toFixed(1)}kJ/kg`,
+        color: "#059669"
+      },
+      {
+        from: points[3],
+        to: points[0],
+        label: `ΔH: ${(points[0].enthalpy - points[3].enthalpy).toFixed(1)}kJ/kg`,
+        color: "#d97706"
+      },
+    ];
+
+    processes.forEach((process) => {
+      const midX = margin + (process.from.x + process.to.x) / 2;
+      const midY = margin + (process.from.y + process.to.y) / 2;
+
+      // Draw label background
+      ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+      ctx.strokeStyle = process.color;
+      ctx.lineWidth = 1;
+
+      ctx.font = "11px 'Inter', sans-serif";
+      const textWidth = ctx.measureText(process.label).width;
+
+      ctx.beginPath();
+      ctx.roundRect(midX - textWidth/2 - 6, midY - 8, textWidth + 12, 16, 3);
+      ctx.fill();
+      ctx.stroke();
+
+      // Draw label text
+      ctx.fillStyle = process.color;
+      ctx.textAlign = "center";
+      ctx.fillText(process.label, midX, midY + 4);
+    });
+  };
+
+  const drawPropertyAnnotations = (
+    ctx: CanvasRenderingContext2D,
+    points: CyclePoint[],
+    margin: number,
+  ) => {
+    points.forEach((point, index) => {
+      const x = margin + point.x;
+      const y = margin + point.y;
+
+      // Enhanced point labels with key properties
+      const labels = [
+        `${point.temperature.toFixed(1)}°C`,
+        `${(point.pressure/1000).toFixed(1)}MPa`,
+        `${point.enthalpy.toFixed(0)}kJ/kg`
+      ];
+
+      // Background for labels
+      ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
+      ctx.strokeStyle = ["#dc2626", "#2563eb", "#059669", "#d97706"][index];
+      ctx.lineWidth = 1;
+
+      const maxWidth = Math.max(...labels.map(label => ctx.measureText(label).width));
+      const labelHeight = labels.length * 14 + 8;
+
+      // Position label to avoid overlapping with point
+      const labelX = x + (index % 2 === 0 ? 30 : -30 - maxWidth);
+      const labelY = y - labelHeight/2;
+
+      ctx.beginPath();
+      ctx.roundRect(labelX - 4, labelY - 4, maxWidth + 8, labelHeight, 4);
+      ctx.fill();
+      ctx.stroke();
+
+      // Draw labels
+      ctx.fillStyle = ["#dc2626", "#2563eb", "#059669", "#d97706"][index];
+      ctx.font = "10px 'Inter', sans-serif";
+      ctx.textAlign = index % 2 === 0 ? "left" : "right";
+
+      labels.forEach((label, labelIndex) => {
+        const textX = index % 2 === 0 ? labelX : labelX + maxWidth;
+        ctx.fillText(label, textX, labelY + 12 + labelIndex * 14);
+      });
+    });
+  };
+
   const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
     if (!cycleData?.points) return;
 
