@@ -1,16 +1,23 @@
-import { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useToast } from "@/hooks/useToast";
 import { apiClient } from "@/lib/api";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ApiServiceStatus } from "@/components/ApiServiceStatus";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2 } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Separator } from "@/components/ui/separator";
+import { Loader2, BarChart3, Eye, FileText, AlertTriangle } from "lucide-react";
 import { SaveCalculation } from "@/components/SaveCalculation";
+import { EnhancedRefrigerantSelector } from "@/components/EnhancedRefrigerantSelector";
+import { CycleVisualization } from "@/components/CycleVisualization";
+import { validateOperatingConditions, getRefrigerantById, refrigerants } from "@/lib/refrigerants";
 
 interface ComparisonFormData {
   refrigerants: string[];
@@ -29,31 +36,25 @@ interface RefrigerantResult {
   volumetricCapacity: number;
   dischargePressure: number;
   suctionPressure: number;
+  point_1?: any;
+  point_2?: any;
+  point_3?: any;
+  point_4?: any;
+  performance?: any;
 }
 
 interface ComparisonResult {
   results: RefrigerantResult[];
 }
 
-const refrigerantOptions = [
-  { value: "R134a", label: "R-134a" },
-  { value: "R290", label: "R-290 (Propane)" },
-  { value: "R410A", label: "R-410A" },
-  { value: "R404A", label: "R-404A" },
-  { value: "R448A", label: "R-448A" },
-  { value: "R32", label: "R-32" },
-  { value: "R744", label: "R-744 (CO₂)" },
-  { value: "R1234yf", label: "R-1234yf" },
-];
-
 const performanceMetrics = [
-  { key: "cop", label: "COP", unit: "" },
-  { key: "refrigerationEffect", label: "Refrigeration Effect", unit: "kJ/kg" },
-  { key: "workInput", label: "Work Input", unit: "kJ/kg" },
-  { key: "heatRejection", label: "Heat Rejection", unit: "kJ/kg" },
-  { key: "volumetricCapacity", label: "Volumetric Capacity", unit: "kJ/m³" },
-  { key: "dischargePressure", label: "Discharge Pressure", unit: "kPa" },
-  { key: "suctionPressure", label: "Suction Pressure", unit: "kPa" },
+  { key: "cop", label: "COP", unit: "", higherIsBetter: true },
+  { key: "refrigerationEffect", label: "Refrigeration Effect", unit: "kJ/kg", higherIsBetter: true },
+  { key: "workInput", label: "Work Input", unit: "kJ/kg", higherIsBetter: false },
+  { key: "heatRejection", label: "Heat Rejection", unit: "kJ/kg", higherIsBetter: false },
+  { key: "volumetricCapacity", label: "Volumetric Capacity", unit: "kJ/m³", higherIsBetter: true },
+  { key: "dischargePressure", label: "Discharge Pressure", unit: "kPa", higherIsBetter: false },
+  { key: "suctionPressure", label: "Suction Pressure", unit: "kPa", higherIsBetter: true },
 ];
 
 // Content component for use within Dashboard tabs (no header)
@@ -70,23 +71,72 @@ export function RefrigerantComparisonContent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [calculationData, setCalculationData] = useState<{ inputs: any; results: any } | null>(null);
+  const [validationWarnings, setValidationWarnings] = useState<{[key: string]: string[]}>({});
+  const [selectedRefrigerantForVisualization, setSelectedRefrigerantForVisualization] = useState<string | null>(null);
   const { addToast } = useToast();
 
-  const handleInputChange = (field: keyof Omit<ComparisonFormData, 'refrigerants'>, value: number) => {
+  const handleInputChange = useCallback((field: keyof Omit<ComparisonFormData, 'refrigerants'>, value: number) => {
     setFormData(prev => ({
       ...prev,
       [field]: Number(value) || 0
     }));
-  };
+    
+    // Update validation warnings for all selected refrigerants
+    const newWarnings: {[key: string]: string[]} = {};
+    formData.refrigerants.forEach(refId => {
+      const refProps = getRefrigerantById(refId);
+      if (refProps) {
+        const warnings = validateOperatingConditions(refProps, {
+          evaporatorTemp: field === 'evaporatorTemp' ? value : formData.evaporatorTemp,
+          condenserTemp: field === 'condenserTemp' ? value : formData.condenserTemp,
+          superheat: field === 'superheat' ? value : formData.superheat,
+          subcooling: field === 'subcooling' ? value : formData.subcooling,
+        });
+        if (warnings.length > 0) {
+          newWarnings[refId] = warnings;
+        }
+      }
+    });
+    setValidationWarnings(newWarnings);
+  }, [formData]);
 
-  const handleRefrigerantToggle = (refrigerant: string, checked: boolean) => {
-    setFormData(prev => ({
-      ...prev,
-      refrigerants: checked 
+  const handleRefrigerantToggle = useCallback((refrigerant: string, checked: boolean) => {
+    setFormData(prev => {
+      const newRefrigerants = checked 
         ? [...prev.refrigerants, refrigerant]
-        : prev.refrigerants.filter(r => r !== refrigerant)
-    }));
-  };
+        : prev.refrigerants.filter(r => r !== refrigerant);
+      
+      // Update validation warnings
+      if (checked) {
+        const refProps = getRefrigerantById(refrigerant);
+        if (refProps) {
+          const warnings = validateOperatingConditions(refProps, {
+            evaporatorTemp: prev.evaporatorTemp,
+            condenserTemp: prev.condenserTemp,
+            superheat: prev.superheat,
+            subcooling: prev.subcooling,
+          });
+          if (warnings.length > 0) {
+            setValidationWarnings(current => ({
+              ...current,
+              [refrigerant]: warnings
+            }));
+          }
+        }
+      } else {
+        setValidationWarnings(current => {
+          const updated = { ...current };
+          delete updated[refrigerant];
+          return updated;
+        });
+      }
+      
+      return {
+        ...prev,
+        refrigerants: newRefrigerants
+      };
+    });
+  }, []);
 
   const handleCompare = async () => {
     if (formData.refrigerants.length === 0) {
@@ -153,6 +203,7 @@ export function RefrigerantComparisonContent() {
       }
 
       setResult(processedResult);
+      setSelectedRefrigerantForVisualization(processedResult.results[0]?.refrigerant || null);
 
       // Store data for saving
       setCalculationData({
@@ -218,6 +269,9 @@ export function RefrigerantComparisonContent() {
   const getBestValueIndex = (metricKey: string) => {
     if (!result?.results?.length) return -1;
 
+    const metric = performanceMetrics.find(m => m.key === metricKey);
+    if (!metric) return -1;
+
     const values = result.results.map(r => {
       // Handle different API response structures
       const value = (r as any)[metricKey] || (r as any).performance?.[metricKey];
@@ -226,7 +280,7 @@ export function RefrigerantComparisonContent() {
 
     if (values.length === 0) return -1;
 
-    const bestValue = metricKey === 'cop' || metricKey === 'refrigerationEffect' || metricKey === 'volumetricCapacity'
+    const bestValue = metric.higherIsBetter
       ? Math.max(...values)
       : Math.min(...values);
 
@@ -236,33 +290,92 @@ export function RefrigerantComparisonContent() {
     });
   };
 
+  const getVisualizationData = (refrigerantResult: RefrigerantResult) => {
+    if (!refrigerantResult.point_1 || !refrigerantResult.point_2 || !refrigerantResult.point_3 || !refrigerantResult.point_4) {
+      return null;
+    }
+
+    return {
+      points: [
+        { ...refrigerantResult.point_1, label: 'Evaporator Outlet', description: 'Superheated vapor' },
+        { ...refrigerantResult.point_2, label: 'Compressor Outlet', description: 'High pressure vapor' },
+        { ...refrigerantResult.point_3, label: 'Condenser Outlet', description: 'Subcooled liquid' },
+        { ...refrigerantResult.point_4, label: 'Expansion Valve Outlet', description: 'Low pressure mixture' }
+      ],
+      refrigerant: refrigerantResult.refrigerant,
+      cycleType: 'standard' as const
+    };
+  };
+
+  const getTotalWarnings = () => {
+    return Object.values(validationWarnings).reduce((total, warnings) => total + warnings.length, 0);
+  };
+
   return (
     <div className="space-y-6">
       <Card className="bg-white shadow-lg border-blue-200">
         <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-          <CardTitle className="text-xl">Refrigerant Comparison</CardTitle>
+          <CardTitle className="text-xl">Enhanced Refrigerant Comparison</CardTitle>
+          <CardDescription className="text-blue-100">
+            Compare multiple refrigerants with advanced visualization and CoolProp validation
+          </CardDescription>
         </CardHeader>
         <CardContent className="p-6">
           <div className="space-y-6">
             <div>
               <Label className="text-base font-semibold mb-4 block">Select Refrigerants to Compare</Label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {refrigerantOptions.map((option) => (
-                  <div key={option.value} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={option.value}
-                      checked={formData.refrigerants.includes(option.value)}
-                      onCheckedChange={(checked) => 
-                        handleRefrigerantToggle(option.value, checked as boolean)
-                      }
-                    />
-                    <Label htmlFor={option.value} className="text-sm cursor-pointer">
-                      {option.label}
-                    </Label>
-                  </div>
-                ))}
+                {refrigerants.map((refrigerant) => {
+                  const hasWarnings = validationWarnings[refrigerant.id]?.length > 0;
+                  return (
+                    <div key={refrigerant.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={refrigerant.id}
+                        checked={formData.refrigerants.includes(refrigerant.id)}
+                        onCheckedChange={(checked) => 
+                          handleRefrigerantToggle(refrigerant.id, checked as boolean)
+                        }
+                      />
+                      <Label htmlFor={refrigerant.id} className="text-sm cursor-pointer flex items-center gap-2">
+                        {refrigerant.name}
+                        {hasWarnings && (
+                          <AlertTriangle className="h-3 w-3 text-amber-500" />
+                        )}
+                        <Badge 
+                          variant="outline" 
+                          className={`text-xs ${
+                            refrigerant.coolpropSupport === 'full' ? 'bg-green-50 text-green-700' : 
+                            refrigerant.coolpropSupport === 'limited' ? 'bg-yellow-50 text-yellow-700' : 
+                            'bg-red-50 text-red-700'
+                          }`}
+                        >
+                          {refrigerant.coolpropSupport}
+                        </Badge>
+                      </Label>
+                    </div>
+                  );
+                })}
               </div>
             </div>
+
+            {getTotalWarnings() > 0 && (
+              <Alert>
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>
+                  <strong>Operating Condition Warnings for selected refrigerants:</strong>
+                  {Object.entries(validationWarnings).map(([refId, warnings]) => (
+                    <div key={refId} className="mt-2">
+                      <strong>{getRefrigerantById(refId)?.name}:</strong>
+                      <ul className="ml-4 list-disc">
+                        {warnings.map((warning, index) => (
+                          <li key={index}>{warning}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </AlertDescription>
+              </Alert>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="space-y-2">
@@ -322,7 +435,10 @@ export function RefrigerantComparisonContent() {
                     Comparing...
                   </>
                 ) : (
-                  "Compare"
+                  <>
+                    <BarChart3 className="mr-2 h-4 w-4" />
+                    Compare
+                  </>
                 )}
               </Button>
 
@@ -337,65 +453,200 @@ export function RefrigerantComparisonContent() {
             </div>
 
             {error && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-md">
-                <p className="text-red-700">{error}</p>
-              </div>
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
             )}
           </div>
         </CardContent>
       </Card>
 
       {result && result.results && Array.isArray(result.results) && result.results.length > 0 && (
-        <Card className="bg-white shadow-lg border-green-200">
-          <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
-            <CardTitle className="text-xl">Comparison Results</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="border-b-2 border-gray-200">
-                    <th className="text-left p-3 font-semibold text-gray-700 bg-gray-50">Performance Metric</th>
-                    {result.results.map((refrigerantResult, index) => (
-                      <th key={refrigerantResult.refrigerant || index} className="text-center p-3 font-semibold text-blue-600 bg-blue-50">
-                        {refrigerantResult.refrigerant || `Refrigerant ${index + 1}`}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {performanceMetrics.map((metric) => {
-                    const bestIndex = getBestValueIndex(metric.key);
-                    return (
-                      <tr key={metric.key} className="border-b border-gray-100 hover:bg-gray-50">
-                        <td className="p-3 font-medium text-gray-700 bg-gray-50">
-                          {metric.label}
-                          {metric.unit && <span className="text-sm text-gray-500 ml-1">({metric.unit})</span>}
-                        </td>
+        <Tabs defaultValue="comparison" className="space-y-4">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="comparison" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Comparison Table
+            </TabsTrigger>
+            <TabsTrigger value="visualization" className="flex items-center gap-2">
+              <Eye className="h-4 w-4" />
+              Cycle Visualization
+            </TabsTrigger>
+            <TabsTrigger value="details" className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Detailed Results
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="comparison">
+            <Card className="bg-white shadow-lg border-green-200">
+              <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
+                <CardTitle className="text-xl">Performance Comparison</CardTitle>
+                <CardDescription className="text-green-100">
+                  Side-by-side comparison of key performance metrics
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="border-b-2 border-gray-200">
+                        <th className="text-left p-3 font-semibold text-gray-700 bg-gray-50">Performance Metric</th>
                         {result.results.map((refrigerantResult, index) => (
-                          <td
-                            key={refrigerantResult.refrigerant || index}
-                            className={`p-3 text-center ${
-                              index === bestIndex
-                                ? 'bg-green-100 text-green-800 font-semibold'
-                                : 'text-gray-700'
-                            }`}
-                          >
-                            {getValueForMetric(refrigerantResult, metric.key)}
-                          </td>
+                          <th key={refrigerantResult.refrigerant || index} className="text-center p-3 font-semibold text-blue-600 bg-blue-50">
+                            {refrigerantResult.refrigerant || `Refrigerant ${index + 1}`}
+                          </th>
                         ))}
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                    </thead>
+                    <tbody>
+                      {performanceMetrics.map((metric) => {
+                        const bestIndex = getBestValueIndex(metric.key);
+                        return (
+                          <tr key={metric.key} className="border-b border-gray-100 hover:bg-gray-50">
+                            <td className="p-3 font-medium text-gray-700 bg-gray-50">
+                              {metric.label}
+                              {metric.unit && <span className="text-sm text-gray-500 ml-1">({metric.unit})</span>}
+                            </td>
+                            {result.results.map((refrigerantResult, index) => (
+                              <td
+                                key={refrigerantResult.refrigerant || index}
+                                className={`p-3 text-center ${
+                                  index === bestIndex
+                                    ? 'bg-green-100 text-green-800 font-semibold'
+                                    : 'text-gray-700'
+                                }`}
+                              >
+                                {getValueForMetric(refrigerantResult, metric.key)}
+                              </td>
+                            ))}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="mt-4 text-sm text-gray-600">
+                  <span className="inline-block w-4 h-4 bg-green-100 mr-2 rounded"></span>
+                  Best performance for each metric
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="visualization">
+            <Card className="bg-white shadow-lg border-purple-200">
+              <CardHeader className="bg-gradient-to-r from-purple-600 to-violet-600 text-white">
+                <CardTitle className="text-xl">Cycle Visualization</CardTitle>
+                <CardDescription className="text-purple-100">
+                  P-h diagrams for each refrigerant comparison
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4">
+                    <Label>Select Refrigerant for Visualization:</Label>
+                    <div className="flex gap-2">
+                      {result.results.map((refrigerantResult) => (
+                        <Button
+                          key={refrigerantResult.refrigerant}
+                          variant={selectedRefrigerantForVisualization === refrigerantResult.refrigerant ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setSelectedRefrigerantForVisualization(refrigerantResult.refrigerant)}
+                        >
+                          {refrigerantResult.refrigerant}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {selectedRefrigerantForVisualization && (
+                    <div>
+                      {(() => {
+                        const selectedResult = result.results.find(r => r.refrigerant === selectedRefrigerantForVisualization);
+                        const visualizationData = selectedResult ? getVisualizationData(selectedResult) : null;
+                        
+                        return visualizationData ? (
+                          <CycleVisualization
+                            cycleData={visualizationData}
+                            isAnimating={false}
+                          />
+                        ) : (
+                          <div className="text-center py-8 text-gray-500">
+                            Cycle visualization data not available for {selectedRefrigerantForVisualization}
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="details">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {result.results.map((refrigerantResult, index) => {
+                const refProps = getRefrigerantById(refrigerantResult.refrigerant);
+                return (
+                  <Card key={refrigerantResult.refrigerant || index} className="bg-white shadow-lg">
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between">
+                        {refrigerantResult.refrigerant || `Refrigerant ${index + 1}`}
+                        {refProps && (
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline">{refProps.safety_class}</Badge>
+                            <Badge 
+                              variant={refProps.coolpropSupport === 'full' ? 'default' : 'secondary'}
+                            >
+                              {refProps.coolpropSupport}
+                            </Badge>
+                          </div>
+                        )}
+                      </CardTitle>
+                      {refProps && (
+                        <CardDescription>
+                          GWP: {refProps.gwp} | ODP: {refProps.odp}
+                        </CardDescription>
+                      )}
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="p-3 bg-blue-50 rounded-lg text-center">
+                            <div className="text-lg font-bold text-blue-600">
+                              {getValueForMetric(refrigerantResult, 'cop')}
+                            </div>
+                            <div className="text-sm text-blue-800">COP</div>
+                          </div>
+                          <div className="p-3 bg-green-50 rounded-lg text-center">
+                            <div className="text-lg font-bold text-green-600">
+                              {getValueForMetric(refrigerantResult, 'refrigerationEffect')}
+                            </div>
+                            <div className="text-sm text-green-800">Ref. Effect (kJ/kg)</div>
+                          </div>
+                        </div>
+                        
+                        {refProps && refProps.applications && (
+                          <div>
+                            <span className="font-medium text-sm">Applications:</span>
+                            <div className="mt-1 flex flex-wrap gap-1">
+                              {refProps.applications.map((app, appIndex) => (
+                                <Badge key={appIndex} variant="outline" className="text-xs">
+                                  {app}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
-            <div className="mt-4 text-sm text-gray-600">
-              <span className="inline-block w-4 h-4 bg-green-100 mr-2 rounded"></span>
-              Best performance for each metric
-            </div>
-          </CardContent>
-        </Card>
+          </TabsContent>
+        </Tabs>
       )}
     </div>
   );
