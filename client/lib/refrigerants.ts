@@ -92,7 +92,7 @@ export const REFRIGERANT_DATABASE: RefrigerantProperties[] = [
       normalBoilingPoint: 221.71
     },
     coolpropSupport: 'full',
-    description: 'High-pressure blend for air conditioning systems',
+    description: 'High-pressure blend for air conditioning systems (Note: May have CoolProp limitations)',
     color: '#10B981'
   },
   {
