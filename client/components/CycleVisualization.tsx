@@ -142,30 +142,36 @@ export function CycleVisualization({
       return;
     }
 
-    // Set up coordinate system (P-h diagram style)
+    // Set up coordinate system
     const margin = 60;
     const plotWidth = width - 2 * margin;
     const plotHeight = height - 2 * margin;
+    const config = DIAGRAM_CONFIGS[diagramType];
+
+    // Calculate proper coordinates based on thermodynamic properties
+    const pointsWithCoords = calculateCoordinates(cycleData.points, config, plotWidth, plotHeight);
 
     // Draw axes
-    drawAxes(ctx, margin, plotWidth, plotHeight);
+    drawAxes(ctx, margin, plotWidth, plotHeight, config);
 
-    // Draw saturation dome (simplified)
-    drawSaturationDome(ctx, margin, plotWidth, plotHeight);
+    // Draw saturation dome (only for P-h diagrams)
+    if (diagramType === "P-h") {
+      drawSaturationDome(ctx, margin, plotWidth, plotHeight);
+    }
 
     // Draw cycle lines with animation
     drawCycleLines(
       ctx,
-      cycleData.points,
+      pointsWithCoords,
       margin,
       isAnimating ? animationFrame : 100,
     );
 
     // Draw points
-    drawCyclePoints(ctx, cycleData.points, margin);
+    drawCyclePoints(ctx, pointsWithCoords, margin);
 
     // Draw component labels
-    drawComponentLabels(ctx, cycleData.points, margin);
+    drawComponentLabels(ctx, pointsWithCoords, margin);
   };
 
   const drawPlaceholder = (
