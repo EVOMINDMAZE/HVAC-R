@@ -27,6 +27,7 @@ interface CyclePoint {
   pressure: number; // kPa
   enthalpy: number; // kJ/kg
   entropy: number; // kJ/kg-K
+  specificVolume?: number; // m³/kg
   quality?: number; // 0-1 for two-phase
   x: number; // Canvas coordinates
   y: number;
