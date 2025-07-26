@@ -86,7 +86,7 @@ export function RefrigerantComparisonContent() {
     formData.refrigerants.forEach(refId => {
       const refProps = getRefrigerantById(refId);
       if (refProps) {
-        const warnings = validateOperatingConditions(refProps, {
+        const warnings = validateCycleConditions(refProps, {
           evaporatorTemp: field === 'evaporatorTemp' ? value : formData.evaporatorTemp,
           condenserTemp: field === 'condenserTemp' ? value : formData.condenserTemp,
           superheat: field === 'superheat' ? value : formData.superheat,
@@ -110,7 +110,7 @@ export function RefrigerantComparisonContent() {
       if (checked) {
         const refProps = getRefrigerantById(refrigerant);
         if (refProps) {
-          const warnings = validateOperatingConditions(refProps, {
+          const warnings = validateCycleConditions(refProps, {
             evaporatorTemp: prev.evaporatorTemp,
             condenserTemp: prev.condenserTemp,
             superheat: prev.superheat,
