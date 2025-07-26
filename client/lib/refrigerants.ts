@@ -452,7 +452,7 @@ export const REFRIGERANT_DATABASE: RefrigerantProperties[] = [
       normalBoilingPoint: 229.35
     },
     coolpropSupport: 'full',
-    description: 'R-22 replacement blend for air conditioning',
+    description: 'R-22 replacement blend for air conditioning (Note: Blend refrigerant - may have CoolProp limitations)',
     color: '#7C3AED'
   }
 ];
