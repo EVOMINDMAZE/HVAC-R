@@ -311,28 +311,24 @@ export function validateOperatingConditions(
 ): string[] {
   const warnings: string[] = [];
 
-  // Convert to Kelvin
-  const evapTempK = conditions.evaporatorTemp + 273.15;
-  const condTempK = conditions.condenserTemp + 273.15;
-
   // Check evaporator temperature limits
-  if (evapTempK < refrigerant.limits.minTemp) {
-    warnings.push(`Evaporator temperature ${conditions.evaporatorTemp}°C is below minimum limit ${(refrigerant.limits.minTemp - 273.15).toFixed(1)}°C`);
+  if (conditions.evaporatorTemp < refrigerant.limits.min_temp_c) {
+    warnings.push(`Evaporator temperature ${conditions.evaporatorTemp}°C is below minimum limit ${refrigerant.limits.min_temp_c.toFixed(1)}°C`);
   }
 
   // Check condenser temperature limits
-  if (condTempK > refrigerant.limits.maxTemp) {
-    warnings.push(`Condenser temperature ${conditions.condenserTemp}°C is above maximum limit ${(refrigerant.limits.maxTemp - 273.15).toFixed(1)}°C`);
+  if (conditions.condenserTemp > refrigerant.limits.max_temp_c) {
+    warnings.push(`Condenser temperature ${conditions.condenserTemp}°C is above maximum limit ${refrigerant.limits.max_temp_c.toFixed(1)}°C`);
   }
 
   // Check if approaching critical temperature
-  if (condTempK > (refrigerant.limits.criticalTemp - 20)) {
-    warnings.push(`Condenser temperature ${conditions.condenserTemp}°C is near critical temperature ${(refrigerant.limits.criticalTemp - 273.15).toFixed(1)}°C`);
+  if (conditions.condenserTemp > (refrigerant.limits.critical_temp_c - 20)) {
+    warnings.push(`Condenser temperature ${conditions.condenserTemp}°C is near critical temperature ${refrigerant.limits.critical_temp_c.toFixed(1)}°C`);
   }
 
   // Special handling for CO2 (R744)
   if (refrigerant.id === 'R744') {
-    if (condTempK > refrigerant.limits.criticalTemp) {
+    if (conditions.condenserTemp > refrigerant.limits.critical_temp_c) {
       warnings.push(`R-744 (CO₂) condenser above critical temperature. Operating in transcritical mode.`);
     }
   }
