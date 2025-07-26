@@ -329,10 +329,8 @@ export function CycleVisualization({
     // Draw axes and grid
     drawAxes(ctx, margin, plotWidth, plotHeight, config);
 
-    // Draw saturation dome (only for P-h diagrams)
-    if (diagramType === "P-h") {
-      drawSaturationDome(ctx, margin, plotWidth, plotHeight);
-    }
+    // Draw saturation dome for all diagram types
+    drawSaturationDome(ctx, margin, plotWidth, plotHeight, config);
 
     // Draw cycle lines with animation
     drawCycleLines(
@@ -1120,7 +1118,7 @@ export function CycleVisualization({
                             life
                           </li>
                           <li>
-                            • Should not exceed refrigerant's maximum
+                            �� Should not exceed refrigerant's maximum
                             temperature
                           </li>
                         </>
