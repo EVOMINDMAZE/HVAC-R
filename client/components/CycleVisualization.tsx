@@ -1008,37 +1008,72 @@ export function CycleVisualization({
     const compressionWork = point2.enthalpy - point1.enthalpy;
     const theoreticalCOP = refrigerationEffect / compressionWork;
 
-    // Draw performance metrics overlay
-    const overlayX = margin + plotWidth - 220;
+    // Draw performance metrics overlay with enhanced styling
+    const overlayX = margin + plotWidth - 250;
     const overlayY = margin + 20;
 
-    // Background for metrics
-    ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
-    ctx.strokeStyle = "rgba(59, 130, 246, 0.8)";
+    // Background with gradient
+    const gradient = ctx.createLinearGradient(overlayX, overlayY, overlayX, overlayY + 160);
+    gradient.addColorStop(0, "rgba(255, 255, 255, 0.98)");
+    gradient.addColorStop(1, "rgba(248, 250, 252, 0.95)");
+
+    ctx.fillStyle = gradient;
+    ctx.strokeStyle = "rgba(59, 130, 246, 0.6)";
     ctx.lineWidth = 2;
+    ctx.shadowColor = "rgba(0, 0, 0, 0.1)";
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 2;
+
     ctx.beginPath();
-    ctx.roundRect(overlayX, overlayY, 200, 140, 8);
+    ctx.roundRect(overlayX, overlayY, 230, 160, 12);
     ctx.fill();
     ctx.stroke();
 
-    // Title
-    ctx.fillStyle = "#1f2937";
-    ctx.font = "bold 14px 'Inter', sans-serif";
-    ctx.textAlign = "left";
-    ctx.fillText("Cycle Metrics", overlayX + 10, overlayY + 20);
+    // Reset shadow
+    ctx.shadowColor = "transparent";
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
 
-    // Metrics
-    ctx.font = "12px 'Inter', sans-serif";
+    // Title with icon
+    ctx.fillStyle = "#1f2937";
+    ctx.font = "bold 16px 'Inter', sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText("📊 Cycle Performance", overlayX + 12, overlayY + 25);
+
+    // Separator line
+    ctx.strokeStyle = "rgba(59, 130, 246, 0.3)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(overlayX + 12, overlayY + 35);
+    ctx.lineTo(overlayX + 218, overlayY + 35);
+    ctx.stroke();
+
+    // Enhanced metrics with better formatting
+    ctx.font = "13px 'Inter', sans-serif";
     const metrics = [
-      `Compression Ratio: ${compressionRatio.toFixed(2)}`,
-      `Temperature Lift: ${temperatureLift.toFixed(1)}°C`,
-      `Refrig. Effect: ${refrigerationEffect.toFixed(1)} kJ/kg`,
-      `Compression Work: ${compressionWork.toFixed(1)} kJ/kg`,
-      `Theoretical COP: ${theoreticalCOP.toFixed(2)}`,
+      { label: "Compression Ratio", value: compressionRatio.toFixed(2), unit: "", color: "#dc2626" },
+      { label: "Temperature Lift", value: temperatureLift.toFixed(1), unit: "°C", color: "#ea580c" },
+      { label: "Refrigeration Effect", value: refrigerationEffect.toFixed(1), unit: "kJ/kg", color: "#059669" },
+      { label: "Compression Work", value: compressionWork.toFixed(1), unit: "kJ/kg", color: "#7c3aed" },
+      { label: "Theoretical COP", value: theoreticalCOP.toFixed(2), unit: "", color: "#2563eb" },
     ];
 
     metrics.forEach((metric, index) => {
-      ctx.fillText(metric, overlayX + 10, overlayY + 45 + index * 18);
+      const y = overlayY + 55 + index * 20;
+
+      // Label
+      ctx.fillStyle = "#374151";
+      ctx.textAlign = "left";
+      ctx.fillText(metric.label + ":", overlayX + 12, y);
+
+      // Value with color
+      ctx.fillStyle = metric.color;
+      ctx.font = "bold 13px 'Inter', sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillText(`${metric.value} ${metric.unit}`, overlayX + 218, y);
+      ctx.font = "13px 'Inter', sans-serif";
     });
 
     // Draw process arrows with values
