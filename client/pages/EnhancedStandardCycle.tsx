@@ -41,49 +41,44 @@ import {
   getRefrigerantById,
 } from "../lib/refrigerants";
 
+interface StatePoint {
+  temp_c?: number;
+  temperature_c?: number;
+  pressure_kpa?: number;
+  pressure?: number;
+  enthalpy_kj_kg?: number;
+  enthalpy?: number;
+  entropy_kj_kg_k?: number;
+  entropy?: number;
+  density_kg_m3?: number;
+  density?: number;
+  vapor_quality?: number;
+  quality?: number;
+  [key: string]: any; // Allow for additional properties
+}
+
 interface CalculationResults {
   state_points: {
-    "1_compressor_inlet": {
-      temp_c: number;
-      pressure_kpa: number;
-      enthalpy_kj_kg: number;
-      entropy_kj_kg_k: number;
-      density_kg_m3: number;
-      vapor_quality?: number;
-    };
-    "2_compressor_outlet": {
-      temp_c: number;
-      pressure_kpa: number;
-      enthalpy_kj_kg: number;
-      entropy_kj_kg_k: number;
-      density_kg_m3: number;
-    };
-    "3_expansion_valve_inlet": {
-      temp_c: number;
-      pressure_kpa: number;
-      enthalpy_kj_kg: number;
-      entropy_kj_kg_k: number;
-      density_kg_m3: number;
-    };
-    "4_evaporator_inlet": {
-      temp_c: number;
-      pressure_kpa: number;
-      enthalpy_kj_kg: number;
-      entropy_kj_kg_k: number;
-      density_kg_m3: number;
-      vapor_quality?: number;
-    };
+    "1_compressor_inlet": StatePoint;
+    "2_compressor_outlet": StatePoint;
+    "3_expansion_valve_inlet": StatePoint;
+    "4_evaporator_inlet": StatePoint;
+    [key: string]: StatePoint; // Allow for additional points
   };
   performance: {
-    cop: number;
-    cooling_capacity_kw: number;
-    compressor_work_kw: number;
-    heat_rejection_kw: number;
-    mass_flow_rate_kg_s: number;
-    volumetric_flow_rate_m3_s: number;
+    cop?: number;
+    cooling_capacity_kw?: number;
+    compressor_work_kw?: number;
+    heat_rejection_kw?: number;
+    mass_flow_rate_kg_s?: number;
+    volumetric_flow_rate_m3_s?: number;
+    work_of_compression_kj_kg?: number;
+    refrigeration_effect_kj_kg?: number;
+    [key: string]: any; // Allow for additional performance metrics
   };
-  refrigerant: string;
-  cycle_type: "standard";
+  refrigerant?: string;
+  cycle_type?: "standard";
+  [key: string]: any; // Allow for additional top-level properties
 }
 
 interface CycleAnimationState {
