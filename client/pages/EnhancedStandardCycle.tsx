@@ -200,7 +200,7 @@ export function EnhancedStandardCycleContent() {
       const responseData = await response.json();
 
       console.log("\n✨ === ENHANCED API RESPONSE ANALYSIS ===");
-      console.log("📊 Response Status:", response.status, response.statusText);
+      console.log("�� Response Status:", response.status, response.statusText);
       console.log("📎 Content-Type:", response.headers.get("content-type"));
       console.log("📦 Full Response Structure:");
       console.log(JSON.stringify(responseData, null, 2));
@@ -222,7 +222,7 @@ export function EnhancedStandardCycleContent() {
 
       // Enhanced state points analysis
       if (calculationData.state_points) {
-        console.log("\n🔥 === DETAILED STATE POINTS ANALYSIS ===");
+        console.log("\n🔥 === DETAILED STATE POINTS ANALYSIS (NEW STRUCTURE) ===");
         console.log(
           "📊 Total State Points:",
           Object.keys(calculationData.state_points).length,
@@ -230,41 +230,39 @@ export function EnhancedStandardCycleContent() {
 
         Object.keys(calculationData.state_points).forEach((key) => {
           const point = calculationData.state_points[key];
-          console.log(`\n🔸 ${key.toUpperCase()}:`);
+          console.log(`\n🔸 STATE POINT ${key}:`);
           console.log(
             `  🔑 Available Properties (${Object.keys(point).length}):`,
             Object.keys(point),
           );
-          console.log(`  🌡️ Temperature variants:`, {
-            temp_c: point.temp_c,
-            temperature_c: point.temperature_c,
-            temperature: point.temperature,
-            T: point.T,
-            t: point.t,
-          });
-          console.log(`  📊 Pressure variants:`, {
-            pressure_kpa: point.pressure_kpa,
-            pressure: point.pressure,
-            P: point.P,
-            p: point.p,
-            pressure_pa: point.pressure_pa,
-          });
-          console.log(`  ⚡ Enthalpy variants:`, {
-            enthalpy_kj_kg: point.enthalpy_kj_kg,
-            enthalpy: point.enthalpy,
-            H: point.H,
-            h: point.h,
-          });
-          console.log(`  🌀 Entropy variants:`, {
-            entropy_kj_kg_k: point.entropy_kj_kg_k,
-            entropy: point.entropy,
-            S: point.S,
-            s: point.s,
-          });
+          console.log(`  🌡️ Temperature:`, point.temperature_c);
+          console.log(`  📊 Pressure:`, point.pressure_kpa);
+          console.log(`  ⚡ Enthalpy:`, point.enthalpy_kj_kg);
+          console.log(`  🌀 Entropy:`, point.entropy_kj_kgk);
+          console.log(`  📐 Specific Volume:`, point.specific_volume_m3_kg);
           console.log(`  🔍 All Point Data:`, point);
         });
       } else {
         console.log("\n⚠️ No state_points found in response!");
+      }
+
+      // Log saturation dome data
+      if (calculationData.saturation_dome) {
+        console.log("\n🏔️ === SATURATION DOME DATA ===");
+        console.log("📈 P-h Diagram Data:", {
+          enthalpy_points: calculationData.saturation_dome.ph_diagram?.enthalpy_kj_kg?.length || 0,
+          pressure_points: calculationData.saturation_dome.ph_diagram?.pressure_kpa?.length || 0
+        });
+        console.log("📈 T-s Diagram Data:", {
+          entropy_points: calculationData.saturation_dome.ts_diagram?.entropy_kj_kgk?.length || 0,
+          temperature_points: calculationData.saturation_dome.ts_diagram?.temperature_c?.length || 0
+        });
+        console.log("📈 T-v Diagram Data:", {
+          volume_points: calculationData.saturation_dome.tv_diagram?.specific_volume_m3_kg?.length || 0,
+          temperature_points: calculationData.saturation_dome.tv_diagram?.temperature_c?.length || 0
+        });
+      } else {
+        console.log("\n⚠️ No saturation_dome found in response!");
       }
 
       // Enhanced performance analysis
