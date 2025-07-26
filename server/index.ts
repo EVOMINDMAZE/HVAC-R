@@ -23,20 +23,8 @@ import billingRoutes from "./routes/billing.ts";
 export function createServer() {
   const app = express();
 
-  // Initialize database
-  try {
-    ensureDbInitialized();
-
-    // Clean up expired sessions periodically (only if database is properly initialized)
-    setInterval(() => {
-      if (sessionDb.deleteExpired) {
-        sessionDb.deleteExpired.run();
-      }
-    }, 60 * 60 * 1000); // Every hour
-  } catch (error) {
-    console.error('Database initialization failed:', error);
-    console.log('Continuing without database functionality...');
-  }
+  // Database initialization disabled - using Supabase for all data storage
+  console.log('Using Supabase for data storage, SQLite database disabled');
 
   // Middleware
   app.use(cors({
