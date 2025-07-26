@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+</head>
+<body>
+    <h1>API Response Test</h1>
+    <button onclick="testAPI()">Test API</button>
+    <pre id="result"></pre>
+
+    <script>
+        async function testAPI() {
+            try {
+                const response = await fetch("https://simulateon-backend.onrender.com/calculate-standard", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        refrigerant: "R134a",
+                        evap_temp_c: -10,
+                        cond_temp_c: 45,
+                        superheat_c: 5,
+                        subcooling_c: 2
+                    }),
+                });
+
+                const responseText = await response.text();
+                document.getElementById('result').textContent = responseText;
+                
+                // Try to parse and show structure
+                try {
+                    const data = JSON.parse(responseText);
+                    console.log('Parsed API Response:', data);
+                    document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+                } catch (e) {
+                    console.error('Parse error:', e);
+                }
+            } catch (error) {
+                document.getElementById('result').textContent = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
