@@ -36,8 +36,7 @@ export function initializeDatabase() {
           avatar_url TEXT,
           subscription_plan TEXT DEFAULT 'free',
           subscription_status TEXT DEFAULT 'active',
-          stripe_customer_id TEXT UNIQUE,
-          stripe_subscription_id TEXT,
+
           trial_ends_at DATETIME,
           preferences TEXT DEFAULT '{}',
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
