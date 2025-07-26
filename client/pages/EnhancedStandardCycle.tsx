@@ -179,6 +179,8 @@ export function EnhancedStandardCycleContent() {
 
       const responseData = await response.json();
 
+      console.log("API Response received:", responseData);
+
       if (!response.ok || responseData.error) {
         throw new Error(
           responseData.error || `HTTP error! status: ${response.status}`,
