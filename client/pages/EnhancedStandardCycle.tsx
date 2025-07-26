@@ -413,7 +413,7 @@ export function EnhancedStandardCycleContent() {
                     className="mt-2"
                   />
                   {selectedRefrigerant && (
-                    <div className="mt-2 text-sm text-gray-600 space-y-1">
+                    <div className="mt-2 text-sm text-muted-foreground space-y-1">
                       <div>
                         <TechTerm term="safety_class">
                           <Badge variant="outline" className="mr-2">
