@@ -132,7 +132,7 @@ export function Profile() {
         }
       }
     }
-  }, [authUser]);
+  }, [authUser, subscription]);
 
   const handleSave = async () => {
     if (!authUser) {
