@@ -725,6 +725,7 @@ export function EnhancedStandardCycleContent() {
                   <CycleVisualization
                     cycleData={cycleData}
                     isAnimating={animationState.isAnimating}
+                    onAnimationToggle={toggleAnimation}
                     animationSpeed={animationState.animationSpeed}
                     currentPoint={animationState.currentPoint}
                   />
