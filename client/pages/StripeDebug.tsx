@@ -28,7 +28,8 @@ export function StripeDebug() {
 
   const testBillingAPI = async () => {
     try {
-      const response = await fetch('/api/billing/test');
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const response = await fetch(`${supabaseUrl}/functions/v1/billing/test`);
       const data = await response.json();
       console.log('Billing API test:', data);
       addTestResult(`Billing API test: ${JSON.stringify(data)}`);
