@@ -960,26 +960,91 @@ export function CycleVisualization({
               </Card>
             )}
 
+            {/* Professional Analysis */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Cycle Analysis</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {cycleData && (
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>Pressure Ratio:</span>
+                      <span className="font-mono">
+                        {cycleData.points[1] && cycleData.points[0]
+                          ? (cycleData.points[1].pressure / cycleData.points[0].pressure).toFixed(2)
+                          : "N/A"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Temperature Lift:</span>
+                      <span className="font-mono">
+                        {cycleData.points[1] && cycleData.points[0]
+                          ? `${(cycleData.points[1].temperature - cycleData.points[0].temperature).toFixed(1)}°C`
+                          : "N/A"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Cycle Type:</span>
+                      <span className="font-mono">
+                        {diagramType === "P-h" ? "Vapor Compression" : "Thermodynamic"}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
             {/* Engineering Tools */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Engineering Tools</CardTitle>
+                <CardTitle className="text-lg">Professional Tools</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <Button variant="outline" size="sm" className="w-full justify-start">
-                  📊 Export Data to Excel
+              <CardContent className="space-y-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start text-xs"
+                  onClick={() => {
+                    if (cycleData) {
+                      const csvData = cycleData.points.map((point, i) =>
+                        `Point ${i+1},${point.temperature},${point.pressure},${point.enthalpy},${point.entropy}`
+                      ).join('\n');
+                      const blob = new Blob(['Point,Temperature(°C),Pressure(kPa),Enthalpy(kJ/kg),Entropy(kJ/kg·K)\n' + csvData], { type: 'text/csv' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = `${cycleData.refrigerant}_cycle_data.csv`;
+                      a.click();
+                    }
+                  }}
+                >
+                  📊 Export to CSV
                 </Button>
-                <Button variant="outline" size="sm" className="w-full justify-start">
-                  🖨️ Print Technical Report
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start text-xs"
+                  onClick={() => {
+                    const canvas = canvasRef.current;
+                    if (canvas) {
+                      const link = document.createElement('a');
+                      link.download = `${cycleData?.refrigerant || 'cycle'}_${diagramType}_diagram.png`;
+                      link.href = canvas.toDataURL();
+                      link.click();
+                    }
+                  }}
+                >
+                  🖼️ Save Diagram
                 </Button>
-                <Button variant="outline" size="sm" className="w-full justify-start">
-                  📈 Compare with Standards
+                <Button variant="outline" size="sm" className="w-full justify-start text-xs">
+                  📋 Copy Properties
                 </Button>
-                <Button variant="outline" size="sm" className="w-full justify-start">
-                  ⚙️ System Optimization
+                <Button variant="outline" size="sm" className="w-full justify-start text-xs">
+                  📐 Measure Tool
                 </Button>
-                <Button variant="outline" size="sm" className="w-full justify-start">
-                  🧮 Component Sizing
+                <Button variant="outline" size="sm" className="w-full justify-start text-xs">
+                  🔍 Zoom to Fit
                 </Button>
               </CardContent>
             </Card>
