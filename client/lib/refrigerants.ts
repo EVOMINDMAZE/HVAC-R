@@ -355,18 +355,18 @@ export function getSuggestedOperatingRange(refrigerantId: string) {
   const refrigerant = getRefrigerantById(refrigerantId);
   if (!refrigerant) return null;
 
-  const safetyMargin = 10; // Kelvin
-  
+  const safetyMargin = 10; // Celsius
+
   return {
     evaporatorTemp: {
-      min: refrigerant.limits.minTemp - 273.15 + safetyMargin,
-      max: refrigerant.limits.normalBoilingPoint - 273.15 - safetyMargin,
-      recommended: refrigerant.limits.normalBoilingPoint - 273.15 - 20
+      min: refrigerant.limits.min_temp_c + safetyMargin,
+      max: refrigerant.limits.normal_boiling_point_c - safetyMargin,
+      recommended: refrigerant.limits.normal_boiling_point_c - 20
     },
     condenserTemp: {
-      min: refrigerant.limits.normalBoilingPoint - 273.15 + safetyMargin,
-      max: refrigerant.limits.criticalTemp - 273.15 - safetyMargin,
-      recommended: refrigerant.limits.normalBoilingPoint - 273.15 + 40
+      min: refrigerant.limits.normal_boiling_point_c + safetyMargin,
+      max: refrigerant.limits.critical_temp_c - safetyMargin,
+      recommended: refrigerant.limits.normal_boiling_point_c + 40
     }
   };
 }
