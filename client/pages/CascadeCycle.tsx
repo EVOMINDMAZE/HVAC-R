@@ -303,7 +303,7 @@ export function CascadeCycleContent() {
           name: 'Expansion Valve Outlet',
           temperature: points[3].temperature_c || points[3].temperature || 0,
           pressure: points[3].pressure_kpa || points[3].pressure || 0,
-          enthalpy: points[3].enthalpy_kj_kg || points[3].enthalhy || 0,
+          enthalpy: points[3].enthalpy_kj_kg || points[3].enthalpy || 0,
           entropy: points[3].entropy_kj_kg_k || points[3].entropy || 0,
           quality: points[3].quality,
           x: 0,
