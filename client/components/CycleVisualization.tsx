@@ -1114,6 +1114,33 @@ export function CycleVisualization({
 
           {/* Engineering Properties Panel */}
           <div className="space-y-4">
+            {/* Process Legend - Moved here for better UX */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Process Legend</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-1 gap-2">
+                  <div className="flex items-center gap-3 p-2 bg-red-50 rounded">
+                    <div className="w-6 h-2 bg-red-500 rounded"></div>
+                    <span className="text-sm font-medium">1→2: Compression</span>
+                  </div>
+                  <div className="flex items-center gap-3 p-2 bg-blue-50 rounded">
+                    <div className="w-6 h-2 bg-blue-500 rounded"></div>
+                    <span className="text-sm font-medium">2→3: Condensation</span>
+                  </div>
+                  <div className="flex items-center gap-3 p-2 bg-green-50 rounded">
+                    <div className="w-6 h-2 bg-green-500 rounded"></div>
+                    <span className="text-sm font-medium">3→4: Expansion</span>
+                  </div>
+                  <div className="flex items-center gap-3 p-2 bg-yellow-50 rounded">
+                    <div className="w-6 h-2 bg-yellow-500 rounded"></div>
+                    <span className="text-sm font-medium">4→1: Evaporation</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {selectedPointData ? (
               <Card>
                 <CardHeader>
