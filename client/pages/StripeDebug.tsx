@@ -62,7 +62,8 @@ export function StripeDebug() {
 
   const testWithoutAuth = async () => {
     try {
-      const response = await fetch('/api/billing/test-checkout', {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const response = await fetch(`${supabaseUrl}/functions/v1/billing/create-checkout-session`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
