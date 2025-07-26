@@ -632,14 +632,15 @@ export function EquipmentDiagram({
 // Props interface for cycle data
 interface CycleData {
   points: Array<{
-    temperature_c: number;
-    pressure_kpa: number;
-    enthalpy_kj_kg: number;
-    entropy_kj_kg_k: number;
-    density_kg_m3: number;
+    temperature: number;
+    pressure: number;
+    enthalpy: number;
+    entropy: number;
     quality?: number;
-    label: string;
-    description: string;
+    name: string;
+    id: string;
+    x: number;
+    y: number;
   }>;
   refrigerant: string;
   cycleType: "standard" | "cascade-low" | "cascade-high";
