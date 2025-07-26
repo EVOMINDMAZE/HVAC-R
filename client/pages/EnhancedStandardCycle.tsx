@@ -293,186 +293,214 @@ export function EnhancedStandardCycleContent() {
     return `${value.toFixed(decimals)} ${unit}`;
   };
 
-  // Enhanced helper function with comprehensive CoolProp property name fallbacks
+  // Comprehensive property extraction with enhanced CoolProp compatibility
   const getPropertyValue = (
     obj: StatePoint | undefined,
     propertyNames: string[],
   ): number | undefined => {
-    if (!obj) return undefined;
+    if (!obj) {
+      console.log('getPropertyValue: No object provided');
+      return undefined;
+    }
 
-    // Common CoolProp property naming conventions
+    console.log(`getPropertyValue: Searching for [${propertyNames.join(', ')}] in:`, Object.keys(obj));
+
+    // Comprehensive CoolProp property mapping with all known variations
     const propertyMap: Record<string, string[]> = {
       temperature: [
-        "temp_c",
-        "temperature_c",
-        "temperature",
-        "T",
-        "T_K",
-        "temp",
-        "temp_celsius",
+        "temp_c", "temperature_c", "temperature", "temp", "temp_celsius",
+        "T", "T_K", "T_C", "Temp", "Temperature", "TEMP",
+        "t", "t_c", "temp_k", "temperature_k"
       ],
       pressure: [
-        "pressure_kpa",
-        "pressure",
-        "P",
-        "P_Pa",
-        "press",
-        "pressure_pa",
-        "pressure_bar",
+        "pressure_kpa", "pressure", "pressure_pa", "pressure_bar", "press",
+        "P", "P_Pa", "P_kPa", "P_bar", "Pressure", "PRESSURE",
+        "p", "p_pa", "p_kpa", "p_bar", "pressure_mpa", "P_MPa"
       ],
       enthalpy: [
-        "enthalpy_kj_kg",
-        "enthalpy",
-        "H",
-        "h",
-        "specific_enthalpy",
-        "enthalpy_specific",
+        "enthalpy_kj_kg", "enthalpy", "specific_enthalpy", "enthalpy_specific",
+        "H", "h", "Enthalpy", "ENTHALPY", "h_kj_kg", "H_kJ_kg",
+        "enthalpy_j_kg", "H_J_kg", "specific_h", "h_specific"
       ],
       entropy: [
-        "entropy_kj_kg_k",
-        "entropy",
-        "S",
-        "s",
-        "specific_entropy",
-        "entropy_specific",
+        "entropy_kj_kg_k", "entropy", "specific_entropy", "entropy_specific",
+        "S", "s", "Entropy", "ENTROPY", "s_kj_kg_k", "S_kJ_kg_K",
+        "entropy_j_kg_k", "S_J_kg_K", "specific_s", "s_specific"
       ],
       density: [
-        "density_kg_m3",
-        "density",
-        "D",
-        "rho",
-        "specific_volume",
-        "volume_specific",
+        "density_kg_m3", "density", "rho", "specific_volume", "volume_specific",
+        "D", "d", "Density", "DENSITY", "rho_kg_m3", "D_kg_m3",
+        "density_g_l", "rho_g_L", "vol_specific", "v_specific"
       ],
       quality: [
-        "vapor_quality",
-        "quality",
-        "Q",
-        "x",
-        "dryness_fraction",
-        "vapor_fraction",
+        "vapor_quality", "quality", "dryness_fraction", "vapor_fraction",
+        "Q", "x", "X", "Quality", "QUALITY", "q", "dryness",
+        "vapor_frac", "vap_quality", "steam_quality", "x_vapor"
       ],
     };
 
-    // First try the provided property names
+    // Step 1: Try exact matches first
     for (const name of propertyNames) {
       const value = obj[name];
-      if (value !== undefined && value !== null && !isNaN(value)) {
-        console.log(`Found value for ${name}:`, value);
-        return value;
+      if (value !== undefined && value !== null && !isNaN(Number(value))) {
+        const numValue = Number(value);
+        console.log(`✓ Found exact match ${name}:`, numValue);
+        return numValue;
       }
     }
 
-    // Then try all possible variations based on the first property name
-    const primaryProperty = propertyNames[0];
-    const baseProperty = primaryProperty.split("_")[0]; // Get base name (e.g., 'temp' from 'temp_c')
+    // Step 2: Try property map variations
+    for (const primaryProperty of propertyNames) {
+      // Find property type by checking against map keys
+      for (const [propertyType, variations] of Object.entries(propertyMap)) {
+        if (primaryProperty.toLowerCase().includes(propertyType.toLowerCase()) ||
+            primaryProperty.toLowerCase().includes(propertyType.substring(0, 4).toLowerCase())) {
 
-    // Check if we have extended mappings for this property type
-    for (const [key, variations] of Object.entries(propertyMap)) {
-      if (primaryProperty.includes(key) || baseProperty.includes(key)) {
-        for (const variation of variations) {
-          const value = obj[variation];
-          if (value !== undefined && value !== null && !isNaN(value)) {
-            console.log(
-              `Found value for ${variation} (fallback for ${primaryProperty}):`,
-              value,
-            );
-            return value;
+          console.log(`Searching ${propertyType} variations for ${primaryProperty}:`, variations);
+
+          for (const variation of variations) {
+            const value = obj[variation];
+            if (value !== undefined && value !== null && !isNaN(Number(value))) {
+              const numValue = Number(value);
+              console.log(`✓ Found fallback ${variation} for ${primaryProperty}:`, numValue);
+              return numValue;
+            }
           }
         }
       }
     }
 
-    console.log(
-      `No value found for any variation of ${propertyNames[0]} in object:`,
-      Object.keys(obj),
-    );
+    // Step 3: Case-insensitive fallback
+    const objKeys = Object.keys(obj);
+    for (const primaryProperty of propertyNames) {
+      const lowerPrimary = primaryProperty.toLowerCase();
+      for (const key of objKeys) {
+        if (key.toLowerCase() === lowerPrimary ||
+            key.toLowerCase().includes(lowerPrimary.split('_')[0])) {
+          const value = obj[key];
+          if (value !== undefined && value !== null && !isNaN(Number(value))) {
+            const numValue = Number(value);
+            console.log(`✓ Found case-insensitive match ${key} for ${primaryProperty}:`, numValue);
+            return numValue;
+          }
+        }
+      }
+    }
+
+    console.log(`❌ No value found for any variation of [${propertyNames.join(', ')}]`);
+    console.log('Available keys:', objKeys);
+    console.log('Object values:', obj);
     return undefined;
   };
 
-  // Helper function for performance metrics with comprehensive fallbacks
+  // Enhanced performance metrics extraction with comprehensive CoolProp mapping
   const getPerformanceValue = (
     performanceObj: any,
     propertyNames: string[],
   ): number | undefined => {
-    if (!performanceObj) return undefined;
+    if (!performanceObj) {
+      console.log('getPerformanceValue: No performance object provided');
+      return undefined;
+    }
 
-    // Common performance metric naming conventions
+    console.log(`getPerformanceValue: Searching for [${propertyNames.join(', ')}] in:`, Object.keys(performanceObj));
+
+    // Comprehensive performance metric mapping for CoolProp and various backends
     const performanceMap: Record<string, string[]> = {
       cop: [
-        "cop",
-        "COP",
-        "coefficient_of_performance",
-        "performance_coefficient",
+        "cop", "COP", "Cop", "coefficient_of_performance", "performance_coefficient",
+        "coeff_of_performance", "coefficient_performance", "cop_cooling", "COP_cooling",
+        "cooling_cop", "refrigeration_cop", "efficiency_cooling"
       ],
       cooling_capacity: [
-        "cooling_capacity_kw",
-        "cooling_capacity",
-        "capacity",
-        "Q_evap",
-        "evaporator_load",
-        "refrigeration_effect_kw",
+        "cooling_capacity_kw", "cooling_capacity", "capacity", "capacity_kw",
+        "Q_evap", "Q_evaporator", "evaporator_load", "refrigeration_effect_kw",
+        "refrigeration_capacity", "cooling_load", "evap_capacity", "q_evap_kw",
+        "cooling_power", "refrigeration_effect", "evaporator_capacity"
       ],
       compressor_work: [
-        "compressor_work_kw",
-        "compressor_work",
-        "work",
-        "W_comp",
-        "work_input",
-        "work_of_compression_kj_kg",
+        "compressor_work_kw", "compressor_work", "work", "work_kw", "power",
+        "W_comp", "W_compressor", "work_input", "power_input", "compressor_power",
+        "work_of_compression_kj_kg", "compression_work", "work_compression",
+        "compressor_power_kw", "input_power", "mechanical_power"
       ],
       heat_rejection: [
-        "heat_rejection_kw",
-        "heat_rejection",
-        "Q_cond",
-        "condenser_load",
-        "heat_rejected",
+        "heat_rejection_kw", "heat_rejection", "Q_cond", "Q_condenser",
+        "condenser_load", "heat_rejected", "condensing_capacity", "rejection_heat",
+        "condenser_capacity", "q_cond_kw", "heat_rejected_kw", "condensation_heat"
       ],
       mass_flow_rate: [
-        "mass_flow_rate_kg_s",
-        "mass_flow_rate",
-        "mdot",
-        "flow_rate",
-        "mass_flow",
+        "mass_flow_rate_kg_s", "mass_flow_rate", "mdot", "m_dot", "mass_flow",
+        "flow_rate", "mass_flow_kg_s", "refrigerant_flow_rate", "flow_rate_mass",
+        "mass_rate", "kg_per_s", "mass_flux", "circulation_rate"
       ],
       volumetric_flow_rate: [
-        "volumetric_flow_rate_m3_s",
-        "volumetric_flow_rate",
-        "volume_flow",
-        "V_dot",
+        "volumetric_flow_rate_m3_s", "volumetric_flow_rate", "volume_flow",
+        "V_dot", "v_dot", "volumetric_flow", "volume_flow_rate", "vol_flow_rate",
+        "suction_volume_flow", "displacement", "volume_rate", "m3_per_s"
       ],
+      refrigeration_effect: [
+        "refrigeration_effect_kj_kg", "refrigeration_effect", "specific_cooling",
+        "cooling_effect", "evap_effect", "specific_refrigeration_effect",
+        "cooling_per_kg", "refrigerant_effect", "evaporator_effect"
+      ]
     };
 
-    // First try the provided property names
+    // Step 1: Direct property name matches
     for (const name of propertyNames) {
       const value = performanceObj[name];
-      if (value !== undefined && value !== null && !isNaN(value)) {
-        console.log(`Found performance value for ${name}:`, value);
-        return value;
+      if (value !== undefined && value !== null && !isNaN(Number(value))) {
+        const numValue = Number(value);
+        console.log(`✓ Found exact performance match ${name}:`, numValue);
+        return numValue;
       }
     }
 
-    // Then try all possible variations
-    const primaryProperty = propertyNames[0];
-    for (const [key, variations] of Object.entries(performanceMap)) {
-      if (primaryProperty.includes(key)) {
-        for (const variation of variations) {
-          const value = performanceObj[variation];
-          if (value !== undefined && value !== null && !isNaN(value)) {
-            console.log(
-              `Found performance value for ${variation} (fallback for ${primaryProperty}):`,
-              value,
-            );
-            return value;
+    // Step 2: Property map variations with better matching
+    for (const primaryProperty of propertyNames) {
+      for (const [propertyType, variations] of Object.entries(performanceMap)) {
+        // More flexible matching logic
+        const lowerPrimary = primaryProperty.toLowerCase();
+        if (lowerPrimary.includes(propertyType.toLowerCase()) ||
+            propertyType.toLowerCase().includes(lowerPrimary.split('_')[0]) ||
+            lowerPrimary.includes(propertyType.split('_')[0])) {
+
+          console.log(`Searching ${propertyType} variations for ${primaryProperty}:`, variations);
+
+          for (const variation of variations) {
+            const value = performanceObj[variation];
+            if (value !== undefined && value !== null && !isNaN(Number(value))) {
+              const numValue = Number(value);
+              console.log(`✓ Found performance fallback ${variation} for ${primaryProperty}:`, numValue);
+              return numValue;
+            }
           }
         }
       }
     }
 
-    console.log(
-      `No performance value found for any variation of ${propertyNames[0]} in object:`,
-      Object.keys(performanceObj),
-    );
+    // Step 3: Case-insensitive and partial matching
+    const perfKeys = Object.keys(performanceObj);
+    for (const primaryProperty of propertyNames) {
+      const lowerPrimary = primaryProperty.toLowerCase();
+      for (const key of perfKeys) {
+        const lowerKey = key.toLowerCase();
+        if (lowerKey === lowerPrimary ||
+            lowerKey.includes(lowerPrimary.split('_')[0]) ||
+            lowerPrimary.includes(lowerKey.split('_')[0])) {
+          const value = performanceObj[key];
+          if (value !== undefined && value !== null && !isNaN(Number(value))) {
+            const numValue = Number(value);
+            console.log(`✓ Found case-insensitive performance match ${key} for ${primaryProperty}:`, numValue);
+            return numValue;
+          }
+        }
+      }
+    }
+
+    console.log(`❌ No performance value found for any variation of [${propertyNames.join(', ')}]`);
+    console.log('Available performance keys:', perfKeys);
+    console.log('Performance object:', performanceObj);
     return undefined;
   };
 
