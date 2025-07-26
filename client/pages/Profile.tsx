@@ -99,9 +99,13 @@ export function Profile() {
 
   const [user, setUser] = useState(initialUser);
 
-  // Update local state when auth user changes
+  // Update local state when auth user or subscription changes
   useEffect(() => {
     if (authUser) {
+      const plan = subscription?.plan || 'free';
+      const planDisplayName = plan.charAt(0).toUpperCase() + plan.slice(1).replace('_', ' ');
+      const isUnlimited = plan !== 'free';
+
       setUser({
         id: authUser.id,
         firstName: authUser.user_metadata?.first_name || authUser.email?.split('@')[0] || "User",
@@ -113,9 +117,9 @@ export function Profile() {
         location: authUser.user_metadata?.location || "",
         avatar: authUser.user_metadata?.avatar_url || "",
         joinedDate: authUser.created_at?.split('T')[0] || "2024-01-01",
-        plan: "Free",
-        calculationsUsed: 0,
-        calculationsLimit: 10
+        plan: planDisplayName,
+        calculationsUsed: 0, // This will be updated with real data
+        calculationsLimit: isUnlimited ? -1 : 10
       });
 
       // Load preferences from user metadata
