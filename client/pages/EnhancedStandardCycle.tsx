@@ -62,7 +62,8 @@ interface CycleAnimationState {
   animationSpeed: number;
 }
 
-export function EnhancedStandardCycle() {
+// Content-only version for embedding in other pages
+export function EnhancedStandardCycleContent() {
   const [formData, setFormData] = useState({
     refrigerant: 'R134a',
     evap_temp_c: -10,
