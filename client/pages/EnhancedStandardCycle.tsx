@@ -369,7 +369,20 @@ export function EnhancedStandardCycleContent() {
 
                 {error && (
                   <Alert variant="destructive">
-                    <AlertDescription>{error}</AlertDescription>
+                    <AlertDescription>
+                      {error}
+                      {error.includes('blend refrigerant') && (
+                        <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded">
+                          <strong className="text-blue-800">Suggestions:</strong>
+                          <ul className="mt-1 ml-4 list-disc text-sm text-blue-700">
+                            <li>Try increasing superheat to 10°C or higher</li>
+                            <li>Try increasing subcooling to 5°C or higher</li>
+                            <li>Consider using pure refrigerants like R134a, R32, R290, or R744</li>
+                            <li>Adjust evaporator/condenser temperatures to avoid two-phase conditions</li>
+                          </ul>
+                        </div>
+                      )}
+                    </AlertDescription>
                   </Alert>
                 )}
 
