@@ -995,18 +995,37 @@ export function CycleVisualization({
     const clickX = (event.clientX - rect.left) * scaleX;
     const clickY = (event.clientY - rect.top) * scaleY;
 
-    const margin = 100; // Updated margin for new canvas size
+    const margin = 120; // Updated margin for new canvas size
+    const plotWidth = canvas.width - 2 * margin;
+    const plotHeight = canvas.height - 2 * margin;
+    const config = DIAGRAM_CONFIGS[diagramType];
 
-    // Check if click is near any point
-    cycleData.points.forEach((point) => {
+    // Calculate proper coordinates for click detection
+    const pointsWithCoords = calculateCoordinates(
+      cycleData.points,
+      config,
+      plotWidth,
+      plotHeight,
+    );
+
+    console.log('Click detection:', {
+      clickX, clickY,
+      pointsWithCoords: pointsWithCoords.map(p => ({ id: p.id, x: margin + p.x, y: margin + p.y }))
+    });
+
+    // Check if click is near any point using calculated coordinates
+    pointsWithCoords.forEach((point) => {
       const pointX = margin + point.x;
       const pointY = margin + point.y;
       const distance = Math.sqrt(
         (clickX - pointX) ** 2 + (clickY - pointY) ** 2,
       );
 
-      if (distance < 25) {
+      console.log(`Point ${point.id} distance:`, distance);
+
+      if (distance < 40) {
         // Increased click radius for better UX
+        console.log(`Selecting point ${point.id}`);
         setSelectedPoint(selectedPoint === point.id ? null : point.id);
       }
     });
