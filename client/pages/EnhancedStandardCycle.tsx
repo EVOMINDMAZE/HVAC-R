@@ -34,6 +34,7 @@ import {
 import { EnhancedRefrigerantSelector } from "../components/EnhancedRefrigerantSelector";
 import { CycleVisualization } from "../components/CycleVisualization";
 import { EquipmentDiagrams } from "../components/EquipmentDiagrams";
+import { TechnicalTooltip, TechTerm } from "../components/TechnicalTooltip";
 import {
   RefrigerantProperties,
   validateCycleConditions,
