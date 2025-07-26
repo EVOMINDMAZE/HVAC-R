@@ -232,6 +232,62 @@ export function CycleVisualization({
     );
   };
 
+  const drawGrid = (
+    ctx: CanvasRenderingContext2D,
+    margin: number,
+    plotWidth: number,
+    plotHeight: number,
+  ) => {
+    // Major grid lines
+    ctx.strokeStyle = "#e5e7eb";
+    ctx.lineWidth = 1;
+    ctx.setLineDash([]);
+
+    const gridLines = 10;
+
+    // Vertical grid lines
+    for (let i = 0; i <= gridLines; i++) {
+      const x = margin + (plotWidth * i) / gridLines;
+      ctx.beginPath();
+      ctx.moveTo(x, margin);
+      ctx.lineTo(x, margin + plotHeight);
+      ctx.stroke();
+    }
+
+    // Horizontal grid lines
+    for (let i = 0; i <= gridLines; i++) {
+      const y = margin + (plotHeight * i) / gridLines;
+      ctx.beginPath();
+      ctx.moveTo(margin, y);
+      ctx.lineTo(margin + plotWidth, y);
+      ctx.stroke();
+    }
+
+    // Minor grid lines
+    ctx.strokeStyle = "#f3f4f6";
+    ctx.lineWidth = 0.5;
+
+    const minorGridLines = 50;
+
+    // Vertical minor grid
+    for (let i = 0; i <= minorGridLines; i++) {
+      const x = margin + (plotWidth * i) / minorGridLines;
+      ctx.beginPath();
+      ctx.moveTo(x, margin);
+      ctx.lineTo(x, margin + plotHeight);
+      ctx.stroke();
+    }
+
+    // Horizontal minor grid
+    for (let i = 0; i <= minorGridLines; i++) {
+      const y = margin + (plotHeight * i) / minorGridLines;
+      ctx.beginPath();
+      ctx.moveTo(margin, y);
+      ctx.lineTo(margin + plotWidth, y);
+      ctx.stroke();
+    }
+  };
+
   const drawAxes = (
     ctx: CanvasRenderingContext2D,
     margin: number,
@@ -239,8 +295,13 @@ export function CycleVisualization({
     plotHeight: number,
     config: DiagramConfig,
   ) => {
-    ctx.strokeStyle = "#374151";
-    ctx.lineWidth = 2;
+    // Draw grid first
+    drawGrid(ctx, margin, plotWidth, plotHeight);
+
+    // Main axes with enhanced styling
+    ctx.strokeStyle = "#1f2937";
+    ctx.lineWidth = 3;
+    ctx.setLineDash([]);
 
     // X-axis
     ctx.beginPath();
@@ -254,21 +315,70 @@ export function CycleVisualization({
     ctx.lineTo(margin, margin + plotHeight);
     ctx.stroke();
 
-    // Labels
-    ctx.fillStyle = "#374151";
-    ctx.font = "14px Inter, sans-serif";
+    // Enhanced axis labels
+    ctx.fillStyle = "#1f2937";
+    ctx.font = "bold 16px 'Inter', -apple-system, BlinkMacSystemFont, sans-serif";
     ctx.textAlign = "center";
+
+    // X-axis label
     ctx.fillText(
       `${config.xAxis.label} (${config.xAxis.unit})`,
       margin + plotWidth / 2,
-      margin + plotHeight + 40,
+      margin + plotHeight + 50,
     );
 
+    // Y-axis label
     ctx.save();
-    ctx.translate(20, margin + plotHeight / 2);
+    ctx.translate(25, margin + plotHeight / 2);
     ctx.rotate(-Math.PI / 2);
     ctx.fillText(`${config.yAxis.label} (${config.yAxis.unit})`, 0, 0);
     ctx.restore();
+
+    // Add axis tick marks and values
+    drawAxisTicks(ctx, margin, plotWidth, plotHeight, config);
+  };
+
+  const drawAxisTicks = (
+    ctx: CanvasRenderingContext2D,
+    margin: number,
+    plotWidth: number,
+    plotHeight: number,
+    config: DiagramConfig,
+  ) => {
+    ctx.strokeStyle = "#374151";
+    ctx.lineWidth = 2;
+    ctx.fillStyle = "#374151";
+    ctx.font = "12px 'Inter', sans-serif";
+    ctx.textAlign = "center";
+
+    const numTicks = 5;
+
+    // X-axis ticks
+    for (let i = 0; i <= numTicks; i++) {
+      const x = margin + (plotWidth * i) / numTicks;
+      ctx.beginPath();
+      ctx.moveTo(x, margin + plotHeight);
+      ctx.lineTo(x, margin + plotHeight + 8);
+      ctx.stroke();
+
+      // Tick labels (simplified)
+      const value = (i / numTicks * 100).toFixed(0);
+      ctx.fillText(value, x, margin + plotHeight + 25);
+    }
+
+    // Y-axis ticks
+    ctx.textAlign = "right";
+    for (let i = 0; i <= numTicks; i++) {
+      const y = margin + plotHeight - (plotHeight * i) / numTicks;
+      ctx.beginPath();
+      ctx.moveTo(margin - 8, y);
+      ctx.lineTo(margin, y);
+      ctx.stroke();
+
+      // Tick labels (simplified)
+      const value = (i / numTicks * 100).toFixed(0);
+      ctx.fillText(value, margin - 12, y + 4);
+    }
   };
 
   const drawSaturationDome = (
