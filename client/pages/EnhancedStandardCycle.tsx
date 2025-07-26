@@ -334,6 +334,47 @@ export function EnhancedStandardCycleContent() {
     return undefined;
   };
 
+  // Helper function for performance metrics with comprehensive fallbacks
+  const getPerformanceValue = (performanceObj: any, propertyNames: string[]): number | undefined => {
+    if (!performanceObj) return undefined;
+
+    // Common performance metric naming conventions
+    const performanceMap: Record<string, string[]> = {
+      cop: ["cop", "COP", "coefficient_of_performance", "performance_coefficient"],
+      cooling_capacity: ["cooling_capacity_kw", "cooling_capacity", "capacity", "Q_evap", "evaporator_load", "refrigeration_effect_kw"],
+      compressor_work: ["compressor_work_kw", "compressor_work", "work", "W_comp", "work_input", "work_of_compression_kj_kg"],
+      heat_rejection: ["heat_rejection_kw", "heat_rejection", "Q_cond", "condenser_load", "heat_rejected"],
+      mass_flow_rate: ["mass_flow_rate_kg_s", "mass_flow_rate", "mdot", "flow_rate", "mass_flow"],
+      volumetric_flow_rate: ["volumetric_flow_rate_m3_s", "volumetric_flow_rate", "volume_flow", "V_dot"]
+    };
+
+    // First try the provided property names
+    for (const name of propertyNames) {
+      const value = performanceObj[name];
+      if (value !== undefined && value !== null && !isNaN(value)) {
+        console.log(`Found performance value for ${name}:`, value);
+        return value;
+      }
+    }
+
+    // Then try all possible variations
+    const primaryProperty = propertyNames[0];
+    for (const [key, variations] of Object.entries(performanceMap)) {
+      if (primaryProperty.includes(key)) {
+        for (const variation of variations) {
+          const value = performanceObj[variation];
+          if (value !== undefined && value !== null && !isNaN(value)) {
+            console.log(`Found performance value for ${variation} (fallback for ${primaryProperty}):`, value);
+            return value;
+          }
+        }
+      }
+    }
+
+    console.log(`No performance value found for any variation of ${propertyNames[0]} in object:`, Object.keys(performanceObj));
+    return undefined;
+  };
+
   const cycleData = results
     ? {
         points: [
