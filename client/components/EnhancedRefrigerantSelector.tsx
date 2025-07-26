@@ -57,13 +57,15 @@ export function EnhancedRefrigerantSelector({
   const selectedRefrigerant = REFRIGERANT_DATABASE.find(ref => ref.id === value);
 
   // Filter refrigerants based on search and category
-  const filteredRefrigerants = REFRIGERANT_DATABASE.filter(ref => {
-    const matchesSearch = ref.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         ref.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         ref.id.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || ref.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const filteredRefrigerants = React.useMemo(() => {
+    let results = searchTerm ? searchRefrigerants(searchTerm) : getRefrigerantsByPopularity();
+
+    if (selectedCategory !== 'all') {
+      results = results.filter(ref => ref.category === selectedCategory);
+    }
+
+    return results;
+  }, [searchTerm, selectedCategory]);
 
   // Validate operating conditions when they change
   useEffect(() => {
