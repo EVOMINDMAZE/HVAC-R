@@ -121,7 +121,7 @@ export function CascadeCycleContent() {
         const cycleData = updatedData[cycle];
         const refProps = getRefrigerantById(cycleData.refrigerant);
         if (refProps) {
-          const warnings = validateOperatingConditions(refProps, {
+          const warnings = validateCycleConditions(refProps, {
             evaporatorTemp: cycleData.evaporatorTemp,
             condenserTemp: cycleData.condenserTemp,
             superheat: cycleData.superheat,
