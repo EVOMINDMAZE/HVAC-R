@@ -43,6 +43,13 @@ export function useSubscription() {
       }
 
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+
+      if (!supabaseUrl || supabaseUrl === 'your-supabase-project-url') {
+        setSubscription({ subscription: null, plan: 'free', status: 'active' });
+        setLoading(false);
+        return;
+      }
+
       const response = await fetch(`${supabaseUrl}/functions/v1/billing/subscription`, {
         headers: {
           'Authorization': `Bearer ${token}`,
