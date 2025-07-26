@@ -605,9 +605,11 @@ export function EnhancedStandardCycleContent() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Real-time Validation</CardTitle>
+                <CardTitle>
+                  <TechTerm term="coolprop_support">Real-time Validation</TechTerm>
+                </CardTitle>
                 <CardDescription>
-                  CoolProp integration and property verification
+                  Thermodynamic property verification and operating condition checks
                 </CardDescription>
               </CardHeader>
               <CardContent>
