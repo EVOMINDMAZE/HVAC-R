@@ -180,6 +180,19 @@ export function Pricing() {
       }
 
       console.log('Attempting to create checkout session with priceId:', priceId);
+
+      // Check if Supabase is configured
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      if (!supabaseUrl || supabaseUrl === 'your-supabase-project-url') {
+        // Demo mode - show what would happen
+        addToast({
+          type: 'info',
+          title: 'Demo Mode',
+          description: `Would upgrade to ${planName} plan with price ID: ${priceId.substring(0, 20)}... Please configure Supabase Edge Functions to complete setup.`
+        });
+        return;
+      }
+
       await createCheckoutSession(priceId);
     } catch (error: any) {
       console.error('Subscription error:', error);
