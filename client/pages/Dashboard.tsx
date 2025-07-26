@@ -146,10 +146,16 @@ function QuickStats() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-orange-100 text-sm">Current Plan</p>
-                <p className="text-xl font-bold capitalize">Free</p>
-                <p className="text-orange-200 text-xs mt-1">Click to upgrade</p>
+                <p className="text-xl font-bold">{stats.subscription.plan}</p>
+                <p className="text-orange-200 text-xs mt-1">
+                  {plan === 'free' ? 'Click to upgrade' : 'Manage subscription'}
+                </p>
               </div>
-              <BarChart3 className="h-8 w-8 text-orange-200" />
+              {plan === 'free' ? (
+                <BarChart3 className="h-8 w-8 text-orange-200" />
+              ) : (
+                <Crown className="h-8 w-8 text-orange-200" />
+              )}
             </div>
           </CardContent>
         </Card>
