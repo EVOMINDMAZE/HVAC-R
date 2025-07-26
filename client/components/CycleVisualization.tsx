@@ -468,8 +468,8 @@ export function CycleVisualization({
     ctx.fillText(`${config.yAxis.label} (${config.yAxis.unit})`, 0, 0);
     ctx.restore();
 
-    // Add axis tick marks and values
-    drawAxisTicks(ctx, margin, plotWidth, plotHeight, config);
+    // Add axis tick marks and values with real thermodynamic data
+    drawAxisTicks(ctx, margin, plotWidth, plotHeight, config, pointsWithCoords);
   };
 
   const drawAxisTicks = (
