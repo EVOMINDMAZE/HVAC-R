@@ -217,7 +217,20 @@ export function RefrigerantComparisonContent() {
         description: `Successfully compared ${formData.refrigerants.length} refrigerants`
       });
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Comparison failed";
+      const originalMessage = err instanceof Error ? err.message : "Comparison failed";
+      let errorMessage = originalMessage;
+
+      // Handle specific CoolProp errors
+      if (originalMessage.includes('Two-phase inputs not supported for pseudo-pure')) {
+        errorMessage =
+          'CoolProp limitation: Some selected refrigerants are blends and two-phase calculations are not supported. ' +
+          'Try using pure refrigerants (R134a, R32, R290, R744) or increase superheat/subcooling values.';
+      } else if (originalMessage.includes('PropsSI')) {
+        errorMessage =
+          'CoolProp calculation error: The specified operating conditions may be outside the valid range for some refrigerants. ' +
+          'Please check your temperature and pressure values.';
+      }
+
       setError(errorMessage);
       addToast({
         type: 'error',
