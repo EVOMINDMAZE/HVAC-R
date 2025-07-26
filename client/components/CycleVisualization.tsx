@@ -127,7 +127,7 @@ export function CycleVisualization({
     if (!ctx) return;
 
     drawCycle(ctx, canvas.width, canvas.height);
-  }, [cycleData, animationFrame, selectedPoint]);
+  }, [cycleData, animationFrame, selectedPoint, diagramType]);
 
   const drawCycle = (
     ctx: CanvasRenderingContext2D,
