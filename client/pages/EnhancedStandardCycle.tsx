@@ -622,3 +622,8 @@ export function EnhancedStandardCycleContent() {
     </div>
   );
 }
+
+// Standalone page version with header and footer
+export function EnhancedStandardCycle() {
+  return <EnhancedStandardCycleContent />;
+}
