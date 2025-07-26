@@ -179,7 +179,10 @@ export function EnhancedStandardCycleContent() {
 
       const responseData = await response.json();
 
-      console.log("=== FULL API RESPONSE ===");
+      console.log("\n✨ === ENHANCED API RESPONSE ANALYSIS ===");
+      console.log("📊 Response Status:", response.status, response.statusText);
+      console.log("📎 Content-Type:", response.headers.get('content-type'));
+      console.log("📦 Full Response Structure:");
       console.log(JSON.stringify(responseData, null, 2));
 
       if (!response.ok || responseData.error) {
@@ -188,49 +191,133 @@ export function EnhancedStandardCycleContent() {
         );
       }
 
-      // Handle response format - could be direct data or wrapped in data property
+      // Enhanced response format handling
       const calculationData = responseData.data || responseData;
 
-      console.log("=== CALCULATION DATA ===");
+      console.log("\n⚙️ === PROCESSING CALCULATION DATA ===");
+      console.log("🔍 Data Structure Type:", typeof calculationData);
+      console.log("📝 Top-level Keys:", Object.keys(calculationData || {}));
+      console.log("🔄 Processed Data:");
       console.log(JSON.stringify(calculationData, null, 2));
 
-      // Log detailed structure for debugging
+      // Enhanced state points analysis
       if (calculationData.state_points) {
-        console.log("=== STATE POINTS ANALYSIS ===");
+        console.log("\n🔥 === DETAILED STATE POINTS ANALYSIS ===");
+        console.log("📊 Total State Points:", Object.keys(calculationData.state_points).length);
+
         Object.keys(calculationData.state_points).forEach((key) => {
           const point = calculationData.state_points[key];
-          console.log(`${key}:`, point);
-          console.log(`  Properties available:`, Object.keys(point));
-          console.log(`  Sample values:`, {
+          console.log(`\n🔸 ${key.toUpperCase()}:`);
+          console.log(`  🔑 Available Properties (${Object.keys(point).length}):`, Object.keys(point));
+          console.log(`  🌡️ Temperature variants:`, {
             temp_c: point.temp_c,
             temperature_c: point.temperature_c,
+            temperature: point.temperature,
+            T: point.T,
+            t: point.t
+          });
+          console.log(`  📊 Pressure variants:`, {
             pressure_kpa: point.pressure_kpa,
             pressure: point.pressure,
+            P: point.P,
+            p: point.p,
+            pressure_pa: point.pressure_pa
+          });
+          console.log(`  ⚡ Enthalpy variants:`, {
             enthalpy_kj_kg: point.enthalpy_kj_kg,
             enthalpy: point.enthalpy,
+            H: point.H,
+            h: point.h
           });
+          console.log(`  🌀 Entropy variants:`, {
+            entropy_kj_kg_k: point.entropy_kj_kg_k,
+            entropy: point.entropy,
+            S: point.S,
+            s: point.s
+          });
+          console.log(`  🔍 All Point Data:`, point);
         });
-      }
-      if (calculationData.performance) {
-        console.log("=== PERFORMANCE ANALYSIS ===");
-        console.log("Performance object:", calculationData.performance);
-        console.log(
-          "Performance properties:",
-          Object.keys(calculationData.performance),
-        );
+      } else {
+        console.log("\n⚠️ No state_points found in response!");
       }
 
+      // Enhanced performance analysis
+      if (calculationData.performance) {
+        console.log("\n🚀 === DETAILED PERFORMANCE ANALYSIS ===");
+        console.log("📊 Available Performance Metrics:", Object.keys(calculationData.performance).length);
+        console.log("🔑 Performance Properties:", Object.keys(calculationData.performance));
+
+        const perf = calculationData.performance;
+        console.log("🎢 COP variants:", {
+          cop: perf.cop,
+          COP: perf.COP,
+          coefficient_of_performance: perf.coefficient_of_performance
+        });
+        console.log("❄️ Cooling Capacity variants:", {
+          cooling_capacity_kw: perf.cooling_capacity_kw,
+          cooling_capacity: perf.cooling_capacity,
+          capacity: perf.capacity,
+          Q_evap: perf.Q_evap
+        });
+        console.log("⚙️ Compressor Work variants:", {
+          compressor_work_kw: perf.compressor_work_kw,
+          compressor_work: perf.compressor_work,
+          work: perf.work,
+          W_comp: perf.W_comp
+        });
+        console.log("🔍 Full Performance Object:", perf);
+      } else {
+        console.log("\n⚠️ No performance data found in response!");
+      }
+
+      // Additional validation
+      console.log("\n✅ === RESPONSE VALIDATION ===");
+      console.log("📊 State Points Valid:", !!calculationData.state_points);
+      console.log("🚀 Performance Valid:", !!calculationData.performance);
+      console.log("❄️ Refrigerant:", calculationData.refrigerant || 'Not specified');
+      console.log("🔄 Cycle Type:", calculationData.cycle_type || 'Not specified');
+
+      // Enhanced validation and result setting
       if (calculationData.state_points || calculationData.performance) {
+        console.log("\n✅ === SETTING RESULTS ===");
+        console.log("💾 Storing calculation data...");
+
         setResults(calculationData);
         setAnimationState((prev) => ({ ...prev, currentPoint: 1 }));
         setCalculationComplete(true);
-        // Auto-switch to results tab to show user the results
-        setTimeout(() => setActiveTab("results"), 500);
+
+        console.log("✨ Results set successfully!");
+        console.log("📦 Final stored data structure:", {
+          hasStatePoints: !!calculationData.state_points,
+          statePointKeys: calculationData.state_points ? Object.keys(calculationData.state_points) : [],
+          hasPerformance: !!calculationData.performance,
+          performanceKeys: calculationData.performance ? Object.keys(calculationData.performance) : [],
+          refrigerant: calculationData.refrigerant
+        });
+
+        // Auto-switch to results tab with visual feedback
+        setTimeout(() => {
+          setActiveTab("results");
+          console.log("🔄 Switched to results tab");
+        }, 500);
       } else {
-        console.log("Unexpected response format:", responseData);
-        throw new Error(
-          "Invalid response format - missing state_points or performance data",
-        );
+        console.log("\n❌ === RESPONSE VALIDATION FAILED ===");
+        console.log("⚠️ Unexpected response format:", responseData);
+        console.log("🔍 Available top-level keys:", Object.keys(responseData));
+
+        // Try to find data in alternative locations
+        const alternativeData = responseData.result || responseData.calculation || responseData.output;
+        if (alternativeData) {
+          console.log("🔄 Found alternative data location:", alternativeData);
+          setResults(alternativeData);
+          setCalculationComplete(true);
+          setTimeout(() => setActiveTab("results"), 500);
+        } else {
+          throw new Error(
+            "Invalid response format - missing state_points or performance data. Available keys: " +
+            Object.keys(responseData).join(', ')
+          );
+        }
       }
     } catch (err) {
       const errorMessage =
