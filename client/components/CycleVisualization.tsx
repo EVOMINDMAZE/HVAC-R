@@ -411,45 +411,90 @@ export function CycleVisualization({
   ) => {
     if (points.length < 4) return;
 
-    const colors = ["#ef4444", "#3b82f6", "#10b981", "#f59e0b"];
-    const processes = [
-      "Compression",
-      "Condensation",
-      "Expansion",
-      "Evaporation",
-    ];
+    const colors = ["#dc2626", "#2563eb", "#059669", "#d97706"];
+    const processNames = ["Compression", "Condensation", "Expansion", "Evaporation"];
+    const lineWidths = [5, 5, 5, 5];
+
+    // Enable anti-aliasing for smooth lines
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
 
     for (let i = 0; i < 4; i++) {
       const startPoint = points[i];
       const endPoint = points[(i + 1) % 4];
-
-      ctx.strokeStyle = colors[i];
-      ctx.lineWidth = 3;
+      const color = colors[i];
 
       // Calculate drawing progress for this line
       const lineProgress = Math.max(0, Math.min(1, (progress - i * 25) / 25));
 
       if (lineProgress > 0) {
+        // Create gradient for the line
+        const gradient = ctx.createLinearGradient(
+          margin + startPoint.x, margin + startPoint.y,
+          margin + endPoint.x, margin + endPoint.y
+        );
+        gradient.addColorStop(0, color);
+        gradient.addColorStop(1, color + "cc"); // Add transparency
+
+        // Draw shadow first
+        ctx.shadowColor = color + "40";
+        ctx.shadowBlur = 8;
+        ctx.shadowOffsetX = 2;
+        ctx.shadowOffsetY = 2;
+
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = lineWidths[i];
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+
         ctx.beginPath();
         ctx.moveTo(margin + startPoint.x, margin + startPoint.y);
 
-        // Draw partial line based on animation progress
+        // Draw smooth curves instead of straight lines
         const deltaX = endPoint.x - startPoint.x;
         const deltaY = endPoint.y - startPoint.y;
         const currentX = startPoint.x + deltaX * lineProgress;
         const currentY = startPoint.y + deltaY * lineProgress;
 
-        ctx.lineTo(margin + currentX, margin + currentY);
+        // Add bezier curves for smooth transitions
+        const controlX1 = startPoint.x + deltaX * 0.3;
+        const controlY1 = startPoint.y;
+        const controlX2 = startPoint.x + deltaX * 0.7;
+        const controlY2 = endPoint.y;
+
+        if (lineProgress === 1) {
+          ctx.bezierCurveTo(
+            margin + controlX1, margin + controlY1,
+            margin + controlX2, margin + controlY2,
+            margin + endPoint.x, margin + endPoint.y
+          );
+        } else {
+          ctx.lineTo(margin + currentX, margin + currentY);
+        }
+
         ctx.stroke();
 
-        // Add arrow at current position if animating
-        if (isAnimating && lineProgress < 1) {
-          drawArrow(
+        // Reset shadow
+        ctx.shadowColor = "transparent";
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+
+        // Add animated arrow if line is being drawn
+        if (isAnimating && lineProgress < 1 && lineProgress > 0.1) {
+          drawEnhancedArrow(
             ctx,
             margin + currentX,
             margin + currentY,
             Math.atan2(deltaY, deltaX),
+            color,
+            i
           );
+        }
+
+        // Add process label
+        if (lineProgress > 0.5) {
+          drawProcessLabel(ctx, startPoint, endPoint, margin, processNames[i], color);
         }
       }
     }
