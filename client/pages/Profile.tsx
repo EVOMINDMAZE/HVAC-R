@@ -142,7 +142,7 @@ export function Profile() {
         }
       }
     }
-  }, [authUser, subscription]);
+  }, [authUser, subscription, calculations]);
 
   const handleSave = async () => {
     if (!authUser) {
