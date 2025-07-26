@@ -39,35 +39,37 @@ import {
 } from "../lib/refrigerants";
 
 interface CalculationResults {
-  point_1: {
-    temperature_c: number;
-    pressure_kpa: number;
-    enthalpy_kj_kg: number;
-    entropy_kj_kg_k: number;
-    density_kg_m3: number;
-    quality?: number;
-  };
-  point_2: {
-    temperature_c: number;
-    pressure_kpa: number;
-    enthalpy_kj_kg: number;
-    entropy_kj_kg_k: number;
-    density_kg_m3: number;
-  };
-  point_3: {
-    temperature_c: number;
-    pressure_kpa: number;
-    enthalpy_kj_kg: number;
-    entropy_kj_kg_k: number;
-    density_kg_m3: number;
-  };
-  point_4: {
-    temperature_c: number;
-    pressure_kpa: number;
-    enthalpy_kj_kg: number;
-    entropy_kj_kg_k: number;
-    density_kg_m3: number;
-    quality?: number;
+  state_points: {
+    "1_compressor_inlet": {
+      temp_c: number;
+      pressure_kpa: number;
+      enthalpy_kj_kg: number;
+      entropy_kj_kg_k: number;
+      density_kg_m3: number;
+      vapor_quality?: number;
+    };
+    "2_compressor_outlet": {
+      temp_c: number;
+      pressure_kpa: number;
+      enthalpy_kj_kg: number;
+      entropy_kj_kg_k: number;
+      density_kg_m3: number;
+    };
+    "3_expansion_valve_inlet": {
+      temp_c: number;
+      pressure_kpa: number;
+      enthalpy_kj_kg: number;
+      entropy_kj_kg_k: number;
+      density_kg_m3: number;
+    };
+    "4_evaporator_inlet": {
+      temp_c: number;
+      pressure_kpa: number;
+      enthalpy_kj_kg: number;
+      entropy_kj_kg_k: number;
+      density_kg_m3: number;
+      vapor_quality?: number;
+    };
   };
   performance: {
     cop: number;
