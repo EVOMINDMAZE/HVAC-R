@@ -274,6 +274,19 @@ export function EnhancedStandardCycleContent() {
     return `${value.toFixed(decimals)} ${unit}`;
   };
 
+  // Helper function to safely extract property values with multiple possible names
+  const getPropertyValue = (obj: StatePoint | undefined, propertyNames: string[]): number | undefined => {
+    if (!obj) return undefined;
+
+    for (const name of propertyNames) {
+      const value = obj[name];
+      if (value !== undefined && value !== null && !isNaN(value)) {
+        return value;
+      }
+    }
+    return undefined;
+  };
+
   const cycleData = results
     ? {
         points: [
