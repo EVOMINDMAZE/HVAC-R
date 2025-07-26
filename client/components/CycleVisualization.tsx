@@ -436,6 +436,23 @@ export function CycleVisualization({
         </div>
       </CardHeader>
       <CardContent>
+        <div className="mb-4 flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            <Label htmlFor="diagram-type">Diagram Type:</Label>
+          </div>
+          <Select value={diagramType} onValueChange={(value: DiagramType) => setDiagramType(value)}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Select diagram type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="P-h">P-h (Pressure-Enthalpy)</SelectItem>
+              <SelectItem value="T-s">T-s (Temperature-Entropy)</SelectItem>
+              <SelectItem value="P-v">P-v (Pressure-Volume)</SelectItem>
+              <SelectItem value="T-v">T-v (Temperature-Volume)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Main Visualization */}
           <div className="lg:col-span-2">
