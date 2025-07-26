@@ -73,79 +73,103 @@ export function CycleVisualization({
   const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
   const [diagramType, setDiagramType] = useState<DiagramType>("P-h");
 
-  // Calculate realistic refrigeration cycle coordinates
+  // Calculate coordinates using actual thermodynamic data
   const calculateCoordinates = (points: CyclePoint[], config: DiagramConfig, plotWidth: number, plotHeight: number) => {
     if (!points || points.length === 0) return points;
 
-    // For realistic refrigeration cycles, use proper thermodynamic relationships
-    return points.map((point, index) => {
-      let x: number, y: number;
+    console.log("Calculating coordinates with real data for", diagramType);
+    console.log("Points received:", points);
 
-      if (diagramType === "P-h") {
-        // P-h diagram: Create proper refrigeration cycle shape
-        const baseEnthalpy = 200; // kJ/kg
-        const enthalpyRange = 300; // kJ/kg
-        const basePressure = 100; // kPa
-        const pressureRatio = 10; // High/Low pressure ratio
+    // Get the actual property values for scaling
+    const xValues: number[] = [];
+    const yValues: number[] = [];
 
-        switch (index) {
-          case 0: // Point 1 - Evaporator outlet (low P, medium h)
-            x = plotWidth * 0.3;
-            y = plotHeight * 0.8;
-            break;
-          case 1: // Point 2 - Compressor outlet (high P, high h)
-            x = plotWidth * 0.7;
-            y = plotHeight * 0.2;
-            break;
-          case 2: // Point 3 - Condenser outlet (high P, low h)
-            x = plotWidth * 0.2;
-            y = plotHeight * 0.2;
-            break;
-          case 3: // Point 4 - Expansion valve outlet (low P, low h)
-            x = plotWidth * 0.2;
-            y = plotHeight * 0.8;
-            break;
-          default:
-            x = plotWidth / 2;
-            y = plotHeight / 2;
-        }
-      } else if (diagramType === "T-s") {
-        // T-s diagram: Ideal cycle shape
-        switch (index) {
-          case 0: // Point 1 - Low T, medium s
-            x = plotWidth * 0.4;
-            y = plotHeight * 0.8;
-            break;
-          case 1: // Point 2 - High T, medium s (isentropic compression)
-            x = plotWidth * 0.4;
-            y = plotHeight * 0.2;
-            break;
-          case 2: // Point 3 - High T, low s
-            x = plotWidth * 0.2;
-            y = plotHeight * 0.2;
-            break;
-          case 3: // Point 4 - Low T, low s (isenthalpic expansion)
-            x = plotWidth * 0.2;
-            y = plotHeight * 0.8;
-            break;
-          default:
-            x = plotWidth / 2;
-            y = plotHeight / 2;
-        }
-      } else {
-        // For P-v and T-v diagrams, create rectangular cycles
-        const positions = [
-          { x: 0.7, y: 0.7 }, // Point 1
-          { x: 0.3, y: 0.3 }, // Point 2
-          { x: 0.3, y: 0.3 }, // Point 3
-          { x: 0.7, y: 0.7 }, // Point 4
-        ];
-        x = plotWidth * positions[index].x;
-        y = plotHeight * positions[index].y;
-      }
+    points.forEach(point => {
+      const xProp = config.xAxis.property;
+      const yProp = config.yAxis.property;
 
-      return { ...point, x, y };
+      const xVal = point[xProp] as number;
+      const yVal = point[yProp] as number;
+
+      console.log(`Point ${point.id}: ${xProp}=${xVal}, ${yProp}=${yVal}`);
+
+      if (!isNaN(xVal) && xVal !== undefined) xValues.push(xVal);
+      if (!isNaN(yVal) && yVal !== undefined) yValues.push(yVal);
     });
+
+    console.log("X values for scaling:", xValues);
+    console.log("Y values for scaling:", yValues);
+
+    // If we have valid data, use it for scaling
+    if (xValues.length > 0 && yValues.length > 0) {
+      const xMin = Math.min(...xValues);
+      const xMax = Math.max(...xValues);
+      const yMin = Math.min(...yValues);
+      const yMax = Math.max(...yValues);
+
+      console.log(`Scaling: X[${xMin} to ${xMax}], Y[${yMin} to ${yMax}]`);
+
+      // Add padding
+      const xRange = xMax - xMin || 1;
+      const yRange = yMax - yMin || 1;
+      const xPadding = xRange * 0.15;
+      const yPadding = yRange * 0.15;
+
+      return points.map(point => {
+        const xVal = point[config.xAxis.property] as number;
+        const yVal = point[config.yAxis.property] as number;
+
+        const x = !isNaN(xVal)
+          ? ((xVal - xMin + xPadding) / (xRange + 2 * xPadding)) * plotWidth
+          : plotWidth / 2;
+
+        const y = !isNaN(yVal)
+          ? plotHeight - ((yVal - yMin + yPadding) / (yRange + 2 * yPadding)) * plotHeight
+          : plotHeight / 2;
+
+        console.log(`Point ${point.id} mapped to canvas: (${x.toFixed(1)}, ${y.toFixed(1)})`);
+        return { ...point, x, y };
+      });
+    } else {
+      // Fallback to idealized positions if no valid data
+      console.log("No valid data found, using fallback positions");
+      return points.map((point, index) => {
+        let x: number, y: number;
+
+        // Create realistic cycle shapes based on typical refrigeration cycle characteristics
+        if (diagramType === "P-h") {
+          const positions = [
+            { x: 0.35, y: 0.75 }, // Point 1 - Evaporator outlet (low P, medium h)
+            { x: 0.65, y: 0.25 }, // Point 2 - Compressor outlet (high P, high h)
+            { x: 0.25, y: 0.25 }, // Point 3 - Condenser outlet (high P, low h)
+            { x: 0.25, y: 0.75 }, // Point 4 - Expansion outlet (low P, low h)
+          ];
+          x = plotWidth * positions[index].x;
+          y = plotHeight * positions[index].y;
+        } else if (diagramType === "T-s") {
+          const positions = [
+            { x: 0.4, y: 0.8 },  // Point 1 - Low T, medium s
+            { x: 0.45, y: 0.2 }, // Point 2 - High T, medium s
+            { x: 0.3, y: 0.2 },  // Point 3 - High T, low s
+            { x: 0.25, y: 0.8 }, // Point 4 - Low T, low s
+          ];
+          x = plotWidth * positions[index].x;
+          y = plotHeight * positions[index].y;
+        } else {
+          // P-v and T-v diagrams
+          const positions = [
+            { x: 0.7, y: 0.7 }, // Point 1
+            { x: 0.3, y: 0.3 }, // Point 2
+            { x: 0.3, y: 0.6 }, // Point 3
+            { x: 0.7, y: 0.6 }, // Point 4
+          ];
+          x = plotWidth * positions[index].x;
+          y = plotHeight * positions[index].y;
+        }
+
+        return { ...point, x, y };
+      });
+    }
   };
 
   // Animation loop
