@@ -498,10 +498,11 @@ export function CycleVisualization({
           <div className="lg:col-span-2">
             <canvas
               ref={canvasRef}
-              width={600}
-              height={400}
-              className="border rounded-lg cursor-pointer w-full"
+              width={1200}
+              height={800}
+              className="border rounded-lg cursor-pointer w-full shadow-lg bg-gradient-to-br from-gray-50 to-white"
               onClick={handleCanvasClick}
+              style={{ maxWidth: '100%', height: 'auto' }}
             />
             <div className="mt-2 text-sm text-gray-600">
               Click on cycle points to see detailed properties
