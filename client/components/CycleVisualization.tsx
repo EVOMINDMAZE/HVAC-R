@@ -197,17 +197,18 @@ export function CycleVisualization({
     margin: number,
     plotWidth: number,
     plotHeight: number,
+    config: DiagramConfig,
   ) => {
     ctx.strokeStyle = "#374151";
     ctx.lineWidth = 2;
 
-    // X-axis (Enthalpy)
+    // X-axis
     ctx.beginPath();
     ctx.moveTo(margin, margin + plotHeight);
     ctx.lineTo(margin + plotWidth, margin + plotHeight);
     ctx.stroke();
 
-    // Y-axis (Pressure - log scale)
+    // Y-axis
     ctx.beginPath();
     ctx.moveTo(margin, margin);
     ctx.lineTo(margin, margin + plotHeight);
@@ -218,7 +219,7 @@ export function CycleVisualization({
     ctx.font = "14px Inter, sans-serif";
     ctx.textAlign = "center";
     ctx.fillText(
-      "Enthalpy (kJ/kg)",
+      `${config.xAxis.label} (${config.xAxis.unit})`,
       margin + plotWidth / 2,
       margin + plotHeight + 40,
     );
@@ -226,7 +227,7 @@ export function CycleVisualization({
     ctx.save();
     ctx.translate(20, margin + plotHeight / 2);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText("Pressure (kPa)", 0, 0);
+    ctx.fillText(`${config.yAxis.label} (${config.yAxis.unit})`, 0, 0);
     ctx.restore();
   };
 
