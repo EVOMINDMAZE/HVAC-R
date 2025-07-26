@@ -550,6 +550,14 @@ export function validateCycleConditions(
     warnings.push(`${refrigerant.name} is not supported by CoolProp. Calculations may fail.`);
   }
 
+  // Special warnings for blend refrigerants (pseudo-pure fluids in CoolProp)
+  if (refrigerant.category === 'HFC' && (refrigerant.id.includes('407') || refrigerant.id.includes('404') || refrigerant.id.includes('448') || refrigerant.id.includes('507') || refrigerant.id.includes('410'))) {
+    warnings.push(
+      `${refrigerant.name} is a blend refrigerant. CoolProp may have limitations with two-phase calculations. ` +
+      'Consider using higher superheat (≥10°C) and subcooling (≥5°C) values to avoid calculation errors.'
+    );
+  }
+
   // Check superheat and subcooling values
   if (conditions.superheat < 0) {
     warnings.push(`Negative superheat (${conditions.superheat}°C) may indicate wet compression`);
