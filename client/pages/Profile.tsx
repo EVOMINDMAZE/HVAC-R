@@ -58,22 +58,44 @@ export function Profile() {
   });
   const [preferencesLoading, setPreferencesLoading] = useState(false);
 
-  // Initialize user state with real data when available, fallback to mock
-  const initialUser = authUser ? {
-    id: authUser.id,
-    firstName: authUser.user_metadata?.first_name || authUser.email?.split('@')[0] || "User",
-    lastName: authUser.user_metadata?.last_name || "",
-    email: authUser.email || "",
-    company: authUser.user_metadata?.company || "",
-    role: authUser.user_metadata?.role || "",
-    phone: authUser.phone || "",
-    location: authUser.user_metadata?.location || "",
-    avatar: authUser.user_metadata?.avatar_url || "",
-    joinedDate: authUser.created_at?.split('T')[0] || "2024-01-01",
-    plan: "Free",
-    calculationsUsed: 0,
-    calculationsLimit: 10
-  } : mockUser;
+  // Initialize user state with real Supabase data
+  const getInitialUser = () => {
+    if (!authUser) {
+      return {
+        id: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        company: "",
+        role: "",
+        phone: "",
+        location: "",
+        avatar: "",
+        joinedDate: "",
+        plan: "Free",
+        calculationsUsed: 0,
+        calculationsLimit: 10
+      };
+    }
+
+    return {
+      id: authUser.id,
+      firstName: authUser.user_metadata?.first_name || authUser.email?.split('@')[0] || "User",
+      lastName: authUser.user_metadata?.last_name || "",
+      email: authUser.email || "",
+      company: authUser.user_metadata?.company || "",
+      role: authUser.user_metadata?.role || "",
+      phone: authUser.phone || "",
+      location: authUser.user_metadata?.location || "",
+      avatar: authUser.user_metadata?.avatar_url || "",
+      joinedDate: authUser.created_at?.split('T')[0] || "2024-01-01",
+      plan: "Free",
+      calculationsUsed: 0,
+      calculationsLimit: 10
+    };
+  };
+
+  const initialUser = getInitialUser();
 
   const [user, setUser] = useState(initialUser);
 
