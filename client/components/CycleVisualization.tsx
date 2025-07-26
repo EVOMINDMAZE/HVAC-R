@@ -1101,9 +1101,9 @@ export function CycleVisualization({
           <div className="lg:col-span-2">
             <canvas
               ref={canvasRef}
-              width={1200}
-              height={800}
-              className="border rounded-lg cursor-pointer w-full shadow-lg bg-gradient-to-br from-gray-50 to-white"
+              width={1600}
+              height={1000}
+              className="border rounded-lg cursor-pointer w-full shadow-xl bg-gradient-to-br from-gray-50 to-white"
               onClick={handleCanvasClick}
               style={{ maxWidth: "100%", height: "auto" }}
             />
