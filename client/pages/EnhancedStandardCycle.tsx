@@ -258,92 +258,44 @@ export function EnhancedStandardCycleContent() {
           {
             id: "1",
             name: "Evaporator Outlet",
-            temperature:
-              results.point_1?.temperature_c ||
-              results.state_points?.[0]?.temperature_c ||
-              0,
-            pressure:
-              results.point_1?.pressure_kpa ||
-              results.state_points?.[0]?.pressure_kpa ||
-              0,
-            enthalpy:
-              results.point_1?.enthalpy_kj_kg ||
-              results.state_points?.[0]?.enthalpy_kj_kg ||
-              0,
-            entropy:
-              results.point_1?.entropy_kj_kg_k ||
-              results.state_points?.[0]?.entropy_kj_kg_k ||
-              0,
-            quality: results.point_1?.quality,
+            temperature: results.state_points?.["1_compressor_inlet"]?.temp_c || 0,
+            pressure: results.state_points?.["1_compressor_inlet"]?.pressure_kpa || 0,
+            enthalpy: results.state_points?.["1_compressor_inlet"]?.enthalpy_kj_kg || 0,
+            entropy: results.state_points?.["1_compressor_inlet"]?.entropy_kj_kg_k || 0,
+            quality: results.state_points?.["1_compressor_inlet"]?.vapor_quality,
             x: 0, // Will be calculated by CycleVisualization
             y: 0,
           },
           {
             id: "2",
             name: "Compressor Outlet",
-            temperature:
-              results.point_2?.temperature_c ||
-              results.state_points?.[1]?.temperature_c ||
-              0,
-            pressure:
-              results.point_2?.pressure_kpa ||
-              results.state_points?.[1]?.pressure_kpa ||
-              0,
-            enthalpy:
-              results.point_2?.enthalpy_kj_kg ||
-              results.state_points?.[1]?.enthalpy_kj_kg ||
-              0,
-            entropy:
-              results.point_2?.entropy_kj_kg_k ||
-              results.state_points?.[1]?.entropy_kj_kg_k ||
-              0,
-            quality: results.point_2?.quality,
+            temperature: results.state_points?.["2_compressor_outlet"]?.temp_c || 0,
+            pressure: results.state_points?.["2_compressor_outlet"]?.pressure_kpa || 0,
+            enthalpy: results.state_points?.["2_compressor_outlet"]?.enthalpy_kj_kg || 0,
+            entropy: results.state_points?.["2_compressor_outlet"]?.entropy_kj_kg_k || 0,
+            quality: results.state_points?.["2_compressor_outlet"]?.vapor_quality,
             x: 0,
             y: 0,
           },
           {
             id: "3",
             name: "Condenser Outlet",
-            temperature:
-              results.point_3?.temperature_c ||
-              results.state_points?.[2]?.temperature_c ||
-              0,
-            pressure:
-              results.point_3?.pressure_kpa ||
-              results.state_points?.[2]?.pressure_kpa ||
-              0,
-            enthalpy:
-              results.point_3?.enthalpy_kj_kg ||
-              results.state_points?.[2]?.enthalpy_kj_kg ||
-              0,
-            entropy:
-              results.point_3?.entropy_kj_kg_k ||
-              results.state_points?.[2]?.entropy_kj_kg_k ||
-              0,
-            quality: results.point_3?.quality,
+            temperature: results.state_points?.["3_expansion_valve_inlet"]?.temp_c || 0,
+            pressure: results.state_points?.["3_expansion_valve_inlet"]?.pressure_kpa || 0,
+            enthalpy: results.state_points?.["3_expansion_valve_inlet"]?.enthalpy_kj_kg || 0,
+            entropy: results.state_points?.["3_expansion_valve_inlet"]?.entropy_kj_kg_k || 0,
+            quality: results.state_points?.["3_expansion_valve_inlet"]?.vapor_quality,
             x: 0,
             y: 0,
           },
           {
             id: "4",
             name: "Expansion Valve Outlet",
-            temperature:
-              results.point_4?.temperature_c ||
-              results.state_points?.[3]?.temperature_c ||
-              0,
-            pressure:
-              results.point_4?.pressure_kpa ||
-              results.state_points?.[3]?.pressure_kpa ||
-              0,
-            enthalpy:
-              results.point_4?.enthalpy_kj_kg ||
-              results.state_points?.[3]?.enthalpy_kj_kg ||
-              0,
-            entropy:
-              results.point_4?.entropy_kj_kg_k ||
-              results.state_points?.[3]?.entropy_kj_kg_k ||
-              0,
-            quality: results.point_4?.quality,
+            temperature: results.state_points?.["4_evaporator_inlet"]?.temp_c || 0,
+            pressure: results.state_points?.["4_evaporator_inlet"]?.pressure_kpa || 0,
+            enthalpy: results.state_points?.["4_evaporator_inlet"]?.enthalpy_kj_kg || 0,
+            entropy: results.state_points?.["4_evaporator_inlet"]?.entropy_kj_kg_k || 0,
+            quality: results.state_points?.["4_evaporator_inlet"]?.vapor_quality,
             x: 0,
             y: 0,
           },
