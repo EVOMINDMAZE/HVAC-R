@@ -580,12 +580,12 @@ export function EnhancedStandardCycleContent() {
                       <div key={index} className="border rounded-lg p-3">
                         <div className={`font-medium text-${color}-600 mb-2`}>{label}</div>
                         <div className="grid grid-cols-2 gap-2 text-sm">
-                          <div>T: {formatValue(point.temperature_c, '°C')}</div>
-                          <div>P: {formatValue(point.pressure_kpa, 'kPa', 0)}</div>
-                          <div>h: {formatValue(point.enthalpy_kj_kg, 'kJ/kg')}</div>
-                          <div>s: {formatValue(point.entropy_kj_kg_k, 'kJ/kg·K', 3)}</div>
-                          <div>ρ: {formatValue(point.density_kg_m3, 'kg/m³')}</div>
-                          {point.quality !== undefined && (
+                          <div>T: {formatValue(point?.temperature_c, '°C')}</div>
+                          <div>P: {formatValue(point?.pressure_kpa, 'kPa', 0)}</div>
+                          <div>h: {formatValue(point?.enthalpy_kj_kg, 'kJ/kg')}</div>
+                          <div>s: {formatValue(point?.entropy_kj_kg_k, 'kJ/kg·K', 3)}</div>
+                          <div>ρ: {formatValue(point?.density_kg_m3, 'kg/m³')}</div>
+                          {point?.quality !== undefined && (
                             <div>x: {formatValue(point.quality * 100, '%')}</div>
                           )}
                         </div>
