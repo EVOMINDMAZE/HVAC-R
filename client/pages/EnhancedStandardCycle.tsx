@@ -1595,6 +1595,7 @@ export function EnhancedStandardCycleContent() {
                             <TechTerm term="entropy">s</TechTerm>:{" "}
                             {formatValue(
                               getPropertyValue(point, [
+                                "entropy_kj_kgk",
                                 "entropy_kj_kg_k",
                                 "entropy",
                               ]),
