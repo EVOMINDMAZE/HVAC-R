@@ -717,18 +717,24 @@ export function CycleVisualization({
 
     const canvas = canvasRef.current!;
     const rect = canvas.getBoundingClientRect();
-    const clickX = event.clientX - rect.left;
-    const clickY = event.clientY - rect.top;
+
+    // Scale click coordinates to canvas coordinates
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const clickX = (event.clientX - rect.left) * scaleX;
+    const clickY = (event.clientY - rect.top) * scaleY;
+
+    const margin = 100; // Updated margin for new canvas size
 
     // Check if click is near any point
     cycleData.points.forEach((point) => {
-      const pointX = 60 + point.x;
-      const pointY = 60 + point.y;
+      const pointX = margin + point.x;
+      const pointY = margin + point.y;
       const distance = Math.sqrt(
         (clickX - pointX) ** 2 + (clickY - pointY) ** 2,
       );
 
-      if (distance < 15) {
+      if (distance < 25) { // Increased click radius for better UX
         setSelectedPoint(selectedPoint === point.id ? null : point.id);
       }
     });
