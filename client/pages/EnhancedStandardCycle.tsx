@@ -447,7 +447,7 @@ export function EnhancedStandardCycleContent() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="evap_temp">
-                      Evaporator Temperature (°C)
+                      <TechTerm term="evaporator">Evaporator Temperature (°C)</TechTerm>
                     </Label>
                     <Input
                       id="evap_temp"
@@ -460,11 +460,12 @@ export function EnhancedStandardCycleContent() {
                         )
                       }
                       className="mt-1"
+                      placeholder="e.g., -10"
                     />
                   </div>
                   <div>
                     <Label htmlFor="cond_temp">
-                      Condenser Temperature (°C)
+                      <TechTerm term="condenser">Condenser Temperature (°C)</TechTerm>
                     </Label>
                     <Input
                       id="cond_temp"
@@ -477,10 +478,13 @@ export function EnhancedStandardCycleContent() {
                         )
                       }
                       className="mt-1"
+                      placeholder="e.g., 45"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="superheat">Superheat (°C)</Label>
+                    <Label htmlFor="superheat">
+                      <TechTerm term="superheat">Superheat (°C)</TechTerm>
+                    </Label>
                     <Input
                       id="superheat"
                       type="number"
@@ -492,10 +496,13 @@ export function EnhancedStandardCycleContent() {
                         )
                       }
                       className="mt-1"
+                      placeholder="e.g., 5"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="subcooling">Subcooling (°C)</Label>
+                    <Label htmlFor="subcooling">
+                      <TechTerm term="subcooling">Subcooling (°C)</TechTerm>
+                    </Label>
                     <Input
                       id="subcooling"
                       type="number"
@@ -507,6 +514,7 @@ export function EnhancedStandardCycleContent() {
                         )
                       }
                       className="mt-1"
+                      placeholder="e.g., 2"
                     />
                   </div>
                 </div>
