@@ -108,13 +108,20 @@ function QuickStats() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-purple-100 text-sm">This Month</p>
-                <p className="text-2xl font-bold">{stats?.monthlyCalculations || 0}/10</p>
-                <div className="w-full bg-purple-300 rounded-full h-2 mt-2">
-                  <div
-                    className="bg-white rounded-full h-2 transition-all duration-300"
-                    style={{ width: `${usagePercentage}%` }}
-                  ></div>
-                </div>
+                <p className="text-2xl font-bold">
+                  {stats?.monthlyCalculations || 0}{isUnlimited ? '' : '/10'}
+                </p>
+                {!isUnlimited && (
+                  <div className="w-full bg-purple-300 rounded-full h-2 mt-2">
+                    <div
+                      className="bg-white rounded-full h-2 transition-all duration-300"
+                      style={{ width: `${usagePercentage}%` }}
+                    ></div>
+                  </div>
+                )}
+                {isUnlimited && (
+                  <p className="text-purple-200 text-xs mt-1">Unlimited</p>
+                )}
               </div>
               <FileText className="h-8 w-8 text-purple-200" />
             </div>
