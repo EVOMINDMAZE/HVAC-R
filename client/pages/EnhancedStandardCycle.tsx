@@ -96,7 +96,7 @@ export function EnhancedStandardCycle() {
     setSelectedRefrigerant(refProps);
     
     if (refProps) {
-      const warnings = validateOperatingConditions(refProps, {
+      const warnings = validateCycleConditions(refProps, {
         evaporatorTemp: formData.evap_temp_c,
         condenserTemp: formData.cond_temp_c,
         superheat: formData.superheat_c,
