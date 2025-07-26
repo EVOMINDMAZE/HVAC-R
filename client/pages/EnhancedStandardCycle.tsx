@@ -110,6 +110,8 @@ export function EnhancedStandardCycleContent() {
     currentPoint: 1,
     animationSpeed: 1000,
   });
+  const [activeTab, setActiveTab] = useState("calculation");
+  const [calculationComplete, setCalculationComplete] = useState(false);
 
   const handleInputChange = useCallback((field: string, value: number) => {
     setFormData((prev) => ({
