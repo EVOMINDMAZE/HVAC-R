@@ -1,14 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { stripePromise } from "@/lib/stripe";
 import { useSupabaseAuth } from "./useSupabaseAuth";
 import { AuthErrorHandler } from "@/utils/authErrorHandler";
-
-// Prevent HMR errors by ensuring clean module state
-if (import.meta.hot) {
-  import.meta.hot.accept(() => {
-    // Handle HMR updates gracefully
-  });
-}
 
 interface Subscription {
   id: string;
