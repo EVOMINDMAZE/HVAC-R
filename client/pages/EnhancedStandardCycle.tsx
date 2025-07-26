@@ -185,11 +185,15 @@ export function EnhancedStandardCycleContent() {
         );
       }
 
-      if (responseData.data) {
-        setResults(responseData.data);
+      // Handle response format - could be direct data or wrapped in data property
+      const calculationData = responseData.data || responseData;
+
+      if (calculationData.state_points || calculationData.performance) {
+        setResults(calculationData);
         setAnimationState((prev) => ({ ...prev, currentPoint: 1 }));
       } else {
-        throw new Error("Invalid response format");
+        console.log("Unexpected response format:", responseData);
+        throw new Error("Invalid response format - missing state_points or performance data");
       }
     } catch (err) {
       const errorMessage =
