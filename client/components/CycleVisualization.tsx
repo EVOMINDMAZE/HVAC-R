@@ -675,22 +675,40 @@ export function CycleVisualization({
     margin: number,
   ) => {
     const components = [
-      { name: "🔧 Compressor", position: { x: 0.1, y: 0.8 } },
-      { name: "🌡️ Condenser", position: { x: 0.5, y: 0.1 } },
-      { name: "🔻 Expansion Valve", position: { x: 0.9, y: 0.2 } },
-      { name: "❄️ Evaporator", position: { x: 0.5, y: 0.9 } },
+      { name: "Compressor", icon: "⚙️", position: { x: 0.15, y: 0.7 }, color: "#dc2626" },
+      { name: "Condenser", icon: "🌡️", position: { x: 0.5, y: 0.1 }, color: "#2563eb" },
+      { name: "Expansion Valve", icon: "🔻", position: { x: 0.85, y: 0.3 }, color: "#059669" },
+      { name: "Evaporator", icon: "❄️", position: { x: 0.5, y: 0.85 }, color: "#d97706" },
     ];
 
-    ctx.fillStyle = "#6b7280";
-    ctx.font = "12px Inter, sans-serif";
-    ctx.textAlign = "center";
-
     components.forEach((comp) => {
-      const x =
-        margin + comp.position.x * (canvasRef.current!.width - 2 * margin);
-      const y =
-        margin + comp.position.y * (canvasRef.current!.height - 2 * margin);
-      ctx.fillText(comp.name, x, y);
+      const x = margin + comp.position.x * (canvasRef.current!.width - 2 * margin);
+      const y = margin + comp.position.y * (canvasRef.current!.height - 2 * margin);
+
+      // Component background
+      ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
+      ctx.strokeStyle = comp.color;
+      ctx.lineWidth = 2;
+
+      const text = `${comp.icon} ${comp.name}`;
+      ctx.font = "bold 14px 'Inter', sans-serif";
+      const textWidth = ctx.measureText(text).width;
+
+      ctx.beginPath();
+      ctx.roundRect(
+        x - textWidth / 2 - 8,
+        y - 10,
+        textWidth + 16,
+        20,
+        6
+      );
+      ctx.fill();
+      ctx.stroke();
+
+      // Component text
+      ctx.fillStyle = comp.color;
+      ctx.textAlign = "center";
+      ctx.fillText(text, x, y + 5);
     });
   };
 
