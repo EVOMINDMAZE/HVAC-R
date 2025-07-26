@@ -212,7 +212,7 @@ export const REFRIGERANT_DATABASE: RefrigerantProperties[] = [
       normalBoilingPoint: 228.0
     },
     coolpropSupport: 'limited',
-    description: 'Low-GWP blend for commercial refrigeration (Limited CoolProp support)',
+    description: 'Low-GWP blend for commercial refrigeration (Note: Limited CoolProp support, may have calculation limitations)',
     color: '#EC4899'
   },
   {
