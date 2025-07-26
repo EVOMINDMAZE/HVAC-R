@@ -526,19 +526,19 @@ export function EnhancedStandardCycleContent() {
                       </div>
                       <div className="p-3 bg-green-50 rounded-lg">
                         <div className="text-2xl font-bold text-green-600">
-                          {formatValue(results.performance.cooling_capacity_kw, 'kW')}
+                          {formatValue(results.performance?.cooling_capacity_kw, 'kW')}
                         </div>
                         <div className="text-sm text-green-800">Cooling Capacity</div>
                       </div>
                       <div className="p-3 bg-orange-50 rounded-lg">
                         <div className="text-2xl font-bold text-orange-600">
-                          {formatValue(results.performance.compressor_work_kw, 'kW')}
+                          {formatValue(results.performance?.compressor_work_kw, 'kW')}
                         </div>
                         <div className="text-sm text-orange-800">Compressor Work</div>
                       </div>
                       <div className="p-3 bg-red-50 rounded-lg">
                         <div className="text-2xl font-bold text-red-600">
-                          {formatValue(results.performance.heat_rejection_kw, 'kW')}
+                          {formatValue(results.performance?.heat_rejection_kw, 'kW')}
                         </div>
                         <div className="text-sm text-red-800">Heat Rejection</div>
                       </div>
