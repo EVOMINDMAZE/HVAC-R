@@ -351,10 +351,10 @@ export function EnhancedStandardCycleContent() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-3xl font-bold text-foreground mb-2">
           Enhanced Standard Refrigeration Cycle
         </h1>
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           Advanced cycle analysis with real-time visualization and equipment
           simulation
         </p>
