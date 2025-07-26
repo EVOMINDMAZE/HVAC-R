@@ -69,6 +69,20 @@ interface CycleVisualizationProps {
     points: CyclePoint[];
     refrigerant: string;
     cycleType: "standard" | "cascade-low" | "cascade-high";
+    saturationDome?: {
+      ph_diagram: {
+        enthalpy_kj_kg: number[];
+        pressure_kpa: number[];
+      };
+      ts_diagram: {
+        entropy_kj_kgk: number[];
+        temperature_c: number[];
+      };
+      tv_diagram: {
+        specific_volume_m3_kg: number[];
+        temperature_c: number[];
+      };
+    };
   };
   isAnimating?: boolean;
   onAnimationToggle?: () => void;
