@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { useToast } from "@/hooks/useToast";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useSubscription, useCustomerPortal } from "@/hooks/useStripe";
