@@ -123,6 +123,9 @@ export function CycleVisualization({
     const canvas = canvasRef.current;
     if (!canvas || !cycleData) return;
 
+    console.log("CycleVisualization: Drawing with data:", cycleData);
+    console.log("Points:", cycleData.points);
+
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
