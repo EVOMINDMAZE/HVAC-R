@@ -18,6 +18,37 @@ interface CyclePoint {
   y: number;
 }
 
+type DiagramType = "P-h" | "T-s" | "P-v" | "T-v";
+
+interface DiagramConfig {
+  xAxis: { property: keyof CyclePoint; label: string; unit: string };
+  yAxis: { property: keyof CyclePoint; label: string; unit: string };
+  name: string;
+}
+
+const DIAGRAM_CONFIGS: Record<DiagramType, DiagramConfig> = {
+  "P-h": {
+    xAxis: { property: "enthalpy", label: "Enthalpy", unit: "kJ/kg" },
+    yAxis: { property: "pressure", label: "Pressure", unit: "kPa" },
+    name: "Pressure-Enthalpy Diagram"
+  },
+  "T-s": {
+    xAxis: { property: "entropy", label: "Entropy", unit: "kJ/kg·K" },
+    yAxis: { property: "temperature", label: "Temperature", unit: "°C" },
+    name: "Temperature-Entropy Diagram"
+  },
+  "P-v": {
+    xAxis: { property: "enthalpy", label: "Specific Volume", unit: "m³/kg" }, // Using enthalpy as placeholder
+    yAxis: { property: "pressure", label: "Pressure", unit: "kPa" },
+    name: "Pressure-Volume Diagram"
+  },
+  "T-v": {
+    xAxis: { property: "enthalpy", label: "Specific Volume", unit: "m³/kg" }, // Using enthalpy as placeholder
+    yAxis: { property: "temperature", label: "Temperature", unit: "°C" },
+    name: "Temperature-Volume Diagram"
+  }
+};
+
 interface CycleVisualizationProps {
   cycleData?: {
     points: CyclePoint[];
@@ -36,6 +67,7 @@ export function CycleVisualization({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [animationFrame, setAnimationFrame] = useState(0);
   const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
+  const [diagramType, setDiagramType] = useState<DiagramType>("P-h");
 
   // Animation loop
   useEffect(() => {
