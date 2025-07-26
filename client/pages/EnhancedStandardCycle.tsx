@@ -195,6 +195,9 @@ export function EnhancedStandardCycleContent() {
       if (calculationData.state_points || calculationData.performance) {
         setResults(calculationData);
         setAnimationState((prev) => ({ ...prev, currentPoint: 1 }));
+        setCalculationComplete(true);
+        // Auto-switch to results tab to show user the results
+        setTimeout(() => setActiveTab("results"), 500);
       } else {
         console.log("Unexpected response format:", responseData);
         throw new Error(
