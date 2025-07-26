@@ -1371,30 +1371,7 @@ export function CycleVisualization({
               </CardContent>
             </Card>
 
-            {/* Process Legend */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Process Legend</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-1 bg-red-500"></div>
-                  <span className="text-sm">1→2: Compression</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-1 bg-blue-500"></div>
-                  <span className="text-sm">2→3: Condensation</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-1 bg-green-500"></div>
-                  <span className="text-sm">3→4: Expansion</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-1 bg-yellow-500"></div>
-                  <span className="text-sm">4→1: Evaporation</span>
-                </div>
-              </CardContent>
-            </Card>
+
           </div>
         </div>
       </CardContent>
