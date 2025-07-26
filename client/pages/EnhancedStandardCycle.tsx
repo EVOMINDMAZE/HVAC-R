@@ -357,7 +357,7 @@ export function EnhancedStandardCycleContent() {
         </p>
       </div>
 
-      <Tabs defaultValue="calculation" className="space-y-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="calculation" className="flex items-center gap-2">
             <Calculator className="h-4 w-4" />
@@ -370,6 +370,7 @@ export function EnhancedStandardCycleContent() {
           >
             <Eye className="h-4 w-4" />
             Visualization
+            {calculationComplete && <Badge variant="outline" className="ml-1">New</Badge>}
           </TabsTrigger>
           <TabsTrigger
             value="results"
@@ -378,6 +379,7 @@ export function EnhancedStandardCycleContent() {
           >
             <FileText className="h-4 w-4" />
             Results
+            {calculationComplete && <Badge variant="default" className="ml-1">View</Badge>}
           </TabsTrigger>
           <TabsTrigger
             value="equipment"
@@ -386,6 +388,7 @@ export function EnhancedStandardCycleContent() {
           >
             <Wrench className="h-4 w-4" />
             Equipment
+            {calculationComplete && <Badge variant="outline" className="ml-1">New</Badge>}
           </TabsTrigger>
         </TabsList>
 
