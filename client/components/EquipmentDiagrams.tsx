@@ -444,11 +444,11 @@ export function EquipmentDiagrams({
             {cycleData.points.map((point, index) => (
               <div key={index} className="p-2 bg-white rounded border">
                 <div className="font-medium text-blue-600">State {index + 1}</div>
-                <div className="text-gray-600">{point.label}</div>
+                <div className="text-gray-600">{point.name}</div>
                 <div className="mt-1">
-                  <div>T: {point.temperature_c.toFixed(1)}°C</div>
-                  <div>P: {(point.pressure_kpa / 1000).toFixed(1)} MPa</div>
-                  <div>h: {point.enthalpy_kj_kg.toFixed(1)} kJ/kg</div>
+                  <div>T: {point.temperature?.toFixed(1) || '0.0'}°C</div>
+                  <div>P: {((point.pressure || 0) / 1000).toFixed(1)} MPa</div>
+                  <div>h: {point.enthalpy?.toFixed(1) || '0.0'} kJ/kg</div>
                 </div>
               </div>
             ))}
