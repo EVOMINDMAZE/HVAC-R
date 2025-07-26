@@ -28,6 +28,8 @@ import {
   Pause,
   RotateCcw,
   Info,
+  CheckCircle,
+  ArrowRight,
 } from "lucide-react";
 import { EnhancedRefrigerantSelector } from "../components/EnhancedRefrigerantSelector";
 import { CycleVisualization } from "../components/CycleVisualization";
