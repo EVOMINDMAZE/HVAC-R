@@ -232,7 +232,20 @@ export function CascadeCycleContent() {
         description: `${formData.ltCycle.refrigerant}/${formData.htCycle.refrigerant} cascade system analysis completed`
       });
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Calculation failed";
+      const originalMessage = err instanceof Error ? err.message : "Calculation failed";
+      let errorMessage = originalMessage;
+
+      // Handle specific CoolProp errors
+      if (originalMessage.includes('Two-phase inputs not supported for pseudo-pure')) {
+        errorMessage =
+          'CoolProp limitation: One or both refrigerants are blends and two-phase calculations are not supported. ' +
+          'Try increasing superheat and subcooling values, or use pure refrigerants like R134a, R32, or R290.';
+      } else if (originalMessage.includes('PropsSI')) {
+        errorMessage =
+          'CoolProp calculation error: The specified operating conditions may be outside the valid range. ' +
+          'Please check your temperature and pressure values for both cycles.';
+      }
+
       setError(errorMessage);
       addToast({
         type: 'error',
