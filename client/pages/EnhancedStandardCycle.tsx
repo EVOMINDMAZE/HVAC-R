@@ -823,28 +823,34 @@ export function EnhancedStandardCycleContent() {
             id: "1",
             name: "Evaporator Outlet",
             temperature:
-              getPropertyValue(results.state_points?.["1_compressor_inlet"], [
-                "temp_c",
+              getPropertyValue(results.state_points?.["1"], [
                 "temperature_c",
+                "temp_c",
                 "temperature",
               ]) || 0,
             pressure:
-              getPropertyValue(results.state_points?.["1_compressor_inlet"], [
+              getPropertyValue(results.state_points?.["1"], [
                 "pressure_kpa",
                 "pressure",
               ]) || 0,
             enthalpy:
-              getPropertyValue(results.state_points?.["1_compressor_inlet"], [
+              getPropertyValue(results.state_points?.["1"], [
                 "enthalpy_kj_kg",
                 "enthalpy",
               ]) || 0,
             entropy:
-              getPropertyValue(results.state_points?.["1_compressor_inlet"], [
+              getPropertyValue(results.state_points?.["1"], [
+                "entropy_kj_kgk",
                 "entropy_kj_kg_k",
                 "entropy",
               ]) || 0,
+            specificVolume:
+              getPropertyValue(results.state_points?.["1"], [
+                "specific_volume_m3_kg",
+                "specific_volume",
+              ]) || 0,
             quality: getPropertyValue(
-              results.state_points?.["1_compressor_inlet"],
+              results.state_points?.["1"],
               ["vapor_quality", "quality"],
             ),
             x: 0, // Will be calculated by CycleVisualization
@@ -854,28 +860,34 @@ export function EnhancedStandardCycleContent() {
             id: "2",
             name: "Compressor Outlet",
             temperature:
-              getPropertyValue(results.state_points?.["2_compressor_outlet"], [
-                "temp_c",
+              getPropertyValue(results.state_points?.["2"], [
                 "temperature_c",
+                "temp_c",
                 "temperature",
               ]) || 0,
             pressure:
-              getPropertyValue(results.state_points?.["2_compressor_outlet"], [
+              getPropertyValue(results.state_points?.["2"], [
                 "pressure_kpa",
                 "pressure",
               ]) || 0,
             enthalpy:
-              getPropertyValue(results.state_points?.["2_compressor_outlet"], [
+              getPropertyValue(results.state_points?.["2"], [
                 "enthalpy_kj_kg",
                 "enthalpy",
               ]) || 0,
             entropy:
-              getPropertyValue(results.state_points?.["2_compressor_outlet"], [
+              getPropertyValue(results.state_points?.["2"], [
+                "entropy_kj_kgk",
                 "entropy_kj_kg_k",
                 "entropy",
               ]) || 0,
+            specificVolume:
+              getPropertyValue(results.state_points?.["2"], [
+                "specific_volume_m3_kg",
+                "specific_volume",
+              ]) || 0,
             quality: getPropertyValue(
-              results.state_points?.["2_compressor_outlet"],
+              results.state_points?.["2"],
               ["vapor_quality", "quality"],
             ),
             x: 0,
@@ -886,26 +898,31 @@ export function EnhancedStandardCycleContent() {
             name: "Condenser Outlet",
             temperature:
               getPropertyValue(
-                results.state_points?.["3_expansion_valve_inlet"],
-                ["temp_c", "temperature_c", "temperature"],
+                results.state_points?.["3"],
+                ["temperature_c", "temp_c", "temperature"],
               ) || 0,
             pressure:
               getPropertyValue(
-                results.state_points?.["3_expansion_valve_inlet"],
+                results.state_points?.["3"],
                 ["pressure_kpa", "pressure"],
               ) || 0,
             enthalpy:
               getPropertyValue(
-                results.state_points?.["3_expansion_valve_inlet"],
+                results.state_points?.["3"],
                 ["enthalpy_kj_kg", "enthalpy"],
               ) || 0,
             entropy:
               getPropertyValue(
-                results.state_points?.["3_expansion_valve_inlet"],
-                ["entropy_kj_kg_k", "entropy"],
+                results.state_points?.["3"],
+                ["entropy_kj_kgk", "entropy_kj_kg_k", "entropy"],
+              ) || 0,
+            specificVolume:
+              getPropertyValue(
+                results.state_points?.["3"],
+                ["specific_volume_m3_kg", "specific_volume"],
               ) || 0,
             quality: getPropertyValue(
-              results.state_points?.["3_expansion_valve_inlet"],
+              results.state_points?.["3"],
               ["vapor_quality", "quality"],
             ),
             x: 0,
@@ -915,28 +932,34 @@ export function EnhancedStandardCycleContent() {
             id: "4",
             name: "Expansion Valve Outlet",
             temperature:
-              getPropertyValue(results.state_points?.["4_evaporator_inlet"], [
-                "temp_c",
+              getPropertyValue(results.state_points?.["4"], [
                 "temperature_c",
+                "temp_c",
                 "temperature",
               ]) || 0,
             pressure:
-              getPropertyValue(results.state_points?.["4_evaporator_inlet"], [
+              getPropertyValue(results.state_points?.["4"], [
                 "pressure_kpa",
                 "pressure",
               ]) || 0,
             enthalpy:
-              getPropertyValue(results.state_points?.["4_evaporator_inlet"], [
+              getPropertyValue(results.state_points?.["4"], [
                 "enthalpy_kj_kg",
                 "enthalpy",
               ]) || 0,
             entropy:
-              getPropertyValue(results.state_points?.["4_evaporator_inlet"], [
+              getPropertyValue(results.state_points?.["4"], [
+                "entropy_kj_kgk",
                 "entropy_kj_kg_k",
                 "entropy",
               ]) || 0,
+            specificVolume:
+              getPropertyValue(
+                results.state_points?.["4"],
+                ["specific_volume_m3_kg", "specific_volume"],
+              ) || 0,
             quality: getPropertyValue(
-              results.state_points?.["4_evaporator_inlet"],
+              results.state_points?.["4"],
               ["vapor_quality", "quality"],
             ),
             x: 0,
@@ -945,6 +968,7 @@ export function EnhancedStandardCycleContent() {
         ],
         refrigerant: results.refrigerant || formData.refrigerant,
         cycleType: "standard" as const,
+        saturationDome: results.saturation_dome,
       }
     : undefined;
 
