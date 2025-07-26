@@ -312,8 +312,8 @@ export function CycleVisualization({
       return;
     }
 
-    // Set up coordinate system with larger margins for 4K canvas
-    const margin = 100;
+    // Set up coordinate system with larger margins for higher resolution
+    const margin = 120;
     const plotWidth = width - 2 * margin;
     const plotHeight = height - 2 * margin;
     const config = DIAGRAM_CONFIGS[diagramType];
