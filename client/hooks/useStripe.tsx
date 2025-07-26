@@ -101,9 +101,18 @@ export function useStripeCheckout() {
         throw new Error('No access token available');
       }
 
-      console.log('Making API call to create-checkout-session with:', { priceId, hasToken: !!token });
-
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      console.log('Making API call to create-checkout-session with:', {
+        priceId,
+        hasToken: !!token,
+        supabaseUrl,
+        fullUrl: `${supabaseUrl}/functions/v1/billing/create-checkout-session`
+      });
+
+      if (!supabaseUrl) {
+        throw new Error('VITE_SUPABASE_URL is not configured');
+      }
+
       const response = await fetch(`${supabaseUrl}/functions/v1/billing/create-checkout-session`, {
         method: 'POST',
         headers: {
