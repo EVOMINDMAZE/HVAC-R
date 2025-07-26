@@ -155,8 +155,11 @@ export function EnhancedRefrigerantSelector({
                   <SelectItem key={refrigerant.id} value={refrigerant.id}>
                     <div className="flex items-center justify-between w-full">
                       <div className="flex items-center gap-2">
-                        <div 
-                          className="w-3 h-3 rounded-full" 
+                        {POPULAR_REFRIGERANTS.includes(refrigerant.id) && (
+                          <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
+                        )}
+                        <div
+                          className="w-3 h-3 rounded-full"
                           style={{ backgroundColor: refrigerant.color }}
                         />
                         <span className="font-medium">{refrigerant.name}</span>
