@@ -691,33 +691,9 @@ export function EnhancedStandardCycleContent() {
         <TabsContent value="visualization">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                P-h Diagram Visualization
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={toggleAnimation}
-                    disabled={!results}
-                  >
-                    {animationState.isAnimating ? (
-                      <Pause className="h-4 w-4" />
-                    ) : (
-                      <Play className="h-4 w-4" />
-                    )}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={resetAnimation}
-                    disabled={!results}
-                  >
-                    <RotateCcw className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardTitle>
+              <CardTitle>Thermodynamic Cycle Visualization</CardTitle>
               <CardDescription>
-                Interactive pressure-enthalpy diagram with cycle animation
+                Interactive diagrams with multiple view types and animation
               </CardDescription>
             </CardHeader>
             <CardContent>
