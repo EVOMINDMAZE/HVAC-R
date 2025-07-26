@@ -6,18 +6,27 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { 
-  AlertTriangle, 
-  CheckCircle, 
-  Info, 
-  Thermometer, 
+import {
+  AlertTriangle,
+  CheckCircle,
+  Info,
+  Thermometer,
   Gauge,
   Leaf,
   Shield,
   Search,
-  TrendingUp
+  TrendingUp,
+  Star
 } from 'lucide-react';
-import { REFRIGERANT_DATABASE, validateOperatingConditions, getSuggestedOperatingRange, RefrigerantProperties } from '@/lib/refrigerants';
+import {
+  REFRIGERANT_DATABASE,
+  validateOperatingConditions,
+  getSuggestedOperatingRange,
+  RefrigerantProperties,
+  searchRefrigerants,
+  getRefrigerantsByPopularity,
+  POPULAR_REFRIGERANTS
+} from '@/lib/refrigerants';
 
 interface EnhancedRefrigerantSelectorProps {
   value: string;
