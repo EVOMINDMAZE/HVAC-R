@@ -1096,9 +1096,9 @@ export function CycleVisualization({
             </SelectContent>
           </Select>
         </div>
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-4 gap-6">
           {/* Main Visualization */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-3">
             <canvas
               ref={canvasRef}
               width={1600}
