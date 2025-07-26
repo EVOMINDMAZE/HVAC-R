@@ -65,6 +65,8 @@ export function CycleVisualization({
   cycleData,
   isAnimating = false,
   onAnimationToggle,
+  animationSpeed = 1000,
+  currentPoint = 1,
 }: CycleVisualizationProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [animationFrame, setAnimationFrame] = useState(0);
