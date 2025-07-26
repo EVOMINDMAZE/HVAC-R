@@ -42,7 +42,8 @@ export function useSubscription() {
         throw new Error('No access token available');
       }
 
-      const response = await fetch('/api/billing/subscription', {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const response = await fetch(`${supabaseUrl}/functions/v1/billing/subscription`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
