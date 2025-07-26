@@ -392,20 +392,40 @@ export function CycleVisualization({
     plotWidth: number,
     plotHeight: number,
   ) => {
-    // Simplified saturation dome
-    ctx.strokeStyle = "#e5e7eb";
-    ctx.lineWidth = 1;
-    ctx.setLineDash([5, 5]);
+    // Enhanced saturation dome for P-h diagram
+    const centerX = margin + plotWidth * 0.35;
+    const centerY = margin + plotHeight * 0.6;
+    const radiusX = plotWidth * 0.3;
+    const radiusY = plotHeight * 0.4;
+
+    // Dome fill with gradient
+    const gradient = ctx.createRadialGradient(
+      centerX, centerY - radiusY * 0.3, 0,
+      centerX, centerY, radiusY
+    );
+    gradient.addColorStop(0, "rgba(59, 130, 246, 0.05)");
+    gradient.addColorStop(1, "rgba(59, 130, 246, 0.02)");
+
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI);
+    ctx.fill();
+
+    // Dome border
+    ctx.strokeStyle = "rgba(59, 130, 246, 0.4)";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([8, 4]);
 
     ctx.beginPath();
-    const centerX = margin + plotWidth * 0.3;
-    const centerY = margin + plotHeight * 0.7;
-    const radiusX = plotWidth * 0.25;
-    const radiusY = plotHeight * 0.3;
-
     ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI);
     ctx.stroke();
     ctx.setLineDash([]);
+
+    // Add saturation dome label
+    ctx.fillStyle = "rgba(59, 130, 246, 0.8)";
+    ctx.font = "12px 'Inter', sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("Saturation Dome", centerX, centerY + radiusY + 20);
   };
 
   const drawCycleLines = (
