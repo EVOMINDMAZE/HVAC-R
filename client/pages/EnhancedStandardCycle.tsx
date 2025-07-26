@@ -900,10 +900,10 @@ export function EnhancedStandardCycleContent() {
                             P: {formatValue(point?.pressure_kpa, "kPa", 0)}
                           </div>
                           <div>
-                            h: {formatValue(point?.enthalpy_kj_kg, "kJ/kg")}
+                            <TechTerm term="enthalpy">h</TechTerm>: {formatValue(point?.enthalpy_kj_kg, "kJ/kg")}
                           </div>
                           <div>
-                            s:{" "}
+                            <TechTerm term="entropy">s</TechTerm>:{" "}
                             {formatValue(point?.entropy_kj_kg_k, "kJ/kg·K", 3)}
                           </div>
                           <div>
@@ -911,7 +911,7 @@ export function EnhancedStandardCycleContent() {
                           </div>
                           {point?.vapor_quality !== undefined && (
                             <div>
-                              x: {formatValue(point.vapor_quality * 100, "%")}
+                              <TechTerm term="quality">x</TechTerm>: {formatValue(point.vapor_quality * 100, "%")}
                             </div>
                           )}
                         </div>
