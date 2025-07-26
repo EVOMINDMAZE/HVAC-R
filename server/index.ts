@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import { ensureDbInitialized, sessionDb } from "./database/index.ts";
+// Database imports removed - using Supabase for all data storage
 import { signUp, signIn, signOut, getCurrentUser, authenticateToken } from "./routes/auth.ts";
 import {
   saveCalculation,
