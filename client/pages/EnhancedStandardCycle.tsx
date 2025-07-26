@@ -687,7 +687,7 @@ export function EnhancedStandardCycleContent() {
                     )}
                   </div>
                 ) : (
-                  <div className="text-gray-500 text-center py-8">
+                  <div className="text-muted-foreground text-center py-8">
                     Select a refrigerant to view properties
                   </div>
                 )}
