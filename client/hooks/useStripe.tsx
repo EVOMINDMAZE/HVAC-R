@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { stripePromise } from "@/lib/stripe";
 import { useSupabaseAuth } from "./useSupabaseAuth";
 import { AuthErrorHandler } from "@/utils/authErrorHandler";
