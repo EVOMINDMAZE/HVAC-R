@@ -32,6 +32,7 @@ import {
 
 export function Profile() {
   const { user: authUser, updateUser } = useSupabaseAuth();
+  const { calculations } = useSupabaseCalculations();
   const navigate = useNavigate();
   const { addToast } = useToast();
   const { uploadAvatar, removeAvatar, uploading } = useFileUpload();
