@@ -1563,8 +1563,8 @@ export function EnhancedStandardCycleContent() {
                             T:{" "}
                             {formatValue(
                               getPropertyValue(point, [
-                                "temp_c",
                                 "temperature_c",
+                                "temp_c",
                                 "temperature",
                               ]),
                               "°C",
