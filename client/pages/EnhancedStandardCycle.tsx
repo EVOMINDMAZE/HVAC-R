@@ -788,7 +788,7 @@ export function EnhancedStandardCycleContent() {
                           {results.performance?.cop?.toFixed(2) || "N/A"}
                         </div>
                         <div className="text-sm text-blue-800">
-                          Coefficient of Performance
+                          <TechTerm term="cop">Coefficient of Performance</TechTerm>
                         </div>
                       </div>
                       <div className="p-3 bg-green-50 rounded-lg">
