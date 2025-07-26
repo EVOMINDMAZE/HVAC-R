@@ -53,12 +53,12 @@ const DIAGRAM_CONFIGS: Record<DiagramType, DiagramConfig> = {
     name: "Temperature-Entropy Diagram",
   },
   "P-v": {
-    xAxis: { property: "enthalpy", label: "Specific Volume", unit: "m³/kg" }, // Using enthalpy as placeholder
+    xAxis: { property: "specificVolume", label: "Specific Volume", unit: "m³/kg" },
     yAxis: { property: "pressure", label: "Pressure", unit: "kPa" },
     name: "Pressure-Volume Diagram",
   },
   "T-v": {
-    xAxis: { property: "enthalpy", label: "Specific Volume", unit: "m³/kg" }, // Using enthalpy as placeholder
+    xAxis: { property: "specificVolume", label: "Specific Volume", unit: "m³/kg" },
     yAxis: { property: "temperature", label: "Temperature", unit: "°C" },
     name: "Temperature-Volume Diagram",
   },
