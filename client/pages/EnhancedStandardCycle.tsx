@@ -887,23 +887,23 @@ export function EnhancedStandardCycleContent() {
                           {label}
                         </div>
                         <div className="grid grid-cols-2 gap-2 text-sm">
-                          <div>T: {formatValue(point?.temp_c, "°C")}</div>
+                          <div>T: {formatValue(getPropertyValue(point, ["temp_c", "temperature_c", "temperature"]), "°C")}</div>
                           <div>
-                            P: {formatValue(point?.pressure_kpa, "kPa", 0)}
+                            P: {formatValue(getPropertyValue(point, ["pressure_kpa", "pressure"]), "kPa", 0)}
                           </div>
                           <div>
-                            <TechTerm term="enthalpy">h</TechTerm>: {formatValue(point?.enthalpy_kj_kg, "kJ/kg")}
+                            <TechTerm term="enthalpy">h</TechTerm>: {formatValue(getPropertyValue(point, ["enthalpy_kj_kg", "enthalpy"]), "kJ/kg")}
                           </div>
                           <div>
                             <TechTerm term="entropy">s</TechTerm>:{" "}
-                            {formatValue(point?.entropy_kj_kg_k, "kJ/kg·K", 3)}
+                            {formatValue(getPropertyValue(point, ["entropy_kj_kg_k", "entropy"]), "kJ/kg·K", 3)}
                           </div>
                           <div>
-                            ρ: {formatValue(point?.density_kg_m3, "kg/m³")}
+                            ρ: {formatValue(getPropertyValue(point, ["density_kg_m3", "density"]), "kg/m³")}
                           </div>
-                          {point?.vapor_quality !== undefined && (
+                          {getPropertyValue(point, ["vapor_quality", "quality"]) !== undefined && (
                             <div>
-                              <TechTerm term="quality">x</TechTerm>: {formatValue(point.vapor_quality * 100, "%")}
+                              <TechTerm term="quality">x</TechTerm>: {formatValue((getPropertyValue(point, ["vapor_quality", "quality"]) || 0) * 100, "%")}
                             </div>
                           )}
                         </div>
