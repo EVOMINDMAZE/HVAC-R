@@ -378,7 +378,7 @@ export function EquipmentDiagrams({
           {cycleData && (
             <div className="mt-2 text-sm text-gray-600">
               <div>State 4 → 1</div>
-              <div>{cycleData.points[0]?.temperature_c.toFixed(1)}°C</div>
+              <div>{cycleData.points[0]?.temperature?.toFixed(1) || '0.0'}°C</div>
             </div>
           )}
         </div>
@@ -394,7 +394,7 @@ export function EquipmentDiagrams({
           {cycleData && (
             <div className="mt-2 text-sm text-gray-600">
               <div>State 1 → 2</div>
-              <div>{cycleData.points[1]?.temperature_c.toFixed(1)}°C</div>
+              <div>{cycleData.points[1]?.temperature?.toFixed(1) || '0.0'}°C</div>
             </div>
           )}
         </div>
@@ -410,7 +410,7 @@ export function EquipmentDiagrams({
           {cycleData && (
             <div className="mt-2 text-sm text-gray-600">
               <div>State 2 → 3</div>
-              <div>{cycleData.points[2]?.temperature_c.toFixed(1)}°C</div>
+              <div>{cycleData.points[2]?.temperature?.toFixed(1) || '0.0'}°C</div>
             </div>
           )}
         </div>
@@ -426,7 +426,7 @@ export function EquipmentDiagrams({
           {cycleData && (
             <div className="mt-2 text-sm text-gray-600">
               <div>State 3 → 4</div>
-              <div>{cycleData.points[3]?.temperature_c.toFixed(1)}°C</div>
+              <div>{cycleData.points[3]?.temperature?.toFixed(1) || '0.0'}°C</div>
             </div>
           )}
         </div>
