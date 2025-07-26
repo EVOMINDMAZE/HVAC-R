@@ -96,8 +96,20 @@ export function CycleVisualization({
   ) => {
     if (!points || points.length === 0) return points;
 
-    console.log("Calculating coordinates with enhanced algorithm for", diagramType);
-    console.log("Points received:", points.map(p => ({ id: p.id, name: p.name, temp: p.temperature, pressure: p.pressure, enthalpy: p.enthalpy })));
+    console.log(
+      "Calculating coordinates with enhanced algorithm for",
+      diagramType,
+    );
+    console.log(
+      "Points received:",
+      points.map((p) => ({
+        id: p.id,
+        name: p.name,
+        temp: p.temperature,
+        pressure: p.pressure,
+        enthalpy: p.enthalpy,
+      })),
+    );
 
     // Get the actual property values for scaling with validation
     const xValues: number[] = [];
@@ -111,7 +123,9 @@ export function CycleVisualization({
       const xVal = point[xProp] as number;
       const yVal = point[yProp] as number;
 
-      console.log(`Point ${point.id}: ${xProp}=${xVal}, ${yProp}=${yVal}, valid=${!isNaN(xVal) && !isNaN(yVal)}`);
+      console.log(
+        `Point ${point.id}: ${xProp}=${xVal}, ${yProp}=${yVal}, valid=${!isNaN(xVal) && !isNaN(yVal)}`,
+      );
 
       if (!isNaN(xVal) && xVal !== undefined && xVal !== null) {
         xValues.push(xVal);
@@ -121,7 +135,12 @@ export function CycleVisualization({
       }
 
       // Only include points with valid coordinates
-      if (!isNaN(xVal) && !isNaN(yVal) && xVal !== undefined && yVal !== undefined) {
+      if (
+        !isNaN(xVal) &&
+        !isNaN(yVal) &&
+        xVal !== undefined &&
+        yVal !== undefined
+      ) {
         validPoints.push(point);
       }
     });
@@ -137,7 +156,9 @@ export function CycleVisualization({
       const yMin = Math.min(...yValues);
       const yMax = Math.max(...yValues);
 
-      console.log(`Real thermodynamic scaling: X[${xMin.toFixed(2)} to ${xMax.toFixed(2)}], Y[${yMin.toFixed(2)} to ${yMax.toFixed(2)}]`);
+      console.log(
+        `Real thermodynamic scaling: X[${xMin.toFixed(2)} to ${xMax.toFixed(2)}], Y[${yMin.toFixed(2)} to ${yMax.toFixed(2)}]`,
+      );
 
       // Smart padding based on data range
       const xRange = xMax - xMin || 1;
@@ -154,58 +175,79 @@ export function CycleVisualization({
         if (!isNaN(xVal) && !isNaN(yVal)) {
           // Use real thermodynamic coordinates
           x = ((xVal - xMin + xPadding) / (xRange + 2 * xPadding)) * plotWidth;
-          y = plotHeight - ((yVal - yMin + yPadding) / (yRange + 2 * yPadding)) * plotHeight;
+          y =
+            plotHeight -
+            ((yVal - yMin + yPadding) / (yRange + 2 * yPadding)) * plotHeight;
         } else {
           // Fallback to idealized position for invalid points
-          const fallbackPositions = getIdealizedPositions(diagramType, plotWidth, plotHeight);
+          const fallbackPositions = getIdealizedPositions(
+            diagramType,
+            plotWidth,
+            plotHeight,
+          );
           const index = parseInt(point.id) - 1;
           x = fallbackPositions[index]?.x || plotWidth / 2;
           y = fallbackPositions[index]?.y || plotHeight / 2;
         }
 
-        console.log(`Point ${point.id} mapped: (${x.toFixed(1)}, ${y.toFixed(1)}) [${!isNaN(xVal) && !isNaN(yVal) ? 'REAL' : 'FALLBACK'}]`);
+        console.log(
+          `Point ${point.id} mapped: (${x.toFixed(1)}, ${y.toFixed(1)}) [${!isNaN(xVal) && !isNaN(yVal) ? "REAL" : "FALLBACK"}]`,
+        );
         return { ...point, x, y };
       });
     } else {
       // Enhanced fallback with realistic thermodynamic cycle shapes
       console.log("Using enhanced thermodynamic fallback positions");
-      const fallbackPositions = getIdealizedPositions(diagramType, plotWidth, plotHeight);
+      const fallbackPositions = getIdealizedPositions(
+        diagramType,
+        plotWidth,
+        plotHeight,
+      );
 
       return points.map((point, index) => {
-        const pos = fallbackPositions[index] || { x: plotWidth / 2, y: plotHeight / 2 };
-        console.log(`Point ${point.id} fallback position: (${pos.x.toFixed(1)}, ${pos.y.toFixed(1)})`);
+        const pos = fallbackPositions[index] || {
+          x: plotWidth / 2,
+          y: plotHeight / 2,
+        };
+        console.log(
+          `Point ${point.id} fallback position: (${pos.x.toFixed(1)}, ${pos.y.toFixed(1)})`,
+        );
         return { ...point, x: pos.x, y: pos.y };
       });
     }
   };
 
   // Enhanced idealized positions that reflect real thermodynamic cycles
-  const getIdealizedPositions = (type: DiagramType, width: number, height: number) => {
+  const getIdealizedPositions = (
+    type: DiagramType,
+    width: number,
+    height: number,
+  ) => {
     const positions: { x: number; y: number }[] = [];
 
     if (type === "P-h") {
       // Realistic P-h cycle with proper thermodynamic relationships
       positions.push(
-        { x: width * 0.3, y: height * 0.75 },  // 1: Low P, moderate h (evaporator outlet)
-        { x: width * 0.7, y: height * 0.2 },   // 2: High P, high h (compressor outlet)
-        { x: width * 0.2, y: height * 0.2 },   // 3: High P, low h (condenser outlet)
-        { x: width * 0.2, y: height * 0.75 }   // 4: Low P, low h (expansion outlet)
+        { x: width * 0.3, y: height * 0.75 }, // 1: Low P, moderate h (evaporator outlet)
+        { x: width * 0.7, y: height * 0.2 }, // 2: High P, high h (compressor outlet)
+        { x: width * 0.2, y: height * 0.2 }, // 3: High P, low h (condenser outlet)
+        { x: width * 0.2, y: height * 0.75 }, // 4: Low P, low h (expansion outlet)
       );
     } else if (type === "T-s") {
       // Realistic T-s cycle
       positions.push(
-        { x: width * 0.35, y: height * 0.8 },  // 1: Low T, moderate s
+        { x: width * 0.35, y: height * 0.8 }, // 1: Low T, moderate s
         { x: width * 0.55, y: height * 0.15 }, // 2: High T, high s
         { x: width * 0.25, y: height * 0.15 }, // 3: High T, low s
-        { x: width * 0.25, y: height * 0.8 }   // 4: Low T, low s
+        { x: width * 0.25, y: height * 0.8 }, // 4: Low T, low s
       );
     } else {
       // P-v and T-v diagrams with realistic shapes
       positions.push(
-        { x: width * 0.75, y: height * 0.7 },  // 1: Large volume, low pressure
-        { x: width * 0.25, y: height * 0.3 },  // 2: Small volume, high pressure
-        { x: width * 0.3, y: height * 0.3 },   // 3: Moderate volume, high pressure
-        { x: width * 0.7, y: height * 0.7 }    // 4: Large volume, low pressure
+        { x: width * 0.75, y: height * 0.7 }, // 1: Large volume, low pressure
+        { x: width * 0.25, y: height * 0.3 }, // 2: Small volume, high pressure
+        { x: width * 0.3, y: height * 0.3 }, // 3: Moderate volume, high pressure
+        { x: width * 0.7, y: height * 0.7 }, // 4: Large volume, low pressure
       );
     }
 
