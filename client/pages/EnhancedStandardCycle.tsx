@@ -515,7 +515,7 @@ export function EnhancedStandardCycleContent() {
                 <CardDescription>Overall system performance metrics</CardDescription>
               </CardHeader>
               <CardContent>
-                {results ? (
+                {results && results.performance ? (
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="p-3 bg-blue-50 rounded-lg">
