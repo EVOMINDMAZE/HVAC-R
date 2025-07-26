@@ -155,16 +155,17 @@ export function CycleVisualization({
     return () => clearInterval(interval);
   }, [isAnimating]);
 
-  // Canvas drawing
+  // Canvas drawing with enhanced rendering
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !cycleData) return;
 
-    console.log("CycleVisualization: Drawing with data:", cycleData);
-    console.log("Points:", cycleData.points);
-
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
+    // Enable high-quality rendering
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
 
     drawCycle(ctx, canvas.width, canvas.height);
   }, [cycleData, animationFrame, selectedPoint, diagramType]);
