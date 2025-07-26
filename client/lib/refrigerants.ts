@@ -302,7 +302,7 @@ export const REFRIGERANT_DATABASE: RefrigerantProperties[] = [
       normalBoilingPoint: 226.45
     },
     coolpropSupport: 'full',
-    description: 'Azeotropic blend for low-temperature applications',
+    description: 'Azeotropic blend for low-temperature applications (Note: May have CoolProp limitations)',
     color: '#A855F7'
   },
   {
