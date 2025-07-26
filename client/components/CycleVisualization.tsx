@@ -175,16 +175,20 @@ export function CycleVisualization({
     width: number,
     height: number,
   ) => {
-    // Clear canvas
-    ctx.clearRect(0, 0, width, height);
+    // Clear canvas with gradient background
+    const gradient = ctx.createLinearGradient(0, 0, 0, height);
+    gradient.addColorStop(0, "#fafafa");
+    gradient.addColorStop(1, "#f8fafc");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
 
     if (!cycleData?.points || cycleData.points.length < 4) {
       drawPlaceholder(ctx, width, height);
       return;
     }
 
-    // Set up coordinate system
-    const margin = 60;
+    // Set up coordinate system with larger margins for 4K canvas
+    const margin = 100;
     const plotWidth = width - 2 * margin;
     const plotHeight = height - 2 * margin;
     const config = DIAGRAM_CONFIGS[diagramType];
@@ -192,7 +196,7 @@ export function CycleVisualization({
     // Calculate proper coordinates based on thermodynamic properties
     const pointsWithCoords = calculateCoordinates(cycleData.points, config, plotWidth, plotHeight);
 
-    // Draw axes
+    // Draw axes and grid
     drawAxes(ctx, margin, plotWidth, plotHeight, config);
 
     // Draw saturation dome (only for P-h diagrams)
