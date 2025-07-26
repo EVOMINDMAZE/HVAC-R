@@ -790,22 +790,22 @@ export function EnhancedStandardCycleContent() {
                   <div className="space-y-4">
                     {[
                       {
-                        point: results.point_1,
+                        point: results.state_points?.["1_compressor_inlet"],
                         label: "Point 1 - Evaporator Outlet",
                         color: "blue",
                       },
                       {
-                        point: results.point_2,
+                        point: results.state_points?.["2_compressor_outlet"],
                         label: "Point 2 - Compressor Outlet",
                         color: "red",
                       },
                       {
-                        point: results.point_3,
+                        point: results.state_points?.["3_expansion_valve_inlet"],
                         label: "Point 3 - Condenser Outlet",
                         color: "green",
                       },
                       {
-                        point: results.point_4,
+                        point: results.state_points?.["4_evaporator_inlet"],
                         label: "Point 4 - Expansion Outlet",
                         color: "orange",
                       },
@@ -816,7 +816,7 @@ export function EnhancedStandardCycleContent() {
                         </div>
                         <div className="grid grid-cols-2 gap-2 text-sm">
                           <div>
-                            T: {formatValue(point?.temperature_c, "°C")}
+                            T: {formatValue(point?.temp_c, "°C")}
                           </div>
                           <div>
                             P: {formatValue(point?.pressure_kpa, "kPa", 0)}
@@ -831,9 +831,9 @@ export function EnhancedStandardCycleContent() {
                           <div>
                             ρ: {formatValue(point?.density_kg_m3, "kg/m³")}
                           </div>
-                          {point?.quality !== undefined && (
+                          {point?.vapor_quality !== undefined && (
                             <div>
-                              x: {formatValue(point.quality * 100, "%")}
+                              x: {formatValue(point.vapor_quality * 100, "%")}
                             </div>
                           )}
                         </div>
