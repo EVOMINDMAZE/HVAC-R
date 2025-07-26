@@ -2,7 +2,7 @@ import React from 'react';
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ApiServiceStatus } from "@/components/ApiServiceStatus";
-import { EnhancedStandardCycle } from '@/pages/EnhancedStandardCycle';
+import { EnhancedStandardCycleContent } from '@/pages/EnhancedStandardCycle';
 
 // Main StandardCycle page that uses the enhanced tabbed version
 export function StandardCycle() {
