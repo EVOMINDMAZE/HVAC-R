@@ -257,7 +257,7 @@ export function EnhancedStandardCycleContent() {
           entropy_points: calculationData.saturation_dome.ts_diagram?.entropy_kj_kgk?.length || 0,
           temperature_points: calculationData.saturation_dome.ts_diagram?.temperature_c?.length || 0
         });
-        console.log("📈 T-v Diagram Data:", {
+        console.log("��� T-v Diagram Data:", {
           volume_points: calculationData.saturation_dome.tv_diagram?.specific_volume_m3_kg?.length || 0,
           temperature_points: calculationData.saturation_dome.tv_diagram?.temperature_c?.length || 0
         });
@@ -808,11 +808,52 @@ export function EnhancedStandardCycleContent() {
       }
     }
 
+    // Step 4: Try calculated values for missing properties
+    const calculateDerivedValue = (primaryProperty: string): number | undefined => {
+      const lowerPrimary = primaryProperty.toLowerCase();
+
+      // Calculate cooling capacity from refrigeration effect
+      if (lowerPrimary.includes('cooling_capacity') || lowerPrimary.includes('capacity')) {
+        const refEffect = performanceObj.refrigeration_effect_kj_kg;
+        if (refEffect && !isNaN(refEffect)) {
+          console.log(`✓ Using refrigeration effect as capacity approximation: ${refEffect} kJ/kg`);
+          return refEffect; // This is specific effect in kJ/kg
+        }
+      }
+
+      // Calculate heat rejection from energy balance
+      if (lowerPrimary.includes('heat_rejection') || lowerPrimary.includes('rejection')) {
+        const refEffect = performanceObj.refrigeration_effect_kj_kg;
+        const compWork = performanceObj.work_of_compression_kj_kg;
+        if (refEffect && compWork && !isNaN(refEffect) && !isNaN(compWork)) {
+          const heatRejection = refEffect + compWork;
+          console.log(`✓ Calculated heat rejection: ${heatRejection} kJ/kg`);
+          return heatRejection;
+        }
+      }
+
+      // Use work_of_compression_kj_kg for compressor work
+      if (lowerPrimary.includes('compressor_work')) {
+        const specificWork = performanceObj.work_of_compression_kj_kg;
+        if (specificWork && !isNaN(specificWork)) {
+          console.log(`✓ Using specific work: ${specificWork} kJ/kg`);
+          return specificWork;
+        }
+      }
+
+      return undefined;
+    };
+
+    const derivedValue = calculateDerivedValue(propertyNames[0]);
+    if (derivedValue !== undefined) {
+      return derivedValue;
+    }
+
     console.log(
       `❌ No performance value found for any variation of [${propertyNames.join(", ")}]`,
     );
     console.log("Available performance keys:", perfKeys);
-    console.log("Performance object:", performanceObj);
+    console.log("Performance object sample:", Object.keys(performanceObj).slice(0, 10));
     return undefined;
   };
 
