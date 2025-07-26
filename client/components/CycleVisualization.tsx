@@ -500,27 +500,83 @@ export function CycleVisualization({
     }
   };
 
-  const drawArrow = (
+  const drawEnhancedArrow = (
     ctx: CanvasRenderingContext2D,
     x: number,
     y: number,
     angle: number,
+    color: string,
+    processIndex: number,
   ) => {
-    const size = 8;
-    ctx.fillStyle = "#ef4444";
+    const size = 12;
+    const pulseScale = 1 + 0.3 * Math.sin(Date.now() * 0.005 + processIndex); // Pulsing effect
 
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(angle);
+    ctx.scale(pulseScale, pulseScale);
+
+    // Arrow shadow
+    ctx.shadowColor = color + "60";
+    ctx.shadowBlur = 6;
+    ctx.fillStyle = color;
 
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineTo(-size, -size / 2);
+    ctx.lineTo(-size * 0.6, 0);
     ctx.lineTo(-size, size / 2);
     ctx.closePath();
     ctx.fill();
 
+    // Arrow highlight
+    ctx.shadowColor = "transparent";
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.moveTo(-2, 0);
+    ctx.lineTo(-size * 0.7, -size / 4);
+    ctx.lineTo(-size * 0.7, size / 4);
+    ctx.closePath();
+    ctx.fill();
+
     ctx.restore();
+  };
+
+  const drawProcessLabel = (
+    ctx: CanvasRenderingContext2D,
+    startPoint: CyclePoint,
+    endPoint: CyclePoint,
+    margin: number,
+    processName: string,
+    color: string,
+  ) => {
+    const midX = margin + (startPoint.x + endPoint.x) / 2;
+    const midY = margin + (startPoint.y + endPoint.y) / 2;
+
+    // Label background
+    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+
+    const padding = 8;
+    ctx.font = "bold 12px 'Inter', sans-serif";
+    const textWidth = ctx.measureText(processName).width;
+
+    ctx.beginPath();
+    ctx.roundRect(
+      midX - textWidth / 2 - padding,
+      midY - 10 - padding,
+      textWidth + 2 * padding,
+      20 + 2 * padding,
+      4
+    );
+    ctx.fill();
+    ctx.stroke();
+
+    // Label text
+    ctx.fillStyle = color;
+    ctx.textAlign = "center";
+    ctx.fillText(processName, midX, midY + 4);
   };
 
   const drawCyclePoints = (
