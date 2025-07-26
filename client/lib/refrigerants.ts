@@ -299,8 +299,8 @@ export function validateOperatingConditions(
   };
 }
 
-// Overloaded function for cycle parameters validation
-export function validateOperatingConditions(
+// Cycle parameters validation function
+export function validateCycleConditions(
   refrigerant: RefrigerantProperties,
   conditions: {
     evaporatorTemp: number;
