@@ -871,27 +871,27 @@ export function EnhancedStandardCycleContent() {
                       {
                         point: results.state_points?.["1_compressor_inlet"],
                         label: "Point 1 - Evaporator Outlet",
-                        color: "blue",
+                        colorClass: "text-primary border-l-primary",
                       },
                       {
                         point: results.state_points?.["2_compressor_outlet"],
                         label: "Point 2 - Compressor Outlet",
-                        color: "red",
+                        colorClass: "text-rose-600 border-l-rose-600",
                       },
                       {
                         point:
                           results.state_points?.["3_expansion_valve_inlet"],
                         label: "Point 3 - Condenser Outlet",
-                        color: "green",
+                        colorClass: "text-emerald-600 border-l-emerald-600",
                       },
                       {
                         point: results.state_points?.["4_evaporator_inlet"],
                         label: "Point 4 - Expansion Outlet",
-                        color: "orange",
+                        colorClass: "text-amber-600 border-l-amber-600",
                       },
-                    ].map(({ point, label, color }, index) => (
-                      <div key={index} className="border rounded-lg p-3">
-                        <div className={`font-medium text-${color}-600 mb-2`}>
+                    ].map(({ point, label, colorClass }, index) => (
+                      <div key={index} className={`border rounded-lg p-3 border-l-4 ${colorClass.includes('border-l-') ? '' : 'border-l-gray-200'}`}>
+                        <div className={`font-medium mb-2 ${colorClass.split(' ')[0]}`}>
                           {label}
                         </div>
                         <div className="grid grid-cols-2 gap-2 text-sm">
