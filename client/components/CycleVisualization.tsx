@@ -69,6 +69,44 @@ export function CycleVisualization({
   const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
   const [diagramType, setDiagramType] = useState<DiagramType>("P-h");
 
+  // Calculate canvas coordinates based on thermodynamic properties
+  const calculateCoordinates = (points: CyclePoint[], config: DiagramConfig, plotWidth: number, plotHeight: number) => {
+    if (!points || points.length === 0) return points;
+
+    // Get property values for scaling
+    const xValues = points.map(p => p[config.xAxis.property] as number).filter(v => !isNaN(v));
+    const yValues = points.map(p => p[config.yAxis.property] as number).filter(v => !isNaN(v));
+
+    if (xValues.length === 0 || yValues.length === 0) return points;
+
+    const xMin = Math.min(...xValues);
+    const xMax = Math.max(...xValues);
+    const yMin = Math.min(...yValues);
+    const yMax = Math.max(...yValues);
+
+    // Add padding (10% on each side)
+    const xRange = xMax - xMin;
+    const yRange = yMax - yMin;
+    const xPadding = xRange * 0.1;
+    const yPadding = yRange * 0.1;
+
+    return points.map(point => {
+      const xValue = point[config.xAxis.property] as number;
+      const yValue = point[config.yAxis.property] as number;
+
+      // Scale to canvas coordinates
+      const x = xValue && !isNaN(xValue)
+        ? ((xValue - xMin + xPadding) / (xRange + 2 * xPadding)) * plotWidth
+        : plotWidth / 2;
+
+      const y = yValue && !isNaN(yValue)
+        ? plotHeight - ((yValue - yMin + yPadding) / (yRange + 2 * yPadding)) * plotHeight
+        : plotHeight / 2;
+
+      return { ...point, x, y };
+    });
+  };
+
   // Animation loop
   useEffect(() => {
     if (!isAnimating) return;
