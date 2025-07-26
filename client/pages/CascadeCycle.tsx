@@ -246,20 +246,65 @@ export function CascadeCycleContent() {
 
   const getVisualizationData = (cycle: 'lt' | 'ht') => {
     if (!result) return null;
-    
+
     const cycleData = cycle === 'lt' ? result.lt_cycle : result.ht_cycle;
     const refrigerant = cycle === 'lt' ? formData.ltCycle.refrigerant : formData.htCycle.refrigerant;
-    
-    if (!cycleData?.point_1 || !cycleData?.point_2 || !cycleData?.point_3 || !cycleData?.point_4) {
+
+    // Try multiple possible data structures from API
+    const points = [
+      cycleData?.point_1 || cycleData?.state_points?.[0] || {},
+      cycleData?.point_2 || cycleData?.state_points?.[1] || {},
+      cycleData?.point_3 || cycleData?.state_points?.[2] || {},
+      cycleData?.point_4 || cycleData?.state_points?.[3] || {}
+    ];
+
+    // Check if we have at least some temperature data
+    if (!points.some(p => p.temperature_c !== undefined || p.temperature !== undefined)) {
       return null;
     }
 
     return {
       points: [
-        { ...cycleData.point_1, label: 'Evaporator Outlet', description: 'Superheated vapor' },
-        { ...cycleData.point_2, label: 'Compressor Outlet', description: 'High pressure vapor' },
-        { ...cycleData.point_3, label: 'Condenser Outlet', description: 'Subcooled liquid' },
-        { ...cycleData.point_4, label: 'Expansion Valve Outlet', description: 'Low pressure mixture' }
+        {
+          ...points[0],
+          temperature_c: points[0].temperature_c || points[0].temperature || 0,
+          pressure_kpa: points[0].pressure_kpa || points[0].pressure || 0,
+          enthalpy_kj_kg: points[0].enthalpy_kj_kg || points[0].enthalpy || 0,
+          entropy_kj_kg_k: points[0].entropy_kj_kg_k || points[0].entropy || 0,
+          density_kg_m3: points[0].density_kg_m3 || points[0].density || 0,
+          label: 'Evaporator Outlet',
+          description: 'Superheated vapor'
+        },
+        {
+          ...points[1],
+          temperature_c: points[1].temperature_c || points[1].temperature || 0,
+          pressure_kpa: points[1].pressure_kpa || points[1].pressure || 0,
+          enthalpy_kj_kg: points[1].enthalpy_kj_kg || points[1].enthalpy || 0,
+          entropy_kj_kg_k: points[1].entropy_kj_kg_k || points[1].entropy || 0,
+          density_kg_m3: points[1].density_kg_m3 || points[1].density || 0,
+          label: 'Compressor Outlet',
+          description: 'High pressure vapor'
+        },
+        {
+          ...points[2],
+          temperature_c: points[2].temperature_c || points[2].temperature || 0,
+          pressure_kpa: points[2].pressure_kpa || points[2].pressure || 0,
+          enthalpy_kj_kg: points[2].enthalpy_kj_kg || points[2].enthalpy || 0,
+          entropy_kj_kg_k: points[2].entropy_kj_kg_k || points[2].entropy || 0,
+          density_kg_m3: points[2].density_kg_m3 || points[2].density || 0,
+          label: 'Condenser Outlet',
+          description: 'Subcooled liquid'
+        },
+        {
+          ...points[3],
+          temperature_c: points[3].temperature_c || points[3].temperature || 0,
+          pressure_kpa: points[3].pressure_kpa || points[3].pressure || 0,
+          enthalpy_kj_kg: points[3].enthalpy_kj_kg || points[3].enthalpy || 0,
+          entropy_kj_kg_k: points[3].entropy_kj_kg_k || points[3].entropy || 0,
+          density_kg_m3: points[3].density_kg_m3 || points[3].density || 0,
+          label: 'Expansion Valve Outlet',
+          description: 'Low pressure mixture'
+        }
       ],
       refrigerant: refrigerant,
       cycleType: cycle === 'lt' ? 'cascade-low' as const : 'cascade-high' as const
