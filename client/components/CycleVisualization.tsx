@@ -327,7 +327,7 @@ export function CycleVisualization({
     );
 
     // Draw axes and grid
-    drawAxes(ctx, margin, plotWidth, plotHeight, config);
+    drawAxes(ctx, margin, plotWidth, plotHeight, config, pointsWithCoords);
 
     // Draw saturation dome for all diagram types
     drawSaturationDome(ctx, margin, plotWidth, plotHeight, config);
