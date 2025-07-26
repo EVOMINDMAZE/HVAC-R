@@ -584,22 +584,87 @@ export function CycleVisualization({
     points: CyclePoint[],
     margin: number,
   ) => {
+    const pointColors = ["#dc2626", "#2563eb", "#059669", "#d97706"];
+    const pointNames = ["1", "2", "3", "4"];
+
     points.forEach((point, index) => {
       const x = margin + point.x;
       const y = margin + point.y;
       const isSelected = selectedPoint === point.id;
+      const color = pointColors[index];
+      const radius = isSelected ? 12 : 10;
 
-      // Point circle
-      ctx.fillStyle = isSelected ? "#ef4444" : "#374151";
+      // Point shadow
+      ctx.shadowColor = color + "40";
+      ctx.shadowBlur = 8;
+      ctx.shadowOffsetX = 2;
+      ctx.shadowOffsetY = 2;
+
+      // Outer ring
+      ctx.fillStyle = "white";
       ctx.beginPath();
-      ctx.arc(x, y, isSelected ? 8 : 6, 0, 2 * Math.PI);
+      ctx.arc(x, y, radius + 2, 0, 2 * Math.PI);
       ctx.fill();
 
-      // Point label
-      ctx.fillStyle = "#374151";
-      ctx.font = "bold 14px Inter, sans-serif";
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Inner circle
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(x, y, radius - 2, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // Reset shadow
+      ctx.shadowColor = "transparent";
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+
+      // Point number
+      ctx.fillStyle = "white";
+      ctx.font = "bold 14px 'Inter', sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText(`${index + 1}`, x, y - 15);
+      ctx.fillText(pointNames[index], x, y + 5);
+
+      // Point label with background
+      const labelY = y - radius - 20;
+      const labelText = point.name;
+
+      ctx.font = "12px 'Inter', sans-serif";
+      const textWidth = ctx.measureText(labelText).width;
+
+      // Label background
+      ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1;
+
+      ctx.beginPath();
+      ctx.roundRect(
+        x - textWidth / 2 - 6,
+        labelY - 8,
+        textWidth + 12,
+        16,
+        4
+      );
+      ctx.fill();
+      ctx.stroke();
+
+      // Label text
+      ctx.fillStyle = color;
+      ctx.textAlign = "center";
+      ctx.fillText(labelText, x, labelY + 4);
+
+      // Animated pulse effect for selected point
+      if (isSelected) {
+        const pulseRadius = radius + 5 + 3 * Math.sin(Date.now() * 0.008);
+        ctx.strokeStyle = color + "60";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(x, y, pulseRadius, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
     });
   };
 
