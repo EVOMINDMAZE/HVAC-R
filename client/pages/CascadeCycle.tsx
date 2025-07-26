@@ -18,7 +18,7 @@ import { SaveCalculation } from "@/components/SaveCalculation";
 import { EnhancedRefrigerantSelector } from "@/components/EnhancedRefrigerantSelector";
 import { CycleVisualization } from "@/components/CycleVisualization";
 import { EquipmentDiagrams } from "@/components/EquipmentDiagrams";
-import { validateOperatingConditions, getRefrigerantById } from "@/lib/refrigerants";
+import { validateCycleConditions, getRefrigerantById } from "@/lib/refrigerants";
 
 interface CycleData {
   refrigerant: string;
