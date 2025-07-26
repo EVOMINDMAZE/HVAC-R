@@ -87,7 +87,7 @@ export function CycleVisualization({
   const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
   const [diagramType, setDiagramType] = useState<DiagramType>("P-h");
 
-  // Calculate coordinates using actual thermodynamic data
+  // Enhanced coordinate calculation with better thermodynamic accuracy
   const calculateCoordinates = (
     points: CyclePoint[],
     config: DiagramConfig,
@@ -96,12 +96,13 @@ export function CycleVisualization({
   ) => {
     if (!points || points.length === 0) return points;
 
-    console.log("Calculating coordinates with real data for", diagramType);
-    console.log("Points received:", points);
+    console.log("Calculating coordinates with enhanced algorithm for", diagramType);
+    console.log("Points received:", points.map(p => ({ id: p.id, name: p.name, temp: p.temperature, pressure: p.pressure, enthalpy: p.enthalpy })));
 
-    // Get the actual property values for scaling
+    // Get the actual property values for scaling with validation
     const xValues: number[] = [];
     const yValues: number[] = [];
+    const validPoints: CyclePoint[] = [];
 
     points.forEach((point) => {
       const xProp = config.xAxis.property;
@@ -110,88 +111,105 @@ export function CycleVisualization({
       const xVal = point[xProp] as number;
       const yVal = point[yProp] as number;
 
-      console.log(`Point ${point.id}: ${xProp}=${xVal}, ${yProp}=${yVal}`);
+      console.log(`Point ${point.id}: ${xProp}=${xVal}, ${yProp}=${yVal}, valid=${!isNaN(xVal) && !isNaN(yVal)}`);
 
-      if (!isNaN(xVal) && xVal !== undefined) xValues.push(xVal);
-      if (!isNaN(yVal) && yVal !== undefined) yValues.push(yVal);
+      if (!isNaN(xVal) && xVal !== undefined && xVal !== null) {
+        xValues.push(xVal);
+      }
+      if (!isNaN(yVal) && yVal !== undefined && yVal !== null) {
+        yValues.push(yVal);
+      }
+
+      // Only include points with valid coordinates
+      if (!isNaN(xVal) && !isNaN(yVal) && xVal !== undefined && yVal !== undefined) {
+        validPoints.push(point);
+      }
     });
 
+    console.log(`Valid data points: ${validPoints.length}/4`);
     console.log("X values for scaling:", xValues);
     console.log("Y values for scaling:", yValues);
 
-    // If we have valid data, use it for scaling
-    if (xValues.length > 0 && yValues.length > 0) {
+    // Enhanced scaling with real thermodynamic data
+    if (xValues.length >= 3 && yValues.length >= 3) {
       const xMin = Math.min(...xValues);
       const xMax = Math.max(...xValues);
       const yMin = Math.min(...yValues);
       const yMax = Math.max(...yValues);
 
-      console.log(`Scaling: X[${xMin} to ${xMax}], Y[${yMin} to ${yMax}]`);
+      console.log(`Real thermodynamic scaling: X[${xMin.toFixed(2)} to ${xMax.toFixed(2)}], Y[${yMin.toFixed(2)} to ${yMax.toFixed(2)}]`);
 
-      // Add padding
+      // Smart padding based on data range
       const xRange = xMax - xMin || 1;
       const yRange = yMax - yMin || 1;
-      const xPadding = xRange * 0.15;
-      const yPadding = yRange * 0.15;
+      const xPadding = Math.max(xRange * 0.1, xRange > 1000 ? 50 : 5); // Adaptive padding
+      const yPadding = Math.max(yRange * 0.1, yRange > 1000 ? 50 : 5);
 
       return points.map((point) => {
         const xVal = point[config.xAxis.property] as number;
         const yVal = point[config.yAxis.property] as number;
 
-        const x = !isNaN(xVal)
-          ? ((xVal - xMin + xPadding) / (xRange + 2 * xPadding)) * plotWidth
-          : plotWidth / 2;
+        let x: number, y: number;
 
-        const y = !isNaN(yVal)
-          ? plotHeight -
-            ((yVal - yMin + yPadding) / (yRange + 2 * yPadding)) * plotHeight
-          : plotHeight / 2;
+        if (!isNaN(xVal) && !isNaN(yVal)) {
+          // Use real thermodynamic coordinates
+          x = ((xVal - xMin + xPadding) / (xRange + 2 * xPadding)) * plotWidth;
+          y = plotHeight - ((yVal - yMin + yPadding) / (yRange + 2 * yPadding)) * plotHeight;
+        } else {
+          // Fallback to idealized position for invalid points
+          const fallbackPositions = getIdealizedPositions(diagramType, plotWidth, plotHeight);
+          const index = parseInt(point.id) - 1;
+          x = fallbackPositions[index]?.x || plotWidth / 2;
+          y = fallbackPositions[index]?.y || plotHeight / 2;
+        }
 
-        console.log(
-          `Point ${point.id} mapped to canvas: (${x.toFixed(1)}, ${y.toFixed(1)})`,
-        );
+        console.log(`Point ${point.id} mapped: (${x.toFixed(1)}, ${y.toFixed(1)}) [${!isNaN(xVal) && !isNaN(yVal) ? 'REAL' : 'FALLBACK'}]`);
         return { ...point, x, y };
       });
     } else {
-      // Fallback to idealized positions if no valid data
-      console.log("No valid data found, using fallback positions");
+      // Enhanced fallback with realistic thermodynamic cycle shapes
+      console.log("Using enhanced thermodynamic fallback positions");
+      const fallbackPositions = getIdealizedPositions(diagramType, plotWidth, plotHeight);
+
       return points.map((point, index) => {
-        let x: number, y: number;
-
-        // Create realistic cycle shapes based on typical refrigeration cycle characteristics
-        if (diagramType === "P-h") {
-          const positions = [
-            { x: 0.35, y: 0.75 }, // Point 1 - Evaporator outlet (low P, medium h)
-            { x: 0.65, y: 0.25 }, // Point 2 - Compressor outlet (high P, high h)
-            { x: 0.25, y: 0.25 }, // Point 3 - Condenser outlet (high P, low h)
-            { x: 0.25, y: 0.75 }, // Point 4 - Expansion outlet (low P, low h)
-          ];
-          x = plotWidth * positions[index].x;
-          y = plotHeight * positions[index].y;
-        } else if (diagramType === "T-s") {
-          const positions = [
-            { x: 0.4, y: 0.8 }, // Point 1 - Low T, medium s
-            { x: 0.45, y: 0.2 }, // Point 2 - High T, medium s
-            { x: 0.3, y: 0.2 }, // Point 3 - High T, low s
-            { x: 0.25, y: 0.8 }, // Point 4 - Low T, low s
-          ];
-          x = plotWidth * positions[index].x;
-          y = plotHeight * positions[index].y;
-        } else {
-          // P-v and T-v diagrams
-          const positions = [
-            { x: 0.7, y: 0.7 }, // Point 1
-            { x: 0.3, y: 0.3 }, // Point 2
-            { x: 0.3, y: 0.6 }, // Point 3
-            { x: 0.7, y: 0.6 }, // Point 4
-          ];
-          x = plotWidth * positions[index].x;
-          y = plotHeight * positions[index].y;
-        }
-
-        return { ...point, x, y };
+        const pos = fallbackPositions[index] || { x: plotWidth / 2, y: plotHeight / 2 };
+        console.log(`Point ${point.id} fallback position: (${pos.x.toFixed(1)}, ${pos.y.toFixed(1)})`);
+        return { ...point, x: pos.x, y: pos.y };
       });
     }
+  };
+
+  // Enhanced idealized positions that reflect real thermodynamic cycles
+  const getIdealizedPositions = (type: DiagramType, width: number, height: number) => {
+    const positions: { x: number; y: number }[] = [];
+
+    if (type === "P-h") {
+      // Realistic P-h cycle with proper thermodynamic relationships
+      positions.push(
+        { x: width * 0.3, y: height * 0.75 },  // 1: Low P, moderate h (evaporator outlet)
+        { x: width * 0.7, y: height * 0.2 },   // 2: High P, high h (compressor outlet)
+        { x: width * 0.2, y: height * 0.2 },   // 3: High P, low h (condenser outlet)
+        { x: width * 0.2, y: height * 0.75 }   // 4: Low P, low h (expansion outlet)
+      );
+    } else if (type === "T-s") {
+      // Realistic T-s cycle
+      positions.push(
+        { x: width * 0.35, y: height * 0.8 },  // 1: Low T, moderate s
+        { x: width * 0.55, y: height * 0.15 }, // 2: High T, high s
+        { x: width * 0.25, y: height * 0.15 }, // 3: High T, low s
+        { x: width * 0.25, y: height * 0.8 }   // 4: Low T, low s
+      );
+    } else {
+      // P-v and T-v diagrams with realistic shapes
+      positions.push(
+        { x: width * 0.75, y: height * 0.7 },  // 1: Large volume, low pressure
+        { x: width * 0.25, y: height * 0.3 },  // 2: Small volume, high pressure
+        { x: width * 0.3, y: height * 0.3 },   // 3: Moderate volume, high pressure
+        { x: width * 0.7, y: height * 0.7 }    // 4: Large volume, low pressure
+      );
+    }
+
+    return positions;
   };
 
   // Animation loop
@@ -1025,7 +1043,7 @@ export function CycleVisualization({
                       )}
                       {selectedPointData.id === "4" && (
                         <>
-                          <li>• Two-phase mixture after expansion</li>
+                          <li>�� Two-phase mixture after expansion</li>
                           <li>• Quality determines evaporator performance</li>
                           <li>
                             • Lower quality = more liquid = better heat transfer
