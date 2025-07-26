@@ -101,12 +101,20 @@ export function Profile() {
 
   const [user, setUser] = useState(initialUser);
 
-  // Update local state when auth user or subscription changes
+  // Update local state when auth user, subscription, or calculations change
   useEffect(() => {
     if (authUser) {
       const plan = subscription?.plan || 'free';
       const planDisplayName = plan.charAt(0).toUpperCase() + plan.slice(1).replace('_', ' ');
       const isUnlimited = plan !== 'free';
+
+      // Calculate real usage from Supabase calculations
+      const currentMonth = new Date().getMonth();
+      const currentYear = new Date().getFullYear();
+      const monthlyCalculations = calculations.filter(calc => {
+        const calcDate = new Date(calc.created_at);
+        return calcDate.getMonth() === currentMonth && calcDate.getFullYear() === currentYear;
+      }).length;
 
       setUser({
         id: authUser.id,
@@ -120,7 +128,7 @@ export function Profile() {
         avatar: authUser.user_metadata?.avatar_url || "",
         joinedDate: authUser.created_at?.split('T')[0] || "2024-01-01",
         plan: planDisplayName,
-        calculationsUsed: 0, // This will be updated with real data
+        calculationsUsed: monthlyCalculations,
         calculationsLimit: isUnlimited ? -1 : 10
       });
 
