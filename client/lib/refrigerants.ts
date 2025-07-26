@@ -580,3 +580,46 @@ export function getSuggestedOperatingRange(refrigerantId: string) {
     }
   };
 }
+
+// Popular refrigerants that should be shown first
+export const POPULAR_REFRIGERANTS = [
+  'R134a', 'R410A', 'R32', 'R290', 'R744', 'R22', 'R407C', 'R404A'
+];
+
+// Function to get refrigerants sorted by popularity
+export function getRefrigerantsByPopularity(): RefrigerantProperties[] {
+  const popular = POPULAR_REFRIGERANTS.map(id => getRefrigerantById(id)).filter(Boolean) as RefrigerantProperties[];
+  const others = REFRIGERANT_DATABASE.filter(ref => !POPULAR_REFRIGERANTS.includes(ref.id));
+  return [...popular, ...others];
+}
+
+// Function to search refrigerants
+export function searchRefrigerants(query: string): RefrigerantProperties[] {
+  if (!query.trim()) {
+    return getRefrigerantsByPopularity();
+  }
+
+  const lowerQuery = query.toLowerCase();
+
+  return REFRIGERANT_DATABASE.filter(ref =>
+    ref.id.toLowerCase().includes(lowerQuery) ||
+    ref.name.toLowerCase().includes(lowerQuery) ||
+    ref.fullName.toLowerCase().includes(lowerQuery) ||
+    ref.alternativeNames?.some(name => name.toLowerCase().includes(lowerQuery)) ||
+    ref.applications.some(app => app.toLowerCase().includes(lowerQuery))
+  ).sort((a, b) => {
+    // Prioritize exact matches
+    if (a.id.toLowerCase() === lowerQuery) return -1;
+    if (b.id.toLowerCase() === lowerQuery) return 1;
+    if (a.name.toLowerCase() === lowerQuery) return -1;
+    if (b.name.toLowerCase() === lowerQuery) return 1;
+
+    // Then prioritize popular refrigerants
+    const aPopular = POPULAR_REFRIGERANTS.includes(a.id);
+    const bPopular = POPULAR_REFRIGERANTS.includes(b.id);
+    if (aPopular && !bPopular) return -1;
+    if (!aPopular && bPopular) return 1;
+
+    return 0;
+  });
+}
