@@ -413,12 +413,16 @@ export function EnhancedStandardCycleContent() {
                     className="mt-2"
                   />
                   {selectedRefrigerant && (
-                    <div className="mt-2 text-sm text-gray-600">
-                      <Badge variant="outline" className="mr-2">
-                        {selectedRefrigerant.safety_class}
-                      </Badge>
-                      GWP: {selectedRefrigerant.gwp} | ODP:{" "}
-                      {selectedRefrigerant.odp}
+                    <div className="mt-2 text-sm text-gray-600 space-y-1">
+                      <div>
+                        <TechTerm term="safety_class">
+                          <Badge variant="outline" className="mr-2">
+                            {selectedRefrigerant.safety_class}
+                          </Badge>
+                        </TechTerm>
+                        <TechTerm term="gwp">GWP: {selectedRefrigerant.gwp}</TechTerm> |
+                        <TechTerm term="odp"> ODP: {selectedRefrigerant.odp}</TechTerm>
+                      </div>
                     </div>
                   )}
 
