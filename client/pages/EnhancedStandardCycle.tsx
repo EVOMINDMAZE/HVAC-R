@@ -222,7 +222,9 @@ export function EnhancedStandardCycleContent() {
 
       // Enhanced state points analysis
       if (calculationData.state_points) {
-        console.log("\n🔥 === DETAILED STATE POINTS ANALYSIS (NEW STRUCTURE) ===");
+        console.log(
+          "\n🔥 === DETAILED STATE POINTS ANALYSIS (NEW STRUCTURE) ===",
+        );
         console.log(
           "📊 Total State Points:",
           Object.keys(calculationData.state_points).length,
@@ -250,16 +252,28 @@ export function EnhancedStandardCycleContent() {
       if (calculationData.saturation_dome) {
         console.log("\n🏔️ === SATURATION DOME DATA ===");
         console.log("📈 P-h Diagram Data:", {
-          enthalpy_points: calculationData.saturation_dome.ph_diagram?.enthalpy_kj_kg?.length || 0,
-          pressure_points: calculationData.saturation_dome.ph_diagram?.pressure_kpa?.length || 0
+          enthalpy_points:
+            calculationData.saturation_dome.ph_diagram?.enthalpy_kj_kg
+              ?.length || 0,
+          pressure_points:
+            calculationData.saturation_dome.ph_diagram?.pressure_kpa?.length ||
+            0,
         });
         console.log("📈 T-s Diagram Data:", {
-          entropy_points: calculationData.saturation_dome.ts_diagram?.entropy_kj_kgk?.length || 0,
-          temperature_points: calculationData.saturation_dome.ts_diagram?.temperature_c?.length || 0
+          entropy_points:
+            calculationData.saturation_dome.ts_diagram?.entropy_kj_kgk
+              ?.length || 0,
+          temperature_points:
+            calculationData.saturation_dome.ts_diagram?.temperature_c?.length ||
+            0,
         });
         console.log("��� T-v Diagram Data:", {
-          volume_points: calculationData.saturation_dome.tv_diagram?.specific_volume_m3_kg?.length || 0,
-          temperature_points: calculationData.saturation_dome.tv_diagram?.temperature_c?.length || 0
+          volume_points:
+            calculationData.saturation_dome.tv_diagram?.specific_volume_m3_kg
+              ?.length || 0,
+          temperature_points:
+            calculationData.saturation_dome.tv_diagram?.temperature_c?.length ||
+            0,
         });
       } else {
         console.log("\n⚠️ No saturation_dome found in response!");
@@ -809,20 +823,30 @@ export function EnhancedStandardCycleContent() {
     }
 
     // Step 4: Try calculated values for missing properties
-    const calculateDerivedValue = (primaryProperty: string): number | undefined => {
+    const calculateDerivedValue = (
+      primaryProperty: string,
+    ): number | undefined => {
       const lowerPrimary = primaryProperty.toLowerCase();
 
       // Calculate cooling capacity from refrigeration effect
-      if (lowerPrimary.includes('cooling_capacity') || lowerPrimary.includes('capacity')) {
+      if (
+        lowerPrimary.includes("cooling_capacity") ||
+        lowerPrimary.includes("capacity")
+      ) {
         const refEffect = performanceObj.refrigeration_effect_kj_kg;
         if (refEffect && !isNaN(refEffect)) {
-          console.log(`✓ Using refrigeration effect as capacity approximation: ${refEffect} kJ/kg`);
+          console.log(
+            `✓ Using refrigeration effect as capacity approximation: ${refEffect} kJ/kg`,
+          );
           return refEffect; // This is specific effect in kJ/kg
         }
       }
 
       // Calculate heat rejection from energy balance
-      if (lowerPrimary.includes('heat_rejection') || lowerPrimary.includes('rejection')) {
+      if (
+        lowerPrimary.includes("heat_rejection") ||
+        lowerPrimary.includes("rejection")
+      ) {
         const refEffect = performanceObj.refrigeration_effect_kj_kg;
         const compWork = performanceObj.work_of_compression_kj_kg;
         if (refEffect && compWork && !isNaN(refEffect) && !isNaN(compWork)) {
@@ -833,7 +857,7 @@ export function EnhancedStandardCycleContent() {
       }
 
       // Use work_of_compression_kj_kg for compressor work
-      if (lowerPrimary.includes('compressor_work')) {
+      if (lowerPrimary.includes("compressor_work")) {
         const specificWork = performanceObj.work_of_compression_kj_kg;
         if (specificWork && !isNaN(specificWork)) {
           console.log(`✓ Using specific work: ${specificWork} kJ/kg`);
@@ -853,7 +877,10 @@ export function EnhancedStandardCycleContent() {
       `❌ No performance value found for any variation of [${propertyNames.join(", ")}]`,
     );
     console.log("Available performance keys:", perfKeys);
-    console.log("Performance object sample:", Object.keys(performanceObj).slice(0, 10));
+    console.log(
+      "Performance object sample:",
+      Object.keys(performanceObj).slice(0, 10),
+    );
     return undefined;
   };
 
@@ -890,10 +917,10 @@ export function EnhancedStandardCycleContent() {
                 "specific_volume_m3_kg",
                 "specific_volume",
               ]) || 0,
-            quality: getPropertyValue(
-              results.state_points?.["1"],
-              ["vapor_quality", "quality"],
-            ),
+            quality: getPropertyValue(results.state_points?.["1"], [
+              "vapor_quality",
+              "quality",
+            ]),
             x: 0, // Will be calculated by CycleVisualization
             y: 0,
           },
@@ -927,10 +954,10 @@ export function EnhancedStandardCycleContent() {
                 "specific_volume_m3_kg",
                 "specific_volume",
               ]) || 0,
-            quality: getPropertyValue(
-              results.state_points?.["2"],
-              ["vapor_quality", "quality"],
-            ),
+            quality: getPropertyValue(results.state_points?.["2"], [
+              "vapor_quality",
+              "quality",
+            ]),
             x: 0,
             y: 0,
           },
@@ -938,34 +965,36 @@ export function EnhancedStandardCycleContent() {
             id: "3",
             name: "Condenser Outlet",
             temperature:
-              getPropertyValue(
-                results.state_points?.["3"],
-                ["temperature_c", "temp_c", "temperature"],
-              ) || 0,
+              getPropertyValue(results.state_points?.["3"], [
+                "temperature_c",
+                "temp_c",
+                "temperature",
+              ]) || 0,
             pressure:
-              getPropertyValue(
-                results.state_points?.["3"],
-                ["pressure_kpa", "pressure"],
-              ) || 0,
+              getPropertyValue(results.state_points?.["3"], [
+                "pressure_kpa",
+                "pressure",
+              ]) || 0,
             enthalpy:
-              getPropertyValue(
-                results.state_points?.["3"],
-                ["enthalpy_kj_kg", "enthalpy"],
-              ) || 0,
+              getPropertyValue(results.state_points?.["3"], [
+                "enthalpy_kj_kg",
+                "enthalpy",
+              ]) || 0,
             entropy:
-              getPropertyValue(
-                results.state_points?.["3"],
-                ["entropy_kj_kgk", "entropy_kj_kg_k", "entropy"],
-              ) || 0,
+              getPropertyValue(results.state_points?.["3"], [
+                "entropy_kj_kgk",
+                "entropy_kj_kg_k",
+                "entropy",
+              ]) || 0,
             specificVolume:
-              getPropertyValue(
-                results.state_points?.["3"],
-                ["specific_volume_m3_kg", "specific_volume"],
-              ) || 0,
-            quality: getPropertyValue(
-              results.state_points?.["3"],
-              ["vapor_quality", "quality"],
-            ),
+              getPropertyValue(results.state_points?.["3"], [
+                "specific_volume_m3_kg",
+                "specific_volume",
+              ]) || 0,
+            quality: getPropertyValue(results.state_points?.["3"], [
+              "vapor_quality",
+              "quality",
+            ]),
             x: 0,
             y: 0,
           },
@@ -995,14 +1024,14 @@ export function EnhancedStandardCycleContent() {
                 "entropy",
               ]) || 0,
             specificVolume:
-              getPropertyValue(
-                results.state_points?.["4"],
-                ["specific_volume_m3_kg", "specific_volume"],
-              ) || 0,
-            quality: getPropertyValue(
-              results.state_points?.["4"],
-              ["vapor_quality", "quality"],
-            ),
+              getPropertyValue(results.state_points?.["4"], [
+                "specific_volume_m3_kg",
+                "specific_volume",
+              ]) || 0,
+            quality: getPropertyValue(results.state_points?.["4"], [
+              "vapor_quality",
+              "quality",
+            ]),
             x: 0,
             y: 0,
           },

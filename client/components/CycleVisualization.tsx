@@ -53,12 +53,20 @@ const DIAGRAM_CONFIGS: Record<DiagramType, DiagramConfig> = {
     name: "Temperature-Entropy Diagram",
   },
   "P-v": {
-    xAxis: { property: "specificVolume", label: "Specific Volume", unit: "m³/kg" },
+    xAxis: {
+      property: "specificVolume",
+      label: "Specific Volume",
+      unit: "m³/kg",
+    },
     yAxis: { property: "pressure", label: "Pressure", unit: "kPa" },
     name: "Pressure-Volume Diagram",
   },
   "T-v": {
-    xAxis: { property: "specificVolume", label: "Specific Volume", unit: "m³/kg" },
+    xAxis: {
+      property: "specificVolume",
+      label: "Specific Volume",
+      unit: "m³/kg",
+    },
     yAxis: { property: "temperature", label: "Temperature", unit: "°C" },
     name: "Temperature-Volume Diagram",
   },
@@ -347,7 +355,13 @@ export function CycleVisualization({
     drawComponentLabels(ctx, pointsWithCoords, margin);
 
     // Draw enhanced engineering data overlay
-    drawEngineeringOverlay(ctx, pointsWithCoords, margin, plotWidth, plotHeight);
+    drawEngineeringOverlay(
+      ctx,
+      pointsWithCoords,
+      margin,
+      plotWidth,
+      plotHeight,
+    );
   };
 
   const drawPlaceholder = (
@@ -491,8 +505,12 @@ export function CycleVisualization({
     ctx.textAlign = "center";
 
     // Calculate real value ranges from cycle points
-    const xValues = points.map(p => p[config.xAxis.property] as number).filter(v => !isNaN(v) && v !== undefined);
-    const yValues = points.map(p => p[config.yAxis.property] as number).filter(v => !isNaN(v) && v !== undefined);
+    const xValues = points
+      .map((p) => p[config.xAxis.property] as number)
+      .filter((v) => !isNaN(v) && v !== undefined);
+    const yValues = points
+      .map((p) => p[config.yAxis.property] as number)
+      .filter((v) => !isNaN(v) && v !== undefined);
 
     if (xValues.length === 0 || yValues.length === 0) {
       console.log("No valid axis data available for", diagramType);
@@ -517,7 +535,7 @@ export function CycleVisualization({
 
     console.log(`Real axis ranges for ${diagramType}:`, {
       xRange: [xMinPadded.toFixed(2), xMaxPadded.toFixed(2)],
-      yRange: [yMinPadded.toFixed(2), yMaxPadded.toFixed(2)]
+      yRange: [yMinPadded.toFixed(2), yMaxPadded.toFixed(2)],
     });
 
     const numTicks = 6;
@@ -534,9 +552,12 @@ export function CycleVisualization({
 
       // Format value based on magnitude and type
       let formattedValue: string;
-      if (config.xAxis.property === 'pressure') {
-        formattedValue = realValue > 1000 ? (realValue / 1000).toFixed(1) + 'k' : realValue.toFixed(0);
-      } else if (config.xAxis.property === 'specificVolume') {
+      if (config.xAxis.property === "pressure") {
+        formattedValue =
+          realValue > 1000
+            ? (realValue / 1000).toFixed(1) + "k"
+            : realValue.toFixed(0);
+      } else if (config.xAxis.property === "specificVolume") {
         formattedValue = realValue.toFixed(4);
       } else {
         formattedValue = realValue.toFixed(1);
@@ -558,9 +579,12 @@ export function CycleVisualization({
 
       // Format value based on magnitude and type
       let formattedValue: string;
-      if (config.yAxis.property === 'pressure') {
-        formattedValue = realValue > 1000 ? (realValue / 1000).toFixed(1) + 'k' : realValue.toFixed(0);
-      } else if (config.yAxis.property === 'temperature') {
+      if (config.yAxis.property === "pressure") {
+        formattedValue =
+          realValue > 1000
+            ? (realValue / 1000).toFixed(1) + "k"
+            : realValue.toFixed(0);
+      } else if (config.yAxis.property === "temperature") {
         formattedValue = realValue.toFixed(0);
       } else {
         formattedValue = realValue.toFixed(1);
@@ -619,7 +643,7 @@ export function CycleVisualization({
       console.log(`Drawing saturation dome for ${diagramType}:`, {
         points: xData.length,
         xRange: [xMin, xMax],
-        yRange: [yMin, yMax]
+        yRange: [yMin, yMax],
       });
 
       // Draw saturation dome curve
@@ -630,7 +654,10 @@ export function CycleVisualization({
 
       for (let i = 0; i < Math.min(xData.length, yData.length); i++) {
         const x = margin + ((xData[i] - xMin) / (xMax - xMin)) * plotWidth;
-        const y = margin + plotHeight - ((yData[i] - yMin) / (yMax - yMin)) * plotHeight;
+        const y =
+          margin +
+          plotHeight -
+          ((yData[i] - yMin) / (yMax - yMin)) * plotHeight;
 
         if (i === 0) {
           ctx.moveTo(x, y);
@@ -1014,7 +1041,12 @@ export function CycleVisualization({
     const overlayY = margin + 20;
 
     // Background with gradient
-    const gradient = ctx.createLinearGradient(overlayX, overlayY, overlayX, overlayY + 160);
+    const gradient = ctx.createLinearGradient(
+      overlayX,
+      overlayY,
+      overlayX,
+      overlayY + 160,
+    );
     gradient.addColorStop(0, "rgba(255, 255, 255, 0.98)");
     gradient.addColorStop(1, "rgba(248, 250, 252, 0.95)");
 
@@ -1054,11 +1086,36 @@ export function CycleVisualization({
     // Enhanced metrics with better formatting
     ctx.font = "13px 'Inter', sans-serif";
     const metrics = [
-      { label: "Compression Ratio", value: compressionRatio.toFixed(2), unit: "", color: "#dc2626" },
-      { label: "Temperature Lift", value: temperatureLift.toFixed(1), unit: "°C", color: "#ea580c" },
-      { label: "Refrigeration Effect", value: refrigerationEffect.toFixed(1), unit: "kJ/kg", color: "#059669" },
-      { label: "Compression Work", value: compressionWork.toFixed(1), unit: "kJ/kg", color: "#7c3aed" },
-      { label: "Theoretical COP", value: theoreticalCOP.toFixed(2), unit: "", color: "#2563eb" },
+      {
+        label: "Compression Ratio",
+        value: compressionRatio.toFixed(2),
+        unit: "",
+        color: "#dc2626",
+      },
+      {
+        label: "Temperature Lift",
+        value: temperatureLift.toFixed(1),
+        unit: "°C",
+        color: "#ea580c",
+      },
+      {
+        label: "Refrigeration Effect",
+        value: refrigerationEffect.toFixed(1),
+        unit: "kJ/kg",
+        color: "#059669",
+      },
+      {
+        label: "Compression Work",
+        value: compressionWork.toFixed(1),
+        unit: "kJ/kg",
+        color: "#7c3aed",
+      },
+      {
+        label: "Theoretical COP",
+        value: theoreticalCOP.toFixed(2),
+        unit: "",
+        color: "#2563eb",
+      },
     ];
 
     metrics.forEach((metric, index) => {
@@ -1096,25 +1153,25 @@ export function CycleVisualization({
         from: points[0],
         to: points[1],
         label: `ΔT: ${(points[1].temperature - points[0].temperature).toFixed(1)}°C`,
-        color: "#dc2626"
+        color: "#dc2626",
       },
       {
         from: points[1],
         to: points[2],
-        label: `ΔP: ${((points[1].pressure - points[2].pressure)/1000).toFixed(1)}MPa`,
-        color: "#2563eb"
+        label: `ΔP: ${((points[1].pressure - points[2].pressure) / 1000).toFixed(1)}MPa`,
+        color: "#2563eb",
       },
       {
         from: points[2],
         to: points[3],
         label: `ΔH: ${(points[2].enthalpy - points[3].enthalpy).toFixed(1)}kJ/kg`,
-        color: "#059669"
+        color: "#059669",
       },
       {
         from: points[3],
         to: points[0],
         label: `ΔH: ${(points[0].enthalpy - points[3].enthalpy).toFixed(1)}kJ/kg`,
-        color: "#d97706"
+        color: "#d97706",
       },
     ];
 
@@ -1131,7 +1188,7 @@ export function CycleVisualization({
       const textWidth = ctx.measureText(process.label).width;
 
       ctx.beginPath();
-      ctx.roundRect(midX - textWidth/2 - 6, midY - 8, textWidth + 12, 16, 3);
+      ctx.roundRect(midX - textWidth / 2 - 6, midY - 8, textWidth + 12, 16, 3);
       ctx.fill();
       ctx.stroke();
 
@@ -1154,8 +1211,8 @@ export function CycleVisualization({
       // Enhanced point labels with key properties
       const labels = [
         `${point.temperature.toFixed(1)}°C`,
-        `${(point.pressure/1000).toFixed(1)}MPa`,
-        `${point.enthalpy.toFixed(0)}kJ/kg`
+        `${(point.pressure / 1000).toFixed(1)}MPa`,
+        `${point.enthalpy.toFixed(0)}kJ/kg`,
       ];
 
       // Background for labels
@@ -1163,12 +1220,14 @@ export function CycleVisualization({
       ctx.strokeStyle = ["#dc2626", "#2563eb", "#059669", "#d97706"][index];
       ctx.lineWidth = 1;
 
-      const maxWidth = Math.max(...labels.map(label => ctx.measureText(label).width));
+      const maxWidth = Math.max(
+        ...labels.map((label) => ctx.measureText(label).width),
+      );
       const labelHeight = labels.length * 14 + 8;
 
       // Position label to avoid overlapping with point
       const labelX = x + (index % 2 === 0 ? 30 : -30 - maxWidth);
-      const labelY = y - labelHeight/2;
+      const labelY = y - labelHeight / 2;
 
       ctx.beginPath();
       ctx.roundRect(labelX - 4, labelY - 4, maxWidth + 8, labelHeight, 4);
@@ -1212,9 +1271,14 @@ export function CycleVisualization({
       plotHeight,
     );
 
-    console.log('Click detection:', {
-      clickX, clickY,
-      pointsWithCoords: pointsWithCoords.map(p => ({ id: p.id, x: margin + p.x, y: margin + p.y }))
+    console.log("Click detection:", {
+      clickX,
+      clickY,
+      pointsWithCoords: pointsWithCoords.map((p) => ({
+        id: p.id,
+        x: margin + p.x,
+        y: margin + p.y,
+      })),
     });
 
     // Check if click is near any point using calculated coordinates
@@ -1327,11 +1391,15 @@ export function CycleVisualization({
                 <div className="grid grid-cols-1 gap-2">
                   <div className="flex items-center gap-3 p-2 bg-red-50 rounded">
                     <div className="w-6 h-2 bg-red-500 rounded"></div>
-                    <span className="text-sm font-medium">1→2: Compression</span>
+                    <span className="text-sm font-medium">
+                      1→2: Compression
+                    </span>
                   </div>
                   <div className="flex items-center gap-3 p-2 bg-blue-50 rounded">
                     <div className="w-6 h-2 bg-blue-500 rounded"></div>
-                    <span className="text-sm font-medium">2→3: Condensation</span>
+                    <span className="text-sm font-medium">
+                      2→3: Condensation
+                    </span>
                   </div>
                   <div className="flex items-center gap-3 p-2 bg-green-50 rounded">
                     <div className="w-6 h-2 bg-green-500 rounded"></div>
@@ -1339,7 +1407,9 @@ export function CycleVisualization({
                   </div>
                   <div className="flex items-center gap-3 p-2 bg-yellow-50 rounded">
                     <div className="w-6 h-2 bg-yellow-500 rounded"></div>
-                    <span className="text-sm font-medium">4→1: Evaporation</span>
+                    <span className="text-sm font-medium">
+                      4→1: Evaporation
+                    </span>
                   </div>
                 </div>
               </CardContent>
@@ -1574,8 +1644,6 @@ export function CycleVisualization({
                 </Button>
               </CardContent>
             </Card>
-
-
           </div>
         </div>
       </CardContent>
