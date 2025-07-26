@@ -71,13 +71,26 @@ export function CycleVisualization({
 
   // Calculate canvas coordinates based on thermodynamic properties
   const calculateCoordinates = (points: CyclePoint[], config: DiagramConfig, plotWidth: number, plotHeight: number) => {
-    if (!points || points.length === 0) return points;
+    if (!points || points.length === 0) {
+      console.log("No points to calculate coordinates for");
+      return points;
+    }
+
+    console.log("Calculating coordinates for diagram type:", diagramType);
+    console.log("Config:", config);
+    console.log("Input points:", points);
 
     // Get property values for scaling
     const xValues = points.map(p => p[config.xAxis.property] as number).filter(v => !isNaN(v));
     const yValues = points.map(p => p[config.yAxis.property] as number).filter(v => !isNaN(v));
 
-    if (xValues.length === 0 || yValues.length === 0) return points;
+    console.log("X values:", xValues);
+    console.log("Y values:", yValues);
+
+    if (xValues.length === 0 || yValues.length === 0) {
+      console.log("No valid X or Y values found");
+      return points;
+    }
 
     const xMin = Math.min(...xValues);
     const xMax = Math.max(...xValues);
