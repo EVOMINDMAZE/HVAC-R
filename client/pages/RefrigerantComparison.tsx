@@ -325,7 +325,7 @@ export function RefrigerantComparisonContent() {
             <div>
               <Label className="text-base font-semibold mb-4 block">Select Refrigerants to Compare</Label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {refrigerants.map((refrigerant) => {
+                {REFRIGERANT_DATABASE.map((refrigerant) => {
                   const hasWarnings = validationWarnings[refrigerant.id]?.length > 0;
                   return (
                     <div key={refrigerant.id} className="flex items-center space-x-2">
