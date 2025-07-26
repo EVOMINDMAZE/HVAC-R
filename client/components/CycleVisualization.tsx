@@ -522,45 +522,81 @@ export function CycleVisualization({
     margin: number,
     plotWidth: number,
     plotHeight: number,
+    config: DiagramConfig,
   ) => {
-    // Enhanced saturation dome for P-h diagram
-    const centerX = margin + plotWidth * 0.35;
-    const centerY = margin + plotHeight * 0.6;
-    const radiusX = plotWidth * 0.3;
-    const radiusY = plotHeight * 0.4;
+    if (!cycleData?.saturationDome) {
+      // Fallback to simplified dome if no data available
+      const centerX = margin + plotWidth * 0.35;
+      const centerY = margin + plotHeight * 0.6;
+      const radiusX = plotWidth * 0.3;
+      const radiusY = plotHeight * 0.4;
 
-    // Dome fill with gradient
-    const gradient = ctx.createRadialGradient(
-      centerX,
-      centerY - radiusY * 0.3,
-      0,
-      centerX,
-      centerY,
-      radiusY,
-    );
-    gradient.addColorStop(0, "rgba(59, 130, 246, 0.05)");
-    gradient.addColorStop(1, "rgba(59, 130, 246, 0.02)");
+      ctx.strokeStyle = "rgba(59, 130, 246, 0.3)";
+      ctx.lineWidth = 1;
+      ctx.setLineDash([8, 4]);
+      ctx.beginPath();
+      ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      return;
+    }
 
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI);
-    ctx.fill();
+    // Draw real saturation dome using API data
+    let xData: number[] = [];
+    let yData: number[] = [];
 
-    // Dome border
-    ctx.strokeStyle = "rgba(59, 130, 246, 0.4)";
-    ctx.lineWidth = 2;
-    ctx.setLineDash([8, 4]);
+    if (diagramType === "P-h" && cycleData.saturationDome.ph_diagram) {
+      xData = cycleData.saturationDome.ph_diagram.enthalpy_kj_kg;
+      yData = cycleData.saturationDome.ph_diagram.pressure_kpa;
+    } else if (diagramType === "T-s" && cycleData.saturationDome.ts_diagram) {
+      xData = cycleData.saturationDome.ts_diagram.entropy_kj_kgk;
+      yData = cycleData.saturationDome.ts_diagram.temperature_c;
+    } else if (diagramType === "T-v" && cycleData.saturationDome.tv_diagram) {
+      xData = cycleData.saturationDome.tv_diagram.specific_volume_m3_kg;
+      yData = cycleData.saturationDome.tv_diagram.temperature_c;
+    }
 
-    ctx.beginPath();
-    ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI);
-    ctx.stroke();
-    ctx.setLineDash([]);
+    if (xData.length > 0 && yData.length > 0) {
+      // Scale the saturation dome data to canvas coordinates
+      const xMin = Math.min(...xData);
+      const xMax = Math.max(...xData);
+      const yMin = Math.min(...yData);
+      const yMax = Math.max(...yData);
 
-    // Add saturation dome label
-    ctx.fillStyle = "rgba(59, 130, 246, 0.8)";
-    ctx.font = "12px 'Inter', sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText("Saturation Dome", centerX, centerY + radiusY + 20);
+      console.log(`Drawing saturation dome for ${diagramType}:`, {
+        points: xData.length,
+        xRange: [xMin, xMax],
+        yRange: [yMin, yMax]
+      });
+
+      // Draw saturation dome curve
+      ctx.strokeStyle = "rgba(59, 130, 246, 0.6)";
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 2]);
+      ctx.beginPath();
+
+      for (let i = 0; i < Math.min(xData.length, yData.length); i++) {
+        const x = margin + ((xData[i] - xMin) / (xMax - xMin)) * plotWidth;
+        const y = margin + plotHeight - ((yData[i] - yMin) / (yMax - yMin)) * plotHeight;
+
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Add saturation dome label
+      ctx.fillStyle = "rgba(59, 130, 246, 0.8)";
+      ctx.font = "12px 'Inter', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("Saturation Dome", margin + plotWidth * 0.8, margin + 30);
+    } else {
+      console.log(`No saturation dome data for ${diagramType}`);
+    }
   };
 
   const drawCycleLines = (
