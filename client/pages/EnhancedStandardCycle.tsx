@@ -1529,23 +1529,22 @@ export function EnhancedStandardCycleContent() {
                   <div className="space-y-4">
                     {[
                       {
-                        point: results.state_points?.["1_compressor_inlet"],
+                        point: results.state_points?.["1"],
                         label: "Point 1 - Evaporator Outlet",
                         colorClass: "text-primary border-l-primary",
                       },
                       {
-                        point: results.state_points?.["2_compressor_outlet"],
+                        point: results.state_points?.["2"],
                         label: "Point 2 - Compressor Outlet",
                         colorClass: "text-rose-600 border-l-rose-600",
                       },
                       {
-                        point:
-                          results.state_points?.["3_expansion_valve_inlet"],
+                        point: results.state_points?.["3"],
                         label: "Point 3 - Condenser Outlet",
                         colorClass: "text-emerald-600 border-l-emerald-600",
                       },
                       {
-                        point: results.state_points?.["4_evaporator_inlet"],
+                        point: results.state_points?.["4"],
                         label: "Point 4 - Expansion Outlet",
                         colorClass: "text-amber-600 border-l-amber-600",
                       },
