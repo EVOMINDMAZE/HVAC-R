@@ -57,6 +57,8 @@ interface CycleVisualizationProps {
   };
   isAnimating?: boolean;
   onAnimationToggle?: () => void;
+  animationSpeed?: number;
+  currentPoint?: number;
 }
 
 export function CycleVisualization({
