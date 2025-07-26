@@ -520,7 +520,7 @@ export function EnhancedStandardCycleContent() {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="p-3 bg-blue-50 rounded-lg">
                         <div className="text-2xl font-bold text-blue-600">
-                          {results.performance.cop.toFixed(2)}
+                          {results.performance?.cop?.toFixed(2) || 'N/A'}
                         </div>
                         <div className="text-sm text-blue-800">Coefficient of Performance</div>
                       </div>
