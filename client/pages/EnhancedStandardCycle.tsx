@@ -762,7 +762,7 @@ export function EnhancedStandardCycleContent() {
                   />
                 </div>
               ) : (
-                <div className="text-center py-12 text-gray-500">
+                <div className="text-center py-12 text-muted-foreground">
                   Calculate a cycle to view the P-h diagram visualization
                 </div>
               )}
