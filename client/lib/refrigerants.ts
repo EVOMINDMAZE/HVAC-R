@@ -1,12 +1,17 @@
 // Enhanced refrigerant database with CoolProp-validated properties
 export interface RefrigerantLimits {
-  minTemp: number;  // Kelvin
-  maxTemp: number;  // Kelvin
-  minPressure: number;  // Pa
-  maxPressure: number;  // Pa
-  criticalTemp: number;  // Kelvin
-  criticalPressure: number;  // Pa
-  normalBoilingPoint: number;  // Kelvin
+  min_temp_c: number;  // Celsius
+  max_temp_c: number;  // Celsius
+  critical_temp_c: number;  // Celsius
+  critical_pressure_kpa: number;  // kPa
+  normal_boiling_point_c: number;  // Celsius
+  minTemp: number;  // Kelvin (legacy)
+  maxTemp: number;  // Kelvin (legacy)
+  minPressure: number;  // Pa (legacy)
+  maxPressure: number;  // Pa (legacy)
+  criticalTemp: number;  // Kelvin (legacy)
+  criticalPressure: number;  // Pa (legacy)
+  normalBoilingPoint: number;  // Kelvin (legacy)
 }
 
 export interface RefrigerantProperties {
@@ -17,6 +22,10 @@ export interface RefrigerantProperties {
   ozoneDepleteionPotential: number;
   globalWarmingPotential: number;
   safety: 'A1' | 'A2' | 'A2L' | 'A3' | 'B1' | 'B2' | 'B2L' | 'B3';
+  // Aliases for compatibility
+  odp: number;
+  gwp: number;
+  safety_class: string;
   applications: string[];
   limits: RefrigerantLimits;
   coolpropSupport: 'full' | 'limited' | 'none';
