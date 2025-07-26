@@ -289,8 +289,6 @@ export const userDb = {
   findById: null as any,
   update: null as any,
   updateSubscription: null as any,
-  updateStripeInfo: null as any,
-  findByStripeCustomerId: null as any,
   updatePreferences: null as any
 };
 
