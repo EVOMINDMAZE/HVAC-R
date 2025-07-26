@@ -109,8 +109,8 @@ export function useStripeCheckout() {
         fullUrl: `${supabaseUrl}/functions/v1/billing/create-checkout-session`
       });
 
-      if (!supabaseUrl) {
-        throw new Error('VITE_SUPABASE_URL is not configured');
+      if (!supabaseUrl || supabaseUrl === 'your-supabase-project-url') {
+        throw new Error('Supabase is not configured yet. Please set VITE_SUPABASE_URL and deploy the Edge Functions.');
       }
 
       const response = await fetch(`${supabaseUrl}/functions/v1/billing/create-checkout-session`, {
