@@ -204,6 +204,11 @@ export function useCustomerPortal() {
       }
 
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+
+      if (!supabaseUrl || supabaseUrl === 'your-supabase-project-url') {
+        throw new Error('Supabase is not configured yet. Please set VITE_SUPABASE_URL and deploy the Edge Functions.');
+      }
+
       const response = await fetch(`${supabaseUrl}/functions/v1/billing/create-portal-session`, {
         method: 'POST',
         headers: {
