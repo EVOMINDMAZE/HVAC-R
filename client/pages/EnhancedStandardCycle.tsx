@@ -35,6 +35,7 @@ import { EnhancedRefrigerantSelector } from "../components/EnhancedRefrigerantSe
 import { CycleVisualization } from "../components/CycleVisualization";
 import { EquipmentDiagrams } from "../components/EquipmentDiagrams";
 import { TechnicalTooltip, TechTerm } from "../components/TechnicalTooltip";
+import { ProfessionalFeatures } from "../components/ProfessionalFeatures";
 import {
   RefrigerantProperties,
   validateCycleConditions,
@@ -110,6 +111,11 @@ export function EnhancedStandardCycleContent() {
   });
   const [activeTab, setActiveTab] = useState("calculation");
   const [calculationComplete, setCalculationComplete] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    // Show onboarding for first-time users
+    return !localStorage.getItem('hvac_platform_onboarding_completed');
+  });
+  const [onboardingStep, setOnboardingStep] = useState(0);
 
   const handleInputChange = useCallback((field: string, value: number) => {
     setFormData((prev) => ({
@@ -740,7 +746,7 @@ export function EnhancedStandardCycleContent() {
         onValueChange={setActiveTab}
         className="space-y-6"
       >
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="calculation" className="flex items-center gap-2">
             <Calculator className="h-4 w-4" />
             Calculation
@@ -783,6 +789,16 @@ export function EnhancedStandardCycleContent() {
                 New
               </Badge>
             )}
+          </TabsTrigger>
+          <TabsTrigger
+            value="professional"
+            className="flex items-center gap-2"
+          >
+            <ArrowRight className="h-4 w-4" />
+            Professional
+            <Badge variant="secondary" className="ml-1">
+              Pro
+            </Badge>
           </TabsTrigger>
         </TabsList>
 
@@ -1410,7 +1426,179 @@ export function EnhancedStandardCycleContent() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        <TabsContent value="professional">
+          <ProfessionalFeatures
+            cycleData={cycleData}
+            results={results}
+            refrigerant={formData.refrigerant}
+          />
+        </TabsContent>
       </Tabs>
+
+      {/* Interactive Onboarding */}
+      {showOnboarding && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <Card className="max-w-2xl w-full">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Info className="h-5 w-5 text-blue-600" />
+                Welcome to the World-Class HVAC Platform
+                <Badge variant="outline" className="ml-auto">
+                  Step {onboardingStep + 1} of 4
+                </Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {onboardingStep === 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">🎯 Built for Every Professional</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-4 bg-blue-50 rounded-lg border">
+                      <div className="font-semibold text-blue-800">Technicians & Field Engineers</div>
+                      <div className="text-sm text-blue-600 mt-1">Quick calculations, troubleshooting tools, real-time analysis</div>
+                    </div>
+                    <div className="p-4 bg-green-50 rounded-lg border">
+                      <div className="font-semibold text-green-800">Design Engineers</div>
+                      <div className="text-sm text-green-600 mt-1">Advanced simulations, professional reports, detailed analysis</div>
+                    </div>
+                    <div className="p-4 bg-purple-50 rounded-lg border">
+                      <div className="font-semibold text-purple-800">Department Heads</div>
+                      <div className="text-sm text-purple-600 mt-1">Strategic insights, cost analysis, sustainability planning</div>
+                    </div>
+                    <div className="p-4 bg-orange-50 rounded-lg border">
+                      <div className="font-semibold text-orange-800">Entrepreneurs</div>
+                      <div className="text-sm text-orange-600 mt-1">Business intelligence, ROI analysis, market insights</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {onboardingStep === 1 && (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">🚀 Core Calculation Features</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <Calculator className="h-5 w-5 text-blue-600" />
+                      <div>
+                        <div className="font-semibold">Calculation Tab</div>
+                        <div className="text-sm text-muted-foreground">Configure refrigerant and operating conditions with real-time validation</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Eye className="h-5 w-5 text-green-600" />
+                      <div>
+                        <div className="font-semibold">Visualization Tab</div>
+                        <div className="text-sm text-muted-foreground">Interactive P-h diagrams with multiple view types and animation</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <FileText className="h-5 w-5 text-purple-600" />
+                      <div>
+                        <div className="font-semibold">Results Tab</div>
+                        <div className="text-sm text-muted-foreground">Comprehensive performance metrics and state point analysis</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {onboardingStep === 2 && (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">⚡ Professional Features</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <ArrowRight className="h-5 w-5 text-blue-600" />
+                      <div>
+                        <div className="font-semibold">Professional Tab</div>
+                        <div className="text-sm text-muted-foreground">Advanced tools for unit conversion, sustainability analysis, and cost optimization</div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 mt-3">
+                      <div className="p-3 bg-gray-50 rounded border">
+                        <div className="text-sm font-semibold">🌍 Dynamic Units</div>
+                        <div className="text-xs text-muted-foreground">SI ↔ Imperial conversion</div>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded border">
+                        <div className="text-sm font-semibold">🍃 Sustainability</div>
+                        <div className="text-xs text-muted-foreground">GWP, ODP, regulations</div>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded border">
+                        <div className="text-sm font-semibold">💰 Cost Analysis</div>
+                        <div className="text-xs text-muted-foreground">ROI, lifecycle costs</div>
+                      </div>
+                      <div className="p-3 bg-gray-50 rounded border">
+                        <div className="text-sm font-semibold">📊 Reports</div>
+                        <div className="text-xs text-muted-foreground">Professional PDFs</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {onboardingStep === 3 && (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">🎯 Getting Started</h3>
+                  <div className="space-y-3">
+                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="font-semibold text-green-800 mb-2">Quick Start Guide:</div>
+                      <ol className="text-sm text-green-700 space-y-1">
+                        <li>1. Select your refrigerant from the dropdown</li>
+                        <li>2. Enter operating conditions (temperatures, superheat, subcooling)</li>
+                        <li>3. Click "Calculate Cycle" to run thermodynamic analysis</li>
+                        <li>4. Explore results in Visualization, Results, and Professional tabs</li>
+                        <li>5. Generate professional reports for your projects</li>
+                      </ol>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-sm text-muted-foreground">Ready to revolutionize your HVAC analysis workflow?</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex justify-between pt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setOnboardingStep(Math.max(0, onboardingStep - 1))}
+                  disabled={onboardingStep === 0}
+                >
+                  Previous
+                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      localStorage.setItem('hvac_platform_onboarding_completed', 'true');
+                      setShowOnboarding(false);
+                    }}
+                  >
+                    Skip Tour
+                  </Button>
+                  {onboardingStep < 3 ? (
+                    <Button
+                      onClick={() => setOnboardingStep(onboardingStep + 1)}
+                    >
+                      Next
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => {
+                        localStorage.setItem('hvac_platform_onboarding_completed', 'true');
+                        setShowOnboarding(false);
+                      }}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Start Using Platform
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
