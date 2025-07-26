@@ -11,7 +11,7 @@ import { Loader2, Calculator, Eye, FileText, Wrench, Play, Pause, RotateCcw } fr
 import { EnhancedRefrigerantSelector } from '../components/EnhancedRefrigerantSelector';
 import { CycleVisualization } from '../components/CycleVisualization';
 import { EquipmentDiagrams } from '../components/EquipmentDiagrams';
-import { RefrigerantProperties, validateOperatingConditions, getRefrigerantById } from '../lib/refrigerants';
+import { RefrigerantProperties, validateCycleConditions, getRefrigerantById } from '../lib/refrigerants';
 
 interface CalculationResults {
   point_1: {
