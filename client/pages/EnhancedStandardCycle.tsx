@@ -842,7 +842,7 @@ export function EnhancedStandardCycleContent() {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
                         <div className="text-2xl font-bold text-primary">
-                          {results.performance?.cop?.toFixed(2) || "N/A"}
+                          {formatValue(getPerformanceValue(results.performance, ["cop"]), "")}
                         </div>
                         <div className="text-sm text-primary/80">
                           <TechTerm term="cop">Coefficient of Performance</TechTerm>
@@ -851,7 +851,7 @@ export function EnhancedStandardCycleContent() {
                       <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
                         <div className="text-2xl font-bold text-emerald-600">
                           {formatValue(
-                            results.performance?.cooling_capacity_kw,
+                            getPerformanceValue(results.performance, ["cooling_capacity_kw", "cooling_capacity"]),
                             "kW",
                           )}
                         </div>
@@ -862,7 +862,7 @@ export function EnhancedStandardCycleContent() {
                       <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
                         <div className="text-2xl font-bold text-amber-600">
                           {formatValue(
-                            results.performance?.compressor_work_kw,
+                            getPerformanceValue(results.performance, ["compressor_work_kw", "work_of_compression_kj_kg"]),
                             "kW",
                           )}
                         </div>
@@ -873,7 +873,7 @@ export function EnhancedStandardCycleContent() {
                       <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg">
                         <div className="text-2xl font-bold text-rose-600">
                           {formatValue(
-                            results.performance?.heat_rejection_kw,
+                            getPerformanceValue(results.performance, ["heat_rejection_kw", "heat_rejection"]),
                             "kW",
                           )}
                         </div>
