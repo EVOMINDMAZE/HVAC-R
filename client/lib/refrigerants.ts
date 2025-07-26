@@ -272,7 +272,7 @@ export const REFRIGERANT_DATABASE: RefrigerantProperties[] = [
       normalBoilingPoint: 226.65
     },
     coolpropSupport: 'full',
-    description: 'Low-temperature commercial refrigeration blend',
+    description: 'Low-temperature commercial refrigeration blend (Note: May have CoolProp limitations)',
     color: '#F97316'
   },
   {
