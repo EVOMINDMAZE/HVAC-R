@@ -408,7 +408,7 @@ export function CycleVisualization({
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2">
           <Zap className="h-5 w-5" />
-          Cycle Visualization - {cycleData?.refrigerant || "No Data"}
+          {DIAGRAM_CONFIGS[diagramType].name} - {cycleData?.refrigerant || "No Data"}
         </CardTitle>
         <div className="flex gap-2">
           <Button
