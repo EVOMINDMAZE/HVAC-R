@@ -9,15 +9,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  User, 
-  Mail, 
-  Building, 
-  MapPin, 
-  Phone, 
+import {
+  User,
+  Mail,
+  Building,
+  MapPin,
+  Phone,
   Calendar,
   Shield,
   Bell,
@@ -25,7 +31,7 @@ import {
   CreditCard,
   Download,
   Trash2,
-  Camera
+  Camera,
 } from "lucide-react";
 
 // User data comes from Supabase authentication and real backend data
@@ -41,9 +47,9 @@ export function Profile() {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
   const [passwordForm, setPasswordForm] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmNewPassword: ''
+    currentPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
   });
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [preferences, setPreferences] = useState({
@@ -51,12 +57,12 @@ export function Profile() {
       emailResults: true,
       weeklyUsage: true,
       productUpdates: false,
-      securityAlerts: true
+      securityAlerts: true,
     },
     defaultUnits: {
-      temperature: 'celsius',
-      pressure: 'kpa'
-    }
+      temperature: "celsius",
+      pressure: "kpa",
+    },
   });
   const [preferencesLoading, setPreferencesLoading] = useState(false);
 
@@ -76,13 +82,16 @@ export function Profile() {
         joinedDate: "",
         plan: "Free",
         calculationsUsed: 0,
-        calculationsLimit: 10
+        calculationsLimit: 10,
       };
     }
 
     return {
       id: authUser.id,
-      firstName: authUser.user_metadata?.first_name || authUser.email?.split('@')[0] || "User",
+      firstName:
+        authUser.user_metadata?.first_name ||
+        authUser.email?.split("@")[0] ||
+        "User",
       lastName: authUser.user_metadata?.last_name || "",
       email: authUser.email || "",
       company: authUser.user_metadata?.company || "",
@@ -90,10 +99,10 @@ export function Profile() {
       phone: authUser.phone || "",
       location: authUser.user_metadata?.location || "",
       avatar: authUser.user_metadata?.avatar_url || "",
-      joinedDate: authUser.created_at?.split('T')[0] || "2024-01-01",
+      joinedDate: authUser.created_at?.split("T")[0] || "2024-01-01",
       plan: "Free",
       calculationsUsed: 0,
-      calculationsLimit: 10
+      calculationsLimit: 10,
     };
   };
 
@@ -104,21 +113,28 @@ export function Profile() {
   // Update local state when auth user, subscription, or calculations change
   useEffect(() => {
     if (authUser) {
-      const plan = subscription?.plan || 'free';
-      const planDisplayName = plan.charAt(0).toUpperCase() + plan.slice(1).replace('_', ' ');
-      const isUnlimited = plan !== 'free';
+      const plan = subscription?.plan || "free";
+      const planDisplayName =
+        plan.charAt(0).toUpperCase() + plan.slice(1).replace("_", " ");
+      const isUnlimited = plan !== "free";
 
       // Calculate real usage from Supabase calculations
       const currentMonth = new Date().getMonth();
       const currentYear = new Date().getFullYear();
-      const monthlyCalculations = calculations.filter(calc => {
+      const monthlyCalculations = calculations.filter((calc) => {
         const calcDate = new Date(calc.created_at);
-        return calcDate.getMonth() === currentMonth && calcDate.getFullYear() === currentYear;
+        return (
+          calcDate.getMonth() === currentMonth &&
+          calcDate.getFullYear() === currentYear
+        );
       }).length;
 
       setUser({
         id: authUser.id,
-        firstName: authUser.user_metadata?.first_name || authUser.email?.split('@')[0] || "User",
+        firstName:
+          authUser.user_metadata?.first_name ||
+          authUser.email?.split("@")[0] ||
+          "User",
         lastName: authUser.user_metadata?.last_name || "",
         email: authUser.email || "",
         company: authUser.user_metadata?.company || "",
@@ -126,19 +142,19 @@ export function Profile() {
         phone: authUser.phone || "",
         location: authUser.user_metadata?.location || "",
         avatar: authUser.user_metadata?.avatar_url || "",
-        joinedDate: authUser.created_at?.split('T')[0] || "2024-01-01",
+        joinedDate: authUser.created_at?.split("T")[0] || "2024-01-01",
         plan: planDisplayName,
         calculationsUsed: monthlyCalculations,
-        calculationsLimit: isUnlimited ? -1 : 10
+        calculationsLimit: isUnlimited ? -1 : 10,
       });
 
       // Load preferences from user metadata
       if (authUser.user_metadata?.preferences) {
         try {
           const userPrefs = JSON.parse(authUser.user_metadata.preferences);
-          setPreferences(prev => ({ ...prev, ...userPrefs }));
+          setPreferences((prev) => ({ ...prev, ...userPrefs }));
         } catch (error) {
-          console.warn('Failed to parse user preferences:', error);
+          console.warn("Failed to parse user preferences:", error);
         }
       }
     }
@@ -147,9 +163,9 @@ export function Profile() {
   const handleSave = async () => {
     if (!authUser) {
       addToast({
-        type: 'error',
-        title: 'Not Authenticated',
-        description: 'Please sign in to save changes'
+        type: "error",
+        title: "Not Authenticated",
+        description: "Please sign in to save changes",
       });
       return;
     }
@@ -164,21 +180,21 @@ export function Profile() {
           company: user.company,
           role: user.role,
           location: user.location,
-        }
+        },
       });
 
       if (error) throw error;
 
       addToast({
-        type: 'success',
-        title: 'Profile Updated',
-        description: 'Your profile has been saved successfully'
+        type: "success",
+        title: "Profile Updated",
+        description: "Your profile has been saved successfully",
       });
     } catch (error: any) {
       addToast({
-        type: 'error',
-        title: 'Save Failed',
-        description: error.message || 'Failed to save profile changes'
+        type: "error",
+        title: "Save Failed",
+        description: error.message || "Failed to save profile changes",
       });
     } finally {
       setLoading(false);
@@ -186,26 +202,28 @@ export function Profile() {
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setUser(prev => ({ ...prev, [field]: value }));
+    setUser((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     const { url } = await uploadAvatar(file);
     if (url) {
-      setUser(prev => ({ ...prev, avatar: url }));
+      setUser((prev) => ({ ...prev, avatar: url }));
     }
 
     // Reset file input
-    event.target.value = '';
+    event.target.value = "";
   };
 
   const handleAvatarRemove = async () => {
     const { success } = await removeAvatar();
     if (success) {
-      setUser(prev => ({ ...prev, avatar: '' }));
+      setUser((prev) => ({ ...prev, avatar: "" }));
     }
   };
 
@@ -214,27 +232,27 @@ export function Profile() {
 
     if (!authUser) {
       addToast({
-        type: 'error',
-        title: 'Not Authenticated',
-        description: 'Please sign in to change your password'
+        type: "error",
+        title: "Not Authenticated",
+        description: "Please sign in to change your password",
       });
       return;
     }
 
     if (passwordForm.newPassword !== passwordForm.confirmNewPassword) {
       addToast({
-        type: 'error',
-        title: 'Password Mismatch',
-        description: 'New passwords do not match'
+        type: "error",
+        title: "Password Mismatch",
+        description: "New passwords do not match",
       });
       return;
     }
 
     if (passwordForm.newPassword.length < 6) {
       addToast({
-        type: 'error',
-        title: 'Password Too Short',
-        description: 'Password must be at least 6 characters long'
+        type: "error",
+        title: "Password Too Short",
+        description: "Password must be at least 6 characters long",
       });
       return;
     }
@@ -243,28 +261,28 @@ export function Profile() {
     try {
       const { error } = await updateUser({
         data: {
-          password: passwordForm.newPassword
-        }
+          password: passwordForm.newPassword,
+        },
       });
 
       if (error) throw error;
 
       addToast({
-        type: 'success',
-        title: 'Password Updated',
-        description: 'Your password has been changed successfully'
+        type: "success",
+        title: "Password Updated",
+        description: "Your password has been changed successfully",
       });
 
       setPasswordForm({
-        currentPassword: '',
-        newPassword: '',
-        confirmNewPassword: ''
+        currentPassword: "",
+        newPassword: "",
+        confirmNewPassword: "",
       });
     } catch (error: any) {
       addToast({
-        type: 'error',
-        title: 'Password Change Failed',
-        description: error.message || 'Failed to change password'
+        type: "error",
+        title: "Password Change Failed",
+        description: error.message || "Failed to change password",
       });
     } finally {
       setPasswordLoading(false);
@@ -274,9 +292,9 @@ export function Profile() {
   const handlePreferencesSave = async () => {
     if (!authUser) {
       addToast({
-        type: 'error',
-        title: 'Not Authenticated',
-        description: 'Please sign in to save preferences'
+        type: "error",
+        title: "Not Authenticated",
+        description: "Please sign in to save preferences",
       });
       return;
     }
@@ -285,22 +303,22 @@ export function Profile() {
     try {
       const { error } = await updateUser({
         data: {
-          preferences: JSON.stringify(preferences)
-        }
+          preferences: JSON.stringify(preferences),
+        },
       });
 
       if (error) throw error;
 
       addToast({
-        type: 'success',
-        title: 'Preferences Saved',
-        description: 'Your preferences have been updated successfully'
+        type: "success",
+        title: "Preferences Saved",
+        description: "Your preferences have been updated successfully",
       });
     } catch (error: any) {
       addToast({
-        type: 'error',
-        title: 'Save Failed',
-        description: error.message || 'Failed to save preferences'
+        type: "error",
+        title: "Save Failed",
+        description: error.message || "Failed to save preferences",
       });
     } finally {
       setPreferencesLoading(false);
@@ -313,10 +331,12 @@ export function Profile() {
       <div className="bg-white shadow-sm border-b border-blue-200">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" onClick={() => navigate('/dashboard')}>
+            <Button variant="ghost" onClick={() => navigate("/dashboard")}>
               ← Back to Dashboard
             </Button>
-            <h1 className="text-3xl font-bold text-blue-900">Account Settings</h1>
+            <h1 className="text-3xl font-bold text-blue-900">
+              Account Settings
+            </h1>
           </div>
         </div>
       </div>
@@ -324,26 +344,26 @@ export function Profile() {
       <div className="max-w-4xl mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4 mb-8 bg-white border border-blue-200">
-            <TabsTrigger 
-              value="profile" 
+            <TabsTrigger
+              value="profile"
               className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
             >
               Profile
             </TabsTrigger>
-            <TabsTrigger 
-              value="security" 
+            <TabsTrigger
+              value="security"
               className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
             >
               Security
             </TabsTrigger>
-            <TabsTrigger 
-              value="billing" 
+            <TabsTrigger
+              value="billing"
               className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
             >
               Billing
             </TabsTrigger>
-            <TabsTrigger 
-              value="preferences" 
+            <TabsTrigger
+              value="preferences"
               className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
             >
               Preferences
@@ -361,9 +381,13 @@ export function Profile() {
                 <div className="flex items-center space-x-6 mb-8">
                   <div className="relative">
                     <Avatar className="w-24 h-24">
-                      <AvatarImage src={user.avatar} alt={`${user.firstName} ${user.lastName}`} />
+                      <AvatarImage
+                        src={user.avatar}
+                        alt={`${user.firstName} ${user.lastName}`}
+                      />
                       <AvatarFallback className="text-xl bg-blue-100 text-blue-600">
-                        {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+                        {user.firstName.charAt(0)}
+                        {user.lastName.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                     <div className="absolute -bottom-2 -right-2">
@@ -396,7 +420,8 @@ export function Profile() {
                     </h3>
                     <p className="text-gray-600">{user.role}</p>
                     <p className="text-sm text-gray-500">
-                      Member since {new Date(user.joinedDate).toLocaleDateString()}
+                      Member since{" "}
+                      {new Date(user.joinedDate).toLocaleDateString()}
                     </p>
                     {user.avatar && (
                       <Button
@@ -421,7 +446,9 @@ export function Profile() {
                       <Input
                         id="firstName"
                         value={user.firstName}
-                        onChange={(e) => handleInputChange("firstName", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("firstName", e.target.value)
+                        }
                         className="pl-10 border-blue-200 focus:border-blue-500"
                       />
                     </div>
@@ -432,7 +459,9 @@ export function Profile() {
                     <Input
                       id="lastName"
                       value={user.lastName}
-                      onChange={(e) => handleInputChange("lastName", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("lastName", e.target.value)
+                      }
                       className="border-blue-200 focus:border-blue-500"
                     />
                   </div>
@@ -445,7 +474,9 @@ export function Profile() {
                         id="email"
                         type="email"
                         value={user.email}
-                        onChange={(e) => handleInputChange("email", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("email", e.target.value)
+                        }
                         className="pl-10 border-blue-200 focus:border-blue-500"
                       />
                     </div>
@@ -458,7 +489,9 @@ export function Profile() {
                       <Input
                         id="phone"
                         value={user.phone}
-                        onChange={(e) => handleInputChange("phone", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("phone", e.target.value)
+                        }
                         className="pl-10 border-blue-200 focus:border-blue-500"
                       />
                     </div>
@@ -471,7 +504,9 @@ export function Profile() {
                       <Input
                         id="company"
                         value={user.company}
-                        onChange={(e) => handleInputChange("company", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("company", e.target.value)
+                        }
                         className="pl-10 border-blue-200 focus:border-blue-500"
                       />
                     </div>
@@ -484,7 +519,9 @@ export function Profile() {
                       <Input
                         id="location"
                         value={user.location}
-                        onChange={(e) => handleInputChange("location", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("location", e.target.value)
+                        }
                         className="pl-10 border-blue-200 focus:border-blue-500"
                       />
                     </div>
@@ -493,7 +530,11 @@ export function Profile() {
 
                 <div className="mt-8 flex justify-end space-x-4">
                   <Button variant="outline">Cancel</Button>
-                  <Button onClick={handleSave} disabled={loading} className="bg-blue-600 hover:bg-blue-700">
+                  <Button
+                    onClick={handleSave}
+                    disabled={loading}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
                     {loading ? "Saving..." : "Save Changes"}
                   </Button>
                 </div>
@@ -520,10 +561,12 @@ export function Profile() {
                         id="currentPassword"
                         type="password"
                         value={passwordForm.currentPassword}
-                        onChange={(e) => setPasswordForm(prev => ({
-                          ...prev,
-                          currentPassword: e.target.value
-                        }))}
+                        onChange={(e) =>
+                          setPasswordForm((prev) => ({
+                            ...prev,
+                            currentPassword: e.target.value,
+                          }))
+                        }
                         className="border-blue-200 focus:border-blue-500"
                         required
                       />
@@ -534,25 +577,31 @@ export function Profile() {
                         id="newPassword"
                         type="password"
                         value={passwordForm.newPassword}
-                        onChange={(e) => setPasswordForm(prev => ({
-                          ...prev,
-                          newPassword: e.target.value
-                        }))}
+                        onChange={(e) =>
+                          setPasswordForm((prev) => ({
+                            ...prev,
+                            newPassword: e.target.value,
+                          }))
+                        }
                         className="border-blue-200 focus:border-blue-500"
                         minLength={6}
                         required
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="confirmNewPassword">Confirm New Password</Label>
+                      <Label htmlFor="confirmNewPassword">
+                        Confirm New Password
+                      </Label>
                       <Input
                         id="confirmNewPassword"
                         type="password"
                         value={passwordForm.confirmNewPassword}
-                        onChange={(e) => setPasswordForm(prev => ({
-                          ...prev,
-                          confirmNewPassword: e.target.value
-                        }))}
+                        onChange={(e) =>
+                          setPasswordForm((prev) => ({
+                            ...prev,
+                            confirmNewPassword: e.target.value,
+                          }))
+                        }
                         className="border-blue-200 focus:border-blue-500"
                         minLength={6}
                         required
@@ -564,14 +613,17 @@ export function Profile() {
                     className="bg-green-600 hover:bg-green-700"
                     disabled={passwordLoading}
                   >
-                    {passwordLoading ? 'Updating...' : 'Update Password'}
+                    {passwordLoading ? "Updating..." : "Update Password"}
                   </Button>
                 </form>
 
                 <div className="border-t pt-6">
-                  <h3 className="text-lg font-semibold mb-4">Two-Factor Authentication</h3>
+                  <h3 className="text-lg font-semibold mb-4">
+                    Two-Factor Authentication
+                  </h3>
                   <p className="text-gray-600 mb-4">
-                    Add an extra layer of security to your account by enabling two-factor authentication.
+                    Add an extra layer of security to your account by enabling
+                    two-factor authentication.
                   </p>
                   <Button variant="outline">
                     <Key className="h-4 w-4 mr-2" />
@@ -592,38 +644,50 @@ export function Profile() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
-{subscriptionLoading ? (
+                {subscriptionLoading ? (
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-                    <p className="text-gray-600 mt-2">Loading subscription details...</p>
+                    <p className="text-gray-600 mt-2">
+                      Loading subscription details...
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-6">
                     {/* Current Plan */}
                     <div className="bg-blue-50 p-6 rounded-lg">
                       <h3 className="text-lg font-semibold text-blue-900 mb-2">
-                        Current Plan: {subscription?.plan || 'Free'}
+                        Current Plan: {subscription?.plan || "Free"}
                       </h3>
                       {subscription?.subscription ? (
                         <div className="space-y-2">
                           <p className="text-blue-700">
-                            Status: <span className="capitalize">{subscription.subscription.status}</span>
+                            Status:{" "}
+                            <span className="capitalize">
+                              {subscription.subscription.status}
+                            </span>
                           </p>
                           <p className="text-blue-700">
-                            ${subscription.subscription.amount}/{subscription.subscription.interval}
+                            ${subscription.subscription.amount}/
+                            {subscription.subscription.interval}
                           </p>
                           <p className="text-blue-700">
-                            Next billing: {new Date(subscription.subscription.current_period_end * 1000).toLocaleDateString()}
+                            Next billing:{" "}
+                            {new Date(
+                              subscription.subscription.current_period_end *
+                                1000,
+                            ).toLocaleDateString()}
                           </p>
                           {subscription.subscription.cancel_at_period_end && (
                             <p className="text-red-600 font-semibold">
-                              Subscription will cancel at the end of current period
+                              Subscription will cancel at the end of current
+                              period
                             </p>
                           )}
                         </div>
                       ) : (
                         <p className="text-blue-700">
-                          You have used {user.calculationsUsed} of {user.calculationsLimit} calculations this month.
+                          You have used {user.calculationsUsed} of{" "}
+                          {user.calculationsLimit} calculations this month.
                         </p>
                       )}
                     </div>
@@ -637,11 +701,11 @@ export function Profile() {
                           className="justify-start bg-blue-600 hover:bg-blue-700 text-white"
                         >
                           <CreditCard className="h-4 w-4 mr-2" />
-                          {portalLoading ? 'Loading...' : 'Manage Subscription'}
+                          {portalLoading ? "Loading..." : "Manage Subscription"}
                         </Button>
                       ) : (
                         <Button
-                          onClick={() => navigate('/pricing')}
+                          onClick={() => navigate("/pricing")}
                           className="justify-start bg-blue-600 hover:bg-blue-700 text-white"
                         >
                           <CreditCard className="h-4 w-4 mr-2" />
@@ -655,9 +719,12 @@ export function Profile() {
                     </div>
 
                     <div className="border-t pt-6">
-                      <h4 className="font-semibold text-red-600 mb-2">Danger Zone</h4>
+                      <h4 className="font-semibold text-red-600 mb-2">
+                        Danger Zone
+                      </h4>
                       <p className="text-gray-600 mb-4">
-                        Once you delete your account, there is no going back. Please be certain.
+                        Once you delete your account, there is no going back.
+                        Please be certain.
                       </p>
                       <Button variant="destructive">
                         <Trash2 className="h-4 w-4 mr-2" />
@@ -684,38 +751,59 @@ export function Profile() {
                   <h3 className="text-lg font-semibold">Notifications</h3>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-700">Email notifications for calculation results</span>
+                      <span className="text-gray-700">
+                        Email notifications for calculation results
+                      </span>
                       <input
                         type="checkbox"
                         checked={preferences.notifications.emailResults}
-                        onChange={(e) => setPreferences(prev => ({
-                          ...prev,
-                          notifications: { ...prev.notifications, emailResults: e.target.checked }
-                        }))}
+                        onChange={(e) =>
+                          setPreferences((prev) => ({
+                            ...prev,
+                            notifications: {
+                              ...prev.notifications,
+                              emailResults: e.target.checked,
+                            },
+                          }))
+                        }
                         className="rounded border-blue-300 text-blue-600 focus:ring-blue-500"
                       />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-700">Weekly usage summary</span>
+                      <span className="text-gray-700">
+                        Weekly usage summary
+                      </span>
                       <input
                         type="checkbox"
                         checked={preferences.notifications.weeklyUsage}
-                        onChange={(e) => setPreferences(prev => ({
-                          ...prev,
-                          notifications: { ...prev.notifications, weeklyUsage: e.target.checked }
-                        }))}
+                        onChange={(e) =>
+                          setPreferences((prev) => ({
+                            ...prev,
+                            notifications: {
+                              ...prev.notifications,
+                              weeklyUsage: e.target.checked,
+                            },
+                          }))
+                        }
                         className="rounded border-blue-300 text-blue-600 focus:ring-blue-500"
                       />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-700">Product updates and news</span>
+                      <span className="text-gray-700">
+                        Product updates and news
+                      </span>
                       <input
                         type="checkbox"
                         checked={preferences.notifications.productUpdates}
-                        onChange={(e) => setPreferences(prev => ({
-                          ...prev,
-                          notifications: { ...prev.notifications, productUpdates: e.target.checked }
-                        }))}
+                        onChange={(e) =>
+                          setPreferences((prev) => ({
+                            ...prev,
+                            notifications: {
+                              ...prev.notifications,
+                              productUpdates: e.target.checked,
+                            },
+                          }))
+                        }
                         className="rounded border-blue-300 text-blue-600 focus:ring-blue-500"
                       />
                     </div>
@@ -724,10 +812,15 @@ export function Profile() {
                       <input
                         type="checkbox"
                         checked={preferences.notifications.securityAlerts}
-                        onChange={(e) => setPreferences(prev => ({
-                          ...prev,
-                          notifications: { ...prev.notifications, securityAlerts: e.target.checked }
-                        }))}
+                        onChange={(e) =>
+                          setPreferences((prev) => ({
+                            ...prev,
+                            notifications: {
+                              ...prev.notifications,
+                              securityAlerts: e.target.checked,
+                            },
+                          }))
+                        }
                         className="rounded border-blue-300 text-blue-600 focus:ring-blue-500"
                       />
                     </div>
@@ -735,36 +828,54 @@ export function Profile() {
                 </div>
 
                 <div className="border-t pt-6">
-                  <h3 className="text-lg font-semibold mb-4">Default Settings</h3>
+                  <h3 className="text-lg font-semibold mb-4">
+                    Default Settings
+                  </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="defaultUnits">Default Temperature Units</Label>
+                      <Label htmlFor="defaultUnits">
+                        Default Temperature Units
+                      </Label>
                       <Select
                         value={preferences.defaultUnits.temperature}
-                        onValueChange={(value) => setPreferences(prev => ({
-                          ...prev,
-                          defaultUnits: { ...prev.defaultUnits, temperature: value }
-                        }))}
+                        onValueChange={(value) =>
+                          setPreferences((prev) => ({
+                            ...prev,
+                            defaultUnits: {
+                              ...prev.defaultUnits,
+                              temperature: value,
+                            },
+                          }))
+                        }
                       >
                         <SelectTrigger className="border-blue-200 focus:border-blue-500">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="celsius">Celsius (°C)</SelectItem>
-                          <SelectItem value="fahrenheit">Fahrenheit (°F)</SelectItem>
+                          <SelectItem value="fahrenheit">
+                            Fahrenheit (°F)
+                          </SelectItem>
                           <SelectItem value="kelvin">Kelvin (K)</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="defaultPressure">Default Pressure Units</Label>
+                      <Label htmlFor="defaultPressure">
+                        Default Pressure Units
+                      </Label>
                       <Select
                         value={preferences.defaultUnits.pressure}
-                        onValueChange={(value) => setPreferences(prev => ({
-                          ...prev,
-                          defaultUnits: { ...prev.defaultUnits, pressure: value }
-                        }))}
+                        onValueChange={(value) =>
+                          setPreferences((prev) => ({
+                            ...prev,
+                            defaultUnits: {
+                              ...prev.defaultUnits,
+                              pressure: value,
+                            },
+                          }))
+                        }
                       >
                         <SelectTrigger className="border-blue-200 focus:border-blue-500">
                           <SelectValue />
@@ -789,12 +900,12 @@ export function Profile() {
                           emailResults: true,
                           weeklyUsage: true,
                           productUpdates: false,
-                          securityAlerts: true
+                          securityAlerts: true,
                         },
                         defaultUnits: {
-                          temperature: 'celsius',
-                          pressure: 'kpa'
-                        }
+                          temperature: "celsius",
+                          pressure: "kpa",
+                        },
                       });
                     }}
                   >
@@ -805,7 +916,7 @@ export function Profile() {
                     onClick={handlePreferencesSave}
                     disabled={preferencesLoading}
                   >
-                    {preferencesLoading ? 'Saving...' : 'Save Preferences'}
+                    {preferencesLoading ? "Saving..." : "Save Preferences"}
                   </Button>
                 </div>
               </CardContent>

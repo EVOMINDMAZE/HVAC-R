@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { useSupabaseAuth } from './useSupabaseAuth';
-import { useSupabaseCalculations } from './useSupabaseCalculations';
-import { useSubscription } from './useStripe';
-import { UserStats } from '@/lib/api';
+import { useState, useEffect } from "react";
+import { useSupabaseAuth } from "./useSupabaseAuth";
+import { useSupabaseCalculations } from "./useSupabaseCalculations";
+import { useSubscription } from "./useStripe";
+import { UserStats } from "@/lib/api";
 
 export function useUserStats() {
   const { isAuthenticated } = useSupabaseAuth();
@@ -29,20 +29,27 @@ export function useUserStats() {
       const totalCalculations = calculations.length;
       const currentMonth = new Date().getMonth();
       const currentYear = new Date().getFullYear();
-      const monthlyCalculations = calculations.filter(calc => {
+      const monthlyCalculations = calculations.filter((calc) => {
         const calcDate = new Date(calc.created_at);
-        return calcDate.getMonth() === currentMonth && calcDate.getFullYear() === currentYear;
+        return (
+          calcDate.getMonth() === currentMonth &&
+          calcDate.getFullYear() === currentYear
+        );
       }).length;
 
       // Get real subscription data from Stripe
-      const plan = subscription?.plan || 'free';
-      const isUnlimited = plan !== 'free';
+      const plan = subscription?.plan || "free";
+      const isUnlimited = plan !== "free";
       const limit = isUnlimited ? -1 : 10;
-      const remaining = isUnlimited ? -1 : Math.max(0, 10 - monthlyCalculations);
+      const remaining = isUnlimited
+        ? -1
+        : Math.max(0, 10 - monthlyCalculations);
 
       // Calculate usage by type from real calculations
       const usageByType = calculations.reduce((acc: any[], calc) => {
-        const existing = acc.find(item => item.type === calc.calculation_type);
+        const existing = acc.find(
+          (item) => item.type === calc.calculation_type,
+        );
         if (existing) {
           existing.count++;
         } else {
@@ -58,14 +65,14 @@ export function useUserStats() {
         subscription: {
           plan: plan.charAt(0).toUpperCase() + plan.slice(1),
           limit,
-          remaining
-        }
+          remaining,
+        },
       };
 
       setStats(realStats);
     } catch (err) {
-      setError('Failed to fetch statistics');
-      console.error('Error fetching user stats:', err);
+      setError("Failed to fetch statistics");
+      console.error("Error fetching user stats:", err);
     } finally {
       setIsLoading(false);
     }
@@ -81,6 +88,6 @@ export function useUserStats() {
     stats,
     isLoading,
     error,
-    refreshStats
+    refreshStats,
   };
 }

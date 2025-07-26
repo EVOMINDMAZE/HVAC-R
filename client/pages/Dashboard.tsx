@@ -18,7 +18,7 @@ import {
   BarChart3,
   Crown,
   Zap,
-  Target
+  Target,
 } from "lucide-react";
 
 function QuickStats() {
@@ -31,30 +31,37 @@ function QuickStats() {
   const totalCalculations = calculations.length;
   const currentMonth = new Date().getMonth();
   const currentYear = new Date().getFullYear();
-  const monthlyCalculations = calculations.filter(calc => {
+  const monthlyCalculations = calculations.filter((calc) => {
     const calcDate = new Date(calc.created_at);
-    return calcDate.getMonth() === currentMonth && calcDate.getFullYear() === currentYear;
+    return (
+      calcDate.getMonth() === currentMonth &&
+      calcDate.getFullYear() === currentYear
+    );
   }).length;
 
   // Get real subscription data from Stripe
-  const plan = subscription?.plan || 'free';
-  const planDisplayName = plan.charAt(0).toUpperCase() + plan.slice(1).replace('_', ' ');
-  const isUnlimited = plan !== 'free';
+  const plan = subscription?.plan || "free";
+  const planDisplayName =
+    plan.charAt(0).toUpperCase() + plan.slice(1).replace("_", " ");
+  const isUnlimited = plan !== "free";
   const remaining = isUnlimited ? -1 : Math.max(0, 10 - monthlyCalculations);
 
   const stats = {
     totalCalculations,
     monthlyCalculations,
-    subscription: { plan: planDisplayName, remaining }
+    subscription: { plan: planDisplayName, remaining },
   };
 
-  const remainingText = stats?.subscription.remaining === -1
-    ? "Unlimited"
-    : stats?.subscription.remaining?.toString() || "0";
+  const remainingText =
+    stats?.subscription.remaining === -1
+      ? "Unlimited"
+      : stats?.subscription.remaining?.toString() || "0";
 
   // Calculate usage based on plan limits
   const monthlyLimit = isUnlimited ? monthlyCalculations : 10;
-  const usagePercentage = isUnlimited ? 0 : Math.min((monthlyCalculations / 10) * 100, 100);
+  const usagePercentage = isUnlimited
+    ? 0
+    : Math.min((monthlyCalculations / 10) * 100, 100);
   const isNearLimit = !isUnlimited && usagePercentage > 70;
   const isAtLimit = !isUnlimited && monthlyCalculations >= 10;
 
@@ -62,26 +69,39 @@ function QuickStats() {
     <div className="space-y-6">
       {/* Usage Warning Banner */}
       {isNearLimit && (
-        <Card className={`border-2 ${isAtLimit ? 'border-red-500 bg-red-50' : 'border-yellow-500 bg-yellow-50'}`}>
+        <Card
+          className={`border-2 ${isAtLimit ? "border-red-500 bg-red-50" : "border-yellow-500 bg-yellow-50"}`}
+        >
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className={`w-3 h-3 rounded-full ${isAtLimit ? 'bg-red-500' : 'bg-yellow-500'}`}></div>
+                <div
+                  className={`w-3 h-3 rounded-full ${isAtLimit ? "bg-red-500" : "bg-yellow-500"}`}
+                ></div>
                 <div>
-                  <p className={`font-semibold ${isAtLimit ? 'text-red-800' : 'text-yellow-800'}`}>
-                    {isAtLimit ? 'Monthly Limit Reached!' : 'Approaching Monthly Limit'}
-                  </p>
-                  <p className={`text-sm ${isAtLimit ? 'text-red-600' : 'text-yellow-600'}`}>
+                  <p
+                    className={`font-semibold ${isAtLimit ? "text-red-800" : "text-yellow-800"}`}
+                  >
                     {isAtLimit
-                      ? 'Upgrade now to continue your calculations and unlock unlimited access'
-                      : `You've used ${monthlyCalculations}/10 calculations this month. Upgrade for unlimited access.`
-                    }
+                      ? "Monthly Limit Reached!"
+                      : "Approaching Monthly Limit"}
+                  </p>
+                  <p
+                    className={`text-sm ${isAtLimit ? "text-red-600" : "text-yellow-600"}`}
+                  >
+                    {isAtLimit
+                      ? "Upgrade now to continue your calculations and unlock unlimited access"
+                      : `You've used ${monthlyCalculations}/10 calculations this month. Upgrade for unlimited access.`}
                   </p>
                 </div>
               </div>
               <Button
-                className={isAtLimit ? 'bg-red-600 hover:bg-red-700' : 'bg-yellow-600 hover:bg-yellow-700'}
-                onClick={() => navigate('/pricing')}
+                className={
+                  isAtLimit
+                    ? "bg-red-600 hover:bg-red-700"
+                    : "bg-yellow-600 hover:bg-yellow-700"
+                }
+                onClick={() => navigate("/pricing")}
               >
                 Upgrade Now
               </Button>
@@ -96,7 +116,9 @@ function QuickStats() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-blue-100 text-sm">Total Calculations</p>
-                <p className="text-2xl font-bold">{stats?.totalCalculations || 0}</p>
+                <p className="text-2xl font-bold">
+                  {stats?.totalCalculations || 0}
+                </p>
                 <p className="text-blue-200 text-xs mt-1">All time</p>
               </div>
               <Calculator className="h-8 w-8 text-blue-200" />
@@ -110,7 +132,8 @@ function QuickStats() {
               <div>
                 <p className="text-purple-100 text-sm">This Month</p>
                 <p className="text-2xl font-bold">
-                  {stats?.monthlyCalculations || 0}{isUnlimited ? '' : '/10'}
+                  {stats?.monthlyCalculations || 0}
+                  {isUnlimited ? "" : "/10"}
                 </p>
                 {!isUnlimited && (
                   <div className="w-full bg-purple-300 rounded-full h-2 mt-2">
@@ -129,7 +152,9 @@ function QuickStats() {
           </CardContent>
         </Card>
 
-        <Card className={`bg-gradient-to-r ${stats.subscription.remaining <= 2 ? 'from-red-500 to-red-600' : 'from-green-500 to-green-600'} text-white`}>
+        <Card
+          className={`bg-gradient-to-r ${stats.subscription.remaining <= 2 ? "from-red-500 to-red-600" : "from-green-500 to-green-600"} text-white`}
+        >
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -142,17 +167,20 @@ function QuickStats() {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white cursor-pointer hover:from-orange-600 hover:to-orange-700 transition-all duration-200" onClick={() => navigate('/pricing')}>
+        <Card
+          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white cursor-pointer hover:from-orange-600 hover:to-orange-700 transition-all duration-200"
+          onClick={() => navigate("/pricing")}
+        >
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-orange-100 text-sm">Current Plan</p>
                 <p className="text-xl font-bold">{stats.subscription.plan}</p>
                 <p className="text-orange-200 text-xs mt-1">
-                  {plan === 'free' ? 'Click to upgrade' : 'Manage subscription'}
+                  {plan === "free" ? "Click to upgrade" : "Manage subscription"}
                 </p>
               </div>
-              {plan === 'free' ? (
+              {plan === "free" ? (
                 <BarChart3 className="h-8 w-8 text-orange-200" />
               ) : (
                 <Crown className="h-8 w-8 text-orange-200" />
@@ -182,22 +210,33 @@ function RecentCalculations() {
         {recentCalculations.length === 0 ? (
           <div className="text-center py-8">
             <Calculator className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No calculations yet</h3>
-            <p className="text-gray-600 mb-4">Start by running your first calculation</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              No calculations yet
+            </h3>
+            <p className="text-gray-600 mb-4">
+              Start by running your first calculation
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
             {recentCalculations.map((calc) => (
-              <div key={calc.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+              <div
+                key={calc.id}
+                className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              >
                 <div className="flex items-center space-x-4">
                   <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                     <Calculator className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900">{calc.name || calc.calculation_type}</h4>
+                    <h4 className="font-semibold text-gray-900">
+                      {calc.name || calc.calculation_type}
+                    </h4>
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                       <Clock className="h-3 w-3" />
-                      <span>{new Date(calc.created_at).toLocaleDateString()}</span>
+                      <span>
+                        {new Date(calc.created_at).toLocaleDateString()}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -237,7 +276,7 @@ function QuickActions() {
         <Button
           className="w-full justify-start"
           variant="outline"
-          onClick={() => navigate('/standard-cycle')}
+          onClick={() => navigate("/standard-cycle")}
         >
           <Calculator className="h-4 w-4 mr-2" />
           New Standard Cycle
@@ -245,7 +284,7 @@ function QuickActions() {
         <Button
           className="w-full justify-start"
           variant="outline"
-          onClick={() => navigate('/refrigerant-comparison')}
+          onClick={() => navigate("/refrigerant-comparison")}
         >
           <TrendingUp className="h-4 w-4 mr-2" />
           Compare Refrigerants
@@ -253,7 +292,7 @@ function QuickActions() {
         <Button
           className="w-full justify-start"
           variant="outline"
-          onClick={() => navigate('/cascade-cycle')}
+          onClick={() => navigate("/cascade-cycle")}
         >
           <BarChart3 className="h-4 w-4 mr-2" />
           Cascade Analysis
@@ -261,7 +300,7 @@ function QuickActions() {
         <Button
           className="w-full justify-start"
           variant="outline"
-          onClick={() => navigate('/history')}
+          onClick={() => navigate("/history")}
         >
           <FileText className="h-4 w-4 mr-2" />
           View History
@@ -279,31 +318,44 @@ function ValueProposition() {
       <CardContent className="p-8">
         <div className="text-center">
           <Crown className="h-12 w-12 text-yellow-300 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-4">Unlock Professional Features</h2>
+          <h2 className="text-2xl font-bold mb-4">
+            Unlock Professional Features
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div className="text-center">
               <Zap className="h-8 w-8 text-yellow-300 mx-auto mb-2" />
               <h3 className="font-semibold">Unlimited Calculations</h3>
-              <p className="text-blue-100 text-sm">No monthly limits on your analysis</p>
+              <p className="text-blue-100 text-sm">
+                No monthly limits on your analysis
+              </p>
             </div>
             <div className="text-center">
               <Target className="h-8 w-8 text-yellow-300 mx-auto mb-2" />
               <h3 className="font-semibold">Advanced Analytics</h3>
-              <p className="text-blue-100 text-sm">Detailed reports & optimization tips</p>
+              <p className="text-blue-100 text-sm">
+                Detailed reports & optimization tips
+              </p>
             </div>
             <div className="text-center">
               <FileText className="h-8 w-8 text-yellow-300 mx-auto mb-2" />
               <h3 className="font-semibold">Export & Share</h3>
-              <p className="text-blue-100 text-sm">PDF reports & team collaboration</p>
+              <p className="text-blue-100 text-sm">
+                PDF reports & team collaboration
+              </p>
             </div>
           </div>
           <div className="bg-white/10 rounded-lg p-4 mb-6">
-            <p className="text-lg font-semibold text-yellow-300">Save 20+ hours per month</p>
-            <p className="text-blue-100">Professional engineers save an average of $2,400/month in consulting time</p>
+            <p className="text-lg font-semibold text-yellow-300">
+              Save 20+ hours per month
+            </p>
+            <p className="text-blue-100">
+              Professional engineers save an average of $2,400/month in
+              consulting time
+            </p>
           </div>
           <Button
             className="bg-yellow-400 hover:bg-yellow-500 text-purple-900 font-bold px-8 py-3"
-            onClick={() => navigate('/pricing')}
+            onClick={() => navigate("/pricing")}
           >
             Upgrade Now - Start Free Trial
           </Button>

@@ -1,26 +1,26 @@
-import Database from 'better-sqlite3';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import Database from "better-sqlite3";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Initialize database
-const dbPath = path.join(__dirname, 'simulateon.db');
+const dbPath = path.join(__dirname, "simulateon.db");
 export const db = new Database(dbPath);
 
 // Enable foreign keys
-db.pragma('foreign_keys = ON');
+db.pragma("foreign_keys = ON");
 
 // Initialize database schema
 export function initializeDatabase() {
   try {
-    const schemaPath = path.join(__dirname, 'schema.sql');
+    const schemaPath = path.join(__dirname, "schema.sql");
 
     // Check if schema file exists
     if (!fs.existsSync(schemaPath)) {
-      console.error('Schema file not found at:', schemaPath);
+      console.error("Schema file not found at:", schemaPath);
       // Create a minimal schema inline
       const minimalSchema = `
         CREATE TABLE IF NOT EXISTS users (
@@ -95,127 +95,127 @@ export function initializeDatabase() {
       `;
       db.exec(minimalSchema);
     } else {
-      const schema = fs.readFileSync(schemaPath, 'utf8');
+      const schema = fs.readFileSync(schemaPath, "utf8");
       db.exec(schema);
     }
 
     // Initialize prepared statements after tables are created
     initializePreparedStatements();
 
-    console.log('Database initialized successfully');
+    console.log("Database initialized successfully");
   } catch (error) {
-    console.error('Failed to initialize database:', error);
-    console.log('Continuing without database initialization...');
+    console.error("Failed to initialize database:", error);
+    console.log("Continuing without database initialization...");
   }
 }
 
 function initializePreparedStatements() {
   try {
     // User operations
-  userDb.create = db.prepare(`
+    userDb.create = db.prepare(`
     INSERT INTO users (email, password_hash, first_name, last_name, company, role, phone)
     VALUES (?, ?, ?, ?, ?, ?, ?)
   `);
 
-  userDb.findByEmail = db.prepare(`
+    userDb.findByEmail = db.prepare(`
     SELECT * FROM users WHERE email = ?
   `);
 
-  userDb.findById = db.prepare(`
+    userDb.findById = db.prepare(`
     SELECT * FROM users WHERE id = ?
   `);
 
-  userDb.update = db.prepare(`
+    userDb.update = db.prepare(`
     UPDATE users
     SET first_name = ?, last_name = ?, company = ?, role = ?, phone = ?, location = ?, updated_at = CURRENT_TIMESTAMP
     WHERE id = ?
   `);
 
-  userDb.updateSubscription = db.prepare(`
+    userDb.updateSubscription = db.prepare(`
     UPDATE users
     SET subscription_plan = ?, subscription_status = ?, trial_ends_at = ?, updated_at = CURRENT_TIMESTAMP
     WHERE id = ?
   `);
 
-  // Stripe operations removed - using Supabase Edge Functions instead
+    // Stripe operations removed - using Supabase Edge Functions instead
 
-  userDb.updatePreferences = db.prepare(`
+    userDb.updatePreferences = db.prepare(`
     UPDATE users
     SET preferences = ?, updated_at = CURRENT_TIMESTAMP
     WHERE id = ?
   `);
 
-  // Session operations
-  sessionDb.create = db.prepare(`
+    // Session operations
+    sessionDb.create = db.prepare(`
     INSERT INTO user_sessions (user_id, token, expires_at)
     VALUES (?, ?, ?)
   `);
 
-  sessionDb.findByToken = db.prepare(`
+    sessionDb.findByToken = db.prepare(`
     SELECT s.*, u.* FROM user_sessions s
     JOIN users u ON s.user_id = u.id
     WHERE s.token = ? AND s.expires_at > CURRENT_TIMESTAMP
   `);
 
-  sessionDb.deleteByToken = db.prepare(`
+    sessionDb.deleteByToken = db.prepare(`
     DELETE FROM user_sessions WHERE token = ?
   `);
 
-  sessionDb.deleteExpired = db.prepare(`
+    sessionDb.deleteExpired = db.prepare(`
     DELETE FROM user_sessions WHERE expires_at <= CURRENT_TIMESTAMP
   `);
 
-  // Calculation operations
-  calculationDb.create = db.prepare(`
+    // Calculation operations
+    calculationDb.create = db.prepare(`
     INSERT INTO calculations (user_id, type, name, notes, parameters, results)
     VALUES (?, ?, ?, ?, ?, ?)
   `);
 
-  calculationDb.findByUserId = db.prepare(`
+    calculationDb.findByUserId = db.prepare(`
     SELECT * FROM calculations
     WHERE user_id = ?
     ORDER BY created_at DESC
   `);
 
-  calculationDb.findById = db.prepare(`
+    calculationDb.findById = db.prepare(`
     SELECT * FROM calculations WHERE id = ? AND user_id = ?
   `);
 
-  calculationDb.update = db.prepare(`
+    calculationDb.update = db.prepare(`
     UPDATE calculations
     SET name = ?, notes = ?, updated_at = CURRENT_TIMESTAMP
     WHERE id = ? AND user_id = ?
   `);
 
-  calculationDb.delete = db.prepare(`
+    calculationDb.delete = db.prepare(`
     DELETE FROM calculations WHERE id = ? AND user_id = ?
   `);
 
-  calculationDb.countByUserId = db.prepare(`
+    calculationDb.countByUserId = db.prepare(`
     SELECT COUNT(*) as count FROM calculations WHERE user_id = ?
   `);
 
-  calculationDb.countByUserIdAndMonth = db.prepare(`
+    calculationDb.countByUserIdAndMonth = db.prepare(`
     SELECT COUNT(*) as count FROM calculations
     WHERE user_id = ? AND created_at >= date('now', 'start of month')
   `);
 
-  // Subscription plan operations
-  planDb.getAll = db.prepare(`
+    // Subscription plan operations
+    planDb.getAll = db.prepare(`
     SELECT * FROM subscription_plans WHERE is_active = TRUE ORDER BY price_monthly ASC
   `);
 
-  planDb.findByName = db.prepare(`
+    planDb.findByName = db.prepare(`
     SELECT * FROM subscription_plans WHERE name = ?
   `);
 
-  // Billing events operations
-  billingDb.createEvent = db.prepare(`
+    // Billing events operations
+    billingDb.createEvent = db.prepare(`
     INSERT INTO billing_events (stripe_event_id, event_type, customer_id, subscription_id, data)
     VALUES (?, ?, ?, ?, ?)
   `);
 
-  billingDb.findEventById = db.prepare(`
+    billingDb.findEventById = db.prepare(`
     SELECT * FROM billing_events WHERE stripe_event_id = ?
   `);
 
@@ -223,7 +223,7 @@ function initializePreparedStatements() {
       UPDATE billing_events SET processed = TRUE WHERE stripe_event_id = ?
     `);
   } catch (error) {
-    console.error('Failed to initialize prepared statements:', error);
+    console.error("Failed to initialize prepared statements:", error);
     throw error;
   }
 }
@@ -287,7 +287,7 @@ export const userDb = {
   findById: null as any,
   update: null as any,
   updateSubscription: null as any,
-  updatePreferences: null as any
+  updatePreferences: null as any,
 };
 
 // Session operations
@@ -295,7 +295,7 @@ export const sessionDb = {
   create: null as any,
   findByToken: null as any,
   deleteByToken: null as any,
-  deleteExpired: null as any
+  deleteExpired: null as any,
 };
 
 // Calculation operations
@@ -306,27 +306,27 @@ export const calculationDb = {
   update: null as any,
   delete: null as any,
   countByUserId: null as any,
-  countByUserIdAndMonth: null as any
+  countByUserIdAndMonth: null as any,
 };
 
 // Usage tracking operations
 export const usageDb = {
   track: null as any,
   getMonthlyUsage: null as any,
-  getUsageByType: null as any
+  getUsageByType: null as any,
 };
 
 // Subscription plan operations
 export const planDb = {
   getAll: null as any,
-  findByName: null as any
+  findByName: null as any,
 };
 
 // Billing operations
 export const billingDb = {
   createEvent: null as any,
   findEventById: null as any,
-  markEventProcessed: null as any
+  markEventProcessed: null as any,
 };
 
 // Initialize database lazily when first needed

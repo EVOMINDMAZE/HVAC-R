@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
-import { useStripeCheckout } from '@/hooks/useStripe';
-import { STRIPE_PRICE_IDS } from '@/lib/stripe';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useToast } from '@/hooks/useToast';
+import { useState } from "react";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { useStripeCheckout } from "@/hooks/useStripe";
+import { STRIPE_PRICE_IDS } from "@/lib/stripe";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/hooks/useToast";
 
 export function StripeDebug() {
   const { isAuthenticated, user, session } = useSupabaseAuth();
@@ -13,17 +13,28 @@ export function StripeDebug() {
   const [testResults, setTestResults] = useState<string[]>([]);
 
   const addTestResult = (result: string) => {
-    setTestResults(prev => [...prev, `${new Date().toLocaleTimeString()}: ${result}`]);
+    setTestResults((prev) => [
+      ...prev,
+      `${new Date().toLocaleTimeString()}: ${result}`,
+    ]);
   };
 
   const testStripeConfig = () => {
-    console.log('Stripe Price IDs:', STRIPE_PRICE_IDS);
-    addTestResult(`Stripe Price IDs loaded: ${JSON.stringify(STRIPE_PRICE_IDS, null, 2)}`);
+    console.log("Stripe Price IDs:", STRIPE_PRICE_IDS);
+    addTestResult(
+      `Stripe Price IDs loaded: ${JSON.stringify(STRIPE_PRICE_IDS, null, 2)}`,
+    );
   };
 
   const testAuthentication = () => {
-    console.log('Auth status:', { isAuthenticated, user, hasSession: !!session });
-    addTestResult(`Auth status - Authenticated: ${isAuthenticated}, User: ${user?.email || 'none'}, Session: ${!!session}`);
+    console.log("Auth status:", {
+      isAuthenticated,
+      user,
+      hasSession: !!session,
+    });
+    addTestResult(
+      `Auth status - Authenticated: ${isAuthenticated}, User: ${user?.email || "none"}, Session: ${!!session}`,
+    );
   };
 
   const testBillingAPI = async () => {
@@ -31,10 +42,10 @@ export function StripeDebug() {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       const response = await fetch(`${supabaseUrl}/functions/v1/billing/test`);
       const data = await response.json();
-      console.log('Billing API test:', data);
+      console.log("Billing API test:", data);
       addTestResult(`Billing API test: ${JSON.stringify(data)}`);
     } catch (err: any) {
-      console.error('Billing API error:', err);
+      console.error("Billing API error:", err);
       addTestResult(`Billing API error: ${err.message}`);
     }
   };
@@ -43,19 +54,21 @@ export function StripeDebug() {
     if (!isAuthenticated) {
       addTestResult(`Cannot test checkout - not authenticated`);
       addToast({
-        type: 'error',
-        title: 'Not Authenticated',
-        description: 'Please sign in to test checkout functionality'
+        type: "error",
+        title: "Not Authenticated",
+        description: "Please sign in to test checkout functionality",
       });
       return;
     }
 
     try {
-      addTestResult(`Testing checkout session for ${planName} with price ID: ${priceId}`);
+      addTestResult(
+        `Testing checkout session for ${planName} with price ID: ${priceId}`,
+      );
       await createCheckoutSession(priceId);
       addTestResult(`Checkout session created successfully for ${planName}`);
     } catch (err: any) {
-      console.error('Checkout test error:', err);
+      console.error("Checkout test error:", err);
       addTestResult(`Checkout session error for ${planName}: ${err.message}`);
     }
   };
@@ -63,18 +76,21 @@ export function StripeDebug() {
   const testWithoutAuth = async () => {
     try {
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const response = await fetch(`${supabaseUrl}/functions/v1/billing/create-checkout-session`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${supabaseUrl}/functions/v1/billing/create-checkout-session`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ priceId: "test-price-id" }),
         },
-        body: JSON.stringify({ priceId: 'test-price-id' }),
-      });
+      );
       const data = await response.json();
-      console.log('Test checkout without auth:', data);
+      console.log("Test checkout without auth:", data);
       addTestResult(`Test checkout without auth: ${JSON.stringify(data)}`);
     } catch (err: any) {
-      console.error('Test checkout error:', err);
+      console.error("Test checkout error:", err);
       addTestResult(`Test checkout error: ${err.message}`);
     }
   };
@@ -96,29 +112,49 @@ export function StripeDebug() {
           <div className="space-y-2">
             <h3 className="font-semibold">Test Checkout Sessions</h3>
             <div className="grid grid-cols-2 gap-2">
-              <Button 
-                onClick={() => testCheckoutSession(STRIPE_PRICE_IDS.PROFESSIONAL_MONTHLY, 'Professional Monthly')}
+              <Button
+                onClick={() =>
+                  testCheckoutSession(
+                    STRIPE_PRICE_IDS.PROFESSIONAL_MONTHLY,
+                    "Professional Monthly",
+                  )
+                }
                 disabled={loading}
                 variant="outline"
               >
                 Professional Monthly
               </Button>
-              <Button 
-                onClick={() => testCheckoutSession(STRIPE_PRICE_IDS.PROFESSIONAL_YEARLY, 'Professional Yearly')}
+              <Button
+                onClick={() =>
+                  testCheckoutSession(
+                    STRIPE_PRICE_IDS.PROFESSIONAL_YEARLY,
+                    "Professional Yearly",
+                  )
+                }
                 disabled={loading}
                 variant="outline"
               >
                 Professional Yearly
               </Button>
-              <Button 
-                onClick={() => testCheckoutSession(STRIPE_PRICE_IDS.ENTERPRISE_MONTHLY, 'Enterprise Monthly')}
+              <Button
+                onClick={() =>
+                  testCheckoutSession(
+                    STRIPE_PRICE_IDS.ENTERPRISE_MONTHLY,
+                    "Enterprise Monthly",
+                  )
+                }
                 disabled={loading}
                 variant="outline"
               >
                 Enterprise Monthly
               </Button>
-              <Button 
-                onClick={() => testCheckoutSession(STRIPE_PRICE_IDS.ENTERPRISE_YEARLY, 'Enterprise Yearly')}
+              <Button
+                onClick={() =>
+                  testCheckoutSession(
+                    STRIPE_PRICE_IDS.ENTERPRISE_YEARLY,
+                    "Enterprise Yearly",
+                  )
+                }
                 disabled={loading}
                 variant="outline"
               >
@@ -127,7 +163,9 @@ export function StripeDebug() {
             </div>
           </div>
 
-          {loading && <div className="text-blue-600">Processing checkout...</div>}
+          {loading && (
+            <div className="text-blue-600">Processing checkout...</div>
+          )}
           {error && <div className="text-red-600">Error: {error}</div>}
 
           <div className="mt-6">
@@ -145,7 +183,7 @@ export function StripeDebug() {
             </div>
           </div>
 
-          <Button 
+          <Button
             onClick={() => setTestResults([])}
             variant="outline"
             size="sm"
