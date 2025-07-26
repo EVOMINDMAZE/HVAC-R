@@ -137,15 +137,7 @@ function initializePreparedStatements() {
     WHERE id = ?
   `);
 
-  userDb.updateStripeInfo = db.prepare(`
-    UPDATE users
-    SET stripe_customer_id = ?, stripe_subscription_id = ?, updated_at = CURRENT_TIMESTAMP
-    WHERE id = ?
-  `);
-
-  userDb.findByStripeCustomerId = db.prepare(`
-    SELECT * FROM users WHERE stripe_customer_id = ?
-  `);
+  // Stripe operations removed - using Supabase Edge Functions instead
 
   userDb.updatePreferences = db.prepare(`
     UPDATE users
