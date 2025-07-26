@@ -103,7 +103,7 @@ export function CycleVisualization({
     const xPadding = xRange * 0.1;
     const yPadding = yRange * 0.1;
 
-    return points.map(point => {
+    const result = points.map(point => {
       const xValue = point[config.xAxis.property] as number;
       const yValue = point[config.yAxis.property] as number;
 
@@ -118,6 +118,9 @@ export function CycleVisualization({
 
       return { ...point, x, y };
     });
+
+    console.log("Calculated coordinates:", result);
+    return result;
   };
 
   // Animation loop
