@@ -307,6 +307,20 @@ export function EnhancedStandardCycleContent() {
                       GWP: {selectedRefrigerant.gwp} | ODP: {selectedRefrigerant.odp}
                     </div>
                   )}
+
+                  {selectedRefrigerant && ['R407C', 'R404A', 'R448A', 'R507A', 'R410A'].includes(selectedRefrigerant.id) && (
+                    <Alert className="mt-3">
+                      <Info className="h-4 w-4" />
+                      <AlertDescription>
+                        <strong>Pro Tip:</strong> {selectedRefrigerant.name} is a blend refrigerant. For best results with CoolProp calculations:
+                        <ul className="mt-1 ml-4 list-disc text-sm">
+                          <li>Use superheat ≥ 10°C</li>
+                          <li>Use subcooling ≥ 5°C</li>
+                          <li>Avoid operating conditions near saturation</li>
+                        </ul>
+                      </AlertDescription>
+                    </Alert>
+                  )}
                 </div>
 
                 <Separator />
