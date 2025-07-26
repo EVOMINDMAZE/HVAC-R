@@ -1,17 +1,42 @@
-import React, { useState, useCallback } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { Alert, AlertDescription } from '../components/ui/alert';
-import { Badge } from '../components/ui/badge';
-import { Separator } from '../components/ui/separator';
-import { Loader2, Calculator, Eye, FileText, Wrench, Play, Pause, RotateCcw, Info } from 'lucide-react';
-import { EnhancedRefrigerantSelector } from '../components/EnhancedRefrigerantSelector';
-import { CycleVisualization } from '../components/CycleVisualization';
-import { EquipmentDiagrams } from '../components/EquipmentDiagrams';
-import { RefrigerantProperties, validateCycleConditions, getRefrigerantById } from '../lib/refrigerants';
+import React, { useState, useCallback } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../components/ui/tabs";
+import { Alert, AlertDescription } from "../components/ui/alert";
+import { Badge } from "../components/ui/badge";
+import { Separator } from "../components/ui/separator";
+import {
+  Loader2,
+  Calculator,
+  Eye,
+  FileText,
+  Wrench,
+  Play,
+  Pause,
+  RotateCcw,
+  Info,
+} from "lucide-react";
+import { EnhancedRefrigerantSelector } from "../components/EnhancedRefrigerantSelector";
+import { CycleVisualization } from "../components/CycleVisualization";
+import { EquipmentDiagrams } from "../components/EquipmentDiagrams";
+import {
+  RefrigerantProperties,
+  validateCycleConditions,
+  getRefrigerantById,
+} from "../lib/refrigerants";
 
 interface CalculationResults {
   point_1: {
@@ -53,7 +78,7 @@ interface CalculationResults {
     volumetric_flow_rate_m3_s: number;
   };
   refrigerant: string;
-  cycle_type: 'standard';
+  cycle_type: "standard";
 }
 
 interface CycleAnimationState {
@@ -65,56 +90,67 @@ interface CycleAnimationState {
 // Content-only version for embedding in other pages
 export function EnhancedStandardCycleContent() {
   const [formData, setFormData] = useState({
-    refrigerant: 'R134a',
+    refrigerant: "R134a",
     evap_temp_c: -10,
     cond_temp_c: 45,
     superheat_c: 5,
-    subcooling_c: 2
+    subcooling_c: 2,
   });
 
   const [results, setResults] = useState<CalculationResults | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
-  const [selectedRefrigerant, setSelectedRefrigerant] = useState<RefrigerantProperties | null>(null);
+  const [selectedRefrigerant, setSelectedRefrigerant] =
+    useState<RefrigerantProperties | null>(null);
   const [animationState, setAnimationState] = useState<CycleAnimationState>({
     isAnimating: false,
     currentPoint: 1,
-    animationSpeed: 1000
+    animationSpeed: 1000,
   });
 
   const handleInputChange = useCallback((field: string, value: number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
     setError(null);
   }, []);
 
-  const handleRefrigerantChange = useCallback((refrigerant: string) => {
-    setFormData(prev => ({ ...prev, refrigerant }));
-    const refProps = getRefrigerantById(refrigerant);
-    setSelectedRefrigerant(refProps);
-    
-    if (refProps) {
-      const warnings = validateCycleConditions(refProps, {
-        evaporatorTemp: formData.evap_temp_c,
-        condenserTemp: formData.cond_temp_c,
-        superheat: formData.superheat_c,
-        subcooling: formData.subcooling_c
-      });
-      setValidationWarnings(warnings);
-    }
-    setError(null);
-  }, [formData.evap_temp_c, formData.cond_temp_c, formData.superheat_c, formData.subcooling_c]);
+  const handleRefrigerantChange = useCallback(
+    (refrigerant: string) => {
+      setFormData((prev) => ({ ...prev, refrigerant }));
+      const refProps = getRefrigerantById(refrigerant);
+      setSelectedRefrigerant(refProps);
+
+      if (refProps) {
+        const warnings = validateCycleConditions(refProps, {
+          evaporatorTemp: formData.evap_temp_c,
+          condenserTemp: formData.cond_temp_c,
+          superheat: formData.superheat_c,
+          subcooling: formData.subcooling_c,
+        });
+        setValidationWarnings(warnings);
+      }
+      setError(null);
+    },
+    [
+      formData.evap_temp_c,
+      formData.cond_temp_c,
+      formData.superheat_c,
+      formData.subcooling_c,
+    ],
+  );
 
   const validateInputs = useCallback(() => {
     if (formData.evap_temp_c >= formData.cond_temp_c) {
-      setError('Evaporator temperature must be lower than condenser temperature');
+      setError(
+        "Evaporator temperature must be lower than condenser temperature",
+      );
       return false;
     }
     if (formData.superheat_c < 0 || formData.subcooling_c < 0) {
-      setError('Superheat and subcooling must be positive values');
+      setError("Superheat and subcooling must be positive values");
       return false;
     }
     return true;
@@ -128,137 +164,202 @@ export function EnhancedStandardCycleContent() {
     setResults(null);
 
     try {
-      const response = await fetch('https://simulateon-backend.onrender.com/calculate-standard', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        "https://simulateon-backend.onrender.com/calculate-standard",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
         },
-        body: JSON.stringify(formData),
-      });
+      );
 
       const responseData = await response.json();
 
       if (!response.ok || responseData.error) {
-        throw new Error(responseData.error || `HTTP error! status: ${response.status}`);
+        throw new Error(
+          responseData.error || `HTTP error! status: ${response.status}`,
+        );
       }
 
       if (responseData.data) {
         setResults(responseData.data);
-        setAnimationState(prev => ({ ...prev, currentPoint: 1 }));
+        setAnimationState((prev) => ({ ...prev, currentPoint: 1 }));
       } else {
-        throw new Error('Invalid response format');
+        throw new Error("Invalid response format");
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
+      const errorMessage =
+        err instanceof Error ? err.message : "An unexpected error occurred";
 
       // Handle specific CoolProp errors for blend refrigerants
-      if (errorMessage.includes('Two-phase inputs not supported for pseudo-pure')) {
+      if (
+        errorMessage.includes("Two-phase inputs not supported for pseudo-pure")
+      ) {
         const refrigerantName = formData.refrigerant;
         setError(
           `CoolProp limitation: ${refrigerantName} is a blend refrigerant and two-phase calculations are not supported. ` +
-          'Try adjusting the superheat or subcooling values to avoid two-phase conditions, or use a pure refrigerant like R134a or R32.'
+            "Try adjusting the superheat or subcooling values to avoid two-phase conditions, or use a pure refrigerant like R134a or R32.",
         );
-      } else if (errorMessage.includes('PropsSI')) {
+      } else if (errorMessage.includes("PropsSI")) {
         setError(
-          'CoolProp calculation error: The specified operating conditions may be outside the valid range for this refrigerant. ' +
-          'Please check your temperature and pressure values.'
+          "CoolProp calculation error: The specified operating conditions may be outside the valid range for this refrigerant. " +
+            "Please check your temperature and pressure values.",
         );
       } else {
         setError(errorMessage);
       }
 
-      console.error('Calculation error:', err);
+      console.error("Calculation error:", err);
     } finally {
       setLoading(false);
     }
   };
 
   const toggleAnimation = () => {
-    setAnimationState(prev => ({
+    setAnimationState((prev) => ({
       ...prev,
-      isAnimating: !prev.isAnimating
+      isAnimating: !prev.isAnimating,
     }));
   };
 
   const resetAnimation = () => {
-    setAnimationState(prev => ({
+    setAnimationState((prev) => ({
       ...prev,
       isAnimating: false,
-      currentPoint: 1
+      currentPoint: 1,
     }));
   };
 
   const adjustAnimationSpeed = (speed: number) => {
-    setAnimationState(prev => ({
+    setAnimationState((prev) => ({
       ...prev,
-      animationSpeed: speed
+      animationSpeed: speed,
     }));
   };
 
-  const formatValue = (value: number | undefined, unit: string, decimals: number = 2) => {
+  const formatValue = (
+    value: number | undefined,
+    unit: string,
+    decimals: number = 2,
+  ) => {
     if (value === undefined || value === null || isNaN(value)) {
       return `N/A ${unit}`;
     }
     return `${value.toFixed(decimals)} ${unit}`;
   };
 
-  const cycleData = results ? {
-    points: [
-      {
-        id: '1',
-        name: 'Evaporator Outlet',
-        temperature: results.point_1?.temperature_c || results.state_points?.[0]?.temperature_c || 0,
-        pressure: results.point_1?.pressure_kpa || results.state_points?.[0]?.pressure_kpa || 0,
-        enthalpy: results.point_1?.enthalpy_kj_kg || results.state_points?.[0]?.enthalpy_kj_kg || 0,
-        entropy: results.point_1?.entropy_kj_kg_k || results.state_points?.[0]?.entropy_kj_kg_k || 0,
-        quality: results.point_1?.quality,
-        x: 0, // Will be calculated by CycleVisualization
-        y: 0
-      },
-      {
-        id: '2',
-        name: 'Compressor Outlet',
-        temperature: results.point_2?.temperature_c || results.state_points?.[1]?.temperature_c || 0,
-        pressure: results.point_2?.pressure_kpa || results.state_points?.[1]?.pressure_kpa || 0,
-        enthalpy: results.point_2?.enthalpy_kj_kg || results.state_points?.[1]?.enthalpy_kj_kg || 0,
-        entropy: results.point_2?.entropy_kj_kg_k || results.state_points?.[1]?.entropy_kj_kg_k || 0,
-        quality: results.point_2?.quality,
-        x: 0,
-        y: 0
-      },
-      {
-        id: '3',
-        name: 'Condenser Outlet',
-        temperature: results.point_3?.temperature_c || results.state_points?.[2]?.temperature_c || 0,
-        pressure: results.point_3?.pressure_kpa || results.state_points?.[2]?.pressure_kpa || 0,
-        enthalpy: results.point_3?.enthalpy_kj_kg || results.state_points?.[2]?.enthalpy_kj_kg || 0,
-        entropy: results.point_3?.entropy_kj_kg_k || results.state_points?.[2]?.entropy_kj_kg_k || 0,
-        quality: results.point_3?.quality,
-        x: 0,
-        y: 0
-      },
-      {
-        id: '4',
-        name: 'Expansion Valve Outlet',
-        temperature: results.point_4?.temperature_c || results.state_points?.[3]?.temperature_c || 0,
-        pressure: results.point_4?.pressure_kpa || results.state_points?.[3]?.pressure_kpa || 0,
-        enthalpy: results.point_4?.enthalpy_kj_kg || results.state_points?.[3]?.enthalpy_kj_kg || 0,
-        entropy: results.point_4?.entropy_kj_kg_k || results.state_points?.[3]?.entropy_kj_kg_k || 0,
-        quality: results.point_4?.quality,
-        x: 0,
-        y: 0
+  const cycleData = results
+    ? {
+        points: [
+          {
+            id: "1",
+            name: "Evaporator Outlet",
+            temperature:
+              results.point_1?.temperature_c ||
+              results.state_points?.[0]?.temperature_c ||
+              0,
+            pressure:
+              results.point_1?.pressure_kpa ||
+              results.state_points?.[0]?.pressure_kpa ||
+              0,
+            enthalpy:
+              results.point_1?.enthalpy_kj_kg ||
+              results.state_points?.[0]?.enthalpy_kj_kg ||
+              0,
+            entropy:
+              results.point_1?.entropy_kj_kg_k ||
+              results.state_points?.[0]?.entropy_kj_kg_k ||
+              0,
+            quality: results.point_1?.quality,
+            x: 0, // Will be calculated by CycleVisualization
+            y: 0,
+          },
+          {
+            id: "2",
+            name: "Compressor Outlet",
+            temperature:
+              results.point_2?.temperature_c ||
+              results.state_points?.[1]?.temperature_c ||
+              0,
+            pressure:
+              results.point_2?.pressure_kpa ||
+              results.state_points?.[1]?.pressure_kpa ||
+              0,
+            enthalpy:
+              results.point_2?.enthalpy_kj_kg ||
+              results.state_points?.[1]?.enthalpy_kj_kg ||
+              0,
+            entropy:
+              results.point_2?.entropy_kj_kg_k ||
+              results.state_points?.[1]?.entropy_kj_kg_k ||
+              0,
+            quality: results.point_2?.quality,
+            x: 0,
+            y: 0,
+          },
+          {
+            id: "3",
+            name: "Condenser Outlet",
+            temperature:
+              results.point_3?.temperature_c ||
+              results.state_points?.[2]?.temperature_c ||
+              0,
+            pressure:
+              results.point_3?.pressure_kpa ||
+              results.state_points?.[2]?.pressure_kpa ||
+              0,
+            enthalpy:
+              results.point_3?.enthalpy_kj_kg ||
+              results.state_points?.[2]?.enthalpy_kj_kg ||
+              0,
+            entropy:
+              results.point_3?.entropy_kj_kg_k ||
+              results.state_points?.[2]?.entropy_kj_kg_k ||
+              0,
+            quality: results.point_3?.quality,
+            x: 0,
+            y: 0,
+          },
+          {
+            id: "4",
+            name: "Expansion Valve Outlet",
+            temperature:
+              results.point_4?.temperature_c ||
+              results.state_points?.[3]?.temperature_c ||
+              0,
+            pressure:
+              results.point_4?.pressure_kpa ||
+              results.state_points?.[3]?.pressure_kpa ||
+              0,
+            enthalpy:
+              results.point_4?.enthalpy_kj_kg ||
+              results.state_points?.[3]?.enthalpy_kj_kg ||
+              0,
+            entropy:
+              results.point_4?.entropy_kj_kg_k ||
+              results.state_points?.[3]?.entropy_kj_kg_k ||
+              0,
+            quality: results.point_4?.quality,
+            x: 0,
+            y: 0,
+          },
+        ],
+        refrigerant: results.refrigerant || formData.refrigerant,
+        cycleType: "standard" as const,
       }
-    ],
-    refrigerant: results.refrigerant || formData.refrigerant,
-    cycleType: 'standard' as const
-  } : undefined;
+    : undefined;
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Enhanced Standard Refrigeration Cycle</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          Enhanced Standard Refrigeration Cycle
+        </h1>
         <p className="text-gray-600">
-          Advanced cycle analysis with real-time visualization and equipment simulation
+          Advanced cycle analysis with real-time visualization and equipment
+          simulation
         </p>
       </div>
 
@@ -268,15 +369,27 @@ export function EnhancedStandardCycleContent() {
             <Calculator className="h-4 w-4" />
             Calculation
           </TabsTrigger>
-          <TabsTrigger value="visualization" className="flex items-center gap-2" disabled={!results}>
+          <TabsTrigger
+            value="visualization"
+            className="flex items-center gap-2"
+            disabled={!results}
+          >
             <Eye className="h-4 w-4" />
             Visualization
           </TabsTrigger>
-          <TabsTrigger value="results" className="flex items-center gap-2" disabled={!results}>
+          <TabsTrigger
+            value="results"
+            className="flex items-center gap-2"
+            disabled={!results}
+          >
             <FileText className="h-4 w-4" />
             Results
           </TabsTrigger>
-          <TabsTrigger value="equipment" className="flex items-center gap-2" disabled={!results}>
+          <TabsTrigger
+            value="equipment"
+            className="flex items-center gap-2"
+            disabled={!results}
+          >
             <Wrench className="h-4 w-4" />
             Equipment
           </TabsTrigger>
@@ -304,45 +417,65 @@ export function EnhancedStandardCycleContent() {
                       <Badge variant="outline" className="mr-2">
                         {selectedRefrigerant.safety_class}
                       </Badge>
-                      GWP: {selectedRefrigerant.gwp} | ODP: {selectedRefrigerant.odp}
+                      GWP: {selectedRefrigerant.gwp} | ODP:{" "}
+                      {selectedRefrigerant.odp}
                     </div>
                   )}
 
-                  {selectedRefrigerant && ['R407C', 'R404A', 'R448A', 'R507A', 'R410A'].includes(selectedRefrigerant.id) && (
-                    <Alert className="mt-3">
-                      <Info className="h-4 w-4" />
-                      <AlertDescription>
-                        <strong>Pro Tip:</strong> {selectedRefrigerant.name} is a blend refrigerant. For best results with CoolProp calculations:
-                        <ul className="mt-1 ml-4 list-disc text-sm">
-                          <li>Use superheat ≥ 10°C</li>
-                          <li>Use subcooling ≥ 5°C</li>
-                          <li>Avoid operating conditions near saturation</li>
-                        </ul>
-                      </AlertDescription>
-                    </Alert>
-                  )}
+                  {selectedRefrigerant &&
+                    ["R407C", "R404A", "R448A", "R507A", "R410A"].includes(
+                      selectedRefrigerant.id,
+                    ) && (
+                      <Alert className="mt-3">
+                        <Info className="h-4 w-4" />
+                        <AlertDescription>
+                          <strong>Pro Tip:</strong> {selectedRefrigerant.name}{" "}
+                          is a blend refrigerant. For best results with CoolProp
+                          calculations:
+                          <ul className="mt-1 ml-4 list-disc text-sm">
+                            <li>Use superheat ≥ 10°C</li>
+                            <li>Use subcooling ≥ 5°C</li>
+                            <li>Avoid operating conditions near saturation</li>
+                          </ul>
+                        </AlertDescription>
+                      </Alert>
+                    )}
                 </div>
 
                 <Separator />
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="evap_temp">Evaporator Temperature (°C)</Label>
+                    <Label htmlFor="evap_temp">
+                      Evaporator Temperature (°C)
+                    </Label>
                     <Input
                       id="evap_temp"
                       type="number"
                       value={formData.evap_temp_c}
-                      onChange={(e) => handleInputChange('evap_temp_c', parseFloat(e.target.value))}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "evap_temp_c",
+                          parseFloat(e.target.value),
+                        )
+                      }
                       className="mt-1"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="cond_temp">Condenser Temperature (°C)</Label>
+                    <Label htmlFor="cond_temp">
+                      Condenser Temperature (°C)
+                    </Label>
                     <Input
                       id="cond_temp"
                       type="number"
                       value={formData.cond_temp_c}
-                      onChange={(e) => handleInputChange('cond_temp_c', parseFloat(e.target.value))}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "cond_temp_c",
+                          parseFloat(e.target.value),
+                        )
+                      }
                       className="mt-1"
                     />
                   </div>
@@ -352,7 +485,12 @@ export function EnhancedStandardCycleContent() {
                       id="superheat"
                       type="number"
                       value={formData.superheat_c}
-                      onChange={(e) => handleInputChange('superheat_c', parseFloat(e.target.value))}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "superheat_c",
+                          parseFloat(e.target.value),
+                        )
+                      }
                       className="mt-1"
                     />
                   </div>
@@ -362,7 +500,12 @@ export function EnhancedStandardCycleContent() {
                       id="subcooling"
                       type="number"
                       value={formData.subcooling_c}
-                      onChange={(e) => handleInputChange('subcooling_c', parseFloat(e.target.value))}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "subcooling_c",
+                          parseFloat(e.target.value),
+                        )
+                      }
                       className="mt-1"
                     />
                   </div>
@@ -385,14 +528,22 @@ export function EnhancedStandardCycleContent() {
                   <Alert variant="destructive">
                     <AlertDescription>
                       {error}
-                      {error.includes('blend refrigerant') && (
+                      {error.includes("blend refrigerant") && (
                         <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded">
-                          <strong className="text-blue-800">Suggestions:</strong>
+                          <strong className="text-blue-800">
+                            Suggestions:
+                          </strong>
                           <ul className="mt-1 ml-4 list-disc text-sm text-blue-700">
                             <li>Try increasing superheat to 10°C or higher</li>
                             <li>Try increasing subcooling to 5°C or higher</li>
-                            <li>Consider using pure refrigerants like R134a, R32, R290, or R744</li>
-                            <li>Adjust evaporator/condenser temperatures to avoid two-phase conditions</li>
+                            <li>
+                              Consider using pure refrigerants like R134a, R32,
+                              R290, or R744
+                            </li>
+                            <li>
+                              Adjust evaporator/condenser temperatures to avoid
+                              two-phase conditions
+                            </li>
                           </ul>
                         </div>
                       )}
@@ -400,9 +551,9 @@ export function EnhancedStandardCycleContent() {
                   </Alert>
                 )}
 
-                <Button 
-                  onClick={handleCalculate} 
-                  disabled={loading} 
+                <Button
+                  onClick={handleCalculate}
+                  disabled={loading}
                   className="w-full"
                   size="lg"
                 >
@@ -433,44 +584,71 @@ export function EnhancedStandardCycleContent() {
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <span className="font-medium">Critical Temperature:</span>
-                        <div>{selectedRefrigerant.limits.critical_temp_c.toFixed(1)}°C</div>
+                        <span className="font-medium">
+                          Critical Temperature:
+                        </span>
+                        <div>
+                          {selectedRefrigerant.limits.critical_temp_c.toFixed(
+                            1,
+                          )}
+                          °C
+                        </div>
                       </div>
                       <div>
                         <span className="font-medium">Critical Pressure:</span>
-                        <div>{(selectedRefrigerant.limits.critical_pressure_kpa / 1000).toFixed(1)} MPa</div>
+                        <div>
+                          {(
+                            selectedRefrigerant.limits.critical_pressure_kpa /
+                            1000
+                          ).toFixed(1)}{" "}
+                          MPa
+                        </div>
                       </div>
                       <div>
                         <span className="font-medium">Min Temperature:</span>
-                        <div>{selectedRefrigerant.limits.min_temp_c.toFixed(1)}°C</div>
+                        <div>
+                          {selectedRefrigerant.limits.min_temp_c.toFixed(1)}°C
+                        </div>
                       </div>
                       <div>
                         <span className="font-medium">Max Temperature:</span>
-                        <div>{selectedRefrigerant.limits.max_temp_c.toFixed(1)}°C</div>
+                        <div>
+                          {selectedRefrigerant.limits.max_temp_c.toFixed(1)}°C
+                        </div>
                       </div>
                     </div>
-                    
+
                     <Separator />
-                    
+
                     <div>
                       <span className="font-medium">CoolProp Support:</span>
-                      <Badge 
-                        variant={selectedRefrigerant.coolpropSupport === 'full' ? 'default' : 'secondary'}
+                      <Badge
+                        variant={
+                          selectedRefrigerant.coolpropSupport === "full"
+                            ? "default"
+                            : "secondary"
+                        }
                         className="ml-2"
                       >
                         {selectedRefrigerant.coolpropSupport}
                       </Badge>
                     </div>
-                    
+
                     {selectedRefrigerant.applications && (
                       <div>
                         <span className="font-medium">Applications:</span>
                         <div className="mt-1 flex flex-wrap gap-1">
-                          {selectedRefrigerant.applications.map((app, index) => (
-                            <Badge key={index} variant="outline" className="text-xs">
-                              {app}
-                            </Badge>
-                          ))}
+                          {selectedRefrigerant.applications.map(
+                            (app, index) => (
+                              <Badge
+                                key={index}
+                                variant="outline"
+                                className="text-xs"
+                              >
+                                {app}
+                              </Badge>
+                            ),
+                          )}
                         </div>
                       </div>
                     )}
@@ -523,14 +701,22 @@ export function EnhancedStandardCycleContent() {
                   <div className="flex items-center gap-4 mb-4">
                     <Label>Animation Speed:</Label>
                     <div className="flex gap-2">
-                      {[500, 1000, 2000].map(speed => (
+                      {[500, 1000, 2000].map((speed) => (
                         <Button
                           key={speed}
-                          variant={animationState.animationSpeed === speed ? 'default' : 'outline'}
+                          variant={
+                            animationState.animationSpeed === speed
+                              ? "default"
+                              : "outline"
+                          }
                           size="sm"
                           onClick={() => adjustAnimationSpeed(speed)}
                         >
-                          {speed === 500 ? 'Fast' : speed === 1000 ? 'Normal' : 'Slow'}
+                          {speed === 500
+                            ? "Fast"
+                            : speed === 1000
+                              ? "Normal"
+                              : "Slow"}
                         </Button>
                       ))}
                     </div>
@@ -556,7 +742,9 @@ export function EnhancedStandardCycleContent() {
             <Card>
               <CardHeader>
                 <CardTitle>Cycle Performance</CardTitle>
-                <CardDescription>Overall system performance metrics</CardDescription>
+                <CardDescription>
+                  Overall system performance metrics
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 {results && results.performance ? (
@@ -564,38 +752,67 @@ export function EnhancedStandardCycleContent() {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="p-3 bg-blue-50 rounded-lg">
                         <div className="text-2xl font-bold text-blue-600">
-                          {results.performance?.cop?.toFixed(2) || 'N/A'}
+                          {results.performance?.cop?.toFixed(2) || "N/A"}
                         </div>
-                        <div className="text-sm text-blue-800">Coefficient of Performance</div>
+                        <div className="text-sm text-blue-800">
+                          Coefficient of Performance
+                        </div>
                       </div>
                       <div className="p-3 bg-green-50 rounded-lg">
                         <div className="text-2xl font-bold text-green-600">
-                          {formatValue(results.performance?.cooling_capacity_kw, 'kW')}
+                          {formatValue(
+                            results.performance?.cooling_capacity_kw,
+                            "kW",
+                          )}
                         </div>
-                        <div className="text-sm text-green-800">Cooling Capacity</div>
+                        <div className="text-sm text-green-800">
+                          Cooling Capacity
+                        </div>
                       </div>
                       <div className="p-3 bg-orange-50 rounded-lg">
                         <div className="text-2xl font-bold text-orange-600">
-                          {formatValue(results.performance?.compressor_work_kw, 'kW')}
+                          {formatValue(
+                            results.performance?.compressor_work_kw,
+                            "kW",
+                          )}
                         </div>
-                        <div className="text-sm text-orange-800">Compressor Work</div>
+                        <div className="text-sm text-orange-800">
+                          Compressor Work
+                        </div>
                       </div>
                       <div className="p-3 bg-red-50 rounded-lg">
                         <div className="text-2xl font-bold text-red-600">
-                          {formatValue(results.performance?.heat_rejection_kw, 'kW')}
+                          {formatValue(
+                            results.performance?.heat_rejection_kw,
+                            "kW",
+                          )}
                         </div>
-                        <div className="text-sm text-red-800">Heat Rejection</div>
+                        <div className="text-sm text-red-800">
+                          Heat Rejection
+                        </div>
                       </div>
                     </div>
                     <Separator />
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span>Mass Flow Rate:</span>
-                        <span className="font-mono">{formatValue(results.performance?.mass_flow_rate_kg_s, 'kg/s', 4)}</span>
+                        <span className="font-mono">
+                          {formatValue(
+                            results.performance?.mass_flow_rate_kg_s,
+                            "kg/s",
+                            4,
+                          )}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Volumetric Flow Rate:</span>
-                        <span className="font-mono">{formatValue(results.performance?.volumetric_flow_rate_m3_s, 'm³/s', 6)}</span>
+                        <span className="font-mono">
+                          {formatValue(
+                            results.performance?.volumetric_flow_rate_m3_s,
+                            "m³/s",
+                            6,
+                          )}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -610,27 +827,60 @@ export function EnhancedStandardCycleContent() {
             <Card>
               <CardHeader>
                 <CardTitle>State Points</CardTitle>
-                <CardDescription>Thermodynamic properties at each cycle point</CardDescription>
+                <CardDescription>
+                  Thermodynamic properties at each cycle point
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 {results ? (
                   <div className="space-y-4">
                     {[
-                      { point: results.point_1, label: 'Point 1 - Evaporator Outlet', color: 'blue' },
-                      { point: results.point_2, label: 'Point 2 - Compressor Outlet', color: 'red' },
-                      { point: results.point_3, label: 'Point 3 - Condenser Outlet', color: 'green' },
-                      { point: results.point_4, label: 'Point 4 - Expansion Outlet', color: 'orange' }
+                      {
+                        point: results.point_1,
+                        label: "Point 1 - Evaporator Outlet",
+                        color: "blue",
+                      },
+                      {
+                        point: results.point_2,
+                        label: "Point 2 - Compressor Outlet",
+                        color: "red",
+                      },
+                      {
+                        point: results.point_3,
+                        label: "Point 3 - Condenser Outlet",
+                        color: "green",
+                      },
+                      {
+                        point: results.point_4,
+                        label: "Point 4 - Expansion Outlet",
+                        color: "orange",
+                      },
                     ].map(({ point, label, color }, index) => (
                       <div key={index} className="border rounded-lg p-3">
-                        <div className={`font-medium text-${color}-600 mb-2`}>{label}</div>
+                        <div className={`font-medium text-${color}-600 mb-2`}>
+                          {label}
+                        </div>
                         <div className="grid grid-cols-2 gap-2 text-sm">
-                          <div>T: {formatValue(point?.temperature_c, '°C')}</div>
-                          <div>P: {formatValue(point?.pressure_kpa, 'kPa', 0)}</div>
-                          <div>h: {formatValue(point?.enthalpy_kj_kg, 'kJ/kg')}</div>
-                          <div>s: {formatValue(point?.entropy_kj_kg_k, 'kJ/kg·K', 3)}</div>
-                          <div>ρ: {formatValue(point?.density_kg_m3, 'kg/m³')}</div>
+                          <div>
+                            T: {formatValue(point?.temperature_c, "°C")}
+                          </div>
+                          <div>
+                            P: {formatValue(point?.pressure_kpa, "kPa", 0)}
+                          </div>
+                          <div>
+                            h: {formatValue(point?.enthalpy_kj_kg, "kJ/kg")}
+                          </div>
+                          <div>
+                            s:{" "}
+                            {formatValue(point?.entropy_kj_kg_k, "kJ/kg·K", 3)}
+                          </div>
+                          <div>
+                            ρ: {formatValue(point?.density_kg_m3, "kg/m³")}
+                          </div>
                           {point?.quality !== undefined && (
-                            <div>x: {formatValue(point.quality * 100, '%')}</div>
+                            <div>
+                              x: {formatValue(point.quality * 100, "%")}
+                            </div>
                           )}
                         </div>
                       </div>
@@ -651,12 +901,13 @@ export function EnhancedStandardCycleContent() {
             <CardHeader>
               <CardTitle>Equipment Diagrams</CardTitle>
               <CardDescription>
-                Interactive system components with refrigerant flow visualization
+                Interactive system components with refrigerant flow
+                visualization
               </CardDescription>
             </CardHeader>
             <CardContent>
               {results ? (
-                <EquipmentDiagrams 
+                <EquipmentDiagrams
                   cycleData={cycleData}
                   isAnimating={animationState.isAnimating}
                   animationSpeed={animationState.animationSpeed}

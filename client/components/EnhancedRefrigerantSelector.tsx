@@ -1,11 +1,17 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
+import React, { useState, useEffect, useMemo } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import {
   AlertTriangle,
   CheckCircle,
@@ -16,8 +22,8 @@ import {
   Shield,
   Search,
   TrendingUp,
-  Star
-} from 'lucide-react';
+  Star,
+} from "lucide-react";
 import {
   REFRIGERANT_DATABASE,
   validateOperatingConditions,
@@ -25,8 +31,8 @@ import {
   RefrigerantProperties,
   searchRefrigerants,
   getRefrigerantsByPopularity,
-  POPULAR_REFRIGERANTS
-} from '@/lib/refrigerants';
+  POPULAR_REFRIGERANTS,
+} from "@/lib/refrigerants";
 
 interface EnhancedRefrigerantSelectorProps {
   value: string;
@@ -45,23 +51,27 @@ export function EnhancedRefrigerantSelector({
   condenserTemp,
   onSuggestedRangeApply,
   showValidation = true,
-  className
+  className,
 }: EnhancedRefrigerantSelectorProps) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [validationResults, setValidationResults] = useState<{
     evap: { valid: boolean; warnings: string[]; errors: string[] };
     cond: { valid: boolean; warnings: string[]; errors: string[] };
   } | null>(null);
 
-  const selectedRefrigerant = REFRIGERANT_DATABASE.find(ref => ref.id === value);
+  const selectedRefrigerant = REFRIGERANT_DATABASE.find(
+    (ref) => ref.id === value,
+  );
 
   // Filter refrigerants based on search and category
   const filteredRefrigerants = React.useMemo(() => {
-    let results = searchTerm ? searchRefrigerants(searchTerm) : getRefrigerantsByPopularity();
+    let results = searchTerm
+      ? searchRefrigerants(searchTerm)
+      : getRefrigerantsByPopularity();
 
-    if (selectedCategory !== 'all') {
-      results = results.filter(ref => ref.category === selectedCategory);
+    if (selectedCategory !== "all") {
+      results = results.filter((ref) => ref.category === selectedCategory);
     }
 
     return results;
@@ -74,26 +84,31 @@ export function EnhancedRefrigerantSelector({
       return;
     }
 
-    const evapValidation = evaporatorTemp !== undefined 
-      ? validateOperatingConditions(value, evaporatorTemp) 
-      : { valid: true, warnings: [], errors: [] };
-    
-    const condValidation = condenserTemp !== undefined 
-      ? validateOperatingConditions(value, condenserTemp) 
-      : { valid: true, warnings: [], errors: [] };
+    const evapValidation =
+      evaporatorTemp !== undefined
+        ? validateOperatingConditions(value, evaporatorTemp)
+        : { valid: true, warnings: [], errors: [] };
+
+    const condValidation =
+      condenserTemp !== undefined
+        ? validateOperatingConditions(value, condenserTemp)
+        : { valid: true, warnings: [], errors: [] };
 
     setValidationResults({
       evap: evapValidation,
-      cond: condValidation
+      cond: condValidation,
     });
   }, [value, evaporatorTemp, condenserTemp, showValidation]);
 
   const handleSuggestedRangeApply = () => {
     if (!selectedRefrigerant || !onSuggestedRangeApply) return;
-    
+
     const range = getSuggestedOperatingRange(value);
     if (range) {
-      onSuggestedRangeApply(range.evaporatorTemp.recommended, range.condenserTemp.recommended);
+      onSuggestedRangeApply(
+        range.evaporatorTemp.recommended,
+        range.condenserTemp.recommended,
+      );
     }
   };
 
@@ -103,7 +118,9 @@ export function EnhancedRefrigerantSelector({
     return <CheckCircle className="h-4 w-4 text-green-500" />;
   };
 
-  const categories = [...new Set(REFRIGERANT_DATABASE.map(ref => ref.category))];
+  const categories = [
+    ...new Set(REFRIGERANT_DATABASE.map((ref) => ref.category)),
+  ];
 
   return (
     <div className={`space-y-4 ${className}`}>
@@ -128,13 +145,16 @@ export function EnhancedRefrigerantSelector({
             </div>
             <div>
               <Label htmlFor="category">Filter by Category</Label>
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <Select
+                value={selectedCategory}
+                onValueChange={setSelectedCategory}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Categories</SelectItem>
-                  {categories.map(category => (
+                  {categories.map((category) => (
                     <SelectItem key={category} value={category}>
                       {category}
                     </SelectItem>
@@ -151,7 +171,7 @@ export function EnhancedRefrigerantSelector({
                 <SelectValue placeholder="Choose a refrigerant" />
               </SelectTrigger>
               <SelectContent className="max-h-96">
-                {filteredRefrigerants.map(refrigerant => (
+                {filteredRefrigerants.map((refrigerant) => (
                   <SelectItem key={refrigerant.id} value={refrigerant.id}>
                     <div className="flex items-center justify-between w-full">
                       <div className="flex items-center gap-2">
@@ -163,11 +183,17 @@ export function EnhancedRefrigerantSelector({
                           style={{ backgroundColor: refrigerant.color }}
                         />
                         <span className="font-medium">{refrigerant.name}</span>
-                        <span className="text-sm text-gray-500">({refrigerant.fullName})</span>
+                        <span className="text-sm text-gray-500">
+                          ({refrigerant.fullName})
+                        </span>
                       </div>
                       <div className="flex gap-1">
-                        <Badge 
-                          variant={refrigerant.coolpropSupport === 'full' ? 'default' : 'secondary'}
+                        <Badge
+                          variant={
+                            refrigerant.coolpropSupport === "full"
+                              ? "default"
+                              : "secondary"
+                          }
                           className="text-xs"
                         >
                           {refrigerant.coolpropSupport}
@@ -190,8 +216,8 @@ export function EnhancedRefrigerantSelector({
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <div 
-                className="w-4 h-4 rounded-full" 
+              <div
+                className="w-4 h-4 rounded-full"
                 style={{ backgroundColor: selectedRefrigerant.color }}
               />
               {selectedRefrigerant.name} - {selectedRefrigerant.fullName}
@@ -204,14 +230,18 @@ export function EnhancedRefrigerantSelector({
                 <Leaf className="h-4 w-4 text-green-500" />
                 <div>
                   <div className="text-sm font-medium">GWP</div>
-                  <div className="text-sm text-gray-600">{selectedRefrigerant.globalWarmingPotential}</div>
+                  <div className="text-sm text-gray-600">
+                    {selectedRefrigerant.globalWarmingPotential}
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <Shield className="h-4 w-4 text-blue-500" />
                 <div>
                   <div className="text-sm font-medium">Safety</div>
-                  <div className="text-sm text-gray-600">{selectedRefrigerant.safety}</div>
+                  <div className="text-sm text-gray-600">
+                    {selectedRefrigerant.safety}
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -219,7 +249,10 @@ export function EnhancedRefrigerantSelector({
                 <div>
                   <div className="text-sm font-medium">Critical Temp</div>
                   <div className="text-sm text-gray-600">
-                    {(selectedRefrigerant.limits.criticalTemp - 273.15).toFixed(1)}°C
+                    {(selectedRefrigerant.limits.criticalTemp - 273.15).toFixed(
+                      1,
+                    )}
+                    °C
                   </div>
                 </div>
               </div>
@@ -228,7 +261,10 @@ export function EnhancedRefrigerantSelector({
                 <div>
                   <div className="text-sm font-medium">Critical Press</div>
                   <div className="text-sm text-gray-600">
-                    {(selectedRefrigerant.limits.criticalPressure / 1000).toFixed(0)} kPa
+                    {(
+                      selectedRefrigerant.limits.criticalPressure / 1000
+                    ).toFixed(0)}{" "}
+                    kPa
                   </div>
                 </div>
               </div>
@@ -236,14 +272,16 @@ export function EnhancedRefrigerantSelector({
 
             {/* Description */}
             <div>
-              <p className="text-sm text-gray-700">{selectedRefrigerant.description}</p>
+              <p className="text-sm text-gray-700">
+                {selectedRefrigerant.description}
+              </p>
             </div>
 
             {/* Applications */}
             <div>
               <Label>Typical Applications</Label>
               <div className="flex flex-wrap gap-2 mt-1">
-                {selectedRefrigerant.applications.map(app => (
+                {selectedRefrigerant.applications.map((app) => (
                   <Badge key={app} variant="outline" className="text-xs">
                     {app}
                   </Badge>
@@ -252,14 +290,13 @@ export function EnhancedRefrigerantSelector({
             </div>
 
             {/* CoolProp Support Warning */}
-            {selectedRefrigerant.coolpropSupport !== 'full' && (
+            {selectedRefrigerant.coolpropSupport !== "full" && (
               <Alert>
                 <AlertTriangle className="h-4 w-4" />
                 <AlertDescription>
-                  {selectedRefrigerant.coolpropSupport === 'limited' 
-                    ? 'This refrigerant has limited CoolProp support. Some properties may not be available.'
-                    : 'This refrigerant is not supported by CoolProp. Calculations may fail.'
-                  }
+                  {selectedRefrigerant.coolpropSupport === "limited"
+                    ? "This refrigerant has limited CoolProp support. Some properties may not be available."
+                    : "This refrigerant is not supported by CoolProp. Calculations may fail."}
                 </AlertDescription>
               </Alert>
             )}
@@ -282,17 +319,27 @@ export function EnhancedRefrigerantSelector({
                   return (
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <div className="font-medium">Evaporator Temperature</div>
-                        <div>Recommended: {range.evaporatorTemp.recommended.toFixed(1)}°C</div>
+                        <div className="font-medium">
+                          Evaporator Temperature
+                        </div>
+                        <div>
+                          Recommended:{" "}
+                          {range.evaporatorTemp.recommended.toFixed(1)}°C
+                        </div>
                         <div className="text-gray-600">
-                          Range: {range.evaporatorTemp.min.toFixed(1)}°C to {range.evaporatorTemp.max.toFixed(1)}°C
+                          Range: {range.evaporatorTemp.min.toFixed(1)}°C to{" "}
+                          {range.evaporatorTemp.max.toFixed(1)}°C
                         </div>
                       </div>
                       <div>
                         <div className="font-medium">Condenser Temperature</div>
-                        <div>Recommended: {range.condenserTemp.recommended.toFixed(1)}°C</div>
+                        <div>
+                          Recommended:{" "}
+                          {range.condenserTemp.recommended.toFixed(1)}°C
+                        </div>
                         <div className="text-gray-600">
-                          Range: {range.condenserTemp.min.toFixed(1)}°C to {range.condenserTemp.max.toFixed(1)}°C
+                          Range: {range.condenserTemp.min.toFixed(1)}°C to{" "}
+                          {range.condenserTemp.max.toFixed(1)}°C
                         </div>
                       </div>
                     </div>
@@ -316,19 +363,28 @@ export function EnhancedRefrigerantSelector({
           <CardContent className="space-y-4">
             {evaporatorTemp !== undefined && (
               <div className="flex items-start gap-3">
-                {getStatusIcon(validationResults.evap.valid, validationResults.evap.warnings.length > 0)}
+                {getStatusIcon(
+                  validationResults.evap.valid,
+                  validationResults.evap.warnings.length > 0,
+                )}
                 <div className="flex-1">
-                  <div className="font-medium">Evaporator Temperature: {evaporatorTemp}°C</div>
+                  <div className="font-medium">
+                    Evaporator Temperature: {evaporatorTemp}°C
+                  </div>
                   {validationResults.evap.errors.map((error, idx) => (
                     <Alert key={idx} className="mt-2">
                       <AlertTriangle className="h-4 w-4" />
-                      <AlertDescription className="text-red-700">{error}</AlertDescription>
+                      <AlertDescription className="text-red-700">
+                        {error}
+                      </AlertDescription>
                     </Alert>
                   ))}
                   {validationResults.evap.warnings.map((warning, idx) => (
                     <Alert key={idx} className="mt-2">
                       <Info className="h-4 w-4" />
-                      <AlertDescription className="text-yellow-700">{warning}</AlertDescription>
+                      <AlertDescription className="text-yellow-700">
+                        {warning}
+                      </AlertDescription>
                     </Alert>
                   ))}
                 </div>
@@ -337,19 +393,28 @@ export function EnhancedRefrigerantSelector({
 
             {condenserTemp !== undefined && (
               <div className="flex items-start gap-3">
-                {getStatusIcon(validationResults.cond.valid, validationResults.cond.warnings.length > 0)}
+                {getStatusIcon(
+                  validationResults.cond.valid,
+                  validationResults.cond.warnings.length > 0,
+                )}
                 <div className="flex-1">
-                  <div className="font-medium">Condenser Temperature: {condenserTemp}°C</div>
+                  <div className="font-medium">
+                    Condenser Temperature: {condenserTemp}°C
+                  </div>
                   {validationResults.cond.errors.map((error, idx) => (
                     <Alert key={idx} className="mt-2">
                       <AlertTriangle className="h-4 w-4" />
-                      <AlertDescription className="text-red-700">{error}</AlertDescription>
+                      <AlertDescription className="text-red-700">
+                        {error}
+                      </AlertDescription>
                     </Alert>
                   ))}
                   {validationResults.cond.warnings.map((warning, idx) => (
                     <Alert key={idx} className="mt-2">
                       <Info className="h-4 w-4" />
-                      <AlertDescription className="text-yellow-700">{warning}</AlertDescription>
+                      <AlertDescription className="text-yellow-700">
+                        {warning}
+                      </AlertDescription>
                     </Alert>
                   ))}
                 </div>

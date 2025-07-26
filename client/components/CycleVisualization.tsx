@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Play, Pause, RotateCcw, Zap, Thermometer, Gauge } from 'lucide-react';
+import React, { useEffect, useRef, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Play, Pause, RotateCcw, Zap, Thermometer, Gauge } from "lucide-react";
 
 interface CyclePoint {
   id: string;
@@ -20,16 +20,16 @@ interface CycleVisualizationProps {
   cycleData?: {
     points: CyclePoint[];
     refrigerant: string;
-    cycleType: 'standard' | 'cascade-low' | 'cascade-high';
+    cycleType: "standard" | "cascade-low" | "cascade-high";
   };
   isAnimating?: boolean;
   onAnimationToggle?: () => void;
 }
 
-export function CycleVisualization({ 
-  cycleData, 
-  isAnimating = false, 
-  onAnimationToggle 
+export function CycleVisualization({
+  cycleData,
+  isAnimating = false,
+  onAnimationToggle,
 }: CycleVisualizationProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [animationFrame, setAnimationFrame] = useState(0);
@@ -40,7 +40,7 @@ export function CycleVisualization({
     if (!isAnimating) return;
 
     const interval = setInterval(() => {
-      setAnimationFrame(prev => (prev + 1) % 100);
+      setAnimationFrame((prev) => (prev + 1) % 100);
     }, 50);
 
     return () => clearInterval(interval);
@@ -51,13 +51,17 @@ export function CycleVisualization({
     const canvas = canvasRef.current;
     if (!canvas || !cycleData) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     drawCycle(ctx, canvas.width, canvas.height);
   }, [cycleData, animationFrame, selectedPoint]);
 
-  const drawCycle = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
+  const drawCycle = (
+    ctx: CanvasRenderingContext2D,
+    width: number,
+    height: number,
+  ) => {
     // Clear canvas
     ctx.clearRect(0, 0, width, height);
 
@@ -78,7 +82,12 @@ export function CycleVisualization({
     drawSaturationDome(ctx, margin, plotWidth, plotHeight);
 
     // Draw cycle lines with animation
-    drawCycleLines(ctx, cycleData.points, margin, isAnimating ? animationFrame : 100);
+    drawCycleLines(
+      ctx,
+      cycleData.points,
+      margin,
+      isAnimating ? animationFrame : 100,
+    );
 
     // Draw points
     drawCyclePoints(ctx, cycleData.points, margin);
@@ -87,20 +96,33 @@ export function CycleVisualization({
     drawComponentLabels(ctx, cycleData.points, margin);
   };
 
-  const drawPlaceholder = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
-    ctx.fillStyle = '#f3f4f6';
+  const drawPlaceholder = (
+    ctx: CanvasRenderingContext2D,
+    width: number,
+    height: number,
+  ) => {
+    ctx.fillStyle = "#f3f4f6";
     ctx.fillRect(0, 0, width, height);
-    
-    ctx.fillStyle = '#6b7280';
-    ctx.font = '16px Inter, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Run calculation to see cycle visualization', width / 2, height / 2);
+
+    ctx.fillStyle = "#6b7280";
+    ctx.font = "16px Inter, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(
+      "Run calculation to see cycle visualization",
+      width / 2,
+      height / 2,
+    );
   };
 
-  const drawAxes = (ctx: CanvasRenderingContext2D, margin: number, plotWidth: number, plotHeight: number) => {
-    ctx.strokeStyle = '#374151';
+  const drawAxes = (
+    ctx: CanvasRenderingContext2D,
+    margin: number,
+    plotWidth: number,
+    plotHeight: number,
+  ) => {
+    ctx.strokeStyle = "#374151";
     ctx.lineWidth = 2;
-    
+
     // X-axis (Enthalpy)
     ctx.beginPath();
     ctx.moveTo(margin, margin + plotHeight);
@@ -114,21 +136,30 @@ export function CycleVisualization({
     ctx.stroke();
 
     // Labels
-    ctx.fillStyle = '#374151';
-    ctx.font = '14px Inter, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Enthalpy (kJ/kg)', margin + plotWidth / 2, margin + plotHeight + 40);
-    
+    ctx.fillStyle = "#374151";
+    ctx.font = "14px Inter, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(
+      "Enthalpy (kJ/kg)",
+      margin + plotWidth / 2,
+      margin + plotHeight + 40,
+    );
+
     ctx.save();
     ctx.translate(20, margin + plotHeight / 2);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText('Pressure (kPa)', 0, 0);
+    ctx.fillText("Pressure (kPa)", 0, 0);
     ctx.restore();
   };
 
-  const drawSaturationDome = (ctx: CanvasRenderingContext2D, margin: number, plotWidth: number, plotHeight: number) => {
+  const drawSaturationDome = (
+    ctx: CanvasRenderingContext2D,
+    margin: number,
+    plotWidth: number,
+    plotHeight: number,
+  ) => {
     // Simplified saturation dome
-    ctx.strokeStyle = '#e5e7eb';
+    ctx.strokeStyle = "#e5e7eb";
     ctx.lineWidth = 1;
     ctx.setLineDash([5, 5]);
 
@@ -143,11 +174,21 @@ export function CycleVisualization({
     ctx.setLineDash([]);
   };
 
-  const drawCycleLines = (ctx: CanvasRenderingContext2D, points: CyclePoint[], margin: number, progress: number) => {
+  const drawCycleLines = (
+    ctx: CanvasRenderingContext2D,
+    points: CyclePoint[],
+    margin: number,
+    progress: number,
+  ) => {
     if (points.length < 4) return;
 
-    const colors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b'];
-    const processes = ['Compression', 'Condensation', 'Expansion', 'Evaporation'];
+    const colors = ["#ef4444", "#3b82f6", "#10b981", "#f59e0b"];
+    const processes = [
+      "Compression",
+      "Condensation",
+      "Expansion",
+      "Evaporation",
+    ];
 
     for (let i = 0; i < 4; i++) {
       const startPoint = points[i];
@@ -174,69 +215,85 @@ export function CycleVisualization({
 
         // Add arrow at current position if animating
         if (isAnimating && lineProgress < 1) {
-          drawArrow(ctx, 
-            margin + currentX, 
-            margin + currentY, 
-            Math.atan2(deltaY, deltaX)
+          drawArrow(
+            ctx,
+            margin + currentX,
+            margin + currentY,
+            Math.atan2(deltaY, deltaX),
           );
         }
       }
     }
   };
 
-  const drawArrow = (ctx: CanvasRenderingContext2D, x: number, y: number, angle: number) => {
+  const drawArrow = (
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    angle: number,
+  ) => {
     const size = 8;
-    ctx.fillStyle = '#ef4444';
-    
+    ctx.fillStyle = "#ef4444";
+
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(angle);
-    
+
     ctx.beginPath();
     ctx.moveTo(0, 0);
-    ctx.lineTo(-size, -size/2);
-    ctx.lineTo(-size, size/2);
+    ctx.lineTo(-size, -size / 2);
+    ctx.lineTo(-size, size / 2);
     ctx.closePath();
     ctx.fill();
-    
+
     ctx.restore();
   };
 
-  const drawCyclePoints = (ctx: CanvasRenderingContext2D, points: CyclePoint[], margin: number) => {
+  const drawCyclePoints = (
+    ctx: CanvasRenderingContext2D,
+    points: CyclePoint[],
+    margin: number,
+  ) => {
     points.forEach((point, index) => {
       const x = margin + point.x;
       const y = margin + point.y;
       const isSelected = selectedPoint === point.id;
 
       // Point circle
-      ctx.fillStyle = isSelected ? '#ef4444' : '#374151';
+      ctx.fillStyle = isSelected ? "#ef4444" : "#374151";
       ctx.beginPath();
       ctx.arc(x, y, isSelected ? 8 : 6, 0, 2 * Math.PI);
       ctx.fill();
 
       // Point label
-      ctx.fillStyle = '#374151';
-      ctx.font = 'bold 14px Inter, sans-serif';
-      ctx.textAlign = 'center';
+      ctx.fillStyle = "#374151";
+      ctx.font = "bold 14px Inter, sans-serif";
+      ctx.textAlign = "center";
       ctx.fillText(`${index + 1}`, x, y - 15);
     });
   };
 
-  const drawComponentLabels = (ctx: CanvasRenderingContext2D, points: CyclePoint[], margin: number) => {
+  const drawComponentLabels = (
+    ctx: CanvasRenderingContext2D,
+    points: CyclePoint[],
+    margin: number,
+  ) => {
     const components = [
-      { name: '🔧 Compressor', position: { x: 0.1, y: 0.8 } },
-      { name: '🌡️ Condenser', position: { x: 0.5, y: 0.1 } },
-      { name: '🔻 Expansion Valve', position: { x: 0.9, y: 0.2 } },
-      { name: '❄️ Evaporator', position: { x: 0.5, y: 0.9 } }
+      { name: "🔧 Compressor", position: { x: 0.1, y: 0.8 } },
+      { name: "🌡️ Condenser", position: { x: 0.5, y: 0.1 } },
+      { name: "🔻 Expansion Valve", position: { x: 0.9, y: 0.2 } },
+      { name: "❄️ Evaporator", position: { x: 0.5, y: 0.9 } },
     ];
 
-    ctx.fillStyle = '#6b7280';
-    ctx.font = '12px Inter, sans-serif';
-    ctx.textAlign = 'center';
+    ctx.fillStyle = "#6b7280";
+    ctx.font = "12px Inter, sans-serif";
+    ctx.textAlign = "center";
 
-    components.forEach(comp => {
-      const x = margin + comp.position.x * (canvasRef.current!.width - 2 * margin);
-      const y = margin + comp.position.y * (canvasRef.current!.height - 2 * margin);
+    components.forEach((comp) => {
+      const x =
+        margin + comp.position.x * (canvasRef.current!.width - 2 * margin);
+      const y =
+        margin + comp.position.y * (canvasRef.current!.height - 2 * margin);
       ctx.fillText(comp.name, x, y);
     });
   };
@@ -250,25 +307,29 @@ export function CycleVisualization({
     const clickY = event.clientY - rect.top;
 
     // Check if click is near any point
-    cycleData.points.forEach(point => {
+    cycleData.points.forEach((point) => {
       const pointX = 60 + point.x;
       const pointY = 60 + point.y;
-      const distance = Math.sqrt((clickX - pointX) ** 2 + (clickY - pointY) ** 2);
-      
+      const distance = Math.sqrt(
+        (clickX - pointX) ** 2 + (clickY - pointY) ** 2,
+      );
+
       if (distance < 15) {
         setSelectedPoint(selectedPoint === point.id ? null : point.id);
       }
     });
   };
 
-  const selectedPointData = cycleData?.points.find(p => p.id === selectedPoint);
+  const selectedPointData = cycleData?.points.find(
+    (p) => p.id === selectedPoint,
+  );
 
   return (
     <Card className="w-full">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2">
           <Zap className="h-5 w-5" />
-          Cycle Visualization - {cycleData?.refrigerant || 'No Data'}
+          Cycle Visualization - {cycleData?.refrigerant || "No Data"}
         </CardTitle>
         <div className="flex gap-2">
           <Button
@@ -277,8 +338,12 @@ export function CycleVisualization({
             onClick={onAnimationToggle}
             className="flex items-center gap-2"
           >
-            {isAnimating ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-            {isAnimating ? 'Pause' : 'Animate'}
+            {isAnimating ? (
+              <Pause className="h-4 w-4" />
+            ) : (
+              <Play className="h-4 w-4" />
+            )}
+            {isAnimating ? "Pause" : "Animate"}
           </Button>
           <Button
             variant="outline"
@@ -312,22 +377,33 @@ export function CycleVisualization({
             {selectedPointData ? (
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Point {selectedPointData.name}</CardTitle>
+                  <CardTitle className="text-lg">
+                    Point {selectedPointData.name}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex items-center gap-2">
                     <Thermometer className="h-4 w-4 text-red-500" />
-                    <span>Temperature: {selectedPointData.temperature.toFixed(1)}°C</span>
+                    <span>
+                      Temperature: {selectedPointData.temperature.toFixed(1)}°C
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Gauge className="h-4 w-4 text-blue-500" />
-                    <span>Pressure: {(selectedPointData.pressure / 1000).toFixed(1)} kPa</span>
+                    <span>
+                      Pressure: {(selectedPointData.pressure / 1000).toFixed(1)}{" "}
+                      kPa
+                    </span>
                   </div>
                   <div>
-                    <span>Enthalpy: {selectedPointData.enthalpy.toFixed(1)} kJ/kg</span>
+                    <span>
+                      Enthalpy: {selectedPointData.enthalpy.toFixed(1)} kJ/kg
+                    </span>
                   </div>
                   <div>
-                    <span>Entropy: {selectedPointData.entropy.toFixed(3)} kJ/kg-K</span>
+                    <span>
+                      Entropy: {selectedPointData.entropy.toFixed(3)} kJ/kg-K
+                    </span>
                   </div>
                   {selectedPointData.quality !== undefined && (
                     <div>
