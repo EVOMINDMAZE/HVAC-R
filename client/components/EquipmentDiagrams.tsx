@@ -323,6 +323,142 @@ export function EquipmentDiagram({
   return getEquipmentSvg();
 }
 
+// Props interface for cycle data
+interface CycleData {
+  points: Array<{
+    temperature_c: number;
+    pressure_kpa: number;
+    enthalpy_kj_kg: number;
+    entropy_kj_kg_k: number;
+    density_kg_m3: number;
+    quality?: number;
+    label: string;
+    description: string;
+  }>;
+  refrigerant: string;
+  cycleType: 'standard' | 'cascade-low' | 'cascade-high';
+}
+
+interface EquipmentDiagramsProps {
+  cycleData?: CycleData;
+  isAnimating?: boolean;
+  animationSpeed?: number;
+}
+
+// Main component that displays equipment diagrams with cycle data
+export function EquipmentDiagrams({
+  cycleData,
+  isAnimating = false,
+  animationSpeed = 1000
+}: EquipmentDiagramsProps) {
+  return (
+    <div className="space-y-6">
+      {/* Complete Cycle Overview */}
+      <div className="flex justify-center">
+        <EquipmentDiagram
+          type="complete-cycle"
+          width={400}
+          height={300}
+          animated={isAnimating}
+          refrigerant={cycleData?.refrigerant}
+          showLabels={true}
+        />
+      </div>
+
+      {/* Individual Equipment Components */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="text-center">
+          <EquipmentDiagram
+            type="evaporator"
+            width={180}
+            height={120}
+            animated={isAnimating}
+            showLabels={true}
+          />
+          {cycleData && (
+            <div className="mt-2 text-sm text-gray-600">
+              <div>State 4 → 1</div>
+              <div>{cycleData.points[0]?.temperature_c.toFixed(1)}°C</div>
+            </div>
+          )}
+        </div>
+
+        <div className="text-center">
+          <EquipmentDiagram
+            type="compressor"
+            width={180}
+            height={120}
+            animated={isAnimating}
+            showLabels={true}
+          />
+          {cycleData && (
+            <div className="mt-2 text-sm text-gray-600">
+              <div>State 1 → 2</div>
+              <div>{cycleData.points[1]?.temperature_c.toFixed(1)}°C</div>
+            </div>
+          )}
+        </div>
+
+        <div className="text-center">
+          <EquipmentDiagram
+            type="condenser"
+            width={180}
+            height={120}
+            animated={isAnimating}
+            showLabels={true}
+          />
+          {cycleData && (
+            <div className="mt-2 text-sm text-gray-600">
+              <div>State 2 → 3</div>
+              <div>{cycleData.points[2]?.temperature_c.toFixed(1)}°C</div>
+            </div>
+          )}
+        </div>
+
+        <div className="text-center">
+          <EquipmentDiagram
+            type="expansion-valve"
+            width={180}
+            height={120}
+            animated={isAnimating}
+            showLabels={true}
+          />
+          {cycleData && (
+            <div className="mt-2 text-sm text-gray-600">
+              <div>State 3 → 4</div>
+              <div>{cycleData.points[3]?.temperature_c.toFixed(1)}°C</div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Cycle Information */}
+      {cycleData && (
+        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+          <h3 className="text-lg font-semibold mb-3">
+            {cycleData.refrigerant} {cycleData.cycleType === 'standard' ? 'Standard' :
+             cycleData.cycleType === 'cascade-low' ? 'Cascade Low-Temperature' :
+             'Cascade High-Temperature'} Cycle
+          </h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            {cycleData.points.map((point, index) => (
+              <div key={index} className="p-2 bg-white rounded border">
+                <div className="font-medium text-blue-600">State {index + 1}</div>
+                <div className="text-gray-600">{point.label}</div>
+                <div className="mt-1">
+                  <div>T: {point.temperature_c.toFixed(1)}°C</div>
+                  <div>P: {(point.pressure_kpa / 1000).toFixed(1)} MPa</div>
+                  <div>h: {point.enthalpy_kj_kg.toFixed(1)} kJ/kg</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Collection of all equipment diagrams
 export function EquipmentLibrary() {
   const equipmentTypes = [
