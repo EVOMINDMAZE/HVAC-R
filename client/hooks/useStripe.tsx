@@ -174,7 +174,8 @@ export function useCustomerPortal() {
         throw new Error('No access token available');
       }
 
-      const response = await fetch('/api/billing/create-portal-session', {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const response = await fetch(`${supabaseUrl}/functions/v1/billing/create-portal-session`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
