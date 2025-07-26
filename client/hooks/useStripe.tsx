@@ -98,7 +98,7 @@ export function useSubscription() {
 
   useEffect(() => {
     fetchSubscription();
-  }, [isAuthenticated, session?.access_token]);
+  }, [isAuthenticated]);
 
   return {
     subscription,
