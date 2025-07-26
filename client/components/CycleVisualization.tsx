@@ -478,40 +478,91 @@ export function CycleVisualization({
     plotWidth: number,
     plotHeight: number,
     config: DiagramConfig,
+    points: CyclePoint[],
   ) => {
     ctx.strokeStyle = "#374151";
     ctx.lineWidth = 2;
     ctx.fillStyle = "#374151";
-    ctx.font = "12px 'Inter', sans-serif";
+    ctx.font = "bold 14px 'Inter', sans-serif";
     ctx.textAlign = "center";
 
-    const numTicks = 5;
+    // Calculate real value ranges from cycle points
+    const xValues = points.map(p => p[config.xAxis.property] as number).filter(v => !isNaN(v) && v !== undefined);
+    const yValues = points.map(p => p[config.yAxis.property] as number).filter(v => !isNaN(v) && v !== undefined);
 
-    // X-axis ticks
-    for (let i = 0; i <= numTicks; i++) {
-      const x = margin + (plotWidth * i) / numTicks;
-      ctx.beginPath();
-      ctx.moveTo(x, margin + plotHeight);
-      ctx.lineTo(x, margin + plotHeight + 8);
-      ctx.stroke();
-
-      // Tick labels (simplified)
-      const value = ((i / numTicks) * 100).toFixed(0);
-      ctx.fillText(value, x, margin + plotHeight + 25);
+    if (xValues.length === 0 || yValues.length === 0) {
+      console.log("No valid axis data available for", diagramType);
+      return;
     }
 
-    // Y-axis ticks
+    const xMin = Math.min(...xValues);
+    const xMax = Math.max(...xValues);
+    const yMin = Math.min(...yValues);
+    const yMax = Math.max(...yValues);
+
+    // Add padding to ranges
+    const xRange = xMax - xMin || 1;
+    const yRange = yMax - yMin || 1;
+    const xPadding = xRange * 0.15;
+    const yPadding = yRange * 0.15;
+
+    const xMinPadded = xMin - xPadding;
+    const xMaxPadded = xMax + xPadding;
+    const yMinPadded = yMin - yPadding;
+    const yMaxPadded = yMax + yPadding;
+
+    console.log(`Real axis ranges for ${diagramType}:`, {
+      xRange: [xMinPadded.toFixed(2), xMaxPadded.toFixed(2)],
+      yRange: [yMinPadded.toFixed(2), yMaxPadded.toFixed(2)]
+    });
+
+    const numTicks = 6;
+
+    // X-axis ticks with real values
+    for (let i = 0; i <= numTicks; i++) {
+      const x = margin + (plotWidth * i) / numTicks;
+      const realValue = xMinPadded + ((xMaxPadded - xMinPadded) * i) / numTicks;
+
+      ctx.beginPath();
+      ctx.moveTo(x, margin + plotHeight);
+      ctx.lineTo(x, margin + plotHeight + 10);
+      ctx.stroke();
+
+      // Format value based on magnitude and type
+      let formattedValue: string;
+      if (config.xAxis.property === 'pressure') {
+        formattedValue = realValue > 1000 ? (realValue / 1000).toFixed(1) + 'k' : realValue.toFixed(0);
+      } else if (config.xAxis.property === 'specificVolume') {
+        formattedValue = realValue.toFixed(4);
+      } else {
+        formattedValue = realValue.toFixed(1);
+      }
+
+      ctx.fillText(formattedValue, x, margin + plotHeight + 28);
+    }
+
+    // Y-axis ticks with real values
     ctx.textAlign = "right";
     for (let i = 0; i <= numTicks; i++) {
       const y = margin + plotHeight - (plotHeight * i) / numTicks;
+      const realValue = yMinPadded + ((yMaxPadded - yMinPadded) * i) / numTicks;
+
       ctx.beginPath();
-      ctx.moveTo(margin - 8, y);
+      ctx.moveTo(margin - 10, y);
       ctx.lineTo(margin, y);
       ctx.stroke();
 
-      // Tick labels (simplified)
-      const value = ((i / numTicks) * 100).toFixed(0);
-      ctx.fillText(value, margin - 12, y + 4);
+      // Format value based on magnitude and type
+      let formattedValue: string;
+      if (config.yAxis.property === 'pressure') {
+        formattedValue = realValue > 1000 ? (realValue / 1000).toFixed(1) + 'k' : realValue.toFixed(0);
+      } else if (config.yAxis.property === 'temperature') {
+        formattedValue = realValue.toFixed(0);
+      } else {
+        formattedValue = realValue.toFixed(1);
+      }
+
+      ctx.fillText(formattedValue, margin - 15, y + 5);
     }
   };
 
