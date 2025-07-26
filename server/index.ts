@@ -24,12 +24,19 @@ export function createServer() {
   const app = express();
 
   // Initialize database
-  ensureDbInitialized();
+  try {
+    ensureDbInitialized();
 
-  // Clean up expired sessions periodically
-  setInterval(() => {
-    sessionDb.deleteExpired.run();
-  }, 60 * 60 * 1000); // Every hour
+    // Clean up expired sessions periodically (only if database is properly initialized)
+    setInterval(() => {
+      if (sessionDb.deleteExpired) {
+        sessionDb.deleteExpired.run();
+      }
+    }, 60 * 60 * 1000); // Every hour
+  } catch (error) {
+    console.error('Database initialization failed:', error);
+    console.log('Continuing without database functionality...');
+  }
 
   // Middleware
   app.use(cors({
