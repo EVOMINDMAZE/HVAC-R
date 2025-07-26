@@ -60,10 +60,10 @@ interface StatePoint {
 
 interface CalculationResults {
   state_points: {
-    "1_compressor_inlet": StatePoint;
-    "2_compressor_outlet": StatePoint;
-    "3_expansion_valve_inlet": StatePoint;
-    "4_evaporator_inlet": StatePoint;
+    "1": StatePoint;
+    "2": StatePoint;
+    "3": StatePoint;
+    "4": StatePoint;
     [key: string]: StatePoint; // Allow for additional points
   };
   performance: {
@@ -76,6 +76,20 @@ interface CalculationResults {
     work_of_compression_kj_kg?: number;
     refrigeration_effect_kj_kg?: number;
     [key: string]: any; // Allow for additional performance metrics
+  };
+  saturation_dome?: {
+    ph_diagram: {
+      enthalpy_kj_kg: number[];
+      pressure_kpa: number[];
+    };
+    ts_diagram: {
+      entropy_kj_kgk: number[];
+      temperature_c: number[];
+    };
+    tv_diagram: {
+      specific_volume_m3_kg: number[];
+      temperature_c: number[];
+    };
   };
   refrigerant?: string;
   cycle_type?: "standard";
