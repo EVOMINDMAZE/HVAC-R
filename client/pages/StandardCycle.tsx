@@ -11,7 +11,7 @@ export function StandardCycle() {
       <Header variant="dashboard" />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <ApiServiceStatus />
-        <EnhancedStandardCycle />
+        <EnhancedStandardCycleContent />
       </div>
       <Footer />
     </div>
