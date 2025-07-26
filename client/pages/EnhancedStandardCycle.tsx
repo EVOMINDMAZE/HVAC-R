@@ -195,6 +195,17 @@ export function EnhancedStandardCycleContent() {
       // Handle response format - could be direct data or wrapped in data property
       const calculationData = responseData.data || responseData;
 
+      // Log detailed structure for debugging
+      if (calculationData.state_points) {
+        console.log("State points structure:", calculationData.state_points);
+        Object.keys(calculationData.state_points).forEach(key => {
+          console.log(`${key} properties:`, Object.keys(calculationData.state_points[key]));
+        });
+      }
+      if (calculationData.performance) {
+        console.log("Performance structure:", Object.keys(calculationData.performance));
+      }
+
       if (calculationData.state_points || calculationData.performance) {
         setResults(calculationData);
         setAnimationState((prev) => ({ ...prev, currentPoint: 1 }));
