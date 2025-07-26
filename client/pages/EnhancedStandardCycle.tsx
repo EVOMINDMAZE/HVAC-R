@@ -178,7 +178,10 @@ export function EnhancedStandardCycleContent() {
     }));
   };
 
-  const formatValue = (value: number, unit: string, decimals: number = 2) => {
+  const formatValue = (value: number | undefined, unit: string, decimals: number = 2) => {
+    if (value === undefined || value === null || isNaN(value)) {
+      return `N/A ${unit}`;
+    }
     return `${value.toFixed(decimals)} ${unit}`;
   };
 
