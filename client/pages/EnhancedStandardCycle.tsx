@@ -183,12 +183,48 @@ export function EnhancedStandardCycle() {
 
   const cycleData = results ? {
     points: [
-      { ...results.point_1, label: 'Evaporator Outlet', description: 'Superheated vapor' },
-      { ...results.point_2, label: 'Compressor Outlet', description: 'High pressure vapor' },
-      { ...results.point_3, label: 'Condenser Outlet', description: 'Subcooled liquid' },
-      { ...results.point_4, label: 'Expansion Valve Outlet', description: 'Low pressure mixture' }
+      {
+        ...(results.point_1 || results.state_points?.[0] || {}),
+        label: 'Evaporator Outlet',
+        description: 'Superheated vapor',
+        temperature_c: results.point_1?.temperature_c || results.state_points?.[0]?.temperature_c || 0,
+        pressure_kpa: results.point_1?.pressure_kpa || results.state_points?.[0]?.pressure_kpa || 0,
+        enthalpy_kj_kg: results.point_1?.enthalpy_kj_kg || results.state_points?.[0]?.enthalpy_kj_kg || 0,
+        entropy_kj_kg_k: results.point_1?.entropy_kj_kg_k || results.state_points?.[0]?.entropy_kj_kg_k || 0,
+        density_kg_m3: results.point_1?.density_kg_m3 || results.state_points?.[0]?.density_kg_m3 || 0
+      },
+      {
+        ...(results.point_2 || results.state_points?.[1] || {}),
+        label: 'Compressor Outlet',
+        description: 'High pressure vapor',
+        temperature_c: results.point_2?.temperature_c || results.state_points?.[1]?.temperature_c || 0,
+        pressure_kpa: results.point_2?.pressure_kpa || results.state_points?.[1]?.pressure_kpa || 0,
+        enthalpy_kj_kg: results.point_2?.enthalpy_kj_kg || results.state_points?.[1]?.enthalpy_kj_kg || 0,
+        entropy_kj_kg_k: results.point_2?.entropy_kj_kg_k || results.state_points?.[1]?.entropy_kj_kg_k || 0,
+        density_kg_m3: results.point_2?.density_kg_m3 || results.state_points?.[1]?.density_kg_m3 || 0
+      },
+      {
+        ...(results.point_3 || results.state_points?.[2] || {}),
+        label: 'Condenser Outlet',
+        description: 'Subcooled liquid',
+        temperature_c: results.point_3?.temperature_c || results.state_points?.[2]?.temperature_c || 0,
+        pressure_kpa: results.point_3?.pressure_kpa || results.state_points?.[2]?.pressure_kpa || 0,
+        enthalpy_kj_kg: results.point_3?.enthalpy_kj_kg || results.state_points?.[2]?.enthalpy_kj_kg || 0,
+        entropy_kj_kg_k: results.point_3?.entropy_kj_kg_k || results.state_points?.[2]?.entropy_kj_kg_k || 0,
+        density_kg_m3: results.point_3?.density_kg_m3 || results.state_points?.[2]?.density_kg_m3 || 0
+      },
+      {
+        ...(results.point_4 || results.state_points?.[3] || {}),
+        label: 'Expansion Valve Outlet',
+        description: 'Low pressure mixture',
+        temperature_c: results.point_4?.temperature_c || results.state_points?.[3]?.temperature_c || 0,
+        pressure_kpa: results.point_4?.pressure_kpa || results.state_points?.[3]?.pressure_kpa || 0,
+        enthalpy_kj_kg: results.point_4?.enthalpy_kj_kg || results.state_points?.[3]?.enthalpy_kj_kg || 0,
+        entropy_kj_kg_k: results.point_4?.entropy_kj_kg_k || results.state_points?.[3]?.entropy_kj_kg_k || 0,
+        density_kg_m3: results.point_4?.density_kg_m3 || results.state_points?.[3]?.density_kg_m3 || 0
+      }
     ],
-    refrigerant: results.refrigerant,
+    refrigerant: results.refrigerant || formData.refrigerant,
     cycleType: 'standard' as const
   } : undefined;
 
