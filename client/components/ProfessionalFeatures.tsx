@@ -61,6 +61,13 @@ const UNIT_SYSTEMS: Record<string, UnitSystem> = {
 };
 
 export function ProfessionalFeatures({ cycleData, results, refrigerant = 'R134a' }: ProfessionalFeaturesProps) {
+  // Safety wrapper to prevent crashes from undefined values
+  const safeToFixed = (value: any, decimals: number = 2): string => {
+    if (value === undefined || value === null || isNaN(Number(value))) {
+      return 'N/A';
+    }
+    return Number(value).toFixed(decimals);
+  };
   const [unitSystem, setUnitSystem] = useState<'SI' | 'Imperial'>('SI');
   const [reportConfig, setReportConfig] = useState({
     includeCalculations: true,
