@@ -195,7 +195,9 @@ export function EnhancedStandardCycleContent() {
         setAnimationState((prev) => ({ ...prev, currentPoint: 1 }));
       } else {
         console.log("Unexpected response format:", responseData);
-        throw new Error("Invalid response format - missing state_points or performance data");
+        throw new Error(
+          "Invalid response format - missing state_points or performance data",
+        );
       }
     } catch (err) {
       const errorMessage =
@@ -264,44 +266,71 @@ export function EnhancedStandardCycleContent() {
           {
             id: "1",
             name: "Evaporator Outlet",
-            temperature: results.state_points?.["1_compressor_inlet"]?.temp_c || 0,
-            pressure: results.state_points?.["1_compressor_inlet"]?.pressure_kpa || 0,
-            enthalpy: results.state_points?.["1_compressor_inlet"]?.enthalpy_kj_kg || 0,
-            entropy: results.state_points?.["1_compressor_inlet"]?.entropy_kj_kg_k || 0,
-            quality: results.state_points?.["1_compressor_inlet"]?.vapor_quality,
+            temperature:
+              results.state_points?.["1_compressor_inlet"]?.temp_c || 0,
+            pressure:
+              results.state_points?.["1_compressor_inlet"]?.pressure_kpa || 0,
+            enthalpy:
+              results.state_points?.["1_compressor_inlet"]?.enthalpy_kj_kg || 0,
+            entropy:
+              results.state_points?.["1_compressor_inlet"]?.entropy_kj_kg_k ||
+              0,
+            quality:
+              results.state_points?.["1_compressor_inlet"]?.vapor_quality,
             x: 0, // Will be calculated by CycleVisualization
             y: 0,
           },
           {
             id: "2",
             name: "Compressor Outlet",
-            temperature: results.state_points?.["2_compressor_outlet"]?.temp_c || 0,
-            pressure: results.state_points?.["2_compressor_outlet"]?.pressure_kpa || 0,
-            enthalpy: results.state_points?.["2_compressor_outlet"]?.enthalpy_kj_kg || 0,
-            entropy: results.state_points?.["2_compressor_outlet"]?.entropy_kj_kg_k || 0,
-            quality: results.state_points?.["2_compressor_outlet"]?.vapor_quality,
+            temperature:
+              results.state_points?.["2_compressor_outlet"]?.temp_c || 0,
+            pressure:
+              results.state_points?.["2_compressor_outlet"]?.pressure_kpa || 0,
+            enthalpy:
+              results.state_points?.["2_compressor_outlet"]?.enthalpy_kj_kg ||
+              0,
+            entropy:
+              results.state_points?.["2_compressor_outlet"]?.entropy_kj_kg_k ||
+              0,
+            quality:
+              results.state_points?.["2_compressor_outlet"]?.vapor_quality,
             x: 0,
             y: 0,
           },
           {
             id: "3",
             name: "Condenser Outlet",
-            temperature: results.state_points?.["3_expansion_valve_inlet"]?.temp_c || 0,
-            pressure: results.state_points?.["3_expansion_valve_inlet"]?.pressure_kpa || 0,
-            enthalpy: results.state_points?.["3_expansion_valve_inlet"]?.enthalpy_kj_kg || 0,
-            entropy: results.state_points?.["3_expansion_valve_inlet"]?.entropy_kj_kg_k || 0,
-            quality: results.state_points?.["3_expansion_valve_inlet"]?.vapor_quality,
+            temperature:
+              results.state_points?.["3_expansion_valve_inlet"]?.temp_c || 0,
+            pressure:
+              results.state_points?.["3_expansion_valve_inlet"]?.pressure_kpa ||
+              0,
+            enthalpy:
+              results.state_points?.["3_expansion_valve_inlet"]
+                ?.enthalpy_kj_kg || 0,
+            entropy:
+              results.state_points?.["3_expansion_valve_inlet"]
+                ?.entropy_kj_kg_k || 0,
+            quality:
+              results.state_points?.["3_expansion_valve_inlet"]?.vapor_quality,
             x: 0,
             y: 0,
           },
           {
             id: "4",
             name: "Expansion Valve Outlet",
-            temperature: results.state_points?.["4_evaporator_inlet"]?.temp_c || 0,
-            pressure: results.state_points?.["4_evaporator_inlet"]?.pressure_kpa || 0,
-            enthalpy: results.state_points?.["4_evaporator_inlet"]?.enthalpy_kj_kg || 0,
-            entropy: results.state_points?.["4_evaporator_inlet"]?.entropy_kj_kg_k || 0,
-            quality: results.state_points?.["4_evaporator_inlet"]?.vapor_quality,
+            temperature:
+              results.state_points?.["4_evaporator_inlet"]?.temp_c || 0,
+            pressure:
+              results.state_points?.["4_evaporator_inlet"]?.pressure_kpa || 0,
+            enthalpy:
+              results.state_points?.["4_evaporator_inlet"]?.enthalpy_kj_kg || 0,
+            entropy:
+              results.state_points?.["4_evaporator_inlet"]?.entropy_kj_kg_k ||
+              0,
+            quality:
+              results.state_points?.["4_evaporator_inlet"]?.vapor_quality,
             x: 0,
             y: 0,
           },
@@ -806,7 +835,8 @@ export function EnhancedStandardCycleContent() {
                         color: "red",
                       },
                       {
-                        point: results.state_points?.["3_expansion_valve_inlet"],
+                        point:
+                          results.state_points?.["3_expansion_valve_inlet"],
                         label: "Point 3 - Condenser Outlet",
                         color: "green",
                       },
@@ -821,9 +851,7 @@ export function EnhancedStandardCycleContent() {
                           {label}
                         </div>
                         <div className="grid grid-cols-2 gap-2 text-sm">
-                          <div>
-                            T: {formatValue(point?.temp_c, "°C")}
-                          </div>
+                          <div>T: {formatValue(point?.temp_c, "°C")}</div>
                           <div>
                             P: {formatValue(point?.pressure_kpa, "kPa", 0)}
                           </div>
