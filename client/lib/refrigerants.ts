@@ -43,10 +43,18 @@ export const REFRIGERANT_DATABASE: RefrigerantProperties[] = [
     ozoneDepleteionPotential: 0,
     globalWarmingPotential: 1430,
     safety: 'A1',
+    odp: 0,
+    gwp: 1430,
+    safety_class: 'A1',
     applications: ['Air Conditioning', 'Commercial Refrigeration', 'Automotive AC'],
     limits: {
-      minTemp: 169.85,  // Triple point
-      maxTemp: 455.0,   // CoolProp max reliable temp
+      min_temp_c: -103.3,
+      max_temp_c: 181.9,
+      critical_temp_c: 101.06,
+      critical_pressure_kpa: 4059.3,
+      normal_boiling_point_c: -26.07,
+      minTemp: 169.85,  // Legacy Kelvin
+      maxTemp: 455.0,
       minPressure: 389.6,
       maxPressure: 7000000,
       criticalTemp: 374.21,
