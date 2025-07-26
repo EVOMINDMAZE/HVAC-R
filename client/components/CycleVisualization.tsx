@@ -430,6 +430,7 @@ export function CycleVisualization({
     plotWidth: number,
     plotHeight: number,
     config: DiagramConfig,
+    pointsWithCoords: CyclePoint[],
   ) => {
     // Draw grid first
     drawGrid(ctx, margin, plotWidth, plotHeight);
