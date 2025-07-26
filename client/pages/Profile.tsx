@@ -27,22 +27,7 @@ import {
   Camera
 } from "lucide-react";
 
-// Mock user data
-const mockUser = {
-  id: "1",
-  firstName: "John",
-  lastName: "Doe",
-  email: "john.doe@company.com",
-  company: "HVAC Solutions Inc.",
-  role: "Senior HVAC Engineer",
-  phone: "+1 (555) 123-4567",
-  location: "New York, NY",
-  avatar: "",
-  joinedDate: "2024-01-01",
-  plan: "Professional",
-  calculationsUsed: 24,
-  calculationsLimit: 100
-};
+// User data comes from Supabase authentication and real backend data
 
 export function Profile() {
   const { user: authUser, updateUser } = useSupabaseAuth();
