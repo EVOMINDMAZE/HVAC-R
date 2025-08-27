@@ -39,22 +39,22 @@ export function Header({ variant = 'landing' }: HeaderProps) {
   if (variant === 'dashboard') {
     return (
       <div className="bg-white shadow-sm border-b border-blue-200">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-8">
-              <div>
+        <div className="max-w-7xl mx-auto px-4 py-6 overflow-hidden">
+          <div className="flex justify-between items-center min-w-0">
+            <div className="flex items-center space-x-8 min-w-0">
+              <div className="min-w-0">
                 <Link to="/dashboard">
                   <h1 className="text-3xl font-bold text-blue-900 cursor-pointer hover:text-blue-700">
                     Simulateon
                   </h1>
                 </Link>
-                <p className="text-blue-600 mt-1">
+                <p className="text-blue-600 mt-1 truncate max-w-[14rem] sm:max-w-xs md:max-w-sm lg:max-w-md">
                   Welcome back, {user?.email?.split('@')[0] || "Engineer"}
                 </p>
               </div>
 
               {/* Desktop Navigation */}
-              <nav className="hidden md:flex items-center space-x-6">
+              <nav className="hidden md:flex items-center space-x-6 flex-shrink-0">
                 <Link
                   to="/dashboard"
                   className="text-gray-600 hover:text-blue-600 font-medium"
@@ -88,15 +88,15 @@ export function Header({ variant = 'landing' }: HeaderProps) {
               </nav>
             </div>
 
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600 hidden md:block">
+            <div className="flex items-center space-x-4 min-w-0">
+              <span className="text-sm text-gray-600 hidden md:block truncate max-w-[12rem]">
                 {user?.email}
               </span>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => navigate("/profile")}
-                className="hidden md:flex"
+                className="hidden md:flex whitespace-nowrap"
               >
                 <User className="h-4 w-4 mr-2" />
                 Profile
