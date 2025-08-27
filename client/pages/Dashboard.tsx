@@ -401,18 +401,97 @@ export function Dashboard() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Header variant="dashboard" />
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      <main className="max-w-7xl mx-auto px-4 py-10">
         <SystemStatus />
 
-        <div className="space-y-8">
-          <QuickStats />
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <RecentCalculations />
-            <QuickActions />
+        {/* Top summary and quick actions */}
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <div className="lg:col-span-2">
+            <QuickStats />
           </div>
 
-          <ValueProposition />
+          <div className="space-y-4">
+            <Card className="p-0 overflow-hidden shadow-md">
+              <CardHeader className="bg-gradient-to-r from-white to-white/80">
+                <CardTitle className="text-sm text-gray-600">Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4">
+                <QuickActions />
+              </CardContent>
+            </Card>
+
+            <Card className="p-0 overflow-hidden shadow-md">
+              <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                <CardTitle className="text-sm">Pro Features</CardTitle>
+              </CardHeader>
+              <CardContent className="p-4">
+                <ValueProposition />
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Main content area */}
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <RecentCalculations />
+          </div>
+
+          <aside className="space-y-6">
+            <Card className="p-4 shadow-md">
+              <h3 className="text-sm font-semibold text-gray-700 mb-2">Usage</h3>
+              <p className="text-xs text-gray-500">Monthly usage and quick insights</p>
+              <div className="mt-4">
+                {/* Small usage sparkline (simple visual) */}
+                <div className="w-full h-16 bg-gradient-to-r from-white to-white/50 rounded-md flex items-center justify-center">
+                  <svg width="100%" height="40" viewBox="0 0 120 40" className="mx-2">
+                    <polyline
+                      fill="none"
+                      stroke="#3b82f6"
+                      strokeWidth="2"
+                      points="0,30 20,22 40,10 60,14 80,8 100,12 120,6"
+                    />
+                  </svg>
+                </div>
+
+                <div className="flex items-center justify-between mt-3 text-sm">
+                  <div>
+                    <div className="text-xs text-gray-500">This month</div>
+                    <div className="text-lg font-bold">{/* dynamic value inserted by QuickStats */} </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xs text-gray-500">Remaining</div>
+                    <div className="text-lg font-semibold text-green-600">{/* remaining */}</div>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-4 shadow-md">
+              <h3 className="text-sm font-semibold text-gray-700 mb-2">Tips</h3>
+              <ul className="text-sm text-gray-600 list-disc list-inside space-y-2">
+                <li>Use comparators to evaluate refrigerants quickly.</li>
+                <li>Run batch calculations from the History page.</li>
+                <li>Upgrade for export and team collaboration.</li>
+              </ul>
+            </Card>
+          </aside>
+        </section>
+
+        {/* CTA */}
+        <div className="mt-8">
+          <Card className="p-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h3 className="text-lg font-bold">Need more power?</h3>
+                <p className="text-sm opacity-90">Upgrade to Professional for unlimited calculations and advanced analytics.</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Button className="bg-white text-blue-700 hover:bg-gray-100">Upgrade</Button>
+                <Button variant="outline" className="text-white">Contact Sales</Button>
+              </div>
+            </div>
+          </Card>
         </div>
       </main>
 
