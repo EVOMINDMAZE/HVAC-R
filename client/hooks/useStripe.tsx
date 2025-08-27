@@ -52,14 +52,35 @@ export function useSubscription() {
         return;
       }
 
-      const response = await fetch(
-        `${supabaseUrl}/functions/v1/billing/subscription`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+      console.log("Fetching subscription from Supabase Edge Function", { supabaseUrl, hasToken: !!token });
+
+      // Add a fetch timeout to avoid hanging requests
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+
+      let response: Response;
+      try {
+        response = await fetch(
+          `${supabaseUrl}/functions/v1/billing/subscription`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            signal: controller.signal,
+            mode: "cors",
           },
-        },
-      );
+        );
+      } catch (fetchErr: any) {
+        clearTimeout(timeout);
+        console.error("Network error while fetching subscription:", fetchErr);
+        // Fallback to free plan when network fails
+        setSubscription({ subscription: null, plan: "free", status: "active" });
+        setError(fetchErr.message || "Network error");
+        return;
+      } finally {
+        clearTimeout(timeout);
+      }
 
       if (!response.ok) {
         // Check for auth-related errors
@@ -69,11 +90,28 @@ export function useSubscription() {
           );
           return;
         }
-        throw new Error("Failed to fetch subscription");
+        let errorMsg = `HTTP ${response.status}: Failed to fetch subscription`;
+        try {
+          const errData = await response.json();
+          console.error("Subscription API error response:", errData);
+          errorMsg = errData.error || errData.message || errorMsg;
+        } catch (e) {
+          console.error("Could not parse error body from subscription endpoint", e);
+        }
+        setError(errorMsg);
+        // Fallback to free plan on server error
+        setSubscription({ subscription: null, plan: "free", status: "active" });
+        return;
       }
 
-      const data = await response.json();
-      setSubscription(data);
+      try {
+        const data = await response.json();
+        setSubscription(data);
+      } catch (parseErr) {
+        console.error("Failed to parse subscription response json:", parseErr);
+        setSubscription({ subscription: null, plan: "free", status: "active" });
+        setError("Failed to parse subscription response");
+      }
     } catch (err: any) {
       // Handle auth errors specifically
       if (
