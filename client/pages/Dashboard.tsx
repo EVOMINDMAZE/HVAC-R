@@ -243,18 +243,18 @@ function RecentCalculations() {
             </p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
             {recentCalculations.map((calc) => (
               <div
                 key={calc.id}
                 className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
               >
-                <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <div className="flex items-center space-x-4 min-w-0">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
                     <Calculator className="h-5 w-5 text-blue-600" />
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">
+                  <div className="min-w-0">
+                    <h4 className="font-semibold text-gray-900 truncate max-w-[28ch]">
                       {calc.name || calc.calculation_type}
                     </h4>
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
@@ -265,7 +265,7 @@ function RecentCalculations() {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-3 flex-shrink-0">
                   <Badge variant="secondary">{calc.calculation_type}</Badge>
                   <Button variant="ghost" className="text-sm px-3 py-1" onClick={() => navigate(`/calculations/${calc.id}`)} aria-label={`View ${calc.calculation_type} details`}>
                     Details
