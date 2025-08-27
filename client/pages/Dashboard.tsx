@@ -67,6 +67,24 @@ function QuickStats() {
 
   return (
     <div className="space-y-6">
+      {/* Header with quick action */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-bold">Welcome back{user?.email ? `, ${user.email.split('@')[0]}` : ''} 👋</h2>
+          <p className="text-sm text-gray-600">Your workspace at a glance — quick access to common tasks and usage.</p>
+        </div>
+        <div className="flex items-center space-x-3">
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={() => navigate('/standard-cycle')} aria-label="Start new calculation">
+            <Calculator className="h-4 w-4 mr-2" />
+            New Calculation
+          </Button>
+          <Button variant="outline" className="hidden sm:inline-flex" onClick={() => navigate('/history')} aria-label="View calculation history">
+            <HistoryIcon className="h-4 w-4 mr-2" />
+            View History
+          </Button>
+        </div>
+      </div>
+
       {/* Usage Warning Banner */}
       {isNearLimit && (
         <Card
@@ -188,6 +206,13 @@ function QuickStats() {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Quick access CTA */}
+      <div className="flex items-center justify-end">
+        <Button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white" onClick={() => navigate('/standard-cycle')}>
+          Start New Calculation
+        </Button>
       </div>
     </div>
   );
