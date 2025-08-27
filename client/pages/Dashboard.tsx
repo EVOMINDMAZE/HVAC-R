@@ -73,12 +73,12 @@ function QuickStats() {
           <h2 className="text-xl font-bold">Welcome back{user?.email ? `, ${user.email.split('@')[0]}` : ''} 👋</h2>
           <p className="text-sm text-gray-600">Your workspace at a glance — quick access to common tasks and usage.</p>
         </div>
-        <div className="flex items-center space-x-3">
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={() => navigate('/standard-cycle')} aria-label="Start new calculation">
+        <div className="flex flex-wrap items-center gap-2">
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white whitespace-nowrap" onClick={() => navigate('/standard-cycle')} aria-label="Start new calculation">
             <Calculator className="h-4 w-4 mr-2" />
             New Calculation
           </Button>
-          <Button variant="outline" className="hidden sm:inline-flex" onClick={() => navigate('/history')} aria-label="View calculation history">
+          <Button variant="outline" className="hidden sm:inline-flex whitespace-nowrap" onClick={() => navigate('/history')} aria-label="View calculation history">
             <HistoryIcon className="h-4 w-4 mr-2" />
             View History
           </Button>
