@@ -39,58 +39,46 @@ export function Header({ variant = 'landing' }: HeaderProps) {
   if (variant === 'dashboard') {
     return (
       <div className="bg-white shadow-sm border-b border-blue-200">
-        <div className="max-w-7xl mx-auto px-4 py-6 overflow-hidden">
-          <div className="flex justify-between items-center min-w-0">
-            <div className="flex items-center space-x-8 min-w-0">
-              <div className="min-w-0">
-                <Link to="/dashboard">
-                  <h1 className="text-3xl font-bold text-blue-900 cursor-pointer hover:text-blue-700">
-                    Simulateon
-                  </h1>
-                </Link>
-                <p className="text-blue-600 mt-1 truncate max-w-[14rem] sm:max-w-xs md:max-w-sm lg:max-w-md">
-                  Welcome back, {user?.email?.split('@')[0] || "Engineer"}
-                </p>
-              </div>
-
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+            <div className="flex items-center space-x-4 min-w-0">
+              <Link to="/dashboard" className="inline-flex items-center space-x-3 min-w-0">
+                <h1 className="text-2xl md:text-3xl font-bold text-blue-900 cursor-pointer hover:text-blue-700 truncate">Simulateon</h1>
+              </Link>
+              <p className="text-sm text-gray-600 hidden sm:block truncate max-w-xs">Welcome back, {user?.email?.split('@')[0] || "Engineer"}</p>
             </div>
 
-            <div className="flex items-center space-x-4 min-w-0">
-              <span className="text-sm text-gray-600 hidden md:block truncate max-w-[12rem]">
-                {user?.email}
-              </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate("/profile")}
-                className="hidden md:flex whitespace-nowrap"
-              >
-                <User className="h-4 w-4 mr-2" />
-                Profile
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleSignOut}
-                className="hidden md:flex"
-              >
-                Sign Out
-              </Button>
+            <div className="flex items-center space-x-4 justify-end min-w-0">
+              <nav className="hidden md:flex items-center space-x-6 text-sm">
+                <Link to="/dashboard" className="text-gray-600 hover:text-blue-600 font-medium">Dashboard</Link>
+                <Link to="/standard-cycle" className="text-gray-600 hover:text-blue-600 font-medium">Standard Cycle</Link>
+                <Link to="/refrigerant-comparison" className="text-gray-600 hover:text-blue-600 font-medium">Comparison</Link>
+                <Link to="/cascade-cycle" className="text-gray-600 hover:text-blue-600 font-medium">Cascade</Link>
+                <Link to="/history" className="text-gray-600 hover:text-blue-600 font-medium">History</Link>
+              </nav>
 
-              {/* Mobile menu button */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="md:hidden"
-              >
-                {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </Button>
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-600 hidden md:block truncate max-w-[12rem]">{user?.email}</span>
+                <div className="hidden md:flex items-center space-x-2">
+                  <Button variant="outline" size="sm" onClick={() => navigate('/profile')} className="whitespace-nowrap">
+                    <User className="h-4 w-4 mr-2" />
+                    Profile
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={handleSignOut}>
+                    Sign Out
+                  </Button>
+                </div>
+
+                {/* Mobile menu button */}
+                <Button variant="ghost" size="sm" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden">
+                  {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                </Button>
+              </div>
             </div>
           </div>
 
-          {/* Desktop Navigation (separate row) */}
-          <nav className="mt-4 hidden md:flex items-center space-x-6 overflow-x-auto whitespace-nowrap">
+          {/* Centered navigation row for symmetry */}
+          <nav className="mt-3 hidden md:flex items-center justify-center space-x-8 text-sm">
             <Link to="/dashboard" className="text-gray-600 hover:text-blue-600 font-medium">Dashboard</Link>
             <Link to="/standard-cycle" className="text-gray-600 hover:text-blue-600 font-medium">Standard Cycle</Link>
             <Link to="/refrigerant-comparison" className="text-gray-600 hover:text-blue-600 font-medium">Comparison</Link>
@@ -102,66 +90,20 @@ export function Header({ variant = 'landing' }: HeaderProps) {
           {isMobileMenuOpen && (
             <div className="md:hidden mt-4 pt-4 border-t border-gray-200">
               <nav className="flex flex-col space-y-4">
-                <Link
-                  to="/dashboard"
-                  className="text-gray-600 hover:text-blue-600 font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  to="/standard-cycle"
-                  className="text-gray-600 hover:text-blue-600 font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Standard Cycle
-                </Link>
-                <Link
-                  to="/refrigerant-comparison"
-                  className="text-gray-600 hover:text-blue-600 font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Comparison
-                </Link>
-                <Link
-                  to="/cascade-cycle"
-                  className="text-gray-600 hover:text-blue-600 font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Cascade
-                </Link>
-                <Link
-                  to="/history"
-                  className="text-gray-600 hover:text-blue-600 font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  History
-                </Link>
+                <Link to="/dashboard" className="text-gray-600 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>Dashboard</Link>
+                <Link to="/standard-cycle" className="text-gray-600 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>Standard Cycle</Link>
+                <Link to="/refrigerant-comparison" className="text-gray-600 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>Comparison</Link>
+                <Link to="/cascade-cycle" className="text-gray-600 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>Cascade</Link>
+                <Link to="/history" className="text-gray-600 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>History</Link>
                 <div className="flex items-center space-x-2 pt-4 border-t border-gray-200">
                   <span className="text-sm text-gray-600">{user?.email}</span>
                 </div>
                 <div className="flex space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      navigate("/profile");
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="flex-1"
-                  >
+                  <Button variant="outline" size="sm" onClick={() => { navigate('/profile'); setIsMobileMenuOpen(false); }} className="flex-1">
                     <User className="h-4 w-4 mr-2" />
                     Profile
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      handleSignOut();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="flex-1"
-                  >
+                  <Button variant="outline" size="sm" onClick={() => { handleSignOut(); setIsMobileMenuOpen(false); }} className="flex-1">
                     Sign Out
                   </Button>
                 </div>
