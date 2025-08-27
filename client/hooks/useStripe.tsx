@@ -54,26 +54,49 @@ export function useSubscription() {
 
       console.log("Fetching subscription from Supabase Edge Function", { supabaseUrl, hasToken: !!token });
 
-      // Add a fetch timeout to avoid hanging requests
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 8000);
+      // Add retry/backoff logic for edge function calls
+      const maxRetries = 3;
+      let attempt = 0;
+      let response: Response | null = null;
+      let lastError: any = null;
 
-      let response: Response;
-      try {
-        response = await fetch(
-          `${supabaseUrl}/functions/v1/billing/subscription`,
-          {
+      while (attempt < maxRetries) {
+        attempt += 1;
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8000);
+
+        try {
+          console.log(`Attempt ${attempt} fetching subscription from Edge Function: ${supabaseUrl}/functions/v1/billing/subscription`);
+          response = await fetch(`${supabaseUrl}/functions/v1/billing/subscription`, {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
             },
             signal: controller.signal,
             mode: "cors",
-          },
-        );
-      } catch (fetchErr: any) {
-        clearTimeout(timeout);
-        console.error("Network error while fetching subscription:", fetchErr);
+          });
+
+          clearTimeout(timeout);
+
+          if (response.ok) {
+            break; // success
+          } else {
+            // Non-OK response — capture and break to handle below
+            console.error(`Edge function responded with status ${response.status}`);
+            break;
+          }
+        } catch (err: any) {
+          lastError = err;
+          clearTimeout(timeout);
+          console.warn(`Fetch attempt ${attempt} failed:`, err.message || err);
+          // exponential backoff before retrying
+          const backoff = 500 * Math.pow(2, attempt - 1);
+          await new Promise((r) => setTimeout(r, backoff));
+        }
+      }
+
+      if (!response) {
+        console.error("All attempts to call Supabase Edge Function failed", lastError);
         // Try fallback to internal server API (/api/subscriptions/current)
         try {
           console.log("Attempting fallback to internal API /api/subscriptions/current");
@@ -101,10 +124,8 @@ export function useSubscription() {
 
         // Final fallback to free plan when network fails
         setSubscription({ subscription: null, plan: "free", status: "active" });
-        setError(fetchErr.message || "Network error");
+        setError(lastError?.message || "Network error");
         return;
-      } finally {
-        clearTimeout(timeout);
       }
 
       if (!response.ok) {
