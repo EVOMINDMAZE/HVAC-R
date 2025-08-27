@@ -437,7 +437,7 @@ export function Dashboard() {
             <RecentCalculations />
           </div>
 
-          <aside className="space-y-6">
+          <aside className="space-y-6 lg:sticky lg:top-24">
             <Card className="p-4 shadow-md">
               <h3 className="text-sm font-semibold text-gray-700 mb-2">Usage</h3>
               <p className="text-xs text-gray-500">Monthly usage and quick insights</p>
