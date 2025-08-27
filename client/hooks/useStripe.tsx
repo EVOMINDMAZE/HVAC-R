@@ -74,7 +74,32 @@ export function useSubscription() {
       } catch (fetchErr: any) {
         clearTimeout(timeout);
         console.error("Network error while fetching subscription:", fetchErr);
-        // Fallback to free plan when network fails
+        // Try fallback to internal server API (/api/subscriptions/current)
+        try {
+          console.log("Attempting fallback to internal API /api/subscriptions/current");
+          const fallbackController = new AbortController();
+          const fallbackTimeout = setTimeout(() => fallbackController.abort(), 8000);
+          const fallbackResponse = await fetch(`${window.location.origin}/api/subscriptions/current`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            signal: fallbackController.signal,
+          });
+          clearTimeout(fallbackTimeout);
+
+          if (fallbackResponse.ok) {
+            const fallbackData = await fallbackResponse.json();
+            setSubscription(fallbackData);
+            return;
+          } else {
+            console.error("Fallback API responded with non-OK status", fallbackResponse.status);
+          }
+        } catch (fallbackErr: any) {
+          console.error("Fallback attempt failed:", fallbackErr);
+        }
+
+        // Final fallback to free plan when network fails
         setSubscription({ subscription: null, plan: "free", status: "active" });
         setError(fetchErr.message || "Network error");
         return;
