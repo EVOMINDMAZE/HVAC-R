@@ -53,39 +53,6 @@ export function Header({ variant = 'landing' }: HeaderProps) {
                 </p>
               </div>
 
-              {/* Desktop Navigation */}
-              <nav className="hidden md:flex items-center space-x-6 flex-shrink-0">
-                <Link
-                  to="/dashboard"
-                  className="text-gray-600 hover:text-blue-600 font-medium"
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  to="/standard-cycle"
-                  className="text-gray-600 hover:text-blue-600 font-medium"
-                >
-                  Standard Cycle
-                </Link>
-                <Link
-                  to="/refrigerant-comparison"
-                  className="text-gray-600 hover:text-blue-600 font-medium"
-                >
-                  Comparison
-                </Link>
-                <Link
-                  to="/cascade-cycle"
-                  className="text-gray-600 hover:text-blue-600 font-medium"
-                >
-                  Cascade
-                </Link>
-                <Link
-                  to="/history"
-                  className="text-gray-600 hover:text-blue-600 font-medium"
-                >
-                  History
-                </Link>
-              </nav>
             </div>
 
             <div className="flex items-center space-x-4 min-w-0">
@@ -121,6 +88,15 @@ export function Header({ variant = 'landing' }: HeaderProps) {
               </Button>
             </div>
           </div>
+
+          {/* Desktop Navigation (separate row) */}
+          <nav className="mt-4 hidden md:flex items-center space-x-6 overflow-x-auto whitespace-nowrap">
+            <Link to="/dashboard" className="text-gray-600 hover:text-blue-600 font-medium">Dashboard</Link>
+            <Link to="/standard-cycle" className="text-gray-600 hover:text-blue-600 font-medium">Standard Cycle</Link>
+            <Link to="/refrigerant-comparison" className="text-gray-600 hover:text-blue-600 font-medium">Comparison</Link>
+            <Link to="/cascade-cycle" className="text-gray-600 hover:text-blue-600 font-medium">Cascade</Link>
+            <Link to="/history" className="text-gray-600 hover:text-blue-600 font-medium">History</Link>
+          </nav>
 
           {/* Mobile Navigation */}
           {isMobileMenuOpen && (
