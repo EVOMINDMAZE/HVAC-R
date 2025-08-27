@@ -265,8 +265,14 @@ function RecentCalculations() {
                     </div>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="flex items-center space-x-3">
                   <Badge variant="secondary">{calc.calculation_type}</Badge>
+                  <Button variant="ghost" className="text-sm px-3 py-1" onClick={() => navigate(`/calculations/${calc.id}`)} aria-label={`View ${calc.calculation_type} details`}>
+                    Details
+                  </Button>
+                  <Button variant="outline" className="text-sm px-3 py-1" onClick={() => navigate('/standard-cycle')} aria-label="Run this calculation">
+                    Run
+                  </Button>
                 </div>
               </div>
             ))}
