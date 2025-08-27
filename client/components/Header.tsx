@@ -49,13 +49,6 @@ export function Header({ variant = 'landing' }: HeaderProps) {
             </div>
 
             <div className="flex items-center space-x-4 justify-end min-w-0">
-              <nav className="hidden md:flex items-center space-x-6 text-sm">
-                <Link to="/dashboard" className="text-gray-600 hover:text-blue-600 font-medium">Dashboard</Link>
-                <Link to="/standard-cycle" className="text-gray-600 hover:text-blue-600 font-medium">Standard Cycle</Link>
-                <Link to="/refrigerant-comparison" className="text-gray-600 hover:text-blue-600 font-medium">Comparison</Link>
-                <Link to="/cascade-cycle" className="text-gray-600 hover:text-blue-600 font-medium">Cascade</Link>
-                <Link to="/history" className="text-gray-600 hover:text-blue-600 font-medium">History</Link>
-              </nav>
 
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600 hidden md:block truncate max-w-[12rem]">{user?.email}</span>
