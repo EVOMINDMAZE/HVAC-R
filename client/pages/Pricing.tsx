@@ -319,14 +319,12 @@ export function Pricing() {
                 </TabsTrigger>
               </TabsList>
             </Tabs>
-            {billingCycle === "yearly" && (
-              <Badge
-                variant="secondary"
-                className="ml-4 bg-green-100 text-green-700"
-              >
-                Save up to 17%
-              </Badge>
-            )}
+            <Badge
+              variant="secondary"
+              className={`ml-4 bg-green-100 text-green-700 ${billingCycle === "yearly" ? "" : "invisible"}`}
+            >
+              Save up to 17%
+            </Badge>
           </div>
         </div>
 
