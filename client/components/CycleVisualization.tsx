@@ -1459,111 +1459,91 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
               </Card>
             )}
 
-            {/* Professional Analysis */}
+            {/* Legend + Tools (combined for compact layout) */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Process Legend</CardTitle>
+                <CardTitle className="text-lg">Legend & Tools</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="grid grid-cols-1 gap-2">
-                  <div className="flex items-center gap-3 p-2 bg-red-50 rounded">
-                    <div className="w-6 h-2 bg-red-500 rounded"></div>
-                    <span className="text-sm font-medium">
-                      1→2: Compression
-                    </span>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 gap-3">
+                  <div>
+                    <h4 className="text-sm font-medium text-muted-foreground mb-2">Process Legend</h4>
+                    <div className="grid grid-cols-1 gap-2">
+                      <div className="flex items-center gap-3 p-2 bg-red-50 rounded">
+                        <div className="w-6 h-2 bg-red-500 rounded" />
+                        <span className="text-sm font-medium">1→2: Compression</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 bg-blue-50 rounded">
+                        <div className="w-6 h-2 bg-blue-500 rounded" />
+                        <span className="text-sm font-medium">2→3: Condensation</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 bg-green-50 rounded">
+                        <div className="w-6 h-2 bg-green-500 rounded" />
+                        <span className="text-sm font-medium">3→4: Expansion</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 bg-yellow-50 rounded">
+                        <div className="w-6 h-2 bg-yellow-500 rounded" />
+                        <span className="text-sm font-medium">4→1: Evaporation</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3 p-2 bg-blue-50 rounded">
-                    <div className="w-6 h-2 bg-blue-500 rounded"></div>
-                    <span className="text-sm font-medium">
-                      2→3: Condensation
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3 p-2 bg-green-50 rounded">
-                    <div className="w-6 h-2 bg-green-500 rounded"></div>
-                    <span className="text-sm font-medium">3→4: Expansion</span>
-                  </div>
-                  <div className="flex items-center gap-3 p-2 bg-yellow-50 rounded">
-                    <div className="w-6 h-2 bg-yellow-500 rounded"></div>
-                    <span className="text-sm font-medium">
-                      4→1: Evaporation
-                    </span>
+
+                  <div>
+                    <h4 className="text-sm font-medium text-muted-foreground mb-2">Professional Tools</h4>
+                    <div className="space-y-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full justify-start text-xs"
+                        onClick={() => {
+                          if (cycleData) {
+                            const csvData = cycleData.points
+                              .map(
+                                (point, i) =>
+                                  `Point ${i + 1},${point.temperature},${point.pressure},${point.enthalpy},${point.entropy}`,
+                              )
+                              .join("\n");
+                            const blob = new Blob(
+                              [
+                                "Point,Temperature(°C),Pressure(kPa),Enthalpy(kJ/kg),Entropy(kJ/kg·K)\n" +
+                                  csvData,
+                              ],
+                              { type: "text/csv" },
+                            );
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement("a");
+                            a.href = url;
+                            a.download = `${cycleData.refrigerant}_cycle_data.csv`;
+                            a.click();
+                          }
+                        }}
+                      >
+                        📊 Export to CSV
+                      </Button>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full justify-start text-xs"
+                        onClick={() => {
+                          const canvas = canvasRef.current;
+                          if (canvas) {
+                            const link = document.createElement("a");
+                            link.download = `${cycleData?.refrigerant || "cycle"}_${diagramType}_diagram.png`;
+                            link.href = canvas.toDataURL();
+                            link.click();
+                          }
+                        }}
+                      >
+                        🖼️ Save Diagram
+                      </Button>
+
+                      <Button variant="outline" size="sm" className="w-full justify-start text-xs">📋 Copy Properties</Button>
+                      <Button variant="outline" size="sm" className="w-full justify-start text-xs">📐 Measure Tool</Button>
+                      <Button variant="outline" size="sm" className="w-full justify-start text-xs">🔍 Zoom to Fit</Button>
+                    </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Engineering Tools */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Professional Tools</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full justify-start text-xs"
-                  onClick={() => {
-                    if (cycleData) {
-                      const csvData = cycleData.points
-                        .map(
-                          (point, i) =>
-                            `Point ${i + 1},${point.temperature},${point.pressure},${point.enthalpy},${point.entropy}`,
-                        )
-                        .join("\n");
-                      const blob = new Blob(
-                        [
-                          "Point,Temperature(°C),Pressure(kPa),Enthalpy(kJ/kg),Entropy(kJ/kg·K)\n" +
-                            csvData,
-                        ],
-                        { type: "text/csv" },
-                      );
-                      const url = URL.createObjectURL(blob);
-                      const a = document.createElement("a");
-                      a.href = url;
-                      a.download = `${cycleData.refrigerant}_cycle_data.csv`;
-                      a.click();
-                    }
-                  }}
-                >
-                  📊 Export to CSV
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full justify-start text-xs"
-                  onClick={() => {
-                    const canvas = canvasRef.current;
-                    if (canvas) {
-                      const link = document.createElement("a");
-                      link.download = `${cycleData?.refrigerant || "cycle"}_${diagramType}_diagram.png`;
-                      link.href = canvas.toDataURL();
-                      link.click();
-                    }
-                  }}
-                >
-                  🖼️ Save Diagram
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full justify-start text-xs"
-                >
-                  📋 Copy Properties
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full justify-start text-xs"
-                >
-                  📐 Measure Tool
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full justify-start text-xs"
-                >
-                  🔍 Zoom to Fit
-                </Button>
               </CardContent>
             </Card>
           </div>
