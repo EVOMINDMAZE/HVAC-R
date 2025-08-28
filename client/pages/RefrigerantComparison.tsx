@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { Loader2, BarChart3, Eye, FileText, AlertTriangle } from "lucide-react";
+import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { SaveCalculation } from "@/components/SaveCalculation";
 import { EnhancedRefrigerantSelector } from "@/components/EnhancedRefrigerantSelector";
 import { CycleVisualization } from "@/components/CycleVisualization";
