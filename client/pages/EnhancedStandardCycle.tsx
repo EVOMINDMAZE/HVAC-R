@@ -1124,26 +1124,6 @@ export function EnhancedStandardCycleContent() {
               <CardContent className="space-y-6">
                 <div>
                   <Label htmlFor="refrigerant">Refrigerant</Label>
-                  {selectedRefrigerant && (
-                    <div className="mt-2 text-sm text-muted-foreground space-y-1">
-                      <div>
-                        <TechTerm term="safety_class">
-                          <Badge variant="outline" className="mr-2">
-                            {selectedRefrigerant.safety_class}
-                          </Badge>
-                        </TechTerm>
-                        <TechTerm term="gwp">
-                          GWP: {selectedRefrigerant.gwp}
-                        </TechTerm>{" "}
-                        |
-                        <TechTerm term="odp">
-                          {" "}
-                          ODP: {selectedRefrigerant.odp}
-                        </TechTerm>
-                      </div>
-                    </div>
-                  )}
-
                   {selectedRefrigerant &&
                     ["R407C", "R404A", "R448A", "R507A", "R410A"].includes(
                       selectedRefrigerant.id,
