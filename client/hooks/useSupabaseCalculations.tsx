@@ -190,11 +190,15 @@ export function useSupabaseCalculations() {
         }
       }
 
-      addToast({
-        type: 'error',
-        title: 'Failed to Save Calculation',
-        description: errorMessage
-      });
+      if (!silent) {
+        addToast({
+          type: 'error',
+          title: 'Failed to Save Calculation',
+          description: errorMessage
+        });
+      } else {
+        console.warn('Auto-save failed:', errorMessage);
+      }
       return null;
     }
   };
