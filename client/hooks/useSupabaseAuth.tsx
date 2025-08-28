@@ -30,8 +30,33 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // Get initial session with error handling
+    // Get initial session with error handling, but first verify Supabase host is reachable
     const getInitialSession = async () => {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+
+      // Quick connectivity check to avoid unhandled fetch failures from supabase-js
+      if (supabaseUrl) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3000);
+          await fetch(supabaseUrl, { method: 'GET', mode: 'cors', signal: controller.signal });
+          clearTimeout(timeoutId);
+        } catch (err: any) {
+          console.warn('Supabase host unreachable, disabling auth: ', err?.message || err);
+          // Clear any existing stored session tokens to prevent supabase-js from attempting refresh
+          try {
+            localStorage.removeItem('supabase.auth.token');
+            sessionStorage.removeItem('supabase.auth.token');
+          } catch (e) {
+            // ignore
+          }
+          setIsLoading(false);
+          setSession(null);
+          setUser(null);
+          return;
+        }
+      }
+
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
 
@@ -57,30 +82,36 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    getInitialSession();
+    await getInitialSession();
 
     // Listen for auth changes with error handling
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        // Handle token refresh errors
-        if (event === 'TOKEN_REFRESHED' && !session) {
-          console.warn('Token refresh failed, user will be signed out');
+    let subscription: any = { unsubscribe: () => {} };
+    try {
+      const sub = supabase.auth.onAuthStateChange(
+        async (event, session) => {
+          // Handle token refresh errors
+          if (event === 'TOKEN_REFRESHED' && !session) {
+            console.warn('Token refresh failed, user will be signed out');
+          }
+
+          // Handle sign out event or invalid sessions
+          if (event === 'SIGNED_OUT' || !session) {
+            setSession(null);
+            setUser(null);
+          } else {
+            setSession(session);
+            setUser(session.user);
+          }
+
+          setIsLoading(false);
         }
+      );
+      subscription = sub.data?.subscription ?? sub;
+    } catch (err) {
+      console.warn('Failed to subscribe to auth state changes:', err);
+    }
 
-        // Handle sign out event or invalid sessions
-        if (event === 'SIGNED_OUT' || !session) {
-          setSession(null);
-          setUser(null);
-        } else {
-          setSession(session);
-          setUser(session.user);
-        }
-
-        setIsLoading(false);
-      }
-    );
-
-    return () => subscription.unsubscribe();
+    return () => subscription.unsubscribe ? subscription.unsubscribe() : undefined;
   }, []);
 
   const signUp = async (email: string, password: string) => {
