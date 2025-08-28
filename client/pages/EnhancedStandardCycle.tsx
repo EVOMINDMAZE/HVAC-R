@@ -731,6 +731,15 @@ export function EnhancedStandardCycleContent() {
                 "specific_volume_m3_kg",
                 "specific_volume",
               ]) || 0,
+            density:
+              getPropertyValue(results.state_points?.["1"], [
+                "density_kg_m3",
+                "density",
+                "rho",
+              ]) || (getPropertyValue(results.state_points?.["1"], [
+                "specific_volume_m3_kg",
+                "specific_volume",
+              ]) ? 1 / getPropertyValue(results.state_points?.["1"], ["specific_volume_m3_kg","specific_volume"]) : undefined),
             quality: getPropertyValue(results.state_points?.["1"], [
               "vapor_quality",
               "quality",
