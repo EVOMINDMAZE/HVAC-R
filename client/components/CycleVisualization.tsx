@@ -934,7 +934,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       },
       {
         name: "Condenser",
-        icon: "🌡️",
+        icon: "🌡��",
         position: { x: 0.5, y: 0.1 },
         color: "#2563eb",
       },
@@ -1475,40 +1475,27 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
             {/* Professional Analysis */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Cycle Analysis</CardTitle>
+                <CardTitle className="text-lg">Process Legend</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {cycleData && (
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span>Pressure Ratio:</span>
-                      <span className="font-mono">
-                        {cycleData.points[1] && cycleData.points[0]
-                          ? (
-                              cycleData.points[1].pressure /
-                              cycleData.points[0].pressure
-                            ).toFixed(2)
-                          : "N/A"}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Temperature Lift:</span>
-                      <span className="font-mono">
-                        {cycleData.points[1] && cycleData.points[0]
-                          ? `${(cycleData.points[1].temperature - cycleData.points[0].temperature).toFixed(1)}°C`
-                          : "N/A"}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Cycle Type:</span>
-                      <span className="font-mono">
-                        {diagramType === "P-h"
-                          ? "Vapor Compression"
-                          : "Thermodynamic"}
-                      </span>
-                    </div>
+                <div className="grid grid-cols-1 gap-2">
+                  <div className="flex items-center gap-3 p-2 bg-red-50 rounded">
+                    <div className="w-6 h-2 bg-red-500 rounded"></div>
+                    <span className="text-sm font-medium">1→2: Compression</span>
                   </div>
-                )}
+                  <div className="flex items-center gap-3 p-2 bg-blue-50 rounded">
+                    <div className="w-6 h-2 bg-blue-500 rounded"></div>
+                    <span className="text-sm font-medium">2→3: Condensation</span>
+                  </div>
+                  <div className="flex items-center gap-3 p-2 bg-green-50 rounded">
+                    <div className="w-6 h-2 bg-green-500 rounded"></div>
+                    <span className="text-sm font-medium">3→4: Expansion</span>
+                  </div>
+                  <div className="flex items-center gap-3 p-2 bg-yellow-50 rounded">
+                    <div className="w-6 h-2 bg-yellow-500 rounded"></div>
+                    <span className="text-sm font-medium">4→1: Evaporation</span>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
