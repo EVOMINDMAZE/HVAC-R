@@ -268,17 +268,6 @@ export function CycleVisualization({
     return positions;
   };
 
-  // Animation loop
-  useEffect(() => {
-    if (!isAnimating) return;
-
-    const interval = setInterval(() => {
-      setAnimationFrame((prev) => (prev + 1) % 100);
-    }, 50);
-
-    return () => clearInterval(interval);
-  }, [isAnimating]);
-
   // Canvas drawing with enhanced rendering
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -292,7 +281,7 @@ export function CycleVisualization({
     ctx.imageSmoothingQuality = "high";
 
     drawCycle(ctx, canvas.width, canvas.height);
-  }, [cycleData, animationFrame, selectedPoint, diagramType]);
+  }, [cycleData, selectedPoint, diagramType]);
 
   const drawCycle = (
     ctx: CanvasRenderingContext2D,
