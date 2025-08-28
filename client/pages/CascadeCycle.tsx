@@ -925,10 +925,7 @@ export function CascadeCycleContent() {
                       {(() => {
                         const ltVisualizationData = getVisualizationData("lt");
                         return ltVisualizationData ? (
-                          <EquipmentDiagrams
-                            cycleData={ltVisualizationData}
-                            isAnimating={false}
-                          />
+                          <EquipmentDiagrams cycleData={ltVisualizationData} />
                         ) : (
                           <div className="text-center py-8 text-gray-500">
                             Equipment data not available for LT cycle
