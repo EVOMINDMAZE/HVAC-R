@@ -1367,7 +1367,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
               </CardContent>
             </Card>
 
-            {selectedPointData ? (
+            {selectedPointData && (
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
@@ -1465,18 +1465,6 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
                         </>
                       )}
                     </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            ) : (
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="text-center space-y-2">
-                    <div className="text-4xl">👆</div>
-                    <p className="text-muted-foreground">
-                      Click any cycle point to view detailed engineering
-                      properties
-                    </p>
                   </div>
                 </CardContent>
               </Card>
