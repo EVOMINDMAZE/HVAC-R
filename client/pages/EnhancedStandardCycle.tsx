@@ -109,11 +109,6 @@ export function EnhancedStandardCycleContent() {
   const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
   const [selectedRefrigerant, setSelectedRefrigerant] =
     useState<RefrigerantProperties | null>(null);
-  const [animationState, setAnimationState] = useState<CycleAnimationState>({
-    isAnimating: false,
-    currentPoint: 1,
-    animationSpeed: 1000,
-  });
   const [activeTab, setActiveTab] = useState("calculation");
   const [calculationComplete, setCalculationComplete] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(() => {
