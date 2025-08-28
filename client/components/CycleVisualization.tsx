@@ -1317,226 +1317,147 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
           {/* Engineering Properties Panel */}
           <div className="space-y-4">
-            {/* Process Legend - Moved here for better UX */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Cycle Analysis</CardTitle>
+                <CardTitle className="text-lg">Details</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                {cycleData && (
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Pressure Ratio</span>
-                      <span className="font-mono text-lg font-semibold">
-                        {cycleData.points[1] && cycleData.points[0]
-                          ? (cycleData.points[1].pressure / cycleData.points[0].pressure).toFixed(2)
-                          : "N/A"}
-                      </span>
-                    </div>
+              <CardContent>
+                <Accordion type="single" collapsible defaultValue="analysis">
+                  <AccordionItem value="analysis">
+                    <AccordionTrigger>Cycle Analysis</AccordionTrigger>
+                    <AccordionContent>
+                      {cycleData ? (
+                        <div className="space-y-2 text-sm">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">Pressure Ratio</span>
+                            <span className="font-mono text-lg font-semibold">{cycleData.points[1] && cycleData.points[0] ? (cycleData.points[1].pressure / cycleData.points[0].pressure).toFixed(2) : "N/A"}</span>
+                          </div>
 
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Temperature Lift</span>
-                      <span className="font-mono text-lg font-semibold">
-                        {cycleData.points[1] && cycleData.points[0]
-                          ? `${(cycleData.points[1].temperature - cycleData.points[0].temperature).toFixed(1)} °C`
-                          : "N/A"}
-                      </span>
-                    </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">Temperature Lift</span>
+                            <span className="font-mono text-lg font-semibold">{cycleData.points[1] && cycleData.points[0] ? `${(cycleData.points[1].temperature - cycleData.points[0].temperature).toFixed(1)} °C` : "N/A"}</span>
+                          </div>
 
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Cycle Type</span>
-                      <span className="font-mono text-sm">
-                        {diagramType === "P-h" ? "Vapor Compression" : "Thermodynamic"}
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {selectedPointData && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-blue-500"></div>
-                    State {selectedPointData.id} - {selectedPointData.name}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {/* Primary Properties */}
-                  <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div>
-                      <div className="text-xs text-gray-500">Temperature</div>
-                      <div className="font-mono text-lg font-semibold">{selectedPointData.temperature.toFixed(2)} °C</div>
-                    </div>
-
-                    <div>
-                      <div className="text-xs text-gray-500">Pressure</div>
-                      <div className="font-mono text-lg font-semibold">{(selectedPointData.pressure / 1000).toFixed(2)} MPa</div>
-                    </div>
-
-                    <div>
-                      <div className="text-xs text-gray-500">Enthalpy</div>
-                      <div className="font-mono">{selectedPointData.enthalpy.toFixed(1)} kJ/kg</div>
-                    </div>
-
-                    <div>
-                      <div className="text-xs text-gray-500">Entropy</div>
-                      <div className="font-mono">{selectedPointData.entropy.toFixed(3)} kJ/kg·K</div>
-                    </div>
-                  </div>
-
-                  {/* Quality if two-phase */}
-                  {selectedPointData.quality !== undefined && (
-                    <div className="p-2 bg-blue-50 rounded">
-                      <Badge variant="secondary" className="w-full justify-center">
-                        Vapor Quality: {(selectedPointData.quality * 100).toFixed(1)}%
-                      </Badge>
-                    </div>
-                  )}
-
-                  {/* Engineering Notes */}
-                  <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                    <h4 className="font-semibold text-sm mb-2">Engineering Notes:</h4>
-                    <ul className="text-xs space-y-1 text-gray-600">
-                      {selectedPointData.id === "1" && (
-                        <>
-                          <li>
-                            • Refrigerant exits evaporator as superheated vapor
-                          </li>
-                          <li>
-                            • Critical for preventing liquid slugging in
-                            compressor
-                          </li>
-                          <li>
-                            • Superheat should be 5-15°C for optimal performance
-                          </li>
-                        </>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-600">Cycle Type</span>
+                            <span className="font-mono text-sm">{diagramType === "P-h" ? "Vapor Compression" : "Thermodynamic"}</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-sm text-gray-500">No cycle data available</div>
                       )}
-                      {selectedPointData.id === "2" && (
-                        <>
-                          <li>
-                            • Highest temperature and pressure in the cycle
-                          </li>
-                          <li>
-                            • Compressor discharge temperature critical for oil
-                            life
-                          </li>
-                          <li>
-                            • Should not exceed refrigerant's maximum
-                            temperature
-                          </li>
-                        </>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="state">
+                    <AccordionTrigger>State Details</AccordionTrigger>
+                    <AccordionContent>
+                      {selectedPointData ? (
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-2 gap-3 text-sm">
+                            <div>
+                              <div className="text-xs text-gray-500">Temperature</div>
+                              <div className="font-mono text-lg font-semibold">{selectedPointData.temperature.toFixed(2)} °C</div>
+                            </div>
+                            <div>
+                              <div className="text-xs text-gray-500">Pressure</div>
+                              <div className="font-mono text-lg font-semibold">{(selectedPointData.pressure / 1000).toFixed(2)} MPa</div>
+                            </div>
+                            <div>
+                              <div className="text-xs text-gray-500">Enthalpy</div>
+                              <div className="font-mono">{selectedPointData.enthalpy.toFixed(1)} kJ/kg</div>
+                            </div>
+                            <div>
+                              <div className="text-xs text-gray-500">Entropy</div>
+                              <div className="font-mono">{selectedPointData.entropy.toFixed(3)} kJ/kg·K</div>
+                            </div>
+                          </div>
+
+                          {selectedPointData.quality !== undefined && (
+                            <div className="p-2 bg-blue-50 rounded">
+                              <Badge variant="secondary" className="w-full justify-center">Vapor Quality: {(selectedPointData.quality * 100).toFixed(1)}%</Badge>
+                            </div>
+                          )}
+
+                          <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                            <h4 className="font-semibold text-sm mb-2">Engineering Notes:</h4>
+                            <ul className="text-xs space-y-1 text-gray-600">
+                              {selectedPointData.id === "1" && (
+                                <>
+                                  <li>• Refrigerant exits evaporator as superheated vapor</li>
+                                  <li>• Critical for preventing liquid slugging in compressor</li>
+                                  <li>• Superheat should be 5-15°C for optimal performance</li>
+                                </>
+                              )}
+                              {selectedPointData.id === "2" && (
+                                <>
+                                  <li>• Highest temperature and pressure in the cycle</li>
+                                  <li>• Compressor discharge temperature critical for oil life</li>
+                                  <li>• Should not exceed refrigerant's maximum temperature</li>
+                                </>
+                              )}
+                              {selectedPointData.id === "3" && (
+                                <>
+                                  <li>• Subcooled liquid from condenser</li>
+                                  <li>• Subcooling improves cycle efficiency</li>
+                                  <li>• Prevents flash gas formation at expansion valve</li>
+                                </>
+                              )}
+                              {selectedPointData.id === "4" && (
+                                <>
+                                  <li>• Two-phase mixture after expansion</li>
+                                  <li>• Quality determines evaporator performance</li>
+                                  <li>• Lower quality = more liquid = better heat transfer</li>
+                                </>
+                              )}
+                            </ul>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-sm text-gray-500">Select a cycle point on the diagram to view state details</div>
                       )}
-                      {selectedPointData.id === "3" && (
-                        <>
-                          <li>• Subcooled liquid from condenser</li>
-                          <li>• Subcooling improves cycle efficiency</li>
-                          <li>
-                            • Prevents flash gas formation at expansion valve
-                          </li>
-                        </>
-                      )}
-                      {selectedPointData.id === "4" && (
-                        <>
-                          <li>• Two-phase mixture after expansion</li>
-                          <li>• Quality determines evaporator performance</li>
-                          <li>
-                            • Lower quality = more liquid = better heat transfer
-                          </li>
-                        </>
-                      )}
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                    </AccordionContent>
+                  </AccordionItem>
 
-            {/* Legend + Tools (combined for compact layout) */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Legend & Tools</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 gap-3">
-                  <div>
-                    <h4 className="text-sm font-medium text-muted-foreground mb-2">Process Legend</h4>
-                    <div className="grid grid-cols-1 gap-2">
-                      <div className="flex items-center gap-3 p-2 bg-red-50 rounded">
-                        <div className="w-6 h-2 bg-red-500 rounded" />
-                        <span className="text-sm font-medium">1→2: Compression</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-2 bg-blue-50 rounded">
-                        <div className="w-6 h-2 bg-blue-500 rounded" />
-                        <span className="text-sm font-medium">2→3: Condensation</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-2 bg-green-50 rounded">
-                        <div className="w-6 h-2 bg-green-500 rounded" />
-                        <span className="text-sm font-medium">3→4: Expansion</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-2 bg-yellow-50 rounded">
-                        <div className="w-6 h-2 bg-yellow-500 rounded" />
-                        <span className="text-sm font-medium">4→1: Evaporation</span>
-                      </div>
-                    </div>
-                  </div>
+                  <AccordionItem value="tools">
+                    <AccordionTrigger>Legend & Tools</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-3">
+                        <div>
+                          <h4 className="text-sm font-medium text-muted-foreground mb-2">Process Legend</h4>
+                          <div className="grid grid-cols-1 gap-2">
+                            <div className="flex items-center gap-3 p-2 bg-red-50 rounded"><div className="w-6 h-2 bg-red-500 rounded" /> <span className="text-sm font-medium">1→2: Compression</span></div>
+                            <div className="flex items-center gap-3 p-2 bg-blue-50 rounded"><div className="w-6 h-2 bg-blue-500 rounded" /> <span className="text-sm font-medium">2→3: Condensation</span></div>
+                            <div className="flex items-center gap-3 p-2 bg-green-50 rounded"><div className="w-6 h-2 bg-green-500 rounded" /> <span className="text-sm font-medium">3→4: Expansion</span></div>
+                            <div className="flex items-center gap-3 p-2 bg-yellow-50 rounded"><div className="w-6 h-2 bg-yellow-500 rounded" /> <span className="text-sm font-medium">4→1: Evaporation</span></div>
+                          </div>
+                        </div>
 
-                  <div>
-                    <h4 className="text-sm font-medium text-muted-foreground mb-2">Professional Tools</h4>
-                    <div className="space-y-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full justify-start text-xs"
-                        onClick={() => {
-                          if (cycleData) {
-                            const csvData = cycleData.points
-                              .map(
-                                (point, i) =>
-                                  `Point ${i + 1},${point.temperature},${point.pressure},${point.enthalpy},${point.entropy}`,
-                              )
-                              .join("\n");
-                            const blob = new Blob(
-                              [
-                                "Point,Temperature(°C),Pressure(kPa),Enthalpy(kJ/kg),Entropy(kJ/kg·K)\n" +
-                                  csvData,
-                              ],
-                              { type: "text/csv" },
-                            );
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement("a");
-                            a.href = url;
-                            a.download = `${cycleData.refrigerant}_cycle_data.csv`;
-                            a.click();
-                          }
-                        }}
-                      >
-                        📊 Export to CSV
-                      </Button>
+                        <div>
+                          <h4 className="text-sm font-medium text-muted-foreground mb-2">Professional Tools</h4>
+                          <div className="space-y-2">
+                            <Button variant="outline" size="sm" className="w-full justify-start text-xs" onClick={() => {
+                              if (cycleData) {
+                                const csvData = cycleData.points.map((point, i) => `Point ${i + 1},${point.temperature},${point.pressure},${point.enthalpy},${point.entropy}`).join("\n");
+                                const blob = new Blob(["Point,Temperature(°C),Pressure(kPa),Enthalpy(kJ/kg),Entropy(kJ/kg·K)\n" + csvData], { type: "text/csv" });
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement("a"); a.href = url; a.download = `${cycleData.refrigerant}_cycle_data.csv`; a.click();
+                              }
+                            }}>📊 Export to CSV</Button>
 
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full justify-start text-xs"
-                        onClick={() => {
-                          const canvas = canvasRef.current;
-                          if (canvas) {
-                            const link = document.createElement("a");
-                            link.download = `${cycleData?.refrigerant || "cycle"}_${diagramType}_diagram.png`;
-                            link.href = canvas.toDataURL();
-                            link.click();
-                          }
-                        }}
-                      >
-                        🖼️ Save Diagram
-                      </Button>
+                            <Button variant="outline" size="sm" className="w-full justify-start text-xs" onClick={() => {
+                              const canvas = canvasRef.current; if (canvas) { const link = document.createElement("a"); link.download = `${cycleData?.refrigerant || "cycle"}_${diagramType}_diagram.png`; link.href = canvas.toDataURL(); link.click(); }
+                            }}>🖼️ Save Diagram</Button>
 
-                      <Button variant="outline" size="sm" className="w-full justify-start text-xs">📋 Copy Properties</Button>
-                      <Button variant="outline" size="sm" className="w-full justify-start text-xs">📐 Measure Tool</Button>
-                      <Button variant="outline" size="sm" className="w-full justify-start text-xs">🔍 Zoom to Fit</Button>
-                    </div>
-                  </div>
-                </div>
+                            <Button variant="outline" size="sm" className="w-full justify-start text-xs">📋 Copy Properties</Button>
+                            <Button variant="outline" size="sm" className="w-full justify-start text-xs">📐 Measure Tool</Button>
+                            <Button variant="outline" size="sm" className="w-full justify-start text-xs">🔍 Zoom to Fit</Button>
+                          </div>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               </CardContent>
             </Card>
           </div>
