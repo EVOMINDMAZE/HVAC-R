@@ -390,28 +390,6 @@ export function EnhancedStandardCycleContent() {
     }
   };
 
-  const toggleAnimation = () => {
-    setAnimationState((prev) => ({
-      ...prev,
-      isAnimating: !prev.isAnimating,
-    }));
-  };
-
-  const resetAnimation = () => {
-    setAnimationState((prev) => ({
-      ...prev,
-      isAnimating: false,
-      currentPoint: 1,
-    }));
-  };
-
-  const adjustAnimationSpeed = (speed: number) => {
-    setAnimationState((prev) => ({
-      ...prev,
-      animationSpeed: speed,
-    }));
-  };
-
   const formatValue = (
     value: number | undefined,
     unit: string,
@@ -1791,7 +1769,7 @@ export function EnhancedStandardCycleContent() {
                     <div className="grid grid-cols-2 gap-3 mt-3">
                       <div className="p-3 bg-gray-50 rounded border">
                         <div className="text-sm font-semibold">
-                          🌍 Dynamic Units
+                          ��� Dynamic Units
                         </div>
                         <div className="text-xs text-muted-foreground">
                           SI ↔ Imperial conversion
