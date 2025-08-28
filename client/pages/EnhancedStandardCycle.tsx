@@ -485,22 +485,21 @@ export function EnhancedStandardCycleContent() {
         "specific_s",
         "s_specific",
       ],
+      // Note: do NOT include specific_volume variations under density here,
+      // because density != specific volume. We'll compute 1/v elsewhere.
       density: [
         "density_kg_m3",
         "density",
         "rho",
-        "specific_volume",
-        "volume_specific",
-        "D",
-        "d",
-        "Density",
-        "DENSITY",
         "rho_kg_m3",
         "D_kg_m3",
-        "density_g_l",
-        "rho_g_L",
-        "vol_specific",
-        "v_specific",
+        "density_kg_per_m3",
+        "density_kg_m^3",
+        "rho_kg_per_m3",
+        "Density",
+        "DENSITY",
+        "D",
+        "d",
       ],
       quality: [
         "vapor_quality",
@@ -593,6 +592,41 @@ export function EnhancedStandardCycleContent() {
     console.log("Available keys:", objKeys);
     console.log("Object values:", obj);
     return undefined;
+  };
+
+  // Helpers specific to density/specific volume extraction
+  const getSpecificVolume = (point?: StatePoint): number | undefined => {
+    return (
+      getPropertyValue(point, [
+        "specific_volume_m3_kg",
+        "specific_volume",
+        "specific_volume_m3_per_kg",
+        "specific_volume_m3kg",
+        "v_m3_kg",
+        "v",
+        "V",
+        "V_specific",
+        "specific_vol",
+        "vol_specific",
+        "v_specific",
+      ]) ?? undefined
+    );
+  };
+
+  const getDensity = (point?: StatePoint): number | undefined => {
+    const direct = getPropertyValue(point, [
+      "density_kg_m3",
+      "density",
+      "rho",
+      "rho_kg_m3",
+      "density_kg_per_m3",
+      "density_kg_m^3",
+      "rho_kg_per_m3",
+    ]);
+    if (direct !== undefined) return direct;
+
+    const sv = getSpecificVolume(point);
+    return sv && sv !== 0 ? 1 / sv : undefined;
   };
 
   const getPerformanceValue = (
