@@ -1364,44 +1364,39 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
                 <CardContent className="space-y-4">
                   {/* Primary Properties */}
                   <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Thermometer className="h-4 w-4 text-red-500" />
-                      <span className="font-mono">
-                        T: {selectedPointData.temperature.toFixed(2)}°C
-                      </span>
+                    <div>
+                      <div className="text-xs text-gray-500">Temperature</div>
+                      <div className="font-mono text-lg font-semibold">{selectedPointData.temperature.toFixed(2)} °C</div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Gauge className="h-4 w-4 text-blue-500" />
-                      <span className="font-mono">
-                        P: {(selectedPointData.pressure / 1000).toFixed(1)} MPa
-                      </span>
+
+                    <div>
+                      <div className="text-xs text-gray-500">Pressure</div>
+                      <div className="font-mono text-lg font-semibold">{(selectedPointData.pressure / 1000).toFixed(2)} MPa</div>
                     </div>
-                    <div className="font-mono">
-                      h: {selectedPointData.enthalpy.toFixed(1)} kJ/kg
+
+                    <div>
+                      <div className="text-xs text-gray-500">Enthalpy</div>
+                      <div className="font-mono">{selectedPointData.enthalpy.toFixed(1)} kJ/kg</div>
                     </div>
-                    <div className="font-mono">
-                      s: {selectedPointData.entropy.toFixed(3)} kJ/kg·K
+
+                    <div>
+                      <div className="text-xs text-gray-500">Entropy</div>
+                      <div className="font-mono">{selectedPointData.entropy.toFixed(3)} kJ/kg·K</div>
                     </div>
                   </div>
 
                   {/* Quality if two-phase */}
                   {selectedPointData.quality !== undefined && (
                     <div className="p-2 bg-blue-50 rounded">
-                      <Badge
-                        variant="secondary"
-                        className="w-full justify-center"
-                      >
-                        Vapor Quality:{" "}
-                        {(selectedPointData.quality * 100).toFixed(1)}%
+                      <Badge variant="secondary" className="w-full justify-center">
+                        Vapor Quality: {(selectedPointData.quality * 100).toFixed(1)}%
                       </Badge>
                     </div>
                   )}
 
                   {/* Engineering Notes */}
                   <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                    <h4 className="font-semibold text-sm mb-2">
-                      Engineering Notes:
-                    </h4>
+                    <h4 className="font-semibold text-sm mb-2">Engineering Notes:</h4>
                     <ul className="text-xs space-y-1 text-gray-600">
                       {selectedPointData.id === "1" && (
                         <>
