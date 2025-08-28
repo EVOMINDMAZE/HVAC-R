@@ -196,7 +196,7 @@ export function ProfessionalFeatures({
   const calculateCostAnalysis = () => {
     if (!results?.performance) return null;
 
-    const powerConsumption = results.performance.compressor_work_kw || 0;
+    const powerConsumption = compressorWorkKwNum || 0;
     const annualEnergyConsumption =
       powerConsumption * costAnalysis.operatingHours; // kWh/year
     const annualEnergyCost =
