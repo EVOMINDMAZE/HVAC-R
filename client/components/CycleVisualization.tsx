@@ -98,7 +98,6 @@ export function CycleVisualization({
   currentPoint = 1,
 }: CycleVisualizationProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [animationFrame, setAnimationFrame] = useState(0);
   const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
   const [diagramType, setDiagramType] = useState<DiagramType>("P-h");
 
