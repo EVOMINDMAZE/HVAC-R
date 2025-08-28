@@ -876,22 +876,7 @@ export function EnhancedStandardCycleContent() {
                 "specific_volume_m3_kg",
                 "specific_volume",
               ]) || 0,
-            density:
-              getPropertyValue(results.state_points?.["1"], [
-                "density_kg_m3",
-                "density",
-                "rho",
-              ]) ||
-              (getPropertyValue(results.state_points?.["1"], [
-                "specific_volume_m3_kg",
-                "specific_volume",
-              ])
-                ? 1 /
-                  getPropertyValue(results.state_points?.["1"], [
-                    "specific_volume_m3_kg",
-                    "specific_volume",
-                  ])
-                : undefined),
+            density: getDensity(results.state_points?.["1"]),
             quality: getPropertyValue(results.state_points?.["1"], [
               "vapor_quality",
               "quality",
@@ -929,22 +914,7 @@ export function EnhancedStandardCycleContent() {
                 "specific_volume_m3_kg",
                 "specific_volume",
               ]) || 0,
-            density:
-              getPropertyValue(results.state_points?.["2"], [
-                "density_kg_m3",
-                "density",
-                "rho",
-              ]) ||
-              (getPropertyValue(results.state_points?.["2"], [
-                "specific_volume_m3_kg",
-                "specific_volume",
-              ])
-                ? 1 /
-                  getPropertyValue(results.state_points?.["2"], [
-                    "specific_volume_m3_kg",
-                    "specific_volume",
-                  ])
-                : undefined),
+            density: getDensity(results.state_points?.["2"]),
             quality: getPropertyValue(results.state_points?.["2"], [
               "vapor_quality",
               "quality",
@@ -982,22 +952,7 @@ export function EnhancedStandardCycleContent() {
                 "specific_volume_m3_kg",
                 "specific_volume",
               ]) || 0,
-            density:
-              getPropertyValue(results.state_points?.["3"], [
-                "density_kg_m3",
-                "density",
-                "rho",
-              ]) ||
-              (getPropertyValue(results.state_points?.["3"], [
-                "specific_volume_m3_kg",
-                "specific_volume",
-              ])
-                ? 1 /
-                  getPropertyValue(results.state_points?.["3"], [
-                    "specific_volume_m3_kg",
-                    "specific_volume",
-                  ])
-                : undefined),
+            density: getDensity(results.state_points?.["3"]),
             quality: getPropertyValue(results.state_points?.["3"], [
               "vapor_quality",
               "quality",
@@ -1035,22 +990,7 @@ export function EnhancedStandardCycleContent() {
                 "specific_volume_m3_kg",
                 "specific_volume",
               ]) || 0,
-            density:
-              getPropertyValue(results.state_points?.["4"], [
-                "density_kg_m3",
-                "density",
-                "rho",
-              ]) ||
-              (getPropertyValue(results.state_points?.["4"], [
-                "specific_volume_m3_kg",
-                "specific_volume",
-              ])
-                ? 1 /
-                  getPropertyValue(results.state_points?.["4"], [
-                    "specific_volume_m3_kg",
-                    "specific_volume",
-                  ])
-                : undefined),
+            density: getDensity(results.state_points?.["4"]),
             quality: getPropertyValue(results.state_points?.["4"], [
               "vapor_quality",
               "quality",
@@ -1701,19 +1641,7 @@ export function EnhancedStandardCycleContent() {
                           </div>
                           <div>
                             ρ:{" "}
-                            {formatValue(
-                              getPropertyValue(point, [
-                                "density_kg_m3",
-                                "density",
-                              ]) ?? ((): number | undefined => {
-                                const sv = getPropertyValue(point, [
-                                  "specific_volume_m3_kg",
-                                  "specific_volume",
-                                ]);
-                                return sv && sv !== 0 ? 1 / sv : undefined;
-                              })(),
-                              "kg/m³",
-                            )}
+                            {formatValue(getDensity(point), "kg/m³")}
                           </div>
                           {getPropertyValue(point, [
                             "vapor_quality",
