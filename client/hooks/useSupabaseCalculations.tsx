@@ -98,14 +98,21 @@ export function useSupabaseCalculations() {
     calculationType: string,
     inputs: any,
     results: any,
-    name?: string
+    name?: string,
+    options?: { silent?: boolean }
   ): Promise<Calculation | null> => {
+    const silent = options?.silent === true;
+
     if (!user || !supabase) {
-      addToast({
-        type: 'error',
-        title: 'Service Unavailable',
-        description: !user ? 'Please sign in to save calculations' : 'Database service not configured'
-      });
+      if (!silent) {
+        addToast({
+          type: 'error',
+          title: 'Service Unavailable',
+          description: !user ? 'Please sign in to save calculations' : 'Database service not configured'
+        });
+      } else {
+        console.debug('Auto-save skipped: no user or supabase configured');
+      }
       return null;
     }
 
