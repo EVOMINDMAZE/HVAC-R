@@ -731,8 +731,8 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
         ctx.shadowOffsetX = 0;
         ctx.shadowOffsetY = 0;
 
-        // Add animated arrow if line is being drawn
-        if (isAnimating && lineProgress < 1 && lineProgress > 0.1) {
+        // Animated arrows are only shown when progress < 100 (animation disabled by default)
+        if (progress < 100 && lineProgress < 1 && lineProgress > 0.1) {
           drawEnhancedArrow(
             ctx,
             margin + currentX,
