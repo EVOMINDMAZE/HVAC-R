@@ -45,10 +45,8 @@ export function Header({ variant = 'landing' }: HeaderProps) {
 
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-2">
             <div className="flex items-center space-x-4 min-w-0">
-              <Link to="/dashboard" className="inline-flex items-center space-x-3 min-w-0">
-                <h1 className="text-2xl md:text-3xl font-bold text-blue-900 cursor-pointer hover:text-blue-700 truncate">Simulateon</h1>
-              </Link>
-              <p className="text-sm text-gray-600 hidden sm:block truncate max-w-xs">Welcome back, {user?.email?.split('@')[0] || "Engineer"}</p>
+              <Link to="/dashboard" className="inline-flex items-center space-x-3 min-w-0" />
+              <p className="text-sm text-gray-600 hidden sm:block truncate max-w-xs">Welcome back, hanniz.riadus</p>
             </div>
 
             <div className="flex items-center space-x-4 justify-end min-w-0">
