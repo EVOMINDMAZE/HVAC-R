@@ -941,10 +941,7 @@ export function CascadeCycleContent() {
                       {(() => {
                         const htVisualizationData = getVisualizationData("ht");
                         return htVisualizationData ? (
-                          <EquipmentDiagrams
-                            cycleData={htVisualizationData}
-                            isAnimating={false}
-                          />
+                          <EquipmentDiagrams cycleData={htVisualizationData} />
                         ) : (
                           <div className="text-center py-8 text-gray-500">
                             Equipment data not available for HT cycle
