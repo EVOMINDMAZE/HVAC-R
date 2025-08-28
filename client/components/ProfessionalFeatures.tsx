@@ -227,6 +227,28 @@ export function ProfessionalFeatures({
   const costData = calculateCostAnalysis();
   const sustainabilityData = getRefrigerantSustainability(refrigerant);
 
+  // Robust extraction of performance metrics with support for multiple API variants
+  const rawPerformance = results?.performance || {};
+  const coolingCapacityKw: number | undefined =
+    rawPerformance.cooling_capacity_kw ??
+    rawPerformance.cooling_capacity ??
+    rawPerformance.capacity ??
+    rawPerformance.Q_evap ??
+    rawPerformance.Q_e ? rawPerformance.Q_e : undefined;
+
+  const compressorWorkKw: number | undefined =
+    rawPerformance.compressor_work_kw ??
+    rawPerformance.compressor_work ??
+    rawPerformance.work ??
+    rawPerformance.W_comp ??
+    rawPerformance.W ? rawPerformance.W : undefined;
+
+  // Ensure numeric conversion if values are strings
+  const coolingCapacityKwNum =
+    coolingCapacityKw !== undefined ? Number(coolingCapacityKw) : undefined;
+  const compressorWorkKwNum =
+    compressorWorkKw !== undefined ? Number(compressorWorkKw) : undefined;
+
   // Generate professional report
   const generateReport = () => {
     const reportData = {
