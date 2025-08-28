@@ -1671,7 +1671,13 @@ export function EnhancedStandardCycleContent() {
                               getPropertyValue(point, [
                                 "density_kg_m3",
                                 "density",
-                              ]),
+                              ]) ?? ((): number | undefined => {
+                                const sv = getPropertyValue(point, [
+                                  "specific_volume_m3_kg",
+                                  "specific_volume",
+                                ]);
+                                return sv && sv !== 0 ? 1 / sv : undefined;
+                              })(),
                               "kg/m³",
                             )}
                           </div>
