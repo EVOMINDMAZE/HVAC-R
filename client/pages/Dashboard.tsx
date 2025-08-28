@@ -20,9 +20,15 @@ import {
   Crown,
   Zap,
   Target,
+  RefreshCw,
+  Loader2,
 } from "lucide-react";
 
-function QuickStats({ stats, user }: any) {
+function formatNumber(n: number) {
+  return new Intl.NumberFormat(undefined).format(n);
+}
+
+function QuickStats({ stats, user, isLoading, onRefresh }: any) {
   const navigate = useNavigate();
 
   return (
@@ -38,7 +44,7 @@ function QuickStats({ stats, user }: any) {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center gap-2">
           <Button
             className="bg-primary text-primary-foreground hover:opacity-95 whitespace-nowrap"
             onClick={() => navigate("/standard-cycle")}
@@ -47,6 +53,22 @@ function QuickStats({ stats, user }: any) {
             <Calculator className="h-4 w-4 mr-2" />
             New Calculation
           </Button>
+
+          <Button
+            variant="ghost"
+            className="hidden sm:inline-flex items-center"
+            onClick={onRefresh}
+            aria-label="Refresh dashboard data"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            ) : (
+              <RefreshCw className="h-4 w-4 mr-2" />
+            )}
+            Refresh
+          </Button>
+
           <Button
             variant="outline"
             className="hidden sm:inline-flex whitespace-nowrap"
@@ -78,7 +100,7 @@ function QuickStats({ stats, user }: any) {
                   <p className={`text-sm ${stats.isAtLimit ? "text-red-600" : "text-yellow-600"}`}>
                     {stats.isAtLimit
                       ? "You've reached your monthly calculation cap. Upgrade to continue."
-                      : `You've used ${stats.monthlyCalculations}/10 calculations this month.`}
+                      : `You've used ${stats.monthlyCalculations}/${stats.monthlyLimit} calculations this month.`}
                   </p>
                 </div>
               </div>
@@ -99,7 +121,7 @@ function QuickStats({ stats, user }: any) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm opacity-90">Total Calculations</p>
-                <p className="text-3xl font-bold mt-1">{stats.totalCalculations}</p>
+                <p className="text-3xl font-bold mt-1">{formatNumber(stats.totalCalculations)}</p>
                 <p className="text-xs opacity-80 mt-1">All time</p>
               </div>
               <Calculator className="h-8 w-8 text-white/80" />
@@ -113,7 +135,7 @@ function QuickStats({ stats, user }: any) {
               <div>
                 <p className="text-sm opacity-90">This Month</p>
                 <p className="text-3xl font-bold mt-1">
-                  {stats.monthlyCalculations}
+                  {formatNumber(stats.monthlyCalculations)}
                   {!stats.isUnlimited && <span className="text-base font-medium">/{stats.monthlyLimit}</span>}
                 </p>
 
@@ -165,7 +187,7 @@ function QuickStats({ stats, user }: any) {
   );
 }
 
-function RecentCalculations() {
+function RecentCalculations({ isLoading }: any) {
   const navigate = useNavigate();
   const { calculations } = useSupabaseCalculations();
   const recentCalculations = calculations.slice(0, 5);
@@ -179,7 +201,21 @@ function RecentCalculations() {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6">
-        {recentCalculations.length === 0 ? (
+        {isLoading ? (
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="animate-pulse p-3 bg-slate-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-slate-200 rounded-md" />
+                  <div className="flex-1">
+                    <div className="h-4 bg-slate-200 rounded w-3/5 mb-2" />
+                    <div className="h-3 bg-slate-200 rounded w-1/3" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : recentCalculations.length === 0 ? (
           <div className="text-center py-8">
             <Calculator className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">No calculations yet</h3>
@@ -306,8 +342,8 @@ function ValueProposition() {
 
 export function Dashboard() {
   const { user } = useSupabaseAuth();
-  const { calculations } = useSupabaseCalculations();
-  const { subscription } = useSubscription();
+  const { calculations, isLoading: calculationsLoading, refetch } = useSupabaseCalculations();
+  const { subscription, loading: subscriptionLoading, refetch: subscriptionRefetch } = useSubscription();
 
   const stats = useMemo(() => {
     const totalCalculations = calculations.length;
@@ -322,9 +358,9 @@ export function Dashboard() {
     const plan = subscription?.plan || "free";
     const planDisplayName = plan.charAt(0).toUpperCase() + plan.slice(1).replace("_", " ");
     const isUnlimited = plan !== "free";
-    const remaining = isUnlimited ? -1 : Math.max(0, 10 - monthlyCalculations);
+    const monthlyLimit = isUnlimited ? monthlyCalculations || 0 : 10;
+    const remaining = isUnlimited ? -1 : Math.max(0, monthlyLimit - monthlyCalculations);
     const remainingText = remaining === -1 ? "Unlimited" : remaining.toString();
-    const monthlyLimit = isUnlimited ? monthlyCalculations : 10;
     const usagePercentage = isUnlimited ? 0 : Math.min((monthlyCalculations / monthlyLimit) * 100, 100);
     const isNearLimit = !isUnlimited && usagePercentage > 70;
     const isAtLimit = !isUnlimited && monthlyCalculations >= monthlyLimit;
@@ -345,6 +381,16 @@ export function Dashboard() {
     };
   }, [calculations, subscription]);
 
+  const isLoading = calculationsLoading || subscriptionLoading;
+
+  const handleRefresh = async () => {
+    try {
+      await Promise.all([refetch(), subscriptionRefetch?.()]);
+    } catch (e) {
+      // silent - errors handled by hooks/toast
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-blue-50">
       <Header variant="dashboard" />
@@ -353,12 +399,12 @@ export function Dashboard() {
         <SystemStatus />
 
         <section className="mb-6">
-          <QuickStats stats={stats} user={user} />
+          <QuickStats stats={stats} user={user} isLoading={isLoading} onRefresh={handleRefresh} />
         </section>
 
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <RecentCalculations />
+            <RecentCalculations isLoading={isLoading} />
 
             <Card className="p-4 shadow-md">
               <h3 className="text-base font-semibold text-gray-800 mb-3">Tips</h3>
@@ -392,7 +438,7 @@ export function Dashboard() {
                 <div className="flex items-center justify-between mt-3 text-sm">
                   <div>
                     <div className="text-xs text-gray-500">This month</div>
-                    <div className="text-lg font-bold">{stats.monthlyCalculations}</div>
+                    <div className="text-lg font-bold">{formatNumber(stats.monthlyCalculations)}</div>
                   </div>
                   <div className="text-right">
                     <div className="text-xs text-gray-500">Remaining</div>
