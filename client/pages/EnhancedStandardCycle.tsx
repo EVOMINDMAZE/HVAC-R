@@ -316,7 +316,7 @@ export function EnhancedStandardCycleContent() {
 
       // Additional validation
       console.log("\n✅ === RESPONSE VALIDATION ===");
-      console.log("📊 State Points Valid:", !!calculationData.state_points);
+      console.log("���� State Points Valid:", !!calculationData.state_points);
       console.log("🚀 Performance Valid:", !!calculationData.performance);
       console.log(
         "❄️ Refrigerant:",
@@ -1308,6 +1308,19 @@ export function EnhancedStandardCycleContent() {
                     </>
                   )}
                 </Button>
+
+                <div className="mt-6">
+                  <EnhancedRefrigerantSelector
+                    value={formData.refrigerant}
+                    onChange={handleRefrigerantChange}
+                    evaporatorTemp={formData.evap_temp_c}
+                    condenserTemp={formData.cond_temp_c}
+                    onSuggestedRangeApply={(evap, cond) =>
+                      setFormData((prev) => ({ ...prev, evap_temp_c: evap, cond_temp_c: cond }))
+                    }
+                    className="mt-2"
+                  />
+                </div>
 
                 {calculationComplete && (
                   <Alert className="mt-4 border-green-200 bg-green-50">
