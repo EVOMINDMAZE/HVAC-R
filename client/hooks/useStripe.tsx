@@ -38,6 +38,15 @@ export function useSubscription() {
 
     try {
       setLoading(true);
+
+      // Feature flag: only call billing services when explicitly enabled
+      const billingEnabled = import.meta.env.VITE_BILLING_ENABLED === "true";
+      if (!billingEnabled) {
+        setSubscription({ subscription: null, plan: "free", status: "active" });
+        setLoading(false);
+        return;
+      }
+
       const token = session?.access_token;
 
       if (!token) {
