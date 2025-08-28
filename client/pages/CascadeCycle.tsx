@@ -133,6 +133,7 @@ export function CascadeCycleContent() {
     "lt" | "ht"
   >("lt");
   const { addToast } = useToast();
+  const { saveCalculation } = useSupabaseCalculations();
 
   const handleCycleInputChange = useCallback(
     (
