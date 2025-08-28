@@ -30,7 +30,7 @@ export function SaveCalculation({
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState('');
   const [isSaving, setIsSaving] = useState(false);
-  const { saveCalculation } = useSupabaseCalculations();
+  const { saveCalculation, findMatchingCalculation, updateCalculation } = useSupabaseCalculations();
 
   const handleSave = async () => {
     if (!inputs || !results) return;
