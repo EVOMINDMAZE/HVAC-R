@@ -34,6 +34,7 @@ import { EquipmentDiagrams } from "../components/EquipmentDiagrams";
 import { TechnicalTooltip, TechTerm } from "../components/TechnicalTooltip";
 import { SaveCalculation } from "../components/SaveCalculation";
 import { ProfessionalFeatures } from "../components/ProfessionalFeatures";
+import { useSupabaseCalculations } from "../hooks/useSupabaseCalculations";
 import {
   RefrigerantProperties,
   validateCycleConditions,
@@ -1684,7 +1685,7 @@ export function EnhancedStandardCycleContent() {
                             )}
                           </div>
                           <div>
-                            ρ: {formatValue(getDensity(point), "kg/m³")}
+                            ��: {formatValue(getDensity(point), "kg/m³")}
                           </div>
                           {getPropertyValue(point, [
                             "vapor_quality",
