@@ -32,6 +32,7 @@ import { EnhancedRefrigerantSelector } from "../components/EnhancedRefrigerantSe
 import { CycleVisualization } from "../components/CycleVisualization";
 import { EquipmentDiagrams } from "../components/EquipmentDiagrams";
 import { TechnicalTooltip, TechTerm } from "../components/TechnicalTooltip";
+import { SaveCalculation } from "../components/SaveCalculation";
 import { ProfessionalFeatures } from "../components/ProfessionalFeatures";
 import {
   RefrigerantProperties,
