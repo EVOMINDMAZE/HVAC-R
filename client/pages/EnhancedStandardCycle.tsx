@@ -1426,6 +1426,17 @@ export function EnhancedStandardCycleContent() {
         </TabsContent>
 
         <TabsContent value="results">
+          <div className="flex justify-end mb-4">
+            {results && (
+              <SaveCalculation
+                calculationType="Standard Cycle"
+                inputs={formData}
+                results={results}
+                disabled={loading}
+              />
+            )}
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
