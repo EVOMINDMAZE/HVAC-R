@@ -600,12 +600,101 @@ export function EnhancedStandardCycleContent() {
     variants: string[],
   ): number | undefined => {
     if (!perf) return undefined;
-    for (const key of variants) {
-      const val = perf[key];
-      if (val !== undefined && val !== null && !isNaN(Number(val))) {
-        return Number(val);
+
+    const searchExact = (keys: string[]) => {
+      for (const key of keys) {
+        const val = perf[key];
+        if (val !== undefined && val !== null && !isNaN(Number(val))) {
+          return Number(val);
+        }
+      }
+      return undefined;
+    };
+
+    // 1) Try exact variants
+    const exact = searchExact(variants);
+    if (exact !== undefined) return exact;
+
+    // 2) Derived fallbacks for common aggregated metrics
+    const massKeys = [
+      "mass_flow_rate_kg_s",
+      "mass_flow_rate",
+      "mdot",
+      "m_dot",
+      "mass_flow",
+      "flow_rate",
+      "mass_flow_kg_s",
+      "refrigerant_flow_rate",
+      "flow_rate_mass",
+      "mass_rate",
+      "kg_per_s",
+      "mass_flux",
+      "circulation_rate",
+    ];
+
+    const refrigerationEffectKeys = [
+      "refrigeration_effect_kj_kg",
+      "refrigeration_effect",
+      "refrigeration_effect_kj/kg",
+      "refrigeration_effect_kJ_per_kg",
+      "refrigeration_capacity_per_kg",
+      "q_evap_kj_kg",
+    ];
+
+    const workPerMassKeys = [
+      "work_of_compression_kj_kg",
+      "work_of_compression",
+      "compression_work_kj_kg",
+      "compression_work",
+      "work_kj_kg",
+      "w_comp_kj_kg",
+    ];
+
+    // get mass flow (kg/s)
+    const mass = searchExact(massKeys);
+
+    // If caller asked for cooling/capacity, try refrigeration_effect * mass_flow
+    if (variants.some((v) => v.toLowerCase().includes("cool")) || variants.some((v) => v.toLowerCase().includes("capacity"))) {
+      const refrigerEffect = searchExact(refrigerationEffectKeys) || searchExact(["refrigeration_capacity_kw", "refrigeration_capacity", "capacity_per_kg"]);
+      if (refrigerEffect !== undefined && mass !== undefined) {
+        // refrigerEffect is expected kJ/kg, mass kg/s => kJ/s == kW
+        return Number(refrigerEffect) * Number(mass);
       }
     }
+
+    // If caller asked for compressor work, try work_per_mass * mass_flow
+    if (variants.some((v) => v.toLowerCase().includes("work")) || variants.some((v) => v.toLowerCase().includes("power"))) {
+      const workPerMass = searchExact(workPerMassKeys);
+      if (workPerMass !== undefined && mass !== undefined) {
+        return Number(workPerMass) * Number(mass);
+      }
+
+      // also try direct power-like keys
+      const powerKeys = ["input_power", "compressor_power_kw", "compressor_power", "power", "power_kw", "input_power_kw", "W_comp", "W_compressor"];
+      const p = searchExact(powerKeys);
+      if (p !== undefined) return p;
+    }
+
+    // Heat rejection fallback: Q_cond = Q_evap + W_comp
+    if (variants.some((v) => v.toLowerCase().includes("heat") || v.toLowerCase().includes("rejection"))) {
+      const qEvap = getPerformanceValue(perf, ["cooling_capacity_kw", "cooling_capacity", "refrigeration_capacity", "Q_evap","refrigeration_effect_kw"]) ;
+      const wComp = getPerformanceValue(perf, ["compressor_work_kw","compressor_work","work","power"]);
+      if (qEvap !== undefined && wComp !== undefined) return qEvap + wComp;
+    }
+
+    // 3) Case-insensitive key search
+    const objKeys = Object.keys(perf);
+    for (const key of objKeys) {
+      for (const primary of variants) {
+        if (key.toLowerCase() === primary.toLowerCase() || key.toLowerCase().includes(primary.split("_")[0].toLowerCase())) {
+          const val = perf[key];
+          if (val !== undefined && val !== null && !isNaN(Number(val))) {
+            return Number(val);
+          }
+        }
+      }
+    }
+
     return undefined;
   };
 
