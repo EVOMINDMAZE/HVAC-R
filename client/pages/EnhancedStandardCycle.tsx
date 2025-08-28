@@ -113,6 +113,7 @@ export function EnhancedStandardCycleContent() {
     useState<RefrigerantProperties | null>(null);
   const [activeTab, setActiveTab] = useState("calculation");
   const [calculationComplete, setCalculationComplete] = useState(false);
+  const { saveCalculation } = useSupabaseCalculations();
   const [showOnboarding, setShowOnboarding] = useState(() => {
     // Show onboarding for first-time users
     return !localStorage.getItem("hvac_platform_onboarding_completed");
@@ -322,6 +323,18 @@ export function EnhancedStandardCycleContent() {
 
         setResults(calculationData);
         setCalculationComplete(true);
+
+        // Auto-record the calculation so counts/history reflect every run (non-blocking)
+        try {
+          void saveCalculation(
+            "Standard Cycle",
+            formData,
+            calculationData,
+            `Standard Cycle - ${new Date().toLocaleString()}`
+          ).catch((e) => console.warn('Auto-save failed:', e));
+        } catch (e) {
+          console.warn('Auto-save invocation error:', e);
+        }
 
         console.log("✨ Results set successfully!");
         console.log("📦 Final stored data structure:", {
