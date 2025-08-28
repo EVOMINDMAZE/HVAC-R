@@ -46,7 +46,21 @@ export function useSupabaseCalculations() {
       }
 
       console.log('Successfully fetched calculations:', data?.length || 0, 'items');
-      setCalculations(data || []);
+      // Normalize created_at to ISO strings to avoid date parsing inconsistencies
+      const normalized = (data || []).map((d: any) => ({
+        ...d,
+        created_at: (() => {
+          try {
+            const dt = new Date(d?.created_at);
+            if (!isNaN(dt.getTime())) return dt.toISOString();
+            return String(d?.created_at ?? new Date().toISOString());
+          } catch (e) {
+            return new Date().toISOString();
+          }
+        })(),
+      }));
+
+      setCalculations(normalized);
     } catch (error: any) {
       // Use robust error logging
       logError('fetchCalculations', error);
@@ -111,7 +125,21 @@ export function useSupabaseCalculations() {
       if (error) throw error;
 
       // Add to local state
-      setCalculations(prev => [data, ...prev]);
+      // Ensure created_at is normalized for immediate local state updates
+      const saved = {
+        ...data,
+        created_at: (() => {
+          try {
+            const dt = new Date((data as any)?.created_at);
+            if (!isNaN(dt.getTime())) return dt.toISOString();
+            return new Date().toISOString();
+          } catch (e) {
+            return new Date().toISOString();
+          }
+        })(),
+      };
+
+      setCalculations(prev => [saved, ...prev]);
 
       addToast({
         type: 'success',
