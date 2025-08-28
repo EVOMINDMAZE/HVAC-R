@@ -1313,6 +1313,16 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
             <div className="mt-2 text-sm text-gray-600">
               Click on cycle points to see detailed properties
             </div>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="text-center space-y-2">
+                  <div className="text-4xl">👆</div>
+                  <p className="text-muted-foreground">
+                    Click any cycle point to view detailed engineering properties
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Engineering Properties Panel */}
