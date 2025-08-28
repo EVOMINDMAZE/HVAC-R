@@ -192,54 +192,6 @@ export function ProfessionalFeatures({
     );
   };
 
-  // Cost and ROI calculations
-  const calculateCostAnalysis = () => {
-    if (!results?.performance) return null;
-
-    const powerConsumption = compressorWorkKwNum || 0;
-    const annualEnergyConsumption =
-      powerConsumption * costAnalysis.operatingHours; // kWh/year
-    const annualEnergyCost =
-      annualEnergyConsumption * costAnalysis.electricityRate; // $/year
-    const lifetimeEnergyCost = annualEnergyCost * costAnalysis.equipmentLife;
-    const annualMaintenanceCost =
-      costAnalysis.initialCost * (costAnalysis.maintenanceCostPercent / 100);
-    const totalLifetimeCost =
-      costAnalysis.initialCost +
-      lifetimeEnergyCost +
-      annualMaintenanceCost * costAnalysis.equipmentLife;
-
-    const cop = getPerfVal(results?.performance, [
-      "cop",
-      "COP",
-      "Cop",
-      "coefficient_of_performance",
-      "performance_coefficient",
-      "coeff_of_performance",
-      "coefficient_performance",
-      "cop_cooling",
-      "COP_cooling",
-      "cooling_cop",
-      "refrigeration_cop",
-      "efficiency_cooling",
-    ]) || 0;
-    const efficiency = cop > 0 ? (cop / 6) * 100 : 0; // Relative to theoretical max
-
-    return {
-      annualEnergyConsumption,
-      annualEnergyCost,
-      lifetimeEnergyCost,
-      annualMaintenanceCost,
-      totalLifetimeCost,
-      efficiency,
-      paybackPeriod:
-        powerConsumption > 0 ? costAnalysis.initialCost / annualEnergyCost : 0,
-    };
-  };
-
-  const costData = calculateCostAnalysis();
-  const sustainabilityData = getRefrigerantSustainability(refrigerant);
-
   const getPerfVal = (
     perf: any,
     variants: string[],
@@ -281,6 +233,55 @@ export function ProfessionalFeatures({
     "input_power",
     "mechanical_power",
   ]);
+
+  const cop = getPerfVal(results?.performance, [
+    "cop",
+    "COP",
+    "Cop",
+    "coefficient_of_performance",
+    "performance_coefficient",
+    "coeff_of_performance",
+    "coefficient_performance",
+    "cop_cooling",
+    "COP_cooling",
+    "cooling_cop",
+    "refrigeration_cop",
+    "efficiency_cooling",
+  ]) || 0;
+
+  // Cost and ROI calculations
+  const calculateCostAnalysis = () => {
+    if (!results?.performance) return null;
+
+    const powerConsumption = compressorWorkKwNum || 0;
+    const annualEnergyConsumption =
+      powerConsumption * costAnalysis.operatingHours; // kWh/year
+    const annualEnergyCost =
+      annualEnergyConsumption * costAnalysis.electricityRate; // $/year
+    const lifetimeEnergyCost = annualEnergyCost * costAnalysis.equipmentLife;
+    const annualMaintenanceCost =
+      costAnalysis.initialCost * (costAnalysis.maintenanceCostPercent / 100);
+    const totalLifetimeCost =
+      costAnalysis.initialCost +
+      lifetimeEnergyCost +
+      annualMaintenanceCost * costAnalysis.equipmentLife;
+
+    const efficiency = cop > 0 ? (cop / 6) * 100 : 0; // Relative to theoretical max
+
+    return {
+      annualEnergyConsumption,
+      annualEnergyCost,
+      lifetimeEnergyCost,
+      annualMaintenanceCost,
+      totalLifetimeCost,
+      efficiency,
+      paybackPeriod:
+        powerConsumption > 0 ? costAnalysis.initialCost / annualEnergyCost : 0,
+    };
+  };
+
+  const costData = calculateCostAnalysis();
+  const sustainabilityData = getRefrigerantSustainability(refrigerant);
 
   // Generate professional report
   const generateReport = () => {
