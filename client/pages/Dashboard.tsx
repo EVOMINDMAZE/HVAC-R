@@ -438,30 +438,25 @@ export function Dashboard() {
           </div>
 
           <aside className="space-y-6 lg:sticky lg:top-24">
+            <QuickActions />
+
             <Card className="p-4 shadow-md">
               <h3 className="text-sm font-semibold text-gray-700 mb-2">Usage</h3>
               <p className="text-xs text-gray-500">Monthly usage and quick insights</p>
               <div className="mt-4">
-                {/* Small usage sparkline (simple visual) */}
                 <div className="w-full h-16 bg-gradient-to-r from-white to-white/50 rounded-md flex items-center justify-center">
                   <svg width="100%" height="40" viewBox="0 0 120 40" className="mx-2">
-                    <polyline
-                      fill="none"
-                      stroke="#3b82f6"
-                      strokeWidth="2"
-                      points="0,30 20,22 40,10 60,14 80,8 100,12 120,6"
-                    />
+                    <polyline fill="none" stroke="#3b82f6" strokeWidth="2" points="0,30 20,22 40,10 60,14 80,8 100,12 120,6" />
                   </svg>
                 </div>
-
                 <div className="flex items-center justify-between mt-3 text-sm">
                   <div>
                     <div className="text-xs text-gray-500">This month</div>
-                    <div className="text-lg font-bold">{/* dynamic value inserted by QuickStats */} </div>
+                    <div className="text-lg font-bold"></div>
                   </div>
                   <div className="text-right">
                     <div className="text-xs text-gray-500">Remaining</div>
-                    <div className="text-lg font-semibold text-green-600">{/* remaining */}</div>
+                    <div className="text-lg font-semibold text-green-600"></div>
                   </div>
                 </div>
               </div>
