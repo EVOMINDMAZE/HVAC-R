@@ -197,99 +197,132 @@ export function ProfessionalFeatures({
     variants: string[],
   ): number | undefined => {
     if (!perf) return undefined;
-    for (const key of variants) {
-      const val = perf[key];
-      if (val !== undefined && val !== null && !isNaN(Number(val))) {
-        return Number(val);
+
+    const searchExact = (keys: string[]) => {
+      for (const key of keys) {
+        const val = perf[key];
+        if (val !== undefined && val !== null && !isNaN(Number(val))) {
+          return Number(val);
+        }
+      }
+      return undefined;
+    };
+
+    // 1) exact
+    const exact = searchExact(variants);
+    if (exact !== undefined) return exact;
+
+    // 2) derived fallbacks
+    const massKeys = [
+      "mass_flow_rate_kg_s",
+      "mass_flow_rate",
+      "mdot",
+      "m_dot",
+      "mass_flow",
+      "flow_rate",
+      "mass_flow_kg_s",
+      "refrigerant_flow_rate",
+      "flow_rate_mass",
+      "mass_rate",
+      "kg_per_s",
+      "mass_flux",
+      "circulation_rate",
+    ];
+
+    const refrigerationEffectKeys = [
+      "refrigeration_effect_kj_kg",
+      "refrigeration_effect",
+      "refrigeration_effect_kj/kg",
+      "q_evap_kj_kg",
+      "refrigeration_capacity_per_kg",
+    ];
+
+    const workPerMassKeys = [
+      "work_of_compression_kj_kg",
+      "work_of_compression",
+      "compression_work_kj_kg",
+      "compression_work",
+      "work_kj_kg",
+      "w_comp_kj_kg",
+    ];
+
+    const powerKeys = [
+      "compressor_power_kw",
+      "compressor_power",
+      "power",
+      "power_kw",
+      "input_power",
+      "input_power_kw",
+      "W_comp",
+      "W_compressor",
+    ];
+
+    const mass = searchExact(massKeys);
+
+    // cooling -> refrigeration_effect * mass
+    if (variants.some((v) => v.toLowerCase().includes("cool")) || variants.some((v) => v.toLowerCase().includes("capacity"))) {
+      const refrigerEffect = searchExact(refrigerationEffectKeys) || searchExact(["refrigeration_capacity_kw", "refrigeration_capacity", "capacity_per_kg"]);
+      if (refrigerEffect !== undefined && mass !== undefined) {
+        return refrigerEffect * mass; // kJ/kg * kg/s = kW
       }
     }
-    return undefined;
-  };
 
-  const massFlowKeys = [
-    "mass_flow_rate_kg_s",
-    "mass_flow_rate",
-    "mdot",
-    "m_dot",
-    "mass_flow",
-    "flow_rate",
-    "mass_flow_kg_s",
-    "refrigerant_flow_rate",
-    "flow_rate_mass",
-    "mass_rate",
-    "kg_per_s",
-    "mass_flux",
-    "circulation_rate",
-  ];
-
-  const refrigerationEffectKeys = [
-    "refrigeration_effect_kj_kg",
-    "refrigeration_effect",
-    "refrigeration_effect_kj/kg",
-    "q_evap_kj_kg",
-    "refrigeration_capacity_per_kg",
-  ];
-
-  const workPerMassKeys = [
-    "work_of_compression_kj_kg",
-    "work_of_compression",
-    "compression_work_kj_kg",
-    "compression_work",
-    "work_kj_kg",
-    "w_comp_kj_kg",
-  ];
-
-  const powerLikeKeys = [
-    "compressor_power_kw",
-    "compressor_power",
-    "power",
-    "power_kw",
-    "input_power",
-    "input_power_kw",
-    "W_comp",
-    "W_compressor",
-  ];
-
-  const deriveFromPerMass = (perf: any, perMassKeys: string[]) => {
-    if (!perf) return undefined;
-    const perMass = getPerfVal(perf, perMassKeys);
-    const mass = getPerfVal(perf, massFlowKeys);
-    if (perMass !== undefined && mass !== undefined) {
-      // perMass in kJ/kg * mass kg/s => kJ/s = kW
-      return perMass * mass;
+    // compressor work -> work_per_mass * mass or power keys
+    if (variants.some((v) => v.toLowerCase().includes("work")) || variants.some((v) => v.toLowerCase().includes("power"))) {
+      const workPerMass = searchExact(workPerMassKeys);
+      if (workPerMass !== undefined && mass !== undefined) return workPerMass * mass;
+      const p = searchExact(powerKeys);
+      if (p !== undefined) return p;
     }
+
+    // heat rejection -> q_evap + w_comp
+    if (variants.some((v) => v.toLowerCase().includes("heat") || v.toLowerCase().includes("rejection"))) {
+      const qEvap = getPerfVal(perf, ["cooling_capacity_kw", "cooling_capacity", "refrigeration_capacity", "Q_evap","refrigeration_effect_kw"]);
+      const wComp = getPerfVal(perf, ["compressor_work_kw","compressor_work","work","power"]);
+      if (qEvap !== undefined && wComp !== undefined) return qEvap + wComp;
+    }
+
+    // 3) case-insensitive search
+    const objKeys = Object.keys(perf || {});
+    for (const key of objKeys) {
+      for (const primary of variants) {
+        if (key.toLowerCase() === primary.toLowerCase() || key.toLowerCase().includes(primary.split("_")[0].toLowerCase())) {
+          const val = perf[key];
+          if (val !== undefined && val !== null && !isNaN(Number(val))) return Number(val);
+        }
+      }
+    }
+
     return undefined;
   };
 
-  const coolingCapacityKwNum =
-    getPerfVal(results?.performance, [
-      "cooling_capacity_kw",
-      "cooling_capacity",
-      "capacity",
-      "capacity_kw",
-      "Q_evap",
-      "Q_evaporator",
-      "refrigeration_effect_kw",
-      "refrigeration_capacity",
-      "cooling_load",
-      "evap_capacity",
-      "q_evap_kw",
-      "cooling_power",
-      "evaporator_capacity",
-    ]) ?? deriveFromPerMass(results?.performance, refrigerationEffectKeys);
+  const coolingCapacityKwNum = getPerfVal(results?.performance, [
+    "cooling_capacity_kw",
+    "cooling_capacity",
+    "capacity",
+    "capacity_kw",
+    "Q_evap",
+    "Q_evaporator",
+    "refrigeration_effect_kw",
+    "refrigeration_capacity",
+    "cooling_load",
+    "evap_capacity",
+    "q_evap_kw",
+    "cooling_power",
+    "evaporator_capacity",
+  ]);
 
-  const compressorWorkKwNum =
-    getPerfVal(results?.performance, [
-      "compressor_work_kw",
-      "compressor_work",
-      "work",
-      "work_kw",
-      "power",
-      "W_comp",
-      "compressor_power_kw",
-      "input_power",
-      "mechanical_power",
-    ]) ?? deriveFromPerMass(results?.performance, workPerMassKeys) ?? getPerfVal(results?.performance, powerLikeKeys);
+  const compressorWorkKwNum = getPerfVal(results?.performance, [
+    "compressor_work_kw",
+    "compressor_work",
+    "work",
+    "work_kw",
+    "power",
+    "W_comp",
+    "compressor_power_kw",
+    "input_power",
+    "mechanical_power",
+  ]);
 
   const cop = getPerfVal(results?.performance, [
     "cop",
