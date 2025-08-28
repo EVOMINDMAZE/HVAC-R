@@ -1324,31 +1324,28 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
               <CardContent className="space-y-3">
                 {cycleData && (
                   <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span>Pressure Ratio:</span>
-                      <span className="font-mono">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Pressure Ratio</span>
+                      <span className="font-mono text-lg font-semibold">
                         {cycleData.points[1] && cycleData.points[0]
-                          ? (
-                              cycleData.points[1].pressure /
-                              cycleData.points[0].pressure
-                            ).toFixed(2)
+                          ? (cycleData.points[1].pressure / cycleData.points[0].pressure).toFixed(2)
                           : "N/A"}
                       </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span>Temperature Lift:</span>
-                      <span className="font-mono">
+
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Temperature Lift</span>
+                      <span className="font-mono text-lg font-semibold">
                         {cycleData.points[1] && cycleData.points[0]
-                          ? `${(cycleData.points[1].temperature - cycleData.points[0].temperature).toFixed(1)}°C`
+                          ? `${(cycleData.points[1].temperature - cycleData.points[0].temperature).toFixed(1)} °C`
                           : "N/A"}
                       </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span>Cycle Type:</span>
-                      <span className="font-mono">
-                        {diagramType === "P-h"
-                          ? "Vapor Compression"
-                          : "Thermodynamic"}
+
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Cycle Type</span>
+                      <span className="font-mono text-sm">
+                        {diagramType === "P-h" ? "Vapor Compression" : "Thermodynamic"}
                       </span>
                     </div>
                   </div>
