@@ -1410,36 +1410,7 @@ export function EnhancedStandardCycleContent() {
             <CardContent>
               {results && cycleData ? (
                 <div className="space-y-4">
-                  <div className="flex items-center gap-4 mb-4">
-                    <Label>Animation Speed:</Label>
-                    <div className="flex gap-2">
-                      {[500, 1000, 2000].map((speed) => (
-                        <Button
-                          key={speed}
-                          variant={
-                            animationState.animationSpeed === speed
-                              ? "default"
-                              : "outline"
-                          }
-                          size="sm"
-                          onClick={() => adjustAnimationSpeed(speed)}
-                        >
-                          {speed === 500
-                            ? "Fast"
-                            : speed === 1000
-                              ? "Normal"
-                              : "Slow"}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                  <CycleVisualization
-                    cycleData={cycleData}
-                    isAnimating={animationState.isAnimating}
-                    onAnimationToggle={toggleAnimation}
-                    animationSpeed={animationState.animationSpeed}
-                    currentPoint={animationState.currentPoint}
-                  />
+                  <CycleVisualization cycleData={cycleData} />
                 </div>
               ) : (
                 <div className="text-center py-12 text-muted-foreground">
