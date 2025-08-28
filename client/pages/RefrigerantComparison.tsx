@@ -759,10 +759,7 @@ export function RefrigerantComparisonContent() {
                             : null;
 
                           return visualizationData ? (
-                            <CycleVisualization
-                              cycleData={visualizationData}
-                              isAnimating={false}
-                            />
+                            <CycleVisualization cycleData={visualizationData} />
                           ) : (
                             <div className="text-center py-8 text-gray-500">
                               Cycle visualization data not available for{" "}
