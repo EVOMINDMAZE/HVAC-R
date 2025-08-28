@@ -273,7 +273,8 @@ export function CascadeCycleContent() {
           "Cascade Cycle",
           formData,
           data,
-          `Cascade Cycle - ${new Date().toLocaleString()}`
+          `Cascade Cycle - ${new Date().toLocaleString()}`,
+          { silent: true }
         ).catch((e) => console.warn('Auto-save failed for cascade:', e));
       } catch (e) {
         console.warn('Auto-save invocation error for cascade:', e);
