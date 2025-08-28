@@ -858,11 +858,7 @@ export function EnhancedStandardCycleContent() {
                 "entropy_kj_kg_k",
                 "entropy",
               ]) || 0,
-            specificVolume:
-              getPropertyValue(results.state_points?.["1"], [
-                "specific_volume_m3_kg",
-                "specific_volume",
-              ]) || 0,
+            specificVolume: getSpecificVolume(results.state_points?.["1"]) || 0,
             density: getDensity(results.state_points?.["1"]),
             quality: getPropertyValue(results.state_points?.["1"], [
               "vapor_quality",
@@ -896,11 +892,7 @@ export function EnhancedStandardCycleContent() {
                 "entropy_kj_kg_k",
                 "entropy",
               ]) || 0,
-            specificVolume:
-              getPropertyValue(results.state_points?.["2"], [
-                "specific_volume_m3_kg",
-                "specific_volume",
-              ]) || 0,
+            specificVolume: getSpecificVolume(results.state_points?.["2"]) || 0,
             density: getDensity(results.state_points?.["2"]),
             quality: getPropertyValue(results.state_points?.["2"], [
               "vapor_quality",
@@ -934,11 +926,7 @@ export function EnhancedStandardCycleContent() {
                 "entropy_kj_kg_k",
                 "entropy",
               ]) || 0,
-            specificVolume:
-              getPropertyValue(results.state_points?.["3"], [
-                "specific_volume_m3_kg",
-                "specific_volume",
-              ]) || 0,
+            specificVolume: getSpecificVolume(results.state_points?.["3"]) || 0,
             density: getDensity(results.state_points?.["3"]),
             quality: getPropertyValue(results.state_points?.["3"], [
               "vapor_quality",
@@ -972,11 +960,7 @@ export function EnhancedStandardCycleContent() {
                 "entropy_kj_kg_k",
                 "entropy",
               ]) || 0,
-            specificVolume:
-              getPropertyValue(results.state_points?.["4"], [
-                "specific_volume_m3_kg",
-                "specific_volume",
-              ]) || 0,
+            specificVolume: getSpecificVolume(results.state_points?.["4"]) || 0,
             density: getDensity(results.state_points?.["4"]),
             quality: getPropertyValue(results.state_points?.["4"], [
               "vapor_quality",
