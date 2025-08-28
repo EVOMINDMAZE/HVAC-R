@@ -10,15 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import {
-  Play,
-  Pause,
-  RotateCcw,
-  Zap,
-  Thermometer,
-  Gauge,
-  BarChart3,
-} from "lucide-react";
+import { Zap, Thermometer, Gauge, BarChart3 } from "lucide-react";
 
 interface CyclePoint {
   id: string;
