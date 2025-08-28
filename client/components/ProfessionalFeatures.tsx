@@ -209,7 +209,20 @@ export function ProfessionalFeatures({
       lifetimeEnergyCost +
       annualMaintenanceCost * costAnalysis.equipmentLife;
 
-    const cop = results.performance.cop || 0;
+    const cop = getPerfVal(results?.performance, [
+      "cop",
+      "COP",
+      "Cop",
+      "coefficient_of_performance",
+      "performance_coefficient",
+      "coeff_of_performance",
+      "coefficient_performance",
+      "cop_cooling",
+      "COP_cooling",
+      "cooling_cop",
+      "refrigeration_cop",
+      "efficiency_cooling",
+    ]) || 0;
     const efficiency = cop > 0 ? (cop / 6) * 100 : 0; // Relative to theoretical max
 
     return {
