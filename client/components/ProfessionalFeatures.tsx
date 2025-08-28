@@ -227,9 +227,6 @@ export function ProfessionalFeatures({
   const costData = calculateCostAnalysis();
   const sustainabilityData = getRefrigerantSustainability(refrigerant);
 
-  // Robust extraction of performance metrics with support for multiple API variants
-  const rawPerformance = results?.performance || {};
-
   const getPerfVal = (
     perf: any,
     variants: string[],
@@ -244,7 +241,7 @@ export function ProfessionalFeatures({
     return undefined;
   };
 
-  const coolingCapacityKwNum = getPerfVal(rawPerformance, [
+  const coolingCapacityKwNum = getPerfVal(results?.performance, [
     "cooling_capacity_kw",
     "cooling_capacity",
     "capacity",
@@ -260,7 +257,7 @@ export function ProfessionalFeatures({
     "evaporator_capacity",
   ]);
 
-  const compressorWorkKwNum = getPerfVal(rawPerformance, [
+  const compressorWorkKwNum = getPerfVal(results?.performance, [
     "compressor_work_kw",
     "compressor_work",
     "work",
