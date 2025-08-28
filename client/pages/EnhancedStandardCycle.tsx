@@ -602,6 +602,7 @@ export function EnhancedStandardCycleContent() {
         "specific_volume",
         "specific_volume_m3_per_kg",
         "specific_volume_m3kg",
+        "specific_volume_m3/kg",
         "v_m3_kg",
         "v",
         "V",
@@ -611,6 +612,43 @@ export function EnhancedStandardCycleContent() {
         "v_specific",
       ]) ?? undefined
     );
+  };
+
+  // Estimate specific gas constant R (J/kg·K) from any points that include P, T, and ρ
+  const estimateSpecificGasConstant = (): number | undefined => {
+    const sp = results?.state_points;
+    if (!sp) return undefined;
+    const keys = Object.keys(sp);
+    const estimates: number[] = [];
+    for (const k of keys) {
+      const p_kpa = getPropertyValue(sp[k], ["pressure_kpa", "pressure"]);
+      const t_c = getPropertyValue(sp[k], ["temperature_c", "temp_c", "temperature"]);
+      const rho = getPropertyValue(sp[k], [
+        "density_kg_m3",
+        "density",
+        "rho",
+        "rho_kg_m3",
+        "density_kg_per_m3",
+        "density_kg_m^3",
+        "rho_kg_per_m3",
+      ]) ?? (() => {
+        const svLoc = getSpecificVolume(sp[k]);
+        return svLoc && svLoc !== 0 ? 1 / svLoc : undefined;
+      })();
+      if (
+        p_kpa !== undefined &&
+        t_c !== undefined &&
+        rho !== undefined &&
+        rho !== 0
+      ) {
+        const P = p_kpa * 1000; // Pa
+        const T = t_c + 273.15; // K
+        estimates.push(P / (rho * T));
+      }
+    }
+    if (estimates.length === 0) return undefined;
+    // Average to smooth numerical noise
+    return estimates.reduce((a, b) => a + b, 0) / estimates.length;
   };
 
   const getDensity = (point?: StatePoint): number | undefined => {
@@ -626,7 +664,24 @@ export function EnhancedStandardCycleContent() {
     if (direct !== undefined) return direct;
 
     const sv = getSpecificVolume(point);
-    return sv && sv !== 0 ? 1 / sv : undefined;
+    if (sv && sv !== 0) return 1 / sv;
+
+    // Final fallback: estimate using ideal-gas relation with inferred R
+    const p_kpa = getPropertyValue(point, ["pressure_kpa", "pressure"]);
+    const t_c = getPropertyValue(point, ["temperature_c", "temp_c", "temperature"]);
+    const R = estimateSpecificGasConstant();
+    if (
+      R !== undefined &&
+      p_kpa !== undefined &&
+      t_c !== undefined
+    ) {
+      const P = p_kpa * 1000; // Pa
+      const T = t_c + 273.15; // K
+      const rhoEst = P / (R * T);
+      return isFinite(rhoEst) ? rhoEst : undefined;
+    }
+
+    return undefined;
   };
 
   const getPerformanceValue = (
