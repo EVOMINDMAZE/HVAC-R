@@ -221,15 +221,6 @@ function QuickStats() {
         </Card>
       </div>
 
-      {/* Quick access CTA */}
-      <div className="flex items-center justify-end">
-        <Button
-          className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white"
-          onClick={() => navigate("/standard-cycle")}
-        >
-          Start New Calculation
-        </Button>
-      </div>
     </div>
   );
 }
