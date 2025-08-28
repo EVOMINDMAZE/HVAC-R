@@ -808,20 +808,7 @@ export function EnhancedStandardCycleContent() {
       ])
     : undefined;
 
-  const densityAtSuction = results
-    ? getPropertyValue(results.state_points?.["1"], [
-        "density_kg_m3",
-        "density",
-        "rho",
-      ]) ??
-      ((): number | undefined => {
-        const sv = getPropertyValue(results.state_points?.["1"], [
-          "specific_volume_m3_kg",
-          "specific_volume",
-        ]);
-        return sv && sv !== 0 ? 1 / sv : undefined;
-      })()
-    : undefined;
+  const densityAtSuction = results ? getDensity(results.state_points?.["1"]) : undefined;
 
   const volumetricFlowRate = results?.performance
     ? getPerformanceValue(results.performance, [
