@@ -1431,8 +1431,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
                             life
                           </li>
                           <li>
-                            �� Should not exceed refrigerant's maximum
-                            temperature
+                            • Should not exceed refrigerant's maximum temperature
                           </li>
                         </>
                       )}
