@@ -677,9 +677,19 @@ export function EnhancedStandardCycleContent() {
 
     // Heat rejection fallback: Q_cond = Q_evap + W_comp
     if (variants.some((v) => v.toLowerCase().includes("heat") || v.toLowerCase().includes("rejection"))) {
-      const qEvap = getPerformanceValue(perf, ["cooling_capacity_kw", "cooling_capacity", "refrigeration_capacity", "Q_evap","refrigeration_effect_kw"]) ;
+      const qEvap = getPerformanceValue(perf, ["cooling_capacity_kw", "cooling_capacity", "refrigeration_capacity", "Q_evap","refrigeration_effect_kw"]);
       const wComp = getPerformanceValue(perf, ["compressor_work_kw","compressor_work","work","power"]);
       if (qEvap !== undefined && wComp !== undefined) return qEvap + wComp;
+    }
+
+    // Volumetric flow fallback: volumetric = mass_flow / density
+    if (variants.some((v) => v.toLowerCase().includes("volumetric") || v.toLowerCase().includes("volume"))) {
+      const massFlow = searchExact(massKeys);
+      const densityKeys = ["density_kg_m3", "density", "rho", "rho_kg_m3"];
+      const density = searchExact(densityKeys);
+      if (massFlow !== undefined && density !== undefined && density !== 0) {
+        return massFlow / density; // kg/s / kg/m3 => m3/s
+      }
     }
 
     // 3) Case-insensitive key search
