@@ -267,6 +267,18 @@ export function CascadeCycleContent() {
         results: data,
       });
 
+      try {
+        // Auto-record the cascade calculation so counts/history reflect every run
+        void saveCalculation(
+          "Cascade Cycle",
+          formData,
+          data,
+          `Cascade Cycle - ${new Date().toLocaleString()}`
+        ).catch((e) => console.warn('Auto-save failed for cascade:', e));
+      } catch (e) {
+        console.warn('Auto-save invocation error for cascade:', e);
+      }
+
       addToast({
         type: "success",
         title: "Cascade Analysis Complete",
