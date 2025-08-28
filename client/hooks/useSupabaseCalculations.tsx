@@ -188,6 +188,26 @@ export function useSupabaseCalculations() {
     }
   };
 
+  // Find a matching calculation by deep-compare of inputs and results
+  const findMatchingCalculation = (inputs: any, results: any): Calculation | undefined => {
+    try {
+      const normalize = (v: any) => JSON.stringify(v, Object.keys(v || {}).sort());
+      const iStr = normalize(inputs);
+      const rStr = normalize(results);
+      return calculations.find(calc => {
+        try {
+          const ci = normalize(calc.inputs);
+          const cr = normalize(calc.results);
+          return ci === iStr && cr === rStr;
+        } catch (e) {
+          return false;
+        }
+      });
+    } catch (e) {
+      return undefined;
+    }
+  };
+
   // Delete a calculation
   const deleteCalculation = async (id: string): Promise<boolean> => {
     if (!user || !supabase) return false;
