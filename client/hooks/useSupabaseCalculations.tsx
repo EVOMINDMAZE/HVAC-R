@@ -346,6 +346,7 @@ export function useSupabaseCalculations() {
     saveCalculation,
     deleteCalculation,
     updateCalculation,
+    findMatchingCalculation,
     refetch: fetchCalculations
   };
 }
