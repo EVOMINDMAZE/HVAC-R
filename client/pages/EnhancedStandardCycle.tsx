@@ -755,6 +755,60 @@ export function EnhancedStandardCycleContent() {
     return undefined;
   };
 
+  // Derived flow values for display
+  const massFlowRate = results?.performance
+    ? getPerformanceValue(results.performance, [
+        "mass_flow_rate_kg_s",
+        "mass_flow_rate",
+        "mdot",
+        "m_dot",
+        "mass_flow",
+        "flow_rate",
+        "mass_flow_kg_s",
+        "refrigerant_flow_rate",
+        "flow_rate_mass",
+        "mass_rate",
+        "kg_per_s",
+        "mass_flux",
+        "circulation_rate",
+      ])
+    : undefined;
+
+  const densityAtSuction = results
+    ? getPropertyValue(results.state_points?.["1"], [
+        "density_kg_m3",
+        "density",
+        "rho",
+      ]) ??
+      ((): number | undefined => {
+        const sv = getPropertyValue(results.state_points?.["1"], [
+          "specific_volume_m3_kg",
+          "specific_volume",
+        ]);
+        return sv && sv !== 0 ? 1 / sv : undefined;
+      })()
+    : undefined;
+
+  const volumetricFlowRate = results?.performance
+    ? getPerformanceValue(results.performance, [
+        "volumetric_flow_rate_m3_s",
+        "volumetric_flow_rate",
+        "volume_flow",
+        "V_dot",
+        "v_dot",
+        "volumetric_flow",
+        "volume_flow_rate",
+        "vol_flow_rate",
+        "suction_volume_flow",
+        "displacement",
+        "volume_rate",
+        "m3_per_s",
+      ]) ??
+      (massFlowRate !== undefined && densityAtSuction !== undefined && densityAtSuction !== 0
+        ? massFlowRate / densityAtSuction
+        : undefined)
+    : undefined;
+
   const cycleData = results
     ? {
         points: [
@@ -1710,7 +1764,7 @@ export function EnhancedStandardCycleContent() {
               {onboardingStep === 0 && (
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold">
-                    🎯 Built for Every Professional
+                    ��� Built for Every Professional
                   </h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="p-4 bg-blue-50 rounded-lg border">
