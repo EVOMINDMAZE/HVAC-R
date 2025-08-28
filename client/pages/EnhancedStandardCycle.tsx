@@ -319,7 +319,6 @@ export function EnhancedStandardCycleContent() {
         console.log("💾 Storing calculation data...");
 
         setResults(calculationData);
-        setAnimationState((prev) => ({ ...prev, currentPoint: 1 }));
         setCalculationComplete(true);
 
         console.log("✨ Results set successfully!");
