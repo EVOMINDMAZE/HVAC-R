@@ -271,6 +271,18 @@ export function RefrigerantComparisonContent() {
         results: data,
       });
 
+      try {
+        // Auto-record the comparison so counts/history reflect every run
+        void saveCalculation(
+          "Refrigerant Comparison",
+          formData,
+          data,
+          `Refrigerant Comparison - ${new Date().toLocaleString()}`
+        ).catch((e) => console.warn('Auto-save failed for comparison:', e));
+      } catch (e) {
+        console.warn('Auto-save invocation error for comparison:', e);
+      }
+
       addToast({
         type: "success",
         title: "Comparison Complete",
