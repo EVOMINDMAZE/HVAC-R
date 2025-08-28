@@ -301,41 +301,45 @@ function ValueProposition() {
   const navigate = useNavigate();
 
   return (
-    <Card className="bg-gradient-to-r from-blue-600 to-violet-700 text-white shadow-lg">
-      <CardContent className="p-8">
-        <div className="text-center">
-          <Crown className="h-12 w-12 text-yellow-300 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-3">Unlock Professional Features</h2>
-          <p className="text-sm opacity-90 mb-6">Powerful tools for engineers: faster analysis, sharing and export.</p>
+    <Card className="rounded-xl overflow-hidden shadow-xl">
+      <div className="bg-gradient-to-r from-blue-600 to-violet-700 text-white p-10">
+        <div className="max-w-4xl mx-auto text-center">
+          <Crown className="h-16 w-16 text-yellow-300 mx-auto mb-4" aria-hidden />
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-3">Unlock Professional Features</h2>
+          <p className="text-md opacity-90 mb-8">Powerful tools for engineers: faster analysis, sharing and export.</p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div className="text-center">
-              <Zap className="h-7 w-7 text-yellow-300 mx-auto mb-2" />
-              <h3 className="font-medium">Unlimited Calculations</h3>
-              <p className="text-xs opacity-80">No monthly limits on your analysis</p>
+              <Zap className="h-8 w-8 text-yellow-300 mx-auto mb-3" aria-hidden />
+              <h3 className="font-semibold">Unlimited<br/>Calculations</h3>
+              <p className="text-sm opacity-85 mt-1">No monthly limits on your analysis</p>
             </div>
+
             <div className="text-center">
-              <Target className="h-7 w-7 text-yellow-300 mx-auto mb-2" />
-              <h3 className="font-medium">Advanced Analytics</h3>
-              <p className="text-xs opacity-80">Detailed reports & optimization tips</p>
+              <Target className="h-8 w-8 text-yellow-300 mx-auto mb-3" aria-hidden />
+              <h3 className="font-semibold">Advanced Analytics</h3>
+              <p className="text-sm opacity-85 mt-1">Detailed reports & optimization tips</p>
             </div>
+
             <div className="text-center">
-              <FileText className="h-7 w-7 text-yellow-300 mx-auto mb-2" />
-              <h3 className="font-medium">Export & Share</h3>
-              <p className="text-xs opacity-80">PDF reports & team collaboration</p>
+              <FileText className="h-8 w-8 text-yellow-300 mx-auto mb-3" aria-hidden />
+              <h3 className="font-semibold">Export & Share</h3>
+              <p className="text-sm opacity-85 mt-1">PDF reports & team collaboration</p>
             </div>
           </div>
 
-          <div className="bg-white/10 rounded-md p-4 mb-6">
-            <p className="text-lg font-semibold text-yellow-300">Save 20+ hours per month</p>
+          <div className="bg-white/12 rounded-lg p-6 mb-6 backdrop-blur-sm border border-white/10">
+            <p className="text-lg font-semibold text-yellow-300 mb-1">Save 20+ hours per month</p>
             <p className="text-sm opacity-90">Professional engineers save an average of $2,400/month in consulting time</p>
           </div>
 
-          <Button className="bg-yellow-400 hover:bg-yellow-500 text-purple-900 font-bold px-6 py-2" onClick={() => navigate("/pricing")}>
-            Upgrade Now - Start Free Trial
-          </Button>
+          <div className="flex justify-center">
+            <Button className="bg-yellow-400 hover:bg-yellow-500 text-purple-900 font-bold px-8 py-3 rounded-full shadow-lg" onClick={() => navigate("/pricing")}>
+              Upgrade Now - Start Free Trial
+            </Button>
+          </div>
         </div>
-      </CardContent>
+      </div>
     </Card>
   );
 }
