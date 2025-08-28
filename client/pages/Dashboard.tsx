@@ -413,6 +413,16 @@ export function Dashboard() {
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
             <RecentCalculations />
+
+            {/* Tips card moved into main column per design updates */}
+            <Card className="mt-6 p-4 shadow-md">
+              <h3 className="text-base font-semibold text-gray-800 mb-3">Tips</h3>
+              <ul className="text-sm text-gray-600 space-y-2">
+                <li>Use comparators to evaluate refrigerants quickly.</li>
+                <li>Run batch calculations from the History page.</li>
+                <li>Upgrade for export and team collaboration.</li>
+              </ul>
+            </Card>
           </div>
 
           <aside className="space-y-6 lg:sticky lg:top-24">
@@ -440,14 +450,6 @@ export function Dashboard() {
               </div>
             </Card>
 
-            <Card className="p-4 shadow-md">
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">Tips</h3>
-              <ul className="text-sm text-gray-600 list-disc list-inside space-y-2">
-                <li>Use comparators to evaluate refrigerants quickly.</li>
-                <li>Run batch calculations from the History page.</li>
-                <li>Upgrade for export and team collaboration.</li>
-              </ul>
-            </Card>
           </aside>
         </section>
 
