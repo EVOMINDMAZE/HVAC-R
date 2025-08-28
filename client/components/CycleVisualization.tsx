@@ -1481,11 +1481,15 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
                 <div className="grid grid-cols-1 gap-2">
                   <div className="flex items-center gap-3 p-2 bg-red-50 rounded">
                     <div className="w-6 h-2 bg-red-500 rounded"></div>
-                    <span className="text-sm font-medium">1→2: Compression</span>
+                    <span className="text-sm font-medium">
+                      1→2: Compression
+                    </span>
                   </div>
                   <div className="flex items-center gap-3 p-2 bg-blue-50 rounded">
                     <div className="w-6 h-2 bg-blue-500 rounded"></div>
-                    <span className="text-sm font-medium">2→3: Condensation</span>
+                    <span className="text-sm font-medium">
+                      2→3: Condensation
+                    </span>
                   </div>
                   <div className="flex items-center gap-3 p-2 bg-green-50 rounded">
                     <div className="w-6 h-2 bg-green-500 rounded"></div>
@@ -1493,7 +1497,9 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
                   </div>
                   <div className="flex items-center gap-3 p-2 bg-yellow-50 rounded">
                     <div className="w-6 h-2 bg-yellow-500 rounded"></div>
-                    <span className="text-sm font-medium">4→1: Evaporation</span>
+                    <span className="text-sm font-medium">
+                      4→1: Evaporation
+                    </span>
                   </div>
                 </div>
               </CardContent>

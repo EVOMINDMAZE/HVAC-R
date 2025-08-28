@@ -61,7 +61,10 @@ export function useSubscription() {
         return;
       }
 
-      console.log("Fetching subscription from Supabase Edge Function", { supabaseUrl, hasToken: !!token });
+      console.log("Fetching subscription from Supabase Edge Function", {
+        supabaseUrl,
+        hasToken: !!token,
+      });
 
       // Add retry/backoff logic for edge function calls
       const maxRetries = 3;
@@ -75,15 +78,20 @@ export function useSubscription() {
         const timeout = setTimeout(() => controller.abort(), 8000);
 
         try {
-          console.log(`Attempt ${attempt} fetching subscription from Edge Function: ${supabaseUrl}/functions/v1/billing/subscription`);
-          response = await fetch(`${supabaseUrl}/functions/v1/billing/subscription`, {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
+          console.log(
+            `Attempt ${attempt} fetching subscription from Edge Function: ${supabaseUrl}/functions/v1/billing/subscription`,
+          );
+          response = await fetch(
+            `${supabaseUrl}/functions/v1/billing/subscription`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              signal: controller.signal,
+              mode: "cors",
             },
-            signal: controller.signal,
-            mode: "cors",
-          });
+          );
 
           clearTimeout(timeout);
 
@@ -91,7 +99,9 @@ export function useSubscription() {
             break; // success
           } else {
             // Non-OK response — capture and break to handle below
-            console.error(`Edge function responded with status ${response.status}`);
+            console.error(
+              `Edge function responded with status ${response.status}`,
+            );
             break;
           }
         } catch (err: any) {
@@ -105,19 +115,30 @@ export function useSubscription() {
       }
 
       if (!response) {
-        console.error("All attempts to call Supabase Edge Function failed", lastError);
+        console.error(
+          "All attempts to call Supabase Edge Function failed",
+          lastError,
+        );
         // Try fallback to internal server API (/api/subscriptions/current)
         try {
-          console.log("Attempting fallback to internal API /api/subscriptions/current");
+          console.log(
+            "Attempting fallback to internal API /api/subscriptions/current",
+          );
           const fallbackController = new AbortController();
-          const fallbackTimeout = setTimeout(() => fallbackController.abort(), 8000);
-          const fallbackResponse = await fetch(`${window.location.origin}/api/subscriptions/current`, {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
+          const fallbackTimeout = setTimeout(
+            () => fallbackController.abort(),
+            8000,
+          );
+          const fallbackResponse = await fetch(
+            `${window.location.origin}/api/subscriptions/current`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              signal: fallbackController.signal,
             },
-            signal: fallbackController.signal,
-          });
+          );
           clearTimeout(fallbackTimeout);
 
           if (fallbackResponse.ok) {
@@ -125,7 +146,10 @@ export function useSubscription() {
             setSubscription(fallbackData);
             return;
           } else {
-            console.error("Fallback API responded with non-OK status", fallbackResponse.status);
+            console.error(
+              "Fallback API responded with non-OK status",
+              fallbackResponse.status,
+            );
           }
         } catch (fallbackErr: any) {
           console.error("Fallback attempt failed:", fallbackErr);
@@ -151,7 +175,10 @@ export function useSubscription() {
           console.error("Subscription API error response:", errData);
           errorMsg = errData.error || errData.message || errorMsg;
         } catch (e) {
-          console.error("Could not parse error body from subscription endpoint", e);
+          console.error(
+            "Could not parse error body from subscription endpoint",
+            e,
+          );
         }
         setError(errorMsg);
         // Fallback to free plan on server error

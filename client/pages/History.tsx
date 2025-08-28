@@ -1,26 +1,35 @@
 import { useState } from "react";
-import { useSupabaseCalculations, Calculation } from "@/hooks/useSupabaseCalculations";
+import {
+  useSupabaseCalculations,
+  Calculation,
+} from "@/hooks/useSupabaseCalculations";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { 
-  History as HistoryIcon, 
-  Search, 
-  Calendar, 
-  Download, 
-  Trash2, 
+import {
+  History as HistoryIcon,
+  Search,
+  Calendar,
+  Download,
+  Trash2,
   Calculator,
   TrendingUp,
   BarChart3,
   Filter,
   Eye,
   Edit,
-  Loader2
+  Loader2,
 } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -31,29 +40,39 @@ import {
 import { CalculationDetailsModal } from "@/components/CalculationDetailsModal";
 
 export function History() {
-  const { calculations, isLoading, deleteCalculation, updateCalculation } = useSupabaseCalculations();
+  const { calculations, isLoading, deleteCalculation, updateCalculation } =
+    useSupabaseCalculations();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("newest");
-  const [selectedCalculation, setSelectedCalculation] = useState<Calculation | null>(null);
+  const [selectedCalculation, setSelectedCalculation] =
+    useState<Calculation | null>(null);
   const [showDetails, setShowDetails] = useState(false);
 
   // Filter and sort calculations
   const filteredCalculations = calculations
-    .filter(calc => {
-      const matchesSearch = calc.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           calc.calculation_type.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesFilter = filterType === "all" || calc.calculation_type === filterType;
+    .filter((calc) => {
+      const matchesSearch =
+        calc.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        calc.calculation_type.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesFilter =
+        filterType === "all" || calc.calculation_type === filterType;
       return matchesSearch && matchesFilter;
     })
     .sort((a, b) => {
       switch (sortBy) {
         case "newest":
-          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+          return (
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          );
         case "oldest":
-          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+          return (
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          );
         case "name":
-          return (a.name || a.calculation_type).localeCompare(b.name || b.calculation_type);
+          return (a.name || a.calculation_type).localeCompare(
+            b.name || b.calculation_type,
+          );
         default:
           return 0;
       }
@@ -90,11 +109,11 @@ export function History() {
       const results = calc.results;
       switch (calc.calculation_type) {
         case "Standard Cycle":
-          return results?.data?.performance?.cop 
+          return results?.data?.performance?.cop
             ? `COP: ${results.data.performance.cop.toFixed(2)}`
             : "No COP data";
         case "Refrigerant Comparison":
-          return calc.inputs?.refrigerants 
+          return calc.inputs?.refrigerants
             ? `${calc.inputs.refrigerants.length} refrigerants compared`
             : "Comparison data";
         case "Cascade Cycle":
@@ -139,13 +158,15 @@ export function History() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Header variant="dashboard" />
-      
+
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center space-x-3 mb-4">
             <HistoryIcon className="h-8 w-8 text-blue-600" />
-            <h1 className="text-3xl font-bold text-gray-900">Calculation History</h1>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Calculation History
+            </h1>
           </div>
           <p className="text-gray-600">
             View and manage all your saved calculations
@@ -165,7 +186,7 @@ export function History() {
                   className="pl-10"
                 />
               </div>
-              
+
               <Select value={filterType} onValueChange={setFilterType}>
                 <SelectTrigger>
                   <SelectValue placeholder="Filter by type" />
@@ -173,7 +194,9 @@ export function History() {
                 <SelectContent>
                   <SelectItem value="all">All Types</SelectItem>
                   <SelectItem value="Standard Cycle">Standard Cycle</SelectItem>
-                  <SelectItem value="Refrigerant Comparison">Refrigerant Comparison</SelectItem>
+                  <SelectItem value="Refrigerant Comparison">
+                    Refrigerant Comparison
+                  </SelectItem>
                   <SelectItem value="Cascade Cycle">Cascade Cycle</SelectItem>
                 </SelectContent>
               </Select>
@@ -191,7 +214,8 @@ export function History() {
 
               <div className="flex items-center space-x-2">
                 <Badge variant="secondary" className="text-sm">
-                  {filteredCalculations.length} calculation{filteredCalculations.length !== 1 ? 's' : ''}
+                  {filteredCalculations.length} calculation
+                  {filteredCalculations.length !== 1 ? "s" : ""}
                 </Badge>
               </div>
             </div>
@@ -204,25 +228,27 @@ export function History() {
             <CardContent className="p-12 text-center">
               <Calculator className="h-16 w-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {searchTerm || filterType !== "all" ? "No matching calculations" : "No calculations yet"}
+                {searchTerm || filterType !== "all"
+                  ? "No matching calculations"
+                  : "No calculations yet"}
               </h3>
               <p className="text-gray-600 mb-6">
-                {searchTerm || filterType !== "all" 
+                {searchTerm || filterType !== "all"
                   ? "Try adjusting your search or filter criteria"
-                  : "Start by running your first calculation from the dashboard"
-                }
+                  : "Start by running your first calculation from the dashboard"}
               </p>
               {!searchTerm && filterType === "all" && (
-                <Button>
-                  Go to Dashboard
-                </Button>
+                <Button>Go to Dashboard</Button>
               )}
             </CardContent>
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredCalculations.map((calculation) => (
-              <Card key={calculation.id} className="hover:shadow-lg transition-shadow">
+              <Card
+                key={calculation.id}
+                className="hover:shadow-lg transition-shadow"
+              >
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">
@@ -233,7 +259,7 @@ export function History() {
                         <CardTitle className="text-lg">
                           {calculation.name || calculation.calculation_type}
                         </CardTitle>
-                        <Badge 
+                        <Badge
                           className={`text-xs mt-1 ${getCalculationColor(calculation.calculation_type)}`}
                           variant="secondary"
                         >
@@ -243,18 +269,18 @@ export function History() {
                     </div>
                   </div>
                 </CardHeader>
-                
+
                 <CardContent>
                   <div className="space-y-3">
                     <div className="flex items-center text-sm text-gray-600">
                       <Calendar className="h-4 w-4 mr-2" />
                       {new Date(calculation.created_at).toLocaleDateString()}
                     </div>
-                    
+
                     <p className="text-sm text-gray-700">
                       {formatResultSummary(calculation)}
                     </p>
-                    
+
                     <div className="flex items-center space-x-2 pt-2">
                       <Button
                         size="sm"
@@ -286,7 +312,8 @@ export function History() {
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {selectedCalculation?.name || selectedCalculation?.calculation_type}
+              {selectedCalculation?.name ||
+                selectedCalculation?.calculation_type}
             </DialogTitle>
             <DialogDescription>
               Calculation details and results

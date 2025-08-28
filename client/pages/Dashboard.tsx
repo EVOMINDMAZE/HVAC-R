@@ -70,15 +70,28 @@ function QuickStats() {
       {/* Header with quick action */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold">Welcome back{user?.email ? `, ${user.email.split('@')[0]}` : ''} 👋</h2>
-          <p className="text-sm text-gray-600">Your workspace at a glance — quick access to common tasks and usage.</p>
+          <h2 className="text-xl font-bold">
+            Welcome back{user?.email ? `, ${user.email.split("@")[0]}` : ""} 👋
+          </h2>
+          <p className="text-sm text-gray-600">
+            Your workspace at a glance — quick access to common tasks and usage.
+          </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white whitespace-nowrap" onClick={() => navigate('/standard-cycle')} aria-label="Start new calculation">
+          <Button
+            className="bg-blue-600 hover:bg-blue-700 text-white whitespace-nowrap"
+            onClick={() => navigate("/standard-cycle")}
+            aria-label="Start new calculation"
+          >
             <Calculator className="h-4 w-4 mr-2" />
             New Calculation
           </Button>
-          <Button variant="outline" className="hidden sm:inline-flex whitespace-nowrap" onClick={() => navigate('/history')} aria-label="View calculation history">
+          <Button
+            variant="outline"
+            className="hidden sm:inline-flex whitespace-nowrap"
+            onClick={() => navigate("/history")}
+            aria-label="View calculation history"
+          >
             <HistoryIcon className="h-4 w-4 mr-2" />
             View History
           </Button>
@@ -210,7 +223,10 @@ function QuickStats() {
 
       {/* Quick access CTA */}
       <div className="flex items-center justify-end">
-        <Button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white" onClick={() => navigate('/standard-cycle')}>
+        <Button
+          className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white"
+          onClick={() => navigate("/standard-cycle")}
+        >
           Start New Calculation
         </Button>
       </div>
@@ -267,10 +283,20 @@ function RecentCalculations() {
                 </div>
                 <div className="flex items-center space-x-3 flex-shrink-0">
                   <Badge variant="secondary">{calc.calculation_type}</Badge>
-                  <Button variant="ghost" className="text-sm px-3 py-1" onClick={() => navigate(`/calculations/${calc.id}`)} aria-label={`View ${calc.calculation_type} details`}>
+                  <Button
+                    variant="ghost"
+                    className="text-sm px-3 py-1"
+                    onClick={() => navigate(`/calculations/${calc.id}`)}
+                    aria-label={`View ${calc.calculation_type} details`}
+                  >
                     Details
                   </Button>
-                  <Button variant="outline" className="text-sm px-3 py-1" onClick={() => navigate('/standard-cycle')} aria-label="Run this calculation">
+                  <Button
+                    variant="outline"
+                    className="text-sm px-3 py-1"
+                    onClick={() => navigate("/standard-cycle")}
+                    aria-label="Run this calculation"
+                  >
                     Run
                   </Button>
                 </div>
@@ -416,7 +442,9 @@ export function Dashboard() {
 
             {/* Tips card moved into main column per design updates */}
             <Card className="mt-6 p-4 shadow-md">
-              <h3 className="text-base font-semibold text-gray-800 mb-3">Tips</h3>
+              <h3 className="text-base font-semibold text-gray-800 mb-3">
+                Tips
+              </h3>
               <ul className="text-sm text-gray-600 space-y-2">
                 <li>Use comparators to evaluate refrigerants quickly.</li>
                 <li>Run batch calculations from the History page.</li>
@@ -429,12 +457,26 @@ export function Dashboard() {
             <QuickActions />
 
             <Card className="p-4 shadow-md">
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">Usage</h3>
-              <p className="text-xs text-gray-500">Monthly usage and quick insights</p>
+              <h3 className="text-sm font-semibold text-gray-700 mb-2">
+                Usage
+              </h3>
+              <p className="text-xs text-gray-500">
+                Monthly usage and quick insights
+              </p>
               <div className="mt-4">
                 <div className="w-full h-16 bg-gradient-to-r from-white to-white/50 rounded-md flex items-center justify-center">
-                  <svg width="100%" height="40" viewBox="0 0 120 40" className="mx-2">
-                    <polyline fill="none" stroke="#3b82f6" strokeWidth="2" points="0,30 20,22 40,10 60,14 80,8 100,12 120,6" />
+                  <svg
+                    width="100%"
+                    height="40"
+                    viewBox="0 0 120 40"
+                    className="mx-2"
+                  >
+                    <polyline
+                      fill="none"
+                      stroke="#3b82f6"
+                      strokeWidth="2"
+                      points="0,30 20,22 40,10 60,14 80,8 100,12 120,6"
+                    />
                   </svg>
                 </div>
                 <div className="flex items-center justify-between mt-3 text-sm">
@@ -449,10 +491,8 @@ export function Dashboard() {
                 </div>
               </div>
             </Card>
-
           </aside>
         </section>
-
       </main>
 
       <Footer />

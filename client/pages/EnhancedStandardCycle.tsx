@@ -654,8 +654,17 @@ export function EnhancedStandardCycleContent() {
     const mass = searchExact(massKeys);
 
     // If caller asked for cooling/capacity, try refrigeration_effect * mass_flow
-    if (variants.some((v) => v.toLowerCase().includes("cool")) || variants.some((v) => v.toLowerCase().includes("capacity"))) {
-      const refrigerEffect = searchExact(refrigerationEffectKeys) || searchExact(["refrigeration_capacity_kw", "refrigeration_capacity", "capacity_per_kg"]);
+    if (
+      variants.some((v) => v.toLowerCase().includes("cool")) ||
+      variants.some((v) => v.toLowerCase().includes("capacity"))
+    ) {
+      const refrigerEffect =
+        searchExact(refrigerationEffectKeys) ||
+        searchExact([
+          "refrigeration_capacity_kw",
+          "refrigeration_capacity",
+          "capacity_per_kg",
+        ]);
       if (refrigerEffect !== undefined && mass !== undefined) {
         // refrigerEffect is expected kJ/kg, mass kg/s => kJ/s == kW
         return Number(refrigerEffect) * Number(mass);
@@ -663,27 +672,62 @@ export function EnhancedStandardCycleContent() {
     }
 
     // If caller asked for compressor work, try work_per_mass * mass_flow
-    if (variants.some((v) => v.toLowerCase().includes("work")) || variants.some((v) => v.toLowerCase().includes("power"))) {
+    if (
+      variants.some((v) => v.toLowerCase().includes("work")) ||
+      variants.some((v) => v.toLowerCase().includes("power"))
+    ) {
       const workPerMass = searchExact(workPerMassKeys);
       if (workPerMass !== undefined && mass !== undefined) {
         return Number(workPerMass) * Number(mass);
       }
 
       // also try direct power-like keys
-      const powerKeys = ["input_power", "compressor_power_kw", "compressor_power", "power", "power_kw", "input_power_kw", "W_comp", "W_compressor"];
+      const powerKeys = [
+        "input_power",
+        "compressor_power_kw",
+        "compressor_power",
+        "power",
+        "power_kw",
+        "input_power_kw",
+        "W_comp",
+        "W_compressor",
+      ];
       const p = searchExact(powerKeys);
       if (p !== undefined) return p;
     }
 
     // Heat rejection fallback: Q_cond = Q_evap + W_comp
-    if (variants.some((v) => v.toLowerCase().includes("heat") || v.toLowerCase().includes("rejection"))) {
-      const qEvap = getPerformanceValue(perf, ["cooling_capacity_kw", "cooling_capacity", "refrigeration_capacity", "Q_evap","refrigeration_effect_kw"]);
-      const wComp = getPerformanceValue(perf, ["compressor_work_kw","compressor_work","work","power"]);
+    if (
+      variants.some(
+        (v) =>
+          v.toLowerCase().includes("heat") ||
+          v.toLowerCase().includes("rejection"),
+      )
+    ) {
+      const qEvap = getPerformanceValue(perf, [
+        "cooling_capacity_kw",
+        "cooling_capacity",
+        "refrigeration_capacity",
+        "Q_evap",
+        "refrigeration_effect_kw",
+      ]);
+      const wComp = getPerformanceValue(perf, [
+        "compressor_work_kw",
+        "compressor_work",
+        "work",
+        "power",
+      ]);
       if (qEvap !== undefined && wComp !== undefined) return qEvap + wComp;
     }
 
     // Volumetric flow fallback: volumetric = mass_flow / density
-    if (variants.some((v) => v.toLowerCase().includes("volumetric") || v.toLowerCase().includes("volume"))) {
+    if (
+      variants.some(
+        (v) =>
+          v.toLowerCase().includes("volumetric") ||
+          v.toLowerCase().includes("volume"),
+      )
+    ) {
       const massFlow = searchExact(massKeys);
       const densityKeys = ["density_kg_m3", "density", "rho", "rho_kg_m3"];
       const density = searchExact(densityKeys);
@@ -696,7 +740,10 @@ export function EnhancedStandardCycleContent() {
     const objKeys = Object.keys(perf);
     for (const key of objKeys) {
       for (const primary of variants) {
-        if (key.toLowerCase() === primary.toLowerCase() || key.toLowerCase().includes(primary.split("_")[0].toLowerCase())) {
+        if (
+          key.toLowerCase() === primary.toLowerCase() ||
+          key.toLowerCase().includes(primary.split("_")[0].toLowerCase())
+        ) {
           const val = perf[key];
           if (val !== undefined && val !== null && !isNaN(Number(val))) {
             return Number(val);
@@ -746,10 +793,17 @@ export function EnhancedStandardCycleContent() {
                 "density_kg_m3",
                 "density",
                 "rho",
-              ]) || (getPropertyValue(results.state_points?.["1"], [
+              ]) ||
+              (getPropertyValue(results.state_points?.["1"], [
                 "specific_volume_m3_kg",
                 "specific_volume",
-              ]) ? 1 / getPropertyValue(results.state_points?.["1"], ["specific_volume_m3_kg","specific_volume"]) : undefined),
+              ])
+                ? 1 /
+                  getPropertyValue(results.state_points?.["1"], [
+                    "specific_volume_m3_kg",
+                    "specific_volume",
+                  ])
+                : undefined),
             quality: getPropertyValue(results.state_points?.["1"], [
               "vapor_quality",
               "quality",
@@ -792,10 +846,17 @@ export function EnhancedStandardCycleContent() {
                 "density_kg_m3",
                 "density",
                 "rho",
-              ]) || (getPropertyValue(results.state_points?.["2"], [
+              ]) ||
+              (getPropertyValue(results.state_points?.["2"], [
                 "specific_volume_m3_kg",
                 "specific_volume",
-              ]) ? 1 / getPropertyValue(results.state_points?.["2"], ["specific_volume_m3_kg","specific_volume"]) : undefined),
+              ])
+                ? 1 /
+                  getPropertyValue(results.state_points?.["2"], [
+                    "specific_volume_m3_kg",
+                    "specific_volume",
+                  ])
+                : undefined),
             quality: getPropertyValue(results.state_points?.["2"], [
               "vapor_quality",
               "quality",
@@ -838,10 +899,17 @@ export function EnhancedStandardCycleContent() {
                 "density_kg_m3",
                 "density",
                 "rho",
-              ]) || (getPropertyValue(results.state_points?.["3"], [
+              ]) ||
+              (getPropertyValue(results.state_points?.["3"], [
                 "specific_volume_m3_kg",
                 "specific_volume",
-              ]) ? 1 / getPropertyValue(results.state_points?.["3"], ["specific_volume_m3_kg","specific_volume"]) : undefined),
+              ])
+                ? 1 /
+                  getPropertyValue(results.state_points?.["3"], [
+                    "specific_volume_m3_kg",
+                    "specific_volume",
+                  ])
+                : undefined),
             quality: getPropertyValue(results.state_points?.["3"], [
               "vapor_quality",
               "quality",
@@ -884,10 +952,17 @@ export function EnhancedStandardCycleContent() {
                 "density_kg_m3",
                 "density",
                 "rho",
-              ]) || (getPropertyValue(results.state_points?.["4"], [
+              ]) ||
+              (getPropertyValue(results.state_points?.["4"], [
                 "specific_volume_m3_kg",
                 "specific_volume",
-              ]) ? 1 / getPropertyValue(results.state_points?.["4"], ["specific_volume_m3_kg","specific_volume"]) : undefined),
+              ])
+                ? 1 /
+                  getPropertyValue(results.state_points?.["4"], [
+                    "specific_volume_m3_kg",
+                    "specific_volume",
+                  ])
+                : undefined),
             quality: getPropertyValue(results.state_points?.["4"], [
               "vapor_quality",
               "quality",
@@ -1133,7 +1208,11 @@ export function EnhancedStandardCycleContent() {
                     evaporatorTemp={formData.evap_temp_c}
                     condenserTemp={formData.cond_temp_c}
                     onSuggestedRangeApply={(evap, cond) =>
-                      setFormData((prev) => ({ ...prev, evap_temp_c: evap, cond_temp_c: cond }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        evap_temp_c: evap,
+                        cond_temp_c: cond,
+                      }))
                     }
                     className="mt-2"
                   />
