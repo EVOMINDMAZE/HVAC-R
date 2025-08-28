@@ -320,13 +320,8 @@ export function CycleVisualization({
     // Draw saturation dome for all diagram types
     drawSaturationDome(ctx, margin, plotWidth, plotHeight, config);
 
-    // Draw cycle lines with animation
-    drawCycleLines(
-      ctx,
-      pointsWithCoords,
-      margin,
-      isAnimating ? animationFrame : 100,
-    );
+    // Draw cycle lines (animation removed)
+    drawCycleLines(ctx, pointsWithCoords, margin, 100);
 
     // Draw points
     drawCyclePoints(ctx, pointsWithCoords, margin);
