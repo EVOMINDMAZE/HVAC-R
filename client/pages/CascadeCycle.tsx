@@ -36,6 +36,7 @@ import {
   Zap,
 } from "lucide-react";
 import { SaveCalculation } from "@/components/SaveCalculation";
+import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { EnhancedRefrigerantSelector } from "@/components/EnhancedRefrigerantSelector";
 import { CycleVisualization } from "@/components/CycleVisualization";
 import { EquipmentDiagrams } from "@/components/EquipmentDiagrams";
