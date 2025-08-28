@@ -372,7 +372,7 @@ export function ProfessionalFeatures({
 This report presents a comprehensive analysis of the refrigeration cycle performance, including thermodynamic calculations, cost analysis, and sustainability assessment.
 
 ## Performance Metrics
-- COP: ${results?.performance?.cop?.toFixed(2) || "N/A"}
+- COP: ${cop?.toFixed(2) || "N/A"}
 - Cooling Capacity: ${formatValue(coolingCapacityKwNum, "kW")}
 - Compressor Work: ${formatValue(compressorWorkKwNum, "kW")}
 
