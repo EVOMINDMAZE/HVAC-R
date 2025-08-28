@@ -1317,18 +1317,6 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
           {/* Engineering Properties Panel */}
           <div className="space-y-4">
-            {/* Instructional Card */}
-            <Card>
-              <CardContent className="pt-6 p-6">
-                <div className="text-center">
-                  <div className="text-4xl leading-[50px]">👆</div>
-                  <div className="text-sm text-slate-500 mt-2">
-                    Click any cycle point to view detailed engineering properties
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
             {/* Process Legend - Moved here for better UX */}
             <Card>
               <CardHeader>
