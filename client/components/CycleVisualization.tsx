@@ -86,13 +86,7 @@ interface CycleVisualizationProps {
   };
 }
 
-export function CycleVisualization({
-  cycleData,
-  isAnimating = false,
-  onAnimationToggle,
-  animationSpeed = 1000,
-  currentPoint = 1,
-}: CycleVisualizationProps) {
+export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
   const [diagramType, setDiagramType] = useState<DiagramType>("P-h");
