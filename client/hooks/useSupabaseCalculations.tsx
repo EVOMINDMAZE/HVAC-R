@@ -148,11 +148,15 @@ export function useSupabaseCalculations() {
 
       setCalculations(prev => [saved, ...prev]);
 
-      addToast({
-        type: 'success',
-        title: 'Calculation Saved',
-        description: 'Your calculation has been saved successfully'
-      });
+      if (!silent) {
+        addToast({
+          type: 'success',
+          title: 'Calculation Saved',
+          description: 'Your calculation has been saved successfully'
+        });
+      } else {
+        console.debug('Auto-save succeeded');
+      }
 
       // Notify other hook instances to refetch so dashboard counts update
       try {
