@@ -1563,20 +1563,7 @@ export function EnhancedStandardCycleContent() {
                         <span>Volumetric Flow Rate:</span>
                         <span className="font-mono">
                           {formatValue(
-                            getPerformanceValue(results.performance, [
-                              "volumetric_flow_rate_m3_s",
-                              "volumetric_flow_rate",
-                              "volume_flow",
-                              "V_dot",
-                              "v_dot",
-                              "volumetric_flow",
-                              "volume_flow_rate",
-                              "vol_flow_rate",
-                              "suction_volume_flow",
-                              "displacement",
-                              "volume_rate",
-                              "m3_per_s",
-                            ]),
+                            volumetricFlowRate,
                             "m³/s",
                             6,
                           )}
@@ -1764,7 +1751,7 @@ export function EnhancedStandardCycleContent() {
               {onboardingStep === 0 && (
                 <div className="space-y-4">
                   <h3 className="text-lg font-semibold">
-                    ��� Built for Every Professional
+                    🎯 Built for Every Professional
                   </h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="p-4 bg-blue-50 rounded-lg border">
