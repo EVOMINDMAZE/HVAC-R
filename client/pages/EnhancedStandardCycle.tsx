@@ -93,12 +93,6 @@ interface CalculationResults {
   [key: string]: any; // Allow for additional top-level properties
 }
 
-interface CycleAnimationState {
-  isAnimating: boolean;
-  currentPoint: number;
-  animationSpeed: number;
-}
-
 // Content-only version for embedding in other pages
 export function EnhancedStandardCycleContent() {
   const [formData, setFormData] = useState({
