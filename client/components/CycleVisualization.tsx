@@ -1276,7 +1276,6 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
           {DIAGRAM_CONFIGS[diagramType].name} -{" "}
           {cycleData?.refrigerant || "No Data"}
         </CardTitle>
-        <div className="flex gap-2" />
       </CardHeader>
       <CardContent>
         <div className="mb-4 flex items-center gap-4">
