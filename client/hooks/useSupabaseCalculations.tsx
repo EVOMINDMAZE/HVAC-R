@@ -147,6 +147,15 @@ export function useSupabaseCalculations() {
         description: 'Your calculation has been saved successfully'
       });
 
+      // Notify other hook instances to refetch so dashboard counts update
+      try {
+        if (typeof window !== 'undefined' && window.dispatchEvent) {
+          window.dispatchEvent(new Event('calculations:updated'));
+        }
+      } catch (e) {
+        console.warn('Failed to dispatch calculations:updated event', e);
+      }
+
       return data;
     } catch (error: any) {
       // Use robust error logging
@@ -283,6 +292,32 @@ export function useSupabaseCalculations() {
       console.log('User not authenticated or Supabase not configured, clearing calculations');
       setCalculations([]);
     }
+  }, [user]);
+
+  // Listen for global calculation updates so multiple hook instances stay in sync
+  useEffect(() => {
+    const handler = () => {
+      console.log('Received calculations:updated event, refetching');
+      fetchCalculations();
+    };
+
+    try {
+      if (typeof window !== 'undefined' && window.addEventListener) {
+        window.addEventListener('calculations:updated', handler);
+      }
+    } catch (e) {
+      console.warn('Failed to subscribe to calculations:updated', e);
+    }
+
+    return () => {
+      try {
+        if (typeof window !== 'undefined' && window.removeEventListener) {
+          window.removeEventListener('calculations:updated', handler);
+        }
+      } catch (e) {
+        /* ignore */
+      }
+    };
   }, [user]);
 
   return {
