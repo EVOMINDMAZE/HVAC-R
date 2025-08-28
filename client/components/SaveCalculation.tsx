@@ -37,6 +37,17 @@ export function SaveCalculation({
 
     setIsSaving(true);
     try {
+      // If a matching calculation already exists (auto-saved), update its name instead of creating a duplicate
+      const existing = findMatchingCalculation(inputs, results);
+      if (existing) {
+        const updated = await updateCalculation(existing.id, { name: name || `${calculationType} - ${new Date().toLocaleDateString()}` });
+        if (updated) {
+          setIsOpen(false);
+          setName('');
+        }
+        return;
+      }
+
       const savedCalculation = await saveCalculation(
         calculationType,
         inputs,
