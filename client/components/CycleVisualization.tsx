@@ -1286,37 +1286,7 @@ export function CycleVisualization({
           {DIAGRAM_CONFIGS[diagramType].name} -{" "}
           {cycleData?.refrigerant || "No Data"}
         </CardTitle>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              if (onAnimationToggle) {
-                onAnimationToggle();
-              }
-            }}
-            className="flex items-center gap-2"
-          >
-            {isAnimating ? (
-              <Pause className="h-4 w-4" />
-            ) : (
-              <Play className="h-4 w-4" />
-            )}
-            {isAnimating ? "Pause" : "Animate"}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              setAnimationFrame(0);
-              setSelectedPoint(null);
-            }}
-            className="flex items-center gap-2"
-          >
-            <RotateCcw className="h-4 w-4" />
-            Reset
-          </Button>
-        </div>
+        <div className="flex gap-2" />
       </CardHeader>
       <CardContent>
         <div className="mb-4 flex items-center gap-4">
