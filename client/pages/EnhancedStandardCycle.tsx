@@ -330,7 +330,8 @@ export function EnhancedStandardCycleContent() {
             "Standard Cycle",
             formData,
             calculationData,
-            `Standard Cycle - ${new Date().toLocaleString()}`
+            `Standard Cycle - ${new Date().toLocaleString()}`,
+            { silent: true }
           ).catch((e) => console.warn('Auto-save failed:', e));
         } catch (e) {
           console.warn('Auto-save invocation error:', e);
