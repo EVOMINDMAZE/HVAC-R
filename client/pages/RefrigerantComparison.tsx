@@ -110,6 +110,7 @@ export function RefrigerantComparisonContent() {
 
   const [result, setResult] = useState<ComparisonResult | null>(null);
   const [loading, setLoading] = useState(false);
+  const { saveCalculation } = useSupabaseCalculations();
   const [error, setError] = useState<string | null>(null);
   const [calculationData, setCalculationData] = useState<{
     inputs: any;
