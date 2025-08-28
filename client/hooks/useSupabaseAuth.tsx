@@ -82,7 +82,8 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    await getInitialSession();
+    // start initial session load (no await to avoid async useEffect callback)
+    getInitialSession();
 
     // Listen for auth changes with error handling
     let subscription: any = { unsubscribe: () => {} };
@@ -106,12 +107,12 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
           setIsLoading(false);
         }
       );
-      subscription = sub.data?.subscription ?? sub;
+      subscription = (sub as any).data?.subscription ?? (sub as any);
     } catch (err) {
       console.warn('Failed to subscribe to auth state changes:', err);
     }
 
-    return () => subscription.unsubscribe ? subscription.unsubscribe() : undefined;
+    return () => (subscription && subscription.unsubscribe ? subscription.unsubscribe() : undefined);
   }, []);
 
   const signUp = async (email: string, password: string) => {
