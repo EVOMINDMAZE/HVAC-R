@@ -39,8 +39,8 @@ function QuickStats({ stats, user, isLoading, onRefresh }: any) {
             Welcome back{user?.email ? `, ${user.email.split("@")[0]}` : ""} 👋
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Your workspace at a glance — quick access to recent activity and plan
-            usage.
+            Your workspace at a glance — quick access to recent activity and
+            plan usage.
           </p>
         </div>
 
@@ -84,7 +84,9 @@ function QuickStats({ stats, user, isLoading, onRefresh }: any) {
       {stats.isNearLimit && (
         <Card
           className={`border-2 ${
-            stats.isAtLimit ? "border-destructive bg-destructive/10" : "border-yellow-500 bg-yellow-50"
+            stats.isAtLimit
+              ? "border-destructive bg-destructive/10"
+              : "border-yellow-500 bg-yellow-50"
           }`}
         >
           <CardContent className="p-4">
@@ -94,10 +96,16 @@ function QuickStats({ stats, user, isLoading, onRefresh }: any) {
                   className={`w-3 h-3 rounded-full ${stats.isAtLimit ? "bg-red-500" : "bg-yellow-500"}`}
                 />
                 <div>
-                  <p className={`font-semibold ${stats.isAtLimit ? "text-red-800" : "text-yellow-800"}`}>
-                    {stats.isAtLimit ? "Monthly Limit Reached!" : "Approaching Monthly Limit"}
+                  <p
+                    className={`font-semibold ${stats.isAtLimit ? "text-red-800" : "text-yellow-800"}`}
+                  >
+                    {stats.isAtLimit
+                      ? "Monthly Limit Reached!"
+                      : "Approaching Monthly Limit"}
                   </p>
-                  <p className={`text-sm ${stats.isAtLimit ? "text-red-600" : "text-yellow-600"}`}>
+                  <p
+                    className={`text-sm ${stats.isAtLimit ? "text-red-600" : "text-yellow-600"}`}
+                  >
                     {stats.isAtLimit
                       ? "You've reached your monthly calculation cap. Upgrade to continue."
                       : `You've used ${stats.monthlyCalculations}/${stats.monthlyLimit} calculations this month.`}
@@ -105,7 +113,11 @@ function QuickStats({ stats, user, isLoading, onRefresh }: any) {
                 </div>
               </div>
               <Button
-                className={stats.isAtLimit ? "bg-destructive text-white" : "bg-yellow-600 text-white"}
+                className={
+                  stats.isAtLimit
+                    ? "bg-destructive text-white"
+                    : "bg-yellow-600 text-white"
+                }
                 onClick={() => navigate("/pricing")}
               >
                 Upgrade
@@ -121,7 +133,9 @@ function QuickStats({ stats, user, isLoading, onRefresh }: any) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm opacity-90">Total Calculations</p>
-                <p className="text-3xl font-bold mt-1">{formatNumber(stats.totalCalculations)}</p>
+                <p className="text-3xl font-bold mt-1">
+                  {formatNumber(stats.totalCalculations)}
+                </p>
                 <p className="text-xs opacity-80 mt-1">All time</p>
               </div>
               <Calculator className="h-8 w-8 text-white/80" />
@@ -136,7 +150,11 @@ function QuickStats({ stats, user, isLoading, onRefresh }: any) {
                 <p className="text-sm opacity-90">This Month</p>
                 <p className="text-3xl font-bold mt-1">
                   {formatNumber(stats.monthlyCalculations)}
-                  {!stats.isUnlimited && <span className="text-base font-medium">/{stats.monthlyLimit}</span>}
+                  {!stats.isUnlimited && (
+                    <span className="text-base font-medium">
+                      /{stats.monthlyLimit}
+                    </span>
+                  )}
                 </p>
 
                 {!stats.isUnlimited ? (
@@ -170,15 +188,28 @@ function QuickStats({ stats, user, isLoading, onRefresh }: any) {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white cursor-pointer hover:from-orange-600 hover:to-orange-700 transition-all duration-200" onClick={() => (window.location.href = "/pricing") }>
+        <Card
+          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white cursor-pointer hover:from-orange-600 hover:to-orange-700 transition-all duration-200"
+          onClick={() => (window.location.href = "/pricing")}
+        >
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm opacity-90">Current Plan</p>
-                <p className="text-xl font-semibold mt-1">{stats.planDisplayName}</p>
-                <p className="text-xs opacity-80 mt-1">{stats.plan === "free" ? "Click to upgrade" : "Manage subscription"}</p>
+                <p className="text-xl font-semibold mt-1">
+                  {stats.planDisplayName}
+                </p>
+                <p className="text-xs opacity-80 mt-1">
+                  {stats.plan === "free"
+                    ? "Click to upgrade"
+                    : "Manage subscription"}
+                </p>
               </div>
-              {stats.plan === "free" ? <BarChart3 className="h-8 w-8 text-white/80" /> : <Crown className="h-8 w-8 text-white/80" />}
+              {stats.plan === "free" ? (
+                <BarChart3 className="h-8 w-8 text-white/80" />
+              ) : (
+                <Crown className="h-8 w-8 text-white/80" />
+              )}
             </div>
           </CardContent>
         </Card>
@@ -218,10 +249,19 @@ function RecentCalculations({ isLoading }: any) {
         ) : recentCalculations.length === 0 ? (
           <div className="text-center py-8">
             <Calculator className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No calculations yet</h3>
-            <p className="text-gray-600 mb-4">Start by running your first calculation — it's quick and easy.</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              No calculations yet
+            </h3>
+            <p className="text-gray-600 mb-4">
+              Start by running your first calculation — it's quick and easy.
+            </p>
             <div className="max-w-xs mx-auto">
-              <Button className="w-full" onClick={() => navigate("/standard-cycle")}>Run First Calculation</Button>
+              <Button
+                className="w-full"
+                onClick={() => navigate("/standard-cycle")}
+              >
+                Run First Calculation
+              </Button>
             </div>
           </div>
         ) : (
@@ -236,7 +276,9 @@ function RecentCalculations({ isLoading }: any) {
                     <Calculator className="h-5 w-5 text-blue-600" />
                   </div>
                   <div className="min-w-0">
-                    <h4 className="font-medium text-gray-900 truncate max-w-[28ch]">{calc.name || calc.calculation_type}</h4>
+                    <h4 className="font-medium text-gray-900 truncate max-w-[28ch]">
+                      {calc.name || calc.calculation_type}
+                    </h4>
                     <div className="flex items-center space-x-2 text-sm text-gray-600 mt-1">
                       <Clock className="h-3 w-3" />
                       <span>{new Date(calc.created_at).toLocaleString()}</span>
@@ -246,8 +288,20 @@ function RecentCalculations({ isLoading }: any) {
 
                 <div className="flex items-center space-x-2 flex-shrink-0">
                   <Badge variant="secondary">{calc.calculation_type}</Badge>
-                  <Button variant="ghost" className="text-sm px-3 py-1" onClick={() => navigate(`/calculations/${calc.id}`)}>Details</Button>
-                  <Button variant="outline" className="text-sm px-3 py-1" onClick={() => navigate("/standard-cycle")}>Run</Button>
+                  <Button
+                    variant="ghost"
+                    className="text-sm px-3 py-1"
+                    onClick={() => navigate(`/calculations/${calc.id}`)}
+                  >
+                    Details
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="text-sm px-3 py-1"
+                    onClick={() => navigate("/standard-cycle")}
+                  >
+                    Run
+                  </Button>
                 </div>
               </div>
             ))}
@@ -255,7 +309,11 @@ function RecentCalculations({ isLoading }: any) {
         )}
 
         <div className="mt-6 text-center">
-          <Button variant="outline" className="w-full" onClick={() => navigate("/history")}>
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => navigate("/history")}
+          >
             View All Calculations
           </Button>
         </div>
@@ -276,19 +334,35 @@ function QuickActions() {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6 space-y-3">
-        <Button className="w-full justify-start" variant="outline" onClick={() => navigate("/standard-cycle")}>
+        <Button
+          className="w-full justify-start"
+          variant="outline"
+          onClick={() => navigate("/standard-cycle")}
+        >
           <Calculator className="h-4 w-4 mr-2" />
           New Standard Cycle
         </Button>
-        <Button className="w-full justify-start" variant="outline" onClick={() => navigate("/refrigerant-comparison")}>
+        <Button
+          className="w-full justify-start"
+          variant="outline"
+          onClick={() => navigate("/refrigerant-comparison")}
+        >
           <TrendingUp className="h-4 w-4 mr-2" />
           Compare Refrigerants
         </Button>
-        <Button className="w-full justify-start" variant="outline" onClick={() => navigate("/cascade-cycle")}>
+        <Button
+          className="w-full justify-start"
+          variant="outline"
+          onClick={() => navigate("/cascade-cycle")}
+        >
           <BarChart3 className="h-4 w-4 mr-2" />
           Cascade Analysis
         </Button>
-        <Button className="w-full justify-start" variant="outline" onClick={() => navigate("/history")}>
+        <Button
+          className="w-full justify-start"
+          variant="outline"
+          onClick={() => navigate("/history")}
+        >
           <FileText className="h-4 w-4 mr-2" />
           View History
         </Button>
@@ -304,37 +378,71 @@ function ValueProposition() {
     <Card className="rounded-xl overflow-hidden shadow-xl">
       <div className="bg-gradient-to-r from-blue-600 to-violet-700 text-white p-10">
         <div className="max-w-4xl mx-auto text-center">
-          <Crown className="h-16 w-16 text-yellow-300 mx-auto mb-4" aria-hidden />
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-3">Unlock Professional Features</h2>
-          <p className="text-md opacity-90 mb-8">Powerful tools for engineers: faster analysis, sharing and export.</p>
+          <Crown
+            className="h-16 w-16 text-yellow-300 mx-auto mb-4"
+            aria-hidden
+          />
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-3">
+            Unlock Professional Features
+          </h2>
+          <p className="text-md opacity-90 mb-8">
+            Powerful tools for engineers: faster analysis, sharing and export.
+          </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div className="text-center">
-              <Zap className="h-8 w-8 text-yellow-300 mx-auto mb-3" aria-hidden />
-              <h3 className="font-semibold">Unlimited<br/>Calculations</h3>
-              <p className="text-sm opacity-85 mt-1">No monthly limits on your analysis</p>
+              <Zap
+                className="h-8 w-8 text-yellow-300 mx-auto mb-3"
+                aria-hidden
+              />
+              <h3 className="font-semibold">
+                Unlimited
+                <br />
+                Calculations
+              </h3>
+              <p className="text-sm opacity-85 mt-1">
+                No monthly limits on your analysis
+              </p>
             </div>
 
             <div className="text-center">
-              <Target className="h-8 w-8 text-yellow-300 mx-auto mb-3" aria-hidden />
+              <Target
+                className="h-8 w-8 text-yellow-300 mx-auto mb-3"
+                aria-hidden
+              />
               <h3 className="font-semibold">Advanced Analytics</h3>
-              <p className="text-sm opacity-85 mt-1">Detailed reports & optimization tips</p>
+              <p className="text-sm opacity-85 mt-1">
+                Detailed reports & optimization tips
+              </p>
             </div>
 
             <div className="text-center">
-              <FileText className="h-8 w-8 text-yellow-300 mx-auto mb-3" aria-hidden />
+              <FileText
+                className="h-8 w-8 text-yellow-300 mx-auto mb-3"
+                aria-hidden
+              />
               <h3 className="font-semibold">Export & Share</h3>
-              <p className="text-sm opacity-85 mt-1">PDF reports & team collaboration</p>
+              <p className="text-sm opacity-85 mt-1">
+                PDF reports & team collaboration
+              </p>
             </div>
           </div>
 
           <div className="bg-white/12 rounded-lg p-6 mb-6 backdrop-blur-sm border border-white/10">
-            <p className="text-lg font-semibold text-yellow-300 mb-1">Save 20+ hours per month</p>
-            <p className="text-sm opacity-90">Professional engineers save an average of $2,400/month in consulting time</p>
+            <p className="text-lg font-semibold text-yellow-300 mb-1">
+              Save 20+ hours per month
+            </p>
+            <p className="text-sm opacity-90">
+              Professional engineers save an average of $2,400/month in
+              consulting time
+            </p>
           </div>
 
           <div className="flex justify-center">
-            <Button className="bg-yellow-400 hover:bg-yellow-500 text-purple-900 font-bold px-8 py-3 rounded-full shadow-lg" onClick={() => navigate("/pricing")}>
+            <Button
+              className="bg-yellow-400 hover:bg-yellow-500 text-purple-900 font-bold px-8 py-3 rounded-full shadow-lg"
+              onClick={() => navigate("/pricing")}
+            >
               Upgrade Now - Start Free Trial
             </Button>
           </div>
@@ -346,8 +454,16 @@ function ValueProposition() {
 
 export function Dashboard() {
   const { user } = useSupabaseAuth();
-  const { calculations, isLoading: calculationsLoading, refetch } = useSupabaseCalculations();
-  const { subscription, loading: subscriptionLoading, refetch: subscriptionRefetch } = useSubscription();
+  const {
+    calculations,
+    isLoading: calculationsLoading,
+    refetch,
+  } = useSupabaseCalculations();
+  const {
+    subscription,
+    loading: subscriptionLoading,
+    refetch: subscriptionRefetch,
+  } = useSubscription();
 
   const stats = useMemo(() => {
     const totalCalculations = calculations.length;
@@ -356,16 +472,24 @@ export function Dashboard() {
     const currentYear = now.getFullYear();
     const monthlyCalculations = calculations.filter((calc: any) => {
       const calcDate = new Date(calc.created_at);
-      return calcDate.getMonth() === currentMonth && calcDate.getFullYear() === currentYear;
+      return (
+        calcDate.getMonth() === currentMonth &&
+        calcDate.getFullYear() === currentYear
+      );
     }).length;
 
     const plan = subscription?.plan || "free";
-    const planDisplayName = plan.charAt(0).toUpperCase() + plan.slice(1).replace("_", " ");
+    const planDisplayName =
+      plan.charAt(0).toUpperCase() + plan.slice(1).replace("_", " ");
     const isUnlimited = plan !== "free";
     const monthlyLimit = isUnlimited ? monthlyCalculations || 0 : 10;
-    const remaining = isUnlimited ? -1 : Math.max(0, monthlyLimit - monthlyCalculations);
+    const remaining = isUnlimited
+      ? -1
+      : Math.max(0, monthlyLimit - monthlyCalculations);
     const remainingText = remaining === -1 ? "Unlimited" : remaining.toString();
-    const usagePercentage = isUnlimited ? 0 : Math.min((monthlyCalculations / monthlyLimit) * 100, 100);
+    const usagePercentage = isUnlimited
+      ? 0
+      : Math.min((monthlyCalculations / monthlyLimit) * 100, 100);
     const isNearLimit = !isUnlimited && usagePercentage > 70;
     const isAtLimit = !isUnlimited && monthlyCalculations >= monthlyLimit;
 
@@ -403,7 +527,12 @@ export function Dashboard() {
         <SystemStatus />
 
         <section className="mb-6">
-          <QuickStats stats={stats} user={user} isLoading={isLoading} onRefresh={handleRefresh} />
+          <QuickStats
+            stats={stats}
+            user={user}
+            isLoading={isLoading}
+            onRefresh={handleRefresh}
+          />
         </section>
 
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -411,7 +540,9 @@ export function Dashboard() {
             <RecentCalculations isLoading={isLoading} />
 
             <Card className="p-4 shadow-md">
-              <h3 className="text-base font-semibold text-gray-800 mb-3">Tips</h3>
+              <h3 className="text-base font-semibold text-gray-800 mb-3">
+                Tips
+              </h3>
               <ul className="text-sm text-gray-600 space-y-2">
                 <li>Use comparators to evaluate refrigerants quickly.</li>
                 <li>Run batch calculations from the History page.</li>
@@ -426,11 +557,20 @@ export function Dashboard() {
             <QuickActions />
 
             <Card className="p-4 shadow-md">
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">Usage</h3>
-              <p className="text-xs text-gray-500">Monthly usage and quick insights</p>
+              <h3 className="text-sm font-semibold text-gray-700 mb-2">
+                Usage
+              </h3>
+              <p className="text-xs text-gray-500">
+                Monthly usage and quick insights
+              </p>
               <div className="mt-4">
                 <div className="w-full h-16 bg-gradient-to-r from-white to-white/50 rounded-md flex items-center justify-center">
-                  <svg width="100%" height="40" viewBox="0 0 120 40" className="mx-2">
+                  <svg
+                    width="100%"
+                    height="40"
+                    viewBox="0 0 120 40"
+                    className="mx-2"
+                  >
                     <polyline
                       fill="none"
                       stroke="#3b82f6"
@@ -442,11 +582,15 @@ export function Dashboard() {
                 <div className="flex items-center justify-between mt-3 text-sm">
                   <div>
                     <div className="text-xs text-gray-500">This month</div>
-                    <div className="text-lg font-bold">{formatNumber(stats.monthlyCalculations)}</div>
+                    <div className="text-lg font-bold">
+                      {formatNumber(stats.monthlyCalculations)}
+                    </div>
                   </div>
                   <div className="text-right">
                     <div className="text-xs text-gray-500">Remaining</div>
-                    <div className="text-lg font-semibold text-green-600">{stats.remainingText}</div>
+                    <div className="text-lg font-semibold text-green-600">
+                      {stats.remainingText}
+                    </div>
                   </div>
                 </div>
               </div>

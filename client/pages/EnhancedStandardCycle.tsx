@@ -622,19 +622,25 @@ export function EnhancedStandardCycleContent() {
     const estimates: number[] = [];
     for (const k of keys) {
       const p_kpa = getPropertyValue(sp[k], ["pressure_kpa", "pressure"]);
-      const t_c = getPropertyValue(sp[k], ["temperature_c", "temp_c", "temperature"]);
-      const rho = getPropertyValue(sp[k], [
-        "density_kg_m3",
-        "density",
-        "rho",
-        "rho_kg_m3",
-        "density_kg_per_m3",
-        "density_kg_m^3",
-        "rho_kg_per_m3",
-      ]) ?? (() => {
-        const svLoc = getSpecificVolume(sp[k]);
-        return svLoc && svLoc !== 0 ? 1 / svLoc : undefined;
-      })();
+      const t_c = getPropertyValue(sp[k], [
+        "temperature_c",
+        "temp_c",
+        "temperature",
+      ]);
+      const rho =
+        getPropertyValue(sp[k], [
+          "density_kg_m3",
+          "density",
+          "rho",
+          "rho_kg_m3",
+          "density_kg_per_m3",
+          "density_kg_m^3",
+          "rho_kg_per_m3",
+        ]) ??
+        (() => {
+          const svLoc = getSpecificVolume(sp[k]);
+          return svLoc && svLoc !== 0 ? 1 / svLoc : undefined;
+        })();
       if (
         p_kpa !== undefined &&
         t_c !== undefined &&
@@ -668,13 +674,13 @@ export function EnhancedStandardCycleContent() {
 
     // Final fallback: estimate using ideal-gas relation with inferred R
     const p_kpa = getPropertyValue(point, ["pressure_kpa", "pressure"]);
-    const t_c = getPropertyValue(point, ["temperature_c", "temp_c", "temperature"]);
+    const t_c = getPropertyValue(point, [
+      "temperature_c",
+      "temp_c",
+      "temperature",
+    ]);
     const R = estimateSpecificGasConstant();
-    if (
-      R !== undefined &&
-      p_kpa !== undefined &&
-      t_c !== undefined
-    ) {
+    if (R !== undefined && p_kpa !== undefined && t_c !== undefined) {
       const P = p_kpa * 1000; // Pa
       const T = t_c + 273.15; // K
       const rhoEst = P / (R * T);
@@ -863,10 +869,12 @@ export function EnhancedStandardCycleContent() {
       ])
     : undefined;
 
-  const densityAtSuction = results ? getDensity(results.state_points?.["1"]) : undefined;
+  const densityAtSuction = results
+    ? getDensity(results.state_points?.["1"])
+    : undefined;
 
   const volumetricFlowRate = results?.performance
-    ? getPerformanceValue(results.performance, [
+    ? (getPerformanceValue(results.performance, [
         "volumetric_flow_rate_m3_s",
         "volumetric_flow_rate",
         "volume_flow",
@@ -880,9 +888,11 @@ export function EnhancedStandardCycleContent() {
         "volume_rate",
         "m3_per_s",
       ]) ??
-      (massFlowRate !== undefined && densityAtSuction !== undefined && densityAtSuction !== 0
+      (massFlowRate !== undefined &&
+      densityAtSuction !== undefined &&
+      densityAtSuction !== 0
         ? massFlowRate / densityAtSuction
-        : undefined)
+        : undefined))
     : undefined;
 
   const cycleData = results
@@ -1562,11 +1572,7 @@ export function EnhancedStandardCycleContent() {
                       <div className="flex justify-between">
                         <span>Volumetric Flow Rate:</span>
                         <span className="font-mono">
-                          {formatValue(
-                            volumetricFlowRate,
-                            "m³/s",
-                            6,
-                          )}
+                          {formatValue(volumetricFlowRate, "m³/s", 6)}
                         </span>
                       </div>
                     </div>
@@ -1666,8 +1672,7 @@ export function EnhancedStandardCycleContent() {
                             )}
                           </div>
                           <div>
-                            ρ:{" "}
-                            {formatValue(getDensity(point), "kg/m³")}
+                            ρ: {formatValue(getDensity(point), "kg/m³")}
                           </div>
                           {getPropertyValue(point, [
                             "vapor_quality",
