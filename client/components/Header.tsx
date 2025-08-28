@@ -40,7 +40,10 @@ export function Header({ variant = 'landing' }: HeaderProps) {
     return (
       <div className="bg-white shadow-sm border-b border-blue-200">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+          {/* Prominent brand title above the header row */}
+          <div className="text-blue-900 font-extrabold text-[48.5px] leading-[45px] truncate">Simulateon</div>
+
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-2">
             <div className="flex items-center space-x-4 min-w-0">
               <Link to="/dashboard" className="inline-flex items-center space-x-3 min-w-0">
                 <h1 className="text-2xl md:text-3xl font-bold text-blue-900 cursor-pointer hover:text-blue-700 truncate">Simulateon</h1>
@@ -53,11 +56,11 @@ export function Header({ variant = 'landing' }: HeaderProps) {
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600 hidden md:block truncate max-w-[12rem]">{user?.email}</span>
                 <div className="hidden md:flex items-center space-x-2">
-                  <Button variant="outline" size="sm" onClick={() => navigate('/profile')} className="whitespace-nowrap">
+                  <Button variant="outline" size="sm" onClick={() => navigate('/profile')} className="whitespace-nowrap" style={{ backgroundColor: 'rgba(184,210,245,1)' }}>
                     <User className="h-4 w-4 mr-2" />
                     Profile
                   </Button>
-                  <Button variant="outline" size="sm" onClick={handleSignOut}>
+                  <Button variant="outline" size="sm" onClick={handleSignOut} style={{ backgroundColor: 'rgba(184,210,245,1)' }}>
                     Sign Out
                   </Button>
                 </div>
