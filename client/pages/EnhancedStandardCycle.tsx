@@ -1124,11 +1124,6 @@ export function EnhancedStandardCycleContent() {
               <CardContent className="space-y-6">
                 <div>
                   <Label htmlFor="refrigerant">Refrigerant</Label>
-                  <EnhancedRefrigerantSelector
-                    value={formData.refrigerant}
-                    onChange={handleRefrigerantChange}
-                    className="mt-2"
-                  />
                   {selectedRefrigerant && (
                     <div className="mt-2 text-sm text-muted-foreground space-y-1">
                       <div>
