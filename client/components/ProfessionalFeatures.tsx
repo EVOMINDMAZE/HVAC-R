@@ -302,8 +302,8 @@ This report presents a comprehensive analysis of the refrigeration cycle perform
 
 ## Performance Metrics
 - COP: ${results?.performance?.cop?.toFixed(2) || "N/A"}
-- Cooling Capacity: ${formatValue(results?.performance?.cooling_capacity_kw, "kW")}
-- Compressor Work: ${formatValue(results?.performance?.compressor_work_kw, "kW")}
+- Cooling Capacity: ${formatValue(coolingCapacityKwNum, "kW")}
+- Compressor Work: ${formatValue(compressorWorkKwNum, "kW")}
 
 ## Cost Analysis
 ${
