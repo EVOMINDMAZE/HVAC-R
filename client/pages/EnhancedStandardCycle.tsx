@@ -595,255 +595,17 @@ export function EnhancedStandardCycleContent() {
     return undefined;
   };
 
-  // Enhanced performance metrics extraction with comprehensive CoolProp mapping
   const getPerformanceValue = (
-    performanceObj: any,
-    propertyNames: string[],
+    perf: any,
+    variants: string[],
   ): number | undefined => {
-    if (!performanceObj) {
-      console.log("getPerformanceValue: No performance object provided");
-      return undefined;
-    }
-
-    console.log(
-      `getPerformanceValue: Searching for [${propertyNames.join(", ")}] in:`,
-      Object.keys(performanceObj),
-    );
-
-    // Comprehensive performance metric mapping for CoolProp and various backends
-    const performanceMap: Record<string, string[]> = {
-      cop: [
-        "cop",
-        "COP",
-        "Cop",
-        "coefficient_of_performance",
-        "performance_coefficient",
-        "coeff_of_performance",
-        "coefficient_performance",
-        "cop_cooling",
-        "COP_cooling",
-        "cooling_cop",
-        "refrigeration_cop",
-        "efficiency_cooling",
-      ],
-      cooling_capacity: [
-        "cooling_capacity_kw",
-        "cooling_capacity",
-        "capacity",
-        "capacity_kw",
-        "Q_evap",
-        "Q_evaporator",
-        "evaporator_load",
-        "refrigeration_effect_kw",
-        "refrigeration_capacity",
-        "cooling_load",
-        "evap_capacity",
-        "q_evap_kw",
-        "cooling_power",
-        "refrigeration_effect",
-        "evaporator_capacity",
-      ],
-      compressor_work: [
-        "compressor_work_kw",
-        "compressor_work",
-        "work",
-        "work_kw",
-        "power",
-        "W_comp",
-        "W_compressor",
-        "work_input",
-        "power_input",
-        "compressor_power",
-        "work_of_compression_kj_kg",
-        "compression_work",
-        "work_compression",
-        "compressor_power_kw",
-        "input_power",
-        "mechanical_power",
-      ],
-      heat_rejection: [
-        "heat_rejection_kw",
-        "heat_rejection",
-        "Q_cond",
-        "Q_condenser",
-        "condenser_load",
-        "heat_rejected",
-        "condensing_capacity",
-        "rejection_heat",
-        "condenser_capacity",
-        "q_cond_kw",
-        "heat_rejected_kw",
-        "condensation_heat",
-      ],
-      mass_flow_rate: [
-        "mass_flow_rate_kg_s",
-        "mass_flow_rate",
-        "mdot",
-        "m_dot",
-        "mass_flow",
-        "flow_rate",
-        "mass_flow_kg_s",
-        "refrigerant_flow_rate",
-        "flow_rate_mass",
-        "mass_rate",
-        "kg_per_s",
-        "mass_flux",
-        "circulation_rate",
-      ],
-      volumetric_flow_rate: [
-        "volumetric_flow_rate_m3_s",
-        "volumetric_flow_rate",
-        "volume_flow",
-        "V_dot",
-        "v_dot",
-        "volumetric_flow",
-        "volume_flow_rate",
-        "vol_flow_rate",
-        "suction_volume_flow",
-        "displacement",
-        "volume_rate",
-        "m3_per_s",
-      ],
-      refrigeration_effect: [
-        "refrigeration_effect_kj_kg",
-        "refrigeration_effect",
-        "specific_cooling",
-        "cooling_effect",
-        "evap_effect",
-        "specific_refrigeration_effect",
-        "cooling_per_kg",
-        "refrigerant_effect",
-        "evaporator_effect",
-      ],
-    };
-
-    // Step 1: Direct property name matches
-    for (const name of propertyNames) {
-      const value = performanceObj[name];
-      if (value !== undefined && value !== null && !isNaN(Number(value))) {
-        const numValue = Number(value);
-        console.log(`✓ Found exact performance match ${name}:`, numValue);
-        return numValue;
+    if (!perf) return undefined;
+    for (const key of variants) {
+      const val = perf[key];
+      if (val !== undefined && val !== null && !isNaN(Number(val))) {
+        return Number(val);
       }
     }
-
-    // Step 2: Property map variations with better matching
-    for (const primaryProperty of propertyNames) {
-      for (const [propertyType, variations] of Object.entries(performanceMap)) {
-        // More flexible matching logic
-        const lowerPrimary = primaryProperty.toLowerCase();
-        if (
-          lowerPrimary.includes(propertyType.toLowerCase()) ||
-          propertyType.toLowerCase().includes(lowerPrimary.split("_")[0]) ||
-          lowerPrimary.includes(propertyType.split("_")[0])
-        ) {
-          console.log(
-            `Searching ${propertyType} variations for ${primaryProperty}:`,
-            variations,
-          );
-
-          for (const variation of variations) {
-            const value = performanceObj[variation];
-            if (
-              value !== undefined &&
-              value !== null &&
-              !isNaN(Number(value))
-            ) {
-              const numValue = Number(value);
-              console.log(
-                `✓ Found performance fallback ${variation} for ${primaryProperty}:`,
-                numValue,
-              );
-              return numValue;
-            }
-          }
-        }
-      }
-    }
-
-    // Step 3: Case-insensitive and partial matching
-    const perfKeys = Object.keys(performanceObj);
-    for (const primaryProperty of propertyNames) {
-      const lowerPrimary = primaryProperty.toLowerCase();
-      for (const key of perfKeys) {
-        const lowerKey = key.toLowerCase();
-        if (
-          lowerKey === lowerPrimary ||
-          lowerKey.includes(lowerPrimary.split("_")[0]) ||
-          lowerPrimary.includes(lowerKey.split("_")[0])
-        ) {
-          const value = performanceObj[key];
-          if (value !== undefined && value !== null && !isNaN(Number(value))) {
-            const numValue = Number(value);
-            console.log(
-              `✓ Found case-insensitive performance match ${key} for ${primaryProperty}:`,
-              numValue,
-            );
-            return numValue;
-          }
-        }
-      }
-    }
-
-    // Step 4: Try calculated values for missing properties
-    const calculateDerivedValue = (
-      primaryProperty: string,
-    ): number | undefined => {
-      const lowerPrimary = primaryProperty.toLowerCase();
-
-      // Calculate cooling capacity from refrigeration effect
-      if (
-        lowerPrimary.includes("cooling_capacity") ||
-        lowerPrimary.includes("capacity")
-      ) {
-        const refEffect = performanceObj.refrigeration_effect_kj_kg;
-        if (refEffect && !isNaN(refEffect)) {
-          console.log(
-            `✓ Using refrigeration effect as capacity approximation: ${refEffect} kJ/kg`,
-          );
-          return refEffect; // This is specific effect in kJ/kg
-        }
-      }
-
-      // Calculate heat rejection from energy balance
-      if (
-        lowerPrimary.includes("heat_rejection") ||
-        lowerPrimary.includes("rejection")
-      ) {
-        const refEffect = performanceObj.refrigeration_effect_kj_kg;
-        const compWork = performanceObj.work_of_compression_kj_kg;
-        if (refEffect && compWork && !isNaN(refEffect) && !isNaN(compWork)) {
-          const heatRejection = refEffect + compWork;
-          console.log(`✓ Calculated heat rejection: ${heatRejection} kJ/kg`);
-          return heatRejection;
-        }
-      }
-
-      // Use work_of_compression_kj_kg for compressor work
-      if (lowerPrimary.includes("compressor_work")) {
-        const specificWork = performanceObj.work_of_compression_kj_kg;
-        if (specificWork && !isNaN(specificWork)) {
-          console.log(`✓ Using specific work: ${specificWork} kJ/kg`);
-          return specificWork;
-        }
-      }
-
-      return undefined;
-    };
-
-    const derivedValue = calculateDerivedValue(propertyNames[0]);
-    if (derivedValue !== undefined) {
-      return derivedValue;
-    }
-
-    console.log(
-      `❌ No performance value found for any variation of [${propertyNames.join(", ")}]`,
-    );
-    console.log("Available performance keys:", perfKeys);
-    console.log(
-      "Performance object sample:",
-      Object.keys(performanceObj).slice(0, 10),
-    );
     return undefined;
   };
 
@@ -1400,7 +1162,20 @@ export function EnhancedStandardCycleContent() {
                       <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
                         <div className="text-2xl font-bold text-primary">
                           {formatValue(
-                            getPerformanceValue(results.performance, ["cop"]),
+                            getPerformanceValue(results.performance, [
+                              "cop",
+                              "COP",
+                              "Cop",
+                              "coefficient_of_performance",
+                              "performance_coefficient",
+                              "coeff_of_performance",
+                              "coefficient_performance",
+                              "cop_cooling",
+                              "COP_cooling",
+                              "cooling_cop",
+                              "refrigeration_cop",
+                              "efficiency_cooling",
+                            ]),
                             "",
                           )}
                         </div>
@@ -1416,6 +1191,19 @@ export function EnhancedStandardCycleContent() {
                             getPerformanceValue(results.performance, [
                               "cooling_capacity_kw",
                               "cooling_capacity",
+                              "capacity",
+                              "capacity_kw",
+                              "Q_evap",
+                              "Q_evaporator",
+                              "evaporator_load",
+                              "refrigeration_effect_kw",
+                              "refrigeration_capacity",
+                              "cooling_load",
+                              "evap_capacity",
+                              "q_evap_kw",
+                              "cooling_power",
+                              "refrigeration_effect",
+                              "evaporator_capacity",
                             ]),
                             "kW",
                           )}
@@ -1429,7 +1217,21 @@ export function EnhancedStandardCycleContent() {
                           {formatValue(
                             getPerformanceValue(results.performance, [
                               "compressor_work_kw",
+                              "compressor_work",
+                              "work",
+                              "work_kw",
+                              "power",
+                              "W_comp",
+                              "W_compressor",
+                              "work_input",
+                              "power_input",
+                              "compressor_power",
                               "work_of_compression_kj_kg",
+                              "compression_work",
+                              "work_compression",
+                              "compressor_power_kw",
+                              "input_power",
+                              "mechanical_power",
                             ]),
                             "kW",
                           )}
@@ -1444,6 +1246,16 @@ export function EnhancedStandardCycleContent() {
                             getPerformanceValue(results.performance, [
                               "heat_rejection_kw",
                               "heat_rejection",
+                              "Q_cond",
+                              "Q_condenser",
+                              "condenser_load",
+                              "heat_rejected",
+                              "condensing_capacity",
+                              "rejection_heat",
+                              "condenser_capacity",
+                              "q_cond_kw",
+                              "heat_rejected_kw",
+                              "condensation_heat",
                             ]),
                             "kW",
                           )}
@@ -1462,6 +1274,17 @@ export function EnhancedStandardCycleContent() {
                             getPerformanceValue(results.performance, [
                               "mass_flow_rate_kg_s",
                               "mass_flow_rate",
+                              "mdot",
+                              "m_dot",
+                              "mass_flow",
+                              "flow_rate",
+                              "mass_flow_kg_s",
+                              "refrigerant_flow_rate",
+                              "flow_rate_mass",
+                              "mass_rate",
+                              "kg_per_s",
+                              "mass_flux",
+                              "circulation_rate",
                             ]),
                             "kg/s",
                             4,
@@ -1475,6 +1298,16 @@ export function EnhancedStandardCycleContent() {
                             getPerformanceValue(results.performance, [
                               "volumetric_flow_rate_m3_s",
                               "volumetric_flow_rate",
+                              "volume_flow",
+                              "V_dot",
+                              "v_dot",
+                              "volumetric_flow",
+                              "volume_flow_rate",
+                              "vol_flow_rate",
+                              "suction_volume_flow",
+                              "displacement",
+                              "volume_rate",
+                              "m3_per_s",
                             ]),
                             "m³/s",
                             6,
