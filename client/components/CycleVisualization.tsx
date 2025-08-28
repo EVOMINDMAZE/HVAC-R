@@ -1446,7 +1446,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
                       )}
                       {selectedPointData.id === "4" && (
                         <>
-                          <li>�� Two-phase mixture after expansion</li>
+                          <li>• Two-phase mixture after expansion</li>
                           <li>• Quality determines evaporator performance</li>
                           <li>
                             • Lower quality = more liquid = better heat transfer
