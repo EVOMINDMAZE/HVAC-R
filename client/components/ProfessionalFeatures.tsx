@@ -589,7 +589,7 @@ export function ProfessionalFeatures({
             txt = resp.statusText || String(resp.status);
           }
         }
-        console.error('Server PDF generation failed', resp.status, txt);
+        console.warn('Server PDF generation failed', resp.status, txt);
 
         // If endpoint is missing (404) fallback to client-side printable HTML PDF
         if (resp.status === 404) {
