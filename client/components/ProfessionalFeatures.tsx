@@ -405,13 +405,34 @@ export function ProfessionalFeatures({
   const costData = calculateCostAnalysis();
   const sustainabilityData = getRefrigerantSustainability(refrigerant);
 
-  // Build SVG diagrams (P-h, T-s, P-v) from results / cycleData when canvas capture is unavailable
+  // Build SVG diagrams (P-h, T-s) from results / cycleData when canvas capture is unavailable
   const buildDiagramSvgs = (resultsObj: any, cycleObj: any) => {
     try {
       const svgs: { ph?: string; ts?: string } = {};
-
-      // Operation colors for segments: 1->2 compression, 2->3 condensation, 3->4 expansion, 4->1 evaporation
       const opColors = ['#ef4444', '#f97316', '#06b6d4', '#2563eb'];
+
+      const safeFindArray = (obj: any, keywords: string[]) => {
+        if (!obj || typeof obj !== 'object') return [] as number[];
+        // exact keys first
+        for (const k of Object.keys(obj)) {
+          const low = k.toLowerCase();
+          for (const kw of keywords) {
+            if (low === kw.toLowerCase() && Array.isArray(obj[k])) return obj[k];
+          }
+        }
+        // contains
+        for (const k of Object.keys(obj)) {
+          const low = k.toLowerCase();
+          for (const kw of keywords) {
+            if (low.includes(kw.toLowerCase()) && Array.isArray(obj[k])) return obj[k];
+          }
+        }
+        // fallback: first numeric array
+        for (const k of Object.keys(obj)) {
+          if (Array.isArray(obj[k]) && obj[k].every((v: any) => typeof v === 'number')) return obj[k];
+        }
+        return [] as number[];
+      };
 
       const makeDiagram = (
         xArr: number[],
@@ -428,22 +449,21 @@ export function ProfessionalFeatures({
         const plotW = width - margin.left - margin.right;
         const plotH = height - margin.top - margin.bottom;
 
-        const pad = (v: number, pct = 0.08) => {
-          const r = v === 0 ? 1 : Math.abs(v);
-          return [v - r * pct, v + r * pct];
+        const pad = (minV: number, maxV: number, pct = 0.08) => {
+          const range = Math.max(1e-6, Math.abs(maxV - minV));
+          return [minV - range * pct, maxV + range * pct];
         };
 
         const xMin = Math.min(...xArr);
         const xMax = Math.max(...xArr);
         const yMin = Math.min(...yArr);
         const yMax = Math.max(...yArr);
-        const [xm, xM] = pad(xMin);
-        const [ym, yM] = pad(yMax);
+        const [xm, xM] = pad(xMin, xMax);
+        const [ym, yM] = pad(yMin, yMax);
 
         const xScale = (v: number) => margin.left + ((v - xm) / (xM - xm || 1)) * plotW;
         const yScale = (v: number) => margin.top + plotH - ((v - ym) / (yM - ym || 1)) * plotH;
 
-        // grid ticks (5 ticks)
         const nx = 5;
         const ny = 5;
         const xTicks: number[] = [];
@@ -451,7 +471,6 @@ export function ProfessionalFeatures({
         const yTicks: number[] = [];
         for (let i = 0; i <= ny; i++) yTicks.push(ym + (i / ny) * (yM - ym));
 
-        // Dome path (approx)
         let domePath = '';
         for (let i = 0; i < xArr.length; i++) {
           const x = xScale(xArr[i]);
@@ -459,7 +478,6 @@ export function ProfessionalFeatures({
           domePath += (i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`);
         }
 
-        // Colored operation segments between points (cycle order)
         const segs: string[] = [];
         for (let i = 0; i < pts.length; i++) {
           const cur = pts[i];
@@ -470,8 +488,13 @@ export function ProfessionalFeatures({
           const y2 = yScale(next.y);
           const color = opColors[i % opColors.length] || '#0b5fff';
           segs.push(`<line x1='${x1}' y1='${y1}' x2='${x2}' y2='${y2}' stroke='${color}' stroke-width='3' stroke-linecap='round' />`);
-          // Add arrow marker
-          segs.push(`<path d='M ${x2} ${y2} L ${x2 - (x2 - x1) * 0.03 + 6} ${y2 - 6} L ${x2 - (x2 - x1) * 0.03 - 6} ${y2 - 6} Z' fill='${color}' opacity='0.9' />`);
+          // small arrow
+          const dx = x2 - x1;
+          const dy = y2 - y1;
+          const angle = Math.atan2(dy, dx);
+          const ax = x2 - Math.cos(angle) * 12;
+          const ay = y2 - Math.sin(angle) * 12;
+          segs.push(`<path d='M ${ax + Math.cos(angle + 0.5) * 6} ${ay + Math.sin(angle + 0.5) * 6} L ${x2} ${y2} L ${ax + Math.cos(angle - 0.5) * 6} ${ay + Math.sin(angle - 0.5) * 6} Z' fill='${color}' opacity='0.95' />`);
         }
 
         const ptsMarkup = pts
@@ -483,7 +506,6 @@ export function ProfessionalFeatures({
           })
           .join('');
 
-        // Axis tick markup
         const xTickMarks = xTicks
           .map((t) => {
             const tx = xScale(t);
@@ -498,7 +520,6 @@ export function ProfessionalFeatures({
           })
           .join('');
 
-        // Legend card small
         const legend = `
           <g transform='translate(${margin.left + plotW - 180}, ${margin.top + 6})'>
             <rect x='0' y='0' width='170' height='68' rx='6' fill='#ffffff' stroke='#e6eefc' />
@@ -511,60 +532,41 @@ export function ProfessionalFeatures({
           </g>
         `;
 
-        const svg = `<?xml version="1.0"?><svg xmlns='http://www.w3.org/2000/svg' width='${width}' height='${height}' viewBox='0 0 ${width} ${height}'><style>text{font-family:Inter, Arial, Helvetica, sans-serif;fill:#0b172a}</style><rect x='0' y='0' width='100%' height='100%' fill='white' rx='8' />
+        // Remove xml declaration and ensure responsive sizing
+        const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${width}' height='${height}' viewBox='0 0 ${width} ${height}' preserveAspectRatio='xMidYMid meet' role='img' aria-label='${title}'><style>text{font-family:Inter, Arial, Helvetica, sans-serif;fill:#0b172a}</style><rect x='0' y='0' width='100%' height='100%' fill='white' rx='8' />
           <text x='${margin.left}' y='20' font-size='15' font-weight='700'>${title}</text>
-          <!-- grid -->
-          ${xTicks
-            .map((t) => `<line x1='${xScale(t)}' y1='${margin.top}' x2='${xScale(t)}' y2='${margin.top + plotH}' stroke='#eef2ff' stroke-width='1'/>`)
-            .join('')}
-          ${yTicks
-            .map((t) => `<line x1='${margin.left}' y1='${yScale(t)}' x2='${margin.left + plotW}' y2='${yScale(t)}' stroke='#eef2ff' stroke-width='1'/>`)
-            .join('')}
-
-          <!-- axes -->
+          ${xTicks.map((t) => `<line x1='${xScale(t)}' y1='${margin.top}' x2='${xScale(t)}' y2='${margin.top + plotH}' stroke='#eef2ff' stroke-width='1'/>`).join('')}
+          ${yTicks.map((t) => `<line x1='${margin.left}' y1='${yScale(t)}' x2='${margin.left + plotW}' y2='${yScale(t)}' stroke='#eef2ff' stroke-width='1'/>`).join('')}
           <line x1='${margin.left}' y1='${margin.top}' x2='${margin.left}' y2='${margin.top + plotH}' stroke='#cbd5e1' stroke-width='1.5'/>
           <line x1='${margin.left}' y1='${margin.top + plotH}' x2='${margin.left + plotW}' y2='${margin.top + plotH}' stroke='#cbd5e1' stroke-width='1.5'/>
-
-          <!-- dome -->
           <path d='${domePath}' fill='none' stroke='#94a3b8' stroke-width='2' />
-
-          <!-- operation segments -->
           ${segs.join('\n')}
-
-          <!-- points -->
           ${ptsMarkup}
-
-          <!-- ticks -->
           ${xTickMarks}
           ${yTickMarks}
-
-          <!-- labels -->
           <text x='${margin.left + plotW / 2}' y='${height - 12}' font-size='12' text-anchor='middle'>${xLabel}</text>
           <text x='${margin.left - 40}' y='${margin.top + plotH / 2}' font-size='12' transform='rotate(-90 ${margin.left - 40},${margin.top + plotH / 2})' text-anchor='middle'>${yLabel}</text>
-
           ${legend}
         </svg>`;
 
         return svg;
       };
 
-      // P-h
-      if (resultsObj?.saturation_dome?.ph_diagram) {
-        const ent = resultsObj.saturation_dome.ph_diagram.enthalpy_kj_kg || [];
-        const pres = resultsObj.saturation_dome.ph_diagram.pressure_kpa || [];
-        const points = (cycleObj?.points || []).map((p: any, idx: number) => ({ x: p.enthalpy ?? p.enthalpy_kj_kg ?? 0, y: p.pressure ?? p.pressure_kpa ?? 0, id: String(idx + 1) }));
-        const svg = makeDiagram(ent, pres, 'Enthalpy (kJ/kg)', 'Pressure (kPa)', points, 'P-h Diagram');
-        if (svg) svgs.ph = svg;
-      }
+      // P-h extraction - try multiple possible key names
+      const ph = resultsObj?.saturation_dome?.ph_diagram || {};
+      const ent = safeFindArray(ph, ['enthalpy', 'h', 'enthalpy_kj_kg']);
+      const pres = safeFindArray(ph, ['pressure', 'p', 'pressure_kpa']);
+      const pointsPh = (cycleObj?.points || []).map((p: any, idx: number) => ({ x: p.enthalpy ?? p.enthalpy_kj_kg ?? p.h ?? 0, y: p.pressure ?? p.pressure_kpa ?? p.p ?? 0, id: String(idx + 1) }));
+      const phSvg = makeDiagram(ent, pres, 'Enthalpy (kJ/kg)', 'Pressure (kPa)', pointsPh, 'P-h Diagram');
+      if (phSvg) svgs.ph = phSvg;
 
-      // T-s
-      if (resultsObj?.saturation_dome?.ts_diagram) {
-        const s = resultsObj.saturation_dome.ts_diagram.entropy_kj_kgk || [];
-        const t = resultsObj.saturation_dome.ts_diagram.temperature_c || [];
-        const points = (cycleObj?.points || []).map((p: any, idx: number) => ({ x: p.entropy ?? p.entropy_kj_kgk ?? p.entropy_kj_kg ?? 0, y: p.temperature ?? p.temperature_c ?? 0, id: String(idx + 1) }));
-        const svg = makeDiagram(s, t, 'Entropy (kJ/kg·K)', 'Temperature (°C)', points, 'T-s Diagram');
-        if (svg) svgs.ts = svg;
-      }
+      // T-s extraction
+      const ts = resultsObj?.saturation_dome?.ts_diagram || {};
+      const sArr = safeFindArray(ts, ['entropy', 's', 'entropy_kj_kgk', 'entropy_kj_kg']);
+      const tArr = safeFindArray(ts, ['temperature', 't', 'temperature_c']);
+      const pointsTs = (cycleObj?.points || []).map((p: any, idx: number) => ({ x: p.entropy ?? p.entropy_kj_kgk ?? p.s ?? 0, y: p.temperature ?? p.temperature_c ?? p.t ?? 0, id: String(idx + 1) }));
+      const tsSvg = makeDiagram(sArr, tArr, 'Entropy (kJ/kg·K)', 'Temperature (°C)', pointsTs, 'T-s Diagram');
+      if (tsSvg) svgs.ts = tsSvg;
 
       return svgs;
     } catch (e) {
@@ -580,11 +582,29 @@ export function ProfessionalFeatures({
     if (diagramDataUrl) {
       return `<div class='section'><h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Cycle Diagram</h2><div class='diagram'><img src='${diagramDataUrl}' style='max-width:100%;height:auto;border:1px solid #e6eefc;border-radius:6px' /></div></div>`;
     }
+
+    const sanitizeSvg = (svg: string) => {
+      if (!svg) return '';
+      // remove xml declaration
+      svg = svg.replace(/<\?xml[\s\S]*?\?>/g, '');
+      // ensure viewBox present
+      if (!/viewBox=/i.test(svg)) {
+        const w = svg.match(/width=['"]?(\d+)/)?.[1] || '760';
+        const h = svg.match(/height=['"]?(\d+)/)?.[1] || '420';
+        svg = svg.replace(/<svg/, `<svg viewBox=\"0 0 ${w} ${h}\"`);
+      }
+      // make responsive
+      svg = svg.replace(/<svg([^>]*)width='[^']*'([^>]*)>/i, `<svg$1$2 style='max-width:100%;height:auto;display:block'`);
+      svg = svg.replace(/<svg([^>]*)width=\"[^\"]*\"([^>]*)>/i, `<svg$1$2 style='max-width:100%;height:auto;display:block'`);
+      return svg;
+    };
+
     const diagrams: string[] = [];
-    if (svgs.ph) diagrams.push(`<div style='flex:1;min-width:320px'><h3 style='margin:0 0 8px;font-size:14px;color:#0f172a'>P-h Diagram</h3>${svgs.ph}</div>`);
-    if (svgs.ts) diagrams.push(`<div style='flex:1;min-width:320px'><h3 style='margin:0 0 8px;font-size:14px;color:#0f172a'>T-s Diagram</h3>${svgs.ts}</div>`);
+    if (svgs.ph) diagrams.push(`<div style='flex:1;min-width:300px;max-width:48%'><h3 style='margin:0 0 8px;font-size:14px;color:#0f172a'>P-h Diagram</h3>${sanitizeSvg(svgs.ph)}</div>`);
+    if (svgs.ts) diagrams.push(`<div style='flex:1;min-width:300px;max-width:48%'><h3 style='margin:0 0 8px;font-size:14px;color:#0f172a'>T-s Diagram</h3>${sanitizeSvg(svgs.ts)}</div>`);
+
     if (diagrams.length === 2) {
-      return `<div class='section' style='display:flex;gap:16px;align-items:flex-start'>${diagrams.join('')}</div>`;
+      return `<div class='section' style='display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start'>${diagrams.join('')}</div>`;
     }
     if (diagrams.length === 1) return `<div class='section'>${diagrams[0]}</div>`;
     return '';
@@ -647,6 +667,41 @@ export function ProfessionalFeatures({
       } catch (e) {
         console.warn('Error capturing diagram canvas', e);
         diagramDataUrl = null;
+      }
+
+      // If no canvas capture available, try to rasterize generated SVGs to PNG and use as diagram image
+      if (!diagramDataUrl) {
+        try {
+          const svgs = buildDiagramSvgs(results, cycleData);
+          const firstSvg = svgs.ph || svgs.ts || null;
+          if (firstSvg) {
+            const svgStr = firstSvg.replace(/<\?xml[\s\S]*?\?>/g, '');
+            // extract width/height
+            const wMatch = svgStr.match(/width=['"]?(\d+)/i);
+            const hMatch = svgStr.match(/height=['"]?(\d+)/i);
+            const width = Number(wMatch?.[1] || 760);
+            const height = Number(hMatch?.[1] || 420);
+            const img = new Image();
+            // use encodeURIComponent to safely embed
+            img.src = 'data:image/svg+xml;charset=utf8,' + encodeURIComponent(svgStr);
+            await new Promise<void>((resolve, reject) => {
+              img.onload = () => resolve();
+              img.onerror = (ev) => reject(new Error('SVG image load failed'));
+            });
+            const cvs = document.createElement('canvas');
+            cvs.width = width;
+            cvs.height = height;
+            const cctx = cvs.getContext('2d');
+            if (cctx) {
+              cctx.fillStyle = '#ffffff';
+              cctx.fillRect(0, 0, cvs.width, cvs.height);
+              cctx.drawImage(img, 0, 0, cvs.width, cvs.height);
+              diagramDataUrl = cvs.toDataURL('image/png');
+            }
+          }
+        } catch (e) {
+          console.warn('Failed to rasterize SVG to PNG for server payload', e);
+        }
       }
 
       const payload = {
