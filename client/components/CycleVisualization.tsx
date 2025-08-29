@@ -151,47 +151,58 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       diagramType,
     );
 
-    // Get the actual property values for scaling with validation
-    const xValues: number[] = [];
-    const yValues: number[] = [];
-    const validPoints: CyclePoint[] = [];
+    // If saturation dome data exists, prefer it for axis ranges to match the dome scaling
+    const dome = (cycleData as any)?.saturationDome || (cycleData as any)?.saturation_dome || null;
+    let xValues: number[] = [];
+    let yValues: number[] = [];
 
-    points.forEach((point) => {
-      const xVal = resolvePointValue(point, config.xAxis.property as string);
-      const yVal = resolvePointValue(point, config.yAxis.property as string);
-
-      console.log(
-        `Point ${point.id}: ${String(config.xAxis.property)}=${xVal}, ${String(config.yAxis.property)}=${yVal}, valid=${xVal !== null && yVal !== null}`,
-      );
-
-      if (xVal !== null) xValues.push(xVal);
-      if (yVal !== null) yValues.push(yVal);
-
-      if (xVal !== null && yVal !== null) {
-        validPoints.push(point);
+    if (dome) {
+      // Extract dome arrays for the current diagram when available
+      if (diagramType === "P-h") {
+        const ph = dome.ph_diagram || dome.ph || dome['ph'] || null;
+        if (ph) {
+          xValues = (ph.enthalpy_kj_kg || ph.enthalpy || ph.h || []).slice();
+          yValues = (ph.pressure_kpa || ph.pressure || ph.p || []).slice();
+        }
+      } else if (diagramType === "T-s") {
+        const ts = dome.ts_diagram || dome.ts || dome['ts'] || null;
+        if (ts) {
+          xValues = (ts.entropy_kj_kgk || ts.entropy_kj_kg || ts.entropy || ts.s || []).slice();
+          yValues = (ts.temperature_c || ts.temperature || ts.t || []).slice();
+        }
+      } else if (diagramType === "T-v") {
+        const tv = dome.tv_diagram || dome.tv || dome['tv'] || null;
+        if (tv) {
+          xValues = (tv.specific_volume_m3_kg || tv.specific_volume || tv.v || []).slice();
+          yValues = (tv.temperature_c || tv.temperature || tv.t || []).slice();
+        }
       }
-    });
+    }
 
-    console.log(`Valid data points: ${validPoints.length}/4`);
+    // Fallback to point-derived ranges when dome data is not present or insufficient
+    if (xValues.length === 0 || yValues.length === 0) {
+      points.forEach((point) => {
+        const xVal = resolvePointValue(point, config.xAxis.property as string);
+        const yVal = resolvePointValue(point, config.yAxis.property as string);
+        if (xVal !== null) xValues.push(xVal);
+        if (yVal !== null) yValues.push(yVal);
+      });
+    }
+
     console.log("X values for scaling:", xValues);
     console.log("Y values for scaling:", yValues);
 
-    // Enhanced scaling with real thermodynamic data
-    if (xValues.length >= 2 && yValues.length >= 2) {
+    if (xValues.length >= 1 && yValues.length >= 1) {
       const xMin = Math.min(...xValues);
       const xMax = Math.max(...xValues);
       const yMin = Math.min(...yValues);
       const yMax = Math.max(...yValues);
 
-      console.log(
-        `Real thermodynamic scaling: X[${xMin.toFixed(2)} to ${xMax.toFixed(2)}], Y[${yMin.toFixed(2)} to ${yMax.toFixed(2)}]`,
-      );
-
-      // Smart padding based on data range
+      // Use consistent padding
       const xRange = xMax - xMin || 1;
       const yRange = yMax - yMin || 1;
-      const xPadding = Math.max(xRange * 0.1, xRange > 1000 ? 50 : 5);
-      const yPadding = Math.max(yRange * 0.1, yRange > 1000 ? 50 : 5);
+      const xPadding = Math.max(xRange * 0.12, xRange > 1000 ? 50 : 1);
+      const yPadding = Math.max(yRange * 0.12, yRange > 1000 ? 50 : 1);
 
       return points.map((point) => {
         const xVal = resolvePointValue(point, config.xAxis.property as string);
@@ -201,44 +212,21 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
         if (xVal !== null && yVal !== null) {
           x = ((xVal - xMin + xPadding) / (xRange + 2 * xPadding)) * plotWidth;
-          y =
-            plotHeight -
-            ((yVal - yMin + yPadding) / (yRange + 2 * yPadding)) * plotHeight;
+          y = plotHeight - ((yVal - yMin + yPadding) / (yRange + 2 * yPadding)) * plotHeight;
         } else {
-          const fallbackPositions = getIdealizedPositions(
-            diagramType,
-            plotWidth,
-            plotHeight,
-          );
+          const fallbackPositions = getIdealizedPositions(diagramType, plotWidth, plotHeight);
           const index = parseInt(point.id) - 1;
           x = fallbackPositions[index]?.x || plotWidth / 2;
           y = fallbackPositions[index]?.y || plotHeight / 2;
         }
 
-        console.log(
-          `Point ${point.id} mapped: (${x.toFixed(1)}, ${y.toFixed(1)}) [${xVal !== null && yVal !== null ? "REAL" : "FALLBACK"}]`,
-        );
         return { ...point, x, y };
       });
-    } else {
-      console.log("Using enhanced thermodynamic fallback positions");
-      const fallbackPositions = getIdealizedPositions(
-        diagramType,
-        plotWidth,
-        plotHeight,
-      );
-
-      return points.map((point, index) => {
-        const pos = fallbackPositions[index] || {
-          x: plotWidth / 2,
-          y: plotHeight / 2,
-        };
-        console.log(
-          `Point ${point.id} fallback position: (${pos.x.toFixed(1)}, ${pos.y.toFixed(1)})`,
-        );
-        return { ...point, x: pos.x, y: pos.y };
-      });
     }
+
+    // ultimate fallback
+    const fallbackPositions = getIdealizedPositions(diagramType, plotWidth, plotHeight);
+    return points.map((point, index) => ({ ...point, x: fallbackPositions[index]?.x || plotWidth / 2, y: fallbackPositions[index]?.y || plotHeight / 2 }));
   };
 
   // Enhanced idealized positions that reflect real thermodynamic cycles
@@ -589,13 +577,38 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     ctx.font = "bold 14px 'Inter', sans-serif";
     ctx.textAlign = "center";
 
-    // Calculate real value ranges from cycle points using resolver
-    const xValues = points
-      .map((p) => resolvePointValue(p, config.xAxis.property as string))
-      .filter((v) => v !== null) as number[];
-    const yValues = points
-      .map((p) => resolvePointValue(p, config.yAxis.property as string))
-      .filter((v) => v !== null) as number[];
+    // Use saturation dome arrays when available for consistent axis ranges
+    const dome = (cycleData as any)?.saturationDome || (cycleData as any)?.saturation_dome || null;
+    let xValues: number[] = [];
+    let yValues: number[] = [];
+
+    if (dome) {
+      if (diagramType === "P-h") {
+        const ph = dome.ph_diagram || dome.ph || dome['ph'] || null;
+        if (ph) {
+          xValues = (ph.enthalpy_kj_kg || ph.enthalpy || ph.h || []).slice() as number[];
+          yValues = (ph.pressure_kpa || ph.pressure || ph.p || []).slice() as number[];
+        }
+      } else if (diagramType === "T-s") {
+        const ts = dome.ts_diagram || dome.ts || dome['ts'] || null;
+        if (ts) {
+          xValues = (ts.entropy_kj_kgk || ts.entropy_kj_kg || ts.entropy || ts.s || []).slice() as number[];
+          yValues = (ts.temperature_c || ts.temperature || ts.t || []).slice() as number[];
+        }
+      } else if (diagramType === "T-v") {
+        const tv = dome.tv_diagram || dome.tv || dome['tv'] || null;
+        if (tv) {
+          xValues = (tv.specific_volume_m3_kg || tv.specific_volume || tv.v || []).slice() as number[];
+          yValues = (tv.temperature_c || tv.temperature || tv.t || []).slice() as number[];
+        }
+      }
+    }
+
+    // fallback to point-derived values
+    if (xValues.length === 0 || yValues.length === 0) {
+      xValues = points.map((p) => resolvePointValue(p, config.xAxis.property as string)).filter((v) => v !== null) as number[];
+      yValues = points.map((p) => resolvePointValue(p, config.yAxis.property as string)).filter((v) => v !== null) as number[];
+    }
 
     if (xValues.length === 0 || yValues.length === 0) {
       console.log("No valid axis data available for", diagramType);
@@ -607,11 +620,12 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     const yMin = Math.min(...yValues);
     const yMax = Math.max(...yValues);
 
-    // Add padding to ranges
+    // Add padding to ranges (use consistent fraction)
     const xRange = xMax - xMin || 1;
     const yRange = yMax - yMin || 1;
-    const xPadding = xRange * 0.15;
-    const yPadding = yRange * 0.15;
+    const padFrac = 0.12;
+    const xPadding = xRange * padFrac;
+    const yPadding = yRange * padFrac;
 
     const xMinPadded = xMin - xPadding;
     const xMaxPadded = xMax + xPadding;
