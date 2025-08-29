@@ -955,7 +955,17 @@ export function ProfessionalFeatures({
     const svg2 = makeBarSVG('Compressor Work (kW)', compressorWorkKwNum, maxMetric);
     const svg3 = makeBarSVG('COP', cop, maxMetric);
 
-    const diagramSection = diagramDataUrl ? `<div class='card'><h3>Diagram</h3><div><img src='${diagramDataUrl}' style='max-width:100%;height:auto;border-radius:6px;border:1px solid #e6eefc' /></div></div>` : '';
+    const svgs = buildDiagramSvgs(results, cycleData);
+    const diagramSection = diagramDataUrl
+      ? `<div class='card'><h3>Diagram</h3><div><img src='${diagramDataUrl}' style='max-width:100%;height:auto;border-radius:6px;border:1px solid #e6eefc' /></div></div>`
+      : (svgs && (svgs.ph || svgs.ts || svgs.pv))
+        ? `
+          <div class='card'><h3>Diagrams</h3>
+            ${svgs.ph ? `<div style='margin-bottom:12px'>${svgs.ph}</div>` : ''}
+            ${svgs.ts ? `<div style='margin-bottom:12px'>${svgs.ts}</div>` : ''}
+            ${svgs.pv ? `<div style='margin-bottom:12px'>${svgs.pv}</div>` : ''}
+          </div>`
+        : '';
 
     const html = `<!doctype html><html><head><meta charset='utf-8'><title>${project} - Chart Package</title>
     <style>body{font-family:Inter,Arial,Helvetica,sans-serif;padding:20px;background:#f8fafc} .card{background:#fff;padding:16px;border-radius:8px;box-shadow:0 6px 20px rgba(13,38,59,0.06);margin-bottom:16px}</style>
