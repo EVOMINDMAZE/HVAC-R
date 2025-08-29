@@ -123,6 +123,9 @@ export function RefrigerantComparisonContent() {
     selectedRefrigerantForVisualization,
     setSelectedRefrigerantForVisualization,
   ] = useState<string | null>(null);
+  // Temporary debug state to inspect raw API response
+  const [debugResponse, setDebugResponse] = useState<any | null>(null);
+  const [showDebug, setShowDebug] = useState(false);
   const { addToast } = useToast();
 
   const handleInputChange = useCallback(
