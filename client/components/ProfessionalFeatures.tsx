@@ -742,7 +742,7 @@ export function ProfessionalFeatures({
 
         const headerTitle = reportConfig.projectName || 'Refrigeration Cycle Analysis Report';
         const now = new Date();
-        const diagramHtml = formatSvgsForPrintable(results, cycleData, diagramDataUrl, reportConfig.includeDiagrams);
+        const diagramHtml = formatSvgsForPrintable(results, cycleData, diagramDataUrl, false); // omit diagrams for professional report
 
         const html = `<!doctype html><html><head><meta charset='utf-8'><title>${headerTitle}</title>
         <meta name='viewport' content='width=device-width,initial-scale=1' />
@@ -854,7 +854,7 @@ export function ProfessionalFeatures({
           // Build printable HTML (same as previous client-side generator)
           const headerTitle = reportConfig.projectName || 'Refrigeration Cycle Analysis Report';
           const now = new Date();
-          const diagramHtml = formatSvgsForPrintable(results, cycleData, diagramDataUrl, reportConfig.includeDiagrams);
+          const diagramHtml = formatSvgsForPrintable(results, cycleData, diagramDataUrl, false); // omit diagrams for professional report
 
           const html = `<!doctype html><html><head><meta charset='utf-8'><title>${headerTitle}</title>
           <meta name='viewport' content='width=device-width,initial-scale=1' />
