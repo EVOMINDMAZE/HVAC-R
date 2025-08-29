@@ -131,7 +131,7 @@ const endpoints = [
 ];
 
 const supportedRefrigerants = [
-  "R134a", "R290", "R410A", "R404A", "R448A", "R32", "R744", "R507A", "R1234yf", "R1234ze"
+  "R134a", "R290", "R410A", "R404A", "R448A", "R32", "R744", "R507A", "R1234yf", "R1234ze(E)"
 ];
 
 export function ApiDocs() {
