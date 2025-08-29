@@ -39,7 +39,14 @@ export const uploadAvatar: RequestHandler = async (req, res) => {
     const { data, error } = await admin.storage.from(bucketName).upload(filename, buf, { upsert: false });
     if (error) {
       console.error('Server upload error', error);
-      return res.status(500).json({ error: 'Upload failed', details: error });
+      // stringift error details for safe transport
+      let details: any = null;
+      try {
+        details = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
+      } catch (e) {
+        details = String(error);
+      }
+      return res.status(500).json({ success: false, error: 'Upload failed', details });
     }
 
     const publicRes = admin.storage.from(bucketName).getPublicUrl((data as any).path);
