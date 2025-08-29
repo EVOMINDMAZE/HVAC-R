@@ -1133,14 +1133,26 @@ export function ProfessionalFeatures({
     </body></html>`;
 
     try {
-      const blob = new Blob([html], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${project}-chart-package.html`;
-      a.click();
-      URL.revokeObjectURL(url);
-      console.log('Chart package download started');
+      // Open printable window with diagrams and auto-print, so user can save as PDF
+      const w = window.open('', '_blank');
+      if (!w) {
+        window.alert('Popup blocked. Please allow popups to generate the Chart Package PDF.');
+        return;
+      }
+      w.document.open();
+      w.document.write(html);
+      w.document.close();
+      // Give the window time to render before printing
+      const printAttempt = () => {
+        try {
+          w.focus();
+          w.print();
+        } catch (err) {
+          console.warn('Chart package print failed, will retry', err);
+        }
+      };
+      setTimeout(printAttempt, 300);
+      console.log('Chart package opened for print');
     } catch (e) {
       console.error('Chart package generation failed', e);
       window.alert('Chart package generation failed: ' + (e as any).message);
