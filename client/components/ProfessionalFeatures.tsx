@@ -1063,14 +1063,26 @@ export function ProfessionalFeatures({
     const svg3 = makeBarSVG('COP', cop, maxMetric);
 
     const svgs = buildDiagramSvgs(results, cycleData);
+    const sanitizeSvgInline = (s: string | undefined) => {
+      if (!s) return '';
+      let svg = s.replace(/<\?xml[\s\S]*?\?>/g, '');
+      if (!/viewBox=/i.test(svg)) {
+        const w = svg.match(/width=['"]?(\d+)/)?.[1] || '760';
+        const h = svg.match(/height=['"]?(\d+)/)?.[1] || '420';
+        svg = svg.replace(/<svg/, `<svg viewBox=\"0 0 ${w} ${h}\"`);
+      }
+      svg = svg.replace(/<svg([^>]*)width=['"][^'"]*['"]([^>]*)>/i, `<svg$1$2 style='max-width:100%;height:auto;display:block'`);
+      return svg;
+    };
+
     const diagramSection = diagramDataUrl
       ? `<div class='card'><h3>Diagram</h3><div><img src='${diagramDataUrl}' style='max-width:100%;height:auto;border-radius:6px;border:1px solid #e6eefc' /></div></div>`
       : (svgs && (svgs.ph || svgs.ts || svgs.pv))
         ? `
           <div class='card'><h3>Diagrams</h3>
-            ${svgs.ph ? `<div style='margin-bottom:12px'>${svgs.ph}</div>` : ''}
-            ${svgs.ts ? `<div style='margin-bottom:12px'>${svgs.ts}</div>` : ''}
-            ${svgs.pv ? `<div style='margin-bottom:12px'>${svgs.pv}</div>` : ''}
+            ${svgs.ph ? `<div style='margin-bottom:12px'>${sanitizeSvgInline(svgs.ph)}</div>` : ''}
+            ${svgs.ts ? `<div style='margin-bottom:12px'>${sanitizeSvgInline(svgs.ts)}</div>` : ''}
+            ${svgs.pv ? `<div style='margin-bottom:12px'>${sanitizeSvgInline(svgs.pv)}</div>` : ''}
           </div>`
         : '';
 
