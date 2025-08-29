@@ -96,6 +96,9 @@ export function createServer() {
   // Accept either the legacy session token (authenticateToken) or a Supabase JWT (authenticateSupabaseToken)
   app.post('/api/storage/upload', authenticateSupabaseToken, uploadAvatar);
 
+  // Server-side PDF report generation
+  app.post('/api/reports/generate', authenticateSupabaseToken, generateReportPdf);
+
   // Error handling middleware
   app.use(
     (
