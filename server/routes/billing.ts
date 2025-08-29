@@ -167,7 +167,7 @@ router.post(
 // Get subscription details
 router.get("/subscription", authenticateSupabaseToken, async (req, res) => {
   try {
-    const userEmail = req.user.email;
+    const userEmail = (req as any).user?.email;
 
     // Check if Stripe is configured
     const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
