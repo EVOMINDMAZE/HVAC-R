@@ -408,23 +408,50 @@ export function ProfessionalFeatures({
   // Build SVG diagrams (P-h, T-s, P-v) from results / cycleData when canvas capture is unavailable
   const buildDiagramSvgs = (resultsObj: any, cycleObj: any) => {
     try {
-      const svgs: { ph?: string; ts?: string; pv?: string } = {};
-      // Helper to create SVG given x/y arrays and cycle points
-      const makeSvg = (xArr: number[], yArr: number[], xLabel: string, yLabel: string, points: { x: number; y: number; id?: string }[], title: string) => {
+      const svgs: { ph?: string; ts?: string } = {};
+
+      // Operation colors for segments: 1->2 compression, 2->3 condensation, 3->4 expansion, 4->1 evaporation
+      const opColors = ['#ef4444', '#f97316', '#06b6d4', '#2563eb'];
+
+      const makeDiagram = (
+        xArr: number[],
+        yArr: number[],
+        xLabel: string,
+        yLabel: string,
+        pts: { x: number; y: number; id?: string }[],
+        title: string,
+      ) => {
         if (!xArr || !yArr || xArr.length === 0 || yArr.length === 0) return null;
-        const width = 780;
-        const height = 360;
-        const margin = { left: 60, right: 20, top: 30, bottom: 40 };
+        const width = 760;
+        const height = 420;
+        const margin = { left: 70, right: 24, top: 30, bottom: 48 };
         const plotW = width - margin.left - margin.right;
         const plotH = height - margin.top - margin.bottom;
+
+        const pad = (v: number, pct = 0.08) => {
+          const r = v === 0 ? 1 : Math.abs(v);
+          return [v - r * pct, v + r * pct];
+        };
+
         const xMin = Math.min(...xArr);
         const xMax = Math.max(...xArr);
         const yMin = Math.min(...yArr);
         const yMax = Math.max(...yArr);
-        const xScale = (v: number) => margin.left + ((v - xMin) / (xMax - xMin || 1)) * plotW;
-        const yScale = (v: number) => margin.top + plotH - ((v - yMin) / (yMax - yMin || 1)) * plotH;
+        const [xm, xM] = pad(xMin);
+        const [ym, yM] = pad(yMax);
 
-        // Dome/path from xArr/yArr
+        const xScale = (v: number) => margin.left + ((v - xm) / (xM - xm || 1)) * plotW;
+        const yScale = (v: number) => margin.top + plotH - ((v - ym) / (yM - ym || 1)) * plotH;
+
+        // grid ticks (5 ticks)
+        const nx = 5;
+        const ny = 5;
+        const xTicks: number[] = [];
+        for (let i = 0; i <= nx; i++) xTicks.push(xm + (i / nx) * (xM - xm));
+        const yTicks: number[] = [];
+        for (let i = 0; i <= ny; i++) yTicks.push(ym + (i / ny) * (yM - ym));
+
+        // Dome path (approx)
         let domePath = '';
         for (let i = 0; i < xArr.length; i++) {
           const x = xScale(xArr[i]);
@@ -432,44 +459,92 @@ export function ProfessionalFeatures({
           domePath += (i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`);
         }
 
-        // Cycle path
-        let cyclePath = '';
-        if (points && points.length > 0) {
-          for (let i = 0; i < points.length; i++) {
-            const p = points[i];
-            const x = xScale(p.x);
-            const y = yScale(p.y);
-            cyclePath += i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`;
-          }
-          // close cycle
-          if (points.length > 1) {
-            const p0 = points[0];
-            const x0 = xScale(p0.x);
-            const y0 = yScale(p0.y);
-            cyclePath += ` L ${x0} ${y0}`;
-          }
+        // Colored operation segments between points (cycle order)
+        const segs: string[] = [];
+        for (let i = 0; i < pts.length; i++) {
+          const cur = pts[i];
+          const next = pts[(i + 1) % pts.length];
+          const x1 = xScale(cur.x);
+          const y1 = yScale(cur.y);
+          const x2 = xScale(next.x);
+          const y2 = yScale(next.y);
+          const color = opColors[i % opColors.length] || '#0b5fff';
+          segs.push(`<line x1='${x1}' y1='${y1}' x2='${x2}' y2='${y2}' stroke='${color}' stroke-width='3' stroke-linecap='round' />`);
+          // Add arrow marker
+          segs.push(`<path d='M ${x2} ${y2} L ${x2 - (x2 - x1) * 0.03 + 6} ${y2 - 6} L ${x2 - (x2 - x1) * 0.03 - 6} ${y2 - 6} Z' fill='${color}' opacity='0.9' />`);
         }
 
-        // Points markup
-        const ptsMarkup = (points || [])
+        const ptsMarkup = pts
           .map((p) => {
             const x = xScale(p.x);
             const y = yScale(p.y);
             const label = p.id ? p.id : '';
-            return `<g><circle cx='${x}' cy='${y}' r='3.5' fill='#2563eb' stroke='#0b5fff' stroke-width='1' /><text x='${x + 6}' y='${y - 6}' font-size='11' fill='#0b172a'>${label}</text></g>`;
+            return `<g><circle cx='${x}' cy='${y}' r='4.5' fill='#ffffff' stroke='#0b172a' stroke-width='1.5' /><text x='${x + 8}' y='${y - 8}' font-size='12' fill='#0b172a' font-weight='600'>${label}</text></g>`;
           })
           .join('');
 
-        const svg = `<?xml version="1.0"?><svg xmlns='http://www.w3.org/2000/svg' width='${width}' height='${height}' viewBox='0 0 ${width} ${height}'><style>text{font-family:Inter, Arial, Helvetica, sans-serif;fill:#0b172a} .axis{stroke:#cbd5e1;stroke-width:1} .grid{stroke:#eef2ff;stroke-width:1}</style><rect x='0' y='0' width='100%' height='100%' fill='white' rx='8' /><text x='${margin.left}' y='18' font-size='14' font-weight='600'>${title}</text><!-- axes --><line x1='${margin.left}' y1='${margin.top}' x2='${margin.left}' y2='${margin.top + plotH}' class='axis' /><line x1='${margin.left}' y1='${margin.top + plotH}' x2='${margin.left + plotW}' y2='${margin.top + plotH}' class='axis' />
-        <!-- dome -->
-        <path d='${domePath}' fill='none' stroke='#94a3b8' stroke-width='2' />
-        <!-- cycle -->
-        <path d='${cyclePath}' fill='none' stroke='#0b5fff' stroke-width='2' stroke-linejoin='round' stroke-linecap='round' />
-        ${ptsMarkup}
-        <!-- labels -->
-        <text x='${margin.left + plotW / 2}' y='${height - 8}' font-size='12' text-anchor='middle'>${xLabel}</text>
-        <text x='12' y='${margin.top + plotH / 2}' font-size='12' transform='rotate(-90 12,${margin.top + plotH / 2})' text-anchor='middle'>${yLabel}</text>
+        // Axis tick markup
+        const xTickMarks = xTicks
+          .map((t) => {
+            const tx = xScale(t);
+            return `<g><line x1='${tx}' y1='${margin.top + plotH}' x2='${tx}' y2='${margin.top + plotH + 6}' stroke='#94a3b8' stroke-width='1'/><text x='${tx}' y='${margin.top + plotH + 20}' font-size='11' text-anchor='middle' fill='#334155'>${Number(t).toFixed(1)}</text></g>`;
+          })
+          .join('');
+
+        const yTickMarks = yTicks
+          .map((t) => {
+            const ty = yScale(t);
+            return `<g><line x1='${margin.left - 6}' y1='${ty}' x2='${margin.left}' y2='${ty}' stroke='#94a3b8' stroke-width='1'/><text x='${margin.left - 10}' y='${ty + 4}' font-size='11' text-anchor='end' fill='#334155'>${Number(t).toFixed(1)}</text></g>`;
+          })
+          .join('');
+
+        // Legend card small
+        const legend = `
+          <g transform='translate(${margin.left + plotW - 180}, ${margin.top + 6})'>
+            <rect x='0' y='0' width='170' height='68' rx='6' fill='#ffffff' stroke='#e6eefc' />
+            <text x='10' y='16' font-size='12' fill='#0b172a' font-weight='700'>Operations</text>
+            <g transform='translate(8,22)'>
+              <g transform='translate(0,0)'><rect x='0' y='0' width='12' height='8' fill='${opColors[0]}' /><text x='18' y='8' font-size='11' fill='#334155'>Compression (1→2)</text></g>
+              <g transform='translate(0,18)'><rect x='0' y='0' width='12' height='8' fill='${opColors[1]}' /><text x='18' y='8' font-size='11' fill='#334155'>Condensation (2→3)</text></g>
+              <g transform='translate(0,36)'><rect x='0' y='0' width='12' height='8' fill='${opColors[2]}' /><text x='18' y='8' font-size='11' fill='#334155'>Expansion (3→4)</text></g>
+            </g>
+          </g>
+        `;
+
+        const svg = `<?xml version="1.0"?><svg xmlns='http://www.w3.org/2000/svg' width='${width}' height='${height}' viewBox='0 0 ${width} ${height}'><style>text{font-family:Inter, Arial, Helvetica, sans-serif;fill:#0b172a}</style><rect x='0' y='0' width='100%' height='100%' fill='white' rx='8' />
+          <text x='${margin.left}' y='20' font-size='15' font-weight='700'>${title}</text>
+          <!-- grid -->
+          ${xTicks
+            .map((t) => `<line x1='${xScale(t)}' y1='${margin.top}' x2='${xScale(t)}' y2='${margin.top + plotH}' stroke='#eef2ff' stroke-width='1'/>`)
+            .join('')}
+          ${yTicks
+            .map((t) => `<line x1='${margin.left}' y1='${yScale(t)}' x2='${margin.left + plotW}' y2='${yScale(t)}' stroke='#eef2ff' stroke-width='1'/>`)
+            .join('')}
+
+          <!-- axes -->
+          <line x1='${margin.left}' y1='${margin.top}' x2='${margin.left}' y2='${margin.top + plotH}' stroke='#cbd5e1' stroke-width='1.5'/>
+          <line x1='${margin.left}' y1='${margin.top + plotH}' x2='${margin.left + plotW}' y2='${margin.top + plotH}' stroke='#cbd5e1' stroke-width='1.5'/>
+
+          <!-- dome -->
+          <path d='${domePath}' fill='none' stroke='#94a3b8' stroke-width='2' />
+
+          <!-- operation segments -->
+          ${segs.join('\n')}
+
+          <!-- points -->
+          ${ptsMarkup}
+
+          <!-- ticks -->
+          ${xTickMarks}
+          ${yTickMarks}
+
+          <!-- labels -->
+          <text x='${margin.left + plotW / 2}' y='${height - 12}' font-size='12' text-anchor='middle'>${xLabel}</text>
+          <text x='${margin.left - 40}' y='${margin.top + plotH / 2}' font-size='12' transform='rotate(-90 ${margin.left - 40},${margin.top + plotH / 2})' text-anchor='middle'>${yLabel}</text>
+
+          ${legend}
         </svg>`;
+
         return svg;
       };
 
@@ -478,7 +553,7 @@ export function ProfessionalFeatures({
         const ent = resultsObj.saturation_dome.ph_diagram.enthalpy_kj_kg || [];
         const pres = resultsObj.saturation_dome.ph_diagram.pressure_kpa || [];
         const points = (cycleObj?.points || []).map((p: any, idx: number) => ({ x: p.enthalpy ?? p.enthalpy_kj_kg ?? 0, y: p.pressure ?? p.pressure_kpa ?? 0, id: String(idx + 1) }));
-        const svg = makeSvg(ent, pres, 'Enthalpy (kJ/kg)', 'Pressure (kPa)', points, 'P-h Diagram');
+        const svg = makeDiagram(ent, pres, 'Enthalpy (kJ/kg)', 'Pressure (kPa)', points, 'P-h Diagram');
         if (svg) svgs.ph = svg;
       }
 
@@ -487,24 +562,8 @@ export function ProfessionalFeatures({
         const s = resultsObj.saturation_dome.ts_diagram.entropy_kj_kgk || [];
         const t = resultsObj.saturation_dome.ts_diagram.temperature_c || [];
         const points = (cycleObj?.points || []).map((p: any, idx: number) => ({ x: p.entropy ?? p.entropy_kj_kgk ?? p.entropy_kj_kg ?? 0, y: p.temperature ?? p.temperature_c ?? 0, id: String(idx + 1) }));
-        const svg = makeSvg(s, t, 'Entropy (kJ/kg·K)', 'Temperature (°C)', points, 'T-s Diagram');
+        const svg = makeDiagram(s, t, 'Entropy (kJ/kg·K)', 'Temperature (°C)', points, 'T-s Diagram');
         if (svg) svgs.ts = svg;
-      }
-
-      // P-v (from tv_diagram or state points specific volume)
-      if (resultsObj?.saturation_dome?.tv_diagram) {
-        const v = resultsObj.saturation_dome.tv_diagram.specific_volume_m3_kg || [];
-        const tArr = resultsObj.saturation_dome.tv_diagram.temperature_c || [];
-        // For P-v we need pressure; we'll invert arrays if available by mapping tv data points
-        // We'll plot pressure vs specific volume using cycle points if available
-        const cyclePoints = (cycleObj?.points || []).map((p: any, idx: number) => ({ x: p.specific_volume_m3_kg ?? p.specific_volume ?? (p.density ? 1 / p.density : 0), y: p.pressure ?? p.pressure_kpa ?? 0, id: String(idx + 1) }));
-        if (cyclePoints.length > 0) {
-          // Build simple ranges from cyclePoints
-          const xv = cyclePoints.map((p: any) => p.x || 0);
-          const yv = cyclePoints.map((p: any) => p.y || 0);
-          const svg = makeSvg(xv, yv, 'Specific Volume (m³/kg)', 'Pressure (kPa)', cyclePoints, 'P-v Diagram');
-          if (svg) svgs.pv = svg;
-        }
       }
 
       return svgs;
