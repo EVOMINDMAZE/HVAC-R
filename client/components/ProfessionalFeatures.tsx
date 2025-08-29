@@ -34,6 +34,7 @@ import {
   Briefcase,
   Target,
 } from "lucide-react";
+import { computeDomain } from "@/lib/diagramDomain";
 
 interface ProfessionalFeaturesProps {
   cycleData?: any;
