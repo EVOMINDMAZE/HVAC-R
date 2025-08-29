@@ -141,6 +141,12 @@ export function EnhancedRefrigerantSelector({
                 placeholder="Search by name, ID, or full name..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && filteredRefrigerants.length > 0) {
+                    onChange(filteredRefrigerants[0].id);
+                  }
+                }}
+                className="focus:ring-2 focus:ring-sky-500 focus:outline-none"
               />
             </div>
             <div>
@@ -149,7 +155,7 @@ export function EnhancedRefrigerantSelector({
                 value={selectedCategory}
                 onValueChange={setSelectedCategory}
               >
-                <SelectTrigger>
+                <SelectTrigger className="focus:ring-2 focus:ring-sky-500 focus:outline-none">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -167,7 +173,7 @@ export function EnhancedRefrigerantSelector({
           <div>
             <Label>Select Refrigerant</Label>
             <Select value={value} onValueChange={onChange}>
-              <SelectTrigger>
+              <SelectTrigger className="focus:ring-2 focus:ring-sky-500 focus:outline-none">
                 <SelectValue placeholder="Choose a refrigerant" />
               </SelectTrigger>
               <SelectContent className="max-h-96">
@@ -309,7 +315,7 @@ export function EnhancedRefrigerantSelector({
                     <TrendingUp className="h-4 w-4" />
                     Recommended Operating Range
                   </h4>
-                  <Button size="sm" onClick={handleSuggestedRangeApply}>
+                  <Button size="sm" onClick={handleSuggestedRangeApply} className="focus:ring-2 focus:ring-sky-500 focus:outline-none">
                     Apply Range
                   </Button>
                 </div>

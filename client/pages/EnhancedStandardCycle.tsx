@@ -1170,7 +1170,7 @@ export function EnhancedStandardCycleContent() {
                   Configure refrigerant and operating conditions
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-6" onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void handleCalculate(); } }} aria-label="Cycle parameters form">
                 <div>
                   <Label htmlFor="refrigerant">Refrigerant</Label>
                 </div>
@@ -1194,7 +1194,8 @@ export function EnhancedStandardCycleContent() {
                           parseFloat(e.target.value),
                         )
                       }
-                      className="mt-1"
+                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); void handleCalculate(); } }}
+                      className="mt-1 focus:ring-2 focus:ring-sky-500 focus:outline-none"
                       placeholder="e.g., -10"
                     />
                   </div>
@@ -1214,7 +1215,8 @@ export function EnhancedStandardCycleContent() {
                           parseFloat(e.target.value),
                         )
                       }
-                      className="mt-1"
+                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); void handleCalculate(); } }}
+                      className="mt-1 focus:ring-2 focus:ring-sky-500 focus:outline-none"
                       placeholder="e.g., 45"
                     />
                   </div>
@@ -1232,7 +1234,8 @@ export function EnhancedStandardCycleContent() {
                           parseFloat(e.target.value),
                         )
                       }
-                      className="mt-1"
+                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); void handleCalculate(); } }}
+                      className="mt-1 focus:ring-2 focus:ring-sky-500 focus:outline-none"
                       placeholder="e.g., 5"
                     />
                   </div>
@@ -1250,7 +1253,8 @@ export function EnhancedStandardCycleContent() {
                           parseFloat(e.target.value),
                         )
                       }
-                      className="mt-1"
+                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); void handleCalculate(); } }}
+                      className="mt-1 focus:ring-2 focus:ring-sky-500 focus:outline-none"
                       placeholder="e.g., 2"
                     />
                   </div>
@@ -1299,8 +1303,10 @@ export function EnhancedStandardCycleContent() {
                 <Button
                   onClick={() => void handleCalculate()}
                   disabled={loading}
-                  className="w-full"
+                  className="w-full focus:ring-2 focus:ring-sky-500 focus:outline-none"
                   size="lg"
+                  aria-label="Calculate cycle"
+                  aria-busy={loading}
                 >
                   {loading ? (
                     <>
@@ -1338,7 +1344,7 @@ export function EnhancedStandardCycleContent() {
                   )}
 
                   {/* Recommended Operating Range (left column) */}
-                  <div className="mt-4 rounded-lg border bg-sky-50 p-4 mb-4">
+                  <div className="mt-4 rounded-lg border bg-sky-50 p-4 mb-4" aria-live="polite">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2 text-sky-700 font-medium">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-green-600"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
@@ -1362,7 +1368,7 @@ export function EnhancedStandardCycleContent() {
                     </div>
                   </div>
 
-                  <div className="space-y-4 mt-2 hidden md:block">
+                  <div className="space-y-4 mt-2">
                   {/* Refrigerant Selection Card */}
                 
                   {/* Refrigerant Details and Validation Card */}
