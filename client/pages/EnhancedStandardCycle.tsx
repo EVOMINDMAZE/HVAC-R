@@ -1461,31 +1461,6 @@ export function EnhancedStandardCycleContent() {
                         </div>
                       </div>
 
-                      <div className="bg-sky-50 p-4 rounded-lg">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-green-600">
-                              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
-                              <polyline points="16 7 22 7 22 13" />
-                            </svg>
-                            <div className="font-medium">Recommended Operating Range</div>
-                          </div>
-                          <Button variant="default">Apply Range</Button>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4 mt-4">
-                          <div>
-                            <div className="font-medium">Evaporator Temperature</div>
-                            <div>Recommended: -46.1 °C</div>
-                            <div className="text-sm text-gray-600">Range: -93.3 °C to -36.1 °C</div>
-                          </div>
-                          <div>
-                            <div className="font-medium">Condenser Temperature</div>
-                            <div>Recommended: 13.9 °C</div>
-                            <div className="text-sm text-gray-600">Range: -16.1 °C to 91.1 °C</div>
-                          </div>
-                        </div>
-                      </div>
 
                       <div className="mt-4">
                         <div className="flex items-center gap-2">
