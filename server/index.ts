@@ -48,8 +48,15 @@ export function createServer() {
     }),
   );
 
-  app.use(express.json({ limit: "10mb" }));
-  app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+  // Increase body size to allow high-resolution diagram images
+  app.use(express.json({ limit: "30mb" }));
+  app.use(express.urlencoded({ extended: true, limit: "30mb" }));
+
+  // Simple request logging to aid debugging
+  app.use((req, _res, next) => {
+    console.log(`[server] ${req.method} ${req.path}`);
+    next();
+  });
 
   // Health check
   app.get("/api/health", (_req, res) => {
