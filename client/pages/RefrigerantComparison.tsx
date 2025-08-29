@@ -332,6 +332,25 @@ export function RefrigerantComparisonContent() {
     return null;
   };
 
+  const getStatePointValue = (result: any, pathNames: string[]): number | null => {
+    // Look into point_1..point_4 or points array for pressure/density
+    for (const p of ["point_1", "point_2", "point_3", "point_4", "points"]) {
+      const pt = result[p];
+      if (!pt) continue;
+      // points might be an array or object
+      const candidates = Array.isArray(pt) ? pt : typeof pt === "object" ? Object.values(pt) : [];
+      for (const c of candidates) {
+        for (const key of pathNames) {
+          if (c && c[key] !== undefined && c[key] !== null) {
+            const parsed = parseNumber(c[key]);
+            if (parsed !== null) return parsed;
+          }
+        }
+      }
+    }
+    return null;
+  };
+
   const getNumericValue = (result: any, metricKey: string): number | null => {
     // Try direct property
     let v = parseNumber(result[metricKey]);
@@ -349,7 +368,8 @@ export function RefrigerantComparisonContent() {
             parseNumber(perf.refrigeration_effect_kj_kg) ??
             parseNumber(perf.refrigeration_effect) ??
             parseNumber(perf.refrigeration_capacity_kw) ??
-            parseNumber(perf.refrigeration_capacity);
+            parseNumber(perf.refrigeration_capacity) ??
+            null;
           break;
         case "workInput":
           v =
@@ -357,7 +377,8 @@ export function RefrigerantComparisonContent() {
             parseNumber(perf.work_of_compression_kj_kg) ??
             parseNumber(perf.work_input) ??
             parseNumber(perf.compressor_work_kw) ??
-            parseNumber(perf.compressor_work);
+            parseNumber(perf.compressor_work) ??
+            null;
           break;
         case "heatRejection":
           // Q_cond = Q_evap + W_comp
@@ -366,12 +387,14 @@ export function RefrigerantComparisonContent() {
               parseNumber(perf.refrigeration_effect_kj_kg) ??
               parseNumber(perf.refrigeration_effect) ??
               parseNumber(perf.cooling_capacity_kw) ??
-              parseNumber(perf.cooling_capacity);
+              parseNumber(perf.cooling_capacity) ??
+              null;
             const wComp =
               parseNumber(perf.work_of_compression_kj_kg) ??
               parseNumber(perf.work_input) ??
               parseNumber(perf.compressor_work_kw) ??
-              parseNumber(perf.compressor_work);
+              parseNumber(perf.compressor_work) ??
+              null;
             if (qEvap !== null || wComp !== null) {
               v = (qEvap || 0) + (wComp || 0);
             }
@@ -382,21 +405,33 @@ export function RefrigerantComparisonContent() {
             parseNumber(result.volumetricCapacity) ??
             parseNumber(perf.volumetric_capacity) ??
             parseNumber(perf.volumetricCapacity) ??
-            null;
+            // attempt to compute from refrigeration effect * density
+            ((): number | null => {
+              const refEffect = getNumericValue(result, "refrigerationEffect");
+              let density = getStatePointValue(result, ["density_kg_m3", "density", "rho", "rho_kg_m3"]);
+              if (density === null) {
+                // try performance-level density
+                density = parseNumber(perf.density_kg_m3) ?? parseNumber(perf.density);
+              }
+              if (refEffect !== null && density !== null) return refEffect * density;
+              return null;
+            })();
           break;
         case "dischargePressure":
           v =
             parseNumber(result.dischargePressure) ??
             parseNumber(perf.discharge_pressure) ??
             parseNumber(perf.dischargePressure) ??
-            null;
+            // try state point pressures (compressor outlet is often point 2 or 3)
+            getStatePointValue(result, ["pressure_kpa", "pressure", "P_kPa", "P"]);
           break;
         case "suctionPressure":
           v =
             parseNumber(result.suctionPressure) ??
             parseNumber(perf.suction_pressure) ??
             parseNumber(perf.suctionPressure) ??
-            null;
+            // try state point pressures (evaporator outlet is often point 1)
+            getStatePointValue(result, ["pressure_kpa", "pressure", "P_kPa", "P"]);
           break;
         default:
           v = parseNumber(result[metricKey]) ?? parseNumber(perf[metricKey]);
