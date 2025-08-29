@@ -434,7 +434,6 @@ export function ProfessionalFeatures({
         return [] as number[];
       };
 
-      importDomain: any; // placeholder
       const makeDiagram = (
         xArr: number[],
         yArr: number[],
