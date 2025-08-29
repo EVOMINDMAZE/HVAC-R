@@ -721,12 +721,12 @@ export function ProfessionalFeatures({
       }
 
       const payload = {
-        reportConfig,
+        reportConfig: { ...reportConfig, includeDiagrams: false }, // Professional report excludes diagrams
         results,
         cycleData,
         costAnalysis: costData,
         sustainability: sustainabilityData,
-        diagramDataUrl,
+        diagramDataUrl: null, // do not send diagrams for the professional report
         refrigerant,
         unitSystem,
         recommendations: generateRecommendations(),
