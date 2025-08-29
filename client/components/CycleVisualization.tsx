@@ -12,6 +12,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Zap, Thermometer, Gauge, BarChart3 } from "lucide-react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import { computeDomain } from "@/lib/diagramDomain";
 
 interface CyclePoint {
   id: string;
