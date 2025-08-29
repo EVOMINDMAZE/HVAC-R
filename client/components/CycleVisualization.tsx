@@ -104,6 +104,39 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
   const draggingRef = useRef(false);
   const dragOffsetRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
+  // Flexible resolver to read multiple possible property names from API or local cycle data
+  const resolvePointValue = (point: any, prop: string): number | null => {
+    if (!point) return null;
+    const candidates: string[] = [];
+    switch (prop) {
+      case "enthalpy":
+        candidates.push("enthalpy", "enthalpy_kj_kg", "h", "h_kj_kg");
+        break;
+      case "pressure":
+        candidates.push("pressure", "pressure_kpa", "p", "press_kpa");
+        break;
+      case "entropy":
+        candidates.push("entropy", "entropy_kj_kgk", "entropy_kj_kg", "s");
+        break;
+      case "temperature":
+        candidates.push("temperature", "temperature_c", "t", "temp_c");
+        break;
+      case "specificVolume":
+      case "specific_volume":
+      case "specificVolume_m3_kg":
+        candidates.push("specificVolume", "specific_volume", "specific_volume_m3_kg", "v", "specificVolume_m3_kg");
+        break;
+      default:
+        candidates.push(prop);
+    }
+
+    for (const k of candidates) {
+      const v = point[k];
+      if (v !== undefined && v !== null && !isNaN(Number(v))) return Number(v);
+    }
+    return null;
+  };
+
   // Enhanced coordinate calculation with better thermodynamic accuracy
   const calculateCoordinates = (
     points: CyclePoint[],
@@ -117,16 +150,6 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       "Calculating coordinates with enhanced algorithm for",
       diagramType,
     );
-    console.log(
-      "Points received:",
-      points.map((p) => ({
-        id: p.id,
-        name: p.name,
-        temp: p.temperature,
-        pressure: p.pressure,
-        enthalpy: p.enthalpy,
-      })),
-    );
 
     // Get the actual property values for scaling with validation
     const xValues: number[] = [];
@@ -134,30 +157,17 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     const validPoints: CyclePoint[] = [];
 
     points.forEach((point) => {
-      const xProp = config.xAxis.property;
-      const yProp = config.yAxis.property;
-
-      const xVal = point[xProp] as number;
-      const yVal = point[yProp] as number;
+      const xVal = resolvePointValue(point, config.xAxis.property as string);
+      const yVal = resolvePointValue(point, config.yAxis.property as string);
 
       console.log(
-        `Point ${point.id}: ${xProp}=${xVal}, ${yProp}=${yVal}, valid=${!isNaN(xVal) && !isNaN(yVal)}`,
+        `Point ${point.id}: ${String(config.xAxis.property)}=${xVal}, ${String(config.yAxis.property)}=${yVal}, valid=${xVal !== null && yVal !== null}`,
       );
 
-      if (!isNaN(xVal) && xVal !== undefined && xVal !== null) {
-        xValues.push(xVal);
-      }
-      if (!isNaN(yVal) && yVal !== undefined && yVal !== null) {
-        yValues.push(yVal);
-      }
+      if (xVal !== null) xValues.push(xVal);
+      if (yVal !== null) yValues.push(yVal);
 
-      // Only include points with valid coordinates
-      if (
-        !isNaN(xVal) &&
-        !isNaN(yVal) &&
-        xVal !== undefined &&
-        yVal !== undefined
-      ) {
+      if (xVal !== null && yVal !== null) {
         validPoints.push(point);
       }
     });
@@ -167,7 +177,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     console.log("Y values for scaling:", yValues);
 
     // Enhanced scaling with real thermodynamic data
-    if (xValues.length >= 3 && yValues.length >= 3) {
+    if (xValues.length >= 2 && yValues.length >= 2) {
       const xMin = Math.min(...xValues);
       const xMax = Math.max(...xValues);
       const yMin = Math.min(...yValues);
@@ -180,23 +190,21 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       // Smart padding based on data range
       const xRange = xMax - xMin || 1;
       const yRange = yMax - yMin || 1;
-      const xPadding = Math.max(xRange * 0.1, xRange > 1000 ? 50 : 5); // Adaptive padding
+      const xPadding = Math.max(xRange * 0.1, xRange > 1000 ? 50 : 5);
       const yPadding = Math.max(yRange * 0.1, yRange > 1000 ? 50 : 5);
 
       return points.map((point) => {
-        const xVal = point[config.xAxis.property] as number;
-        const yVal = point[config.yAxis.property] as number;
+        const xVal = resolvePointValue(point, config.xAxis.property as string);
+        const yVal = resolvePointValue(point, config.yAxis.property as string);
 
         let x: number, y: number;
 
-        if (!isNaN(xVal) && !isNaN(yVal)) {
-          // Use real thermodynamic coordinates
+        if (xVal !== null && yVal !== null) {
           x = ((xVal - xMin + xPadding) / (xRange + 2 * xPadding)) * plotWidth;
           y =
             plotHeight -
             ((yVal - yMin + yPadding) / (yRange + 2 * yPadding)) * plotHeight;
         } else {
-          // Fallback to idealized position for invalid points
           const fallbackPositions = getIdealizedPositions(
             diagramType,
             plotWidth,
@@ -208,12 +216,11 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
         }
 
         console.log(
-          `Point ${point.id} mapped: (${x.toFixed(1)}, ${y.toFixed(1)}) [${!isNaN(xVal) && !isNaN(yVal) ? "REAL" : "FALLBACK"}]`,
+          `Point ${point.id} mapped: (${x.toFixed(1)}, ${y.toFixed(1)}) [${xVal !== null && yVal !== null ? "REAL" : "FALLBACK"}]`,
         );
         return { ...point, x, y };
       });
     } else {
-      // Enhanced fallback with realistic thermodynamic cycle shapes
       console.log("Using enhanced thermodynamic fallback positions");
       const fallbackPositions = getIdealizedPositions(
         diagramType,
