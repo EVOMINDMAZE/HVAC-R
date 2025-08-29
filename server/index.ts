@@ -90,6 +90,9 @@ export function createServer() {
   // Billing routes (Stripe)
   app.use("/api/billing", billingRoutes);
 
+  // Server-side storage upload (uses SUPABASE_SERVICE_ROLE_KEY)
+  app.post('/api/storage/upload', authenticateToken, uploadAvatar);
+
   // Error handling middleware
   app.use(
     (
