@@ -370,7 +370,7 @@ export const REFRIGERANT_DATABASE: RefrigerantProperties[] = [
     color: "#06B6D4",
   },
   {
-    id: "R1234ze",
+    id: "R1234ze(E)",
     name: "R-1234ze(E)",
     fullName: "Trans-1,3,3,3-Tetrafluoropropene",
     category: "HFO",
