@@ -443,13 +443,14 @@ export function ProfessionalFeatures({
         title: string,
       ) => {
         if (!xArr || !yArr || xArr.length === 0 || yArr.length === 0) return null;
-        const width = 760;
-        const height = 420;
-        const margin = { left: 70, right: 24, top: 30, bottom: 48 };
+        // Match CycleVisualization canvas size and margins for consistent look
+        const width = 1600;
+        const height = 1000;
+        const margin = { left: 120, right: 120, top: 120, bottom: 120 };
         const plotW = width - margin.left - margin.right;
         const plotH = height - margin.top - margin.bottom;
 
-        const pad = (minV: number, maxV: number, pct = 0.08) => {
+        const pad = (minV: number, maxV: number, pct = 0.12) => {
           const range = Math.max(1e-6, Math.abs(maxV - minV));
           return [minV - range * pct, maxV + range * pct];
         };
@@ -458,14 +459,14 @@ export function ProfessionalFeatures({
         const xMax = Math.max(...xArr);
         const yMin = Math.min(...yArr);
         const yMax = Math.max(...yArr);
-        const [xm, xM] = pad(xMin, xMax);
-        const [ym, yM] = pad(yMin, yMax);
+        const [xm, xM] = pad(xMin, xMax, 0.12);
+        const [ym, yM] = pad(yMin, yMax, 0.12);
 
         const xScale = (v: number) => margin.left + ((v - xm) / (xM - xm || 1)) * plotW;
         const yScale = (v: number) => margin.top + plotH - ((v - ym) / (yM - ym || 1)) * plotH;
 
-        const nx = 5;
-        const ny = 5;
+        const nx = 6;
+        const ny = 6;
         const xTicks: number[] = [];
         for (let i = 0; i <= nx; i++) xTicks.push(xm + (i / nx) * (xM - xm));
         const yTicks: number[] = [];
