@@ -434,6 +434,7 @@ export function ProfessionalFeatures({
         return [] as number[];
       };
 
+      importDomain: any; // placeholder
       const makeDiagram = (
         xArr: number[],
         yArr: number[],
@@ -441,36 +442,30 @@ export function ProfessionalFeatures({
         yLabel: string,
         pts: { x: number; y: number; id?: string }[],
         title: string,
+        diagramType: 'P-h' | 'T-s' = 'P-h',
       ) => {
         if (!xArr || !yArr || xArr.length === 0 || yArr.length === 0) return null;
-        // Match CycleVisualization canvas size and margins for consistent look
+        // derive domain using shared util for consistency
+        // lazy import to avoid top-level circular refs
+        const { computeDomain } = require('@/lib/diagramDomain') as any;
+        const domain = computeDomain(diagramType, resultsObj?.saturation_dome || resultsObj?.saturationDome || cycleObj?.saturation_dome || cycleObj?.saturationDome, cycleObj?.points || [], 0.12, 6);
+
         const width = 1600;
         const height = 1000;
         const margin = { left: 120, right: 120, top: 120, bottom: 120 };
         const plotW = width - margin.left - margin.right;
         const plotH = height - margin.top - margin.bottom;
 
-        const pad = (minV: number, maxV: number, pct = 0.12) => {
-          const range = Math.max(1e-6, Math.abs(maxV - minV));
-          return [minV - range * pct, maxV + range * pct];
-        };
-
-        const xMin = Math.min(...xArr);
-        const xMax = Math.max(...xArr);
-        const yMin = Math.min(...yArr);
-        const yMax = Math.max(...yArr);
-        const [xm, xM] = pad(xMin, xMax, 0.12);
-        const [ym, yM] = pad(yMin, yMax, 0.12);
+        const xm = domain.xMin;
+        const xM = domain.xMax;
+        const ym = domain.yMin;
+        const yM = domain.yMax;
 
         const xScale = (v: number) => margin.left + ((v - xm) / (xM - xm || 1)) * plotW;
         const yScale = (v: number) => margin.top + plotH - ((v - ym) / (yM - ym || 1)) * plotH;
 
-        const nx = 6;
-        const ny = 6;
-        const xTicks: number[] = [];
-        for (let i = 0; i <= nx; i++) xTicks.push(xm + (i / nx) * (xM - xm));
-        const yTicks: number[] = [];
-        for (let i = 0; i <= ny; i++) yTicks.push(ym + (i / ny) * (yM - ym));
+        const xTicks = domain.xTicks;
+        const yTicks = domain.yTicks;
 
         let domePath = '';
         for (let i = 0; i < xArr.length; i++) {
