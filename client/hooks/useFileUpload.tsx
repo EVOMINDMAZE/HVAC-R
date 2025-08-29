@@ -67,7 +67,7 @@ export function useFileUpload() {
 
         // Emit telemetry event for monitoring
         try {
-          window.dispatchEvent(new CustomEvent('storage:upload_failed', { detail: { reason: 'upload_error', code: error?.code || null, message: error?.message || null, user: user.id } }));
+          window.dispatchEvent(new CustomEvent('storage:upload_failed', { detail: { reason: 'upload_error', message: error?.message || String(error), user: user.id } }));
         } catch (e) {}
 
         // Helpful guidance for common issues
