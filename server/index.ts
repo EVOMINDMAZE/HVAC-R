@@ -92,7 +92,8 @@ export function createServer() {
   app.use("/api/billing", billingRoutes);
 
   // Server-side storage upload (uses SUPABASE_SERVICE_ROLE_KEY)
-  app.post('/api/storage/upload', authenticateToken, uploadAvatar);
+  // Accept either the legacy session token (authenticateToken) or a Supabase JWT (authenticateSupabaseToken)
+  app.post('/api/storage/upload', authenticateSupabaseToken, uploadAvatar);
 
   // Error handling middleware
   app.use(
