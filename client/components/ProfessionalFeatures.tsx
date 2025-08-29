@@ -405,15 +405,14 @@ export function ProfessionalFeatures({
   const costData = calculateCostAnalysis();
   const sustainabilityData = getRefrigerantSustainability(refrigerant);
 
-  // Generate professional printable report (opens a printable HTML and triggers browser print to PDF)
+  // Generate fully server-side PDF report
   const generateReport = async () => {
     try {
       // Capture the main diagram canvas image (high resolution)
       const canvas = document.querySelector('canvas');
-      let diagramDataUrl = null;
+      let diagramDataUrl: string | null = null;
       if (canvas && canvas instanceof HTMLCanvasElement) {
         const srcCanvas = canvas as HTMLCanvasElement;
-        // Create a high-res copy scaled by devicePixelRatio
         const scale = Math.min(3, Math.max(1, window.devicePixelRatio || 1));
         const off = document.createElement('canvas');
         off.width = srcCanvas.width * scale;
@@ -428,92 +427,45 @@ export function ProfessionalFeatures({
         }
       }
 
-      const headerTitle = reportConfig.projectName || 'Refrigeration Cycle Analysis Report';
-      const now = new Date();
-      const html = `<!doctype html><html><head><meta charset='utf-8'><title>${headerTitle}</title>
-        <meta name='viewport' content='width=device-width,initial-scale=1' />
-        <style>
-          body{font-family:Inter, Arial, Helvetica, sans-serif;color:#0f172a;margin:0;padding:20px;background:#f8fafc}
-          .page{max-width:900px;margin:0 auto;background:#fff;padding:28px;border-radius:8px;box-shadow:0 8px 30px rgba(13,38,59,0.08)}
-          h1{font-size:22px;margin:0 0 6px;color:#0b5fff}
-          .meta{color:#475569;font-size:13px;margin-bottom:12px}
-          .section{margin-top:18px}
-          .metrics{display:flex;gap:12px;flex-wrap:wrap}
-          .metric{background:#f1f5f9;padding:10px;border-radius:8px;flex:1;min-width:140px}
-          .metric h3{margin:0;font-size:12px;color:#334155}
-          .metric p{margin:6px 0 0;font-weight:700;font-size:18px;color:#0f172a}
-          .diagram{margin-top:12px;text-align:center}
-          .notes{background:#f8fafc;padding:12px;border-radius:8px;margin-top:12px}
-          table{width:100%;border-collapse:collapse;margin-top:8px}
-          th,td{padding:8px;border-bottom:1px solid #e2e8f0;text-align:left}
-          footer{font-size:12px;color:#64748b;margin-top:18px}
-          @media print{body{background:white} .page{box-shadow:none;border-radius:0}}
-        </style>
-        </head><body>
-        <div class='page'>
-          <h1>${headerTitle}</h1>
-          <div class='meta'>Project: ${reportConfig.projectName || '-'} &nbsp;|&nbsp; Company: ${reportConfig.companyName || '-'} &nbsp;|&nbsp; Engineer: ${reportConfig.engineerName || '-'} &nbsp;|&nbsp; Date: ${now.toLocaleString()}</div>
+      const payload = {
+        reportConfig,
+        results,
+        cycleData,
+        costAnalysis: costData,
+        sustainability: sustainabilityData,
+        diagramDataUrl,
+        refrigerant,
+        unitSystem,
+        recommendations: generateRecommendations(),
+      };
 
-          <div class='section'>
-            <h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Executive Summary</h2>
-            <div class='notes'>${reportConfig.reportNotes ? reportConfig.reportNotes.replace(/\n/g,'<br/>') : 'No additional notes provided.'}</div>
-          </div>
+      const token = localStorage.getItem('simulateon_token');
+      const resp = await fetch('/api/reports/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+      });
 
-          <div class='section'>
-            <h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Key Performance Metrics</h2>
-            <div class='metrics'>
-              <div class='metric'><h3>COP</h3><p>${cop?.toFixed(2) || 'N/A'}</p></div>
-              <div class='metric'><h3>Cooling Capacity (kW)</h3><p>${formatValue(coolingCapacityKwNum, 'kW')}</p></div>
-              <div class='metric'><h3>Compressor Work (kW)</h3><p>${formatValue(compressorWorkKwNum, 'kW')}</p></div>
-            </div>
-          </div>
-
-          ${diagramDataUrl ? `
-            <div class='section'>
-              <h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Cycle Diagram</h2>
-              <div class='diagram'><img src='${diagramDataUrl}' style='max-width:100%;height:auto;border:1px solid #e6eefc;border-radius:6px' /></div>
-            </div>
-          ` : ''}
-
-          <div class='section'>
-            <h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Cost Analysis</h2>
-            <table>
-              <tbody>
-                <tr><th>Annual Energy Cost</th><td>$${costData?.annualEnergyCost?.toFixed(2) || 'N/A'}</td></tr>
-                <tr><th>Total Lifetime Cost</th><td>$${costData?.totalLifetimeCost?.toFixed(2) || 'N/A'}</td></tr>
-                <tr><th>Payback Period (years)</th><td>${costData?.paybackPeriod?.toFixed(1) || 'N/A'}</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class='section'>
-            <h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Sustainability & Recommendations</h2>
-            <table>
-              <tbody>
-                <tr><th>GWP</th><td>${sustainabilityData.gwp}</td></tr>
-                <tr><th>ODP</th><td>${sustainabilityData.odp}</td></tr>
-                <tr><th>Recommended Alternatives</th><td>${sustainabilityData.alternative}</td></tr>
-              </tbody>
-            </table>
-            <div style='margin-top:12px'><strong>Recommendations:</strong><ul>${generateRecommendations().map(r=>`<li>${r}</li>`).join('')}</ul></div>
-          </div>
-
-          <footer>Generated by SimulateOn Professional HVAC Analysis Platform • ${now.toLocaleString()}</footer>
-        </div>
-        <script>window.onload = function(){ setTimeout(function(){ window.print(); }, 250); };</script>
-        </body></html>`;
-
-      const w = window.open('', '_blank');
-      if (!w) {
-        window.alert('Popup blocked. Please allow popups to generate PDF.');
+      if (!resp.ok) {
+        const txt = await resp.text();
+        console.error('Server PDF generation failed', resp.status, txt);
+        window.alert('Failed to generate PDF: ' + (txt || resp.statusText));
         return;
       }
-      w.document.open();
-      w.document.write(html);
-      w.document.close();
+
+      const blob = await resp.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${reportConfig.projectName || 'hvac-report'}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
     } catch (e) {
-      console.error('Failed to generate printable report', e);
-      window.alert('Failed to generate printable report: ' + (e as any).message);
+      console.error('Failed to generate server PDF', e);
+      window.alert('Failed to generate server PDF: ' + (e as any).message);
     }
   };
 
