@@ -103,8 +103,19 @@ export function createServer() {
   // Accept either the legacy session token (authenticateToken) or a Supabase JWT (authenticateSupabaseToken)
   app.post('/api/storage/upload', authenticateSupabaseToken, uploadAvatar);
 
+  // Middleware to accept either Supabase JWT (contains dots) or legacy session token
+  const authenticateEither: import('express').RequestHandler = (req, res, next) => {
+    const token = req.headers.authorization?.replace('Bearer ', '') || '';
+    if (!token) return res.status(401).json({ error: 'Authentication required' });
+    // Heuristic: JWTs have at least two dots
+    if ((token.match(/\./g) || []).length >= 2) {
+      return authenticateSupabaseToken(req, res, next);
+    }
+    return authenticateToken(req, res, next);
+  };
+
   // Server-side PDF report generation
-  app.post('/api/reports/generate', authenticateSupabaseToken, generateReportPdf);
+  app.post('/api/reports/generate', authenticateEither, generateReportPdf);
 
   // Error handling middleware
   app.use(
