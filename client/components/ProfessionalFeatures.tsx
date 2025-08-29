@@ -440,6 +440,9 @@ export function ProfessionalFeatures({
       };
 
       const token = localStorage.getItem('simulateon_token');
+      // Debug logging
+      console.log('[client] POST /api/reports/generate', { payload: {...payload, diagramDataUrl: diagramDataUrl ? '[IMAGE]' : null}, tokenPresent: !!token });
+
       const resp = await fetch('/api/reports/generate', {
         method: 'POST',
         headers: {
