@@ -3,18 +3,27 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const Card = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "rounded-lg border bg-sky-50 border-slate-200 font-normal my-5 p-5",
-      className,
-    )}
-    {...props}
-  />
-));
+ HTMLDivElement,
+ React.HTMLAttributes<HTMLDivElement>
+>(({ className, style, ...props }, ref) => {
+  const defaultStyle: React.CSSProperties = {
+    margin: "25px 0",
+    padding: "25px",
+    borderColor: "#e2e8f0",
+  };
+  const mergedStyle = { ...defaultStyle, ...(style || {}) };
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "rounded-lg border bg-sky-50 font-normal",
+        className,
+      )}
+      style={mergedStyle}
+      {...props}
+    />
+  );
+});
 Card.displayName = "Card";
 
 const CardHeader = React.forwardRef<
