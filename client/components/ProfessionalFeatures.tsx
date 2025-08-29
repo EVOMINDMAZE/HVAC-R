@@ -510,7 +510,7 @@ export function ProfessionalFeatures({
           // Build printable HTML (same as previous client-side generator)
           const headerTitle = reportConfig.projectName || 'Refrigeration Cycle Analysis Report';
           const now = new Date();
-          const diagramHtml = diagramDataUrl ? `<div class='section'><h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Cycle Diagram</h2><div class='diagram'><img src='${diagramDataUrl}' style='max-width:100%;height:auto;border:1px solid #e6eefc;border-radius:6px' /></div></div>` : '';
+          const diagramHtml = (reportConfig.includeDiagrams && diagramDataUrl) ? `<div class='section'><h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Cycle Diagram</h2><div class='diagram'><img src='${diagramDataUrl}' style='max-width:100%;height:auto;border:1px solid #e6eefc;border-radius:6px' /></div></div>` : '';
 
           const html = `<!doctype html><html><head><meta charset='utf-8'><title>${headerTitle}</title>
           <meta name='viewport' content='width=device-width,initial-scale=1' />
