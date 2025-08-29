@@ -128,7 +128,7 @@ export function computeDomain(
         yArr = (ts.temperature_c || ts.temperature || ts.t || []).slice();
       }
     } else if (diagramType === 'T-v') {
-      const tv = dome.tv_diagram || dome.tv || tv || null;
+      const tv = dome.tv_diagram || dome.tv || null;
       if (tv) {
         xArr = (tv.specific_volume_m3_kg || tv.specific_volume || tv.v || []).slice();
         yArr = (tv.temperature_c || tv.temperature || tv.t || []).slice();
