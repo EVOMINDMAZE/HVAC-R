@@ -325,7 +325,7 @@ export function EnhancedStandardCycleContent() {
 
       // Additional validation
       console.log("\n✅ === RESPONSE VALIDATION ===");
-      console.log("���� State Points Valid:", !!calculationData.state_points);
+      console.log("����� State Points Valid:", !!calculationData.state_points);
       console.log("🚀 Performance Valid:", !!calculationData.performance);
       console.log(
         "❄️ Refrigerant:",
@@ -1353,27 +1353,6 @@ export function EnhancedStandardCycleContent() {
                   />
                 </div>
 
-                {calculationComplete && (
-                  <Alert className="mt-4 border-green-200 bg-green-50">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <AlertDescription className="text-green-800">
-                      <div className="flex items-center justify-between">
-                        <span>
-                          <strong>Calculation Complete!</strong> View your
-                          results in the tabs above.
-                        </span>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setActiveTab("results")}
-                          className="border-green-300 text-green-700 hover:bg-green-100"
-                        >
-                          View Results <ArrowRight className="h-3 w-3 ml-1" />
-                        </Button>
-                      </div>
-                    </AlertDescription>
-                  </Alert>
-                )}
               </CardContent>
             </Card>
 
