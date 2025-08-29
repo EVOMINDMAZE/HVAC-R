@@ -43,6 +43,17 @@ export function useFileUpload() {
         });
 
       if (error) {
+        // Enhanced telemetry for storage errors
+        console.error('Supabase storage.upload error', { error, fileName, user: user.id });
+
+        // Helpful guidance for common issues
+        const msg = (error && (error.message || error.details || error.error)) || String(error);
+        if (msg.toLowerCase().includes('bucket') || msg.toLowerCase().includes('not found')) {
+          const guidance = 'Upload Failed: Storage bucket "avatars" not found. Please create a public "avatars" bucket in your Supabase Storage and ensure your anon key has permission to upload.';
+          addToast({ type: 'error', title: 'Upload Failed', description: guidance });
+          return { url: null, error: guidance };
+        }
+
         throw error;
       }
 
@@ -59,6 +70,7 @@ export function useFileUpload() {
       });
 
       if (updateError) {
+        console.error('Failed to update user profile after avatar upload', { updateError, user: user.id });
         throw updateError;
       }
 
@@ -70,7 +82,18 @@ export function useFileUpload() {
 
       return { url: publicUrl, error: null };
     } catch (error: any) {
-      const errorMessage = error.message || 'Failed to upload image';
+      const errorMessage = error?.message || error?.details || 'Failed to upload image';
+
+      // Log detailed telemetry to console
+      console.error('uploadAvatar error', { error });
+
+      // If it's a bucket not found error provide actionable steps
+      if (String(errorMessage).toLowerCase().includes('bucket') || String(errorMessage).toLowerCase().includes('not found')) {
+        const guidance = 'Upload Failed: Storage bucket "avatars" not found. To fix this: 1) Open your Supabase dashboard -> Storage -> Create a bucket named "avatars"; 2) Set the bucket to public or configure RLS/policies to allow uploads; 3) Retry the upload.';
+        addToast({ type: 'error', title: 'Upload Failed', description: guidance });
+        return { url: null, error: guidance };
+      }
+
       addToast({
         type: 'error',
         title: 'Upload Failed',
