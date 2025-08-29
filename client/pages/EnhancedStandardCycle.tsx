@@ -1429,38 +1429,6 @@ export function EnhancedStandardCycleContent() {
                         <p className="text-sm text-gray-700">{selectedRefrigerant?.description}</p>
                       </div>
 
-                      <div>
-                        <Label>Typical Applications</Label>
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {selectedRefrigerant?.applications?.map((app) => (
-                            <Badge key={app}>{app}</Badge>
-                          ))}
-                        </div>
-                      </div>
-
-
-                      <div className="mt-4">
-                        <div className="flex items-center gap-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-green-500">
-                            <path d="M21.801 10A10 10 0 1 1 17 3.335" />
-                            <path d="m9 11 3 3L22 4" />
-                          </svg>
-                          <div>
-                            <div className="text-sm font-medium">Evaporator Temperature: {formData.evap_temp_c} °C</div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2 mt-4">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-green-500">
-                            <path d="M21.801 10A10 10 0 1 1 17 3.335" />
-                            <path d="m9 11 3 3L22 4" />
-                          </svg>
-                          <div>
-                            <div className="text-sm font-medium">Condenser Temperature: {formData.cond_temp_c} °C</div>
-                          </div>
-                        </div>
-                      </div>
-
                     </div>
                   </div>
                 </div>
