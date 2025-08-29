@@ -690,8 +690,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
     if (xData.length > 0 && yData.length > 0) {
       // Use shared domain so dome aligns with axes
-      const domainUtil = require('@/lib/diagramDomain') as any;
-      const domain = domainUtil.computeDomain(diagramType, (cycleData as any) || {}, cycleData?.points || [], 0.12, 6);
+      const domain = computeDomain(diagramType, (cycleData as any) || {}, cycleData?.points || [], 0.12, 6);
       const xMin = domain.xMin;
       const xMax = domain.xMax;
       const yMin = domain.yMin;
