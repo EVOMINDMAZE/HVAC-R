@@ -589,13 +589,13 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     ctx.font = "bold 14px 'Inter', sans-serif";
     ctx.textAlign = "center";
 
-    // Calculate real value ranges from cycle points
+    // Calculate real value ranges from cycle points using resolver
     const xValues = points
-      .map((p) => p[config.xAxis.property] as number)
-      .filter((v) => !isNaN(v) && v !== undefined);
+      .map((p) => resolvePointValue(p, config.xAxis.property as string))
+      .filter((v) => v !== null) as number[];
     const yValues = points
-      .map((p) => p[config.yAxis.property] as number)
-      .filter((v) => !isNaN(v) && v !== undefined);
+      .map((p) => resolvePointValue(p, config.yAxis.property as string))
+      .filter((v) => v !== null) as number[];
 
     if (xValues.length === 0 || yValues.length === 0) {
       console.log("No valid axis data available for", diagramType);
@@ -686,7 +686,9 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     plotHeight: number,
     config: DiagramConfig,
   ) => {
-    if (!cycleData?.saturationDome) {
+    // Accept either camelCase or snake_case saturation dome property names
+    const dome = (cycleData as any).saturationDome || (cycleData as any).saturation_dome || null;
+    if (!dome) {
       // Fallback to simplified dome if no data available
       const centerX = margin + plotWidth * 0.35;
       const centerY = margin + plotHeight * 0.6;
@@ -703,19 +705,28 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       return;
     }
 
-    // Draw real saturation dome using API data
+    // Draw real saturation dome using API data, accept multiple key variants
     let xData: number[] = [];
     let yData: number[] = [];
 
-    if (diagramType === "P-h" && cycleData.saturationDome.ph_diagram) {
-      xData = cycleData.saturationDome.ph_diagram.enthalpy_kj_kg;
-      yData = cycleData.saturationDome.ph_diagram.pressure_kpa;
-    } else if (diagramType === "T-s" && cycleData.saturationDome.ts_diagram) {
-      xData = cycleData.saturationDome.ts_diagram.entropy_kj_kgk;
-      yData = cycleData.saturationDome.ts_diagram.temperature_c;
-    } else if (diagramType === "T-v" && cycleData.saturationDome.tv_diagram) {
-      xData = cycleData.saturationDome.tv_diagram.specific_volume_m3_kg;
-      yData = cycleData.saturationDome.tv_diagram.temperature_c;
+    if (diagramType === "P-h") {
+      const ph = dome.ph_diagram || dome.ph || dome['ph'] || null;
+      if (ph) {
+        xData = ph.enthalpy_kj_kg || ph.enthalpy || ph.h || [];
+        yData = ph.pressure_kpa || ph.pressure || ph.p || [];
+      }
+    } else if (diagramType === "T-s") {
+      const ts = dome.ts_diagram || dome.ts || dome['ts'] || null;
+      if (ts) {
+        xData = ts.entropy_kj_kgk || ts.entropy_kj_kg || ts.entropy || ts.s || [];
+        yData = ts.temperature_c || ts.temperature || ts.t || [];
+      }
+    } else if (diagramType === "T-v") {
+      const tv = dome.tv_diagram || dome.tv || dome['tv'] || null;
+      if (tv) {
+        xData = tv.specific_volume_m3_kg || tv.specific_volume || tv.v || [];
+        yData = tv.temperature_c || tv.temperature || tv.t || [];
+      }
     }
 
     if (xData.length > 0 && yData.length > 0) {
