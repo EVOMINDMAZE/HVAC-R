@@ -71,8 +71,8 @@ router.post(
     try {
       console.log("Checkout session request received:", req.body);
       const { priceId } = req.body;
-      const userId = req.user.id;
-      const userEmail = req.user.email;
+      const userId = (req as any).user?.id;
+      const userEmail = (req as any).user?.email;
 
       console.log("User info:", { userId, userEmail, priceId });
 
