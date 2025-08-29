@@ -321,45 +321,95 @@ export function RefrigerantComparisonContent() {
     }
   };
 
-  const getValueForMetric = (result: RefrigerantResult, metricKey: string) => {
-    // Handle different API response structures
-    let value = (result as any)[metricKey];
+  const parseNumber = (val: any): number | null => {
+    if (val === undefined || val === null) return null;
+    if (typeof val === "number") return isFinite(val) ? val : null;
+    if (typeof val === "string") {
+      const cleaned = val.replace(/[,\s]+/g, "").replace(/[a-zA-Z%]+/g, "");
+      const n = Number(cleaned);
+      return isNaN(n) ? null : n;
+    }
+    return null;
+  };
 
-    // If not found directly, try performance nested object
-    if (value === undefined && (result as any).performance) {
-      const perf = (result as any).performance;
+  const getNumericValue = (result: any, metricKey: string): number | null => {
+    // Try direct property
+    let v = parseNumber(result[metricKey]);
+    // Try common variants
+    const perf = result.performance || result.perf || result.results || {};
+
+    if (v === null) {
       switch (metricKey) {
         case "cop":
-          value = perf.cop;
+          v = parseNumber(result.cop) ?? parseNumber(perf.cop);
           break;
         case "refrigerationEffect":
-          value = perf.refrigeration_effect_kj_kg || perf.refrigeration_effect;
+          v =
+            parseNumber(result.refrigerationEffect) ??
+            parseNumber(perf.refrigeration_effect_kj_kg) ??
+            parseNumber(perf.refrigeration_effect) ??
+            parseNumber(perf.refrigeration_capacity_kw) ??
+            parseNumber(perf.refrigeration_capacity);
           break;
         case "workInput":
-          value = perf.work_of_compression_kj_kg || perf.work_input;
+          v =
+            parseNumber(result.workInput) ??
+            parseNumber(perf.work_of_compression_kj_kg) ??
+            parseNumber(perf.work_input) ??
+            parseNumber(perf.compressor_work_kw) ??
+            parseNumber(perf.compressor_work);
           break;
         case "heatRejection":
-          const refEffect =
-            perf.refrigeration_effect_kj_kg || perf.refrigeration_effect || 0;
-          const workInput =
-            perf.work_of_compression_kj_kg || perf.work_input || 0;
-          value = refEffect + workInput;
+          // Q_cond = Q_evap + W_comp
+          {
+            const qEvap =
+              parseNumber(perf.refrigeration_effect_kj_kg) ??
+              parseNumber(perf.refrigeration_effect) ??
+              parseNumber(perf.cooling_capacity_kw) ??
+              parseNumber(perf.cooling_capacity);
+            const wComp =
+              parseNumber(perf.work_of_compression_kj_kg) ??
+              parseNumber(perf.work_input) ??
+              parseNumber(perf.compressor_work_kw) ??
+              parseNumber(perf.compressor_work);
+            if (qEvap !== null || wComp !== null) {
+              v = (qEvap || 0) + (wComp || 0);
+            }
+          }
           break;
         case "volumetricCapacity":
-          value = perf.volumetric_capacity || perf.volumetricCapacity;
+          v =
+            parseNumber(result.volumetricCapacity) ??
+            parseNumber(perf.volumetric_capacity) ??
+            parseNumber(perf.volumetricCapacity) ??
+            null;
           break;
         case "dischargePressure":
-          value = perf.discharge_pressure || perf.dischargePressure;
+          v =
+            parseNumber(result.dischargePressure) ??
+            parseNumber(perf.discharge_pressure) ??
+            parseNumber(perf.dischargePressure) ??
+            null;
           break;
         case "suctionPressure":
-          value = perf.suction_pressure || perf.suctionPressure;
+          v =
+            parseNumber(result.suctionPressure) ??
+            parseNumber(perf.suction_pressure) ??
+            parseNumber(perf.suctionPressure) ??
+            null;
           break;
+        default:
+          v = parseNumber(result[metricKey]) ?? parseNumber(perf[metricKey]);
       }
     }
 
-    return typeof value === "number"
-      ? value.toFixed(metricKey === "cop" ? 3 : 1)
-      : "N/A";
+    return v;
+  };
+
+  const getValueForMetric = (result: RefrigerantResult, metricKey: string) => {
+    const num = getNumericValue(result as any, metricKey);
+    if (num === null) return "N/A";
+    return metricKey === "cop" ? num.toFixed(3) : num.toFixed(1);
   };
 
   const getBestValueIndex = (metricKey: string) => {
@@ -368,24 +418,18 @@ export function RefrigerantComparisonContent() {
     const metric = performanceMetrics.find((m) => m.key === metricKey);
     if (!metric) return -1;
 
-    const values = result.results
-      .map((r) => {
-        // Handle different API response structures
-        const value =
-          (r as any)[metricKey] || (r as any).performance?.[metricKey];
-        return typeof value === "number" ? value : null;
-      })
-      .filter((v) => v !== null);
+    const numericValues = result.results
+      .map((r) => getNumericValue(r as any, metricKey))
+      .filter((v) => v !== null) as number[];
 
-    if (values.length === 0) return -1;
+    if (numericValues.length === 0) return -1;
 
     const bestValue = metric.higherIsBetter
-      ? Math.max(...values)
-      : Math.min(...values);
+      ? Math.max(...numericValues)
+      : Math.min(...numericValues);
 
     return result.results.findIndex((r) => {
-      const value =
-        (r as any)[metricKey] || (r as any).performance?.[metricKey];
+      const value = getNumericValue(r as any, metricKey);
       return value === bestValue;
     });
   };
