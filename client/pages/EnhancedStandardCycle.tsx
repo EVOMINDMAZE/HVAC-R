@@ -167,12 +167,15 @@ export function EnhancedStandardCycleContent() {
     return true;
   }, [formData]);
 
-  const handleCalculate = async () => {
+  const handleCalculate = async (overrideParams: Partial<typeof formData> | null = null, attempt: number = 0) => {
     if (!validateInputs()) return;
 
     setLoading(true);
     setError(null);
     setResults(null);
+
+    // Build request payload using possible overrides (used for auto-retry adjustments)
+    const requestBody = overrideParams ? { ...formData, ...overrideParams } : formData;
 
     try {
       const response = await fetch(
@@ -182,16 +185,16 @@ export function EnhancedStandardCycleContent() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(requestBody),
         },
       );
 
       const responseData = await response.json();
 
       console.log("\n✨ === ENHANCED API RESPONSE ANALYSIS ===");
-      console.log("�� Response Status:", response.status, response.statusText);
-      console.log("📎 Content-Type:", response.headers.get("content-type"));
-      console.log("📦 Full Response Structure:");
+      console.log("Response Status:", response.status, response.statusText);
+      console.log("Content-Type:", response.headers.get("content-type"));
+      console.log("Full Response Structure:");
       console.log(JSON.stringify(responseData, null, 2));
 
       if (!response.ok || responseData.error) {
