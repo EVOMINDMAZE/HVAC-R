@@ -33,7 +33,7 @@ export const uploadAvatar: RequestHandler = async (req, res) => {
       return res.status(400).json({ error: 'Invalid file content' });
     }
 
-    const bucketName = bucket || (process.env.VITE_SUPABASE_AVATAR_BUCKET as string) || 'public-avatars';
+    const bucketName = bucket || (process.env.VITE_SUPABASE_AVATAR_BUCKET as string) || 'avatars';
 
     // Upload using the admin client
     const { data, error } = await admin.storage.from(bucketName).upload(filename, buf, { upsert: false });
