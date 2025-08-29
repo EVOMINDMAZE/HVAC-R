@@ -34,7 +34,7 @@ import {
   Briefcase,
   Target,
 } from "lucide-react";
-import { computeDomain } from "@/lib/diagramDomain";
+import { computeDomain, resolveValue } from "@/lib/diagramDomain";
 
 interface ProfessionalFeaturesProps {
   cycleData?: any;
@@ -440,13 +440,12 @@ export function ProfessionalFeatures({
         yArr: number[],
         xLabel: string,
         yLabel: string,
-        pts: { x: number; y: number; id?: string }[],
+        ptsRaw: { x: number; y: number; id?: string }[],
         title: string,
         diagramType: 'P-h' | 'T-s' = 'P-h',
       ) => {
-        if (!xArr || !yArr || xArr.length === 0 || yArr.length === 0) return null;
-        // derive domain using shared util for consistency
-        const domain = computeDomain(diagramType, resultsObj?.saturation_dome || resultsObj?.saturationDome || cycleObj?.saturation_dome || cycleObj?.saturationDome, cycleObj?.points || [], 0.12, 6);
+        // prefer cycleObj as authoritative data source so both visualizations match
+        const domain = computeDomain(diagramType, cycleObj || resultsObj || {}, cycleObj?.points || [], 0.12, 6);
 
         const width = 1600;
         const height = 1000;
@@ -465,10 +464,37 @@ export function ProfessionalFeatures({
         const xTicks = domain.xTicks;
         const yTicks = domain.yTicks;
 
+        // Build normalized points from ptsRaw using resolveValue to be robust
+        const pts = (cycleObj?.points || ptsRaw || []).map((p: any, idx: number) => ({
+          x: resolveValue(p, diagramType === 'P-h' ? 'enthalpy' : diagramType === 'T-s' ? 'entropy' : 'specificVolume') ?? (p.x ?? 0),
+          y: resolveValue(p, diagramType === 'P-h' ? 'pressure' : diagramType === 'T-s' ? 'temperature' : 'pressure') ?? (p.y ?? 0),
+          id: String(idx + 1),
+        }));
+
+        // dome path from cycleObj saturation arrays if present (prefer cycleObj)
         let domePath = '';
-        for (let i = 0; i < xArr.length; i++) {
-          const x = xScale(xArr[i]);
-          const y = yScale(yArr[i]);
+        const domeSrc = (cycleObj?.saturation_dome || cycleObj?.saturationDome) || (resultsObj?.saturation_dome || resultsObj?.saturationDome) || null;
+        let domeX: number[] = xArr || [];
+        let domeY: number[] = yArr || [];
+        if (domeSrc) {
+          if (diagramType === 'P-h') {
+            const ph = domeSrc.ph_diagram || domeSrc.ph || domeSrc['ph'] || null;
+            if (ph) {
+              domeX = ph.enthalpy_kj_kg || ph.enthalpy || ph.h || domeX;
+              domeY = ph.pressure_kpa || ph.pressure || ph.p || domeY;
+            }
+          } else if (diagramType === 'T-s') {
+            const ts = domeSrc.ts_diagram || domeSrc.ts || domeSrc['ts'] || null;
+            if (ts) {
+              domeX = ts.entropy_kj_kgk || ts.entropy_kj_kg || ts.entropy || ts.s || domeX;
+              domeY = ts.temperature_c || ts.temperature || ts.t || domeY;
+            }
+          }
+        }
+
+        for (let i = 0; i < Math.min(domeX.length, domeY.length); i++) {
+          const x = xScale(domeX[i]);
+          const y = yScale(domeY[i]);
           domePath += (i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`);
         }
 
