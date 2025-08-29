@@ -554,7 +554,7 @@ export function ProfessionalFeatures({
       const ent = safeFindArray(ph, ['enthalpy', 'h', 'enthalpy_kj_kg']);
       const pres = safeFindArray(ph, ['pressure', 'p', 'pressure_kpa']);
       const pointsPh = (cycleObj?.points || []).map((p: any, idx: number) => ({ x: p.enthalpy ?? p.enthalpy_kj_kg ?? p.h ?? 0, y: p.pressure ?? p.pressure_kpa ?? p.p ?? 0, id: String(idx + 1) }));
-      const phSvg = makeDiagram(ent, pres, 'Enthalpy (kJ/kg)', 'Pressure (kPa)', pointsPh, 'P-h Diagram');
+      const phSvg = makeDiagram(ent, pres, 'Enthalpy (kJ/kg)', 'Pressure (kPa)', pointsPh, 'P-h Diagram', 'P-h');
       if (phSvg) svgs.ph = phSvg;
 
       // T-s extraction
@@ -1998,7 +1998,7 @@ export function ProfessionalFeatures({
                       <ul className="space-y-1 text-muted-foreground">
                         <li>• Plan for refrigerant transitions</li>
                         <li>• Budget for preventive maintenance</li>
-                        <li>• Consider energy efficiency incentives</li>
+                        <li>��� Consider energy efficiency incentives</li>
                         <li>• Monitor regulatory changes</li>
                       </ul>
                     </div>
