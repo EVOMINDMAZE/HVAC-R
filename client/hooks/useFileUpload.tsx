@@ -108,10 +108,46 @@ export function useFileUpload() {
 
         // Helpful guidance for common issues
         const msg = (error && (error.message || errStr)) || String(error);
-        if (String(msg).toLowerCase().includes('bucket') || String(msg).toLowerCase().includes('not found')) {
-          const guidance = `Upload Failed: Storage bucket "${(import.meta.env.VITE_SUPABASE_AVATAR_BUCKET as string) || 'avatars'}" not found or inaccessible. Please create a public bucket (e.g. "${fallbackBucket}") and ensure your anon key has permission to upload.`;
-          addToast({ type: 'error', title: 'Upload Failed', description: guidance });
-          return { url: null, error: guidance };
+
+        // If this is a row-level security / RLS error, attempt server-side upload fallback
+        if (String(msg).toLowerCase().includes('row-level') || String(msg).toLowerCase().includes('row level') || String(msg).toLowerCase().includes('violates row-level') || (error && (error?.status === 403 || (error as any)?.statusCode === 403))) {
+          try {
+            // convert file to base64
+            const toBase64 = (file: File) => new Promise<string>((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve((reader.result as string).split(',')[1]);
+              reader.onerror = (e) => reject(e);
+              reader.readAsDataURL(file);
+            });
+
+            const base64 = await toBase64(file);
+            const token = localStorage.getItem('simulateon_token');
+            const resp = await fetch('/api/storage/upload', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+              },
+              body: JSON.stringify({ filename: fileName, contentBase64: base64, bucket: bucketToUse }),
+            });
+            const jr = await resp.json();
+            if (resp.ok && jr?.publicUrl) {
+              // Update profile via updateUser
+              await updateUser({ data: { avatar_url: jr.publicUrl } });
+              addToast({ type: 'success', title: 'Avatar Updated', description: 'Your profile picture has been updated successfully' });
+              return { url: jr.publicUrl, error: null };
+            } else {
+              console.error('Server fallback upload failed', jr);
+              const guidance = jr?.error || jr?.details || 'Server-side upload failed';
+              addToast({ type: 'error', title: 'Upload Failed', description: guidance });
+              return { url: null, error: guidance };
+            }
+          } catch (e) {
+            console.error('Server fallback error', e);
+            const guidance = 'Upload failed due to storage policy restrictions and server fallback also failed';
+            addToast({ type: 'error', title: 'Upload Failed', description: guidance });
+            return { url: null, error: guidance };
+          }
         }
 
         const guidance = `Upload Failed: ${msg}`;
