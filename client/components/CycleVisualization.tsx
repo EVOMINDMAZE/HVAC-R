@@ -92,6 +92,18 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
   const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
   const [diagramType, setDiagramType] = useState<DiagramType>("P-h");
 
+  // Draggable overlay state: position in pixels relative to canvas
+  const [overlayPos, setOverlayPos] = useState<{ x: number; y: number } | null>(() => {
+    try {
+      const raw = localStorage.getItem('cycle_performance_overlay_pos');
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+  const draggingRef = useRef(false);
+  const dragOffsetRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+
   // Enhanced coordinate calculation with better thermodynamic accuracy
   const calculateCoordinates = (
     points: CyclePoint[],
@@ -272,7 +284,107 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     ctx.imageSmoothingQuality = "high";
 
     drawCycle(ctx, canvas.width, canvas.height);
-  }, [cycleData, selectedPoint, diagramType]);
+  }, [cycleData, selectedPoint, diagramType, overlayPos]);
+
+  // Mouse/touch handlers to make overlay draggable
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const getEventPos = (e: MouseEvent | TouchEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      let clientX = 0;
+      let clientY = 0;
+      if ((e as TouchEvent).touches && (e as TouchEvent).touches.length > 0) {
+        clientX = (e as TouchEvent).touches[0].clientX;
+        clientY = (e as TouchEvent).touches[0].clientY;
+      } else if ((e as TouchEvent).changedTouches && (e as TouchEvent).changedTouches.length > 0) {
+        clientX = (e as TouchEvent).changedTouches[0].clientX;
+        clientY = (e as TouchEvent).changedTouches[0].clientY;
+      } else {
+        clientX = (e as MouseEvent).clientX;
+        clientY = (e as MouseEvent).clientY;
+      }
+
+      // Map to canvas coordinate space (account for CSS size vs actual pixel buffer)
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+
+      return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
+    };
+
+    const onDown = (ev: MouseEvent | TouchEvent) => {
+      const pos = getEventPos(ev);
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+
+      // Determine default overlay position used by drawEngineeringOverlay when overlayPos is null
+      const margin = 120;
+      const plotWidth = canvasWidth - 2 * margin;
+      const plotHeight = canvasHeight - 2 * margin;
+      const defaultX = margin + plotWidth - 250;
+      const defaultY = margin + 20;
+
+      const overlayX = overlayPos ? overlayPos.x : defaultX;
+      const overlayY = overlayPos ? overlayPos.y : defaultY;
+      const overlayW = 230;
+      const overlayH = 160;
+
+      // Check if pointer is inside overlay rect
+      if (pos.x >= overlayX && pos.x <= overlayX + overlayW && pos.y >= overlayY && pos.y <= overlayY + overlayH) {
+        draggingRef.current = true;
+        dragOffsetRef.current = { x: pos.x - overlayX, y: pos.y - overlayY };
+        // change cursor
+        canvas.style.cursor = 'grabbing';
+        ev.preventDefault();
+      }
+    };
+
+    const onMove = (ev: MouseEvent | TouchEvent) => {
+      if (!draggingRef.current) return;
+      const pos = getEventPos(ev);
+      const canvasWidth = canvas.width;
+      const canvasHeight = canvas.height;
+      const overlayW = 230;
+      const overlayH = 160;
+
+      let newX = pos.x - dragOffsetRef.current.x;
+      let newY = pos.y - dragOffsetRef.current.y;
+
+      // constrain to canvas
+      newX = Math.max(0, Math.min(newX, canvasWidth - overlayW));
+      newY = Math.max(0, Math.min(newY, canvasHeight - overlayH));
+
+      setOverlayPos({ x: newX, y: newY });
+    };
+
+    const onUp = () => {
+      if (!draggingRef.current) return;
+      draggingRef.current = false;
+      // persist position
+      try {
+        if (overlayPos) localStorage.setItem('cycle_performance_overlay_pos', JSON.stringify(overlayPos));
+      } catch (e) {}
+      canvas.style.cursor = 'default';
+    };
+
+    // Attach listeners
+    canvas.addEventListener('mousedown', onDown as any);
+    canvas.addEventListener('touchstart', onDown as any, { passive: false });
+    window.addEventListener('mousemove', onMove as any);
+    window.addEventListener('touchmove', onMove as any, { passive: false });
+    window.addEventListener('mouseup', onUp as any);
+    window.addEventListener('touchend', onUp as any);
+
+    return () => {
+      canvas.removeEventListener('mousedown', onDown as any);
+      canvas.removeEventListener('touchstart', onDown as any);
+      window.removeEventListener('mousemove', onMove as any);
+      window.removeEventListener('touchmove', onMove as any);
+      window.removeEventListener('mouseup', onUp as any);
+      window.removeEventListener('touchend', onUp as any);
+    };
+  }, [overlayPos, cycleData]);
 
   const drawCycle = (
     ctx: CanvasRenderingContext2D,
@@ -1003,8 +1115,10 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     const theoreticalCOP = refrigerationEffect / compressionWork;
 
     // Draw performance metrics overlay with enhanced styling
-    const overlayX = margin + plotWidth - 250;
-    const overlayY = margin + 20;
+    const defaultOverlayX = margin + plotWidth - 250;
+    const defaultOverlayY = margin + 20;
+    const overlayX = overlayPos ? overlayPos.x : defaultOverlayX;
+    const overlayY = overlayPos ? overlayPos.y : defaultOverlayY;
 
     // Background with gradient
     const gradient = ctx.createLinearGradient(
@@ -1027,6 +1141,28 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     ctx.beginPath();
     ctx.roundRect(overlayX, overlayY, 230, 160, 12);
     ctx.fill();
+    ctx.stroke();
+
+    // Draw draggable handle (small grip) at top-right
+    const handleW = 28;
+    const handleH = 18;
+    const handleX = overlayX + 230 - handleW - 8;
+    const handleY = overlayY + 8;
+    ctx.fillStyle = 'rgba(31,41,55,0.06)';
+    ctx.roundRect(handleX, handleY, handleW, handleH, 6);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(31,41,55,0.08)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Draw little grip lines
+    ctx.strokeStyle = 'rgba(31,41,55,0.25)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(handleX + 6, handleY + 6);
+    ctx.lineTo(handleX + 22, handleY + 6);
+    ctx.moveTo(handleX + 6, handleY + 10);
+    ctx.lineTo(handleX + 22, handleY + 10);
     ctx.stroke();
 
     // Reset shadow
