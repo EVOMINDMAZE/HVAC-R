@@ -1125,12 +1125,11 @@ export function ProfessionalFeatures({
 
     const diagramSection = diagramDataUrl
       ? `<div class='card'><h3>Diagram</h3><div><img src='${diagramDataUrl}' style='max-width:100%;height:auto;border-radius:6px;border:1px solid #e6eefc' /></div></div>`
-      : (svgs && (svgs.ph || svgs.ts || svgs.pv))
+      : (svgs && (svgs.ph || svgs.ts))
         ? `
           <div class='card'><h3>Diagrams</h3>
             ${svgs.ph ? `<div style='margin-bottom:12px'>${sanitizeSvgInline(svgs.ph)}</div>` : ''}
             ${svgs.ts ? `<div style='margin-bottom:12px'>${sanitizeSvgInline(svgs.ts)}</div>` : ''}
-            ${svgs.pv ? `<div style='margin-bottom:12px'>${sanitizeSvgInline(svgs.pv)}</div>` : ''}
             ${buildPointsHtmlSmall(cycleData)}
           </div>`
         : '';
