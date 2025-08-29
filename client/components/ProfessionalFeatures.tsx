@@ -573,6 +573,23 @@ export function ProfessionalFeatures({
     }
   };
 
+  // Helper: format built SVGs for printable HTML
+  const formatSvgsForPrintable = (resultsObj: any, cycleObj: any, diagramDataUrl: string | null, includeDiagrams: boolean) => {
+    const svgs = buildDiagramSvgs(resultsObj, cycleObj);
+    if (!includeDiagrams) return '';
+    if (diagramDataUrl) {
+      return `<div class='section'><h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Cycle Diagram</h2><div class='diagram'><img src='${diagramDataUrl}' style='max-width:100%;height:auto;border:1px solid #e6eefc;border-radius:6px' /></div></div>`;
+    }
+    const diagrams: string[] = [];
+    if (svgs.ph) diagrams.push(`<div style='flex:1;min-width:320px'><h3 style='margin:0 0 8px;font-size:14px;color:#0f172a'>P-h Diagram</h3>${svgs.ph}</div>`);
+    if (svgs.ts) diagrams.push(`<div style='flex:1;min-width:320px'><h3 style='margin:0 0 8px;font-size:14px;color:#0f172a'>T-s Diagram</h3>${svgs.ts}</div>`);
+    if (diagrams.length === 2) {
+      return `<div class='section' style='display:flex;gap:16px;align-items:flex-start'>${diagrams.join('')}</div>`;
+    }
+    if (diagrams.length === 1) return `<div class='section'>${diagrams[0]}</div>`;
+    return '';
+  };
+
   // Generate fully server-side PDF report
   const generateReport = async () => {
     try {
