@@ -1831,7 +1831,7 @@ export function EnhancedStandardCycleContent() {
                             )}
                           </div>
                           <div>
-                            ��: {formatValue(getDensity(point), "kg/m³")}
+                            <TechTerm term="density">ρ</TechTerm>: {formatValue(getDensity(point), "kg/m³")}
                           </div>
                           {getPropertyValue(point, [
                             "vapor_quality",
