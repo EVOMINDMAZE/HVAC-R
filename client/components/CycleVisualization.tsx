@@ -400,8 +400,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
     // Use shared domain calculation so scales match Chart Package
     const config = DIAGRAM_CONFIGS[diagramType];
-    const domainUtil = require('@/lib/diagramDomain') as any;
-    const domain = domainUtil.computeDomain(diagramType, cycleData || {}, cycleData?.points || []);
+    const domain = computeDomain(diagramType, cycleData || {}, cycleData?.points || []);
 
     // Set up coordinate system with larger margins for higher resolution
     const margin = 120;
