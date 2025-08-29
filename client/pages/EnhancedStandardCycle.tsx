@@ -206,7 +206,7 @@ export function EnhancedStandardCycleContent() {
       // Enhanced response format handling
       const calculationData = responseData.data || responseData;
 
-      console.log("\n⚙️ === PROCESSING CALCULATION DATA ===");
+      console.log("\n⚙��� === PROCESSING CALCULATION DATA ===");
       console.log("🔍 Data Structure Type:", typeof calculationData);
       console.log("📝 Top-level Keys:", Object.keys(calculationData || {}));
       console.log("🔄 Processed Data:");
@@ -381,22 +381,36 @@ export function EnhancedStandardCycleContent() {
         }
       }
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "An unexpected error occurred";
+      const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred";
 
-      // Handle specific CoolProp errors for blend refrigerants
-      if (
-        errorMessage.includes("Two-phase inputs not supported for pseudo-pure")
-      ) {
-        const refrigerantName = formData.refrigerant;
-        setError(
-          `CoolProp limitation: ${refrigerantName} is a blend refrigerant and two-phase calculations are not supported. ` +
-            "Try adjusting the superheat or subcooling values to avoid two-phase conditions, or use a pure refrigerant like R134a or R32.",
-        );
+      // Handle specific CoolProp errors for blend refrigerants with an automated retry
+      if (errorMessage.includes("Two-phase inputs not supported for pseudo-pure")) {
+        const refrigerantName = requestBody.refrigerant || formData.refrigerant;
+
+        if (attempt === 0) {
+          // Try a best-effort auto-adjust: increase superheat and reduce subcooling slightly
+          const newSuperheat = (requestBody.superheat_c ?? formData.superheat_c) + 2;
+          const newSubcooling = Math.max(0, (requestBody.subcooling_c ?? formData.subcooling_c) - 1);
+
+          setError(
+            `CoolProp limitation detected for blend refrigerant ${refrigerantName}. Attempting automatic adjustment (superheat +2°C, subcooling -1°C) and retrying...`,
+          );
+
+          // Update visible form values so user sees the attempted adjustment
+          setFormData((prev) => ({ ...prev, superheat_c: newSuperheat, subcooling_c: newSubcooling }));
+
+          // Retry once with adjusted params
+          setTimeout(() => {
+            void handleCalculate({ superheat_c: newSuperheat, subcooling_c: newSubcooling }, attempt + 1);
+          }, 250);
+        } else {
+          setError(
+            `CoolProp limitation: ${refrigerantName} is a blend refrigerant and two-phase calculations are not supported. Automatic retry failed. Try using a pure refrigerant (e.g., R134a) or adjust operating conditions to avoid two-phase calculations.`,
+          );
+        }
       } else if (errorMessage.includes("PropsSI")) {
         setError(
-          "CoolProp calculation error: The specified operating conditions may be outside the valid range for this refrigerant. " +
-            "Please check your temperature and pressure values.",
+          "CoolProp calculation error: The specified operating conditions may be outside the valid range for this refrigerant. Please check your temperature and pressure values.",
         );
       } else {
         setError(errorMessage);
