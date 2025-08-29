@@ -1818,8 +1818,8 @@ export function ProfessionalFeatures({
                   </h4>
                   <ul className="text-sm text-blue-700 space-y-1">
                     <li>✓ Executive summary with key findings</li>
-                    <li>✓ Detailed thermodynamic analysis</li>
-                    <li>✓ High-resolution P-h diagrams</li>
+                    <li>✓ Detailed thermodynamic analysis (data only)</li>
+                    <li>✓ Clean executive-ready formatting (diagrams excluded)</li>
                     <li>✓ Cost analysis and ROI calculations</li>
                     <li>✓ Sustainability assessment</li>
                     <li>✓ Engineering recommendations</li>
