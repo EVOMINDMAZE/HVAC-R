@@ -1,12 +1,17 @@
 import { RequestHandler } from 'express';
+import { RequestHandler } from 'express';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 // POST /api/reports/generate
 // Body: { reportConfig, results, cycleData, costAnalysis, sustainability, diagramDataUrl }
 export const generateReportPdf: RequestHandler = async (req, res) => {
+  console.log('[reports] generateReportPdf called', { path: req.path, method: req.method });
   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
-    if (!token) return res.status(401).json({ error: 'Authentication required' });
+    if (!token) {
+      console.log('[reports] missing token');
+      return res.status(401).json({ error: 'Authentication required' });
+    }
 
     const {
       reportConfig,
