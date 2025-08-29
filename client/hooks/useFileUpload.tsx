@@ -121,7 +121,17 @@ export function useFileUpload() {
             });
 
             const base64 = await toBase64(file);
-            const token = localStorage.getItem('simulateon_token');
+            // Prefer legacy simulateon_token, fallback to Supabase access token when available
+            let token = localStorage.getItem('simulateon_token');
+            if (!token && supabase && supabase.auth) {
+              try {
+                const sess = await supabase.auth.getSession();
+                token = sess?.data?.session?.access_token ?? token;
+              } catch (e) {
+                // ignore
+              }
+            }
+
             const resp = await fetch('/api/storage/upload', {
               method: 'POST',
               headers: {
@@ -130,6 +140,7 @@ export function useFileUpload() {
               },
               body: JSON.stringify({ filename: fileName, contentBase64: base64, bucket: bucketToUse }),
             });
+
             // Parse response safely (use clone to avoid consuming body more than once)
             let jr: any = null;
             try {
@@ -137,7 +148,7 @@ export function useFileUpload() {
             } catch (parseErr) {
               try {
                 const txt = await resp.clone().text();
-                jr = txt ? JSON.parse(txt) : null;
+                jr = txt ? (function(){ try { return JSON.parse(txt); } catch(e){ return { text: txt }; } })() : null;
               } catch (e) {
                 jr = null;
               }
@@ -154,8 +165,12 @@ export function useFileUpload() {
               addToast({ type: 'success', title: 'Avatar Updated', description: 'Your profile picture has been uploaded successfully' });
               return { url: jr.publicUrl, error: null };
             } else {
-              console.error('Server fallback upload failed', jr);
-              const guidance = (jr && (jr.error || jr.details)) || 'Server-side upload failed';
+              // Provide richer error diagnostics when server response contained no JSON
+              const statusInfo = `status=${resp.status} ${resp.statusText}`;
+              console.error('Server fallback upload failed', { parsedBody: jr, status: statusInfo });
+              const guidance = (jr && (jr.error || jr.details || jr.message)) || (`Server-side upload failed (${statusInfo})`);
+              // Emit telemetry including raw body when available
+              try { window.dispatchEvent(new CustomEvent('storage:upload_failed', { detail: { reason: 'server_fallback_failed', status: resp.status, body: jr } })); } catch (e) {}
               addToast({ type: 'error', title: 'Upload Failed', description: guidance });
               return { url: null, error: guidance };
             }
