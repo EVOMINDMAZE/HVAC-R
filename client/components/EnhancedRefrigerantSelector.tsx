@@ -41,6 +41,7 @@ interface EnhancedRefrigerantSelectorProps {
   condenserTemp?: number;
   onSuggestedRangeApply?: (evapTemp: number, condTemp: number) => void;
   showValidation?: boolean;
+  showDetails?: boolean;
   className?: string;
 }
 
@@ -51,6 +52,7 @@ export function EnhancedRefrigerantSelector({
   condenserTemp,
   onSuggestedRangeApply,
   showValidation = true,
+  showDetails = true,
   className,
 }: EnhancedRefrigerantSelectorProps) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -218,7 +220,7 @@ export function EnhancedRefrigerantSelector({
       </Card>
 
       {/* Selected Refrigerant Details */}
-      {selectedRefrigerant && (
+      {showDetails && selectedRefrigerant && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
