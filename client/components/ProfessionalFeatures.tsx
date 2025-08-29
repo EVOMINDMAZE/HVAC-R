@@ -1116,20 +1116,55 @@ export function ProfessionalFeatures({
         : '';
 
     const html = `<!doctype html><html><head><meta charset='utf-8'><title>${project} - Chart Package</title>
-    <style>body{font-family:Inter,Arial,Helvetica,sans-serif;padding:20px;background:#f8fafc} .card{background:#fff;padding:16px;border-radius:8px;box-shadow:0 6px 20px rgba(13,38,59,0.06);margin-bottom:16px}</style>
+    <meta name='viewport' content='width=device-width,initial-scale=1'/>
+    <style>
+      :root{color-scheme:light}
+      body{font-family:Inter,Arial,Helvetica,sans-serif;padding:18px;background:#f3f6fb;color:#0b172a}
+      .container{max-width:1100px;margin:0 auto}
+      h1{font-size:20px;margin:0 0 12px;color:#0b5fff}
+      .card{background:#fff;padding:16px;border-radius:8px;box-shadow:0 6px 20px rgba(13,38,59,0.06);margin-bottom:16px}
+      .metrics-row{display:flex;gap:12px;flex-wrap:wrap}
+      .diagram-row{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+      .diagram-col{flex:1;min-width:320px}
+      .legend{font-size:12px;color:#334155}
+      pre{background:#f8fafc;padding:12px;border-radius:6px;overflow:auto}
+      table{width:100%;border-collapse:collapse}
+      th,td{padding:8px;border:1px solid #e6eefc;text-align:left}
+      footer{font-size:12px;color:#6b7280;margin-top:20px}
+      @media print{body{background:white} .card{box-shadow:none;border-radius:0} .no-print{display:none}}
+    </style>
     </head><body>
-    <h1>${project} - Chart Package</h1>
-    <div class='card'><h3>Summary Metrics</h3>
-      <div>${svg1}</div>
-      <div style='margin-top:8px'>${svg2}</div>
-      <div style='margin-top:8px'>${svg3}</div>
+    <div class='container'>
+      <h1>${project} - Chart Package</h1>
+
+      <div class='card'>
+        <h3 style='margin:0 0 8px'>Summary Metrics</h3>
+        <div class='metrics-row'>
+          <div style='flex:1;min-width:240px'>${svg1}</div>
+          <div style='flex:1;min-width:240px'>${svg2}</div>
+          <div style='flex:1;min-width:240px'>${svg3}</div>
+        </div>
+      </div>
+
+      <div class='card'>
+        <h3 style='margin:0 0 8px'>Diagrams</h3>
+        <div class='diagram-row'>
+          <div class='diagram-col'>${svgs.ph ? sanitizeSvgInline(svgs.ph) : ''}</div>
+          <div class='diagram-col'>${svgs.ts ? sanitizeSvgInline(svgs.ts) : ''}</div>
+        </div>
+        <div style='margin-top:12px'>${buildPointsHtmlSmall(cycleData)}</div>
+      </div>
+
+      <div class='card'><h3 style='margin:0 0 8px'>Key Data</h3>
+        <pre>${JSON.stringify({ header: { project: reportConfig.projectName, company: reportConfig.companyName, engineer: reportConfig.engineerName }, performance: results?.performance || {}, costAnalysis: costData, sustainability: sustainabilityData }, null, 2)}</pre>
+      </div>
+
+      <div class='card'><h3 style='margin:0 0 8px'>Recommendations</h3>
+        <ul>${generateRecommendations().map(r=>`<li>${r}</li>`).join('')}</ul>
+      </div>
+
+      <footer>Generated: ${new Date().toLocaleString()}</footer>
     </div>
-    ${diagramSection}
-    <div class='card'><h3>Key Data</h3>
-      <pre>${JSON.stringify({ header: { project: reportConfig.projectName, company: reportConfig.companyName, engineer: reportConfig.engineerName }, performance: results?.performance || {}, costAnalysis: costData, sustainability: sustainabilityData }, null, 2)}</pre>
-    </div>
-    <div class='card'><h3>Recommendations</h3><ul>${generateRecommendations().map(r=>`<li>${r}</li>`).join('')}</ul></div>
-    <footer style='font-size:12px;color:#6b7280;margin-top:20px'>Generated: ${new Date().toLocaleString()}</footer>
     </body></html>`;
 
     try {
