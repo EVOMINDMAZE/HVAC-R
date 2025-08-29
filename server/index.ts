@@ -25,6 +25,7 @@ import {
   createPaymentIntent,
 } from "./routes/subscriptions.ts";
 import billingRoutes from "./routes/billing.ts";
+import { uploadAvatar } from "./routes/storage.ts";
 
 export function createServer() {
   const app = express();
