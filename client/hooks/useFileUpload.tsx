@@ -65,6 +65,11 @@ export function useFileUpload() {
         // Enhanced telemetry for storage errors
         console.error('Supabase storage.upload error', { error, fileName, user: user.id });
 
+        // Emit telemetry event for monitoring
+        try {
+          window.dispatchEvent(new CustomEvent('storage:upload_failed', { detail: { reason: 'upload_error', code: error?.code || null, message: error?.message || null, user: user.id } }));
+        } catch (e) {}
+
         // Helpful guidance for common issues
         const msg = (error && (error.message || error.details || error.error)) || String(error);
         if (msg.toLowerCase().includes('bucket') || msg.toLowerCase().includes('not found')) {
