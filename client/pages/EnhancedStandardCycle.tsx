@@ -1530,6 +1530,45 @@ export function EnhancedStandardCycleContent() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
+                {/* Refrigerant Selection (moved here for improved layout) */}
+                <div className="space-y-4 mb-4">
+                  <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                    <div className="flex items-center justify-between p-4">
+                      <h4 className="text-lg font-semibold">Refrigerant Selection</h4>
+                    </div>
+                    <div className="p-4 pt-0">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                          <Label htmlFor="search">Search Refrigerants</Label>
+                          <Input id="search" placeholder="Search by name, ID, or full name..." value="" onChange={() => {}} className="mt-1" />
+                        </div>
+                        <div>
+                          <Label>Filter by Category</Label>
+                          <div className="mt-1">
+                            <button className="flex h-10 w-full items-center justify-between bg-muted border rounded-md px-3">All Categories <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg></button>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-3">
+                        <Label>Select Refrigerant</Label>
+                        <div className="mt-2">
+                          <button className="flex items-center justify-between w-full bg-muted border rounded-md px-3 h-10">
+                            <div className="flex items-center gap-3">
+                              <div className="w-3 h-3 rounded-full bg-blue-500" />
+                              <div className="font-medium">R-134a</div>
+                              <div className="text-sm text-gray-500">(Tetrafluoroethane)</div>
+                            </div>
+                            <div className="flex gap-2">
+                              <Badge variant="default">full</Badge>
+                              <Badge variant="outline">A1</Badge>
+                            </div>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 {selectedRefrigerant ? (
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4 text-sm">
