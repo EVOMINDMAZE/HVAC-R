@@ -364,6 +364,14 @@ export function RefrigerantComparisonContent() {
   };
 
   const getNumericValue = (result: any, metricKey: string): number | null => {
+    // Debugging: log the entire result object for this metric
+    console.log(`Extracting ${metricKey} from:`, {
+      refrigerant: result.refrigerant,
+      resultKeys: Object.keys(result),
+      performance: result.performance,
+      performanceKeys: result.performance ? Object.keys(result.performance) : 'No performance object'
+    });
+
     // Try direct property
     let v = parseNumber(result[metricKey]);
     // Try common variants
@@ -449,6 +457,9 @@ export function RefrigerantComparisonContent() {
           v = parseNumber(result[metricKey]) ?? parseNumber(perf[metricKey]);
       }
     }
+
+    // Debugging: log the extracted value
+    console.log(`Extracted ${metricKey} for ${result.refrigerant}: `, v);
 
     return v;
   };
