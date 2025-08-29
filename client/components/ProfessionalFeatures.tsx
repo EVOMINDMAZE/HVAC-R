@@ -1840,32 +1840,33 @@ export function ProfessionalFeatures({
                   </ul>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Button
                     onClick={generateReport}
-                    className="w-full"
+                    className="w-full py-3 text-lg font-semibold"
                     disabled={!results}
+                    aria-label="Generate professional report"
                   >
-                    <Download className="h-4 w-4 mr-2" />
-                    Generate Professional Report
+                    <Download className="h-5 w-5 mr-3" />
+                    <span className="align-middle">Generate Professional Report</span>
                   </Button>
-                  <div className="text-xs text-muted-foreground mt-1">Creates a clean, executive-ready PDF (diagrams excluded)</div>
+                  <div className="text-sm text-muted-foreground mt-1">Creates a clean, executive-ready PDF without diagrams — ideal for sending to stakeholders.</div>
 
-                  <div className="grid grid-cols-2 gap-2 mt-3">
-                    <div>
-                      <Button variant="outline" size="sm" className="w-full flex items-center justify-center" disabled={!results} onClick={exportData}>
-                        <FileText className="h-4 w-4 mr-1" />
-                        Export Data (.CSV)
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                    <div className="flex flex-col items-stretch">
+                      <Button variant="outline" size="sm" className="w-full flex items-center justify-center gap-2 whitespace-nowrap" disabled={!results} onClick={exportData} aria-label="Export data as CSV">
+                        <FileText className="h-4 w-4" />
+                        <span className="ml-2 truncate">Export Data (.CSV)</span>
                       </Button>
-                      <div className="text-xs text-muted-foreground mt-1">Download .CSV (Excel compatible)</div>
+                      <div className="text-xs text-muted-foreground text-center mt-2">Download CSV — Excel compatible, UTF-8 encoded</div>
                     </div>
 
-                    <div>
-                      <Button variant="outline" size="sm" className="w-full flex items-center justify-center" disabled={!results} onClick={downloadChartPackage}>
-                        <BarChart3 className="h-4 w-4 mr-1" />
-                        Chart Package (P‑h & T‑s PDF)
+                    <div className="flex flex-col items-stretch">
+                      <Button variant="outline" size="sm" className="w-full flex items-center justify-center gap-2 whitespace-nowrap" disabled={!results} onClick={downloadChartPackage} aria-label="Open chart package printable PDF">
+                        <BarChart3 className="h-4 w-4" />
+                        <span className="ml-2 truncate">Chart Package (P‑h &amp; T‑s PDF)</span>
                       </Button>
-                      <div className="text-xs text-muted-foreground mt-1">Opens printable PDF with both diagrams and point details</div>
+                      <div className="text-xs text-muted-foreground text-center mt-2">Opens a print-ready window containing both diagrams and point details</div>
                     </div>
                   </div>
                 </div>
