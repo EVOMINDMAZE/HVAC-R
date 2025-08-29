@@ -328,10 +328,10 @@ export function CascadeCycleContent() {
 
     // Try multiple possible data structures from API
     const points = [
-      cycleData?.point_1 || cycleData?.state_points?.[0] || {},
-      cycleData?.point_2 || cycleData?.state_points?.[1] || {},
-      cycleData?.point_3 || cycleData?.state_points?.[2] || {},
-      cycleData?.point_4 || cycleData?.state_points?.[3] || {},
+      cycleData?.point_1 || (cycleData as any)?.state_points?.[0] || {},
+      cycleData?.point_2 || (cycleData as any)?.state_points?.[1] || {},
+      cycleData?.point_3 || (cycleData as any)?.state_points?.[2] || {},
+      cycleData?.point_4 || (cycleData as any)?.state_points?.[3] || {},
     ];
 
     // Check if we have at least some temperature data
