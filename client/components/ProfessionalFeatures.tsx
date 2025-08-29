@@ -595,7 +595,19 @@ export function ProfessionalFeatures({
 
         const headerTitle = reportConfig.projectName || 'Refrigeration Cycle Analysis Report';
         const now = new Date();
-        const diagramHtml = (reportConfig.includeDiagrams && diagramDataUrl) ? `<div class='section'><h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Cycle Diagram</h2><div class='diagram'><img src='${diagramDataUrl}' style='max-width:100%;height:auto;border:1px solid #e6eefc;border-radius:6px' /></div></div>` : '';
+        const svgs = buildDiagramSvgs(results, cycleData);
+        let diagramHtml = '';
+        if (reportConfig.includeDiagrams) {
+          if (diagramDataUrl) {
+            diagramHtml = `<div class='section'><h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Cycle Diagram</h2><div class='diagram'><img src='${diagramDataUrl}' style='max-width:100%;height:auto;border:1px solid #e6eefc;border-radius:6px' /></div></div>`;
+          } else {
+            const parts: string[] = [];
+            if (svgs.ph) parts.push(`<div class='section'><h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>P-h Diagram</h2>${svgs.ph}</div>`);
+            if (svgs.ts) parts.push(`<div class='section'><h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>T-s Diagram</h2>${svgs.ts}</div>`);
+            if (svgs.pv) parts.push(`<div class='section'><h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>P-v Diagram</h2>${svgs.pv}</div>`);
+            diagramHtml = parts.join('\n') || '';
+          }
+        }
 
         const html = `<!doctype html><html><head><meta charset='utf-8'><title>${headerTitle}</title>
         <meta name='viewport' content='width=device-width,initial-scale=1' />
@@ -707,7 +719,19 @@ export function ProfessionalFeatures({
           // Build printable HTML (same as previous client-side generator)
           const headerTitle = reportConfig.projectName || 'Refrigeration Cycle Analysis Report';
           const now = new Date();
-          const diagramHtml = (reportConfig.includeDiagrams && diagramDataUrl) ? `<div class='section'><h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Cycle Diagram</h2><div class='diagram'><img src='${diagramDataUrl}' style='max-width:100%;height:auto;border:1px solid #e6eefc;border-radius:6px' /></div></div>` : '';
+          const svgs = buildDiagramSvgs(results, cycleData);
+          let diagramHtml = '';
+          if (reportConfig.includeDiagrams) {
+            if (diagramDataUrl) {
+              diagramHtml = `<div class='section'><h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Cycle Diagram</h2><div class='diagram'><img src='${diagramDataUrl}' style='max-width:100%;height:auto;border:1px solid #e6eefc;border-radius:6px' /></div></div>`;
+            } else {
+              const parts: string[] = [];
+              if (svgs.ph) parts.push(`<div class='section'><h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>P-h Diagram</h2>${svgs.ph}</div>`);
+              if (svgs.ts) parts.push(`<div class='section'><h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>T-s Diagram</h2>${svgs.ts}</div>`);
+              if (svgs.pv) parts.push(`<div class='section'><h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>P-v Diagram</h2>${svgs.pv}</div>`);
+              diagramHtml = parts.join('\n') || '';
+            }
+          }
 
           const html = `<!doctype html><html><head><meta charset='utf-8'><title>${headerTitle}</title>
           <meta name='viewport' content='width=device-width,initial-scale=1' />
