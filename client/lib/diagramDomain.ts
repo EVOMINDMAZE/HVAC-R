@@ -13,31 +13,91 @@ type DomainResult = {
 export function resolveValue(point: any, prop: string): number | null {
   if (!point) return null;
   const candidates: string[] = [];
-  switch (prop) {
+  const p = prop.toLowerCase();
+
+  // helper to push multiple alternatives
+  const push = (...names: string[]) => names.forEach((n) => candidates.push(n));
+
+  switch (p) {
     case 'enthalpy':
-      candidates.push('enthalpy', 'enthalpy_kj_kg', 'h', 'h_kj_kg');
+      push('enthalpy', 'enthalpy_kj_kg', 'enthalpy_kj/kg', 'h', 'h_kj_kg', 'h_kj/kg');
       break;
     case 'pressure':
-      candidates.push('pressure', 'pressure_kpa', 'p', 'press_kpa');
+      push(
+        'pressure',
+        'pressure_kpa',
+        'pressure_pa',
+        'p',
+        'press_kpa',
+        'p_kpa',
+        'p_pa',
+      );
       break;
     case 'entropy':
-      candidates.push('entropy', 'entropy_kj_kgk', 'entropy_kj_kg', 's');
+      push('entropy', 'entropy_kj_kgk', 'entropy_kj_kg', 's', 's_kj_kg_k');
       break;
     case 'temperature':
-      candidates.push('temperature', 'temperature_c', 't', 'temp_c');
+      push('temperature', 'temperature_c', 'temp_c', 't', 'temp');
       break;
-    case 'specificVolume':
+    case 'specificvolume':
     case 'specific_volume':
-      candidates.push('specificVolume', 'specific_volume', 'specific_volume_m3_kg', 'v', 'specificVolume_m3_kg');
+      push(
+        'specificVolume',
+        'specific_volume',
+        'specific_volume_m3_kg',
+        'specific_volume_m3/kg',
+        'v',
+        'specificVolume_m3_kg',
+      );
       break;
     default:
-      candidates.push(prop);
+      push(prop, prop.toLowerCase(), prop.replace(/-/g, '_'));
   }
+
   for (const k of candidates) {
     const v = point[k];
     if (v !== undefined && v !== null && !isNaN(Number(v))) return Number(v);
   }
   return null;
+}
+
+// "Nice" number helper to round tick steps to human-friendly values
+function niceStep(range: number, ticks: number) {
+  if (range <= 0 || !isFinite(range)) return 1;
+  const rawStep = range / ticks;
+  const mag = Math.pow(10, Math.floor(Math.log10(rawStep)));
+  const norm = rawStep / mag; // between 1 and 10
+  let nice = 1;
+  if (norm >= 7.5) nice = 10;
+  else if (norm >= 3.5) nice = 5;
+  else if (norm >= 1.5) nice = 2;
+  else nice = 1;
+  return nice * mag;
+}
+
+// Create an array of ticks from min to max using a nice step
+function makeTicks(min: number, max: number, ticks = 6) {
+  const range = max - min;
+  if (!isFinite(range) || range === 0) {
+    const centre = Number.isFinite(min) ? min : 0;
+    const step = 1;
+    const out: number[] = [];
+    for (let i = -Math.floor(ticks / 2); i <= Math.floor(ticks / 2); i++) {
+      out.push(Number((centre + i * step).toFixed(6)));
+    }
+    return out;
+  }
+  const step = niceStep(range, ticks);
+  // compute first tick <= min that is multiple of step
+  const first = Math.floor(min / step) * step;
+  // compute last tick >= max
+  const last = Math.ceil(max / step) * step;
+  const out: number[] = [];
+  for (let x = first; x <= last + step / 2; x = Number((x + step).toFixed(12))) {
+    out.push(Number(x));
+    if (out.length > 500) break; // safety
+  }
+  return out;
 }
 
 // Compute domain using saturation dome arrays when available, otherwise use cycle points
@@ -68,7 +128,7 @@ export function computeDomain(
         yArr = (ts.temperature_c || ts.temperature || ts.t || []).slice();
       }
     } else if (diagramType === 'T-v') {
-      const tv = dome.tv_diagram || dome.tv || dome['tv'] || null;
+      const tv = dome.tv_diagram || dome.tv || tv || null;
       if (tv) {
         xArr = (tv.specific_volume_m3_kg || tv.specific_volume || tv.v || []).slice();
         yArr = (tv.temperature_c || tv.temperature || tv.t || []).slice();
@@ -111,23 +171,18 @@ export function computeDomain(
   const xRange = xMax - xMin || 1;
   const yRange = yMax - yMin || 1;
 
-  const xPad = Math.max(xRange * paddingFrac, xRange > 1000 ? 50 : 1);
-  const yPad = Math.max(yRange * paddingFrac, yRange > 1000 ? 50 : 1);
+  // padding at least some sensible absolute amount for large ranges
+  const xPad = Math.max(xRange * paddingFrac, xRange > 1000 ? 50 : xRange * 0.02);
+  const yPad = Math.max(yRange * paddingFrac, yRange > 1000 ? 50 : yRange * 0.02);
 
   const xMinP = xMin - xPad;
   const xMaxP = xMax + xPad;
   const yMinP = yMin - yPad;
   const yMaxP = yMax + yPad;
 
-  // Generate ticks
-  const xTicks: number[] = [];
-  for (let i = 0; i <= ticks; i++) {
-    xTicks.push(xMinP + (i / ticks) * (xMaxP - xMinP));
-  }
-  const yTicks: number[] = [];
-  for (let i = 0; i <= ticks; i++) {
-    yTicks.push(yMinP + (i / ticks) * (yMaxP - yMinP));
-  }
+  // Generate nice ticks using helper
+  const xTicks = makeTicks(xMinP, xMaxP, ticks);
+  const yTicks = makeTicks(yMinP, yMaxP, ticks);
 
   return {
     xMin: xMinP,
