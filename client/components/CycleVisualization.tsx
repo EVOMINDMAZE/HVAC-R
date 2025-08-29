@@ -581,8 +581,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     ctx.textAlign = "center";
 
     // Use shared computeDomain for consistent axis ranges and ticks
-    const domainUtil = require('@/lib/diagramDomain') as any;
-    const domain = domainUtil.computeDomain(diagramType, (cycleData as any) || {}, points || [], 0.12, 6);
+    const domain = computeDomain(diagramType, (cycleData as any) || {}, points || [], 0.12, 6);
 
     const xMinPadded = domain.xMin;
     const xMaxPadded = domain.xMax;
