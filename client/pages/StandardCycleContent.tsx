@@ -1,1 +1,1 @@
-export { StandardCycleContent } from './StandardCycle';
+export { EnhancedStandardCycleContent as StandardCycleContent } from './EnhancedStandardCycle';
