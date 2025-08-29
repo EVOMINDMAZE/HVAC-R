@@ -469,35 +469,60 @@ export function ProfessionalFeatures({
     }
   };
 
-  // Export structured JSON data for the project (Export Data button)
+  // Export data as a human-friendly CSV (instead of raw JSON)
   const exportData = () => {
-    const payload = {
-      header: {
-        project: reportConfig.projectName || null,
-        company: reportConfig.companyName || null,
-        engineer: reportConfig.engineerName || null,
-        generated_at: new Date().toISOString(),
-      },
-      unitSystem,
-      reportConfig,
-      cycleData,
-      results,
-      costAnalysis: costData,
-      sustainability: sustainabilityData,
-      recommendations: generateRecommendations(),
-    };
-
     try {
-      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const rows: string[] = [];
+      const pushKV = (k: string, v: any) => rows.push(`"${k.replace(/"/g,'""')}","${String(v ?? '').replace(/"/g,'""')}"`);
+
+      pushKV('Project', reportConfig.projectName || '');
+      pushKV('Company', reportConfig.companyName || '');
+      pushKV('Engineer', reportConfig.engineerName || '');
+      pushKV('Generated At', new Date().toISOString());
+      pushKV('Unit System', unitSystem);
+
+      // Summary metrics
+      pushKV('COP', cop ?? '');
+      pushKV('Cooling Capacity (kW)', coolingCapacityKwNum ?? '');
+      pushKV('Compressor Work (kW)', compressorWorkKwNum ?? '');
+
+      // Cost
+      if (costData) {
+        pushKV('Annual Energy Cost', costData.annualEnergyCost ?? '');
+        pushKV('Total Lifetime Cost', costData.totalLifetimeCost ?? '');
+        pushKV('Payback Period (years)', costData.paybackPeriod ?? '');
+      }
+
+      // Sustainability
+      pushKV('GWP', sustainabilityData.gwp ?? '');
+      pushKV('ODP', sustainabilityData.odp ?? '');
+      pushKV('Recommended Alternatives', sustainabilityData.alternative ?? '');
+
+      // Cycle points
+      if (cycleData?.points && Array.isArray(cycleData.points)) {
+        rows.push('"--- Cycle Points ---",""');
+        cycleData.points.forEach((p: any, idx: number) => {
+          pushKV(`Point ${idx + 1} - Temperature (${UNIT_SYSTEMS[unitSystem].temperature})`, convertTemperature(p.temperature));
+          pushKV(`Point ${idx + 1} - Pressure (${UNIT_SYSTEMS[unitSystem].pressure})`, convertPressure(p.pressure));
+          pushKV(`Point ${idx + 1} - Enthalpy (${UNIT_SYSTEMS[unitSystem].enthalpy})`, convertEnthalpy(p.enthalpy));
+        });
+      }
+
+      // Recommendations
+      rows.push('"--- Recommendations ---",""');
+      generateRecommendations().forEach((r) => pushKV('Recommendation', r));
+
+      const csv = 'Key,Value\n' + rows.join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
+      const a = document.createElement('a');
       a.href = url;
-      a.download = `${reportConfig.projectName || 'hvac-data'}-export.json`;
+      a.download = `${reportConfig.projectName || 'hvac-data'}-export.csv`;
       a.click();
       URL.revokeObjectURL(url);
-      console.log('Export Data: download started');
+      console.log('Export Data: CSV download started');
     } catch (e) {
-      console.error('Export Data failed', e);
+      console.error('Export Data (CSV) failed', e);
       window.alert('Export failed: ' + (e as any).message);
     }
   };
