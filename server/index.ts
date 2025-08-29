@@ -9,6 +9,7 @@ import {
   getCurrentUser,
   authenticateToken,
 } from "./routes/auth.ts";
+import { authenticateSupabaseToken } from './utils/supabaseAuth.ts';
 import {
   saveCalculation,
   getCalculations,
