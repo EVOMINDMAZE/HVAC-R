@@ -82,44 +82,41 @@ export function useFileUpload() {
         });
 
       if (error) {
-        // Enhanced telemetry for storage errors
-        console.error("Supabase storage.upload error", {
-          error,
-          fileName,
-          user: user.id,
-        });
+        // Enhanced telemetry for storage errors - stringify to avoid [object Object]
+        let errStr = '';
+        try {
+          errStr = JSON.stringify(error, Object.getOwnPropertyNames(error));
+        } catch (e) {
+          errStr = String(error);
+        }
+
+        console.error(`Supabase storage.upload error: ${errStr}`, { fileName, user: user?.id, bucket: bucketToUse });
 
         // Emit telemetry event for monitoring
         try {
           window.dispatchEvent(
-            new CustomEvent("storage:upload_failed", {
+            new CustomEvent('storage:upload_failed', {
               detail: {
-                reason: "upload_error",
-                message: error?.message || String(error),
-                user: user.id,
+                reason: 'upload_error',
+                message: error?.message || errStr,
+                user: user?.id,
+                bucket: bucketToUse,
               },
             }),
           );
         } catch (e) {}
 
         // Helpful guidance for common issues
-        const msg =
-          (error && (error.message || String(error))) || String(error);
-        if (
-          msg.toLowerCase().includes("bucket") ||
-          msg.toLowerCase().includes("not found")
-        ) {
-          const guidance =
-            'Upload Failed: Storage bucket "avatars" not found. Please create a public "avatars" bucket in your Supabase Storage and ensure your anon key has permission to upload.';
-          addToast({
-            type: "error",
-            title: "Upload Failed",
-            description: guidance,
-          });
+        const msg = (error && (error.message || errStr)) || String(error);
+        if (String(msg).toLowerCase().includes('bucket') || String(msg).toLowerCase().includes('not found')) {
+          const guidance = `Upload Failed: Storage bucket "${(import.meta.env.VITE_SUPABASE_AVATAR_BUCKET as string) || 'avatars'}" not found or inaccessible. Please create a public bucket (e.g. "${fallbackBucket}") and ensure your anon key has permission to upload.`;
+          addToast({ type: 'error', title: 'Upload Failed', description: guidance });
           return { url: null, error: guidance };
         }
 
-        throw error;
+        const guidance = `Upload Failed: ${msg}`;
+        addToast({ type: 'error', title: 'Upload Failed', description: guidance });
+        return { url: null, error: guidance };
       }
 
       // Get public URL
