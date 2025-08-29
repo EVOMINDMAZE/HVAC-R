@@ -71,7 +71,7 @@ export function useFileUpload() {
         } catch (e) {}
 
         // Helpful guidance for common issues
-        const msg = (error && (error.message || error.details || error.error)) || String(error);
+        const msg = (error && (error.message || String(error))) || String(error);
         if (msg.toLowerCase().includes('bucket') || msg.toLowerCase().includes('not found')) {
           const guidance = 'Upload Failed: Storage bucket "avatars" not found. Please create a public "avatars" bucket in your Supabase Storage and ensure your anon key has permission to upload.';
           addToast({ type: 'error', title: 'Upload Failed', description: guidance });
