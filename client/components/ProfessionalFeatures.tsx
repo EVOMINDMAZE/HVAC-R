@@ -562,7 +562,7 @@ export function ProfessionalFeatures({
       const sArr = safeFindArray(ts, ['entropy', 's', 'entropy_kj_kgk', 'entropy_kj_kg']);
       const tArr = safeFindArray(ts, ['temperature', 't', 'temperature_c']);
       const pointsTs = (cycleObj?.points || []).map((p: any, idx: number) => ({ x: p.entropy ?? p.entropy_kj_kgk ?? p.s ?? 0, y: p.temperature ?? p.temperature_c ?? p.t ?? 0, id: String(idx + 1) }));
-      const tsSvg = makeDiagram(sArr, tArr, 'Entropy (kJ/kg·K)', 'Temperature (°C)', pointsTs, 'T-s Diagram');
+      const tsSvg = makeDiagram(sArr, tArr, 'Entropy (kJ/kg·K)', 'Temperature (°C)', pointsTs, 'T-s Diagram', 'T-s');
       if (tsSvg) svgs.ts = tsSvg;
 
       return svgs;
@@ -1998,7 +1998,7 @@ export function ProfessionalFeatures({
                       <ul className="space-y-1 text-muted-foreground">
                         <li>• Plan for refrigerant transitions</li>
                         <li>• Budget for preventive maintenance</li>
-                        <li>��� Consider energy efficiency incentives</li>
+                        <li>• Consider energy efficiency incentives</li>
                         <li>• Monitor regulatory changes</li>
                       </ul>
                     </div>
