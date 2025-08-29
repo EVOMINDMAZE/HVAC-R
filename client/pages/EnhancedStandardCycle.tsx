@@ -174,8 +174,25 @@ export function EnhancedStandardCycleContent() {
     setError(null);
     setResults(null);
 
+    // Defensive: if overrideParams looks like a DOM/Event accidentally passed by React (onClick passes event), ignore it
+    let safeOverride: Partial<typeof formData> | null = null;
+    try {
+      if (
+        overrideParams &&
+        (overrideParams instanceof Event ||
+          (typeof overrideParams === "object" &&
+            ("nativeEvent" in overrideParams || "currentTarget" in overrideParams || "target" in overrideParams)))
+      ) {
+        safeOverride = null;
+      } else {
+        safeOverride = overrideParams;
+      }
+    } catch (e) {
+      safeOverride = null;
+    }
+
     // Build request payload using possible overrides (used for auto-retry adjustments)
-    const requestBody = overrideParams ? { ...formData, ...overrideParams } : formData;
+    const requestBody = safeOverride ? { ...formData, ...safeOverride } : formData;
 
     try {
       const response = await fetch(
