@@ -1849,16 +1849,24 @@ export function ProfessionalFeatures({
                     <Download className="h-4 w-4 mr-2" />
                     Generate Professional Report
                   </Button>
+                  <div className="text-xs text-muted-foreground mt-1">Creates a clean, executive-ready PDF (diagrams excluded)</div>
 
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button variant="outline" size="sm" disabled={!results} onClick={exportData}>
-                      <FileText className="h-4 w-4 mr-1" />
-                      Export Data
-                    </Button>
-                    <Button variant="outline" size="sm" disabled={!results} onClick={downloadChartPackage}>
-                      <BarChart3 className="h-4 w-4 mr-1" />
-                      Chart Package
-                    </Button>
+                  <div className="grid grid-cols-2 gap-2 mt-3">
+                    <div>
+                      <Button variant="outline" size="sm" className="w-full flex items-center justify-center" disabled={!results} onClick={exportData}>
+                        <FileText className="h-4 w-4 mr-1" />
+                        Export Data (.CSV)
+                      </Button>
+                      <div className="text-xs text-muted-foreground mt-1">Download .CSV (Excel compatible)</div>
+                    </div>
+
+                    <div>
+                      <Button variant="outline" size="sm" className="w-full flex items-center justify-center" disabled={!results} onClick={downloadChartPackage}>
+                        <BarChart3 className="h-4 w-4 mr-1" />
+                        Chart Package (P‑h & T‑s PDF)
+                      </Button>
+                      <div className="text-xs text-muted-foreground mt-1">Opens printable PDF with both diagrams and point details</div>
+                    </div>
                   </div>
                 </div>
 
