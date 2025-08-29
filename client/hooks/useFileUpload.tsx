@@ -36,49 +36,48 @@ export function useFileUpload() {
       const fileExt = file.name.split(".").pop();
       const fileName = `${user.id}/avatar_${Date.now()}.${fileExt}`;
 
-      // Preflight: check bucket exists by attempting to list contents (limit 1)
-      try {
-        const { data: listData, error: listError } = await supabase.storage
-          .from("avatars")
-          .list("", { limit: 1 });
-        if (listError) {
-          // Bucket likely missing or access denied
-          console.error("Supabase storage.list error", { listError });
-          const msg =
-            (listError && (listError.message || String(listError))) ||
-            String(listError);
-          if (
-            String(msg).toLowerCase().includes("bucket") ||
-            String(msg).toLowerCase().includes("not found") ||
-            String(msg).toLowerCase().includes("404")
-          ) {
-            const guidance =
-              'Upload Failed: Storage bucket "avatars" not found or inaccessible. Please create a public "avatars" bucket in your Supabase Storage and ensure your anon key has permission to upload.';
-            addToast({
-              type: "error",
-              title: "Upload Failed",
-              description: guidance,
-            });
-            // Emit telemetry event
-            try {
-              window.dispatchEvent(
-                new CustomEvent("storage:upload_failed", {
-                  detail: { reason: "bucket_not_found", user: user.id },
-                }),
-              );
-            } catch (e) {}
-            return { url: null, error: guidance };
-          }
+      // Determine bucket name (env override allowed)
+      const AVATAR_BUCKET = (import.meta.env.VITE_SUPABASE_AVATAR_BUCKET as string) || 'avatars';
+      const fallbackBucket = 'public-avatars';
+
+      // Helper to attempt list on a bucket and return result
+      const checkBucket = async (bucketName: string) => {
+        try {
+          const res = await supabase.storage.from(bucketName).list('', { limit: 1 });
+          return res;
+        } catch (e) {
+          return { data: null, error: e };
         }
-      } catch (e) {
-        console.warn("Bucket preflight check failed", e);
+      };
+
+      // Preflight: check configured bucket, then fallback bucket
+      let bucketToUse = AVATAR_BUCKET;
+      let listResult = await checkBucket(bucketToUse);
+      if (listResult && (listResult as any).error) {
+        console.warn('Bucket preflight check failed for', bucketToUse, listResult);
+        // Try fallback
+        bucketToUse = fallbackBucket;
+        listResult = await checkBucket(bucketToUse);
       }
 
-      // Upload to Supabase Storage
+      if (listResult && (listResult as any).error) {
+        // Bucket likely missing or access denied
+        console.error('Supabase storage.list error', { listError: listResult.error, triedBucket: bucketToUse });
+        const msg = (listResult.error && (listResult.error.message || String(listResult.error))) || String(listResult.error);
+        if (String(msg).toLowerCase().includes('bucket') || String(msg).toLowerCase().includes('not found') || String(msg).toLowerCase().includes('404')) {
+          const guidance = `Upload Failed: Storage bucket "${AVATAR_BUCKET}" (or fallback "${fallbackBucket}") not found or inaccessible. Please create a public bucket and ensure your anon key has permission to upload.`;
+          addToast({ type: 'error', title: 'Upload Failed', description: guidance });
+          // Emit telemetry event
+          try { window.dispatchEvent(new CustomEvent('storage:upload_failed', { detail: { reason: 'bucket_not_found', user: user.id, attemptedBucket: bucketToUse } })); } catch(e){}
+          return { url: null, error: guidance };
+        }
+      }
+
+      // Upload to Supabase Storage (using resolved bucketToUse)
       const { data, error } = await supabase.storage
-        .from("avatars")
+        .from(bucketToUse)
         .upload(fileName, file, {
-          cacheControl: "3600",
+          cacheControl: '3600',
           upsert: false,
         });
 
@@ -126,7 +125,7 @@ export function useFileUpload() {
       // Get public URL
       const {
         data: { publicUrl },
-      } = supabase.storage.from("avatars").getPublicUrl(data.path);
+      } = supabase.storage.from(bucketToUse).getPublicUrl(data.path);
 
       // Update user profile with new avatar URL
       const { error: updateError } = await updateUser({
@@ -152,21 +151,20 @@ export function useFileUpload() {
       return { url: publicUrl, error: null };
     } catch (error: any) {
       const errorMessage =
-        error?.message || error?.details || "Failed to upload image";
+        error?.message || String(error) || "Failed to upload image";
 
       // Log detailed telemetry to console
       console.error("uploadAvatar error", { error });
 
       // If it's a bucket not found error provide actionable steps
       if (
-        String(errorMessage).toLowerCase().includes("bucket") ||
-        String(errorMessage).toLowerCase().includes("not found")
+        String(errorMessage).toLowerCase().includes('bucket') ||
+        String(errorMessage).toLowerCase().includes('not found')
       ) {
-        const guidance =
-          'Upload Failed: Storage bucket "avatars" not found. To fix this: 1) Open your Supabase dashboard -> Storage -> Create a bucket named "avatars"; 2) Set the bucket to public or configure RLS/policies to allow uploads; 3) Retry the upload.';
+        const guidance = `Upload Failed: Storage bucket "${(import.meta.env.VITE_SUPABASE_AVATAR_BUCKET as string) || 'avatars'}" not found. To fix this: 1) Open your Supabase dashboard -> Storage -> Create a bucket with that name (or create 'public-avatars'); 2) Set the bucket to public or configure RLS/policies to allow uploads; 3) Retry the upload.`;
         addToast({
-          type: "error",
-          title: "Upload Failed",
+          type: 'error',
+          title: 'Upload Failed',
           description: guidance,
         });
         return { url: null, error: guidance };
