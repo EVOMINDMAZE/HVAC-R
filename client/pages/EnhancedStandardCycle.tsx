@@ -1375,8 +1375,8 @@ export function EnhancedStandardCycleContent() {
                   <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
                     <div className="flex flex-col space-y-1.5 p-6">
                       <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
-                        <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#3b82f6' }} />
-                        R-134a - Tetrafluoroethane
+                        <div className="w-4 h-4 rounded-full" style={{ backgroundColor: selectedRefrigerant?.color }} />
+                        {selectedRefrigerant ? `${selectedRefrigerant.name} - ${selectedRefrigerant.fullName}` : 'Refrigerant'}
                       </h3>
                     </div>
 
@@ -1389,7 +1389,7 @@ export function EnhancedStandardCycleContent() {
                           </svg>
                           <div>
                             <div className="text-sm font-medium">GWP</div>
-                            <div className="text-sm text-gray-600">1430</div>
+                            <div className="text-sm text-gray-600">{selectedRefrigerant?.globalWarmingPotential ?? selectedRefrigerant?.gwp ?? 'N/A'}</div>
                           </div>
                         </div>
 
@@ -1399,7 +1399,7 @@ export function EnhancedStandardCycleContent() {
                           </svg>
                           <div>
                             <div className="text-sm font-medium">Safety</div>
-                            <div className="text-sm text-gray-600">A1</div>
+                            <div className="text-sm text-gray-600">{selectedRefrigerant?.safety ?? 'N/A'}</div>
                           </div>
                         </div>
 
@@ -1409,7 +1409,7 @@ export function EnhancedStandardCycleContent() {
                           </svg>
                           <div>
                             <div className="text-sm font-medium">Critical Temp</div>
-                            <div className="text-sm text-gray-600">101.1 °C</div>
+                            <div className="text-sm text-gray-600">{selectedRefrigerant?.limits?.critical_temp_c ? selectedRefrigerant.limits.critical_temp_c.toFixed(1) + ' °C' : selectedRefrigerant?.limits?.criticalTemp ? (selectedRefrigerant.limits.criticalTemp - 273.15).toFixed(1) + ' °C' : 'N/A'}</div>
                           </div>
                         </div>
 
@@ -1420,21 +1420,21 @@ export function EnhancedStandardCycleContent() {
                           </svg>
                           <div>
                             <div className="text-sm font-medium">Critical Press</div>
-                            <div className="text-sm text-gray-600">4059 kPa</div>
+                            <div className="text-sm text-gray-600">{selectedRefrigerant?.limits?.critical_pressure_kpa ? selectedRefrigerant.limits.critical_pressure_kpa.toFixed(0) + ' kPa' : selectedRefrigerant?.limits?.criticalPressure ? Math.round(selectedRefrigerant.limits.criticalPressure/1000) + ' kPa' : 'N/A'}</div>
                           </div>
                         </div>
                       </div>
 
                       <div>
-                        <p className="text-sm text-gray-700">Most common HFC refrigerant for medium-temperature applications</p>
+                        <p className="text-sm text-gray-700">{selectedRefrigerant?.description}</p>
                       </div>
 
                       <div>
                         <Label>Typical Applications</Label>
                         <div className="flex flex-wrap gap-2 mt-2">
-                          <Badge>Air Conditioning</Badge>
-                          <Badge>Commercial Refrigeration</Badge>
-                          <Badge>Automotive AC</Badge>
+                          {selectedRefrigerant?.applications?.map((app) => (
+                            <Badge key={app}>{app}</Badge>
+                          ))}
                         </div>
                       </div>
 
@@ -1446,7 +1446,7 @@ export function EnhancedStandardCycleContent() {
                             <path d="m9 11 3 3L22 4" />
                           </svg>
                           <div>
-                            <div className="text-sm font-medium">Evaporator Temperature: -10 °C</div>
+                            <div className="text-sm font-medium">Evaporator Temperature: {formData.evap_temp_c} °C</div>
                           </div>
                         </div>
 
@@ -1456,7 +1456,7 @@ export function EnhancedStandardCycleContent() {
                             <path d="m9 11 3 3L22 4" />
                           </svg>
                           <div>
-                            <div className="text-sm font-medium">Condenser Temperature: 45 °C</div>
+                            <div className="text-sm font-medium">Condenser Temperature: {formData.cond_temp_c} °C</div>
                           </div>
                         </div>
                       </div>
