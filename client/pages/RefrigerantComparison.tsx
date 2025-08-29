@@ -465,6 +465,9 @@ export function RefrigerantComparisonContent() {
   };
 
   const getValueForMetric = (result: RefrigerantResult, metricKey: string) => {
+    // If this refrigerant had a calculation error on the backend, show an error marker instead of N/A
+    if ((result as any).error) return "Error";
+
     const num = getNumericValue(result as any, metricKey);
     if (num === null) return "N/A";
     return metricKey === "cop" ? num.toFixed(3) : num.toFixed(1);
@@ -763,6 +766,19 @@ export function RefrigerantComparisonContent() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6">
+                  {result.results.some((r) => (r as any).error) && (
+                    <Alert variant="destructive" className="mb-4">
+                      <AlertDescription>
+                        {result.results
+                          .filter((r) => (r as any).error)
+                          .map((r, i) => (
+                            <div key={i} className="text-sm">
+                              <strong>{r.refrigerant}:</strong> {(r as any).error}
+                            </div>
+                          ))}
+                      </AlertDescription>
+                    </Alert>
+                  )}
                   <div className="overflow-x-auto">
                     <table className="w-full border-collapse">
                       <thead>
