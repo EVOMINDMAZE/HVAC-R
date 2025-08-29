@@ -450,7 +450,17 @@ export function ProfessionalFeatures({
       });
 
       if (!resp.ok) {
-        const txt = await resp.text();
+        let txt = '';
+        try {
+          txt = await resp.clone().text();
+        } catch (e) {
+          try {
+            const j = await resp.clone().json();
+            txt = JSON.stringify(j);
+          } catch (e2) {
+            txt = resp.statusText || String(resp.status);
+          }
+        }
         console.error('Server PDF generation failed', resp.status, txt);
         window.alert('Failed to generate PDF: ' + (txt || resp.statusText));
         return;
