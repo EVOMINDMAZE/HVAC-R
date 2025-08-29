@@ -398,13 +398,17 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       return;
     }
 
+    // Use shared domain calculation so scales match Chart Package
+    const config = DIAGRAM_CONFIGS[diagramType];
+    const domainUtil = require('@/lib/diagramDomain') as any;
+    const domain = domainUtil.computeDomain(diagramType, cycleData || {}, cycleData?.points || []);
+
     // Set up coordinate system with larger margins for higher resolution
     const margin = 120;
     const plotWidth = width - 2 * margin;
     const plotHeight = height - 2 * margin;
-    const config = DIAGRAM_CONFIGS[diagramType];
 
-    // Calculate proper coordinates based on thermodynamic properties
+    // Calculate proper coordinates based on thermodynamic properties and shared domain
     const pointsWithCoords = calculateCoordinates(
       cycleData.points,
       config,
@@ -412,10 +416,10 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       plotHeight,
     );
 
-    // Draw axes and grid
+    // Draw axes and grid using domain ticks
     drawAxes(ctx, margin, plotWidth, plotHeight, config, pointsWithCoords);
 
-    // Draw saturation dome for all diagram types
+    // Draw saturation dome using same domain
     drawSaturationDome(ctx, margin, plotWidth, plotHeight, config);
 
     // Draw cycle lines (animation removed)
