@@ -1495,6 +1495,7 @@ export function EnhancedStandardCycleContent() {
                       cond_temp_c: cond,
                     }))
                   }
+                  showDetails={false}
                   className="mt-2"
                 />
 
