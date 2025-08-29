@@ -667,9 +667,52 @@ export function ProfessionalFeatures({
     }
   };
 
-  // Chart package: create an HTML package with embedded SVG summary charts and data tables
-  const downloadChartPackage = () => {
+  // Chart package: create an HTML package with embedded SVG summary charts, data tables and diagram image (if present)
+  const downloadChartPackage = async () => {
     const project = reportConfig.projectName || 'hvac-project';
+
+    // Capture diagram canvas (best-effort)
+    let diagramDataUrl: string | null = null;
+    try {
+      const canvases = Array.from(document.querySelectorAll('canvas')) as HTMLCanvasElement[];
+      const valid = canvases.filter((c) => c && c.width > 0 && c.height > 0);
+      let srcCanvas: HTMLCanvasElement | null = null;
+      if (valid.length === 1) srcCanvas = valid[0];
+      else if (valid.length > 1) srcCanvas = valid.reduce((a, b) => (a.width * a.height > b.width * b.height ? a : b));
+      else if (canvases.length > 0) srcCanvas = canvases[0];
+
+      if (srcCanvas) {
+        await new Promise(requestAnimationFrame);
+        const scale = Math.min(3, Math.max(1, window.devicePixelRatio || 1));
+        const off = document.createElement('canvas');
+        off.width = Math.max(1, Math.floor(srcCanvas.width * scale));
+        off.height = Math.max(1, Math.floor(srcCanvas.height * scale));
+        const ctx = off.getContext('2d', { willReadFrequently: true } as any) as CanvasRenderingContext2D | null;
+        if (ctx) {
+          ctx.scale(scale, scale);
+          (ctx as any).imageSmoothingEnabled = true;
+          ctx.drawImage(srcCanvas, 0, 0);
+          try {
+            diagramDataUrl = off.toDataURL('image/png');
+          } catch (e) {
+            try {
+              diagramDataUrl = srcCanvas.toDataURL('image/png');
+            } catch (e2) {
+              diagramDataUrl = null;
+            }
+          }
+        } else {
+          try {
+            diagramDataUrl = srcCanvas.toDataURL('image/png');
+          } catch (e) {
+            diagramDataUrl = null;
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Chart package: failed to capture diagram canvas', e);
+      diagramDataUrl = null;
+    }
 
     // Simple SVG generator for a metric bar chart
     const makeBarSVG = (label: string, value: number | undefined, max: number) => {
@@ -691,6 +734,8 @@ export function ProfessionalFeatures({
     const svg2 = makeBarSVG('Compressor Work (kW)', compressorWorkKwNum, maxMetric);
     const svg3 = makeBarSVG('COP', cop, maxMetric);
 
+    const diagramSection = diagramDataUrl ? `<div class='card'><h3>Diagram</h3><div><img src='${diagramDataUrl}' style='max-width:100%;height:auto;border-radius:6px;border:1px solid #e6eefc' /></div></div>` : '';
+
     const html = `<!doctype html><html><head><meta charset='utf-8'><title>${project} - Chart Package</title>
     <style>body{font-family:Inter,Arial,Helvetica,sans-serif;padding:20px;background:#f8fafc} .card{background:#fff;padding:16px;border-radius:8px;box-shadow:0 6px 20px rgba(13,38,59,0.06);margin-bottom:16px}</style>
     </head><body>
@@ -700,6 +745,7 @@ export function ProfessionalFeatures({
       <div style='margin-top:8px'>${svg2}</div>
       <div style='margin-top:8px'>${svg3}</div>
     </div>
+    ${diagramSection}
     <div class='card'><h3>Key Data</h3>
       <pre>${JSON.stringify({ header: { project: reportConfig.projectName, company: reportConfig.companyName, engineer: reportConfig.engineerName }, performance: results?.performance || {}, costAnalysis: costData, sustainability: sustainabilityData }, null, 2)}</pre>
     </div>
