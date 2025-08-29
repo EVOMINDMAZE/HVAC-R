@@ -37,7 +37,7 @@ export function useFileUpload() {
       const fileName = `${user.id}/avatar_${Date.now()}.${fileExt}`;
 
       // Determine bucket name (env override allowed)
-      const AVATAR_BUCKET = (import.meta.env.VITE_SUPABASE_AVATAR_BUCKET as string) || 'public-avatars';
+      const AVATAR_BUCKET = (import.meta.env.VITE_SUPABASE_AVATAR_BUCKET as string) || 'avatars';
       const fallbackBucket = 'public-avatars';
 
       // Helper to attempt list on a bucket and return result
