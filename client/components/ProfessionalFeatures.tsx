@@ -618,11 +618,12 @@ export function ProfessionalFeatures({
     if (svgs.ph) diagrams.push(`<div style='flex:1;min-width:300px;max-width:48%'><h3 style='margin:0 0 8px;font-size:14px;color:#0f172a'>P-h Diagram</h3>${sanitizeSvg(svgs.ph)}</div>`);
     if (svgs.ts) diagrams.push(`<div style='flex:1;min-width:300px;max-width:48%'><h3 style='margin:0 0 8px;font-size:14px;color:#0f172a'>T-s Diagram</h3>${sanitizeSvg(svgs.ts)}</div>`);
 
+    const pointsHtml = buildPointsHtml(cycleObj);
     if (diagrams.length === 2) {
-      return `<div class='section' style='display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start'>${diagrams.join('')}</div>`;
+      return `<div class='section' style='display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start'>${diagrams.join('')}</div>${pointsHtml}`;
     }
-    if (diagrams.length === 1) return `<div class='section'>${diagrams[0]}</div>`;
-    return '';
+    if (diagrams.length === 1) return `<div class='section'>${diagrams[0]}</div>${pointsHtml}`;
+    return pointsHtml || '';
   };
 
   // Generate fully server-side PDF report
