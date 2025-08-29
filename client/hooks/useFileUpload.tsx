@@ -130,15 +130,32 @@ export function useFileUpload() {
               },
               body: JSON.stringify({ filename: fileName, contentBase64: base64, bucket: bucketToUse }),
             });
-            const jr = await resp.json();
+            // Parse response safely (use clone to avoid consuming body more than once)
+            let jr: any = null;
+            try {
+              jr = await resp.clone().json();
+            } catch (parseErr) {
+              try {
+                const txt = await resp.clone().text();
+                jr = txt ? JSON.parse(txt) : null;
+              } catch (e) {
+                jr = null;
+              }
+            }
+
             if (resp.ok && jr?.publicUrl) {
-              // Update profile via updateUser
-              await updateUser({ data: { avatar_url: jr.publicUrl } });
-              addToast({ type: 'success', title: 'Avatar Updated', description: 'Your profile picture has been updated successfully' });
+              // Attempt to update user profile, but do not fail the whole flow if this step errors
+              try {
+                await updateUser({ data: { avatar_url: jr.publicUrl } });
+              } catch (updateErr) {
+                console.error('Failed to update user profile after server-side upload', updateErr);
+              }
+
+              addToast({ type: 'success', title: 'Avatar Updated', description: 'Your profile picture has been uploaded successfully' });
               return { url: jr.publicUrl, error: null };
             } else {
               console.error('Server fallback upload failed', jr);
-              const guidance = jr?.error || jr?.details || 'Server-side upload failed';
+              const guidance = (jr && (jr.error || jr.details)) || 'Server-side upload failed';
               addToast({ type: 'error', title: 'Upload Failed', description: guidance });
               return { url: null, error: guidance };
             }
