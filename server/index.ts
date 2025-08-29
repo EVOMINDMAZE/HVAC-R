@@ -10,6 +10,7 @@ import {
   authenticateToken,
 } from "./routes/auth.ts";
 import { authenticateSupabaseToken } from './utils/supabaseAuth.ts';
+import { generateReportPdf } from './routes/reports.ts';
 import {
   saveCalculation,
   getCalculations,
