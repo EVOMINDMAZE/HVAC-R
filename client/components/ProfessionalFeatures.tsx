@@ -445,8 +445,6 @@ export function ProfessionalFeatures({
       ) => {
         if (!xArr || !yArr || xArr.length === 0 || yArr.length === 0) return null;
         // derive domain using shared util for consistency
-        // lazy import to avoid top-level circular refs
-        const { computeDomain } = require('@/lib/diagramDomain') as any;
         const domain = computeDomain(diagramType, resultsObj?.saturation_dome || resultsObj?.saturationDome || cycleObj?.saturation_dome || cycleObj?.saturationDome, cycleObj?.points || [], 0.12, 6);
 
         const width = 1600;
