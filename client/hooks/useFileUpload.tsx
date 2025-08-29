@@ -40,8 +40,8 @@ export function useFileUpload() {
         if (listError) {
           // Bucket likely missing or access denied
           console.error('Supabase storage.list error', { listError });
-          const msg = (listError && (listError.message || listError.details || String(listError))) || String(listError);
-          if (msg.toLowerCase().includes('bucket') || msg.toLowerCase().includes('not found') || msg.toLowerCase().includes('404')) {
+          const msg = (listError && (listError.message || String(listError))) || String(listError);
+          if (String(msg).toLowerCase().includes('bucket') || String(msg).toLowerCase().includes('not found') || String(msg).toLowerCase().includes('404')) {
             const guidance = 'Upload Failed: Storage bucket "avatars" not found or inaccessible. Please create a public "avatars" bucket in your Supabase Storage and ensure your anon key has permission to upload.';
             addToast({ type: 'error', title: 'Upload Failed', description: guidance });
             // Emit telemetry event
