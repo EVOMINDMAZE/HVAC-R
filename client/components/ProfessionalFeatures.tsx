@@ -405,6 +405,115 @@ export function ProfessionalFeatures({
   const costData = calculateCostAnalysis();
   const sustainabilityData = getRefrigerantSustainability(refrigerant);
 
+  // Build SVG diagrams (P-h, T-s, P-v) from results / cycleData when canvas capture is unavailable
+  const buildDiagramSvgs = (resultsObj: any, cycleObj: any) => {
+    try {
+      const svgs: { ph?: string; ts?: string; pv?: string } = {};
+      // Helper to create SVG given x/y arrays and cycle points
+      const makeSvg = (xArr: number[], yArr: number[], xLabel: string, yLabel: string, points: { x: number; y: number; id?: string }[], title: string) => {
+        if (!xArr || !yArr || xArr.length === 0 || yArr.length === 0) return null;
+        const width = 780;
+        const height = 360;
+        const margin = { left: 60, right: 20, top: 30, bottom: 40 };
+        const plotW = width - margin.left - margin.right;
+        const plotH = height - margin.top - margin.bottom;
+        const xMin = Math.min(...xArr);
+        const xMax = Math.max(...xArr);
+        const yMin = Math.min(...yArr);
+        const yMax = Math.max(...yArr);
+        const xScale = (v: number) => margin.left + ((v - xMin) / (xMax - xMin || 1)) * plotW;
+        const yScale = (v: number) => margin.top + plotH - ((v - yMin) / (yMax - yMin || 1)) * plotH;
+
+        // Dome/path from xArr/yArr
+        let domePath = '';
+        for (let i = 0; i < xArr.length; i++) {
+          const x = xScale(xArr[i]);
+          const y = yScale(yArr[i]);
+          domePath += (i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`);
+        }
+
+        // Cycle path
+        let cyclePath = '';
+        if (points && points.length > 0) {
+          for (let i = 0; i < points.length; i++) {
+            const p = points[i];
+            const x = xScale(p.x);
+            const y = yScale(p.y);
+            cyclePath += i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`;
+          }
+          // close cycle
+          if (points.length > 1) {
+            const p0 = points[0];
+            const x0 = xScale(p0.x);
+            const y0 = yScale(p0.y);
+            cyclePath += ` L ${x0} ${y0}`;
+          }
+        }
+
+        // Points markup
+        const ptsMarkup = (points || [])
+          .map((p) => {
+            const x = xScale(p.x);
+            const y = yScale(p.y);
+            const label = p.id ? p.id : '';
+            return `<g><circle cx='${x}' cy='${y}' r='3.5' fill='#2563eb' stroke='#0b5fff' stroke-width='1' /><text x='${x + 6}' y='${y - 6}' font-size='11' fill='#0b172a'>${label}</text></g>`;
+          })
+          .join('');
+
+        const svg = `<?xml version="1.0"?><svg xmlns='http://www.w3.org/2000/svg' width='${width}' height='${height}' viewBox='0 0 ${width} ${height}'><style>text{font-family:Inter, Arial, Helvetica, sans-serif;fill:#0b172a} .axis{stroke:#cbd5e1;stroke-width:1} .grid{stroke:#eef2ff;stroke-width:1}</style><rect x='0' y='0' width='100%' height='100%' fill='white' rx='8' /><text x='${margin.left}' y='18' font-size='14' font-weight='600'>${title}</text><!-- axes --><line x1='${margin.left}' y1='${margin.top}' x2='${margin.left}' y2='${margin.top + plotH}' class='axis' /><line x1='${margin.left}' y1='${margin.top + plotH}' x2='${margin.left + plotW}' y2='${margin.top + plotH}' class='axis' />
+        <!-- dome -->
+        <path d='${domePath}' fill='none' stroke='#94a3b8' stroke-width='2' />
+        <!-- cycle -->
+        <path d='${cyclePath}' fill='none' stroke='#0b5fff' stroke-width='2' stroke-linejoin='round' stroke-linecap='round' />
+        ${ptsMarkup}
+        <!-- labels -->
+        <text x='${margin.left + plotW / 2}' y='${height - 8}' font-size='12' text-anchor='middle'>${xLabel}</text>
+        <text x='12' y='${margin.top + plotH / 2}' font-size='12' transform='rotate(-90 12,${margin.top + plotH / 2})' text-anchor='middle'>${yLabel}</text>
+        </svg>`;
+        return svg;
+      };
+
+      // P-h
+      if (resultsObj?.saturation_dome?.ph_diagram) {
+        const ent = resultsObj.saturation_dome.ph_diagram.enthalpy_kj_kg || [];
+        const pres = resultsObj.saturation_dome.ph_diagram.pressure_kpa || [];
+        const points = (cycleObj?.points || []).map((p: any, idx: number) => ({ x: p.enthalpy ?? p.enthalpy_kj_kg ?? 0, y: p.pressure ?? p.pressure_kpa ?? 0, id: String(idx + 1) }));
+        const svg = makeSvg(ent, pres, 'Enthalpy (kJ/kg)', 'Pressure (kPa)', points, 'P-h Diagram');
+        if (svg) svgs.ph = svg;
+      }
+
+      // T-s
+      if (resultsObj?.saturation_dome?.ts_diagram) {
+        const s = resultsObj.saturation_dome.ts_diagram.entropy_kj_kgk || [];
+        const t = resultsObj.saturation_dome.ts_diagram.temperature_c || [];
+        const points = (cycleObj?.points || []).map((p: any, idx: number) => ({ x: p.entropy ?? p.entropy_kj_kgk ?? p.entropy_kj_kg ?? 0, y: p.temperature ?? p.temperature_c ?? 0, id: String(idx + 1) }));
+        const svg = makeSvg(s, t, 'Entropy (kJ/kg·K)', 'Temperature (°C)', points, 'T-s Diagram');
+        if (svg) svgs.ts = svg;
+      }
+
+      // P-v (from tv_diagram or state points specific volume)
+      if (resultsObj?.saturation_dome?.tv_diagram) {
+        const v = resultsObj.saturation_dome.tv_diagram.specific_volume_m3_kg || [];
+        const tArr = resultsObj.saturation_dome.tv_diagram.temperature_c || [];
+        // For P-v we need pressure; we'll invert arrays if available by mapping tv data points
+        // We'll plot pressure vs specific volume using cycle points if available
+        const cyclePoints = (cycleObj?.points || []).map((p: any, idx: number) => ({ x: p.specific_volume_m3_kg ?? p.specific_volume ?? (p.density ? 1 / p.density : 0), y: p.pressure ?? p.pressure_kpa ?? 0, id: String(idx + 1) }));
+        if (cyclePoints.length > 0) {
+          // Build simple ranges from cyclePoints
+          const xv = cyclePoints.map((p: any) => p.x || 0);
+          const yv = cyclePoints.map((p: any) => p.y || 0);
+          const svg = makeSvg(xv, yv, 'Specific Volume (m³/kg)', 'Pressure (kPa)', cyclePoints, 'P-v Diagram');
+          if (svg) svgs.pv = svg;
+        }
+      }
+
+      return svgs;
+    } catch (e) {
+      console.warn('buildDiagramSvgs failed', e);
+      return {};
+    }
+  };
+
   // Generate fully server-side PDF report
   const generateReport = async () => {
     try {
