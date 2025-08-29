@@ -110,7 +110,7 @@ export function useFileUpload() {
         const msg = (error && (error.message || errStr)) || String(error);
 
         // If this is a row-level security / RLS error, attempt server-side upload fallback
-        if (String(msg).toLowerCase().includes('row-level') || String(msg).toLowerCase().includes('row level') || String(msg).toLowerCase().includes('violates row-level') || (error && (error?.status === 403 || (error as any)?.statusCode === 403))) {
+        if (String(msg).toLowerCase().includes('row-level') || String(msg).toLowerCase().includes('row level') || String(msg).toLowerCase().includes('violates row-level') || (error && (((error as any)?.status === 403) || ((error as any)?.statusCode === 403)))) {
           try {
             // convert file to base64
             const toBase64 = (file: File) => new Promise<string>((resolve, reject) => {
