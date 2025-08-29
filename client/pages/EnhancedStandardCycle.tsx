@@ -306,7 +306,7 @@ export function EnhancedStandardCycleContent() {
           COP: perf.COP,
           coefficient_of_performance: perf.coefficient_of_performance,
         });
-        console.log("❄️ Cooling Capacity variants:", {
+        console.log("❄�� Cooling Capacity variants:", {
           cooling_capacity_kw: perf.cooling_capacity_kw,
           cooling_capacity: perf.cooling_capacity,
           capacity: perf.capacity,
@@ -339,7 +339,7 @@ export function EnhancedStandardCycleContent() {
       // Enhanced validation and result setting
       if (calculationData.state_points || calculationData.performance) {
         console.log("\n✅ === SETTING RESULTS ===");
-        console.log("💾 Storing calculation data...");
+        console.log("��� Storing calculation data...");
 
         setResults(calculationData);
         setCalculationComplete(true);
@@ -378,7 +378,7 @@ export function EnhancedStandardCycleContent() {
       } else {
         console.log("\n❌ === RESPONSE VALIDATION FAILED ===");
         console.log("⚠️ Unexpected response format:", responseData);
-        console.log("🔍 Available top-level keys:", Object.keys(responseData));
+        console.log("���� Available top-level keys:", Object.keys(responseData));
 
         // Try to find data in alternative locations
         const alternativeData =
@@ -1336,6 +1336,31 @@ export function EnhancedStandardCycleContent() {
                       </div>
                     </div>
                   )}
+
+                  {/* Recommended Operating Range (left column) */}
+                  <div className="mt-4 rounded-lg border bg-sky-50 p-4 mb-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2 text-sky-700 font-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-green-600"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                        Recommended Operating Range
+                      </div>
+                      <Button variant="default" size="sm" onClick={() => setFormData(prev => ({ ...prev, evap_temp_c: -46.1, cond_temp_c: 13.9 }))}>
+                        Apply Range
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <div className="font-medium">Evaporator Temperature</div>
+                        <div className="text-sm">Recommended: -46.1 °C</div>
+                        <div className="text-sm text-gray-600">Range: -93.3 °C to -36.1 °C</div>
+                      </div>
+                      <div>
+                        <div className="font-medium">Condenser Temperature</div>
+                        <div className="text-sm">Recommended: 13.9 °C</div>
+                        <div className="text-sm text-gray-600">Range: -16.1 °C to 91.1 °C</div>
+                      </div>
+                    </div>
+                  </div>
 
                   <div className="space-y-4 mt-2 hidden md:block">
                   {/* Refrigerant Selection Card */}
