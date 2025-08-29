@@ -409,22 +409,59 @@ export function ProfessionalFeatures({
   const generateReport = async () => {
     try {
       // Capture the main diagram canvas image (high resolution)
-      const canvas = document.querySelector('canvas');
       let diagramDataUrl: string | null = null;
-      if (canvas && canvas instanceof HTMLCanvasElement) {
-        const srcCanvas = canvas as HTMLCanvasElement;
-        const scale = Math.min(3, Math.max(1, window.devicePixelRatio || 1));
-        const off = document.createElement('canvas');
-        off.width = srcCanvas.width * scale;
-        off.height = srcCanvas.height * scale;
-        const ctx = off.getContext('2d');
-        if (ctx) {
-          ctx.scale(scale, scale);
-          ctx.drawImage(srcCanvas, 0, 0);
-          diagramDataUrl = off.toDataURL('image/png');
-        } else {
-          diagramDataUrl = srcCanvas.toDataURL('image/png');
+      try {
+        // Choose the most likely candidate canvas: visible canvas with the largest pixel area
+        const canvases = Array.from(document.querySelectorAll('canvas')) as HTMLCanvasElement[];
+        const valid = canvases.filter((c) => c && c.width > 0 && c.height > 0);
+        let srcCanvas: HTMLCanvasElement | null = null;
+        if (valid.length === 1) {
+          srcCanvas = valid[0];
+        } else if (valid.length > 1) {
+          srcCanvas = valid.reduce((a, b) => (a.width * a.height > b.width * b.height ? a : b));
+        } else if (canvases.length > 0) {
+          srcCanvas = canvases[0] as HTMLCanvasElement;
         }
+
+        if (srcCanvas) {
+          // Ensure the browser has a chance to finish any pending rendering
+          await new Promise(requestAnimationFrame);
+
+          const scale = Math.min(3, Math.max(1, window.devicePixelRatio || 1));
+          const off = document.createElement('canvas');
+          off.width = Math.max(1, Math.floor(srcCanvas.width * scale));
+          off.height = Math.max(1, Math.floor(srcCanvas.height * scale));
+
+          // Use willReadFrequently where available to improve readback
+          const ctx = off.getContext('2d', { willReadFrequently: true } as any) as CanvasRenderingContext2D | null;
+          if (ctx) {
+            ctx.scale(scale, scale);
+            // Keep smoothing on for nicer output when scaling
+            (ctx as any).imageSmoothingEnabled = true;
+            ctx.drawImage(srcCanvas, 0, 0);
+            try {
+              diagramDataUrl = off.toDataURL('image/png');
+            } catch (e) {
+              console.warn('offscreen toDataURL failed, falling back to source canvas toDataURL', e);
+              try {
+                diagramDataUrl = srcCanvas.toDataURL('image/png');
+              } catch (e2) {
+                console.warn('source canvas toDataURL also failed', e2);
+                diagramDataUrl = null;
+              }
+            }
+          } else {
+            try {
+              diagramDataUrl = srcCanvas.toDataURL('image/png');
+            } catch (e) {
+              console.warn('source canvas toDataURL failed', e);
+              diagramDataUrl = null;
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Error capturing diagram canvas', e);
+        diagramDataUrl = null;
       }
 
       const payload = {
