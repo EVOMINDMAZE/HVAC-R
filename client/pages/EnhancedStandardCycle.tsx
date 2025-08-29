@@ -268,7 +268,7 @@ export function EnhancedStandardCycleContent() {
             calculationData.saturation_dome.ph_diagram?.pressure_kpa?.length ||
             0,
         });
-        console.log("📈 T-s Diagram Data:", {
+        console.log("�� T-s Diagram Data:", {
           entropy_points:
             calculationData.saturation_dome.ts_diagram?.entropy_kj_kgk
               ?.length || 0,
@@ -1337,20 +1337,181 @@ export function EnhancedStandardCycleContent() {
                     </div>
                   )}
 
-                  <EnhancedRefrigerantSelector
-                    value={formData.refrigerant}
-                    onChange={handleRefrigerantChange}
-                    evaporatorTemp={formData.evap_temp_c}
-                    condenserTemp={formData.cond_temp_c}
-                    onSuggestedRangeApply={(evap, cond) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        evap_temp_c: evap,
-                        cond_temp_c: cond,
-                      }))
-                    }
-                    className="mt-2"
-                  />
+                  <div className="space-y-4 mt-2">
+                  {/* Refrigerant Selection Card */}
+                  <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                    <div className="flex flex-col space-y-1.5 p-6">
+                      <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+                          <path d="M21 21l-4.35-4.35" />
+                          <circle cx="11" cy="11" r="8" />
+                        </svg>
+                        Refrigerant Selection
+                      </h3>
+                    </div>
+                    <div className="p-6 pt-0 space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="search">Search Refrigerants</Label>
+                          <Input id="search" placeholder="Search by name, ID, or full name..." value="" onChange={() => {}} className="mt-1" />
+                        </div>
+
+                        <div>
+                          <Label htmlFor="category">Filter by Category</Label>
+                          <button type="button" role="combobox" aria-controls="category-list" aria-expanded="false" className="flex h-10 w-full items-center justify-between bg-muted border rounded-md px-3">
+                            <span className="line-clamp-1">All Categories</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 opacity-50">
+                              <path d="M6 9l6 6 6-6" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label>Select Refrigerant</Label>
+                        <button type="button" role="combobox" aria-controls="refrigerant-list" aria-expanded="false" className="flex h-10 w-full items-center justify-between bg-muted border rounded-md px-3">
+                          <span className="flex items-center justify-between w-full">
+                            <div className="flex items-center gap-2">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3 text-yellow-500 fill-yellow-500">
+                                <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
+                              </svg>
+                              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#3b82f6' }} />
+                              <div className="font-medium">R-134a</div>
+                              <span className="text-sm text-gray-500">(Tetrafluoroethane)</span>
+                            </div>
+
+                            <div className="flex gap-1">
+                              <Badge variant="default">full</Badge>
+                              <Badge variant="outline">A1</Badge>
+                            </div>
+                          </span>
+
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 opacity-50">
+                            <path d="M6 9l6 6 6-6" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Refrigerant Details and Validation Card */}
+                  <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                    <div className="flex flex-col space-y-1.5 p-6">
+                      <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                        <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#3b82f6' }} />
+                        R-134a - Tetrafluoroethane
+                      </h3>
+                    </div>
+
+                    <div className="p-6 pt-0 space-y-4">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="flex items-center gap-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-green-500">
+                            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                          </svg>
+                          <div>
+                            <div className="text-sm font-medium">GWP</div>
+                            <div className="text-sm text-gray-600">1430</div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-blue-500">
+                            <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+                          </svg>
+                          <div>
+                            <div className="text-sm font-medium">Safety</div>
+                            <div className="text-sm text-gray-600">A1</div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-red-500">
+                            <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" />
+                          </svg>
+                          <div>
+                            <div className="text-sm font-medium">Critical Temp</div>
+                            <div className="text-sm text-gray-600">101.1 °C</div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-purple-500">
+                            <path d="m12 14 4-4" />
+                            <path d="M3.34 19a10 10 0 1 1 17.32 0" />
+                          </svg>
+                          <div>
+                            <div className="text-sm font-medium">Critical Press</div>
+                            <div className="text-sm text-gray-600">4059 kPa</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <p className="text-sm text-gray-700">Most common HFC refrigerant for medium-temperature applications</p>
+                      </div>
+
+                      <div>
+                        <Label>Typical Applications</Label>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          <Badge>Air Conditioning</Badge>
+                          <Badge>Commercial Refrigeration</Badge>
+                          <Badge>Automotive AC</Badge>
+                        </div>
+                      </div>
+
+                      <div className="bg-sky-50 p-4 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-green-600">
+                              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                              <polyline points="16 7 22 7 22 13" />
+                            </svg>
+                            <div className="font-medium">Recommended Operating Range</div>
+                          </div>
+                          <Button variant="default">Apply Range</Button>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4 mt-4">
+                          <div>
+                            <div className="font-medium">Evaporator Temperature</div>
+                            <div>Recommended: -46.1 °C</div>
+                            <div className="text-sm text-gray-600">Range: -93.3 °C to -36.1 °C</div>
+                          </div>
+                          <div>
+                            <div className="font-medium">Condenser Temperature</div>
+                            <div>Recommended: 13.9 °C</div>
+                            <div className="text-sm text-gray-600">Range: -16.1 °C to 91.1 °C</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-4">
+                        <div className="flex items-center gap-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-green-500">
+                            <path d="M21.801 10A10 10 0 1 1 17 3.335" />
+                            <path d="m9 11 3 3L22 4" />
+                          </svg>
+                          <div>
+                            <div className="text-sm font-medium">Evaporator Temperature: -10 °C</div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 mt-4">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-green-500">
+                            <path d="M21.801 10A10 10 0 1 1 17 3.335" />
+                            <path d="m9 11 3 3L22 4" />
+                          </svg>
+                          <div>
+                            <div className="text-sm font-medium">Condenser Temperature: 45 °C</div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
                 </div>
 
               </CardContent>
