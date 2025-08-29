@@ -1316,6 +1316,27 @@ export function EnhancedStandardCycleContent() {
                 </Button>
 
                 <div className="mt-6">
+                  {calculationComplete && (
+                    <div role="alert" className="bg-green-50 border border-green-200 rounded-lg mt-4 p-4 w-full relative">
+                      <div className="absolute left-5 top-5 text-foreground">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-800">
+                          <path d="M21.8 10A10 10 0 1 1 17 3.335" />
+                          <path d="m9 11 3 3L22 4" />
+                        </svg>
+                      </div>
+                      <div className="pl-10 text-green-800">
+                        <div className="flex items-center justify-between">
+                          <span>
+                            <strong>Calculation Complete!</strong> View your results in the tabs above.
+                          </span>
+                          <Button variant="outline" size="sm" onClick={() => setActiveTab("results")} className="border-green-300 text-green-700 hover:bg-green-100">
+                            View Results <ArrowRight className="h-3 w-3 ml-1" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   <EnhancedRefrigerantSelector
                     value={formData.refrigerant}
                     onChange={handleRefrigerantChange}
