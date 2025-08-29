@@ -581,72 +581,22 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     ctx.font = "bold 14px 'Inter', sans-serif";
     ctx.textAlign = "center";
 
-    // Use saturation dome arrays when available for consistent axis ranges
-    const dome = (cycleData as any)?.saturationDome || (cycleData as any)?.saturation_dome || null;
-    let xValues: number[] = [];
-    let yValues: number[] = [];
+    // Use shared computeDomain for consistent axis ranges and ticks
+    const domainUtil = require('@/lib/diagramDomain') as any;
+    const domain = domainUtil.computeDomain(diagramType, (cycleData as any) || {}, points || [], 0.12, 6);
 
-    if (dome) {
-      if (diagramType === "P-h") {
-        const ph = dome.ph_diagram || dome.ph || dome['ph'] || null;
-        if (ph) {
-          xValues = (ph.enthalpy_kj_kg || ph.enthalpy || ph.h || []).slice() as number[];
-          yValues = (ph.pressure_kpa || ph.pressure || ph.p || []).slice() as number[];
-        }
-      } else if (diagramType === "T-s") {
-        const ts = dome.ts_diagram || dome.ts || dome['ts'] || null;
-        if (ts) {
-          xValues = (ts.entropy_kj_kgk || ts.entropy_kj_kg || ts.entropy || ts.s || []).slice() as number[];
-          yValues = (ts.temperature_c || ts.temperature || ts.t || []).slice() as number[];
-        }
-      } else if (diagramType === "T-v") {
-        const tv = dome.tv_diagram || dome.tv || dome['tv'] || null;
-        if (tv) {
-          xValues = (tv.specific_volume_m3_kg || tv.specific_volume || tv.v || []).slice() as number[];
-          yValues = (tv.temperature_c || tv.temperature || tv.t || []).slice() as number[];
-        }
-      }
-    }
+    const xMinPadded = domain.xMin;
+    const xMaxPadded = domain.xMax;
+    const yMinPadded = domain.yMin;
+    const yMaxPadded = domain.yMax;
 
-    // fallback to point-derived values
-    if (xValues.length === 0 || yValues.length === 0) {
-      xValues = points.map((p) => resolvePointValue(p, config.xAxis.property as string)).filter((v) => v !== null) as number[];
-      yValues = points.map((p) => resolvePointValue(p, config.yAxis.property as string)).filter((v) => v !== null) as number[];
-    }
-
-    if (xValues.length === 0 || yValues.length === 0) {
-      console.log("No valid axis data available for", diagramType);
-      return;
-    }
-
-    const xMin = Math.min(...xValues);
-    const xMax = Math.max(...xValues);
-    const yMin = Math.min(...yValues);
-    const yMax = Math.max(...yValues);
-
-    // Add padding to ranges (use consistent fraction)
-    const xRange = xMax - xMin || 1;
-    const yRange = yMax - yMin || 1;
-    const padFrac = 0.12;
-    const xPadding = xRange * padFrac;
-    const yPadding = yRange * padFrac;
-
-    const xMinPadded = xMin - xPadding;
-    const xMaxPadded = xMax + xPadding;
-    const yMinPadded = yMin - yPadding;
-    const yMaxPadded = yMax + yPadding;
-
-    console.log(`Real axis ranges for ${diagramType}:`, {
-      xRange: [xMinPadded.toFixed(2), xMaxPadded.toFixed(2)],
-      yRange: [yMinPadded.toFixed(2), yMaxPadded.toFixed(2)],
-    });
-
-    const numTicks = 6;
+    const xTicks = domain.xTicks;
+    const yTicks = domain.yTicks;
 
     // X-axis ticks with real values
-    for (let i = 0; i <= numTicks; i++) {
-      const x = margin + (plotWidth * i) / numTicks;
-      const realValue = xMinPadded + ((xMaxPadded - xMinPadded) * i) / numTicks;
+    for (let i = 0; i < xTicks.length; i++) {
+      const txVal = xTicks[i];
+      const x = margin + ((txVal - xMinPadded) / (xMaxPadded - xMinPadded || 1)) * plotWidth;
 
       ctx.beginPath();
       ctx.moveTo(x, margin + plotHeight);
@@ -655,42 +605,35 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
       // Format value based on magnitude and type
       let formattedValue: string;
-      if (config.xAxis.property === "pressure") {
-        formattedValue =
-          realValue > 1000
-            ? (realValue / 1000).toFixed(1) + "k"
-            : realValue.toFixed(0);
-      } else if (config.xAxis.property === "specificVolume") {
-        formattedValue = realValue.toFixed(4);
+      if (config.xAxis.property === 'pressure') {
+        formattedValue = txVal > 1000 ? (txVal / 1000).toFixed(1) + 'k' : txVal.toFixed(0);
+      } else if (config.xAxis.property === 'specificVolume') {
+        formattedValue = txVal.toFixed(4);
       } else {
-        formattedValue = realValue.toFixed(1);
+        formattedValue = txVal.toFixed(1);
       }
 
       ctx.fillText(formattedValue, x, margin + plotHeight + 28);
     }
 
     // Y-axis ticks with real values
-    ctx.textAlign = "right";
-    for (let i = 0; i <= numTicks; i++) {
-      const y = margin + plotHeight - (plotHeight * i) / numTicks;
-      const realValue = yMinPadded + ((yMaxPadded - yMinPadded) * i) / numTicks;
+    ctx.textAlign = 'right';
+    for (let i = 0; i < yTicks.length; i++) {
+      const tyVal = yTicks[i];
+      const y = margin + plotHeight - ((tyVal - yMinPadded) / (yMaxPadded - yMinPadded || 1)) * plotHeight;
 
       ctx.beginPath();
       ctx.moveTo(margin - 10, y);
       ctx.lineTo(margin, y);
       ctx.stroke();
 
-      // Format value based on magnitude and type
       let formattedValue: string;
-      if (config.yAxis.property === "pressure") {
-        formattedValue =
-          realValue > 1000
-            ? (realValue / 1000).toFixed(1) + "k"
-            : realValue.toFixed(0);
-      } else if (config.yAxis.property === "temperature") {
-        formattedValue = realValue.toFixed(0);
+      if (config.yAxis.property === 'pressure') {
+        formattedValue = tyVal > 1000 ? (tyVal / 1000).toFixed(1) + 'k' : tyVal.toFixed(0);
+      } else if (config.yAxis.property === 'temperature') {
+        formattedValue = tyVal.toFixed(0);
       } else {
-        formattedValue = realValue.toFixed(1);
+        formattedValue = tyVal.toFixed(1);
       }
 
       ctx.fillText(formattedValue, margin - 15, y + 5);
@@ -748,46 +691,35 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     }
 
     if (xData.length > 0 && yData.length > 0) {
-      // Scale the saturation dome data to canvas coordinates
-      const xMin = Math.min(...xData);
-      const xMax = Math.max(...xData);
-      const yMin = Math.min(...yData);
-      const yMax = Math.max(...yData);
-
-      console.log(`Drawing saturation dome for ${diagramType}:`, {
-        points: xData.length,
-        xRange: [xMin, xMax],
-        yRange: [yMin, yMax],
-      });
+      // Use shared domain so dome aligns with axes
+      const domainUtil = require('@/lib/diagramDomain') as any;
+      const domain = domainUtil.computeDomain(diagramType, (cycleData as any) || {}, cycleData?.points || [], 0.12, 6);
+      const xMin = domain.xMin;
+      const xMax = domain.xMax;
+      const yMin = domain.yMin;
+      const yMax = domain.yMax;
 
       // Draw saturation dome curve
-      ctx.strokeStyle = "rgba(59, 130, 246, 0.6)";
+      ctx.strokeStyle = 'rgba(59, 130, 246, 0.6)';
       ctx.lineWidth = 2;
       ctx.setLineDash([4, 2]);
       ctx.beginPath();
 
       for (let i = 0; i < Math.min(xData.length, yData.length); i++) {
-        const x = margin + ((xData[i] - xMin) / (xMax - xMin)) * plotWidth;
-        const y =
-          margin +
-          plotHeight -
-          ((yData[i] - yMin) / (yMax - yMin)) * plotHeight;
+        const x = margin + ((xData[i] - xMin) / (xMax - xMin || 1)) * plotWidth;
+        const y = margin + plotHeight - ((yData[i] - yMin) / (yMax - yMin || 1)) * plotHeight;
 
-        if (i === 0) {
-          ctx.moveTo(x, y);
-        } else {
-          ctx.lineTo(x, y);
-        }
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
       }
 
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Add saturation dome label
-      ctx.fillStyle = "rgba(59, 130, 246, 0.8)";
+      ctx.fillStyle = 'rgba(59, 130, 246, 0.8)';
       ctx.font = "12px 'Inter', sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("Saturation Dome", margin + plotWidth * 0.8, margin + 30);
+      ctx.textAlign = 'center';
+      ctx.fillText('Saturation Dome', margin + plotWidth * 0.8, margin + 30);
     } else {
       console.log(`No saturation dome data for ${diagramType}`);
     }
