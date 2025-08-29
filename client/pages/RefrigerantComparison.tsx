@@ -275,6 +275,15 @@ export function RefrigerantComparisonContent() {
         results: data,
       });
 
+      // Temporary: store raw API response for debugging
+      try {
+        setDebugResponse(data);
+        setShowDebug(true);
+        console.log('Debug compareRefrigerants response:', data);
+      } catch (e) {
+        console.warn('Failed to set debug response', e);
+      }
+
       try {
         // Auto-record the comparison so counts/history reflect every run
         void saveCalculation(
