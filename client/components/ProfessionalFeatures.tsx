@@ -521,13 +521,14 @@ export function ProfessionalFeatures({
           .join('');
 
         const legend = `
-          <g transform='translate(${margin.left + plotW - 180}, ${margin.top + 6})'>
-            <rect x='0' y='0' width='170' height='68' rx='6' fill='#ffffff' stroke='#e6eefc' />
+          <g transform='translate(${margin.left + plotW - 200}, ${margin.top + 6})'>
+            <rect x='0' y='0' width='190' height='92' rx='6' fill='#ffffff' stroke='#e6eefc' />
             <text x='10' y='16' font-size='12' fill='#0b172a' font-weight='700'>Operations</text>
             <g transform='translate(8,22)'>
               <g transform='translate(0,0)'><rect x='0' y='0' width='12' height='8' fill='${opColors[0]}' /><text x='18' y='8' font-size='11' fill='#334155'>Compression (1→2)</text></g>
               <g transform='translate(0,18)'><rect x='0' y='0' width='12' height='8' fill='${opColors[1]}' /><text x='18' y='8' font-size='11' fill='#334155'>Condensation (2→3)</text></g>
               <g transform='translate(0,36)'><rect x='0' y='0' width='12' height='8' fill='${opColors[2]}' /><text x='18' y='8' font-size='11' fill='#334155'>Expansion (3→4)</text></g>
+              <g transform='translate(0,54)'><rect x='0' y='0' width='12' height='8' fill='${opColors[3]}' /><text x='18' y='8' font-size='11' fill='#334155'>Evaporation (4→1)</text></g>
             </g>
           </g>
         `;
@@ -597,6 +598,20 @@ export function ProfessionalFeatures({
       svg = svg.replace(/<svg([^>]*)width='[^']*'([^>]*)>/i, `<svg$1$2 style='max-width:100%;height:auto;display:block'`);
       svg = svg.replace(/<svg([^>]*)width=\"[^\"]*\"([^>]*)>/i, `<svg$1$2 style='max-width:100%;height:auto;display:block'`);
       return svg;
+    };
+
+    const buildPointsHtml = (cycle: any) => {
+      const pts = Array.isArray(cycle?.points) ? cycle.points : [];
+      if (!pts.length) return '';
+      const rows = pts.map((p: any, idx: number) => {
+        const t = convertTemperature(p.temperature ?? p.t ?? p.temperature_c ?? p.temp ?? null);
+        const pval = convertPressure(p.pressure ?? p.p ?? p.pressure_kpa ?? null);
+        const h = convertEnthalpy(p.enthalpy ?? p.h ?? p.enthalpy_kj_kg ?? null);
+        const s = p.entropy ?? p.s ?? p.entropy_kj_kgk ?? p.entropy_kj_kg ?? '';
+        return `<tr><td style='padding:6px;border:1px solid #e6eefc'>Point ${idx+1}</td><td style='padding:6px;border:1px solid #e6eefc'>${t !== null && t !== undefined ? t.toFixed(2) : 'N/A'} ${UNIT_SYSTEMS[unitSystem].temperature}</td><td style='padding:6px;border:1px solid #e6eefc'>${pval !== null && pval !== undefined ? pval.toFixed(1) : 'N/A'} ${UNIT_SYSTEMS[unitSystem].pressure}</td><td style='padding:6px;border:1px solid #e6eefc'>${h !== null && h !== undefined ? Number(h).toFixed(2) : 'N/A'} ${UNIT_SYSTEMS[unitSystem].enthalpy}</td><td style='padding:6px;border:1px solid #e6eefc'>${s ? Number(s).toFixed ? Number(s).toFixed(3) : s : 'N/A'}</td></tr>`;
+      }).join('');
+
+      return `<div style='margin-top:12px'><h4 style='margin:0 0 8px;font-size:13px;color:#0f172a'>Point Details</h4><div style='overflow:auto'><table style='border-collapse:collapse;width:100%'><thead><tr><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Point</th><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Temperature</th><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Pressure</th><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Enthalpy</th><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Entropy</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
     };
 
     const diagrams: string[] = [];
@@ -1075,6 +1090,18 @@ export function ProfessionalFeatures({
       return svg;
     };
 
+    const buildPointsHtmlSmall = (cycle: any) => {
+      const pts = Array.isArray(cycle?.points) ? cycle.points : [];
+      if (!pts.length) return '';
+      const rows = pts.map((p: any, idx: number) => {
+        const t = convertTemperature(p.temperature ?? p.t ?? p.temperature_c ?? p.temp ?? null);
+        const pval = convertPressure(p.pressure ?? p.p ?? p.pressure_kpa ?? null);
+        const h = convertEnthalpy(p.enthalpy ?? p.h ?? p.enthalpy_kj_kg ?? null);
+        return `<tr><td style='padding:6px;border:1px solid #e6eefc'>Point ${idx+1}</td><td style='padding:6px;border:1px solid #e6eefc'>${t !== null && t !== undefined ? t.toFixed(2) : 'N/A'} ${UNIT_SYSTEMS[unitSystem].temperature}</td><td style='padding:6px;border:1px solid #e6eefc'>${pval !== null && pval !== undefined ? pval.toFixed(1) : 'N/A'} ${UNIT_SYSTEMS[unitSystem].pressure}</td><td style='padding:6px;border:1px solid #e6eefc'>${h !== null && h !== undefined ? Number(h).toFixed(2) : 'N/A'} ${UNIT_SYSTEMS[unitSystem].enthalpy}</td></tr>`;
+      }).join('');
+      return `<div style='margin-top:12px'><h4 style='margin:0 0 8px;font-size:13px;color:#0f172a'>Point Details</h4><div style='overflow:auto'><table style='border-collapse:collapse;width:100%'><thead><tr><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Point</th><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Temperature</th><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Pressure</th><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Enthalpy</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+    };
+
     const diagramSection = diagramDataUrl
       ? `<div class='card'><h3>Diagram</h3><div><img src='${diagramDataUrl}' style='max-width:100%;height:auto;border-radius:6px;border:1px solid #e6eefc' /></div></div>`
       : (svgs && (svgs.ph || svgs.ts || svgs.pv))
@@ -1083,6 +1110,7 @@ export function ProfessionalFeatures({
             ${svgs.ph ? `<div style='margin-bottom:12px'>${sanitizeSvgInline(svgs.ph)}</div>` : ''}
             ${svgs.ts ? `<div style='margin-bottom:12px'>${sanitizeSvgInline(svgs.ts)}</div>` : ''}
             ${svgs.pv ? `<div style='margin-bottom:12px'>${sanitizeSvgInline(svgs.pv)}</div>` : ''}
+            ${buildPointsHtmlSmall(cycleData)}
           </div>`
         : '';
 
