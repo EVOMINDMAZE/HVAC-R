@@ -106,6 +106,11 @@ const technicalTerms: Record<
     details:
       "Full = Complete property data | Limited = Basic properties only | Partial = Some restrictions apply",
   },
+  density: {
+    title: "Density",
+    description: "Mass per unit volume of the refrigerant.",
+    details: "Measured in kg/m³. Can be derived from state point properties or estimated using ideal gas approximations when needed.",
+  },
 };
 
 export function TechnicalTooltip({
