@@ -1280,7 +1280,7 @@ export function EnhancedStandardCycleContent() {
                 )}
 
                 <Button
-                  onClick={handleCalculate}
+                  onClick={() => void handleCalculate()}
                   disabled={loading}
                   className="w-full"
                   size="lg"
