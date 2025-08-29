@@ -1,5 +1,4 @@
 import { RequestHandler } from 'express';
-import { RequestHandler } from 'express';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 
 // POST /api/reports/generate
