@@ -421,10 +421,19 @@ export function RefrigerantComparisonContent() {
           }
           break;
         case "volumetricCapacity":
+          console.log('Volumetric Capacity Extraction Debug', {
+            resultVolumetricCapacity: result.volumetricCapacity,
+            perfVolumetricCapacity: perf.volumetric_capacity,
+            perfVolumetricCapacityAlt: perf.volumetricCapacity,
+            perfVolumetricCapacityKjM3: perf.volumetric_capacity_kj_m3,
+            performanceKeys: Object.keys(perf),
+            resultKeys: Object.keys(result)
+          });
           v =
             parseNumber(result.volumetricCapacity) ??
             parseNumber(perf.volumetric_capacity) ??
             parseNumber(perf.volumetricCapacity) ??
+            parseNumber(perf.volumetric_capacity_kj_m3) ??
             // attempt to compute from refrigeration effect * density
             ((): number | null => {
               const refEffect = getNumericValue(result, "refrigerationEffect");
@@ -433,23 +442,42 @@ export function RefrigerantComparisonContent() {
                 // try performance-level density
                 density = parseNumber(perf.density_kg_m3) ?? parseNumber(perf.density);
               }
+              console.log('Volumetric Capacity Computation Debug', { refEffect, density });
               if (refEffect !== null && density !== null) return refEffect * density;
               return null;
             })();
           break;
         case "dischargePressure":
+          console.log('Discharge Pressure Extraction Debug', {
+            resultDischargePressure: result.dischargePressure,
+            perfDischargePressure: perf.discharge_pressure,
+            perfDischargePressureAlt: perf.dischargePressure,
+            perfDischargePressureKpa: perf.discharge_pressure_kpa,
+            performanceKeys: Object.keys(perf),
+            resultKeys: Object.keys(result)
+          });
           v =
             parseNumber(result.dischargePressure) ??
             parseNumber(perf.discharge_pressure) ??
             parseNumber(perf.dischargePressure) ??
+            parseNumber(perf.discharge_pressure_kpa) ??
             // try state point pressures (compressor outlet is often point 2 or 3)
             getStatePointValue(result, ["pressure_kpa", "pressure", "P_kPa", "P"]);
           break;
         case "suctionPressure":
+          console.log('Suction Pressure Extraction Debug', {
+            resultSuctionPressure: result.suctionPressure,
+            perfSuctionPressure: perf.suction_pressure,
+            perfSuctionPressureAlt: perf.suctionPressure,
+            perfSuctionPressureKpa: perf.suction_pressure_kpa,
+            performanceKeys: Object.keys(perf),
+            resultKeys: Object.keys(result)
+          });
           v =
             parseNumber(result.suctionPressure) ??
             parseNumber(perf.suction_pressure) ??
             parseNumber(perf.suctionPressure) ??
+            parseNumber(perf.suction_pressure_kpa) ??
             // try state point pressures (evaporator outlet is often point 1)
             getStatePointValue(result, ["pressure_kpa", "pressure", "P_kPa", "P"]);
           break;
