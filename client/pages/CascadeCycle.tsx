@@ -133,6 +133,8 @@ export function CascadeCycleContent() {
   const [selectedVisualizationCycle, setSelectedVisualizationCycle] = useState<
     "lt" | "ht"
   >("lt");
+  const [debugResponse, setDebugResponse] = useState<any | null>(null);
+  const [showDebug, setShowDebug] = useState(false);
   const { addToast } = useToast();
   const { saveCalculation } = useSupabaseCalculations();
 
@@ -341,6 +343,15 @@ export function CascadeCycleContent() {
         inputs: formData,
         results: data,
       });
+
+      // Temporary: store raw API response for debugging
+      try {
+        setDebugResponse(data);
+        setShowDebug(true);
+        console.log('Debug calculateCascadeCycle response:', data);
+      } catch (e) {
+        console.warn('Failed to set debug response for cascade', e);
+      }
 
       try {
         // Auto-record the cascade calculation so counts/history reflect every run
@@ -988,6 +999,30 @@ export function CascadeCycleContent() {
                   </CardContent>
                 </Card>
               </div>
+
+              {debugResponse && (
+                <Card className="bg-white shadow-md mt-4">
+                  <CardHeader>
+                    <CardTitle>Debug: Raw API Response</CardTitle>
+                    <CardDescription>
+                      Temporary output showing the full response from calculateCascadeCycle API. Remove after debugging.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-start gap-2 mb-2">
+                      <Button size="sm" onClick={() => setShowDebug((s) => !s)}>
+                        {showDebug ? 'Hide' : 'Show'} JSON
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={() => { setDebugResponse(null); setShowDebug(false); }}>
+                        Clear
+                      </Button>
+                    </div>
+                    {showDebug && (
+                      <pre className="max-h-96 overflow-auto text-xs bg-gray-50 p-4 rounded border">{JSON.stringify(debugResponse, null, 2)}</pre>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
             </div>
           )}
         </TabsContent>
