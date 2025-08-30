@@ -260,7 +260,45 @@ export function CascadeCycleContent() {
 
       // Handle different response structures from the API
       const resultData = data.data || data;
-      setResult(resultData);
+
+      // Extensive logging for debugging
+      console.log('Raw Cascade Calculation Response:', {
+        fullResponse: data,
+        resultData: resultData,
+        keys: Object.keys(resultData),
+        overallPerformance: resultData.overall_performance,
+        ltCyclePerformance: resultData.lt_cycle_performance,
+        htCyclePerformance: resultData.ht_cycle_performance
+      });
+
+      // Robust result extraction with fallback mechanisms
+      const processedResult: CascadeResult = {
+        overall_performance: {
+          cop: resultData.overall_performance?.cop ??
+               resultData.cop ??
+               ((resultData.lt_cycle_performance?.cop ?? 0) + (resultData.ht_cycle_performance?.cop ?? 0)) / 2
+        },
+        lt_cycle_performance: {
+          cop: resultData.lt_cycle_performance?.cop ?? resultData.lt_cycle?.performance?.cop,
+          work_of_compression_kj_kg: resultData.lt_cycle_performance?.work_of_compression_kj_kg ??
+                                      resultData.lt_cycle?.performance?.work_of_compression_kj_kg,
+          refrigeration_effect_kj_kg: resultData.lt_cycle_performance?.refrigeration_effect_kj_kg ??
+                                       resultData.lt_cycle?.performance?.refrigeration_effect_kj_kg
+        },
+        ht_cycle_performance: {
+          cop: resultData.ht_cycle_performance?.cop ?? resultData.ht_cycle?.performance?.cop,
+          work_of_compression_kj_kg: resultData.ht_cycle_performance?.work_of_compression_kj_kg ??
+                                      resultData.ht_cycle?.performance?.work_of_compression_kj_kg,
+          refrigeration_effect_kj_kg: resultData.ht_cycle_performance?.refrigeration_effect_kj_kg ??
+                                       resultData.ht_cycle?.performance?.refrigeration_effect_kj_kg
+        },
+        lt_cycle: resultData.lt_cycle,
+        ht_cycle: resultData.ht_cycle
+      };
+
+      console.log('Processed Cascade Result:', processedResult);
+
+      setResult(processedResult);
 
       // Store data for saving
       setCalculationData({
