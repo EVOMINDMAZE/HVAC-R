@@ -311,20 +311,39 @@ export function CascadeCycleContent() {
         totalRefrigerationEffect
       });
 
+      const ltPerformance = resultData.lt_cycle_performance || {};
+      const htPerformance = resultData.ht_cycle_performance || {};
+
+      const ltWork = ltPerformance.work_of_compression_kj_kg ?? 0;
+      const htWork = htPerformance.work_of_compression_kj_kg ?? 0;
+      const ltRefrigerationEffect = ltPerformance.refrigeration_effect_kj_kg ?? 0;
+      const htRefrigerationEffect = htPerformance.refrigeration_effect_kj_kg ?? 0;
+
+      const totalWork = ltWork + htWork;
+      const totalRefrigerationEffect = ltRefrigerationEffect + htRefrigerationEffect;
+
       const overallCop = totalWork > 0 ? totalRefrigerationEffect / totalWork : 0;
-
-      const ltCop = resultData.lt_cycle_performance?.cop ?? 0;
-      const htCop = resultData.ht_cycle_performance?.cop ?? 0;
+      
+      const ltCop = ltPerformance.cop ?? 0;
+      const htCop = htPerformance.cop ?? 0;
       const avgCop = (ltCop + htCop) / 2;
+      
+      const systemEfficiency = avgCop > 0 ? Math.min(100, (overallCop / avgCop) * 100) : 0;
 
-      console.log('COP Calculations:', {
+      console.log("Comprehensive Performance Calculation:", {
+        ltWork,
+        htWork,
+        totalWork,
+        ltRefrigerationEffect,
+        htRefrigerationEffect,
+        totalRefrigerationEffect,
         ltCop,
         htCop,
         avgCop,
-        overallCop
+        overallCop,
+        systemEfficiency
       });
 
-      const systemEfficiency = avgCop > 0 ? Math.min(100, (overallCop / avgCop) * 100) : 0;
 
       console.log('Final Performance Metrics:', {
         overallCop,
