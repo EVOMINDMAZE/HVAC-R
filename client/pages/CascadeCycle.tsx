@@ -538,12 +538,12 @@ export function CascadeCycleContent() {
     }));
 
     // Include saturation dome data if available
-    const saturationDome = cycleData?.saturation_dome || {};
+    const saturationDome = (cycleData as any)?.saturation_dome || {};
 
     return {
       points: mappedPoints,
       refrigerant: refrigerant,
-      cycleType: cycle === "lt" ? "cascade-low" : "cascade-high",
+      cycleType: (cycle === "lt" ? "cascade-low" : "cascade-high") as "cascade-low" | "cascade-high",
       saturationDome: {
         ph_diagram: saturationDome.ph_diagram,
         ts_diagram: saturationDome.ts_diagram,
