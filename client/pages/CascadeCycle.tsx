@@ -290,7 +290,8 @@ export function CascadeCycleContent() {
       // Robust result extraction with multiple fallback mechanisms
       console.log('Raw Performance Data:', {
         ltCyclePerformance: resultData.lt_cycle_performance,
-        htCyclePerformance: resultData.ht_cycle_performance
+        htCyclePerformance: resultData.ht_cycle_performance,
+        resultDataKeys: Object.keys(resultData)
       });
 
       const ltWork = resultData.lt_cycle_performance?.work_of_compression_kj_kg ?? 0;
