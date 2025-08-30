@@ -304,7 +304,7 @@ export function CascadeCycleContent() {
             const htCop = resultData.ht_cycle_performance?.cop ?? 0;
             const avgCop = (ltCop + htCop) / 2;
             const overallCop = processedResult.overall_performance?.cop ?? 0;
-            return (overallCop / avgCop) * 100;
+            return (overallCop * 100) / avgCop;
           })(),
           cascade_temperature: formData.ltCycle.condenserTemp
         },
