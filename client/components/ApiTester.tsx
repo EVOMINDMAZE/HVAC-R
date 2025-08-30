@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, CheckCircle, XCircle } from "lucide-react";
+import { API_BASE_URL } from "@/lib/api";
 
 export function ApiTester() {
   const [testResults, setTestResults] = useState<any[]>([]);
@@ -13,7 +14,7 @@ export function ApiTester() {
     try {
       console.log(`Testing ${endpoint} with body:`, body);
       
-      const response = await fetch(`https://simulateon-backend.onrender.com${endpoint}`, {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

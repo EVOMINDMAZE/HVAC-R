@@ -28,6 +28,7 @@ import {
   CheckCircle,
   ArrowRight,
 } from "lucide-react";
+import { API_BASE_URL } from "@/lib/api";
 import { EnhancedRefrigerantSelector } from "../components/EnhancedRefrigerantSelector";
 import { CycleVisualization } from "../components/CycleVisualization";
 import { EquipmentDiagrams } from "../components/EquipmentDiagrams";
@@ -195,9 +196,7 @@ export function EnhancedStandardCycleContent() {
     const requestBody = safeOverride ? { ...formData, ...safeOverride } : formData;
 
     try {
-      const response = await fetch(
-        "https://simulateon-backend.onrender.com/calculate-standard",
-        {
+      const response = await fetch(`${API_BASE_URL}/calculate-standard`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

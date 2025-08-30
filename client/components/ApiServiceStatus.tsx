@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, CheckCircle, XCircle, RefreshCw } from "lucide-react";
+import { API_BASE_URL } from "@/lib/api";
 
 interface ServiceStatus {
   name: string;
@@ -25,7 +26,7 @@ export function ApiServiceStatus() {
     const startTime = Date.now();
     try {
       // Use a simple HEAD request to check if service is responding (no body parsing needed)
-      const response = await fetch(`https://simulateon-backend.onrender.com${service.endpoint}`, {
+      const response = await fetch(`${API_BASE_URL}${service.endpoint}`, {
         method: 'HEAD',
         headers: {
           'Content-Type': 'application/json',

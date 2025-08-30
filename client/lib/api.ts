@@ -1,10 +1,5 @@
-// For now, disable internal API calls since there's no backend server configured
-// In production, this would point to your actual backend API
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (
-  import.meta.env.MODE === 'production'
-    ? '' // Disabled in production for now
-    : '' // Disabled in development for now
-);
+// Base URL for external calculation service. Prefer env override VITE_API_BASE_URL
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://simulateon-backend-new.onrender.com';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -235,7 +230,7 @@ class ApiClient {
   async calculateStandardCycle(parameters: any): Promise<any> {
     // Direct call to external calculation API
     try {
-      const response = await fetch("https://simulateon-backend.onrender.com/calculate-standard", {
+      const response = await fetch(`${API_BASE_URL}/calculate-standard`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -310,7 +305,7 @@ class ApiClient {
 
   async compareRefrigerants(parameters: any): Promise<any> {
     try {
-      const response = await fetch("https://simulateon-backend.onrender.com/compare-refrigerants", {
+      const response = await fetch(`${API_BASE_URL}/compare-refrigerants`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -388,7 +383,7 @@ class ApiClient {
 
   async calculateCascadeCycle(parameters: any): Promise<any> {
     try {
-      const response = await fetch("https://simulateon-backend.onrender.com/calculate-cascade", {
+      const response = await fetch(`${API_BASE_URL}/calculate-cascade`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

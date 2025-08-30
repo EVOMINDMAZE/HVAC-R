@@ -177,7 +177,7 @@ export function ApiDocs() {
               <Database className="h-12 w-12 text-blue-600 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Base URL</h3>
               <code className="text-sm bg-gray-100 px-3 py-1 rounded">
-                https://simulateon-backend.onrender.com
+                https://simulateon-backend-new.onrender.com
               </code>
             </CardContent>
           </Card>

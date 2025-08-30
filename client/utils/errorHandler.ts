@@ -51,7 +51,7 @@ export function setupGlobalErrorHandler() {
     } catch (error) {
       // Get stack trace to identify source
       const stack = error instanceof Error ? error.stack : '';
-      const isFromExternalAPI = stack.includes('simulateon-backend.onrender.com') ||
+      const isFromExternalAPI = stack.includes('simulateon-backend-new.onrender.com') ||
                                stack.includes('calculate-standard') ||
                                stack.includes('compare-refrigerants') ||
                                stack.includes('calculate-cascade');

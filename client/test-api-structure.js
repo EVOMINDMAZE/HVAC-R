@@ -2,7 +2,7 @@
 async function testApiStructure() {
   try {
     const response = await fetch(
-      "https://simulateon-backend.onrender.com/calculate-standard",
+      "https://simulateon-backend-new.onrender.com/calculate-standard",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
