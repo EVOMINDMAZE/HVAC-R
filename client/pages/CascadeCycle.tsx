@@ -271,32 +271,68 @@ export function CascadeCycleContent() {
         htCyclePerformance: resultData.ht_cycle_performance
       });
 
-      // Robust result extraction with fallback mechanisms
+      // Extensive logging of raw result data
+      console.log('Raw Cascade Calculation Response:', {
+        fullResponse: data,
+        resultData: resultData,
+        keys: Object.keys(resultData),
+        overallPerformance: resultData.overall_performance,
+        ltCyclePerformance: resultData.lt_cycle_performance,
+        htCyclePerformance: resultData.ht_cycle_performance,
+        ltCycle: resultData.lt_cycle,
+        htCycle: resultData.ht_cycle
+      });
+
+      // Robust result extraction with multiple fallback mechanisms
       const processedResult: CascadeResult = {
         overall_performance: {
           cop: resultData.overall_performance?.cop ??
                resultData.cop ??
+               resultData.performance?.cop ??
                ((resultData.lt_cycle_performance?.cop ?? 0) + (resultData.ht_cycle_performance?.cop ?? 0)) / 2
         },
         lt_cycle_performance: {
-          cop: resultData.lt_cycle_performance?.cop ?? resultData.lt_cycle?.performance?.cop,
+          cop: resultData.lt_cycle_performance?.cop ??
+               resultData.lt_cycle?.performance?.cop ??
+               resultData.lt_cycle?.cop ??
+               resultData.performance?.lt_cycle_cop,
           work_of_compression_kj_kg: resultData.lt_cycle_performance?.work_of_compression_kj_kg ??
-                                      resultData.lt_cycle?.performance?.work_of_compression_kj_kg,
+                                      resultData.lt_cycle?.performance?.work_of_compression_kj_kg ??
+                                      resultData.lt_cycle?.work_of_compression_kj_kg ??
+                                      resultData.performance?.lt_cycle_work_of_compression_kj_kg,
           refrigeration_effect_kj_kg: resultData.lt_cycle_performance?.refrigeration_effect_kj_kg ??
-                                       resultData.lt_cycle?.performance?.refrigeration_effect_kj_kg
+                                       resultData.lt_cycle?.performance?.refrigeration_effect_kj_kg ??
+                                       resultData.lt_cycle?.refrigeration_effect_kj_kg ??
+                                       resultData.performance?.lt_cycle_refrigeration_effect_kj_kg
         },
         ht_cycle_performance: {
-          cop: resultData.ht_cycle_performance?.cop ?? resultData.ht_cycle?.performance?.cop,
+          cop: resultData.ht_cycle_performance?.cop ??
+               resultData.ht_cycle?.performance?.cop ??
+               resultData.ht_cycle?.cop ??
+               resultData.performance?.ht_cycle_cop,
           work_of_compression_kj_kg: resultData.ht_cycle_performance?.work_of_compression_kj_kg ??
-                                      resultData.ht_cycle?.performance?.work_of_compression_kj_kg,
+                                      resultData.ht_cycle?.performance?.work_of_compression_kj_kg ??
+                                      resultData.ht_cycle?.work_of_compression_kj_kg ??
+                                      resultData.performance?.ht_cycle_work_of_compression_kj_kg,
           refrigeration_effect_kj_kg: resultData.ht_cycle_performance?.refrigeration_effect_kj_kg ??
-                                       resultData.ht_cycle?.performance?.refrigeration_effect_kj_kg
+                                       resultData.ht_cycle?.performance?.refrigeration_effect_kj_kg ??
+                                       resultData.ht_cycle?.refrigeration_effect_kj_kg ??
+                                       resultData.performance?.ht_cycle_refrigeration_effect_kj_kg
         },
         lt_cycle: resultData.lt_cycle,
         ht_cycle: resultData.ht_cycle
       };
 
-      console.log('Processed Cascade Result:', processedResult);
+      // Extensive logging of processed result
+      console.log('Processed Cascade Result:', {
+        overallCOP: processedResult.overall_performance?.cop,
+        ltCycleCOP: processedResult.lt_cycle_performance?.cop,
+        htCycleCOP: processedResult.ht_cycle_performance?.cop,
+        ltCycleWorkInput: processedResult.lt_cycle_performance?.work_of_compression_kj_kg,
+        htCycleWorkInput: processedResult.ht_cycle_performance?.work_of_compression_kj_kg,
+        ltCycleRefrigerationEffect: processedResult.lt_cycle_performance?.refrigeration_effect_kj_kg,
+        htCycleRefrigerationEffect: processedResult.ht_cycle_performance?.refrigeration_effect_kj_kg
+      });
 
       setResult(processedResult);
 
