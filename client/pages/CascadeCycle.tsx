@@ -871,12 +871,7 @@ export function CascadeCycleContent() {
                     </div>
                     <div className="text-center p-4 bg-blue-50 rounded-lg">
                       <div className="text-2xl font-semibold text-blue-600">
-                        {(
-                          ((result.overall_performance?.cop || 0) * 100) /
-                          (((result.lt_cycle_performance?.cop || 0) +
-                            (result.ht_cycle_performance?.cop || 0)) /
-                            2 || 1)
-                        ).toFixed(1) || "N/A"}
+                        {result.overall_performance?.system_efficiency?.toFixed(1) || "N/A"}
                         %
                       </div>
                       <div className="text-sm text-blue-500 mt-1">
