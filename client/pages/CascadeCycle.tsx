@@ -288,11 +288,9 @@ export function CascadeCycleContent() {
       });
 
       // Robust result extraction with multiple fallback mechanisms
-      console.log('Raw Performance Data:', {
-        ltCyclePerformance: resultData.lt_cycle_performance,
-        htCyclePerformance: resultData.ht_cycle_performance,
-        resultDataKeys: Object.keys(resultData)
-      });
+      // Performance calculation with robust error handling
+      const ltPerformance = resultData.lt_cycle_performance || {};
+      const htPerformance = resultData.ht_cycle_performance || {};
 
       const ltWork = resultData.lt_cycle_performance?.work_of_compression_kj_kg ?? 0;
       const htWork = resultData.ht_cycle_performance?.work_of_compression_kj_kg ?? 0;
