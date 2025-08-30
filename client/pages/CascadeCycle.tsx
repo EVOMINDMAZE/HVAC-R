@@ -287,14 +287,54 @@ export function CascadeCycleContent() {
         htCycle: resultData.ht_cycle
       });
 
-      // Robust result extraction with multiple fallback mechanisms
-      // Performance calculation with robust error handling
+      // Robust performance calculation with single declaration
       const ltPerformance = resultData.lt_cycle_performance || {};
       const htPerformance = resultData.ht_cycle_performance || {};
 
+      const ltWork = ltPerformance.work_of_compression_kj_kg ?? 0;
+      const htWork = htPerformance.work_of_compression_kj_kg ?? 0;
+      const ltRefrigerationEffect = ltPerformance.refrigeration_effect_kj_kg ?? 0;
+      const htRefrigerationEffect = htPerformance.refrigeration_effect_kj_kg ?? 0;
 
+      const totalWork = ltWork + htWork;
+      const totalRefrigerationEffect = ltRefrigerationEffect + htRefrigerationEffect;
 
+      const ltCop = ltPerformance.cop ?? 0;
+      const htCop = htPerformance.cop ?? 0;
+      const avgCop = (ltCop + htCop) / 2;
 
+      const overallCop = totalWork > 0 ? totalRefrigerationEffect / totalWork : 0;
+      const systemEfficiency = avgCop > 0 ? Math.min(100, (overallCop / avgCop) * 100) : 0;
+
+      console.log('Comprehensive Performance Calculation:', {
+        ltWork,
+        htWork,
+        totalWork,
+        ltRefrigerationEffect,
+        htRefrigerationEffect,
+        totalRefrigerationEffect,
+        ltCop,
+        htCop,
+        avgCop,
+        overallCop,
+        systemEfficiency
+      });
+
+      const ltWork = resultData.lt_cycle_performance?.work_of_compression_kj_kg ?? 0;
+      const htWork = resultData.ht_cycle_performance?.work_of_compression_kj_kg ?? 0;
+      const ltRefrigerationEffect = resultData.lt_cycle_performance?.refrigeration_effect_kj_kg ?? 0;
+      const htRefrigerationEffect = resultData.ht_cycle_performance?.refrigeration_effect_kj_kg ?? 0;
+
+      const totalWork = ltWork + htWork;
+      const totalRefrigerationEffect = ltRefrigerationEffect + htRefrigerationEffect;
+
+      const ltWork = ltPerformance.work_of_compression_kj_kg ?? 0;
+      const htWork = htPerformance.work_of_compression_kj_kg ?? 0;
+      const ltRefrigerationEffect = ltPerformance.refrigeration_effect_kj_kg ?? 0;
+      const htRefrigerationEffect = htPerformance.refrigeration_effect_kj_kg ?? 0;
+
+      const totalWork = ltWork + htWork;
+      const totalRefrigerationEffect = ltRefrigerationEffect + htRefrigerationEffect;
 
       const ltCop = ltPerformance.cop ?? 0;
       const htCop = htPerformance.cop ?? 0;
@@ -320,7 +360,13 @@ export function CascadeCycleContent() {
       const ltPerformance = resultData.lt_cycle_performance || {};
       const htPerformance = resultData.ht_cycle_performance || {};
 
+      const ltWork = ltPerformance.work_of_compression_kj_kg ?? 0;
+      const htWork = htPerformance.work_of_compression_kj_kg ?? 0;
+      const ltRefrigerationEffect = ltPerformance.refrigeration_effect_kj_kg ?? 0;
+      const htRefrigerationEffect = htPerformance.refrigeration_effect_kj_kg ?? 0;
 
+      const totalWork = ltWork + htWork;
+      const totalRefrigerationEffect = ltRefrigerationEffect + htRefrigerationEffect;
 
       const ltCop = ltPerformance.cop ?? 0;
       const htCop = htPerformance.cop ?? 0;
