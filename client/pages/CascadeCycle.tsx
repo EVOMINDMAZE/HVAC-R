@@ -459,56 +459,36 @@ export function CascadeCycleContent() {
       return null;
     }
 
+    // Detailed point mapping with comprehensive data extraction
+    const mappedPoints = points.map((point, index) => ({
+      id: `${index + 1}`,
+      name: [
+        "Evaporator Outlet",
+        "Compressor Outlet",
+        "Condenser Outlet",
+        "Expansion Valve Outlet"
+      ][index],
+      temperature: extractPointData(point, "temperature"),
+      pressure: extractPointData(point, "pressure"),
+      enthalpy: extractPointData(point, "enthalpy"),
+      entropy: extractPointData(point, "entropy"),
+      quality: point.vapor_quality ?? point.quality,
+      x: 0,
+      y: 0,
+    }));
+
+    // Include saturation dome data if available
+    const saturationDome = cycleData?.saturation_dome || {};
+
     return {
-      points: [
-        {
-          id: "1",
-          name: "Evaporator Outlet",
-          temperature: points[0].temperature_c || points[0].temperature || 0,
-          pressure: points[0].pressure_kpa || points[0].pressure || 0,
-          enthalpy: points[0].enthalpy_kj_kg || points[0].enthalpy || 0,
-          entropy: points[0].entropy_kj_kg_k || points[0].entropy || 0,
-          quality: points[0].quality,
-          x: 0,
-          y: 0,
-        },
-        {
-          id: "2",
-          name: "Compressor Outlet",
-          temperature: points[1].temperature_c || points[1].temperature || 0,
-          pressure: points[1].pressure_kpa || points[1].pressure || 0,
-          enthalpy: points[1].enthalpy_kj_kg || points[1].enthalpy || 0,
-          entropy: points[1].entropy_kj_kg_k || points[1].entropy || 0,
-          quality: points[1].quality,
-          x: 0,
-          y: 0,
-        },
-        {
-          id: "3",
-          name: "Condenser Outlet",
-          temperature: points[2].temperature_c || points[2].temperature || 0,
-          pressure: points[2].pressure_kpa || points[2].pressure || 0,
-          enthalpy: points[2].enthalpy_kj_kg || points[2].enthalpy || 0,
-          entropy: points[2].entropy_kj_kg_k || points[2].entropy || 0,
-          quality: points[2].quality,
-          x: 0,
-          y: 0,
-        },
-        {
-          id: "4",
-          name: "Expansion Valve Outlet",
-          temperature: points[3].temperature_c || points[3].temperature || 0,
-          pressure: points[3].pressure_kpa || points[3].pressure || 0,
-          enthalpy: points[3].enthalpy_kj_kg || points[3].enthalpy || 0,
-          entropy: points[3].entropy_kj_kg_k || points[3].entropy || 0,
-          quality: points[3].quality,
-          x: 0,
-          y: 0,
-        },
-      ],
+      points: mappedPoints,
       refrigerant: refrigerant,
-      cycleType:
-        cycle === "lt" ? ("cascade-low" as const) : ("cascade-high" as const),
+      cycleType: cycle === "lt" ? "cascade-low" : "cascade-high",
+      saturationDome: {
+        ph_diagram: saturationDome.ph_diagram,
+        ts_diagram: saturationDome.ts_diagram,
+        tv_diagram: saturationDome.tv_diagram,
+      },
     };
   };
 
