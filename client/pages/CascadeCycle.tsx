@@ -292,21 +292,9 @@ export function CascadeCycleContent() {
       const ltPerformance = resultData.lt_cycle_performance || {};
       const htPerformance = resultData.ht_cycle_performance || {};
 
-      const ltWork = resultData.lt_cycle_performance?.work_of_compression_kj_kg ?? 0;
-      const htWork = resultData.ht_cycle_performance?.work_of_compression_kj_kg ?? 0;
-      const ltRefrigerationEffect = resultData.lt_cycle_performance?.refrigeration_effect_kj_kg ?? 0;
-      const htRefrigerationEffect = resultData.ht_cycle_performance?.refrigeration_effect_kj_kg ?? 0;
 
-      const totalWork = ltWork + htWork;
-      const totalRefrigerationEffect = ltRefrigerationEffect + htRefrigerationEffect;
 
-      const ltWork = ltPerformance.work_of_compression_kj_kg ?? 0;
-      const htWork = htPerformance.work_of_compression_kj_kg ?? 0;
-      const ltRefrigerationEffect = ltPerformance.refrigeration_effect_kj_kg ?? 0;
-      const htRefrigerationEffect = htPerformance.refrigeration_effect_kj_kg ?? 0;
 
-      const totalWork = ltWork + htWork;
-      const totalRefrigerationEffect = ltRefrigerationEffect + htRefrigerationEffect;
 
       const ltCop = ltPerformance.cop ?? 0;
       const htCop = htPerformance.cop ?? 0;
@@ -332,13 +320,7 @@ export function CascadeCycleContent() {
       const ltPerformance = resultData.lt_cycle_performance || {};
       const htPerformance = resultData.ht_cycle_performance || {};
 
-      const ltWork = ltPerformance.work_of_compression_kj_kg ?? 0;
-      const htWork = htPerformance.work_of_compression_kj_kg ?? 0;
-      const ltRefrigerationEffect = ltPerformance.refrigeration_effect_kj_kg ?? 0;
-      const htRefrigerationEffect = htPerformance.refrigeration_effect_kj_kg ?? 0;
 
-      const totalWork = ltWork + htWork;
-      const totalRefrigerationEffect = ltRefrigerationEffect + htRefrigerationEffect;
 
       const ltCop = ltPerformance.cop ?? 0;
       const htCop = htPerformance.cop ?? 0;
