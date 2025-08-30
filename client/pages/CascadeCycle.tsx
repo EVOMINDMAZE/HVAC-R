@@ -885,7 +885,7 @@ export function CascadeCycleContent() {
                     </div>
                     <div className="text-center p-4 bg-indigo-50 rounded-lg">
                       <div className="text-2xl font-semibold text-indigo-600">
-                        {formData.ltCycle.condenserTemp.toFixed(1)}°C
+                        {result.overall_performance?.cascade_temperature?.toFixed(1) || "N/A"}°C
                       </div>
                       <div className="text-sm text-indigo-500 mt-1">
                         Cascade Temperature
