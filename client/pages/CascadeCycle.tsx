@@ -287,20 +287,50 @@ export function CascadeCycleContent() {
         htCycle: resultData.ht_cycle
       });
 
-      // Consolidated performance calculation
-      const ltPerformance = resultData.lt_cycle_performance || {};
-      const htPerformance = resultData.ht_cycle_performance || {};
+      // Robust performance calculation with fallbacks and numeric coercion
+      const asNum = (v: any) => (typeof v === 'number' ? v : Number(v)) || 0;
 
-      const ltWork = ltPerformance.work_of_compression_kj_kg ?? 0;
-      const htWork = htPerformance.work_of_compression_kj_kg ?? 0;
-      const ltRefrigerationEffect = ltPerformance.refrigeration_effect_kj_kg ?? 0;
-      const htRefrigerationEffect = htPerformance.refrigeration_effect_kj_kg ?? 0;
+      const ltWork = asNum(
+        resultData.lt_cycle_performance?.work_of_compression_kj_kg ??
+        resultData.lt_cycle?.performance?.work_of_compression_kj_kg ??
+        resultData.lt_cycle?.work_of_compression_kj_kg ??
+        (resultData.performance as any)?.lt_cycle_work_of_compression_kj_kg
+      );
+      const htWork = asNum(
+        resultData.ht_cycle_performance?.work_of_compression_kj_kg ??
+        resultData.ht_cycle?.performance?.work_of_compression_kj_kg ??
+        resultData.ht_cycle?.work_of_compression_kj_kg ??
+        (resultData.performance as any)?.ht_cycle_work_of_compression_kj_kg
+      );
+
+      const ltRefrigerationEffect = asNum(
+        resultData.lt_cycle_performance?.refrigeration_effect_kj_kg ??
+        resultData.lt_cycle?.performance?.refrigeration_effect_kj_kg ??
+        resultData.lt_cycle?.refrigeration_effect_kj_kg ??
+        (resultData.performance as any)?.lt_cycle_refrigeration_effect_kj_kg
+      );
+      const htRefrigerationEffect = asNum(
+        resultData.ht_cycle_performance?.refrigeration_effect_kj_kg ??
+        resultData.ht_cycle?.performance?.refrigeration_effect_kj_kg ??
+        resultData.ht_cycle?.refrigeration_effect_kj_kg ??
+        (resultData.performance as any)?.ht_cycle_refrigeration_effect_kj_kg
+      );
 
       const totalWork = ltWork + htWork;
       const totalRefrigerationEffect = ltRefrigerationEffect + htRefrigerationEffect;
 
-      const ltCop = ltPerformance.cop ?? 0;
-      const htCop = htPerformance.cop ?? 0;
+      const ltCop = asNum(
+        resultData.lt_cycle_performance?.cop ??
+        resultData.lt_cycle?.performance?.cop ??
+        resultData.lt_cycle?.cop ??
+        (resultData.performance as any)?.lt_cycle_cop
+      );
+      const htCop = asNum(
+        resultData.ht_cycle_performance?.cop ??
+        resultData.ht_cycle?.performance?.cop ??
+        resultData.ht_cycle?.cop ??
+        (resultData.performance as any)?.ht_cycle_cop
+      );
       const avgCop = (ltCop + htCop) / 2;
 
       const overallCop = totalWork > 0 ? totalRefrigerationEffect / totalWork : 0;
