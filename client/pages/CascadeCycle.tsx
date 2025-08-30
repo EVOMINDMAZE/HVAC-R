@@ -296,13 +296,13 @@ export function CascadeCycleContent() {
       const totalWork = ltWork + htWork;
       const totalRefrigerationEffect = ltRefrigerationEffect + htRefrigerationEffect;
 
-      const overallCop = totalRefrigerationEffect / totalWork;
+      const overallCop = totalWork > 0 ? totalRefrigerationEffect / totalWork : 0;
 
       const ltCop = resultData.lt_cycle_performance?.cop ?? 0;
       const htCop = resultData.ht_cycle_performance?.cop ?? 0;
       const avgCop = (ltCop + htCop) / 2;
 
-      const systemEfficiency = (overallCop / avgCop) * 100;
+      const systemEfficiency = avgCop > 0 ? (overallCop / avgCop) * 100 : 0;
 
       const processedResult: CascadeResult = {
         overall_performance: {
