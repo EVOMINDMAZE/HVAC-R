@@ -288,24 +288,26 @@ export function CascadeCycleContent() {
       });
 
       // Robust result extraction with multiple fallback mechanisms
+      const ltWork = resultData.lt_cycle_performance?.work_of_compression_kj_kg ?? 0;
+      const htWork = resultData.ht_cycle_performance?.work_of_compression_kj_kg ?? 0;
+      const ltRefrigerationEffect = resultData.lt_cycle_performance?.refrigeration_effect_kj_kg ?? 0;
+      const htRefrigerationEffect = resultData.ht_cycle_performance?.refrigeration_effect_kj_kg ?? 0;
+
+      const totalWork = ltWork + htWork;
+      const totalRefrigerationEffect = ltRefrigerationEffect + htRefrigerationEffect;
+
+      const overallCop = totalRefrigerationEffect / totalWork;
+
+      const ltCop = resultData.lt_cycle_performance?.cop ?? 0;
+      const htCop = resultData.ht_cycle_performance?.cop ?? 0;
+      const avgCop = (ltCop + htCop) / 2;
+
+      const systemEfficiency = (overallCop / avgCop) * 100;
+
       const processedResult: CascadeResult = {
         overall_performance: {
-          cop: (() => {
-            const ltCop = resultData.lt_cycle_performance?.cop ?? 0;
-            const htCop = resultData.ht_cycle_performance?.cop ?? 0;
-            const totalWork = (resultData.lt_cycle_performance?.work_of_compression_kj_kg ?? 0) +
-                             (resultData.ht_cycle_performance?.work_of_compression_kj_kg ?? 0);
-            const totalRefrigerationEffect = (resultData.lt_cycle_performance?.refrigeration_effect_kj_kg ?? 0) +
-                                             (resultData.ht_cycle_performance?.refrigeration_effect_kj_kg ?? 0);
-            return totalRefrigerationEffect / totalWork;
-          })(),
-          system_efficiency: (() => {
-            const ltCop = resultData.lt_cycle_performance?.cop ?? 0;
-            const htCop = resultData.ht_cycle_performance?.cop ?? 0;
-            const avgCop = (ltCop + htCop) / 2;
-            const overallCop = processedResult.overall_performance?.cop ?? 0;
-            return (overallCop * 100) / avgCop;
-          })(),
+          cop: overallCop,
+          system_efficiency: systemEfficiency,
           cascade_temperature: formData.ltCycle.condenserTemp
         },
         lt_cycle_performance: {
