@@ -287,7 +287,7 @@ export function CascadeCycleContent() {
         htCycle: resultData.ht_cycle
       });
 
-      // Robust performance calculation with single declaration
+      // Consolidated performance calculation
       const ltPerformance = resultData.lt_cycle_performance || {};
       const htPerformance = resultData.ht_cycle_performance || {};
 
