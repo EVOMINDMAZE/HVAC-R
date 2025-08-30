@@ -300,13 +300,33 @@ export function CascadeCycleContent() {
       const totalWork = ltWork + htWork;
       const totalRefrigerationEffect = ltRefrigerationEffect + htRefrigerationEffect;
 
-      console.log('Calculation Intermediate Values:', {
+      const ltWork = ltPerformance.work_of_compression_kj_kg ?? 0;
+      const htWork = htPerformance.work_of_compression_kj_kg ?? 0;
+      const ltRefrigerationEffect = ltPerformance.refrigeration_effect_kj_kg ?? 0;
+      const htRefrigerationEffect = htPerformance.refrigeration_effect_kj_kg ?? 0;
+
+      const totalWork = ltWork + htWork;
+      const totalRefrigerationEffect = ltRefrigerationEffect + htRefrigerationEffect;
+
+      const ltCop = ltPerformance.cop ?? 0;
+      const htCop = htPerformance.cop ?? 0;
+      const avgCop = (ltCop + htCop) / 2;
+
+      const overallCop = totalWork > 0 ? totalRefrigerationEffect / totalWork : 0;
+      const systemEfficiency = avgCop > 0 ? Math.min(100, (overallCop / avgCop) * 100) : 0;
+
+      console.log('Comprehensive Performance Calculation:', {
         ltWork,
         htWork,
+        totalWork,
         ltRefrigerationEffect,
         htRefrigerationEffect,
-        totalWork,
-        totalRefrigerationEffect
+        totalRefrigerationEffect,
+        ltCop,
+        htCop,
+        avgCop,
+        overallCop,
+        systemEfficiency
       });
 
       const ltPerformance = resultData.lt_cycle_performance || {};
