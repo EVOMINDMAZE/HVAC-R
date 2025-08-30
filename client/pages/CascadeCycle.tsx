@@ -323,7 +323,7 @@ export function CascadeCycleContent() {
         overallCop
       });
 
-      const systemEfficiency = avgCop > 0 ? (overallCop / avgCop) * 100 : 0;
+      const systemEfficiency = avgCop > 0 ? Math.min(100, (overallCop / avgCop) * 100) : 0;
 
       console.log('Final Performance Metrics:', {
         overallCop,
