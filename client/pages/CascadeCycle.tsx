@@ -420,18 +420,34 @@ export function CascadeCycleContent() {
   const getVisualizationData = (cycle: "lt" | "ht") => {
     if (!result) return null;
 
+    const extractPointData = (point: any, key: string) => {
+      const keys = [
+        `${key}_c`,
+        `${key}_kpa`,
+        `${key}_kj_kg`,
+        `${key}_kj_kgk`,
+        key
+      ];
+
+      for (const k of keys) {
+        if (point[k] !== undefined) return point[k];
+      }
+      return 0;
+    };
+
     const cycleData = cycle === "lt" ? result.lt_cycle : result.ht_cycle;
     const refrigerant =
       cycle === "lt"
         ? formData.ltCycle.refrigerant
         : formData.htCycle.refrigerant;
 
-    // Try multiple possible data structures from API
+    // Prefer state_points if available, otherwise fallback to point_1, point_2, etc.
+    const statePoints = (cycleData as any)?.state_points || cycleData;
     const points = [
-      cycleData?.point_1 || (cycleData as any)?.state_points?.[0] || {},
-      cycleData?.point_2 || (cycleData as any)?.state_points?.[1] || {},
-      cycleData?.point_3 || (cycleData as any)?.state_points?.[2] || {},
-      cycleData?.point_4 || (cycleData as any)?.state_points?.[3] || {},
+      statePoints["1"] || statePoints["point_1"] || {},
+      statePoints["2"] || statePoints["point_2"] || {},
+      statePoints["3"] || statePoints["point_3"] || {},
+      statePoints["4"] || statePoints["point_4"] || {},
     ];
 
     // Check if we have at least some temperature data
