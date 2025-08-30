@@ -74,6 +74,8 @@ interface CycleResult {
 interface CascadeResult {
   overall_performance?: {
     cop: number;
+    system_efficiency?: number;
+    cascade_temperature?: number;
   };
   lt_cycle_performance?: {
     cop: number;
@@ -291,7 +293,10 @@ export function CascadeCycleContent() {
           cop: resultData.overall_performance?.cop ??
                resultData.cop ??
                resultData.performance?.cop ??
-               ((resultData.lt_cycle_performance?.cop ?? 0) + (resultData.ht_cycle_performance?.cop ?? 0)) / 2
+               ((resultData.lt_cycle_performance?.cop ?? 0) + (resultData.ht_cycle_performance?.cop ?? 0)) / 2,
+          system_efficiency: ((resultData.overall_performance?.cop ?? 0) * 100) /
+               (((resultData.lt_cycle_performance?.cop ?? 0) + (resultData.ht_cycle_performance?.cop ?? 0)) / 2 || 1),
+          cascade_temperature: formData.ltCycle.condenserTemp
         },
         lt_cycle_performance: {
           cop: resultData.lt_cycle_performance?.cop ??
