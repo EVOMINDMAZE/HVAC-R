@@ -322,15 +322,14 @@ export function CascadeCycleContent() {
       const totalWork = ltWork + htWork;
       const totalRefrigerationEffect = ltRefrigerationEffect + htRefrigerationEffect;
 
-      const overallCop = totalWork > 0 ? totalRefrigerationEffect / totalWork : 0;
-      
       const ltCop = ltPerformance.cop ?? 0;
       const htCop = htPerformance.cop ?? 0;
       const avgCop = (ltCop + htCop) / 2;
-      
+
+      const overallCop = totalWork > 0 ? totalRefrigerationEffect / totalWork : 0;
       const systemEfficiency = avgCop > 0 ? Math.min(100, (overallCop / avgCop) * 100) : 0;
 
-      console.log("Comprehensive Performance Calculation:", {
+      console.log('Comprehensive Performance Calculation:', {
         ltWork,
         htWork,
         totalWork,
