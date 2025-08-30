@@ -279,9 +279,9 @@ export function RefrigerantComparisonContent() {
       try {
         setDebugResponse(data);
         setShowDebug(true);
-        console.log('Debug compareRefrigerants response:', data);
+        console.log("Debug compareRefrigerants response:", data);
       } catch (e) {
-        console.warn('Failed to set debug response', e);
+        console.warn("Failed to set debug response", e);
       }
 
       try {
@@ -291,10 +291,10 @@ export function RefrigerantComparisonContent() {
           formData,
           data,
           `Refrigerant Comparison - ${new Date().toLocaleString()}`,
-          { silent: true }
-        ).catch((e) => console.warn('Auto-save failed for comparison:', e));
+          { silent: true },
+        ).catch((e) => console.warn("Auto-save failed for comparison:", e));
       } catch (e) {
-        console.warn('Auto-save invocation error for comparison:', e);
+        console.warn("Auto-save invocation error for comparison:", e);
       }
 
       addToast({
@@ -344,13 +344,20 @@ export function RefrigerantComparisonContent() {
     return null;
   };
 
-  const getStatePointValue = (result: any, pathNames: string[]): number | null => {
+  const getStatePointValue = (
+    result: any,
+    pathNames: string[],
+  ): number | null => {
     // Look into point_1..point_4 or points array for pressure/density
     for (const p of ["point_1", "point_2", "point_3", "point_4", "points"]) {
       const pt = result[p];
       if (!pt) continue;
       // points might be an array or object
-      const candidates = Array.isArray(pt) ? pt : typeof pt === "object" ? Object.values(pt) : [];
+      const candidates = Array.isArray(pt)
+        ? pt
+        : typeof pt === "object"
+          ? Object.values(pt)
+          : [];
       for (const c of candidates) {
         for (const key of pathNames) {
           if (c && c[key] !== undefined && c[key] !== null) {
@@ -369,7 +376,9 @@ export function RefrigerantComparisonContent() {
       refrigerant: result.refrigerant,
       resultKeys: Object.keys(result),
       performance: result.performance,
-      performanceKeys: result.performance ? Object.keys(result.performance) : 'No performance object'
+      performanceKeys: result.performance
+        ? Object.keys(result.performance)
+        : "No performance object",
     });
 
     // Try direct property
@@ -421,13 +430,13 @@ export function RefrigerantComparisonContent() {
           }
           break;
         case "volumetricCapacity":
-          console.log('Volumetric Capacity Extraction Debug', {
+          console.log("Volumetric Capacity Extraction Debug", {
             resultVolumetricCapacity: result.volumetricCapacity,
             perfVolumetricCapacity: perf.volumetric_capacity,
             perfVolumetricCapacityAlt: perf.volumetricCapacity,
             perfVolumetricCapacityKjM3: perf.volumetric_capacity_kj_m3,
             performanceKeys: Object.keys(perf),
-            resultKeys: Object.keys(result)
+            resultKeys: Object.keys(result),
           });
           v =
             parseNumber(result.volumetricCapacity) ??
@@ -437,24 +446,34 @@ export function RefrigerantComparisonContent() {
             // attempt to compute from refrigeration effect * density
             ((): number | null => {
               const refEffect = getNumericValue(result, "refrigerationEffect");
-              let density = getStatePointValue(result, ["density_kg_m3", "density", "rho", "rho_kg_m3"]);
+              let density = getStatePointValue(result, [
+                "density_kg_m3",
+                "density",
+                "rho",
+                "rho_kg_m3",
+              ]);
               if (density === null) {
                 // try performance-level density
-                density = parseNumber(perf.density_kg_m3) ?? parseNumber(perf.density);
+                density =
+                  parseNumber(perf.density_kg_m3) ?? parseNumber(perf.density);
               }
-              console.log('Volumetric Capacity Computation Debug', { refEffect, density });
-              if (refEffect !== null && density !== null) return refEffect * density;
+              console.log("Volumetric Capacity Computation Debug", {
+                refEffect,
+                density,
+              });
+              if (refEffect !== null && density !== null)
+                return refEffect * density;
               return null;
             })();
           break;
         case "dischargePressure":
-          console.log('Discharge Pressure Extraction Debug', {
+          console.log("Discharge Pressure Extraction Debug", {
             resultDischargePressure: result.dischargePressure,
             perfDischargePressure: perf.discharge_pressure,
             perfDischargePressureAlt: perf.dischargePressure,
             perfDischargePressureKpa: perf.discharge_pressure_kpa,
             performanceKeys: Object.keys(perf),
-            resultKeys: Object.keys(result)
+            resultKeys: Object.keys(result),
           });
           v =
             parseNumber(result.dischargePressure) ??
@@ -462,16 +481,21 @@ export function RefrigerantComparisonContent() {
             parseNumber(perf.dischargePressure) ??
             parseNumber(perf.discharge_pressure_kpa) ??
             // try state point pressures (compressor outlet is often point 2 or 3)
-            getStatePointValue(result, ["pressure_kpa", "pressure", "P_kPa", "P"]);
+            getStatePointValue(result, [
+              "pressure_kpa",
+              "pressure",
+              "P_kPa",
+              "P",
+            ]);
           break;
         case "suctionPressure":
-          console.log('Suction Pressure Extraction Debug', {
+          console.log("Suction Pressure Extraction Debug", {
             resultSuctionPressure: result.suctionPressure,
             perfSuctionPressure: perf.suction_pressure,
             perfSuctionPressureAlt: perf.suctionPressure,
             perfSuctionPressureKpa: perf.suction_pressure_kpa,
             performanceKeys: Object.keys(perf),
-            resultKeys: Object.keys(result)
+            resultKeys: Object.keys(result),
           });
           v =
             parseNumber(result.suctionPressure) ??
@@ -479,7 +503,12 @@ export function RefrigerantComparisonContent() {
             parseNumber(perf.suctionPressure) ??
             parseNumber(perf.suction_pressure_kpa) ??
             // try state point pressures (evaporator outlet is often point 1)
-            getStatePointValue(result, ["pressure_kpa", "pressure", "P_kPa", "P"]);
+            getStatePointValue(result, [
+              "pressure_kpa",
+              "pressure",
+              "P_kPa",
+              "P",
+            ]);
           break;
         default:
           v = parseNumber(result[metricKey]) ?? parseNumber(perf[metricKey]);
@@ -801,7 +830,8 @@ export function RefrigerantComparisonContent() {
                           .filter((r) => (r as any).error)
                           .map((r, i) => (
                             <div key={i} className="text-sm">
-                              <strong>{r.refrigerant}:</strong> {(r as any).error}
+                              <strong>{r.refrigerant}:</strong>{" "}
+                              {(r as any).error}
                             </div>
                           ))}
                       </AlertDescription>
@@ -875,25 +905,37 @@ export function RefrigerantComparisonContent() {
                       <CardHeader>
                         <CardTitle>Debug: Raw API Response</CardTitle>
                         <CardDescription>
-                          Temporary output showing the full response from compareRefrigerants API. Remove after debugging.
+                          Temporary output showing the full response from
+                          compareRefrigerants API. Remove after debugging.
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
                         <div className="flex items-start gap-2 mb-2">
-                          <Button size="sm" onClick={() => setShowDebug((s) => !s)}>
-                            {showDebug ? 'Hide' : 'Show'} JSON
+                          <Button
+                            size="sm"
+                            onClick={() => setShowDebug((s) => !s)}
+                          >
+                            {showDebug ? "Hide" : "Show"} JSON
                           </Button>
-                          <Button size="sm" variant="ghost" onClick={() => { setDebugResponse(null); setShowDebug(false); }}>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => {
+                              setDebugResponse(null);
+                              setShowDebug(false);
+                            }}
+                          >
                             Clear
                           </Button>
                         </div>
                         {showDebug && (
-                          <pre className="max-h-96 overflow-auto text-xs bg-gray-50 p-4 rounded border">{JSON.stringify(debugResponse, null, 2)}</pre>
+                          <pre className="max-h-96 overflow-auto text-xs bg-gray-50 p-4 rounded border">
+                            {JSON.stringify(debugResponse, null, 2)}
+                          </pre>
                         )}
                       </CardContent>
                     </Card>
                   )}
-
                 </CardContent>
               </Card>
             </TabsContent>

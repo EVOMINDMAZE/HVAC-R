@@ -1,5 +1,7 @@
 // Base URL for external calculation service. Prefer env override VITE_API_BASE_URL
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://simulateon-backend-new.onrender.com';
+export const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  "https://simulateon-backend-new.onrender.com";
 
 interface ApiResponse<T> {
   success: boolean;
@@ -34,7 +36,7 @@ interface AuthResponse {
 
 interface CalculationData {
   id?: number;
-  type: 'Standard Cycle' | 'Refrigerant Comparison' | 'Cascade Cycle';
+  type: "Standard Cycle" | "Refrigerant Comparison" | "Cascade Cycle";
   name?: string;
   notes?: string;
   parameters: any;
@@ -68,24 +70,25 @@ interface SubscriptionPlan {
 
 class ApiClient {
   private getAuthHeaders(): HeadersInit {
-    const token = localStorage.getItem('simulateon_token');
+    const token = localStorage.getItem("simulateon_token");
     return {
-      'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` })
+      "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` }),
     };
   }
 
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<ApiResponse<T>> {
     // Return mock failure when no backend server is configured
     if (!API_BASE_URL) {
-      console.warn('No backend API server configured - returning mock failure');
+      console.warn("No backend API server configured - returning mock failure");
       return {
         success: false,
-        error: 'Backend API not configured',
-        details: 'No internal API server is currently configured. Using fallback data where available.'
+        error: "Backend API not configured",
+        details:
+          "No internal API server is currently configured. Using fallback data where available.",
       };
     }
 
@@ -94,36 +97,41 @@ class ApiClient {
         ...options,
         headers: {
           ...this.getAuthHeaders(),
-          ...(options.headers || {})
-        }
+          ...(options.headers || {}),
+        },
       };
 
-      const response = await fetch(`${API_BASE_URL}${endpoint}`, requestOptions);
+      const response = await fetch(
+        `${API_BASE_URL}${endpoint}`,
+        requestOptions,
+      );
 
       if (!response.ok) {
         let errorData;
         try {
           errorData = await response.json();
         } catch {
-          errorData = { error: `HTTP ${response.status}: ${response.statusText}` };
+          errorData = {
+            error: `HTTP ${response.status}: ${response.statusText}`,
+          };
         }
 
         return {
           success: false,
-          error: errorData.error || 'Request failed',
+          error: errorData.error || "Request failed",
           details: errorData.details,
-          upgradeRequired: errorData.upgradeRequired
+          upgradeRequired: errorData.upgradeRequired,
         };
       }
 
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('API request failed:', error);
+      console.error("API request failed:", error);
       return {
         success: false,
-        error: 'Network error',
-        details: 'Failed to connect to server'
+        error: "Network error",
+        details: "Failed to connect to server",
       };
     }
   }
@@ -138,9 +146,9 @@ class ApiClient {
     role?: string;
     phone?: string;
   }): Promise<ApiResponse<AuthResponse>> {
-    return this.request<AuthResponse>('/api/auth/signup', {
-      method: 'POST',
-      body: JSON.stringify(userData)
+    return this.request<AuthResponse>("/api/auth/signup", {
+      method: "POST",
+      body: JSON.stringify(userData),
     });
   }
 
@@ -148,81 +156,96 @@ class ApiClient {
     email: string;
     password: string;
   }): Promise<ApiResponse<AuthResponse>> {
-    return this.request<AuthResponse>('/api/auth/signin', {
-      method: 'POST',
-      body: JSON.stringify(credentials)
+    return this.request<AuthResponse>("/api/auth/signin", {
+      method: "POST",
+      body: JSON.stringify(credentials),
     });
   }
 
   async signOut(): Promise<ApiResponse<void>> {
-    return this.request<void>('/api/auth/signout', {
-      method: 'POST'
+    return this.request<void>("/api/auth/signout", {
+      method: "POST",
     });
   }
 
   async getCurrentUser(): Promise<ApiResponse<{ user: User }>> {
-    return this.request<{ user: User }>('/api/auth/me');
+    return this.request<{ user: User }>("/api/auth/me");
   }
 
   // Calculations
-  async saveCalculation(calculation: Omit<CalculationData, 'id' | 'created_at' | 'updated_at'>): Promise<ApiResponse<CalculationData>> {
-    return this.request<CalculationData>('/api/calculations', {
-      method: 'POST',
-      body: JSON.stringify(calculation)
+  async saveCalculation(
+    calculation: Omit<CalculationData, "id" | "created_at" | "updated_at">,
+  ): Promise<ApiResponse<CalculationData>> {
+    return this.request<CalculationData>("/api/calculations", {
+      method: "POST",
+      body: JSON.stringify(calculation),
     });
   }
 
   async getCalculations(): Promise<ApiResponse<CalculationData[]>> {
-    return this.request<CalculationData[]>('/api/calculations');
+    return this.request<CalculationData[]>("/api/calculations");
   }
 
   async getCalculation(id: number): Promise<ApiResponse<CalculationData>> {
     return this.request<CalculationData>(`/api/calculations/${id}`);
   }
 
-  async updateCalculation(id: number, updates: { name?: string; notes?: string }): Promise<ApiResponse<CalculationData>> {
+  async updateCalculation(
+    id: number,
+    updates: { name?: string; notes?: string },
+  ): Promise<ApiResponse<CalculationData>> {
     return this.request<CalculationData>(`/api/calculations/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(updates)
+      method: "PUT",
+      body: JSON.stringify(updates),
     });
   }
 
   async deleteCalculation(id: number): Promise<ApiResponse<void>> {
     return this.request<void>(`/api/calculations/${id}`, {
-      method: 'DELETE'
+      method: "DELETE",
     });
   }
 
   async getUserStats(): Promise<ApiResponse<UserStats>> {
-    return this.request<UserStats>('/api/user/stats');
+    return this.request<UserStats>("/api/user/stats");
   }
 
   // Subscriptions
   async getSubscriptionPlans(): Promise<ApiResponse<SubscriptionPlan[]>> {
-    return this.request<SubscriptionPlan[]>('/api/subscriptions/plans');
+    return this.request<SubscriptionPlan[]>("/api/subscriptions/plans");
   }
 
-  async getCurrentSubscription(): Promise<ApiResponse<SubscriptionPlan & { status: string; trialEndsAt?: string }>> {
-    return this.request<SubscriptionPlan & { status: string; trialEndsAt?: string }>('/api/subscriptions/current');
+  async getCurrentSubscription(): Promise<
+    ApiResponse<SubscriptionPlan & { status: string; trialEndsAt?: string }>
+  > {
+    return this.request<
+      SubscriptionPlan & { status: string; trialEndsAt?: string }
+    >("/api/subscriptions/current");
   }
 
-  async updateSubscription(planName: string, billingCycle: 'monthly' | 'yearly'): Promise<ApiResponse<any>> {
-    return this.request<any>('/api/subscriptions/update', {
-      method: 'POST',
-      body: JSON.stringify({ planName, billingCycle })
+  async updateSubscription(
+    planName: string,
+    billingCycle: "monthly" | "yearly",
+  ): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/subscriptions/update", {
+      method: "POST",
+      body: JSON.stringify({ planName, billingCycle }),
     });
   }
 
   async cancelSubscription(): Promise<ApiResponse<void>> {
-    return this.request<void>('/api/subscriptions/cancel', {
-      method: 'POST'
+    return this.request<void>("/api/subscriptions/cancel", {
+      method: "POST",
     });
   }
 
-  async createPaymentIntent(planName: string, billingCycle: 'monthly' | 'yearly'): Promise<ApiResponse<any>> {
-    return this.request<any>('/api/subscriptions/payment-intent', {
-      method: 'POST',
-      body: JSON.stringify({ planName, billingCycle })
+  async createPaymentIntent(
+    planName: string,
+    billingCycle: "monthly" | "yearly",
+  ): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/subscriptions/payment-intent", {
+      method: "POST",
+      body: JSON.stringify({ planName, billingCycle }),
     });
   }
 
@@ -247,57 +270,75 @@ class ApiClient {
       // Check if response is ok
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`API Error (${response.status}): ${response.statusText}. ${errorText.includes('<!doctype') || errorText.includes('<html') ? 'API server may be down or misconfigured.' : errorText}`);
+        throw new Error(
+          `API Error (${response.status}): ${response.statusText}. ${errorText.includes("<!doctype") || errorText.includes("<html") ? "API server may be down or misconfigured." : errorText}`,
+        );
       }
 
       // Get response text once and check both content type and content
       const responseText = await response.text();
-      const contentType = response.headers.get('content-type');
+      const contentType = response.headers.get("content-type");
 
-      console.log('API Response received:', {
+      console.log("API Response received:", {
         url: response.url,
         status: response.status,
         contentType,
         responseLength: responseText.length,
-        responsePreview: responseText.substring(0, 200)
+        responsePreview: responseText.substring(0, 200),
       });
 
       // Check if response looks like HTML
-      if (responseText.trim().startsWith('<') || responseText.includes('<!doctype') || responseText.includes('<html')) {
-        console.error('HTML response received instead of JSON:', {
+      if (
+        responseText.trim().startsWith("<") ||
+        responseText.includes("<!doctype") ||
+        responseText.includes("<html")
+      ) {
+        console.error("HTML response received instead of JSON:", {
           url: response.url,
           status: response.status,
           contentType,
-          responseText: responseText.substring(0, 500)
+          responseText: responseText.substring(0, 500),
         });
-        throw new Error('API server returned HTML instead of JSON. The calculation service may be temporarily unavailable.');
+        throw new Error(
+          "API server returned HTML instead of JSON. The calculation service may be temporarily unavailable.",
+        );
       }
 
       // Check content type
-      if (contentType && !contentType.includes('application/json') && !contentType.includes('text/plain')) {
-        console.error('Unexpected content type:', {
+      if (
+        contentType &&
+        !contentType.includes("application/json") &&
+        !contentType.includes("text/plain")
+      ) {
+        console.error("Unexpected content type:", {
           url: response.url,
           status: response.status,
           contentType,
-          responseText: responseText.substring(0, 500)
+          responseText: responseText.substring(0, 500),
         });
-        throw new Error(`API returned unexpected content type: ${contentType}. Expected JSON but got: ${responseText.substring(0, 100)}...`);
+        throw new Error(
+          `API returned unexpected content type: ${contentType}. Expected JSON but got: ${responseText.substring(0, 100)}...`,
+        );
       }
 
       // Try to parse as JSON
       try {
         if (!responseText) {
-          throw new Error('Empty response received from API');
+          throw new Error("Empty response received from API");
         }
 
         return JSON.parse(responseText);
       } catch (parseError) {
-        console.error('JSON Parse Error:', parseError);
-        throw new Error(`Failed to parse API response as JSON. Error: ${parseError instanceof Error ? parseError.message : 'Unknown parse error'}. Response: ${responseText.substring(0, 200)}...`);
+        console.error("JSON Parse Error:", parseError);
+        throw new Error(
+          `Failed to parse API response as JSON. Error: ${parseError instanceof Error ? parseError.message : "Unknown parse error"}. Response: ${responseText.substring(0, 200)}...`,
+        );
       }
     } catch (error) {
-      if (error instanceof TypeError && error.message.includes('fetch')) {
-        throw new Error('Unable to connect to calculation service. Please check your internet connection.');
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error(
+          "Unable to connect to calculation service. Please check your internet connection.",
+        );
       }
       throw error;
     }
@@ -325,57 +366,75 @@ class ApiClient {
       // Check if response is ok
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`API Error (${response.status}): ${response.statusText}. ${errorText.includes('<!doctype') || errorText.includes('<html') ? 'API server may be down or misconfigured.' : errorText}`);
+        throw new Error(
+          `API Error (${response.status}): ${response.statusText}. ${errorText.includes("<!doctype") || errorText.includes("<html") ? "API server may be down or misconfigured." : errorText}`,
+        );
       }
 
       // Get response text once and check both content type and content
       const responseText = await response.text();
-      const contentType = response.headers.get('content-type');
+      const contentType = response.headers.get("content-type");
 
-      console.log('API Response received:', {
+      console.log("API Response received:", {
         url: response.url,
         status: response.status,
         contentType,
         responseLength: responseText.length,
-        responsePreview: responseText.substring(0, 200)
+        responsePreview: responseText.substring(0, 200),
       });
 
       // Check if response looks like HTML
-      if (responseText.trim().startsWith('<') || responseText.includes('<!doctype') || responseText.includes('<html')) {
-        console.error('HTML response received instead of JSON:', {
+      if (
+        responseText.trim().startsWith("<") ||
+        responseText.includes("<!doctype") ||
+        responseText.includes("<html")
+      ) {
+        console.error("HTML response received instead of JSON:", {
           url: response.url,
           status: response.status,
           contentType,
-          responseText: responseText.substring(0, 500)
+          responseText: responseText.substring(0, 500),
         });
-        throw new Error('API server returned HTML instead of JSON. The comparison service may be temporarily unavailable.');
+        throw new Error(
+          "API server returned HTML instead of JSON. The comparison service may be temporarily unavailable.",
+        );
       }
 
       // Check content type
-      if (contentType && !contentType.includes('application/json') && !contentType.includes('text/plain')) {
-        console.error('Unexpected content type:', {
+      if (
+        contentType &&
+        !contentType.includes("application/json") &&
+        !contentType.includes("text/plain")
+      ) {
+        console.error("Unexpected content type:", {
           url: response.url,
           status: response.status,
           contentType,
-          responseText: responseText.substring(0, 500)
+          responseText: responseText.substring(0, 500),
         });
-        throw new Error(`API returned unexpected content type: ${contentType}. Expected JSON but got: ${responseText.substring(0, 100)}...`);
+        throw new Error(
+          `API returned unexpected content type: ${contentType}. Expected JSON but got: ${responseText.substring(0, 100)}...`,
+        );
       }
 
       // Try to parse as JSON
       try {
         if (!responseText) {
-          throw new Error('Empty response received from API');
+          throw new Error("Empty response received from API");
         }
 
         return JSON.parse(responseText);
       } catch (parseError) {
-        console.error('JSON Parse Error:', parseError);
-        throw new Error(`Failed to parse API response as JSON. Error: ${parseError instanceof Error ? parseError.message : 'Unknown parse error'}. Response: ${responseText.substring(0, 200)}...`);
+        console.error("JSON Parse Error:", parseError);
+        throw new Error(
+          `Failed to parse API response as JSON. Error: ${parseError instanceof Error ? parseError.message : "Unknown parse error"}. Response: ${responseText.substring(0, 200)}...`,
+        );
       }
     } catch (error) {
-      if (error instanceof TypeError && error.message.includes('fetch')) {
-        throw new Error('Unable to connect to comparison service. Please check your internet connection.');
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error(
+          "Unable to connect to comparison service. Please check your internet connection.",
+        );
       }
       throw error;
     }
@@ -410,57 +469,75 @@ class ApiClient {
       // Check if response is ok
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`API Error (${response.status}): ${response.statusText}. ${errorText.includes('<!doctype') || errorText.includes('<html') ? 'API server may be down or misconfigured.' : errorText}`);
+        throw new Error(
+          `API Error (${response.status}): ${response.statusText}. ${errorText.includes("<!doctype") || errorText.includes("<html") ? "API server may be down or misconfigured." : errorText}`,
+        );
       }
 
       // Get response text once and check both content type and content
       const responseText = await response.text();
-      const contentType = response.headers.get('content-type');
+      const contentType = response.headers.get("content-type");
 
-      console.log('API Response received:', {
+      console.log("API Response received:", {
         url: response.url,
         status: response.status,
         contentType,
         responseLength: responseText.length,
-        responsePreview: responseText.substring(0, 200)
+        responsePreview: responseText.substring(0, 200),
       });
 
       // Check if response looks like HTML
-      if (responseText.trim().startsWith('<') || responseText.includes('<!doctype') || responseText.includes('<html')) {
-        console.error('HTML response received instead of JSON:', {
+      if (
+        responseText.trim().startsWith("<") ||
+        responseText.includes("<!doctype") ||
+        responseText.includes("<html")
+      ) {
+        console.error("HTML response received instead of JSON:", {
           url: response.url,
           status: response.status,
           contentType,
-          responseText: responseText.substring(0, 500)
+          responseText: responseText.substring(0, 500),
         });
-        throw new Error('API server returned HTML instead of JSON. The cascade calculation service may be temporarily unavailable.');
+        throw new Error(
+          "API server returned HTML instead of JSON. The cascade calculation service may be temporarily unavailable.",
+        );
       }
 
       // Check content type
-      if (contentType && !contentType.includes('application/json') && !contentType.includes('text/plain')) {
-        console.error('Unexpected content type:', {
+      if (
+        contentType &&
+        !contentType.includes("application/json") &&
+        !contentType.includes("text/plain")
+      ) {
+        console.error("Unexpected content type:", {
           url: response.url,
           status: response.status,
           contentType,
-          responseText: responseText.substring(0, 500)
+          responseText: responseText.substring(0, 500),
         });
-        throw new Error(`API returned unexpected content type: ${contentType}. Expected JSON but got: ${responseText.substring(0, 100)}...`);
+        throw new Error(
+          `API returned unexpected content type: ${contentType}. Expected JSON but got: ${responseText.substring(0, 100)}...`,
+        );
       }
 
       // Try to parse as JSON
       try {
         if (!responseText) {
-          throw new Error('Empty response received from API');
+          throw new Error("Empty response received from API");
         }
 
         return JSON.parse(responseText);
       } catch (parseError) {
-        console.error('JSON Parse Error:', parseError);
-        throw new Error(`Failed to parse API response as JSON. Error: ${parseError instanceof Error ? parseError.message : 'Unknown parse error'}. Response: ${responseText.substring(0, 200)}...`);
+        console.error("JSON Parse Error:", parseError);
+        throw new Error(
+          `Failed to parse API response as JSON. Error: ${parseError instanceof Error ? parseError.message : "Unknown parse error"}. Response: ${responseText.substring(0, 200)}...`,
+        );
       }
     } catch (error) {
-      if (error instanceof TypeError && error.message.includes('fetch')) {
-        throw new Error('Unable to connect to cascade calculation service. Please check your internet connection.');
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error(
+          "Unable to connect to cascade calculation service. Please check your internet connection.",
+        );
       }
       throw error;
     }

@@ -266,17 +266,17 @@ export function CascadeCycleContent() {
       const resultData = data.data || data;
 
       // Extensive logging for debugging
-      console.log('Raw Cascade Calculation Response:', {
+      console.log("Raw Cascade Calculation Response:", {
         fullResponse: data,
         resultData: resultData,
         keys: Object.keys(resultData),
         overallPerformance: resultData.overall_performance,
         ltCyclePerformance: resultData.lt_cycle_performance,
-        htCyclePerformance: resultData.ht_cycle_performance
+        htCyclePerformance: resultData.ht_cycle_performance,
       });
 
       // Extensive logging of raw result data
-      console.log('Raw Cascade Calculation Response:', {
+      console.log("Raw Cascade Calculation Response:", {
         fullResponse: data,
         resultData: resultData,
         keys: Object.keys(resultData),
@@ -284,59 +284,62 @@ export function CascadeCycleContent() {
         ltCyclePerformance: resultData.lt_cycle_performance,
         htCyclePerformance: resultData.ht_cycle_performance,
         ltCycle: resultData.lt_cycle,
-        htCycle: resultData.ht_cycle
+        htCycle: resultData.ht_cycle,
       });
 
       // Robust performance calculation with fallbacks and numeric coercion
-      const asNum = (v: any) => (typeof v === 'number' ? v : Number(v)) || 0;
+      const asNum = (v: any) => (typeof v === "number" ? v : Number(v)) || 0;
 
       const ltWork = asNum(
         resultData.lt_cycle_performance?.work_of_compression_kj_kg ??
-        resultData.lt_cycle?.performance?.work_of_compression_kj_kg ??
-        resultData.lt_cycle?.work_of_compression_kj_kg ??
-        (resultData.performance as any)?.lt_cycle_work_of_compression_kj_kg
+          resultData.lt_cycle?.performance?.work_of_compression_kj_kg ??
+          resultData.lt_cycle?.work_of_compression_kj_kg ??
+          (resultData.performance as any)?.lt_cycle_work_of_compression_kj_kg,
       );
       const htWork = asNum(
         resultData.ht_cycle_performance?.work_of_compression_kj_kg ??
-        resultData.ht_cycle?.performance?.work_of_compression_kj_kg ??
-        resultData.ht_cycle?.work_of_compression_kj_kg ??
-        (resultData.performance as any)?.ht_cycle_work_of_compression_kj_kg
+          resultData.ht_cycle?.performance?.work_of_compression_kj_kg ??
+          resultData.ht_cycle?.work_of_compression_kj_kg ??
+          (resultData.performance as any)?.ht_cycle_work_of_compression_kj_kg,
       );
 
       const ltRefrigerationEffect = asNum(
         resultData.lt_cycle_performance?.refrigeration_effect_kj_kg ??
-        resultData.lt_cycle?.performance?.refrigeration_effect_kj_kg ??
-        resultData.lt_cycle?.refrigeration_effect_kj_kg ??
-        (resultData.performance as any)?.lt_cycle_refrigeration_effect_kj_kg
+          resultData.lt_cycle?.performance?.refrigeration_effect_kj_kg ??
+          resultData.lt_cycle?.refrigeration_effect_kj_kg ??
+          (resultData.performance as any)?.lt_cycle_refrigeration_effect_kj_kg,
       );
       const htRefrigerationEffect = asNum(
         resultData.ht_cycle_performance?.refrigeration_effect_kj_kg ??
-        resultData.ht_cycle?.performance?.refrigeration_effect_kj_kg ??
-        resultData.ht_cycle?.refrigeration_effect_kj_kg ??
-        (resultData.performance as any)?.ht_cycle_refrigeration_effect_kj_kg
+          resultData.ht_cycle?.performance?.refrigeration_effect_kj_kg ??
+          resultData.ht_cycle?.refrigeration_effect_kj_kg ??
+          (resultData.performance as any)?.ht_cycle_refrigeration_effect_kj_kg,
       );
 
       const totalWork = ltWork + htWork;
-      const totalRefrigerationEffect = ltRefrigerationEffect + htRefrigerationEffect;
+      const totalRefrigerationEffect =
+        ltRefrigerationEffect + htRefrigerationEffect;
 
       const ltCop = asNum(
         resultData.lt_cycle_performance?.cop ??
-        resultData.lt_cycle?.performance?.cop ??
-        resultData.lt_cycle?.cop ??
-        (resultData.performance as any)?.lt_cycle_cop
+          resultData.lt_cycle?.performance?.cop ??
+          resultData.lt_cycle?.cop ??
+          (resultData.performance as any)?.lt_cycle_cop,
       );
       const htCop = asNum(
         resultData.ht_cycle_performance?.cop ??
-        resultData.ht_cycle?.performance?.cop ??
-        resultData.ht_cycle?.cop ??
-        (resultData.performance as any)?.ht_cycle_cop
+          resultData.ht_cycle?.performance?.cop ??
+          resultData.ht_cycle?.cop ??
+          (resultData.performance as any)?.ht_cycle_cop,
       );
       const avgCop = (ltCop + htCop) / 2;
 
-      const overallCop = totalWork > 0 ? totalRefrigerationEffect / totalWork : 0;
-      const systemEfficiency = avgCop > 0 ? Math.min(100, (overallCop / avgCop) * 100) : 0;
+      const overallCop =
+        totalWork > 0 ? totalRefrigerationEffect / totalWork : 0;
+      const systemEfficiency =
+        avgCop > 0 ? Math.min(100, (overallCop / avgCop) * 100) : 0;
 
-      console.log('Comprehensive Performance Calculation:', {
+      console.log("Comprehensive Performance Calculation:", {
         ltWork,
         htWork,
         totalWork,
@@ -347,68 +350,76 @@ export function CascadeCycleContent() {
         htCop,
         avgCop,
         overallCop,
-        systemEfficiency
+        systemEfficiency,
       });
 
-
-
-      console.log('Final Performance Metrics:', {
+      console.log("Final Performance Metrics:", {
         overallCop,
         systemEfficiency,
         totalWork,
         totalRefrigerationEffect,
         ltCop,
         htCop,
-        avgCop
+        avgCop,
       });
 
       const processedResult: CascadeResult = {
         overall_performance: {
           cop: overallCop,
           system_efficiency: systemEfficiency,
-          cascade_temperature: formData.ltCycle.condenserTemp
+          cascade_temperature: formData.ltCycle.condenserTemp,
         },
         lt_cycle_performance: {
-          cop: resultData.lt_cycle_performance?.cop ??
-               resultData.lt_cycle?.performance?.cop ??
-               resultData.lt_cycle?.cop ??
-               resultData.performance?.lt_cycle_cop,
-          work_of_compression_kj_kg: resultData.lt_cycle_performance?.work_of_compression_kj_kg ??
-                                      resultData.lt_cycle?.performance?.work_of_compression_kj_kg ??
-                                      resultData.lt_cycle?.work_of_compression_kj_kg ??
-                                      resultData.performance?.lt_cycle_work_of_compression_kj_kg,
-          refrigeration_effect_kj_kg: resultData.lt_cycle_performance?.refrigeration_effect_kj_kg ??
-                                       resultData.lt_cycle?.performance?.refrigeration_effect_kj_kg ??
-                                       resultData.lt_cycle?.refrigeration_effect_kj_kg ??
-                                       resultData.performance?.lt_cycle_refrigeration_effect_kj_kg
+          cop:
+            resultData.lt_cycle_performance?.cop ??
+            resultData.lt_cycle?.performance?.cop ??
+            resultData.lt_cycle?.cop ??
+            resultData.performance?.lt_cycle_cop,
+          work_of_compression_kj_kg:
+            resultData.lt_cycle_performance?.work_of_compression_kj_kg ??
+            resultData.lt_cycle?.performance?.work_of_compression_kj_kg ??
+            resultData.lt_cycle?.work_of_compression_kj_kg ??
+            resultData.performance?.lt_cycle_work_of_compression_kj_kg,
+          refrigeration_effect_kj_kg:
+            resultData.lt_cycle_performance?.refrigeration_effect_kj_kg ??
+            resultData.lt_cycle?.performance?.refrigeration_effect_kj_kg ??
+            resultData.lt_cycle?.refrigeration_effect_kj_kg ??
+            resultData.performance?.lt_cycle_refrigeration_effect_kj_kg,
         },
         ht_cycle_performance: {
-          cop: resultData.ht_cycle_performance?.cop ??
-               resultData.ht_cycle?.performance?.cop ??
-               resultData.ht_cycle?.cop ??
-               resultData.performance?.ht_cycle_cop,
-          work_of_compression_kj_kg: resultData.ht_cycle_performance?.work_of_compression_kj_kg ??
-                                      resultData.ht_cycle?.performance?.work_of_compression_kj_kg ??
-                                      resultData.ht_cycle?.work_of_compression_kj_kg ??
-                                      resultData.performance?.ht_cycle_work_of_compression_kj_kg,
-          refrigeration_effect_kj_kg: resultData.ht_cycle_performance?.refrigeration_effect_kj_kg ??
-                                       resultData.ht_cycle?.performance?.refrigeration_effect_kj_kg ??
-                                       resultData.ht_cycle?.refrigeration_effect_kj_kg ??
-                                       resultData.performance?.ht_cycle_refrigeration_effect_kj_kg
+          cop:
+            resultData.ht_cycle_performance?.cop ??
+            resultData.ht_cycle?.performance?.cop ??
+            resultData.ht_cycle?.cop ??
+            resultData.performance?.ht_cycle_cop,
+          work_of_compression_kj_kg:
+            resultData.ht_cycle_performance?.work_of_compression_kj_kg ??
+            resultData.ht_cycle?.performance?.work_of_compression_kj_kg ??
+            resultData.ht_cycle?.work_of_compression_kj_kg ??
+            resultData.performance?.ht_cycle_work_of_compression_kj_kg,
+          refrigeration_effect_kj_kg:
+            resultData.ht_cycle_performance?.refrigeration_effect_kj_kg ??
+            resultData.ht_cycle?.performance?.refrigeration_effect_kj_kg ??
+            resultData.ht_cycle?.refrigeration_effect_kj_kg ??
+            resultData.performance?.ht_cycle_refrigeration_effect_kj_kg,
         },
         lt_cycle: resultData.lt_cycle,
-        ht_cycle: resultData.ht_cycle
+        ht_cycle: resultData.ht_cycle,
       };
 
       // Extensive logging of processed result
-      console.log('Processed Cascade Result:', {
+      console.log("Processed Cascade Result:", {
         overallCOP: processedResult.overall_performance?.cop,
         ltCycleCOP: processedResult.lt_cycle_performance?.cop,
         htCycleCOP: processedResult.ht_cycle_performance?.cop,
-        ltCycleWorkInput: processedResult.lt_cycle_performance?.work_of_compression_kj_kg,
-        htCycleWorkInput: processedResult.ht_cycle_performance?.work_of_compression_kj_kg,
-        ltCycleRefrigerationEffect: processedResult.lt_cycle_performance?.refrigeration_effect_kj_kg,
-        htCycleRefrigerationEffect: processedResult.ht_cycle_performance?.refrigeration_effect_kj_kg
+        ltCycleWorkInput:
+          processedResult.lt_cycle_performance?.work_of_compression_kj_kg,
+        htCycleWorkInput:
+          processedResult.ht_cycle_performance?.work_of_compression_kj_kg,
+        ltCycleRefrigerationEffect:
+          processedResult.lt_cycle_performance?.refrigeration_effect_kj_kg,
+        htCycleRefrigerationEffect:
+          processedResult.ht_cycle_performance?.refrigeration_effect_kj_kg,
       });
 
       setResult(processedResult);
@@ -423,9 +434,9 @@ export function CascadeCycleContent() {
       try {
         setDebugResponse(data);
         setShowDebug(true);
-        console.log('Debug calculateCascadeCycle response:', data);
+        console.log("Debug calculateCascadeCycle response:", data);
       } catch (e) {
-        console.warn('Failed to set debug response for cascade', e);
+        console.warn("Failed to set debug response for cascade", e);
       }
 
       try {
@@ -435,10 +446,10 @@ export function CascadeCycleContent() {
           formData,
           data,
           `Cascade Cycle - ${new Date().toLocaleString()}`,
-          { silent: true }
-        ).catch((e) => console.warn('Auto-save failed for cascade:', e));
+          { silent: true },
+        ).catch((e) => console.warn("Auto-save failed for cascade:", e));
       } catch (e) {
-        console.warn('Auto-save invocation error for cascade:', e);
+        console.warn("Auto-save invocation error for cascade:", e);
       }
 
       addToast({
@@ -486,7 +497,7 @@ export function CascadeCycleContent() {
         `${key}_kpa`,
         `${key}_kj_kg`,
         `${key}_kj_kgk`,
-        key
+        key,
       ];
 
       for (const k of keys) {
@@ -526,7 +537,7 @@ export function CascadeCycleContent() {
         "Evaporator Outlet",
         "Compressor Outlet",
         "Condenser Outlet",
-        "Expansion Valve Outlet"
+        "Expansion Valve Outlet",
       ][index],
       temperature: extractPointData(point, "temperature"),
       pressure: extractPointData(point, "pressure"),
@@ -543,7 +554,9 @@ export function CascadeCycleContent() {
     return {
       points: mappedPoints,
       refrigerant: refrigerant,
-      cycleType: (cycle === "lt" ? "cascade-low" : "cascade-high") as "cascade-low" | "cascade-high",
+      cycleType: (cycle === "lt" ? "cascade-low" : "cascade-high") as
+        | "cascade-low"
+        | "cascade-high",
       saturationDome: {
         ph_diagram: saturationDome.ph_diagram,
         ts_diagram: saturationDome.ts_diagram,
@@ -937,7 +950,9 @@ export function CascadeCycleContent() {
                     </div>
                     <div className="text-center p-4 bg-blue-50 rounded-lg">
                       <div className="text-2xl font-semibold text-blue-600">
-                        {result.overall_performance?.system_efficiency?.toFixed(1) || "N/A"}
+                        {result.overall_performance?.system_efficiency?.toFixed(
+                          1,
+                        ) || "N/A"}
                         %
                       </div>
                       <div className="text-sm text-blue-500 mt-1">
@@ -1071,20 +1086,30 @@ export function CascadeCycleContent() {
                   <CardHeader>
                     <CardTitle>Debug: Raw API Response</CardTitle>
                     <CardDescription>
-                      Temporary output showing the full response from calculateCascadeCycle API. Remove after debugging.
+                      Temporary output showing the full response from
+                      calculateCascadeCycle API. Remove after debugging.
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="flex items-start gap-2 mb-2">
                       <Button size="sm" onClick={() => setShowDebug((s) => !s)}>
-                        {showDebug ? 'Hide' : 'Show'} JSON
+                        {showDebug ? "Hide" : "Show"} JSON
                       </Button>
-                      <Button size="sm" variant="ghost" onClick={() => { setDebugResponse(null); setShowDebug(false); }}>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          setDebugResponse(null);
+                          setShowDebug(false);
+                        }}
+                      >
                         Clear
                       </Button>
                     </div>
                     {showDebug && (
-                      <pre className="max-h-96 overflow-auto text-xs bg-gray-50 p-4 rounded border">{JSON.stringify(debugResponse, null, 2)}</pre>
+                      <pre className="max-h-96 overflow-auto text-xs bg-gray-50 p-4 rounded border">
+                        {JSON.stringify(debugResponse, null, 2)}
+                      </pre>
                     )}
                   </CardContent>
                 </Card>

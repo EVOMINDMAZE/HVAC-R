@@ -168,7 +168,10 @@ export function EnhancedStandardCycleContent() {
     return true;
   }, [formData]);
 
-  const handleCalculate = async (overrideParams: Partial<typeof formData> | null = null, attempt: number = 0) => {
+  const handleCalculate = async (
+    overrideParams: Partial<typeof formData> | null = null,
+    attempt: number = 0,
+  ) => {
     if (!validateInputs()) return;
 
     setLoading(true);
@@ -182,7 +185,9 @@ export function EnhancedStandardCycleContent() {
         overrideParams &&
         (overrideParams instanceof Event ||
           (typeof overrideParams === "object" &&
-            ("nativeEvent" in overrideParams || "currentTarget" in overrideParams || "target" in overrideParams)))
+            ("nativeEvent" in overrideParams ||
+              "currentTarget" in overrideParams ||
+              "target" in overrideParams)))
       ) {
         safeOverride = null;
       } else {
@@ -193,17 +198,18 @@ export function EnhancedStandardCycleContent() {
     }
 
     // Build request payload using possible overrides (used for auto-retry adjustments)
-    const requestBody = safeOverride ? { ...formData, ...safeOverride } : formData;
+    const requestBody = safeOverride
+      ? { ...formData, ...safeOverride }
+      : formData;
 
     try {
       const response = await fetch(`${API_BASE_URL}/calculate-standard`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestBody),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(requestBody),
+      });
 
       const responseData = await response.json();
 
@@ -350,10 +356,10 @@ export function EnhancedStandardCycleContent() {
             formData,
             calculationData,
             `Standard Cycle - ${new Date().toLocaleString()}`,
-            { silent: true }
-          ).catch((e) => console.warn('Auto-save failed:', e));
+            { silent: true },
+          ).catch((e) => console.warn("Auto-save failed:", e));
         } catch (e) {
-          console.warn('Auto-save invocation error:', e);
+          console.warn("Auto-save invocation error:", e);
         }
 
         console.log("✨ Results set successfully!");
@@ -377,7 +383,10 @@ export function EnhancedStandardCycleContent() {
       } else {
         console.log("\n❌ === RESPONSE VALIDATION FAILED ===");
         console.log("⚠️ Unexpected response format:", responseData);
-        console.log("���� Available top-level keys:", Object.keys(responseData));
+        console.log(
+          "���� Available top-level keys:",
+          Object.keys(responseData),
+        );
 
         // Try to find data in alternative locations
         const alternativeData =
@@ -397,27 +406,41 @@ export function EnhancedStandardCycleContent() {
         }
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred";
+      const errorMessage =
+        err instanceof Error ? err.message : "An unexpected error occurred";
 
       // Handle specific CoolProp errors for blend refrigerants with an automated retry
-      if (errorMessage.includes("Two-phase inputs not supported for pseudo-pure")) {
+      if (
+        errorMessage.includes("Two-phase inputs not supported for pseudo-pure")
+      ) {
         const refrigerantName = requestBody.refrigerant || formData.refrigerant;
 
         if (attempt === 0) {
           // Try a best-effort auto-adjust: increase superheat and reduce subcooling slightly
-          const newSuperheat = (requestBody.superheat_c ?? formData.superheat_c) + 2;
-          const newSubcooling = Math.max(0, (requestBody.subcooling_c ?? formData.subcooling_c) - 1);
+          const newSuperheat =
+            (requestBody.superheat_c ?? formData.superheat_c) + 2;
+          const newSubcooling = Math.max(
+            0,
+            (requestBody.subcooling_c ?? formData.subcooling_c) - 1,
+          );
 
           setError(
             `CoolProp limitation detected for blend refrigerant ${refrigerantName}. Attempting automatic adjustment (superheat +2°C, subcooling -1°C) and retrying...`,
           );
 
           // Update visible form values so user sees the attempted adjustment
-          setFormData((prev) => ({ ...prev, superheat_c: newSuperheat, subcooling_c: newSubcooling }));
+          setFormData((prev) => ({
+            ...prev,
+            superheat_c: newSuperheat,
+            subcooling_c: newSubcooling,
+          }));
 
           // Retry once with adjusted params
           setTimeout(() => {
-            void handleCalculate({ superheat_c: newSuperheat, subcooling_c: newSubcooling }, attempt + 1);
+            void handleCalculate(
+              { superheat_c: newSuperheat, subcooling_c: newSubcooling },
+              attempt + 1,
+            );
           }, 250);
         } else {
           setError(
@@ -1169,7 +1192,16 @@ export function EnhancedStandardCycleContent() {
                   Configure refrigerant and operating conditions
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6" onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void handleCalculate(); } }} aria-label="Cycle parameters form">
+              <CardContent
+                className="space-y-6"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    void handleCalculate();
+                  }
+                }}
+                aria-label="Cycle parameters form"
+              >
                 <div>
                   <Label htmlFor="refrigerant">Refrigerant</Label>
                 </div>
@@ -1193,7 +1225,12 @@ export function EnhancedStandardCycleContent() {
                           parseFloat(e.target.value),
                         )
                       }
-                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); void handleCalculate(); } }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          void handleCalculate();
+                        }
+                      }}
                       className="mt-1 focus:ring-2 focus:ring-sky-500 focus:outline-none"
                       placeholder="e.g., -10"
                     />
@@ -1214,7 +1251,12 @@ export function EnhancedStandardCycleContent() {
                           parseFloat(e.target.value),
                         )
                       }
-                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); void handleCalculate(); } }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          void handleCalculate();
+                        }
+                      }}
                       className="mt-1 focus:ring-2 focus:ring-sky-500 focus:outline-none"
                       placeholder="e.g., 45"
                     />
@@ -1233,7 +1275,12 @@ export function EnhancedStandardCycleContent() {
                           parseFloat(e.target.value),
                         )
                       }
-                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); void handleCalculate(); } }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          void handleCalculate();
+                        }
+                      }}
                       className="mt-1 focus:ring-2 focus:ring-sky-500 focus:outline-none"
                       placeholder="e.g., 5"
                     />
@@ -1252,7 +1299,12 @@ export function EnhancedStandardCycleContent() {
                           parseFloat(e.target.value),
                         )
                       }
-                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); void handleCalculate(); } }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          void handleCalculate();
+                        }
+                      }}
                       className="mt-1 focus:ring-2 focus:ring-sky-500 focus:outline-none"
                       placeholder="e.g., 2"
                     />
@@ -1322,9 +1374,23 @@ export function EnhancedStandardCycleContent() {
 
                 <div className="mt-6">
                   {calculationComplete && (
-                    <div role="alert" className="bg-green-50 border border-green-200 rounded-lg mt-4 p-4 w-full relative">
+                    <div
+                      role="alert"
+                      className="bg-green-50 border border-green-200 rounded-lg mt-4 p-4 w-full relative"
+                    >
                       <div className="absolute left-5 top-5 text-foreground">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-800">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="text-green-800"
+                        >
                           <path d="M21.8 10A10 10 0 1 1 17 3.335" />
                           <path d="m9 11 3 3L22 4" />
                         </svg>
@@ -1332,9 +1398,15 @@ export function EnhancedStandardCycleContent() {
                       <div className="pl-10 text-green-800">
                         <div className="flex items-center justify-between">
                           <span>
-                            <strong>Calculation Complete!</strong> View your results in the tabs above.
+                            <strong>Calculation Complete!</strong> View your
+                            results in the tabs above.
                           </span>
-                          <Button variant="outline" size="sm" onClick={() => setActiveTab("results")} className="border-green-300 text-green-700 hover:bg-green-100">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setActiveTab("results")}
+                            className="border-green-300 text-green-700 hover:bg-green-100"
+                          >
                             View Results <ArrowRight className="h-3 w-3 ml-1" />
                           </Button>
                         </div>
@@ -1343,96 +1415,214 @@ export function EnhancedStandardCycleContent() {
                   )}
 
                   {/* Recommended Operating Range (left column) */}
-                  <div className="mt-4 rounded-lg border bg-sky-50 p-4 mb-4" aria-live="polite">
+                  <div
+                    className="mt-4 rounded-lg border bg-sky-50 p-4 mb-4"
+                    aria-live="polite"
+                  >
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2 text-sky-700 font-medium">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-green-600"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="18"
+                          height="18"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="h-4 w-4 text-green-600"
+                        >
+                          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                          <polyline points="16 7 22 7 22 13" />
+                        </svg>
                         Recommended Operating Range
                       </div>
-                      <Button variant="default" size="sm" onClick={() => setFormData(prev => ({ ...prev, evap_temp_c: -46.1, cond_temp_c: 13.9 }))}>
+                      <Button
+                        variant="default"
+                        size="sm"
+                        onClick={() =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            evap_temp_c: -46.1,
+                            cond_temp_c: 13.9,
+                          }))
+                        }
+                      >
                         Apply Range
                       </Button>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <div className="font-medium">Evaporator Temperature</div>
+                        <div className="font-medium">
+                          Evaporator Temperature
+                        </div>
                         <div className="text-sm">Recommended: -46.1 °C</div>
-                        <div className="text-sm text-gray-600">Range: -93.3 °C to -36.1 °C</div>
+                        <div className="text-sm text-gray-600">
+                          Range: -93.3 °C to -36.1 °C
+                        </div>
                       </div>
                       <div>
                         <div className="font-medium">Condenser Temperature</div>
                         <div className="text-sm">Recommended: 13.9 °C</div>
-                        <div className="text-sm text-gray-600">Range: -16.1 °C to 91.1 °C</div>
+                        <div className="text-sm text-gray-600">
+                          Range: -16.1 °C to 91.1 °C
+                        </div>
                       </div>
                     </div>
                   </div>
 
                   <div className="space-y-4 mt-2">
-                  {/* Refrigerant Selection Card */}
-                
-                  {/* Refrigerant Details and Validation Card */}
-                  <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
-                    <div className="flex flex-col space-y-1.5 p-6">
-                      <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
-                        <div className="w-4 h-4 rounded-full" style={{ backgroundColor: selectedRefrigerant?.color }} />
-                        {selectedRefrigerant ? `${selectedRefrigerant.name} - ${selectedRefrigerant.fullName}` : 'Refrigerant'}
-                      </h3>
-                    </div>
+                    {/* Refrigerant Selection Card */}
 
-                    <div className="p-6 pt-0 space-y-4">
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div className="flex items-center gap-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-green-500">
-                            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
-                            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-                          </svg>
-                          <div>
-                            <div className="text-sm font-medium">GWP</div>
-                            <div className="text-sm text-gray-600">{selectedRefrigerant?.globalWarmingPotential ?? selectedRefrigerant?.gwp ?? 'N/A'}</div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-blue-500">
-                            <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
-                          </svg>
-                          <div>
-                            <div className="text-sm font-medium">Safety</div>
-                            <div className="text-sm text-gray-600">{selectedRefrigerant?.safety ?? 'N/A'}</div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-red-500">
-                            <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" />
-                          </svg>
-                          <div>
-                            <div className="text-sm font-medium">Critical Temp</div>
-                            <div className="text-sm text-gray-600">{selectedRefrigerant?.limits?.critical_temp_c ? selectedRefrigerant.limits.critical_temp_c.toFixed(1) + ' °C' : selectedRefrigerant?.limits?.criticalTemp ? (selectedRefrigerant.limits.criticalTemp - 273.15).toFixed(1) + ' °C' : 'N/A'}</div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-purple-500">
-                            <path d="m12 14 4-4" />
-                            <path d="M3.34 19a10 10 0 1 1 17.32 0" />
-                          </svg>
-                          <div>
-                            <div className="text-sm font-medium">Critical Press</div>
-                            <div className="text-sm text-gray-600">{selectedRefrigerant?.limits?.critical_pressure_kpa ? selectedRefrigerant.limits.critical_pressure_kpa.toFixed(0) + ' kPa' : selectedRefrigerant?.limits?.criticalPressure ? Math.round(selectedRefrigerant.limits.criticalPressure/1000) + ' kPa' : 'N/A'}</div>
-                          </div>
-                        </div>
+                    {/* Refrigerant Details and Validation Card */}
+                    <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+                      <div className="flex flex-col space-y-1.5 p-6">
+                        <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                          <div
+                            className="w-4 h-4 rounded-full"
+                            style={{
+                              backgroundColor: selectedRefrigerant?.color,
+                            }}
+                          />
+                          {selectedRefrigerant
+                            ? `${selectedRefrigerant.name} - ${selectedRefrigerant.fullName}`
+                            : "Refrigerant"}
+                        </h3>
                       </div>
 
-                      <div>
-                        <p className="text-sm text-gray-700">{selectedRefrigerant?.description}</p>
-                      </div>
+                      <div className="p-6 pt-0 space-y-4">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          <div className="flex items-center gap-2">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="h-4 w-4 text-green-500"
+                            >
+                              <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                              <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                            </svg>
+                            <div>
+                              <div className="text-sm font-medium">GWP</div>
+                              <div className="text-sm text-gray-600">
+                                {selectedRefrigerant?.globalWarmingPotential ??
+                                  selectedRefrigerant?.gwp ??
+                                  "N/A"}
+                              </div>
+                            </div>
+                          </div>
 
+                          <div className="flex items-center gap-2">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="h-4 w-4 text-blue-500"
+                            >
+                              <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+                            </svg>
+                            <div>
+                              <div className="text-sm font-medium">Safety</div>
+                              <div className="text-sm text-gray-600">
+                                {selectedRefrigerant?.safety ?? "N/A"}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="h-4 w-4 text-red-500"
+                            >
+                              <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" />
+                            </svg>
+                            <div>
+                              <div className="text-sm font-medium">
+                                Critical Temp
+                              </div>
+                              <div className="text-sm text-gray-600">
+                                {selectedRefrigerant?.limits?.critical_temp_c
+                                  ? selectedRefrigerant.limits.critical_temp_c.toFixed(
+                                      1,
+                                    ) + " °C"
+                                  : selectedRefrigerant?.limits?.criticalTemp
+                                    ? (
+                                        selectedRefrigerant.limits
+                                          .criticalTemp - 273.15
+                                      ).toFixed(1) + " °C"
+                                    : "N/A"}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="h-4 w-4 text-purple-500"
+                            >
+                              <path d="m12 14 4-4" />
+                              <path d="M3.34 19a10 10 0 1 1 17.32 0" />
+                            </svg>
+                            <div>
+                              <div className="text-sm font-medium">
+                                Critical Press
+                              </div>
+                              <div className="text-sm text-gray-600">
+                                {selectedRefrigerant?.limits
+                                  ?.critical_pressure_kpa
+                                  ? selectedRefrigerant.limits.critical_pressure_kpa.toFixed(
+                                      0,
+                                    ) + " kPa"
+                                  : selectedRefrigerant?.limits
+                                        ?.criticalPressure
+                                    ? Math.round(
+                                        selectedRefrigerant.limits
+                                          .criticalPressure / 1000,
+                                      ) + " kPa"
+                                    : "N/A"}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <p className="text-sm text-gray-700">
+                            {selectedRefrigerant?.description}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-                </div>
-
               </CardContent>
             </Card>
 
@@ -1450,7 +1640,7 @@ export function EnhancedStandardCycleContent() {
               </CardHeader>
               <CardContent>
                 {/* Refrigerant Selection (moved here for improved layout) */}
-              <EnhancedRefrigerantSelector
+                <EnhancedRefrigerantSelector
                   value={formData.refrigerant}
                   onChange={handleRefrigerantChange}
                   evaporatorTemp={formData.evap_temp_c}
@@ -1830,7 +2020,8 @@ export function EnhancedStandardCycleContent() {
                             )}
                           </div>
                           <div>
-                            <TechTerm term="density">ρ</TechTerm>: {formatValue(getDensity(point), "kg/m³")}
+                            <TechTerm term="density">ρ</TechTerm>:{" "}
+                            {formatValue(getDensity(point), "kg/m³")}
                           </div>
                           {getPropertyValue(point, [
                             "vapor_quality",
