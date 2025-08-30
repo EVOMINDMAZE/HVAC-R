@@ -290,12 +290,22 @@ export function CascadeCycleContent() {
       // Robust result extraction with multiple fallback mechanisms
       const processedResult: CascadeResult = {
         overall_performance: {
-          cop: resultData.overall_performance?.cop ??
-               resultData.cop ??
-               resultData.performance?.cop ??
-               ((resultData.lt_cycle_performance?.cop ?? 0) + (resultData.ht_cycle_performance?.cop ?? 0)) / 2,
-          system_efficiency: ((resultData.overall_performance?.cop ?? 0) * 100) /
-               (((resultData.lt_cycle_performance?.cop ?? 0) + (resultData.ht_cycle_performance?.cop ?? 0)) / 2 || 1),
+          cop: (() => {
+            const ltCop = resultData.lt_cycle_performance?.cop ?? 0;
+            const htCop = resultData.ht_cycle_performance?.cop ?? 0;
+            const totalWork = (resultData.lt_cycle_performance?.work_of_compression_kj_kg ?? 0) +
+                             (resultData.ht_cycle_performance?.work_of_compression_kj_kg ?? 0);
+            const totalRefrigerationEffect = (resultData.lt_cycle_performance?.refrigeration_effect_kj_kg ?? 0) +
+                                             (resultData.ht_cycle_performance?.refrigeration_effect_kj_kg ?? 0);
+            return totalRefrigerationEffect / totalWork;
+          })(),
+          system_efficiency: (() => {
+            const ltCop = resultData.lt_cycle_performance?.cop ?? 0;
+            const htCop = resultData.ht_cycle_performance?.cop ?? 0;
+            const avgCop = (ltCop + htCop) / 2;
+            const overallCop = processedResult.overall_performance?.cop ?? 0;
+            return (overallCop / avgCop) * 100;
+          })(),
           cascade_temperature: formData.ltCycle.condenserTemp
         },
         lt_cycle_performance: {
