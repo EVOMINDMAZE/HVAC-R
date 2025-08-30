@@ -328,7 +328,12 @@ export function CascadeCycleContent() {
 
       console.log('Final Performance Metrics:', {
         overallCop,
-        systemEfficiency
+        systemEfficiency,
+        totalWork,
+        totalRefrigerationEffect,
+        ltCop,
+        htCop,
+        avgCop
       });
 
       const processedResult: CascadeResult = {
