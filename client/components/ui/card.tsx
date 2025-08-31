@@ -7,16 +7,17 @@ const Card = React.forwardRef<
  React.HTMLAttributes<HTMLDivElement>
 >(({ className, style, ...props }, ref) => {
   const defaultStyle: React.CSSProperties = {
-    margin: "25px 0",
-    padding: "25px",
     borderColor: "#e2e8f0",
+    maxWidth: "100%",
+    boxSizing: "border-box",
+    overflow: "hidden",
   };
   const mergedStyle = { ...defaultStyle, ...(style || {}) };
   return (
     <div
       ref={ref}
       className={cn(
-        "rounded-lg border bg-sky-50 font-normal",
+        "w-full rounded-lg border bg-sky-50 font-normal overflow-hidden",
         className,
       )}
       style={mergedStyle}
