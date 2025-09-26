@@ -54,43 +54,57 @@ import { RenameCalculationDialog } from "@/components/RenameCalculationDialog";
 import { storeCalculationPreset } from "@/lib/historyPresets";
 
 export function History() {
-  const { calculations, isLoading, deleteCalculation, updateCalculation } =
-    useSupabaseCalculations();
+  const {
+    calculations,
+    isLoading,
+    deleteCalculation,
+    updateCalculation,
+    saveCalculation,
+  } = useSupabaseCalculations();
+  const { addToast } = useToast();
+  const navigate = useNavigate();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("newest");
   const [selectedCalculation, setSelectedCalculation] =
     useState<Calculation | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Calculation | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [cloneLoadingId, setCloneLoadingId] = useState<string | null>(null);
 
-  // Filter and sort calculations
-  const filteredCalculations = calculations
-    .filter((calc) => {
-      const matchesSearch =
-        calc.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        calc.calculation_type.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesFilter =
-        filterType === "all" || calc.calculation_type === filterType;
-      return matchesSearch && matchesFilter;
-    })
-    .sort((a, b) => {
-      switch (sortBy) {
-        case "newest":
-          return (
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-          );
-        case "oldest":
-          return (
-            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-          );
-        case "name":
-          return (a.name || a.calculation_type).localeCompare(
-            b.name || b.calculation_type,
-          );
-        default:
-          return 0;
-      }
-    });
+  const filteredCalculations = useMemo(() => {
+    return calculations
+      .filter((calc) => {
+        const lowered = searchTerm.toLowerCase();
+        const matchesSearch = lowered
+          ? (calc.name || "")?.toLowerCase().includes(lowered) ||
+            calc.calculation_type.toLowerCase().includes(lowered)
+          : true;
+        const matchesFilter =
+          filterType === "all" || calc.calculation_type === filterType;
+        return matchesSearch && matchesFilter;
+      })
+      .sort((a, b) => {
+        switch (sortBy) {
+          case "newest":
+            return (
+              new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            );
+          case "oldest":
+            return (
+              new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+            );
+          case "name":
+            return (a.name || a.calculation_type).localeCompare(
+              b.name || b.calculation_type,
+            );
+          default:
+            return 0;
+        }
+      });
+  }, [calculations, searchTerm, filterType, sortBy]);
 
   const getCalculationIcon = (type: string) => {
     switch (type) {
