@@ -891,11 +891,6 @@ export function RefrigerantComparisonContent() {
                                           Error
                                         </Badge>
                                       )}
-                                      {isNA && !isBest && !isError && (
-                                        <span className="text-[11px] uppercase tracking-wide text-gray-400">
-                                          N/A
-                                        </span>
-                                      )}
                                     </div>
                                   </td>
                                 );
