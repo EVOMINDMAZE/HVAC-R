@@ -173,6 +173,9 @@ export function EnhancedStandardCycleContent() {
     overrideParams: Partial<typeof formData> | null = null,
     attempt: number = 0,
   ) => {
+    setCalculationComplete(false);
+    setShowSuccessBanner(false);
+
     if (!validateInputs()) return;
 
     setLoading(true);
@@ -247,7 +250,7 @@ export function EnhancedStandardCycleContent() {
 
         Object.keys(calculationData.state_points).forEach((key) => {
           const point = calculationData.state_points[key];
-          console.log(`\n���� STATE POINT ${key}:`);
+          console.log(`\n🔸 STATE POINT ${key}:`);
           console.log(
             `  🔑 Available Properties (${Object.keys(point).length}):`,
             Object.keys(point),
