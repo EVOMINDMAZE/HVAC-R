@@ -203,6 +203,15 @@ export function RefrigerantComparisonContent() {
     [],
   );
 
+  const handleClearSelections = useCallback(() => {
+    setFormData((prev) => ({
+      ...prev,
+      refrigerants: [],
+    }));
+    setValidationWarnings({});
+    setSelectedRefrigerantForVisualization(null);
+  }, []);
+
   const handleCompare = async () => {
     if (formData.refrigerants.length === 0) {
       const errorMsg = "Please select at least one refrigerant";
