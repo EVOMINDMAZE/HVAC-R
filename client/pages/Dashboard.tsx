@@ -102,29 +102,44 @@ function UsageProgressCard({ stats, onUpgrade }: UsageProgressCardProps) {
   );
 }
 
-function QuickStats({ stats, user, isLoading, onRefresh }: any) {
+function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
   const navigate = useNavigate();
+  const metadata = (user?.user_metadata ?? {}) as Record<string, unknown>;
+  const metadataName =
+    typeof metadata.full_name === "string" ? metadata.full_name : undefined;
+  const firstName =
+    metadataName?.split(" ")[0] ??
+    (user?.email ? user.email.split("@")[0] : undefined);
+
+  const handleUpgrade = () => navigate("/pricing");
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <h2 className="text-2xl font-semibold">
-            Welcome back{user?.email ? `, ${user.email.split("@")[0]}` : ""} 👋
+            Welcome back{firstName ? `, ${firstName}` : ""} 👋
           </h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            Your workspace at a glance — quick access to recent activity and
-            plan usage.
+          <p className="mt-1 text-sm text-muted-foreground">
+            Your workspace at a glance — quick access to recent activity and plan usage.
           </p>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <OnboardingGuide userName={firstName} />
+            {!stats.isUnlimited && (
+              <Badge className="border border-primary/20 bg-primary/10 text-primary">
+                {stats.remaining} calculation{stats.remaining === 1 ? "" : "s"} left this month
+              </Badge>
+            )}
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button
             className="bg-primary text-primary-foreground hover:opacity-95 whitespace-nowrap"
             onClick={() => navigate("/standard-cycle")}
             aria-label="Start new calculation"
           >
-            <Calculator className="h-4 w-4 mr-2" />
+            <Calculator className="h-4 w-4" />
             New Calculation
           </Button>
 
@@ -136,9 +151,9 @@ function QuickStats({ stats, user, isLoading, onRefresh }: any) {
             disabled={isLoading}
           >
             {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <RefreshCw className="h-4 w-4 mr-2" />
+              <RefreshCw className="h-4 w-4" />
             )}
             Refresh
           </Button>
@@ -149,7 +164,7 @@ function QuickStats({ stats, user, isLoading, onRefresh }: any) {
             onClick={() => navigate("/history")}
             aria-label="View calculation history"
           >
-            <HistoryIcon className="h-4 w-4 mr-2" />
+            <HistoryIcon className="h-4 w-4" />
             View History
           </Button>
         </div>
@@ -164,21 +179,25 @@ function QuickStats({ stats, user, isLoading, onRefresh }: any) {
           }`}
         >
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-4">
               <div className="flex items-center space-x-3">
                 <div
-                  className={`w-3 h-3 rounded-full ${stats.isAtLimit ? "bg-red-500" : "bg-yellow-500"}`}
+                  className={`h-3 w-3 rounded-full ${stats.isAtLimit ? "bg-red-500" : "bg-yellow-500"}`}
                 />
                 <div>
                   <p
-                    className={`font-semibold ${stats.isAtLimit ? "text-red-800" : "text-yellow-800"}`}
+                    className={`font-semibold ${
+                      stats.isAtLimit ? "text-red-800" : "text-yellow-800"
+                    }`}
                   >
                     {stats.isAtLimit
                       ? "Monthly Limit Reached!"
                       : "Approaching Monthly Limit"}
                   </p>
                   <p
-                    className={`text-sm ${stats.isAtLimit ? "text-red-600" : "text-yellow-600"}`}
+                    className={`text-sm ${
+                      stats.isAtLimit ? "text-red-600" : "text-yellow-600"
+                    }`}
                   >
                     {stats.isAtLimit
                       ? "You've reached your monthly calculation cap. Upgrade to continue."
@@ -192,7 +211,7 @@ function QuickStats({ stats, user, isLoading, onRefresh }: any) {
                     ? "bg-destructive text-white"
                     : "bg-yellow-600 text-white"
                 }
-                onClick={() => navigate("/pricing")}
+                onClick={handleUpgrade}
               >
                 Upgrade
               </Button>
@@ -201,16 +220,20 @@ function QuickStats({ stats, user, isLoading, onRefresh }: any) {
         </Card>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      {!stats.isUnlimited && (
+        <UsageProgressCard stats={stats} onUpgrade={handleUpgrade} />
+      )}
+
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
         <Card className="bg-gradient-to-r from-blue-600 to-sky-500 text-white">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm opacity-90">Total Calculations</p>
-                <p className="text-3xl font-bold mt-1">
+                <p className="mt-1 text-3xl font-bold">
                   {formatNumber(stats.totalCalculations)}
                 </p>
-                <p className="text-xs opacity-80 mt-1">All time</p>
+                <p className="mt-1 text-xs opacity-80">All time</p>
               </div>
               <Calculator className="h-8 w-8 text-white/80" />
             </div>
@@ -222,7 +245,7 @@ function QuickStats({ stats, user, isLoading, onRefresh }: any) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm opacity-90">This Month</p>
-                <p className="text-3xl font-bold mt-1">
+                <p className="mt-1 text-3xl font-bold">
                   {formatNumber(stats.monthlyCalculations)}
                   {!stats.isUnlimited && (
                     <span className="text-base font-medium">
@@ -230,16 +253,12 @@ function QuickStats({ stats, user, isLoading, onRefresh }: any) {
                     </span>
                   )}
                 </p>
-
                 {!stats.isUnlimited ? (
-                  <div className="w-full bg-white/20 rounded-full h-2 mt-3">
-                    <div
-                      className="bg-white rounded-full h-2 transition-all duration-300"
-                      style={{ width: `${stats.usagePercentage}%` }}
-                    />
-                  </div>
+                  <p className="mt-2 text-sm opacity-80">
+                    {Math.round(stats.usagePercentage)}% of allowance used
+                  </p>
                 ) : (
-                  <p className="text-sm opacity-80 mt-2">Unlimited</p>
+                  <p className="mt-2 text-sm opacity-80">Unlimited</p>
                 )}
               </div>
               <FileText className="h-8 w-8 text-white/80" />
@@ -248,14 +267,20 @@ function QuickStats({ stats, user, isLoading, onRefresh }: any) {
         </Card>
 
         <Card
-          className={`bg-gradient-to-r ${stats.remainingValue <= 2 ? "from-red-600 to-red-500" : "from-emerald-600 to-green-500"} text-white`}
+          className={`bg-gradient-to-r ${
+            stats.remainingValue <= 2
+              ? "from-red-600 to-red-500"
+              : "from-emerald-600 to-green-500"
+          } text-white`}
         >
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm opacity-90">Remaining</p>
-                <p className="text-3xl font-bold mt-1">{stats.remainingText}</p>
-                <p className="text-xs opacity-80 mt-1">This month</p>
+                <p className="mt-1 text-3xl font-bold">
+                  {stats.remainingText}
+                </p>
+                <p className="mt-1 text-xs opacity-80">This month</p>
               </div>
               <TrendingUp className="h-8 w-8 text-white/80" />
             </div>
@@ -264,16 +289,16 @@ function QuickStats({ stats, user, isLoading, onRefresh }: any) {
 
         <Card
           className="bg-gradient-to-r from-orange-500 to-orange-600 text-white cursor-pointer hover:from-orange-600 hover:to-orange-700 transition-all duration-200"
-          onClick={() => (window.location.href = "/pricing")}
+          onClick={handleUpgrade}
         >
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm opacity-90">Current Plan</p>
-                <p className="text-xl font-semibold mt-1">
+                <p className="mt-1 text-xl font-semibold">
                   {stats.planDisplayName}
                 </p>
-                <p className="text-xs opacity-80 mt-1">
+                <p className="mt-1 text-xs opacity-80">
                   {stats.plan === "free"
                     ? "Click to upgrade"
                     : "Manage subscription"}
