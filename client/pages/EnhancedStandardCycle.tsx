@@ -1191,6 +1191,15 @@ export function EnhancedStandardCycleContent() {
       }
     : undefined;
 
+  useEffect(() => {
+    if (!pendingPresetInputs) {
+      return;
+    }
+
+    void handleCalculate(pendingPresetInputs);
+    setPendingPresetInputs(null);
+  }, [handleCalculate, pendingPresetInputs]);
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="mb-8">
@@ -1412,7 +1421,7 @@ export function EnhancedStandardCycleContent() {
                             Suggestions:
                           </strong>
                           <ul className="mt-1 ml-4 list-disc text-sm text-blue-700">
-                            <li>Try increasing superheat to 10°C or higher</li>
+                            <li>Try increasing superheat to 10��C or higher</li>
                             <li>Try increasing subcooling to 5°C or higher</li>
                             <li>
                               Consider using pure refrigerants like R134a, R32,
