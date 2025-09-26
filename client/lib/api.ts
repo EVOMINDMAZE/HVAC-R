@@ -239,7 +239,7 @@ class ApiClient {
 
     try {
       const { data, error } = await supabase
-        .from<SupabaseSubscriptionPlanRow>("subscription_plans")
+        .from("subscription_plans")
         .select(
           "id, name, display_name, price_monthly, price_yearly, calculations_limit, features, is_active, savings",
         )
@@ -266,7 +266,9 @@ class ApiClient {
 
       console.warn("Using Supabase subscription plan data fallback");
 
-      const normalizedPlans: SubscriptionPlan[] = data.map((plan) => {
+      const rows = (data ?? []) as SupabaseSubscriptionPlanRow[];
+
+      const normalizedPlans: SubscriptionPlan[] = rows.map((plan) => {
         const calculationsLimit =
           typeof plan.calculations_limit === "number"
             ? plan.calculations_limit
