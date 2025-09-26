@@ -94,6 +94,34 @@ interface CascadeResult {
   };
 }
 
+const DEFAULT_LOW_TEMP_CYCLE: CycleData = {
+  refrigerant: "R744",
+  evaporatorTemp: -45,
+  condenserTemp: -5,
+  superheat: 6,
+  subcooling: 3,
+};
+
+const DEFAULT_HIGH_TEMP_CYCLE: CycleData = {
+  refrigerant: "R134a",
+  evaporatorTemp: -10,
+  condenserTemp: 40,
+  superheat: 6,
+  subcooling: 4,
+};
+
+const DEFAULT_CASCADE_FORM: CascadeFormData = {
+  ltCycle: DEFAULT_LOW_TEMP_CYCLE,
+  htCycle: DEFAULT_HIGH_TEMP_CYCLE,
+  cascadeHeatExchangerDT: 5,
+};
+
+const RECOMMENDED_GUIDANCE = {
+  superheat: { min: 4, max: 12 },
+  subcooling: { min: 3, max: 8 },
+  cascadeDeltaT: { min: 3, max: 8 },
+} as const;
+
 // Content component for use within Dashboard tabs (no header)
 export function CascadeCycleContent() {
   const [formData, setFormData] = useState<CascadeFormData>({
