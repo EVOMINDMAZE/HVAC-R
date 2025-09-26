@@ -376,16 +376,6 @@ export function RefrigerantComparisonContent() {
   };
 
   const getNumericValue = (result: any, metricKey: string): number | null => {
-    // Debugging: log the entire result object for this metric
-    console.log(`Extracting ${metricKey} from:`, {
-      refrigerant: result.refrigerant,
-      resultKeys: Object.keys(result),
-      performance: result.performance,
-      performanceKeys: result.performance
-        ? Object.keys(result.performance)
-        : "No performance object",
-    });
-
     // Try direct property
     let v = parseNumber(result[metricKey]);
     // Try common variants
@@ -435,14 +425,6 @@ export function RefrigerantComparisonContent() {
           }
           break;
         case "volumetricCapacity":
-          console.log("Volumetric Capacity Extraction Debug", {
-            resultVolumetricCapacity: result.volumetricCapacity,
-            perfVolumetricCapacity: perf.volumetric_capacity,
-            perfVolumetricCapacityAlt: perf.volumetricCapacity,
-            perfVolumetricCapacityKjM3: perf.volumetric_capacity_kj_m3,
-            performanceKeys: Object.keys(perf),
-            resultKeys: Object.keys(result),
-          });
           v =
             parseNumber(result.volumetricCapacity) ??
             parseNumber(perf.volumetric_capacity) ??
@@ -462,24 +444,12 @@ export function RefrigerantComparisonContent() {
                 density =
                   parseNumber(perf.density_kg_m3) ?? parseNumber(perf.density);
               }
-              console.log("Volumetric Capacity Computation Debug", {
-                refEffect,
-                density,
-              });
               if (refEffect !== null && density !== null)
                 return refEffect * density;
               return null;
             })();
           break;
         case "dischargePressure":
-          console.log("Discharge Pressure Extraction Debug", {
-            resultDischargePressure: result.dischargePressure,
-            perfDischargePressure: perf.discharge_pressure,
-            perfDischargePressureAlt: perf.dischargePressure,
-            perfDischargePressureKpa: perf.discharge_pressure_kpa,
-            performanceKeys: Object.keys(perf),
-            resultKeys: Object.keys(result),
-          });
           v =
             parseNumber(result.dischargePressure) ??
             parseNumber(perf.discharge_pressure) ??
@@ -494,14 +464,6 @@ export function RefrigerantComparisonContent() {
             ]);
           break;
         case "suctionPressure":
-          console.log("Suction Pressure Extraction Debug", {
-            resultSuctionPressure: result.suctionPressure,
-            perfSuctionPressure: perf.suction_pressure,
-            perfSuctionPressureAlt: perf.suctionPressure,
-            perfSuctionPressureKpa: perf.suction_pressure_kpa,
-            performanceKeys: Object.keys(perf),
-            resultKeys: Object.keys(result),
-          });
           v =
             parseNumber(result.suctionPressure) ??
             parseNumber(perf.suction_pressure) ??
@@ -519,9 +481,6 @@ export function RefrigerantComparisonContent() {
           v = parseNumber(result[metricKey]) ?? parseNumber(perf[metricKey]);
       }
     }
-
-    // Debugging: log the extracted value
-    console.log(`Extracted ${metricKey} for ${result.refrigerant}: `, v);
 
     return v;
   };
