@@ -230,6 +230,10 @@ export function History() {
     }
   }, [deleteTarget, deleteCalculation]);
 
+  const openDeleteDialog = useCallback((calculation: Calculation) => {
+    setDeleteTarget(calculation);
+  }, []);
+
   const handleCancelDelete = useCallback(() => {
     if (isDeleting) {
       return;
