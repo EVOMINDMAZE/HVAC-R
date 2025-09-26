@@ -591,6 +591,11 @@ export function Dashboard() {
       : Math.min((monthlyCalculations / monthlyLimit) * 100, 100);
     const isNearLimit = !isUnlimited && usagePercentage > 70;
     const isAtLimit = !isUnlimited && monthlyCalculations >= monthlyLimit;
+    const billingCycleReset = new Date(currentYear, currentMonth + 1, 1);
+    const billingCycleResetLabel = billingCycleReset.toLocaleDateString(undefined, {
+      month: "long",
+      day: "numeric",
+    });
 
     return {
       totalCalculations,
@@ -605,6 +610,7 @@ export function Dashboard() {
       isNearLimit,
       isAtLimit,
       remainingValue: remaining,
+      billingCycleResetLabel,
     };
   }, [calculations, subscription]);
 
