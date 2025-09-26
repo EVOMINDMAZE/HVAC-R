@@ -48,7 +48,7 @@ export function Pricing() {
   // Fallback subscription plans data when API is unavailable
   const fallbackPlans: SubscriptionPlan[] = [
     {
-      id: 1,
+      id: "plan-free",
       name: "free",
       display_name: "Free",
       price_monthly: 0,
@@ -64,7 +64,7 @@ export function Pricing() {
       is_active: true,
     },
     {
-      id: 2,
+      id: "plan-professional",
       name: "professional",
       display_name: "Professional",
       price_monthly: 29,
@@ -85,7 +85,7 @@ export function Pricing() {
       savings: 22,
     },
     {
-      id: 3,
+      id: "plan-enterprise",
       name: "enterprise",
       display_name: "Enterprise",
       price_monthly: 99,
