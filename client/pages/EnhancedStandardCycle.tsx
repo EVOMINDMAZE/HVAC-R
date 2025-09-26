@@ -156,6 +156,43 @@ export function EnhancedStandardCycleContent() {
     return undefined;
   }, [calculationComplete, results, showSuccessBanner]);
 
+  useEffect(() => {
+    const preset = consumeCalculationPreset();
+    if (preset?.type !== "Standard Cycle" || !preset.inputs) {
+      return;
+    }
+
+    try {
+      const inputs = preset.inputs as Partial<typeof formData>;
+      let combinedInputs: typeof formData | null = null;
+
+      setFormData((prev) => {
+        combinedInputs = { ...prev, ...inputs };
+        return combinedInputs;
+      });
+
+      if (combinedInputs) {
+        const refProps = getRefrigerantById(combinedInputs.refrigerant);
+        setSelectedRefrigerant(refProps ?? null);
+        if (refProps) {
+          setValidationWarnings(
+            validateCycleConditions(refProps, {
+              evaporatorTemp: combinedInputs.evap_temp_c,
+              condenserTemp: combinedInputs.cond_temp_c,
+              superheat: combinedInputs.superheat_c,
+              subcooling: combinedInputs.subcooling_c,
+            }),
+          );
+        }
+      }
+
+      setPendingPresetInputs(inputs);
+      setActiveTab("calculation");
+    } catch (error) {
+      console.warn("Failed to apply preset for standard cycle", error);
+    }
+  }, []);
+
   const handleInputChange = useCallback((field: string, value: number) => {
     setFormData((prev) => ({
       ...prev,
