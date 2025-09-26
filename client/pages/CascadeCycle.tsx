@@ -124,23 +124,11 @@ const RECOMMENDED_GUIDANCE = {
 
 // Content component for use within Dashboard tabs (no header)
 export function CascadeCycleContent() {
-  const [formData, setFormData] = useState<CascadeFormData>({
-    ltCycle: {
-      refrigerant: "",
-      evaporatorTemp: -40,
-      condenserTemp: -10,
-      superheat: 5,
-      subcooling: 5,
-    },
-    htCycle: {
-      refrigerant: "",
-      evaporatorTemp: -15,
-      condenserTemp: 40,
-      superheat: 5,
-      subcooling: 5,
-    },
-    cascadeHeatExchangerDT: 5,
-  });
+  const [formData, setFormData] = useState<CascadeFormData>(() => ({
+    ltCycle: { ...DEFAULT_LOW_TEMP_CYCLE },
+    htCycle: { ...DEFAULT_HIGH_TEMP_CYCLE },
+    cascadeHeatExchangerDT: DEFAULT_CASCADE_FORM.cascadeHeatExchangerDT,
+  }));
 
   const [result, setResult] = useState<CascadeResult | null>(null);
   const [loading, setLoading] = useState(false);
