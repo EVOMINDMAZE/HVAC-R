@@ -115,7 +115,7 @@ export function EnhancedStandardCycleContent() {
     useState<RefrigerantProperties | null>(null);
   const [activeTab, setActiveTab] = useState("calculation");
   const [calculationComplete, setCalculationComplete] = useState(false);
-  const { saveCalculation } = useSupabaseCalculations();
+  const { saveCalculation, findMatchingCalculation } = useSupabaseCalculations();
   const [showOnboarding, setShowOnboarding] = useState(() => {
     // Show onboarding for first-time users
     return !localStorage.getItem("hvac_platform_onboarding_completed");
@@ -247,7 +247,7 @@ export function EnhancedStandardCycleContent() {
 
         Object.keys(calculationData.state_points).forEach((key) => {
           const point = calculationData.state_points[key];
-          console.log(`\n🔸 STATE POINT ${key}:`);
+          console.log(`\n���� STATE POINT ${key}:`);
           console.log(
             `  🔑 Available Properties (${Object.keys(point).length}):`,
             Object.keys(point),
