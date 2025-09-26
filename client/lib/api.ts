@@ -1,7 +1,9 @@
 // Base URL for external calculation service. Prefer env override VITE_API_BASE_URL
+import { supabase } from "./supabase";
+
 export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
-  "https://simulateon-backend-new.onrender.com";
+  "https://simulateon-backend.onrender.com";
 
 interface ApiResponse<T> {
   success: boolean;
@@ -57,7 +59,7 @@ interface UserStats {
 }
 
 interface SubscriptionPlan {
-  id: number;
+  id: string;
   name: string;
   display_name: string;
   price_monthly: number;
@@ -211,8 +213,80 @@ class ApiClient {
   }
 
   // Subscriptions
+  private async fetchSubscriptionPlansFromSupabase(): Promise<
+    ApiResponse<SubscriptionPlan[]>
+  > {
+    if (!supabase) {
+      return {
+        success: false,
+        error: "Supabase not configured",
+        details:
+          "VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY is missing or invalid",
+      };
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from("subscription_plans")
+        .select("id, name, display_name, price_monthly, price_yearly, calculations_limit, features, is_active, savings")
+        .eq("is_active", true)
+        .order("price_monthly", { ascending: true });
+
+      if (error || !data) {
+        return {
+          success: false,
+          error: error?.message || "Failed to load subscription plans",
+        };
+      }
+
+      const normalizedPlans: SubscriptionPlan[] = data.map((plan) => ({
+        id: plan.id,
+        name: plan.name,
+        display_name: plan.display_name,
+        price_monthly: Number(plan.price_monthly ?? 0),
+        price_yearly: Number(plan.price_yearly ?? 0),
+        calculations_limit: plan.calculations_limit ?? 0,
+        features: Array.isArray(plan.features) ? plan.features : [],
+        is_active: plan.is_active ?? true,
+        savings: plan.savings != null ? Number(plan.savings) : undefined,
+      }));
+
+      return {
+        success: true,
+        data: normalizedPlans,
+      };
+    } catch (error) {
+      console.error("Supabase subscription plans fetch failed:", error);
+      return {
+        success: false,
+        error: "Failed to load subscription plans",
+        details: error instanceof Error ? error.message : undefined,
+      };
+    }
+  }
+
   async getSubscriptionPlans(): Promise<ApiResponse<SubscriptionPlan[]>> {
-    return this.request<SubscriptionPlan[]>("/api/subscriptions/plans");
+    const apiResponse = await this.request<SubscriptionPlan[]>(
+      "/api/subscriptions/plans",
+    );
+
+    if (apiResponse.success && apiResponse.data?.length) {
+      return apiResponse;
+    }
+
+    const supabaseResponse = await this.fetchSubscriptionPlansFromSupabase();
+    if (supabaseResponse.success && supabaseResponse.data?.length) {
+      return supabaseResponse;
+    }
+
+    return {
+      success: false,
+      error:
+        apiResponse.error ||
+        supabaseResponse.error ||
+        "Unable to retrieve subscription plans",
+      details: apiResponse.details || supabaseResponse.details,
+    };
   }
 
   async getCurrentSubscription(): Promise<
