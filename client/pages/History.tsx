@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   useSupabaseCalculations,
   Calculation,
 } from "@/hooks/useSupabaseCalculations";
+import { useToast } from "@/hooks/useToast";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -13,14 +16,13 @@ import {
   History as HistoryIcon,
   Search,
   Calendar,
-  Download,
   Trash2,
   Calculator,
   TrendingUp,
   BarChart3,
-  Filter,
   Eye,
-  Edit,
+  RefreshCw,
+  Copy,
   Loader2,
 } from "lucide-react";
 import {
@@ -37,7 +39,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { CalculationDetailsModal } from "@/components/CalculationDetailsModal";
+import { RenameCalculationDialog } from "@/components/RenameCalculationDialog";
+import { storeCalculationPreset } from "@/lib/historyPresets";
 
 export function History() {
   const { calculations, isLoading, deleteCalculation, updateCalculation } =
