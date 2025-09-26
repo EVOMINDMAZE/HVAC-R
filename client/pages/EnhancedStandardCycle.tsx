@@ -123,6 +123,9 @@ export function EnhancedStandardCycleContent() {
   });
   const [onboardingStep, setOnboardingStep] = useState(0);
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
+  const [pendingPresetInputs, setPendingPresetInputs] = useState<
+    Partial<typeof formData> | null
+  >(null);
 
   const defaultCalculationName = useMemo(
     () => `Standard Cycle - ${new Date().toLocaleDateString()}`,
