@@ -28,6 +28,34 @@ import {
   Loader2,
 } from "lucide-react";
 
+interface DashboardStats {
+  totalCalculations: number;
+  monthlyCalculations: number;
+  plan: string;
+  planDisplayName: string;
+  isUnlimited: boolean;
+  remaining: number;
+  remainingText: string;
+  monthlyLimit: number;
+  usagePercentage: number;
+  isNearLimit: boolean;
+  isAtLimit: boolean;
+  remainingValue: number;
+  billingCycleResetLabel: string;
+}
+
+interface QuickStatsProps {
+  stats: DashboardStats;
+  user: User | null;
+  isLoading: boolean;
+  onRefresh: () => void;
+}
+
+interface UsageProgressCardProps {
+  stats: DashboardStats;
+  onUpgrade: () => void;
+}
+
 function formatNumber(n: number) {
   return new Intl.NumberFormat(undefined).format(n);
 }
