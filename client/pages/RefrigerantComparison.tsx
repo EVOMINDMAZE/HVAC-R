@@ -140,6 +140,62 @@ export function RefrigerantComparisonContent() {
   ] = useState<string | null>(null);
   const { addToast } = useToast();
 
+  useEffect(() => {
+    const preset = consumeCalculationPreset();
+    if (preset?.type !== "Refrigerant Comparison" || !preset.inputs) {
+      return;
+    }
+
+    try {
+      const rawInputs = preset.inputs as Partial<ComparisonFormData>;
+      const normalizedInputs: ComparisonFormData = {
+        refrigerants: Array.isArray(rawInputs.refrigerants)
+          ? [...rawInputs.refrigerants]
+          : [],
+        evaporatorTemp:
+          typeof rawInputs.evaporatorTemp === "number"
+            ? rawInputs.evaporatorTemp
+            : DEFAULT_COMPARISON_FORM.evaporatorTemp,
+        condenserTemp:
+          typeof rawInputs.condenserTemp === "number"
+            ? rawInputs.condenserTemp
+            : DEFAULT_COMPARISON_FORM.condenserTemp,
+        superheat:
+          typeof rawInputs.superheat === "number"
+            ? rawInputs.superheat
+            : DEFAULT_COMPARISON_FORM.superheat,
+        subcooling:
+          typeof rawInputs.subcooling === "number"
+            ? rawInputs.subcooling
+            : DEFAULT_COMPARISON_FORM.subcooling,
+      };
+
+      setFormData(normalizedInputs);
+      setPendingPreset(normalizedInputs);
+      setSelectedRefrigerantForVisualization(
+        normalizedInputs.refrigerants[0] || null,
+      );
+
+      const warningsRecord: { [key: string]: string[] } = {};
+      normalizedInputs.refrigerants.forEach((refId) => {
+        const refProps = getRefrigerantById(refId);
+        if (!refProps) return;
+        const warnings = validateCycleConditions(refProps, {
+          evaporatorTemp: normalizedInputs.evaporatorTemp,
+          condenserTemp: normalizedInputs.condenserTemp,
+          superheat: normalizedInputs.superheat,
+          subcooling: normalizedInputs.subcooling,
+        });
+        if (warnings.length > 0) {
+          warningsRecord[refId] = warnings;
+        }
+      });
+      setValidationWarnings(warningsRecord);
+    } catch (error) {
+      console.warn("Failed to apply preset for refrigerant comparison", error);
+    }
+  }, []);
+
   const handleInputChange = useCallback(
     (field: keyof Omit<ComparisonFormData, "refrigerants">, value: number) => {
       setFormData((prev) => ({
