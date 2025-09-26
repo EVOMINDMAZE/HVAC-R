@@ -425,7 +425,7 @@ export function History() {
                         calculationId={calculation.id}
                         initialName={calculation.name ?? undefined}
                         fallbackName={calculation.calculation_type}
-                        disabled={isDeleting}
+                        disabled={isDeleting || cloneLoadingId === calculation.id}
                         className="!h-8"
                       />
                       <Button
