@@ -1799,14 +1799,37 @@ export function EnhancedStandardCycleContent() {
         </TabsContent>
 
         <TabsContent value="results">
-          <div className="flex justify-end mb-4">
+          {showSuccessBanner && results && (
+            <Alert
+              variant="success"
+              className="mb-4 border-emerald-400/70 bg-emerald-50 shadow-sm"
+            >
+              <CheckCircle className="h-5 w-5" aria-hidden />
+              <AlertTitle>Calculation complete</AlertTitle>
+              <AlertDescription>
+                Outcomes generated with {formData.refrigerant}. Review, rename, or save this scenario to your history.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          <div className="mb-4 flex flex-wrap items-center justify-end gap-2">
             {results && (
-              <SaveCalculation
-                calculationType="Standard Cycle"
-                inputs={formData}
-                results={results}
-                disabled={loading}
-              />
+              <>
+                {matchingCalculation && (
+                  <RenameCalculationDialog
+                    calculationId={matchingCalculation.id}
+                    initialName={matchingCalculation.name ?? undefined}
+                    fallbackName={defaultCalculationName}
+                    disabled={loading}
+                  />
+                )}
+                <SaveCalculation
+                  calculationType="Standard Cycle"
+                  inputs={formData}
+                  results={results}
+                  disabled={loading}
+                />
+              </>
             )}
           </div>
 
