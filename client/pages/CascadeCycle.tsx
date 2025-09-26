@@ -517,6 +517,15 @@ export function CascadeCycleContent() {
     }
   };
 
+  useEffect(() => {
+    if (!pendingPreset) {
+      return;
+    }
+
+    void handleCalculate();
+    setPendingPreset(null);
+  }, [handleCalculate, pendingPreset]);
+
   const getVisualizationData = (cycle: "lt" | "ht") => {
     if (!result) return null;
 
