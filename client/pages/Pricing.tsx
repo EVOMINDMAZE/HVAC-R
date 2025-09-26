@@ -320,7 +320,10 @@ export function Pricing() {
               </TabsList>
             </Tabs>
             {billingCycle === "yearly" && (
-              <Badge variant="secondary" className="bg-green-100 text-green-700">
+              <Badge
+                variant="secondary"
+                className="bg-green-100 text-green-700"
+              >
                 Save up to 17%
               </Badge>
             )}

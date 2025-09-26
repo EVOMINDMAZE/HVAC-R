@@ -11,7 +11,7 @@ import { Calculator, Mail, Lock, Eye, EyeOff } from "lucide-react";
 export function SignIn() {
   const [formData, setFormData] = useState({
     email: "",
-    password: ""
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -31,12 +31,13 @@ export function SignIn() {
 
       // The redirect will handle navigation
     } catch (err: any) {
-      const errorMsg = err.message || "Google sign in failed. Please try again.";
+      const errorMsg =
+        err.message || "Google sign in failed. Please try again.";
       setError(errorMsg);
       addToast({
-        type: 'error',
-        title: 'Google Sign In Failed',
-        description: errorMsg
+        type: "error",
+        title: "Google Sign In Failed",
+        description: errorMsg,
       });
       setLoading(false);
     }
@@ -48,7 +49,10 @@ export function SignIn() {
     setLoading(true);
 
     try {
-      const { user, error: signInError } = await signIn(formData.email, formData.password);
+      const { user, error: signInError } = await signIn(
+        formData.email,
+        formData.password,
+      );
 
       if (signInError) {
         throw new Error(signInError.message);
@@ -56,19 +60,20 @@ export function SignIn() {
 
       if (user) {
         addToast({
-          type: 'success',
-          title: 'Welcome back!',
-          description: 'You have been signed in successfully'
+          type: "success",
+          title: "Welcome back!",
+          description: "You have been signed in successfully",
         });
         navigate("/dashboard");
       }
     } catch (err: any) {
-      const errorMsg = err.message || "Sign in failed. Please check your credentials.";
+      const errorMsg =
+        err.message || "Sign in failed. Please check your credentials.";
       setError(errorMsg);
       addToast({
-        type: 'error',
-        title: 'Sign In Failed',
-        description: errorMsg
+        type: "error",
+        title: "Sign In Failed",
+        description: errorMsg,
       });
     } finally {
       setLoading(false);
@@ -76,7 +81,7 @@ export function SignIn() {
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -84,7 +89,10 @@ export function SignIn() {
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <Link to="/" className="flex items-center justify-center space-x-2 mb-4 no-underline">
+          <Link
+            to="/"
+            className="flex items-center justify-center space-x-2 mb-4 no-underline"
+          >
             <Calculator className="h-10 w-10 text-blue-600" />
             <h1 className="text-3xl font-bold text-blue-900">Simulateon</h1>
           </Link>
@@ -93,7 +101,9 @@ export function SignIn() {
 
         <Card className="bg-white/80 backdrop-blur-sm border-blue-200 shadow-xl">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center text-gray-900">Welcome Back</CardTitle>
+            <CardTitle className="text-2xl text-center text-gray-900">
+              Welcome Back
+            </CardTitle>
             <p className="text-center text-gray-600">
               Continue with your HVAC&R calculations
             </p>
@@ -127,7 +137,9 @@ export function SignIn() {
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     value={formData.password}
-                    onChange={(e) => handleInputChange("password", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("password", e.target.value)
+                    }
                     className="pl-10 pr-10 border-blue-200 focus:border-blue-500"
                     required
                   />
@@ -136,7 +148,11 @@ export function SignIn() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
                   >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -161,7 +177,9 @@ export function SignIn() {
                 <span className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="bg-white px-2 text-gray-500">Or continue with</span>
+                <span className="bg-white px-2 text-gray-500">
+                  Or continue with
+                </span>
               </div>
             </div>
 

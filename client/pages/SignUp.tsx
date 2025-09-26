@@ -12,7 +12,7 @@ export function SignUp() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -33,12 +33,13 @@ export function SignUp() {
 
       // The redirect will handle navigation
     } catch (err: any) {
-      const errorMsg = err.message || "Google sign up failed. Please try again.";
+      const errorMsg =
+        err.message || "Google sign up failed. Please try again.";
       setError(errorMsg);
       addToast({
-        type: 'error',
-        title: 'Google Sign Up Failed',
-        description: errorMsg
+        type: "error",
+        title: "Google Sign Up Failed",
+        description: errorMsg,
       });
       setLoading(false);
     }
@@ -52,9 +53,9 @@ export function SignUp() {
       const errorMsg = "Passwords don't match";
       setError(errorMsg);
       addToast({
-        type: 'warning',
-        title: 'Password Mismatch',
-        description: errorMsg
+        type: "warning",
+        title: "Password Mismatch",
+        description: errorMsg,
       });
       return;
     }
@@ -63,9 +64,9 @@ export function SignUp() {
       const errorMsg = "Password must be at least 6 characters long";
       setError(errorMsg);
       addToast({
-        type: 'warning',
-        title: 'Password Too Short',
-        description: errorMsg
+        type: "warning",
+        title: "Password Too Short",
+        description: errorMsg,
       });
       return;
     }
@@ -73,17 +74,20 @@ export function SignUp() {
     setLoading(true);
 
     try {
-      const { user, error: signUpError } = await signUp(formData.email, formData.password);
-      
+      const { user, error: signUpError } = await signUp(
+        formData.email,
+        formData.password,
+      );
+
       if (signUpError) {
         throw new Error(signUpError.message);
       }
 
       if (user) {
         addToast({
-          type: 'success',
-          title: 'Welcome to Simulateon!',
-          description: 'Please check your email to confirm your account'
+          type: "success",
+          title: "Welcome to Simulateon!",
+          description: "Please check your email to confirm your account",
         });
         navigate("/dashboard");
       }
@@ -91,9 +95,9 @@ export function SignUp() {
       const errorMsg = err.message || "Registration failed. Please try again.";
       setError(errorMsg);
       addToast({
-        type: 'error',
-        title: 'Registration Failed',
-        description: errorMsg
+        type: "error",
+        title: "Registration Failed",
+        description: errorMsg,
       });
     } finally {
       setLoading(false);
@@ -101,7 +105,7 @@ export function SignUp() {
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -109,7 +113,10 @@ export function SignUp() {
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <Link to="/" className="flex items-center justify-center space-x-2 mb-4 no-underline">
+          <Link
+            to="/"
+            className="flex items-center justify-center space-x-2 mb-4 no-underline"
+          >
             <Calculator className="h-10 w-10 text-blue-600" />
             <h1 className="text-3xl font-bold text-blue-900">Simulateon</h1>
           </Link>
@@ -118,7 +125,9 @@ export function SignUp() {
 
         <Card className="bg-white/80 backdrop-blur-sm border-blue-200 shadow-xl">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center text-gray-900">Join Simulateon</CardTitle>
+            <CardTitle className="text-2xl text-center text-gray-900">
+              Join Simulateon
+            </CardTitle>
             <p className="text-center text-gray-600">
               Get started with professional HVAC&R calculations
             </p>
@@ -152,7 +161,9 @@ export function SignUp() {
                     type={showPassword ? "text" : "password"}
                     placeholder="Create a strong password"
                     value={formData.password}
-                    onChange={(e) => handleInputChange("password", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("password", e.target.value)
+                    }
                     className="pl-10 pr-10 border-blue-200 focus:border-blue-500"
                     required
                   />
@@ -161,7 +172,11 @@ export function SignUp() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
                   >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -176,7 +191,9 @@ export function SignUp() {
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Confirm your password"
                     value={formData.confirmPassword}
-                    onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("confirmPassword", e.target.value)
+                    }
                     className="pl-10 pr-10 border-blue-200 focus:border-blue-500"
                     required
                   />
@@ -185,7 +202,11 @@ export function SignUp() {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
                   >
-                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -210,7 +231,9 @@ export function SignUp() {
                 <span className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="bg-white px-2 text-gray-500">Or continue with</span>
+                <span className="bg-white px-2 text-gray-500">
+                  Or continue with
+                </span>
               </div>
             </div>
 
