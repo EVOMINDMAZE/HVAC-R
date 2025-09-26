@@ -144,8 +144,6 @@ export function CascadeCycleContent() {
   const [selectedVisualizationCycle, setSelectedVisualizationCycle] = useState<
     "lt" | "ht"
   >("lt");
-  const [debugResponse, setDebugResponse] = useState<any | null>(null);
-  const [showDebug, setShowDebug] = useState(false);
   const { addToast } = useToast();
   const { saveCalculation } = useSupabaseCalculations();
 
