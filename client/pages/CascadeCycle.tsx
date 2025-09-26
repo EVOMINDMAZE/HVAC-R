@@ -122,6 +122,17 @@ const RECOMMENDED_GUIDANCE = {
   cascadeDeltaT: { min: 3, max: 8 },
 } as const;
 
+const buildCycleWarnings = (cycleData: CycleData): string[] => {
+  const refProps = getRefrigerantById(cycleData.refrigerant);
+  if (!refProps) return [];
+  return validateCycleConditions(refProps, {
+    evaporatorTemp: cycleData.evaporatorTemp,
+    condenserTemp: cycleData.condenserTemp,
+    superheat: cycleData.superheat,
+    subcooling: cycleData.subcooling,
+  });
+};
+
 // Content component for use within Dashboard tabs (no header)
 export function CascadeCycleContent() {
   const [formData, setFormData] = useState<CascadeFormData>(() => ({
