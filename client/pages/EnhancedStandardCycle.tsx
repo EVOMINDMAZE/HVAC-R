@@ -443,6 +443,9 @@ export function EnhancedStandardCycleContent() {
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred";
 
+      setShowSuccessBanner(false);
+      setCalculationComplete(false);
+
       // Handle specific CoolProp errors for blend refrigerants with an automated retry
       if (
         errorMessage.includes("Two-phase inputs not supported for pseudo-pure")
