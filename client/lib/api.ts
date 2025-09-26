@@ -239,8 +239,10 @@ class ApiClient {
 
     try {
       const { data, error } = await supabase
-        .from("subscription_plans")
-        .select("id, name, display_name, price_monthly, price_yearly, calculations_limit, features, is_active, savings")
+        .from<SupabaseSubscriptionPlanRow>("subscription_plans")
+        .select(
+          "id, name, display_name, price_monthly, price_yearly, calculations_limit, features, is_active, savings",
+        )
         .eq("is_active", true)
         .order("price_monthly", { ascending: true });
 
@@ -251,17 +253,42 @@ class ApiClient {
         };
       }
 
-      const normalizedPlans: SubscriptionPlan[] = data.map((plan) => ({
-        id: plan.id,
-        name: plan.name,
-        display_name: plan.display_name,
-        price_monthly: Number(plan.price_monthly ?? 0),
-        price_yearly: Number(plan.price_yearly ?? 0),
-        calculations_limit: plan.calculations_limit ?? 0,
-        features: Array.isArray(plan.features) ? plan.features : [],
-        is_active: plan.is_active ?? true,
-        savings: plan.savings != null ? Number(plan.savings) : undefined,
-      }));
+      const parseNumber = (
+        value: number | string | null | undefined,
+        defaultValue = 0,
+      ) => {
+        if (value === null || value === undefined) {
+          return defaultValue;
+        }
+        const parsed = Number(value);
+        return Number.isFinite(parsed) ? parsed : defaultValue;
+      };
+
+      console.warn("Using Supabase subscription plan data fallback");
+
+      const normalizedPlans: SubscriptionPlan[] = data.map((plan) => {
+        const calculationsLimit =
+          typeof plan.calculations_limit === "number"
+            ? plan.calculations_limit
+            : parseNumber(plan.calculations_limit, 0);
+
+        const savingsValue =
+          plan.savings !== null && plan.savings !== undefined
+            ? parseNumber(plan.savings, 0)
+            : undefined;
+
+        return {
+          id: plan.id,
+          name: plan.name,
+          display_name: plan.display_name,
+          price_monthly: parseNumber(plan.price_monthly, 0),
+          price_yearly: parseNumber(plan.price_yearly, 0),
+          calculations_limit: calculationsLimit,
+          features: Array.isArray(plan.features) ? plan.features : [],
+          is_active: plan.is_active ?? true,
+          savings: savingsValue && savingsValue > 0 ? savingsValue : undefined,
+        };
+      });
 
       return {
         success: true,
