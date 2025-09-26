@@ -582,9 +582,29 @@ export function RefrigerantComparisonContent() {
         <CardContent className="p-6">
           <div className="space-y-6">
             <div>
-              <Label className="text-base font-semibold mb-4 block">
-                Select Refrigerants to Compare
-              </Label>
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-base font-semibold">
+                    Select Refrigerants to Compare
+                  </span>
+                  {hasSelections && (
+                    <Badge variant="outline" className="border-blue-200 bg-blue-50 text-blue-700">
+                      {selectedCount} selected
+                    </Badge>
+                  )}
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleClearSelections}
+                  disabled={!hasSelections}
+                  className="flex items-center gap-2 text-blue-700 hover:text-blue-900"
+                >
+                  <Trash2 className="h-4 w-4" aria-hidden />
+                  Clear all
+                </Button>
+              </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {REFRIGERANT_DATABASE.map((refrigerant) => {
                   const hasWarnings =
