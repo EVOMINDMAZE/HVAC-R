@@ -109,7 +109,50 @@ const technicalTerms: Record<
   density: {
     title: "Density",
     description: "Mass per unit volume of the refrigerant.",
-    details: "Measured in kg/m³. Can be derived from state point properties or estimated using ideal gas approximations when needed.",
+    details:
+      "Measured in kg/m³. Can be derived from state point properties or estimated using ideal gas approximations when needed.",
+  },
+  cooling_capacity: {
+    title: "Cooling Capacity",
+    description: "Total rate of heat removal provided by the evaporator.",
+    details:
+      "Typically measured in kilowatts (kW). Equals the refrigeration effect multiplied by mass flow rate.",
+  },
+  compressor_work: {
+    title: "Compressor Work",
+    description: "Mechanical power required to compress the refrigerant.",
+    details:
+      "Measured in kilowatts (kW). Directly impacts energy consumption and operating cost.",
+  },
+  heat_rejection: {
+    title: "Heat Rejection",
+    description: "Total heat rejected by the condenser to the surroundings.",
+    details:
+      "Measured in kilowatts (kW). Equal to cooling capacity plus compressor work for ideal cycles.",
+  },
+  mass_flow_rate: {
+    title: "Mass Flow Rate",
+    description: "Amount of refrigerant circulating per unit time.",
+    details:
+      "Measured in kilograms per second (kg/s). Influences compressor sizing and heat exchanger design.",
+  },
+  volumetric_flow_rate: {
+    title: "Volumetric Flow Rate",
+    description: "Volume of refrigerant flowing per unit time at compressor inlet conditions.",
+    details:
+      "Measured in cubic meters per second (m³/s). Important for selecting compressor displacement.",
+  },
+  temperature: {
+    title: "Temperature",
+    description: "Thermodynamic temperature of the refrigerant state point.",
+    details:
+      "Typically expressed in degrees Celsius (°C) in HVAC applications.",
+  },
+  pressure: {
+    title: "Pressure",
+    description: "Absolute pressure at the refrigerant state point.",
+    details:
+      "Measured in kilopascals (kPa). Determines saturation conditions and component operating limits.",
   },
 };
 
