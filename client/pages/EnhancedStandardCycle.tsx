@@ -34,6 +34,7 @@ import { CycleVisualization } from "../components/CycleVisualization";
 import { EquipmentDiagrams } from "../components/EquipmentDiagrams";
 import { TechnicalTooltip, TechTerm } from "../components/TechnicalTooltip";
 import { SaveCalculation } from "../components/SaveCalculation";
+import { RenameCalculationDialog } from "../components/RenameCalculationDialog";
 import { ProfessionalFeatures } from "../components/ProfessionalFeatures";
 import { useSupabaseCalculations } from "../hooks/useSupabaseCalculations";
 import {
