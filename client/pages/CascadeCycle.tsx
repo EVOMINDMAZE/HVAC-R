@@ -542,111 +542,140 @@ export function CascadeCycleContent() {
     titleColor: string;
     cycle: "ltCycle" | "htCycle";
     warnings: string[];
-  }) => (
-    <Card className="bg-white shadow-md border-gray-200">
-      <CardHeader className={`${titleColor} text-white`}>
-        <CardTitle className="text-lg flex items-center justify-between">
-          {title}
+  }) => {
+    const superheatOutOfRange =
+      data.superheat < RECOMMENDED_GUIDANCE.superheat.min ||
+      data.superheat > RECOMMENDED_GUIDANCE.superheat.max;
+    const subcoolingOutOfRange =
+      data.subcooling < RECOMMENDED_GUIDANCE.subcooling.min ||
+      data.subcooling > RECOMMENDED_GUIDANCE.subcooling.max;
+
+    return (
+      <Card className="bg-white shadow-md border-gray-200">
+        <CardHeader className={`${titleColor} text-white`}>
+          <CardTitle className="text-lg flex items-center justify-between">
+            {title}
+            {warnings.length > 0 && (
+              <AlertTriangle className="h-4 w-4 text-yellow-200" />
+            )}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-4 space-y-4">
+          <div className="space-y-2">
+            <Label>Refrigerant</Label>
+            <EnhancedRefrigerantSelector
+              value={data.refrigerant}
+              onChange={onRefrigerantChange}
+            />
+            {data.refrigerant && (
+              <div className="text-sm text-gray-600">
+                {(() => {
+                  const refProps = getRefrigerantById(data.refrigerant);
+                  return refProps ? (
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline">{refProps.safety_class}</Badge>
+                      <Badge
+                        variant={
+                          refProps.coolpropSupport === "full"
+                            ? "default"
+                            : "secondary"
+                        }
+                      >
+                        {refProps.coolpropSupport}
+                      </Badge>
+                    </div>
+                  ) : null;
+                })()}
+              </div>
+            )}
+          </div>
+
           {warnings.length > 0 && (
-            <AlertTriangle className="h-4 w-4 text-yellow-200" />
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Review operating limits</AlertTitle>
+              <AlertDescription>
+                <ul className="list-disc ml-4 space-y-1">
+                  {warnings.map((warning, index) => (
+                    <li key={index}>{warning}</li>
+                  ))}
+                </ul>
+              </AlertDescription>
+            </Alert>
           )}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-4 space-y-4">
-        <div className="space-y-2">
-          <Label>Refrigerant</Label>
-          <EnhancedRefrigerantSelector
-            value={data.refrigerant}
-            onChange={onRefrigerantChange}
-          />
-          {data.refrigerant && (
-            <div className="text-sm text-gray-600">
-              {(() => {
-                const refProps = getRefrigerantById(data.refrigerant);
-                return refProps ? (
-                  <div className="flex items-center gap-2">
-                    <Badge variant="outline">{refProps.safety_class}</Badge>
-                    <Badge
-                      variant={
-                        refProps.coolpropSupport === "full"
-                          ? "default"
-                          : "secondary"
-                      }
-                    >
-                      {refProps.coolpropSupport}
-                    </Badge>
-                  </div>
-                ) : null;
-              })()}
+
+          <div className="space-y-2">
+            <Label>Evaporator Temperature (°C)</Label>
+            <Input
+              type="number"
+              value={data.evaporatorTemp}
+              onChange={(e) =>
+                onChange("evaporatorTemp", parseFloat(e.target.value))
+              }
+              className="border-blue-200 focus:border-blue-500"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Condenser Temperature (°C)</Label>
+            <Input
+              type="number"
+              value={data.condenserTemp}
+              onChange={(e) =>
+                onChange("condenserTemp", parseFloat(e.target.value))
+              }
+              className="border-blue-200 focus:border-blue-500"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Superheat (°C)</Label>
+              <Input
+                type="number"
+                value={data.superheat}
+                onChange={(e) =>
+                  onChange("superheat", parseFloat(e.target.value))
+                }
+                className="border-blue-200 focus:border-blue-500"
+              />
+              <p className="text-xs text-gray-500">
+                Recommended {RECOMMENDED_GUIDANCE.superheat.min}–
+                {RECOMMENDED_GUIDANCE.superheat.max}°C
+              </p>
+              {superheatOutOfRange && (
+                <p className="text-xs text-amber-600">
+                  Adjust superheat to protect compressors and improve stability.
+                </p>
+              )}
             </div>
-          )}
-        </div>
 
-        {warnings.length > 0 && (
-          <Alert>
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>
-              <ul className="list-disc ml-4">
-                {warnings.map((warning, index) => (
-                  <li key={index}>{warning}</li>
-                ))}
-              </ul>
-            </AlertDescription>
-          </Alert>
-        )}
-
-        <div className="space-y-2">
-          <Label>Evaporator Temperature (°C)</Label>
-          <Input
-            type="number"
-            value={data.evaporatorTemp}
-            onChange={(e) =>
-              onChange("evaporatorTemp", parseFloat(e.target.value))
-            }
-            className="border-blue-200 focus:border-blue-500"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label>Condenser Temperature (°C)</Label>
-          <Input
-            type="number"
-            value={data.condenserTemp}
-            onChange={(e) =>
-              onChange("condenserTemp", parseFloat(e.target.value))
-            }
-            className="border-blue-200 focus:border-blue-500"
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label>Superheat (°C)</Label>
-            <Input
-              type="number"
-              value={data.superheat}
-              onChange={(e) =>
-                onChange("superheat", parseFloat(e.target.value))
-              }
-              className="border-blue-200 focus:border-blue-500"
-            />
+            <div className="space-y-2">
+              <Label>Subcooling (°C)</Label>
+              <Input
+                type="number"
+                value={data.subcooling}
+                onChange={(e) =>
+                  onChange("subcooling", parseFloat(e.target.value))
+                }
+                className="border-blue-200 focus:border-blue-500"
+              />
+              <p className="text-xs text-gray-500">
+                Recommended {RECOMMENDED_GUIDANCE.subcooling.min}–
+                {RECOMMENDED_GUIDANCE.subcooling.max}°C
+              </p>
+              {subcoolingOutOfRange && (
+                <p className="text-xs text-amber-600">
+                  Set subcooling within range to maximise heat exchanger
+                  capacity.
+                </p>
+              )}
+            </div>
           </div>
-
-          <div className="space-y-2">
-            <Label>Subcooling (°C)</Label>
-            <Input
-              type="number"
-              value={data.subcooling}
-              onChange={(e) =>
-                onChange("subcooling", parseFloat(e.target.value))
-              }
-              className="border-blue-200 focus:border-blue-500"
-            />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
+        </CardContent>
+      </Card>
+    );
+  };
 
   return (
     <div className="space-y-6">
