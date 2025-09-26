@@ -37,6 +37,7 @@ import { SaveCalculation } from "../components/SaveCalculation";
 import { RenameCalculationDialog } from "../components/RenameCalculationDialog";
 import { ProfessionalFeatures } from "../components/ProfessionalFeatures";
 import { useSupabaseCalculations } from "../hooks/useSupabaseCalculations";
+import { consumeCalculationPreset } from "@/lib/historyPresets";
 import {
   RefrigerantProperties,
   validateCycleConditions,
