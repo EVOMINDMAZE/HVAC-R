@@ -60,6 +60,48 @@ function formatNumber(n: number) {
   return new Intl.NumberFormat(undefined).format(n);
 }
 
+function UsageProgressCard({ stats, onUpgrade }: UsageProgressCardProps) {
+  const roundedUsage = Math.round(stats.usagePercentage);
+
+  return (
+    <Card className="border border-primary/20 bg-primary/5 shadow-sm">
+      <CardContent className="space-y-4 p-5">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+              Free plan usage
+            </p>
+            <h3 className="mt-1 text-lg font-semibold text-foreground">
+              {stats.monthlyCalculations} of {stats.monthlyLimit} calculations used
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              Resets on {stats.billingCycleResetLabel}
+            </p>
+          </div>
+          <Badge className="border border-primary/20 bg-primary/10 text-primary">
+            {roundedUsage}% used
+          </Badge>
+        </div>
+
+        <Progress
+          value={stats.usagePercentage}
+          aria-label="Monthly calculation usage"
+          className="h-2 bg-white/60"
+        />
+
+        <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-muted-foreground">
+          <span>
+            {stats.remaining} calculation{stats.remaining === 1 ? "" : "s"} remaining this month
+          </span>
+          <Button size="sm" onClick={onUpgrade}>
+            Upgrade plan
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 function QuickStats({ stats, user, isLoading, onRefresh }: any) {
   const navigate = useNavigate();
 
