@@ -339,18 +339,17 @@ export function Pricing() {
                   : "border-gray-200"
               } hover:shadow-2xl transition-all duration-300`}
             >
-              {plan.name === "professional" && (
-                <div className="absolute left-1/2 top-0 transform -translate-x-1/2 -translate-y-1/2">
-                  <Badge className="bg-blue-600 text-white px-4 py-1 text-sm">
-                    <Star className="h-3 w-3 mr-1" />
-                    Most Popular
-                  </Badge>
-                </div>
-              )}
-
               <CardHeader
-                className={`bg-gradient-to-r ${getPlanColor(plan.name)} text-white text-center py-8`}
+                className={`bg-gradient-to-r ${getPlanColor(plan.name)} text-white text-center pt-12 pb-8`}
               >
+                {plan.name === "professional" && (
+                  <div className="mb-4 flex justify-center">
+                    <Badge className="bg-white/15 text-white px-4 py-1 text-sm backdrop-blur-sm">
+                      <Star className="h-3 w-3 mr-1" />
+                      Most Popular
+                    </Badge>
+                  </div>
+                )}
                 <div className="flex justify-center mb-4">
                   {getPlanIcon(plan.name)}
                 </div>
