@@ -677,6 +677,10 @@ export function CascadeCycleContent() {
     );
   };
 
+  const cascadeDeltaTOutOfRange =
+    formData.cascadeHeatExchangerDT < RECOMMENDED_GUIDANCE.cascadeDeltaT.min ||
+    formData.cascadeHeatExchangerDT > RECOMMENDED_GUIDANCE.cascadeDeltaT.max;
+
   return (
     <div className="space-y-6">
       <div className="mb-8">
