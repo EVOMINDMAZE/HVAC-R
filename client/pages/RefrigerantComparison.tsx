@@ -564,6 +564,9 @@ export function RefrigerantComparisonContent() {
     );
   };
 
+  const selectedCount = formData.refrigerants.length;
+  const hasSelections = selectedCount > 0;
+
   return (
     <div className="space-y-6">
       <Card className="bg-white shadow-lg border-blue-200">
