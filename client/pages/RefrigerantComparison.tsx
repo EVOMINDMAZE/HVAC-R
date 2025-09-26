@@ -376,6 +376,9 @@ export function RefrigerantComparisonContent() {
   };
 
   const getNumericValue = (result: any, metricKey: string): number | null => {
+    if (result?.error) {
+      return null;
+    }
     // Try direct property
     let v = parseNumber(result[metricKey]);
     // Try common variants
