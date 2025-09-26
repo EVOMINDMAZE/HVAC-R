@@ -234,7 +234,7 @@ export function ApiDocs() {
                 Base URL
               </h3>
               <code className="text-sm bg-gray-100 px-3 py-1 rounded">
-                https://simulateon-backend-new.onrender.com
+                https://simulateon-backend.onrender.com
               </code>
             </CardContent>
           </Card>
