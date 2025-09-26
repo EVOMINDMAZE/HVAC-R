@@ -70,6 +70,18 @@ interface SubscriptionPlan {
   savings?: number;
 }
 
+type SupabaseSubscriptionPlanRow = {
+  id: string;
+  name: string;
+  display_name: string;
+  price_monthly: number | string | null;
+  price_yearly: number | string | null;
+  calculations_limit: number | null;
+  features: string[] | null;
+  is_active: boolean | null;
+  savings: number | string | null;
+};
+
 class ApiClient {
   private getAuthHeaders(): HeadersInit {
     const token = localStorage.getItem("simulateon_token");
