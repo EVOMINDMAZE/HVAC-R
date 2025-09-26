@@ -121,6 +121,36 @@ export function EnhancedStandardCycleContent() {
     return !localStorage.getItem("hvac_platform_onboarding_completed");
   });
   const [onboardingStep, setOnboardingStep] = useState(0);
+  const [showSuccessBanner, setShowSuccessBanner] = useState(false);
+
+  const defaultCalculationName = useMemo(
+    () => `Standard Cycle - ${new Date().toLocaleDateString()}`,
+    [],
+  );
+
+  const matchingCalculation = useMemo(() => {
+    if (!results) {
+      return null;
+    }
+    try {
+      return findMatchingCalculation(formData, results) ?? null;
+    } catch (calcError) {
+      console.warn("Failed to match saved calculation", calcError);
+      return null;
+    }
+  }, [findMatchingCalculation, formData, results]);
+
+  useEffect(() => {
+    if (calculationComplete && results) {
+      setShowSuccessBanner(true);
+      const timer = window.setTimeout(() => setShowSuccessBanner(false), 6000);
+      return () => window.clearTimeout(timer);
+    }
+    if (!calculationComplete && showSuccessBanner) {
+      setShowSuccessBanner(false);
+    }
+    return undefined;
+  }, [calculationComplete, results, showSuccessBanner]);
 
   const handleInputChange = useCallback((field: string, value: number) => {
     setFormData((prev) => ({
