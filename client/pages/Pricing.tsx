@@ -340,7 +340,7 @@ export function Pricing() {
               } hover:shadow-2xl transition-all duration-300`}
             >
               {plan.name === "professional" && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <div className="absolute left-1/2 top-0 transform -translate-x-1/2 -translate-y-1/2">
                   <Badge className="bg-blue-600 text-white px-4 py-1 text-sm">
                     <Star className="h-3 w-3 mr-1" />
                     Most Popular
