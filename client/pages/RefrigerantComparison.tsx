@@ -117,11 +117,7 @@ const performanceMetrics = [
 // Content component for use within Dashboard tabs (no header)
 export function RefrigerantComparisonContent() {
   const [formData, setFormData] = useState<ComparisonFormData>({
-    refrigerants: [],
-    evaporatorTemp: -10,
-    condenserTemp: 40,
-    superheat: 5,
-    subcooling: 5,
+    ...DEFAULT_COMPARISON_FORM,
   });
 
   const [result, setResult] = useState<ComparisonResult | null>(null);
@@ -135,6 +131,9 @@ export function RefrigerantComparisonContent() {
   const [validationWarnings, setValidationWarnings] = useState<{
     [key: string]: string[];
   }>({});
+  const [pendingPreset, setPendingPreset] = useState<ComparisonFormData | null>(
+    null,
+  );
   const [
     selectedRefrigerantForVisualization,
     setSelectedRefrigerantForVisualization,
