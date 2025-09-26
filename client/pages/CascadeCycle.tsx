@@ -37,6 +37,7 @@ import {
   validateCycleConditions,
   getRefrigerantById,
 } from "@/lib/refrigerants";
+import { consumeCalculationPreset } from "@/lib/historyPresets";
 
 interface CycleData {
   refrigerant: string;
