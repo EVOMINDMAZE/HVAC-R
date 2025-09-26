@@ -297,7 +297,7 @@ export function Pricing() {
           </p>
 
           {/* Billing Toggle */}
-          <div className="flex items-center justify-center mb-12">
+          <div className="mb-12 flex flex-col items-center gap-3">
             <Tabs
               value={billingCycle}
               onValueChange={(value) =>
@@ -319,12 +319,11 @@ export function Pricing() {
                 </TabsTrigger>
               </TabsList>
             </Tabs>
-            <Badge
-              variant="secondary"
-              className={`ml-4 bg-green-100 text-green-700 ${billingCycle === "yearly" ? "" : "invisible"}`}
-            >
-              Save up to 17%
-            </Badge>
+            {billingCycle === "yearly" && (
+              <Badge variant="secondary" className="bg-green-100 text-green-700">
+                Save up to 17%
+              </Badge>
+            )}
           </div>
         </div>
 
