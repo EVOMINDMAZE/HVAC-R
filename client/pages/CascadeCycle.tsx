@@ -151,7 +151,10 @@ export function CascadeCycleContent() {
   const [validationWarnings, setValidationWarnings] = useState<{
     lt: string[];
     ht: string[];
-  }>({ lt: [], ht: [] });
+  }>(() => ({
+    lt: buildCycleWarnings(DEFAULT_LOW_TEMP_CYCLE),
+    ht: buildCycleWarnings(DEFAULT_HIGH_TEMP_CYCLE),
+  }));
   const [selectedVisualizationCycle, setSelectedVisualizationCycle] = useState<
     "lt" | "ht"
   >("lt");
