@@ -2025,7 +2025,7 @@ export function EnhancedStandardCycleContent() {
                         </div>
                         <div className="grid grid-cols-2 gap-2 text-sm">
                           <div>
-                            T:{" "}
+                            <TechTerm term="temperature">T</TechTerm>:{" "}
                             {formatValue(
                               getPropertyValue(point, [
                                 "temperature_c",
@@ -2036,7 +2036,7 @@ export function EnhancedStandardCycleContent() {
                             )}
                           </div>
                           <div>
-                            P:{" "}
+                            <TechTerm term="pressure">P</TechTerm>:{" "}
                             {formatValue(
                               getPropertyValue(point, [
                                 "pressure_kpa",
