@@ -165,6 +165,70 @@ export function CascadeCycleContent() {
   const { addToast } = useToast();
   const { saveCalculation } = useSupabaseCalculations();
 
+  useEffect(() => {
+    const preset = consumeCalculationPreset();
+    if (preset?.type !== "Cascade Cycle" || !preset.inputs) {
+      return;
+    }
+
+    try {
+      const rawInputs = preset.inputs as Partial<CascadeFormData>;
+      const normalizeCycle = (
+        fallback: CycleData,
+        incoming?: Partial<CycleData>,
+      ): CycleData => ({
+        refrigerant:
+          typeof incoming?.refrigerant === "string" && incoming.refrigerant
+            ? incoming.refrigerant
+            : fallback.refrigerant,
+        evaporatorTemp:
+          typeof incoming?.evaporatorTemp === "number"
+            ? incoming.evaporatorTemp
+            : fallback.evaporatorTemp,
+        condenserTemp:
+          typeof incoming?.condenserTemp === "number"
+            ? incoming.condenserTemp
+            : fallback.condenserTemp,
+        superheat:
+          typeof incoming?.superheat === "number"
+            ? incoming.superheat
+            : fallback.superheat,
+        subcooling:
+          typeof incoming?.subcooling === "number"
+            ? incoming.subcooling
+            : fallback.subcooling,
+      });
+
+      const normalizedLt = normalizeCycle(
+        DEFAULT_LOW_TEMP_CYCLE,
+        rawInputs.ltCycle,
+      );
+      const normalizedHt = normalizeCycle(
+        DEFAULT_HIGH_TEMP_CYCLE,
+        rawInputs.htCycle,
+      );
+
+      const normalized: CascadeFormData = {
+        ltCycle: normalizedLt,
+        htCycle: normalizedHt,
+        cascadeHeatExchangerDT:
+          typeof rawInputs.cascadeHeatExchangerDT === "number"
+            ? rawInputs.cascadeHeatExchangerDT
+            : DEFAULT_CASCADE_FORM.cascadeHeatExchangerDT,
+      };
+
+      setFormData(normalized);
+      setValidationWarnings({
+        lt: buildCycleWarnings(normalized.ltCycle),
+        ht: buildCycleWarnings(normalized.htCycle),
+      });
+      setSelectedVisualizationCycle("lt");
+      setPendingPreset(normalized);
+    } catch (error) {
+      console.warn("Failed to apply preset for cascade cycle", error);
+    }
+  }, []);
+
   const handleCycleInputChange = useCallback(
     (
       cycle: "ltCycle" | "htCycle",
