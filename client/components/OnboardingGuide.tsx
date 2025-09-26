@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import {
   Calculator,
   History,
@@ -80,6 +81,7 @@ export function OnboardingGuide({ userName, className }: OnboardingGuideProps) {
   };
 
   const currentStep = steps[activeStep];
+  const StepIcon = currentStep.icon;
 
   return (
     <div className={className}>
@@ -118,7 +120,7 @@ export function OnboardingGuide({ userName, className }: OnboardingGuideProps) {
             </div>
 
             <div className="flex items-start gap-4 rounded-lg border bg-muted/30 p-4">
-              <currentStep.icon className="mt-1 h-6 w-6 text-primary" aria-hidden />
+              <StepIcon className="mt-1 h-6 w-6 text-primary" aria-hidden />
               <div>
                 <h3 className="text-lg font-semibold">
                   {currentStep.title}
@@ -133,11 +135,12 @@ export function OnboardingGuide({ userName, className }: OnboardingGuideProps) {
               {steps.map((step, index) => (
                 <div
                   key={step.title}
-                  className={`flex items-start gap-3 rounded-md p-3 ${
+                  className={cn(
+                    "flex items-start gap-3 rounded-md p-3 transition-all",
                     index === activeStep
                       ? "bg-background shadow-sm"
-                      : "opacity-80"
-                  }`}
+                      : "opacity-80",
+                  )}
                 >
                   <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
                     {index + 1}
