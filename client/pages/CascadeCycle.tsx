@@ -808,8 +808,20 @@ export function CascadeCycleContent() {
                     />
                     <p className="text-sm text-gray-600">
                       Temperature difference between the two cycles in the
-                      cascade heat exchanger
+                      cascade heat exchanger.
                     </p>
+                    <p className="text-xs text-gray-500">
+                      Recommended range:
+                      {" "}
+                      {RECOMMENDED_GUIDANCE.cascadeDeltaT.min}–
+                      {RECOMMENDED_GUIDANCE.cascadeDeltaT.max}°C
+                    </p>
+                    {cascadeDeltaTOutOfRange && (
+                      <p className="text-xs text-amber-600">
+                        Adjust ΔT to keep the interstage heat exchanger within
+                        efficient operating limits.
+                      </p>
+                    )}
                   </div>
                 </div>
 
