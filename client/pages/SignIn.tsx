@@ -84,10 +84,10 @@ export function SignIn() {
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center space-x-2 mb-4">
+          <Link to="/" className="flex items-center justify-center space-x-2 mb-4 no-underline">
             <Calculator className="h-10 w-10 text-blue-600" />
             <h1 className="text-3xl font-bold text-blue-900">Simulateon</h1>
-          </div>
+          </Link>
           <p className="text-gray-600">Sign in to your account</p>
         </div>
 
