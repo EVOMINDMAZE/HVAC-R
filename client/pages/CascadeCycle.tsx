@@ -272,28 +272,6 @@ export function CascadeCycleContent() {
       // Handle different response structures from the API
       const resultData = data.data || data;
 
-      // Extensive logging for debugging
-      console.log("Raw Cascade Calculation Response:", {
-        fullResponse: data,
-        resultData: resultData,
-        keys: Object.keys(resultData),
-        overallPerformance: resultData.overall_performance,
-        ltCyclePerformance: resultData.lt_cycle_performance,
-        htCyclePerformance: resultData.ht_cycle_performance,
-      });
-
-      // Extensive logging of raw result data
-      console.log("Raw Cascade Calculation Response:", {
-        fullResponse: data,
-        resultData: resultData,
-        keys: Object.keys(resultData),
-        overallPerformance: resultData.overall_performance,
-        ltCyclePerformance: resultData.lt_cycle_performance,
-        htCyclePerformance: resultData.ht_cycle_performance,
-        ltCycle: resultData.lt_cycle,
-        htCycle: resultData.ht_cycle,
-      });
-
       // Robust performance calculation with fallbacks and numeric coercion
       const asNum = (v: any) => (typeof v === "number" ? v : Number(v)) || 0;
 
@@ -346,30 +324,6 @@ export function CascadeCycleContent() {
       const systemEfficiency =
         avgCop > 0 ? Math.min(100, (overallCop / avgCop) * 100) : 0;
 
-      console.log("Comprehensive Performance Calculation:", {
-        ltWork,
-        htWork,
-        totalWork,
-        ltRefrigerationEffect,
-        htRefrigerationEffect,
-        totalRefrigerationEffect,
-        ltCop,
-        htCop,
-        avgCop,
-        overallCop,
-        systemEfficiency,
-      });
-
-      console.log("Final Performance Metrics:", {
-        overallCop,
-        systemEfficiency,
-        totalWork,
-        totalRefrigerationEffect,
-        ltCop,
-        htCop,
-        avgCop,
-      });
-
       const processedResult: CascadeResult = {
         overall_performance: {
           cop: overallCop,
@@ -414,21 +368,6 @@ export function CascadeCycleContent() {
         ht_cycle: resultData.ht_cycle,
       };
 
-      // Extensive logging of processed result
-      console.log("Processed Cascade Result:", {
-        overallCOP: processedResult.overall_performance?.cop,
-        ltCycleCOP: processedResult.lt_cycle_performance?.cop,
-        htCycleCOP: processedResult.ht_cycle_performance?.cop,
-        ltCycleWorkInput:
-          processedResult.lt_cycle_performance?.work_of_compression_kj_kg,
-        htCycleWorkInput:
-          processedResult.ht_cycle_performance?.work_of_compression_kj_kg,
-        ltCycleRefrigerationEffect:
-          processedResult.lt_cycle_performance?.refrigeration_effect_kj_kg,
-        htCycleRefrigerationEffect:
-          processedResult.ht_cycle_performance?.refrigeration_effect_kj_kg,
-      });
-
       setResult(processedResult);
 
       // Store data for saving
@@ -436,15 +375,6 @@ export function CascadeCycleContent() {
         inputs: formData,
         results: data,
       });
-
-      // Temporary: store raw API response for debugging
-      try {
-        setDebugResponse(data);
-        setShowDebug(true);
-        console.log("Debug calculateCascadeCycle response:", data);
-      } catch (e) {
-        console.warn("Failed to set debug response for cascade", e);
-      }
 
       try {
         // Auto-record the cascade calculation so counts/history reflect every run
