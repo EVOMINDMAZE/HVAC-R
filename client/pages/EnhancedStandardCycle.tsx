@@ -1872,7 +1872,9 @@ export function EnhancedStandardCycleContent() {
                           )}
                         </div>
                         <div className="text-sm text-emerald-700">
-                          Cooling Capacity
+                          <TechTerm term="cooling_capacity">
+                            Cooling Capacity
+                          </TechTerm>
                         </div>
                       </div>
                       <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
@@ -1900,7 +1902,9 @@ export function EnhancedStandardCycleContent() {
                           )}
                         </div>
                         <div className="text-sm text-amber-700">
-                          Compressor Work
+                          <TechTerm term="compressor_work">
+                            Compressor Work
+                          </TechTerm>
                         </div>
                       </div>
                       <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg">
@@ -1924,14 +1928,18 @@ export function EnhancedStandardCycleContent() {
                           )}
                         </div>
                         <div className="text-sm text-rose-700">
-                          Heat Rejection
+                          <TechTerm term="heat_rejection">
+                            Heat Rejection
+                          </TechTerm>
                         </div>
                       </div>
                     </div>
                     <Separator />
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span>Mass Flow Rate:</span>
+                        <span>
+                          <TechTerm term="mass_flow_rate">Mass Flow Rate</TechTerm>:
+                        </span>
                         <span className="font-mono">
                           {formatValue(
                             getPerformanceValue(results.performance, [
@@ -1955,7 +1963,11 @@ export function EnhancedStandardCycleContent() {
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Volumetric Flow Rate:</span>
+                        <span>
+                          <TechTerm term="volumetric_flow_rate">
+                            Volumetric Flow Rate
+                          </TechTerm>:
+                        </span>
                         <span className="font-mono">
                           {formatValue(volumetricFlowRate, "m³/s", 6)}
                         </span>
@@ -2020,7 +2032,7 @@ export function EnhancedStandardCycleContent() {
                                 "temp_c",
                                 "temperature",
                               ]),
-                              "°C",
+                              "��C",
                             )}
                           </div>
                           <div>
