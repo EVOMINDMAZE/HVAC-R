@@ -223,6 +223,29 @@ export function CascadeCycleContent() {
     }));
   }, []);
 
+  const handleApplyDefaults = useCallback(() => {
+    const ltDefaults = { ...DEFAULT_LOW_TEMP_CYCLE };
+    const htDefaults = { ...DEFAULT_HIGH_TEMP_CYCLE };
+
+    setFormData({
+      ltCycle: ltDefaults,
+      htCycle: htDefaults,
+      cascadeHeatExchangerDT: DEFAULT_CASCADE_FORM.cascadeHeatExchangerDT,
+    });
+
+    setValidationWarnings({
+      lt: buildCycleWarnings(ltDefaults),
+      ht: buildCycleWarnings(htDefaults),
+    });
+
+    addToast({
+      type: "info",
+      title: "Recommended settings applied",
+      description:
+        "We've loaded common R744/R134a cascade parameters to get you started.",
+    });
+  }, [addToast]);
+
   const handleCalculate = async () => {
     if (!formData.ltCycle.refrigerant || !formData.htCycle.refrigerant) {
       const errorMsg = "Please select refrigerants for both cycles";
