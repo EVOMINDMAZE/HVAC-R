@@ -156,11 +156,86 @@ export function History() {
     }
   };
 
-  const handleDeleteCalculation = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this calculation?")) {
-      await deleteCalculation(id);
+  const calculationRoutes = useMemo(
+    () => ({
+      "Standard Cycle": "/standard-cycle",
+      "Refrigerant Comparison": "/refrigerant-comparison",
+      "Cascade Cycle": "/cascade-cycle",
+    }),
+    [],
+  );
+
+  const handleRerunCalculation = useCallback(
+    (calculation: Calculation) => {
+      const route = calculationRoutes[calculation.calculation_type];
+      if (!route) {
+        addToast({
+          type: "error",
+          title: "Unsupported calculation",
+          description:
+            "We couldn't determine which simulator to open for this record.",
+        });
+        return;
+      }
+
+      storeCalculationPreset({
+        type: calculation.calculation_type,
+        inputs: calculation.inputs,
+        results: calculation.results,
+        sourceId: calculation.id,
+      });
+
+      addToast({
+        type: "info",
+        title: "Loading saved inputs",
+        description: `Opening ${calculation.calculation_type} with your saved settings.`,
+      });
+
+      navigate(route);
+    },
+    [addToast, calculationRoutes, navigate],
+  );
+
+  const handleCloneCalculation = useCallback(
+    async (calculation: Calculation) => {
+      const baseName = calculation.name || calculation.calculation_type;
+      const clonedName = `${baseName} copy (${new Date().toLocaleString()})`;
+      setCloneLoadingId(calculation.id);
+      try {
+        await saveCalculation(
+          calculation.calculation_type,
+          calculation.inputs,
+          calculation.results,
+          clonedName,
+        );
+      } finally {
+        setCloneLoadingId(null);
+      }
+    },
+    [saveCalculation],
+  );
+
+  const handleConfirmDelete = useCallback(async () => {
+    if (!deleteTarget) {
+      return;
     }
-  };
+    setIsDeleting(true);
+    try {
+      const success = await deleteCalculation(deleteTarget.id);
+      if (success) {
+        setDeleteTarget(null);
+      }
+    } finally {
+      setIsDeleting(false);
+    }
+  }, [deleteTarget, deleteCalculation]);
+
+  const handleCancelDelete = useCallback(() => {
+    if (isDeleting) {
+      return;
+    }
+    setDeleteTarget(null);
+  }, [isDeleting]);
 
   const handleViewDetails = (calculation: Calculation) => {
     setSelectedCalculation(calculation);
