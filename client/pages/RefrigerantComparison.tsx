@@ -49,9 +49,9 @@ interface ComparisonFormData {
 const DEFAULT_COMPARISON_FORM: ComparisonFormData = {
   refrigerants: [],
   evaporatorTemp: -10,
-  condenserTemp: 45,
+  condenserTemp: 40,
   superheat: 5,
-  subcooling: 2,
+  subcooling: 5,
 };
 
 interface RefrigerantResult {
