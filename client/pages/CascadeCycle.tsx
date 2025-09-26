@@ -179,19 +179,11 @@ export function CascadeCycleContent() {
         // Update validation warnings for the changed cycle
         if (field !== "refrigerant") {
           const cycleData = updatedData[cycle];
-          const refProps = getRefrigerantById(cycleData.refrigerant);
-          if (refProps) {
-            const warnings = validateCycleConditions(refProps, {
-              evaporatorTemp: cycleData.evaporatorTemp,
-              condenserTemp: cycleData.condenserTemp,
-              superheat: cycleData.superheat,
-              subcooling: cycleData.subcooling,
-            });
-            setValidationWarnings((current) => ({
-              ...current,
-              [cycle === "ltCycle" ? "lt" : "ht"]: warnings,
-            }));
-          }
+          const warnings = buildCycleWarnings(cycleData);
+          setValidationWarnings((current) => ({
+            ...current,
+            [cycle === "ltCycle" ? "lt" : "ht"]: warnings,
+          }));
         }
 
         return updatedData;
