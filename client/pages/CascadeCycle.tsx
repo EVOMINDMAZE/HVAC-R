@@ -726,6 +726,31 @@ export function CascadeCycleContent() {
         </TabsList>
 
         <TabsContent value="calculation">
+          <Alert className="mb-6 border-blue-200 bg-blue-50 text-slate-800">
+            <AlertTitle>Recommended starting point</AlertTitle>
+            <AlertDescription>
+              Begin with CO₂ (R744) on the low stage and R134a on the high stage.
+              Aim for superheat between {RECOMMENDED_GUIDANCE.superheat.min}–
+              {RECOMMENDED_GUIDANCE.superheat.max}°C, subcooling between
+              {" "}
+              {RECOMMENDED_GUIDANCE.subcooling.min}–
+              {RECOMMENDED_GUIDANCE.subcooling.max}°C, and a cascade ΔT of
+              {" "}
+              {RECOMMENDED_GUIDANCE.cascadeDeltaT.min}–
+              {RECOMMENDED_GUIDANCE.cascadeDeltaT.max}°C.
+            </AlertDescription>
+            <div className="mt-4">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleApplyDefaults}
+                className="border-blue-300 text-blue-700 hover:bg-blue-100"
+              >
+                Reapply recommended defaults
+              </Button>
+            </div>
+          </Alert>
           <div className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <CycleForm
