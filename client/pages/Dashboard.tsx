@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-import { useMemo } from "react";
 import type { User } from "@supabase/supabase-js";
 import { useNavigate } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
