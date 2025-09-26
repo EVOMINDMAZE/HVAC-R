@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useToast } from "@/hooks/useToast";
 import { apiClient } from "@/lib/api";
 import { Header } from "@/components/Header";
@@ -36,6 +36,7 @@ import {
   getRefrigerantById,
   REFRIGERANT_DATABASE,
 } from "@/lib/refrigerants";
+import { consumeCalculationPreset } from "@/lib/historyPresets";
 
 interface ComparisonFormData {
   refrigerants: string[];
