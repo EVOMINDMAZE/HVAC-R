@@ -159,6 +159,9 @@ export function CascadeCycleContent() {
   const [selectedVisualizationCycle, setSelectedVisualizationCycle] = useState<
     "lt" | "ht"
   >("lt");
+  const [pendingPreset, setPendingPreset] = useState<CascadeFormData | null>(
+    null,
+  );
   const { addToast } = useToast();
   const { saveCalculation } = useSupabaseCalculations();
 
