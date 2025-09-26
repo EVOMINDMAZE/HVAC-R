@@ -388,21 +388,53 @@ export function History() {
                       {formatResultSummary(calculation)}
                     </p>
 
-                    <div className="flex items-center space-x-2 pt-2">
+                    <div className="flex flex-wrap items-center gap-2 pt-3">
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => handleViewDetails(calculation)}
+                        className="flex items-center gap-1"
                       >
-                        <Eye className="h-3 w-3 mr-1" />
+                        <Eye className="h-3 w-3" />
                         View
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => handleDeleteCalculation(calculation.id)}
+                        onClick={() => handleRerunCalculation(calculation)}
+                        className="flex items-center gap-1"
                       >
-                        <Trash2 className="h-3 w-3 mr-1" />
+                        <RefreshCw className="h-3 w-3" />
+                        Re-run
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleCloneCalculation(calculation)}
+                        disabled={cloneLoadingId === calculation.id}
+                        className="flex items-center gap-1"
+                      >
+                        {cloneLoadingId === calculation.id ? (
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : (
+                          <Copy className="h-3 w-3" />
+                        )}
+                        {cloneLoadingId === calculation.id ? "Cloning" : "Clone"}
+                      </Button>
+                      <RenameCalculationDialog
+                        calculationId={calculation.id}
+                        initialName={calculation.name ?? undefined}
+                        fallbackName={calculation.calculation_type}
+                        disabled={isDeleting}
+                        className="!h-8"
+                      />
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => openDeleteDialog(calculation)}
+                        className="flex items-center gap-1 text-destructive"
+                      >
+                        <Trash2 className="h-3 w-3" />
                         Delete
                       </Button>
                     </div>
