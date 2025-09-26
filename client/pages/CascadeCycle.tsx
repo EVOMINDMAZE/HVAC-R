@@ -202,21 +202,16 @@ export function CascadeCycleContent() {
         },
       }));
 
-      // Update validation warnings
-      const cycleData = formData[cycle];
-      const refProps = getRefrigerantById(refrigerant);
-      if (refProps) {
-        const warnings = validateCycleConditions(refProps, {
-          evaporatorTemp: cycleData.evaporatorTemp,
-          condenserTemp: cycleData.condenserTemp,
-          superheat: cycleData.superheat,
-          subcooling: cycleData.subcooling,
-        });
-        setValidationWarnings((current) => ({
-          ...current,
-          [cycle === "ltCycle" ? "lt" : "ht"]: warnings,
-        }));
-      }
+      const targetCycle = {
+        ...formData[cycle],
+        refrigerant,
+      } as CycleData;
+
+      const warnings = buildCycleWarnings(targetCycle);
+      setValidationWarnings((current) => ({
+        ...current,
+        [cycle === "ltCycle" ? "lt" : "ht"]: warnings,
+      }));
     },
     [formData],
   );
