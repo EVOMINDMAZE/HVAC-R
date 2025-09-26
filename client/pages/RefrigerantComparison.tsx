@@ -815,6 +815,7 @@ export function RefrigerantComparisonContent() {
                 <CardContent className="p-6">
                   {result.results.some((r) => (r as any).error) && (
                     <Alert variant="destructive" className="mb-4">
+                      <AlertTitle>API calculation issues detected</AlertTitle>
                       <AlertDescription>
                         {result.results
                           .filter((r) => (r as any).error)
