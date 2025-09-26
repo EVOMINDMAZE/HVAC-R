@@ -80,7 +80,7 @@ export function RenameCalculationDialog({
           ) : (
             <Pencil className="h-4 w-4" aria-hidden />
           )}
-          <span className="ml-2">Rename</span>
+          <span>Rename</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
