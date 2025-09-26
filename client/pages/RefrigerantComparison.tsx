@@ -439,6 +439,15 @@ export function RefrigerantComparisonContent() {
     return null;
   };
 
+  useEffect(() => {
+    if (!pendingPreset) {
+      return;
+    }
+
+    void handleCompare();
+    setPendingPreset(null);
+  }, [handleCompare, pendingPreset]);
+
   const getNumericValue = (result: any, metricKey: string): number | null => {
     if (result?.error) {
       return null;
