@@ -420,7 +420,7 @@ export function CalculationDetailsModal({ calculation }: CalculationDetailsModal
                   <div>
                     <span className="font-medium">1 - Compressor Inlet:</span>
                     <div>{(() => {
-                      const val = getStatePointValue(pick(cascade, [["lt_cycle"], ["lt_cycle", "state_points"], ["lt_cycle", "points"], ["lt_cycle", "statePoints"], ["lt_cycle_state_points"]]) || pick(cascade, [["lt_cycle"], ["lt_cycle"]]), 1, ["temperature","temp_c","t","temp","temperature_c"]);
+                      const val = getStatePointValue(deepPick([["lt_cycle"], ["lt_cycle", "state_points"], ["lt_cycle", "points"], ["lt_cycle", "statePoints"], ["lt_cycle_state_points"], ["lt_cycle_points"], ["lt_state_points"]]) || deepPick([["lt_cycle"],["lt_cycle"]]), 1, ["temperature","temp_c","t","temp","temperature_c"]);
                       return val !== null ? `${val.toFixed(1)}°C` : "N/A";
                     })()}</div>
                   </div>
