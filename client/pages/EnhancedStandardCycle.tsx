@@ -405,16 +405,17 @@ export function EnhancedStandardCycleContent() {
     propertyNames: string[],
   ): number | undefined => {
     if (!obj) {
-      console.log("getPropertyValue: No object provided");
       return undefined;
     }
 
-    console.log(
-      `getPropertyValue: Searching for [${propertyNames.join(", ")}] in:`,
-      Object.keys(obj),
-    );
+    const toNumeric = (value: unknown): number | undefined => {
+      if (value === undefined || value === null) {
+        return undefined;
+      }
+      const numericValue = Number(value);
+      return Number.isFinite(numericValue) ? numericValue : undefined;
+    };
 
-    // Comprehensive CoolProp property mapping with all known variations
     const propertyMap: Record<string, string[]> = {
       temperature: [
         "temp_c",
@@ -519,19 +520,14 @@ export function EnhancedStandardCycleContent() {
       ],
     };
 
-    // Step 1: Try exact matches first
     for (const name of propertyNames) {
-      const value = obj[name];
-      if (value !== undefined && value !== null && !isNaN(Number(value))) {
-        const numValue = Number(value);
-        console.log(`✓ Found exact match ${name}:`, numValue);
-        return numValue;
+      const numericValue = toNumeric(obj[name]);
+      if (numericValue !== undefined) {
+        return numericValue;
       }
     }
 
-    // Step 2: Try property map variations
     for (const primaryProperty of propertyNames) {
-      // Find property type by checking against map keys
       for (const [propertyType, variations] of Object.entries(propertyMap)) {
         if (
           primaryProperty.toLowerCase().includes(propertyType.toLowerCase()) ||
@@ -539,57 +535,32 @@ export function EnhancedStandardCycleContent() {
             .toLowerCase()
             .includes(propertyType.substring(0, 4).toLowerCase())
         ) {
-          console.log(
-            `Searching ${propertyType} variations for ${primaryProperty}:`,
-            variations,
-          );
-
           for (const variation of variations) {
-            const value = obj[variation];
-            if (
-              value !== undefined &&
-              value !== null &&
-              !isNaN(Number(value))
-            ) {
-              const numValue = Number(value);
-              console.log(
-                `✓ Found fallback ${variation} for ${primaryProperty}:`,
-                numValue,
-              );
-              return numValue;
+            const numericValue = toNumeric(obj[variation]);
+            if (numericValue !== undefined) {
+              return numericValue;
             }
           }
         }
       }
     }
 
-    // Step 3: Case-insensitive fallback
-    const objKeys = Object.keys(obj);
-    for (const primaryProperty of propertyNames) {
-      const lowerPrimary = primaryProperty.toLowerCase();
-      for (const key of objKeys) {
-        if (
-          key.toLowerCase() === lowerPrimary ||
-          key.toLowerCase().includes(lowerPrimary.split("_")[0])
-        ) {
-          const value = obj[key];
-          if (value !== undefined && value !== null && !isNaN(Number(value))) {
-            const numValue = Number(value);
-            console.log(
-              `✓ Found case-insensitive match ${key} for ${primaryProperty}:`,
-              numValue,
-            );
-            return numValue;
-          }
+    const lowerPrimaryNames = propertyNames.map((name) => name.toLowerCase());
+    for (const key of Object.keys(obj)) {
+      const lowerKey = key.toLowerCase();
+      if (
+        lowerPrimaryNames.some((primary) => {
+          const base = primary.split("_")[0];
+          return lowerKey === primary || (base && lowerKey.includes(base));
+        })
+      ) {
+        const numericValue = toNumeric(obj[key]);
+        if (numericValue !== undefined) {
+          return numericValue;
         }
       }
     }
 
-    console.log(
-      `❌ No value found for any variation of [${propertyNames.join(", ")}]`,
-    );
-    console.log("Available keys:", objKeys);
-    console.log("Object values:", obj);
     return undefined;
   };
 
