@@ -20,13 +20,16 @@ export function ErrorModal() {
     const handler = (e: Event) => {
       const detail = (e as CustomEvent).detail || {};
       setTitle(detail.title || "Error");
-      setMessage(detail.message || detail.error || "An unexpected error occurred.");
+      setMessage(
+        detail.message || detail.error || "An unexpected error occurred.",
+      );
       setUpgradeRequired(!!detail.upgradeRequired);
       setOpen(true);
     };
 
     window.addEventListener("app:error", handler as EventListener);
-    return () => window.removeEventListener("app:error", handler as EventListener);
+    return () =>
+      window.removeEventListener("app:error", handler as EventListener);
   }, []);
 
   return (
@@ -34,15 +37,14 @@ export function ErrorModal() {
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            {message}
-          </DialogDescription>
+          <DialogDescription>{message}</DialogDescription>
         </DialogHeader>
 
         <div className="mt-4">
           {upgradeRequired && (
             <div className="p-3 rounded bg-yellow-50 border border-yellow-200 text-yellow-800">
-              This action requires an upgraded plan. Click Upgrade to view options.
+              This action requires an upgraded plan. Click Upgrade to view
+              options.
             </div>
           )}
         </div>

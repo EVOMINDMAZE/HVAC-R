@@ -67,7 +67,7 @@ const UNIT_SYSTEMS: Record<string, UnitSystem> = {
   },
 };
 
-import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 
 export function ProfessionalFeatures({
   cycleData,
@@ -83,8 +83,15 @@ export function ProfessionalFeatures({
   };
   const [unitSystem, setUnitSystem] = useState<"SI" | "Imperial">("SI");
   const { user } = useSupabaseAuth();
-  const subscriptionPlan = (user as any)?.user_metadata?.subscription_plan || (user as any)?.user_metadata?.plan || (user as any)?.subscription_plan || (user as any)?.app_metadata?.plan || null;
-  const isPro = typeof subscriptionPlan === 'string' && /(pro|professional)/i.test(subscriptionPlan);
+  const subscriptionPlan =
+    (user as any)?.user_metadata?.subscription_plan ||
+    (user as any)?.user_metadata?.plan ||
+    (user as any)?.subscription_plan ||
+    (user as any)?.app_metadata?.plan ||
+    null;
+  const isPro =
+    typeof subscriptionPlan === "string" &&
+    /(pro|professional)/i.test(subscriptionPlan);
   const [reportConfig, setReportConfig] = useState({
     includeCalculations: true,
     includeDiagrams: true,
@@ -415,27 +422,33 @@ export function ProfessionalFeatures({
   const buildDiagramSvgs = (resultsObj: any, cycleObj: any) => {
     try {
       const svgs: { ph?: string; ts?: string } = {};
-      const opColors = ['#ef4444', '#f97316', '#06b6d4', '#2563eb'];
+      const opColors = ["#ef4444", "#f97316", "#06b6d4", "#2563eb"];
 
       const safeFindArray = (obj: any, keywords: string[]) => {
-        if (!obj || typeof obj !== 'object') return [] as number[];
+        if (!obj || typeof obj !== "object") return [] as number[];
         // exact keys first
         for (const k of Object.keys(obj)) {
           const low = k.toLowerCase();
           for (const kw of keywords) {
-            if (low === kw.toLowerCase() && Array.isArray(obj[k])) return obj[k];
+            if (low === kw.toLowerCase() && Array.isArray(obj[k]))
+              return obj[k];
           }
         }
         // contains
         for (const k of Object.keys(obj)) {
           const low = k.toLowerCase();
           for (const kw of keywords) {
-            if (low.includes(kw.toLowerCase()) && Array.isArray(obj[k])) return obj[k];
+            if (low.includes(kw.toLowerCase()) && Array.isArray(obj[k]))
+              return obj[k];
           }
         }
         // fallback: first numeric array
         for (const k of Object.keys(obj)) {
-          if (Array.isArray(obj[k]) && obj[k].every((v: any) => typeof v === 'number')) return obj[k];
+          if (
+            Array.isArray(obj[k]) &&
+            obj[k].every((v: any) => typeof v === "number")
+          )
+            return obj[k];
         }
         return [] as number[];
       };
@@ -447,10 +460,16 @@ export function ProfessionalFeatures({
         yLabel: string,
         ptsRaw: { x: number; y: number; id?: string }[],
         title: string,
-        diagramType: 'P-h' | 'T-s' = 'P-h',
+        diagramType: "P-h" | "T-s" = "P-h",
       ) => {
         // prefer cycleObj as authoritative data source so both visualizations match
-        const domain = computeDomain(diagramType, cycleObj || resultsObj || {}, cycleObj?.points || [], 0.12, 6);
+        const domain = computeDomain(
+          diagramType,
+          cycleObj || resultsObj || {},
+          cycleObj?.points || [],
+          0.12,
+          6,
+        );
 
         const width = 1600;
         const height = 1000;
@@ -463,35 +482,71 @@ export function ProfessionalFeatures({
         const ym = domain.yMin;
         const yM = domain.yMax;
 
-        const xScale = (v: number) => margin.left + ((v - xm) / (xM - xm || 1)) * plotW;
-        const yScale = (v: number) => margin.top + plotH - ((v - ym) / (yM - ym || 1)) * plotH;
+        const xScale = (v: number) =>
+          margin.left + ((v - xm) / (xM - xm || 1)) * plotW;
+        const yScale = (v: number) =>
+          margin.top + plotH - ((v - ym) / (yM - ym || 1)) * plotH;
 
         const xTicks = domain.xTicks;
         const yTicks = domain.yTicks;
 
         // Build normalized points from ptsRaw using resolveValue to be robust
-        const pts = (cycleObj?.points || ptsRaw || []).map((p: any, idx: number) => ({
-          x: resolveValue(p, diagramType === 'P-h' ? 'enthalpy' : diagramType === 'T-s' ? 'entropy' : 'specificVolume') ?? (p.x ?? 0),
-          y: resolveValue(p, diagramType === 'P-h' ? 'pressure' : diagramType === 'T-s' ? 'temperature' : 'pressure') ?? (p.y ?? 0),
-          id: String(idx + 1),
-        }));
+        const pts = (cycleObj?.points || ptsRaw || []).map(
+          (p: any, idx: number) => ({
+            x:
+              resolveValue(
+                p,
+                diagramType === "P-h"
+                  ? "enthalpy"
+                  : diagramType === "T-s"
+                    ? "entropy"
+                    : "specificVolume",
+              ) ??
+              p.x ??
+              0,
+            y:
+              resolveValue(
+                p,
+                diagramType === "P-h"
+                  ? "pressure"
+                  : diagramType === "T-s"
+                    ? "temperature"
+                    : "pressure",
+              ) ??
+              p.y ??
+              0,
+            id: String(idx + 1),
+          }),
+        );
 
         // dome path from cycleObj saturation arrays if present (prefer cycleObj)
-        let domePath = '';
-        const domeSrc = (cycleObj?.saturation_dome || cycleObj?.saturationDome) || (resultsObj?.saturation_dome || resultsObj?.saturationDome) || null;
+        let domePath = "";
+        const domeSrc =
+          cycleObj?.saturation_dome ||
+          cycleObj?.saturationDome ||
+          resultsObj?.saturation_dome ||
+          resultsObj?.saturationDome ||
+          null;
         let domeX: number[] = xArr || [];
         let domeY: number[] = yArr || [];
         if (domeSrc) {
-          if (diagramType === 'P-h') {
-            const ph = domeSrc.ph_diagram || domeSrc.ph || domeSrc['ph'] || null;
+          if (diagramType === "P-h") {
+            const ph =
+              domeSrc.ph_diagram || domeSrc.ph || domeSrc["ph"] || null;
             if (ph) {
               domeX = ph.enthalpy_kj_kg || ph.enthalpy || ph.h || domeX;
               domeY = ph.pressure_kpa || ph.pressure || ph.p || domeY;
             }
-          } else if (diagramType === 'T-s') {
-            const ts = domeSrc.ts_diagram || domeSrc.ts || domeSrc['ts'] || null;
+          } else if (diagramType === "T-s") {
+            const ts =
+              domeSrc.ts_diagram || domeSrc.ts || domeSrc["ts"] || null;
             if (ts) {
-              domeX = ts.entropy_kj_kgk || ts.entropy_kj_kg || ts.entropy || ts.s || domeX;
+              domeX =
+                ts.entropy_kj_kgk ||
+                ts.entropy_kj_kg ||
+                ts.entropy ||
+                ts.s ||
+                domeX;
               domeY = ts.temperature_c || ts.temperature || ts.t || domeY;
             }
           }
@@ -500,7 +555,7 @@ export function ProfessionalFeatures({
         for (let i = 0; i < Math.min(domeX.length, domeY.length); i++) {
           const x = xScale(domeX[i]);
           const y = yScale(domeY[i]);
-          domePath += (i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`);
+          domePath += i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`;
         }
 
         const segs: string[] = [];
@@ -511,39 +566,43 @@ export function ProfessionalFeatures({
           const y1 = yScale(cur.y);
           const x2 = xScale(next.x);
           const y2 = yScale(next.y);
-          const color = opColors[i % opColors.length] || '#0b5fff';
-          segs.push(`<line x1='${x1}' y1='${y1}' x2='${x2}' y2='${y2}' stroke='${color}' stroke-width='3' stroke-linecap='round' />`);
+          const color = opColors[i % opColors.length] || "#0b5fff";
+          segs.push(
+            `<line x1='${x1}' y1='${y1}' x2='${x2}' y2='${y2}' stroke='${color}' stroke-width='3' stroke-linecap='round' />`,
+          );
           // small arrow
           const dx = x2 - x1;
           const dy = y2 - y1;
           const angle = Math.atan2(dy, dx);
           const ax = x2 - Math.cos(angle) * 12;
           const ay = y2 - Math.sin(angle) * 12;
-          segs.push(`<path d='M ${ax + Math.cos(angle + 0.5) * 6} ${ay + Math.sin(angle + 0.5) * 6} L ${x2} ${y2} L ${ax + Math.cos(angle - 0.5) * 6} ${ay + Math.sin(angle - 0.5) * 6} Z' fill='${color}' opacity='0.95' />`);
+          segs.push(
+            `<path d='M ${ax + Math.cos(angle + 0.5) * 6} ${ay + Math.sin(angle + 0.5) * 6} L ${x2} ${y2} L ${ax + Math.cos(angle - 0.5) * 6} ${ay + Math.sin(angle - 0.5) * 6} Z' fill='${color}' opacity='0.95' />`,
+          );
         }
 
         const ptsMarkup = pts
           .map((p) => {
             const x = xScale(p.x);
             const y = yScale(p.y);
-            const label = p.id ? p.id : '';
+            const label = p.id ? p.id : "";
             return `<g><circle cx='${x}' cy='${y}' r='4.5' fill='#ffffff' stroke='#0b172a' stroke-width='1.5' /><text x='${x + 8}' y='${y - 8}' font-size='12' fill='#0b172a' font-weight='600'>${label}</text></g>`;
           })
-          .join('');
+          .join("");
 
         const xTickMarks = xTicks
           .map((t) => {
             const tx = xScale(t);
             return `<g><line x1='${tx}' y1='${margin.top + plotH}' x2='${tx}' y2='${margin.top + plotH + 6}' stroke='#94a3b8' stroke-width='1'/><text x='${tx}' y='${margin.top + plotH + 20}' font-size='11' text-anchor='middle' fill='#334155'>${Number(t).toFixed(1)}</text></g>`;
           })
-          .join('');
+          .join("");
 
         const yTickMarks = yTicks
           .map((t) => {
             const ty = yScale(t);
             return `<g><line x1='${margin.left - 6}' y1='${ty}' x2='${margin.left}' y2='${ty}' stroke='#94a3b8' stroke-width='1'/><text x='${margin.left - 10}' y='${ty + 4}' font-size='11' text-anchor='end' fill='#334155'>${Number(t).toFixed(1)}</text></g>`;
           })
-          .join('');
+          .join("");
 
         const legend = `
           <g transform='translate(${margin.left + plotW - 200}, ${margin.top + 6})'>
@@ -561,12 +620,12 @@ export function ProfessionalFeatures({
         // Remove xml declaration and ensure responsive sizing
         const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='${width}' height='${height}' viewBox='0 0 ${width} ${height}' preserveAspectRatio='xMidYMid meet' role='img' aria-label='${title}'><style>text{font-family:Inter, Arial, Helvetica, sans-serif;fill:#0b172a}</style><rect x='0' y='0' width='100%' height='100%' fill='white' rx='8' />
           <text x='${margin.left}' y='20' font-size='15' font-weight='700'>${title}</text>
-          ${xTicks.map((t) => `<line x1='${xScale(t)}' y1='${margin.top}' x2='${xScale(t)}' y2='${margin.top + plotH}' stroke='#eef2ff' stroke-width='1'/>`).join('')}
-          ${yTicks.map((t) => `<line x1='${margin.left}' y1='${yScale(t)}' x2='${margin.left + plotW}' y2='${yScale(t)}' stroke='#eef2ff' stroke-width='1'/>`).join('')}
+          ${xTicks.map((t) => `<line x1='${xScale(t)}' y1='${margin.top}' x2='${xScale(t)}' y2='${margin.top + plotH}' stroke='#eef2ff' stroke-width='1'/>`).join("")}
+          ${yTicks.map((t) => `<line x1='${margin.left}' y1='${yScale(t)}' x2='${margin.left + plotW}' y2='${yScale(t)}' stroke='#eef2ff' stroke-width='1'/>`).join("")}
           <line x1='${margin.left}' y1='${margin.top}' x2='${margin.left}' y2='${margin.top + plotH}' stroke='#cbd5e1' stroke-width='1.5'/>
           <line x1='${margin.left}' y1='${margin.top + plotH}' x2='${margin.left + plotW}' y2='${margin.top + plotH}' stroke='#cbd5e1' stroke-width='1.5'/>
           <path d='${domePath}' fill='none' stroke='#94a3b8' stroke-width='2' />
-          ${segs.join('\n')}
+          ${segs.join("\n")}
           ${ptsMarkup}
           ${xTickMarks}
           ${yTickMarks}
@@ -580,75 +639,131 @@ export function ProfessionalFeatures({
 
       // P-h extraction - try multiple possible key names
       const ph = resultsObj?.saturation_dome?.ph_diagram || {};
-      const ent = safeFindArray(ph, ['enthalpy', 'h', 'enthalpy_kj_kg']);
-      const pres = safeFindArray(ph, ['pressure', 'p', 'pressure_kpa']);
-      const pointsPh = (cycleObj?.points || []).map((p: any, idx: number) => ({ x: p.enthalpy ?? p.enthalpy_kj_kg ?? p.h ?? 0, y: p.pressure ?? p.pressure_kpa ?? p.p ?? 0, id: String(idx + 1) }));
-      const phSvg = makeDiagram(ent, pres, 'Enthalpy (kJ/kg)', 'Pressure (kPa)', pointsPh, 'P-h Diagram', 'P-h');
+      const ent = safeFindArray(ph, ["enthalpy", "h", "enthalpy_kj_kg"]);
+      const pres = safeFindArray(ph, ["pressure", "p", "pressure_kpa"]);
+      const pointsPh = (cycleObj?.points || []).map((p: any, idx: number) => ({
+        x: p.enthalpy ?? p.enthalpy_kj_kg ?? p.h ?? 0,
+        y: p.pressure ?? p.pressure_kpa ?? p.p ?? 0,
+        id: String(idx + 1),
+      }));
+      const phSvg = makeDiagram(
+        ent,
+        pres,
+        "Enthalpy (kJ/kg)",
+        "Pressure (kPa)",
+        pointsPh,
+        "P-h Diagram",
+        "P-h",
+      );
       if (phSvg) svgs.ph = phSvg;
 
       // T-s extraction
       const ts = resultsObj?.saturation_dome?.ts_diagram || {};
-      const sArr = safeFindArray(ts, ['entropy', 's', 'entropy_kj_kgk', 'entropy_kj_kg']);
-      const tArr = safeFindArray(ts, ['temperature', 't', 'temperature_c']);
-      const pointsTs = (cycleObj?.points || []).map((p: any, idx: number) => ({ x: p.entropy ?? p.entropy_kj_kgk ?? p.s ?? 0, y: p.temperature ?? p.temperature_c ?? p.t ?? 0, id: String(idx + 1) }));
-      const tsSvg = makeDiagram(sArr, tArr, 'Entropy (kJ/kg·K)', 'Temperature (°C)', pointsTs, 'T-s Diagram', 'T-s');
+      const sArr = safeFindArray(ts, [
+        "entropy",
+        "s",
+        "entropy_kj_kgk",
+        "entropy_kj_kg",
+      ]);
+      const tArr = safeFindArray(ts, ["temperature", "t", "temperature_c"]);
+      const pointsTs = (cycleObj?.points || []).map((p: any, idx: number) => ({
+        x: p.entropy ?? p.entropy_kj_kgk ?? p.s ?? 0,
+        y: p.temperature ?? p.temperature_c ?? p.t ?? 0,
+        id: String(idx + 1),
+      }));
+      const tsSvg = makeDiagram(
+        sArr,
+        tArr,
+        "Entropy (kJ/kg·K)",
+        "Temperature (°C)",
+        pointsTs,
+        "T-s Diagram",
+        "T-s",
+      );
       if (tsSvg) svgs.ts = tsSvg;
 
       return svgs;
     } catch (e) {
-      console.warn('buildDiagramSvgs failed', e);
+      console.warn("buildDiagramSvgs failed", e);
       return {};
     }
   };
 
   // Helper: format built SVGs for printable HTML
-  const formatSvgsForPrintable = (resultsObj: any, cycleObj: any, diagramDataUrl: string | null, includeDiagrams: boolean) => {
+  const formatSvgsForPrintable = (
+    resultsObj: any,
+    cycleObj: any,
+    diagramDataUrl: string | null,
+    includeDiagrams: boolean,
+  ) => {
     const svgs = buildDiagramSvgs(resultsObj, cycleObj);
-    if (!includeDiagrams) return '';
+    if (!includeDiagrams) return "";
     if (diagramDataUrl) {
       return `<div class='section'><h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Cycle Diagram</h2><div class='diagram'><img src='${diagramDataUrl}' style='max-width:100%;height:auto;border:1px solid #e6eefc;border-radius:6px' /></div></div>`;
     }
 
     const sanitizeSvg = (svg: string) => {
-      if (!svg) return '';
+      if (!svg) return "";
       // remove xml declaration
-      svg = svg.replace(/<\?xml[\s\S]*?\?>/g, '');
+      svg = svg.replace(/<\?xml[\s\S]*?\?>/g, "");
       // ensure viewBox present
       if (!/viewBox=/i.test(svg)) {
-        const w = svg.match(/width=['"]?(\d+)/)?.[1] || '760';
-        const h = svg.match(/height=['"]?(\d+)/)?.[1] || '420';
+        const w = svg.match(/width=['"]?(\d+)/)?.[1] || "760";
+        const h = svg.match(/height=['"]?(\d+)/)?.[1] || "420";
         svg = svg.replace(/<svg/, `<svg viewBox=\"0 0 ${w} ${h}\"`);
       }
       // make responsive
-      svg = svg.replace(/<svg([^>]*)width='[^']*'([^>]*)>/i, `<svg$1$2 style='max-width:100%;height:auto;display:block'`);
-      svg = svg.replace(/<svg([^>]*)width=\"[^\"]*\"([^>]*)>/i, `<svg$1$2 style='max-width:100%;height:auto;display:block'`);
+      svg = svg.replace(
+        /<svg([^>]*)width='[^']*'([^>]*)>/i,
+        `<svg$1$2 style='max-width:100%;height:auto;display:block'`,
+      );
+      svg = svg.replace(
+        /<svg([^>]*)width=\"[^\"]*\"([^>]*)>/i,
+        `<svg$1$2 style='max-width:100%;height:auto;display:block'`,
+      );
       return svg;
     };
 
     const buildPointsHtml = (cycle: any) => {
       const pts = Array.isArray(cycle?.points) ? cycle.points : [];
-      if (!pts.length) return '';
-      const rows = pts.map((p: any, idx: number) => {
-        const t = convertTemperature(p.temperature ?? p.t ?? p.temperature_c ?? p.temp ?? null);
-        const pval = convertPressure(p.pressure ?? p.p ?? p.pressure_kpa ?? null);
-        const h = convertEnthalpy(p.enthalpy ?? p.h ?? p.enthalpy_kj_kg ?? null);
-        const s = p.entropy ?? p.s ?? p.entropy_kj_kgk ?? p.entropy_kj_kg ?? '';
-        return `<tr><td style='padding:6px;border:1px solid #e6eefc'>Point ${idx+1}</td><td style='padding:6px;border:1px solid #e6eefc'>${t !== null && t !== undefined ? t.toFixed(2) : 'N/A'} ${UNIT_SYSTEMS[unitSystem].temperature}</td><td style='padding:6px;border:1px solid #e6eefc'>${pval !== null && pval !== undefined ? pval.toFixed(1) : 'N/A'} ${UNIT_SYSTEMS[unitSystem].pressure}</td><td style='padding:6px;border:1px solid #e6eefc'>${h !== null && h !== undefined ? Number(h).toFixed(2) : 'N/A'} ${UNIT_SYSTEMS[unitSystem].enthalpy}</td><td style='padding:6px;border:1px solid #e6eefc'>${s ? Number(s).toFixed ? Number(s).toFixed(3) : s : 'N/A'}</td></tr>`;
-      }).join('');
+      if (!pts.length) return "";
+      const rows = pts
+        .map((p: any, idx: number) => {
+          const t = convertTemperature(
+            p.temperature ?? p.t ?? p.temperature_c ?? p.temp ?? null,
+          );
+          const pval = convertPressure(
+            p.pressure ?? p.p ?? p.pressure_kpa ?? null,
+          );
+          const h = convertEnthalpy(
+            p.enthalpy ?? p.h ?? p.enthalpy_kj_kg ?? null,
+          );
+          const s =
+            p.entropy ?? p.s ?? p.entropy_kj_kgk ?? p.entropy_kj_kg ?? "";
+          return `<tr><td style='padding:6px;border:1px solid #e6eefc'>Point ${idx + 1}</td><td style='padding:6px;border:1px solid #e6eefc'>${t !== null && t !== undefined ? t.toFixed(2) : "N/A"} ${UNIT_SYSTEMS[unitSystem].temperature}</td><td style='padding:6px;border:1px solid #e6eefc'>${pval !== null && pval !== undefined ? pval.toFixed(1) : "N/A"} ${UNIT_SYSTEMS[unitSystem].pressure}</td><td style='padding:6px;border:1px solid #e6eefc'>${h !== null && h !== undefined ? Number(h).toFixed(2) : "N/A"} ${UNIT_SYSTEMS[unitSystem].enthalpy}</td><td style='padding:6px;border:1px solid #e6eefc'>${s ? (Number(s).toFixed ? Number(s).toFixed(3) : s) : "N/A"}</td></tr>`;
+        })
+        .join("");
 
       return `<div style='margin-top:12px'><h4 style='margin:0 0 8px;font-size:13px;color:#0f172a'>Point Details</h4><div style='overflow:auto'><table style='border-collapse:collapse;width:100%'><thead><tr><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Point</th><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Temperature</th><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Pressure</th><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Enthalpy</th><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Entropy</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
     };
 
     const diagrams: string[] = [];
-    if (svgs.ph) diagrams.push(`<div style='flex:1;min-width:300px;max-width:48%'><h3 style='margin:0 0 8px;font-size:14px;color:#0f172a'>P-h Diagram</h3>${sanitizeSvg(svgs.ph)}</div>`);
-    if (svgs.ts) diagrams.push(`<div style='flex:1;min-width:300px;max-width:48%'><h3 style='margin:0 0 8px;font-size:14px;color:#0f172a'>T-s Diagram</h3>${sanitizeSvg(svgs.ts)}</div>`);
+    if (svgs.ph)
+      diagrams.push(
+        `<div style='flex:1;min-width:300px;max-width:48%'><h3 style='margin:0 0 8px;font-size:14px;color:#0f172a'>P-h Diagram</h3>${sanitizeSvg(svgs.ph)}</div>`,
+      );
+    if (svgs.ts)
+      diagrams.push(
+        `<div style='flex:1;min-width:300px;max-width:48%'><h3 style='margin:0 0 8px;font-size:14px;color:#0f172a'>T-s Diagram</h3>${sanitizeSvg(svgs.ts)}</div>`,
+      );
 
     const pointsHtml = buildPointsHtml(cycleObj);
     if (diagrams.length === 2) {
-      return `<div class='section' style='display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start'>${diagrams.join('')}</div>${pointsHtml}`;
+      return `<div class='section' style='display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start'>${diagrams.join("")}</div>${pointsHtml}`;
     }
-    if (diagrams.length === 1) return `<div class='section'>${diagrams[0]}</div>${pointsHtml}`;
-    return pointsHtml || '';
+    if (diagrams.length === 1)
+      return `<div class='section'>${diagrams[0]}</div>${pointsHtml}`;
+    return pointsHtml || "";
   };
 
   // Generate fully server-side PDF report
@@ -658,13 +773,17 @@ export function ProfessionalFeatures({
       let diagramDataUrl: string | null = null;
       try {
         // Choose the most likely candidate canvas: visible canvas with the largest pixel area
-        const canvases = Array.from(document.querySelectorAll('canvas')) as HTMLCanvasElement[];
+        const canvases = Array.from(
+          document.querySelectorAll("canvas"),
+        ) as HTMLCanvasElement[];
         const valid = canvases.filter((c) => c && c.width > 0 && c.height > 0);
         let srcCanvas: HTMLCanvasElement | null = null;
         if (valid.length === 1) {
           srcCanvas = valid[0];
         } else if (valid.length > 1) {
-          srcCanvas = valid.reduce((a, b) => (a.width * a.height > b.width * b.height ? a : b));
+          srcCanvas = valid.reduce((a, b) =>
+            a.width * a.height > b.width * b.height ? a : b,
+          );
         } else if (canvases.length > 0) {
           srcCanvas = canvases[0] as HTMLCanvasElement;
         }
@@ -674,39 +793,44 @@ export function ProfessionalFeatures({
           await new Promise(requestAnimationFrame);
 
           const scale = Math.min(3, Math.max(1, window.devicePixelRatio || 1));
-          const off = document.createElement('canvas');
+          const off = document.createElement("canvas");
           off.width = Math.max(1, Math.floor(srcCanvas.width * scale));
           off.height = Math.max(1, Math.floor(srcCanvas.height * scale));
 
           // Use willReadFrequently where available to improve readback
-          const ctx = off.getContext('2d', { willReadFrequently: true } as any) as CanvasRenderingContext2D | null;
+          const ctx = off.getContext("2d", {
+            willReadFrequently: true,
+          } as any) as CanvasRenderingContext2D | null;
           if (ctx) {
             ctx.scale(scale, scale);
             // Keep smoothing on for nicer output when scaling
             (ctx as any).imageSmoothingEnabled = true;
             ctx.drawImage(srcCanvas, 0, 0);
             try {
-              diagramDataUrl = off.toDataURL('image/png');
+              diagramDataUrl = off.toDataURL("image/png");
             } catch (e) {
-              console.warn('offscreen toDataURL failed, falling back to source canvas toDataURL', e);
+              console.warn(
+                "offscreen toDataURL failed, falling back to source canvas toDataURL",
+                e,
+              );
               try {
-                diagramDataUrl = srcCanvas.toDataURL('image/png');
+                diagramDataUrl = srcCanvas.toDataURL("image/png");
               } catch (e2) {
-                console.warn('source canvas toDataURL also failed', e2);
+                console.warn("source canvas toDataURL also failed", e2);
                 diagramDataUrl = null;
               }
             }
           } else {
             try {
-              diagramDataUrl = srcCanvas.toDataURL('image/png');
+              diagramDataUrl = srcCanvas.toDataURL("image/png");
             } catch (e) {
-              console.warn('source canvas toDataURL failed', e);
+              console.warn("source canvas toDataURL failed", e);
               diagramDataUrl = null;
             }
           }
         }
       } catch (e) {
-        console.warn('Error capturing diagram canvas', e);
+        console.warn("Error capturing diagram canvas", e);
         diagramDataUrl = null;
       }
 
@@ -716,7 +840,7 @@ export function ProfessionalFeatures({
           const svgs = buildDiagramSvgs(results, cycleData);
           const firstSvg = svgs.ph || svgs.ts || null;
           if (firstSvg) {
-            const svgStr = firstSvg.replace(/<\?xml[\s\S]*?\?>/g, '');
+            const svgStr = firstSvg.replace(/<\?xml[\s\S]*?\?>/g, "");
             // extract width/height
             const wMatch = svgStr.match(/width=['"]?(\d+)/i);
             const hMatch = svgStr.match(/height=['"]?(\d+)/i);
@@ -724,24 +848,25 @@ export function ProfessionalFeatures({
             const height = Number(hMatch?.[1] || 420);
             const img = new Image();
             // use encodeURIComponent to safely embed
-            img.src = 'data:image/svg+xml;charset=utf8,' + encodeURIComponent(svgStr);
+            img.src =
+              "data:image/svg+xml;charset=utf8," + encodeURIComponent(svgStr);
             await new Promise<void>((resolve, reject) => {
               img.onload = () => resolve();
-              img.onerror = (ev) => reject(new Error('SVG image load failed'));
+              img.onerror = (ev) => reject(new Error("SVG image load failed"));
             });
-            const cvs = document.createElement('canvas');
+            const cvs = document.createElement("canvas");
             cvs.width = width;
             cvs.height = height;
-            const cctx = cvs.getContext('2d');
+            const cctx = cvs.getContext("2d");
             if (cctx) {
-              cctx.fillStyle = '#ffffff';
+              cctx.fillStyle = "#ffffff";
               cctx.fillRect(0, 0, cvs.width, cvs.height);
               cctx.drawImage(img, 0, 0, cvs.width, cvs.height);
-              diagramDataUrl = cvs.toDataURL('image/png');
+              diagramDataUrl = cvs.toDataURL("image/png");
             }
           }
         } catch (e) {
-          console.warn('Failed to rasterize SVG to PNG for server payload', e);
+          console.warn("Failed to rasterize SVG to PNG for server payload", e);
         }
       }
 
@@ -757,17 +882,31 @@ export function ProfessionalFeatures({
         recommendations: generateRecommendations(),
       };
 
-      const token = localStorage.getItem('simulateon_token');
+      const token = localStorage.getItem("simulateon_token");
       // Debug logging
-      console.log('[client] POST /api/reports/generate', { payload: {...payload, diagramDataUrl: diagramDataUrl ? '[IMAGE]' : null}, tokenPresent: !!token });
+      console.log("[client] POST /api/reports/generate", {
+        payload: {
+          ...payload,
+          diagramDataUrl: diagramDataUrl ? "[IMAGE]" : null,
+        },
+        tokenPresent: !!token,
+      });
 
       // If there's no auth token, skip server-side generation and use client-side printable fallback
       if (!token) {
-        console.warn('No auth token found; using client-side printable fallback for report generation');
+        console.warn(
+          "No auth token found; using client-side printable fallback for report generation",
+        );
 
-        const headerTitle = reportConfig.projectName || 'Refrigeration Cycle Analysis Report';
+        const headerTitle =
+          reportConfig.projectName || "Refrigeration Cycle Analysis Report";
         const now = new Date();
-        const diagramHtml = formatSvgsForPrintable(results, cycleData, diagramDataUrl, false); // omit diagrams for professional report
+        const diagramHtml = formatSvgsForPrintable(
+          results,
+          cycleData,
+          diagramDataUrl,
+          false,
+        ); // omit diagrams for professional report
 
         const html = `<!doctype html><html><head><meta charset='utf-8'><title>${headerTitle}</title>
         <meta name='viewport' content='width=device-width,initial-scale=1' />
@@ -791,19 +930,19 @@ export function ProfessionalFeatures({
         </head><body>
         <div class='page'>
           <h1>${headerTitle}</h1>
-          <div class='meta'>Project: ${reportConfig.projectName || '-'} &nbsp;|&nbsp; Company: ${reportConfig.companyName || '-'} &nbsp;|&nbsp; Engineer: ${reportConfig.engineerName || '-'} &nbsp;|&nbsp; Date: ${now.toLocaleString()}</div>
+          <div class='meta'>Project: ${reportConfig.projectName || "-"} &nbsp;|&nbsp; Company: ${reportConfig.companyName || "-"} &nbsp;|&nbsp; Engineer: ${reportConfig.engineerName || "-"} &nbsp;|&nbsp; Date: ${now.toLocaleString()}</div>
 
           <div class='section'>
             <h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Executive Summary</h2>
-            <div class='notes'>${reportConfig.reportNotes ? reportConfig.reportNotes.replace(/\n/g,'<br/>') : 'No additional notes provided.'}</div>
+            <div class='notes'>${reportConfig.reportNotes ? reportConfig.reportNotes.replace(/\n/g, "<br/>") : "No additional notes provided."}</div>
           </div>
 
           <div class='section'>
             <h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Key Performance Metrics</h2>
             <div class='metrics'>
-              <div class='metric'><h3>COP</h3><p>${cop?.toFixed(2) || 'N/A'}</p></div>
-              <div class='metric'><h3>Cooling Capacity (kW)</h3><p>${formatValue(coolingCapacityKwNum, 'kW')}</p></div>
-              <div class='metric'><h3>Compressor Work (kW)</h3><p>${formatValue(compressorWorkKwNum, 'kW')}</p></div>
+              <div class='metric'><h3>COP</h3><p>${cop?.toFixed(2) || "N/A"}</p></div>
+              <div class='metric'><h3>Cooling Capacity (kW)</h3><p>${formatValue(coolingCapacityKwNum, "kW")}</p></div>
+              <div class='metric'><h3>Compressor Work (kW)</h3><p>${formatValue(compressorWorkKwNum, "kW")}</p></div>
             </div>
           </div>
 
@@ -813,9 +952,9 @@ export function ProfessionalFeatures({
             <h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Cost Analysis</h2>
             <table>
               <tbody>
-                <tr><th>Annual Energy Cost</th><td>$${costData?.annualEnergyCost?.toFixed(2) || 'N/A'}</td></tr>
-                <tr><th>Total Lifetime Cost</th><td>$${costData?.totalLifetimeCost?.toFixed(2) || 'N/A'}</td></tr>
-                <tr><th>Payback Period (years)</th><td>${costData?.paybackPeriod?.toFixed(1) || 'N/A'}</td></tr>
+                <tr><th>Annual Energy Cost</th><td>$${costData?.annualEnergyCost?.toFixed(2) || "N/A"}</td></tr>
+                <tr><th>Total Lifetime Cost</th><td>$${costData?.totalLifetimeCost?.toFixed(2) || "N/A"}</td></tr>
+                <tr><th>Payback Period (years)</th><td>${costData?.paybackPeriod?.toFixed(1) || "N/A"}</td></tr>
               </tbody>
             </table>
           </div>
@@ -829,7 +968,9 @@ export function ProfessionalFeatures({
                 <tr><th>Recommended Alternatives</th><td>${sustainabilityData.alternative}</td></tr>
               </tbody>
             </table>
-            <div style='margin-top:12px'><strong>Recommendations:</strong><ul>${generateRecommendations().map(r=>`<li>${r}</li>`).join('')}</ul></div>
+            <div style='margin-top:12px'><strong>Recommendations:</strong><ul>${generateRecommendations()
+              .map((r) => `<li>${r}</li>`)
+              .join("")}</ul></div>
           </div>
 
           <footer>Generated by SimulateOn Professional HVAC Analysis Platform • ${now.toLocaleString()}</footer>
@@ -837,9 +978,9 @@ export function ProfessionalFeatures({
         <script>window.onload = function(){ setTimeout(function(){ window.print(); }, 250); };</script>
         </body></html>`;
 
-        const w = window.open('', '_blank');
+        const w = window.open("", "_blank");
         if (!w) {
-          window.alert('Popup blocked. Please allow popups to generate PDF.');
+          window.alert("Popup blocked. Please allow popups to generate PDF.");
           return;
         }
         w.document.open();
@@ -849,17 +990,17 @@ export function ProfessionalFeatures({
         return;
       }
 
-      const resp = await fetch('/api/reports/generate', {
-        method: 'POST',
+      const resp = await fetch("/api/reports/generate", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify(payload),
       });
 
       if (!resp.ok) {
-        let txt = '';
+        let txt = "";
         try {
           txt = await resp.clone().text();
         } catch (e) {
@@ -870,16 +1011,24 @@ export function ProfessionalFeatures({
             txt = resp.statusText || String(resp.status);
           }
         }
-        console.warn('Server PDF generation failed', resp.status, txt);
+        console.warn("Server PDF generation failed", resp.status, txt);
 
         // If endpoint is missing (404) fallback to client-side printable HTML PDF
         if (resp.status === 404) {
-          console.warn('Server PDF endpoint missing, falling back to client-side printable report');
+          console.warn(
+            "Server PDF endpoint missing, falling back to client-side printable report",
+          );
 
           // Build printable HTML (same as previous client-side generator)
-          const headerTitle = reportConfig.projectName || 'Refrigeration Cycle Analysis Report';
+          const headerTitle =
+            reportConfig.projectName || "Refrigeration Cycle Analysis Report";
           const now = new Date();
-          const diagramHtml = formatSvgsForPrintable(results, cycleData, diagramDataUrl, false); // omit diagrams for professional report
+          const diagramHtml = formatSvgsForPrintable(
+            results,
+            cycleData,
+            diagramDataUrl,
+            false,
+          ); // omit diagrams for professional report
 
           const html = `<!doctype html><html><head><meta charset='utf-8'><title>${headerTitle}</title>
           <meta name='viewport' content='width=device-width,initial-scale=1' />
@@ -903,19 +1052,19 @@ export function ProfessionalFeatures({
           </head><body>
           <div class='page'>
             <h1>${headerTitle}</h1>
-            <div class='meta'>Project: ${reportConfig.projectName || '-'} &nbsp;|&nbsp; Company: ${reportConfig.companyName || '-'} &nbsp;|&nbsp; Engineer: ${reportConfig.engineerName || '-'} &nbsp;|&nbsp; Date: ${now.toLocaleString()}</div>
+            <div class='meta'>Project: ${reportConfig.projectName || "-"} &nbsp;|&nbsp; Company: ${reportConfig.companyName || "-"} &nbsp;|&nbsp; Engineer: ${reportConfig.engineerName || "-"} &nbsp;|&nbsp; Date: ${now.toLocaleString()}</div>
 
             <div class='section'>
               <h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Executive Summary</h2>
-              <div class='notes'>${reportConfig.reportNotes ? reportConfig.reportNotes.replace(/\n/g,'<br/>') : 'No additional notes provided.'}</div>
+              <div class='notes'>${reportConfig.reportNotes ? reportConfig.reportNotes.replace(/\n/g, "<br/>") : "No additional notes provided."}</div>
             </div>
 
             <div class='section'>
               <h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Key Performance Metrics</h2>
               <div class='metrics'>
-                <div class='metric'><h3>COP</h3><p>${cop?.toFixed(2) || 'N/A'}</p></div>
-                <div class='metric'><h3>Cooling Capacity (kW)</h3><p>${formatValue(coolingCapacityKwNum, 'kW')}</p></div>
-                <div class='metric'><h3>Compressor Work (kW)</h3><p>${formatValue(compressorWorkKwNum, 'kW')}</p></div>
+                <div class='metric'><h3>COP</h3><p>${cop?.toFixed(2) || "N/A"}</p></div>
+                <div class='metric'><h3>Cooling Capacity (kW)</h3><p>${formatValue(coolingCapacityKwNum, "kW")}</p></div>
+                <div class='metric'><h3>Compressor Work (kW)</h3><p>${formatValue(compressorWorkKwNum, "kW")}</p></div>
               </div>
             </div>
 
@@ -925,9 +1074,9 @@ export function ProfessionalFeatures({
               <h2 style='font-size:16px;margin:0 0 8px;color:#0f172a'>Cost Analysis</h2>
               <table>
                 <tbody>
-                  <tr><th>Annual Energy Cost</th><td>$${costData?.annualEnergyCost?.toFixed(2) || 'N/A'}</td></tr>
-                  <tr><th>Total Lifetime Cost</th><td>$${costData?.totalLifetimeCost?.toFixed(2) || 'N/A'}</td></tr>
-                  <tr><th>Payback Period (years)</th><td>${costData?.paybackPeriod?.toFixed(1) || 'N/A'}</td></tr>
+                  <tr><th>Annual Energy Cost</th><td>$${costData?.annualEnergyCost?.toFixed(2) || "N/A"}</td></tr>
+                  <tr><th>Total Lifetime Cost</th><td>$${costData?.totalLifetimeCost?.toFixed(2) || "N/A"}</td></tr>
+                  <tr><th>Payback Period (years)</th><td>${costData?.paybackPeriod?.toFixed(1) || "N/A"}</td></tr>
                 </tbody>
               </table>
             </div>
@@ -941,7 +1090,9 @@ export function ProfessionalFeatures({
                   <tr><th>Recommended Alternatives</th><td>${sustainabilityData.alternative}</td></tr>
                 </tbody>
               </table>
-              <div style='margin-top:12px'><strong>Recommendations:</strong><ul>${generateRecommendations().map(r=>`<li>${r}</li>`).join('')}</ul></div>
+              <div style='margin-top:12px'><strong>Recommendations:</strong><ul>${generateRecommendations()
+                .map((r) => `<li>${r}</li>`)
+                .join("")}</ul></div>
             </div>
 
             <footer>Generated by SimulateOn Professional HVAC Analysis Platform • ${now.toLocaleString()}</footer>
@@ -949,9 +1100,9 @@ export function ProfessionalFeatures({
           <script>window.onload = function(){ setTimeout(function(){ window.print(); }, 250); };</script>
           </body></html>`;
 
-          const w = window.open('', '_blank');
+          const w = window.open("", "_blank");
           if (!w) {
-            window.alert('Popup blocked. Please allow popups to generate PDF.');
+            window.alert("Popup blocked. Please allow popups to generate PDF.");
             return;
           }
           w.document.open();
@@ -961,20 +1112,20 @@ export function ProfessionalFeatures({
           return;
         }
 
-        window.alert('Failed to generate PDF: ' + (txt || resp.statusText));
+        window.alert("Failed to generate PDF: " + (txt || resp.statusText));
         return;
       }
 
       const blob = await resp.blob();
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = `${reportConfig.projectName || 'hvac-report'}.pdf`;
+      a.download = `${reportConfig.projectName || "hvac-report"}.pdf`;
       a.click();
       URL.revokeObjectURL(url);
     } catch (e) {
-      console.error('Failed to generate server PDF', e);
-      window.alert('Failed to generate server PDF: ' + (e as any).message);
+      console.error("Failed to generate server PDF", e);
+      window.alert("Failed to generate server PDF: " + (e as any).message);
     }
   };
 
@@ -983,114 +1134,146 @@ export function ProfessionalFeatures({
     try {
       if (!isPro) {
         try {
-          window.dispatchEvent(new CustomEvent('app:error', { detail: { title: 'Upgrade required', message: 'Exporting data is available on Professional plans only.', upgradeRequired: true } }));
+          window.dispatchEvent(
+            new CustomEvent("app:error", {
+              detail: {
+                title: "Upgrade required",
+                message:
+                  "Exporting data is available on Professional plans only.",
+                upgradeRequired: true,
+              },
+            }),
+          );
         } catch (e) {}
         return;
       }
       const rows: string[] = [];
-      const pushKV = (k: string, v: any) => rows.push(`"${k.replace(/"/g,'""')}","${String(v ?? '').replace(/"/g,'""')}"`);
+      const pushKV = (k: string, v: any) =>
+        rows.push(
+          `"${k.replace(/"/g, '""')}","${String(v ?? "").replace(/"/g, '""')}"`,
+        );
 
-      pushKV('Project', reportConfig.projectName || '');
-      pushKV('Company', reportConfig.companyName || '');
-      pushKV('Engineer', reportConfig.engineerName || '');
-      pushKV('Generated At', new Date().toISOString());
-      pushKV('Unit System', unitSystem);
+      pushKV("Project", reportConfig.projectName || "");
+      pushKV("Company", reportConfig.companyName || "");
+      pushKV("Engineer", reportConfig.engineerName || "");
+      pushKV("Generated At", new Date().toISOString());
+      pushKV("Unit System", unitSystem);
 
       // Summary metrics
-      pushKV('COP', cop ?? '');
-      pushKV('Cooling Capacity (kW)', coolingCapacityKwNum ?? '');
-      pushKV('Compressor Work (kW)', compressorWorkKwNum ?? '');
+      pushKV("COP", cop ?? "");
+      pushKV("Cooling Capacity (kW)", coolingCapacityKwNum ?? "");
+      pushKV("Compressor Work (kW)", compressorWorkKwNum ?? "");
 
       // Cost
       if (costData) {
-        pushKV('Annual Energy Cost', costData.annualEnergyCost ?? '');
-        pushKV('Total Lifetime Cost', costData.totalLifetimeCost ?? '');
-        pushKV('Payback Period (years)', costData.paybackPeriod ?? '');
+        pushKV("Annual Energy Cost", costData.annualEnergyCost ?? "");
+        pushKV("Total Lifetime Cost", costData.totalLifetimeCost ?? "");
+        pushKV("Payback Period (years)", costData.paybackPeriod ?? "");
       }
 
       // Sustainability
-      pushKV('GWP', sustainabilityData.gwp ?? '');
-      pushKV('ODP', sustainabilityData.odp ?? '');
-      pushKV('Recommended Alternatives', sustainabilityData.alternative ?? '');
+      pushKV("GWP", sustainabilityData.gwp ?? "");
+      pushKV("ODP", sustainabilityData.odp ?? "");
+      pushKV("Recommended Alternatives", sustainabilityData.alternative ?? "");
 
       // Cycle points
       if (cycleData?.points && Array.isArray(cycleData.points)) {
         rows.push('"--- Cycle Points ---",""');
         cycleData.points.forEach((p: any, idx: number) => {
-          pushKV(`Point ${idx + 1} - Temperature (${UNIT_SYSTEMS[unitSystem].temperature})`, convertTemperature(p.temperature));
-          pushKV(`Point ${idx + 1} - Pressure (${UNIT_SYSTEMS[unitSystem].pressure})`, convertPressure(p.pressure));
-          pushKV(`Point ${idx + 1} - Enthalpy (${UNIT_SYSTEMS[unitSystem].enthalpy})`, convertEnthalpy(p.enthalpy));
+          pushKV(
+            `Point ${idx + 1} - Temperature (${UNIT_SYSTEMS[unitSystem].temperature})`,
+            convertTemperature(p.temperature),
+          );
+          pushKV(
+            `Point ${idx + 1} - Pressure (${UNIT_SYSTEMS[unitSystem].pressure})`,
+            convertPressure(p.pressure),
+          );
+          pushKV(
+            `Point ${idx + 1} - Enthalpy (${UNIT_SYSTEMS[unitSystem].enthalpy})`,
+            convertEnthalpy(p.enthalpy),
+          );
         });
       }
 
       // Recommendations
       rows.push('"--- Recommendations ---",""');
-      generateRecommendations().forEach((r) => pushKV('Recommendation', r));
+      generateRecommendations().forEach((r) => pushKV("Recommendation", r));
 
-      const csv = 'Key,Value\n' + rows.join('\n');
-      const blob = new Blob([csv], { type: 'text/csv' });
+      const csv = "Key,Value\n" + rows.join("\n");
+      const blob = new Blob([csv], { type: "text/csv" });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = `${reportConfig.projectName || 'hvac-data'}-export.csv`;
+      a.download = `${reportConfig.projectName || "hvac-data"}-export.csv`;
       a.click();
       URL.revokeObjectURL(url);
-      console.log('Export Data: CSV download started');
+      console.log("Export Data: CSV download started");
     } catch (e) {
-      console.error('Export Data (CSV) failed', e);
-      window.alert('Export failed: ' + (e as any).message);
+      console.error("Export Data (CSV) failed", e);
+      window.alert("Export failed: " + (e as any).message);
     }
   };
 
   // Chart package: create an HTML package with embedded SVG summary charts, data tables and diagram image (if present)
   const downloadChartPackage = async () => {
-    const project = reportConfig.projectName || 'hvac-project';
+    const project = reportConfig.projectName || "hvac-project";
 
     // Capture diagram canvas (best-effort)
     let diagramDataUrl: string | null = null;
     try {
-      const canvases = Array.from(document.querySelectorAll('canvas')) as HTMLCanvasElement[];
+      const canvases = Array.from(
+        document.querySelectorAll("canvas"),
+      ) as HTMLCanvasElement[];
       const valid = canvases.filter((c) => c && c.width > 0 && c.height > 0);
       let srcCanvas: HTMLCanvasElement | null = null;
       if (valid.length === 1) srcCanvas = valid[0];
-      else if (valid.length > 1) srcCanvas = valid.reduce((a, b) => (a.width * a.height > b.width * b.height ? a : b));
+      else if (valid.length > 1)
+        srcCanvas = valid.reduce((a, b) =>
+          a.width * a.height > b.width * b.height ? a : b,
+        );
       else if (canvases.length > 0) srcCanvas = canvases[0];
 
       if (srcCanvas) {
         await new Promise(requestAnimationFrame);
         const scale = Math.min(3, Math.max(1, window.devicePixelRatio || 1));
-        const off = document.createElement('canvas');
+        const off = document.createElement("canvas");
         off.width = Math.max(1, Math.floor(srcCanvas.width * scale));
         off.height = Math.max(1, Math.floor(srcCanvas.height * scale));
-        const ctx = off.getContext('2d', { willReadFrequently: true } as any) as CanvasRenderingContext2D | null;
+        const ctx = off.getContext("2d", {
+          willReadFrequently: true,
+        } as any) as CanvasRenderingContext2D | null;
         if (ctx) {
           ctx.scale(scale, scale);
           (ctx as any).imageSmoothingEnabled = true;
           ctx.drawImage(srcCanvas, 0, 0);
           try {
-            diagramDataUrl = off.toDataURL('image/png');
+            diagramDataUrl = off.toDataURL("image/png");
           } catch (e) {
             try {
-              diagramDataUrl = srcCanvas.toDataURL('image/png');
+              diagramDataUrl = srcCanvas.toDataURL("image/png");
             } catch (e2) {
               diagramDataUrl = null;
             }
           }
         } else {
           try {
-            diagramDataUrl = srcCanvas.toDataURL('image/png');
+            diagramDataUrl = srcCanvas.toDataURL("image/png");
           } catch (e) {
             diagramDataUrl = null;
           }
         }
       }
     } catch (e) {
-      console.warn('Chart package: failed to capture diagram canvas', e);
+      console.warn("Chart package: failed to capture diagram canvas", e);
       diagramDataUrl = null;
     }
 
     // Simple SVG generator for a metric bar chart
-    const makeBarSVG = (label: string, value: number | undefined, max: number) => {
+    const makeBarSVG = (
+      label: string,
+      value: number | undefined,
+      max: number,
+    ) => {
       const val = value ?? 0;
       const w = Math.max(1, Math.round((val / max) * 300));
       const svg = `<?xml version="1.0"?><svg xmlns='http://www.w3.org/2000/svg' width='380' height='80'>
@@ -1103,47 +1286,71 @@ export function ProfessionalFeatures({
       return svg;
     };
 
-    const maxMetric = Math.max(1, (coolingCapacityKwNum || 1), (compressorWorkKwNum || 1), cop || 1);
+    const maxMetric = Math.max(
+      1,
+      coolingCapacityKwNum || 1,
+      compressorWorkKwNum || 1,
+      cop || 1,
+    );
 
-    const svg1 = makeBarSVG('Cooling Capacity (kW)', coolingCapacityKwNum, maxMetric);
-    const svg2 = makeBarSVG('Compressor Work (kW)', compressorWorkKwNum, maxMetric);
-    const svg3 = makeBarSVG('COP', cop, maxMetric);
+    const svg1 = makeBarSVG(
+      "Cooling Capacity (kW)",
+      coolingCapacityKwNum,
+      maxMetric,
+    );
+    const svg2 = makeBarSVG(
+      "Compressor Work (kW)",
+      compressorWorkKwNum,
+      maxMetric,
+    );
+    const svg3 = makeBarSVG("COP", cop, maxMetric);
 
     const svgs = buildDiagramSvgs(results, cycleData);
     const sanitizeSvgInline = (s: string | undefined) => {
-      if (!s) return '';
-      let svg = s.replace(/<\?xml[\s\S]*?\?>/g, '');
+      if (!s) return "";
+      let svg = s.replace(/<\?xml[\s\S]*?\?>/g, "");
       if (!/viewBox=/i.test(svg)) {
-        const w = svg.match(/width=['"]?(\d+)/)?.[1] || '760';
-        const h = svg.match(/height=['"]?(\d+)/)?.[1] || '420';
+        const w = svg.match(/width=['"]?(\d+)/)?.[1] || "760";
+        const h = svg.match(/height=['"]?(\d+)/)?.[1] || "420";
         svg = svg.replace(/<svg/, `<svg viewBox=\"0 0 ${w} ${h}\"`);
       }
-      svg = svg.replace(/<svg([^>]*)width=['"][^'"]*['"]([^>]*)>/i, `<svg$1$2 style='max-width:100%;height:auto;display:block'`);
+      svg = svg.replace(
+        /<svg([^>]*)width=['"][^'"]*['"]([^>]*)>/i,
+        `<svg$1$2 style='max-width:100%;height:auto;display:block'`,
+      );
       return svg;
     };
 
     const buildPointsHtmlSmall = (cycle: any) => {
       const pts = Array.isArray(cycle?.points) ? cycle.points : [];
-      if (!pts.length) return '';
-      const rows = pts.map((p: any, idx: number) => {
-        const t = convertTemperature(p.temperature ?? p.t ?? p.temperature_c ?? p.temp ?? null);
-        const pval = convertPressure(p.pressure ?? p.p ?? p.pressure_kpa ?? null);
-        const h = convertEnthalpy(p.enthalpy ?? p.h ?? p.enthalpy_kj_kg ?? null);
-        return `<tr><td style='padding:6px;border:1px solid #e6eefc'>Point ${idx+1}</td><td style='padding:6px;border:1px solid #e6eefc'>${t !== null && t !== undefined ? t.toFixed(2) : 'N/A'} ${UNIT_SYSTEMS[unitSystem].temperature}</td><td style='padding:6px;border:1px solid #e6eefc'>${pval !== null && pval !== undefined ? pval.toFixed(1) : 'N/A'} ${UNIT_SYSTEMS[unitSystem].pressure}</td><td style='padding:6px;border:1px solid #e6eefc'>${h !== null && h !== undefined ? Number(h).toFixed(2) : 'N/A'} ${UNIT_SYSTEMS[unitSystem].enthalpy}</td></tr>`;
-      }).join('');
+      if (!pts.length) return "";
+      const rows = pts
+        .map((p: any, idx: number) => {
+          const t = convertTemperature(
+            p.temperature ?? p.t ?? p.temperature_c ?? p.temp ?? null,
+          );
+          const pval = convertPressure(
+            p.pressure ?? p.p ?? p.pressure_kpa ?? null,
+          );
+          const h = convertEnthalpy(
+            p.enthalpy ?? p.h ?? p.enthalpy_kj_kg ?? null,
+          );
+          return `<tr><td style='padding:6px;border:1px solid #e6eefc'>Point ${idx + 1}</td><td style='padding:6px;border:1px solid #e6eefc'>${t !== null && t !== undefined ? t.toFixed(2) : "N/A"} ${UNIT_SYSTEMS[unitSystem].temperature}</td><td style='padding:6px;border:1px solid #e6eefc'>${pval !== null && pval !== undefined ? pval.toFixed(1) : "N/A"} ${UNIT_SYSTEMS[unitSystem].pressure}</td><td style='padding:6px;border:1px solid #e6eefc'>${h !== null && h !== undefined ? Number(h).toFixed(2) : "N/A"} ${UNIT_SYSTEMS[unitSystem].enthalpy}</td></tr>`;
+        })
+        .join("");
       return `<div style='margin-top:12px'><h4 style='margin:0 0 8px;font-size:13px;color:#0f172a'>Point Details</h4><div style='overflow:auto'><table style='border-collapse:collapse;width:100%'><thead><tr><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Point</th><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Temperature</th><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Pressure</th><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Enthalpy</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
     };
 
     const diagramSection = diagramDataUrl
       ? `<div class='card'><h3>Diagram</h3><div><img src='${diagramDataUrl}' style='max-width:100%;height:auto;border-radius:6px;border:1px solid #e6eefc' /></div></div>`
-      : (svgs && (svgs.ph || svgs.ts))
+      : svgs && (svgs.ph || svgs.ts)
         ? `
           <div class='card'><h3>Diagrams</h3>
-            ${svgs.ph ? `<div style='margin-bottom:12px'>${sanitizeSvgInline(svgs.ph)}</div>` : ''}
-            ${svgs.ts ? `<div style='margin-bottom:12px'>${sanitizeSvgInline(svgs.ts)}</div>` : ''}
+            ${svgs.ph ? `<div style='margin-bottom:12px'>${sanitizeSvgInline(svgs.ph)}</div>` : ""}
+            ${svgs.ts ? `<div style='margin-bottom:12px'>${sanitizeSvgInline(svgs.ts)}</div>` : ""}
             ${buildPointsHtmlSmall(cycleData)}
           </div>`
-        : '';
+        : "";
 
     const html = `<!doctype html><html><head><meta charset='utf-8'><title>${project} - Chart Package</title>
     <meta name='viewport' content='width=device-width,initial-scale=1'/>
@@ -1179,8 +1386,8 @@ export function ProfessionalFeatures({
       <div class='card'>
         <h3 style='margin:0 0 8px'>Diagrams</h3>
         <div class='diagram-row'>
-          <div class='diagram-col'>${svgs.ph ? sanitizeSvgInline(svgs.ph) : ''}</div>
-          <div class='diagram-col'>${svgs.ts ? sanitizeSvgInline(svgs.ts) : ''}</div>
+          <div class='diagram-col'>${svgs.ph ? sanitizeSvgInline(svgs.ph) : ""}</div>
+          <div class='diagram-col'>${svgs.ts ? sanitizeSvgInline(svgs.ts) : ""}</div>
         </div>
         <div style='margin-top:12px'>${buildPointsHtmlSmall(cycleData)}</div>
       </div>
@@ -1190,7 +1397,9 @@ export function ProfessionalFeatures({
       </div>
 
       <div class='card'><h3 style='margin:0 0 8px'>Recommendations</h3>
-        <ul>${generateRecommendations().map(r=>`<li>${r}</li>`).join('')}</ul>
+        <ul>${generateRecommendations()
+          .map((r) => `<li>${r}</li>`)
+          .join("")}</ul>
       </div>
 
       <footer>Generated: ${new Date().toLocaleString()}</footer>
@@ -1199,9 +1408,11 @@ export function ProfessionalFeatures({
 
     try {
       // Open printable window with diagrams and auto-print, so user can save as PDF
-      const w = window.open('', '_blank');
+      const w = window.open("", "_blank");
       if (!w) {
-        window.alert('Popup blocked. Please allow popups to generate the Chart Package PDF.');
+        window.alert(
+          "Popup blocked. Please allow popups to generate the Chart Package PDF.",
+        );
         return;
       }
       w.document.open();
@@ -1213,14 +1424,14 @@ export function ProfessionalFeatures({
           w.focus();
           w.print();
         } catch (err) {
-          console.warn('Chart package print failed, will retry', err);
+          console.warn("Chart package print failed, will retry", err);
         }
       };
       setTimeout(printAttempt, 300);
-      console.log('Chart package opened for print');
+      console.log("Chart package opened for print");
     } catch (e) {
-      console.error('Chart package generation failed', e);
-      window.alert('Chart package generation failed: ' + (e as any).message);
+      console.error("Chart package generation failed", e);
+      window.alert("Chart package generation failed: " + (e as any).message);
     }
   };
 
@@ -1896,7 +2107,9 @@ export function ProfessionalFeatures({
                   <ul className="text-sm text-blue-700 space-y-1">
                     <li>✓ Executive summary with key findings</li>
                     <li>✓ Detailed thermodynamic analysis (data only)</li>
-                    <li>✓ Clean executive-ready formatting (diagrams excluded)</li>
+                    <li>
+                      ✓ Clean executive-ready formatting (diagrams excluded)
+                    </li>
                     <li>✓ Cost analysis and ROI calculations</li>
                     <li>✓ Sustainability assessment</li>
                     <li>✓ Engineering recommendations</li>
@@ -1913,25 +2126,53 @@ export function ProfessionalFeatures({
                     aria-label="Generate professional report"
                   >
                     <Download className="h-5 w-5 mr-3" />
-                    <span className="align-middle">Generate Professional Report</span>
+                    <span className="align-middle">
+                      Generate Professional Report
+                    </span>
                   </Button>
-                  <div className="text-sm text-muted-foreground mt-1">Creates a clean, executive-ready PDF without diagrams — ideal for sending to stakeholders.</div>
+                  <div className="text-sm text-muted-foreground mt-1">
+                    Creates a clean, executive-ready PDF without diagrams —
+                    ideal for sending to stakeholders.
+                  </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
                     <div className="flex flex-col items-stretch">
-                      <Button variant="outline" size="sm" className="w-full flex items-center justify-center gap-2 whitespace-nowrap" disabled={!results} onClick={exportData} aria-label="Export data as CSV">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full flex items-center justify-center gap-2 whitespace-nowrap"
+                        disabled={!results}
+                        onClick={exportData}
+                        aria-label="Export data as CSV"
+                      >
                         <FileText className="h-4 w-4" />
-                        <span className="ml-2 truncate">Export Data (.CSV)</span>
+                        <span className="ml-2 truncate">
+                          Export Data (.CSV)
+                        </span>
                       </Button>
-                      <div className="text-xs text-muted-foreground text-center mt-2">Download CSV — Excel compatible, UTF-8 encoded</div>
+                      <div className="text-xs text-muted-foreground text-center mt-2">
+                        Download CSV — Excel compatible, UTF-8 encoded
+                      </div>
                     </div>
 
                     <div className="flex flex-col items-stretch">
-                      <Button variant="outline" size="sm" className="w-full flex items-center justify-center gap-2 whitespace-nowrap" disabled={!results} onClick={downloadChartPackage} aria-label="Open chart package printable PDF">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full flex items-center justify-center gap-2 whitespace-nowrap"
+                        disabled={!results}
+                        onClick={downloadChartPackage}
+                        aria-label="Open chart package printable PDF"
+                      >
                         <BarChart3 className="h-4 w-4" />
-                        <span className="ml-2 truncate">Chart Package (P‑h &amp; T‑s PDF)</span>
+                        <span className="ml-2 truncate">
+                          Chart Package (P‑h &amp; T‑s PDF)
+                        </span>
                       </Button>
-                      <div className="text-xs text-muted-foreground text-center mt-2">Opens a print-ready window containing both diagrams and point details</div>
+                      <div className="text-xs text-muted-foreground text-center mt-2">
+                        Opens a print-ready window containing both diagrams and
+                        point details
+                      </div>
                     </div>
                   </div>
                 </div>

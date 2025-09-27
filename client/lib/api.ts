@@ -140,10 +140,10 @@ class ApiClient {
         // Emit global error event for centralized UI handling
         try {
           window.dispatchEvent(
-            new CustomEvent('app:error', {
+            new CustomEvent("app:error", {
               detail: {
-                title: 'Request failed',
-                message: payload.error || 'Request failed',
+                title: "Request failed",
+                message: payload.error || "Request failed",
                 upgradeRequired: !!payload.upgradeRequired,
                 details: payload.details,
               },
@@ -162,13 +162,13 @@ class ApiClient {
       console.error("API request failed:", error);
       try {
         window.dispatchEvent(
-          new CustomEvent('app:error', {
+          new CustomEvent("app:error", {
             detail: {
-              title: 'Network error',
+              title: "Network error",
               message:
                 error instanceof Error && error.message
                   ? error.message
-                  : 'Failed to connect to server',
+                  : "Failed to connect to server",
             },
           }),
         );
@@ -486,9 +486,9 @@ class ApiClient {
     } catch (error) {
       try {
         window.dispatchEvent(
-          new CustomEvent('app:error', {
+          new CustomEvent("app:error", {
             detail: {
-              title: 'Calculation API Error',
+              title: "Calculation API Error",
               message: error instanceof Error ? error.message : String(error),
             },
           }),
@@ -595,9 +595,9 @@ class ApiClient {
     } catch (error) {
       try {
         window.dispatchEvent(
-          new CustomEvent('app:error', {
+          new CustomEvent("app:error", {
             detail: {
-              title: 'API Error',
+              title: "API Error",
               message: error instanceof Error ? error.message : String(error),
             },
           }),
@@ -711,9 +711,9 @@ class ApiClient {
     } catch (error) {
       try {
         window.dispatchEvent(
-          new CustomEvent('app:error', {
+          new CustomEvent("app:error", {
             detail: {
-              title: 'API Error',
+              title: "API Error",
               message: error instanceof Error ? error.message : String(error),
             },
           }),

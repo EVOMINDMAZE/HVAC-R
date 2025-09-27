@@ -87,9 +87,13 @@ export function History() {
 
         const tagLower = tagFilter.trim().toLowerCase();
         const matchesTag = tagLower
-          ? ((calc.tags && Array.isArray(calc.tags) && calc.tags.join(' ').toLowerCase().includes(tagLower)) ||
-             (calc.inputs && JSON.stringify(calc.inputs).toLowerCase().includes(tagLower)) ||
-             (calc.results && JSON.stringify(calc.results).toLowerCase().includes(tagLower)))
+          ? (calc.tags &&
+              Array.isArray(calc.tags) &&
+              calc.tags.join(" ").toLowerCase().includes(tagLower)) ||
+            (calc.inputs &&
+              JSON.stringify(calc.inputs).toLowerCase().includes(tagLower)) ||
+            (calc.results &&
+              JSON.stringify(calc.results).toLowerCase().includes(tagLower))
           : true;
 
         return matchesSearch && matchesFilter && matchesTag;
@@ -145,7 +149,7 @@ export function History() {
   const formatResultSummary = (calc: Calculation) => {
     try {
       let results: any = calc.results || {};
-      if (typeof results === 'string') {
+      if (typeof results === "string") {
         try {
           results = JSON.parse(results);
         } catch (e) {
@@ -154,7 +158,7 @@ export function History() {
       }
 
       const pick = (obj: any, paths: string[][]) => {
-        if (typeof obj === 'string') return undefined;
+        if (typeof obj === "string") return undefined;
         for (const path of paths) {
           let cur = obj;
           let ok = true;
@@ -172,7 +176,7 @@ export function History() {
 
       const readNum = (v: any) => {
         if (v === undefined || v === null) return null;
-        if (typeof v === 'number') return v;
+        if (typeof v === "number") return v;
         const n = Number(v);
         if (!Number.isNaN(n)) return n;
         const parsed = Number(String(v).replace(/[^0-9eE+\-\.]/g, ""));
@@ -181,23 +185,53 @@ export function History() {
 
       switch (calc.calculation_type) {
         case "Standard Cycle": {
-          const copRaw = pick(results, [["data", "performance", "cop"], ["performance", "cop"], ["data", "cop"], ["cop"]]);
+          const copRaw = pick(results, [
+            ["data", "performance", "cop"],
+            ["performance", "cop"],
+            ["data", "cop"],
+            ["cop"],
+          ]);
           const cop = readNum(copRaw);
-          return cop !== undefined && cop !== null ? `COP: ${Number(cop).toFixed(2)}` : "No COP data";
+          return cop !== undefined && cop !== null
+            ? `COP: ${Number(cop).toFixed(2)}`
+            : "No COP data";
         }
         case "Refrigerant Comparison":
           return calc.inputs?.refrigerants
             ? `${calc.inputs.refrigerants.length} refrigerants compared`
             : "Comparison data";
         case "Cascade Cycle": {
-          const overallRaw = pick(results, [["data", "overall_performance", "cop"], ["overall_performance", "cop"], ["data", "performance", "overallCOP"], ["overallCOP"], ["data", "overallCOP"]]);
+          const overallRaw = pick(results, [
+            ["data", "overall_performance", "cop"],
+            ["overall_performance", "cop"],
+            ["data", "performance", "overallCOP"],
+            ["overallCOP"],
+            ["data", "overallCOP"],
+          ]);
           const overall = readNum(overallRaw);
 
-          if (overall !== undefined && overall !== null) return `Overall COP: ${Number(overall).toFixed(2)}`;
+          if (overall !== undefined && overall !== null)
+            return `Overall COP: ${Number(overall).toFixed(2)}`;
 
           // Try to compute overall COP from lt/ht perf if available in saved results
-          const lt = pick(results, [["data", "lt_cycle_performance"], ["lt_cycle_performance"], ["data", "lt_cycle"], ["lt_cycle"], ["data", "performance", "lt_cycle"], []]) || {};
-          const ht = pick(results, [["data", "ht_cycle_performance"], ["ht_cycle_performance"], ["data", "ht_cycle"], ["ht_cycle"], ["data", "performance", "ht_cycle"], []]) || {};
+          const lt =
+            pick(results, [
+              ["data", "lt_cycle_performance"],
+              ["lt_cycle_performance"],
+              ["data", "lt_cycle"],
+              ["lt_cycle"],
+              ["data", "performance", "lt_cycle"],
+              [],
+            ]) || {};
+          const ht =
+            pick(results, [
+              ["data", "ht_cycle_performance"],
+              ["ht_cycle_performance"],
+              ["data", "ht_cycle"],
+              ["ht_cycle"],
+              ["data", "performance", "ht_cycle"],
+              [],
+            ]) || {};
 
           const readNum = (v: any) => {
             if (v === undefined || v === null) return null;
@@ -207,10 +241,36 @@ export function History() {
             return Number.isNaN(parsed) ? null : parsed;
           };
 
-          const ltWork = readNum(pick(lt, [["work_of_compression_kj_kg"],["work_input_kj_kg"],["work_of_compression"]])) || 0;
-          const htWork = readNum(pick(ht, [["work_of_compression_kj_kg"],["work_input_kj_kg"],["work_of_compression"]])) || 0;
-          const ltRe = readNum(pick(lt, [["refrigeration_effect_kj_kg"],["refrigeration_effect"]])) || 0;
-          const htRe = readNum(pick(ht, [["refrigeration_effect_kj_kg"],["refrigeration_effect"]])) || 0;
+          const ltWork =
+            readNum(
+              pick(lt, [
+                ["work_of_compression_kj_kg"],
+                ["work_input_kj_kg"],
+                ["work_of_compression"],
+              ]),
+            ) || 0;
+          const htWork =
+            readNum(
+              pick(ht, [
+                ["work_of_compression_kj_kg"],
+                ["work_input_kj_kg"],
+                ["work_of_compression"],
+              ]),
+            ) || 0;
+          const ltRe =
+            readNum(
+              pick(lt, [
+                ["refrigeration_effect_kj_kg"],
+                ["refrigeration_effect"],
+              ]),
+            ) || 0;
+          const htRe =
+            readNum(
+              pick(ht, [
+                ["refrigeration_effect_kj_kg"],
+                ["refrigeration_effect"],
+              ]),
+            ) || 0;
 
           const totalWork = ltWork + htWork;
           const totalRe = ltRe + htRe;
