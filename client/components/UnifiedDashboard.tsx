@@ -464,6 +464,12 @@ export function UnifiedDashboard({
           </div>
         </CardContent>
       </Card>
+
+      {/* Integration recommendations */}
+      <div className="mt-6">
+        <MCPRecommendations />
+      </div>
+
     </div>
   );
 }
