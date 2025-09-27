@@ -348,39 +348,6 @@ export function CalculationDetailsModal({ calculation }: CalculationDetailsModal
         const computedOverall = (ltWork + htWork) > 0 ? (ltRe + htRe) / (ltWork + htWork) : null;
         const overallCop = maybeOverall !== null ? maybeOverall : computedOverall;
 
-        // Helper to read state point values across common shapes
-        const getStatePoint = (sp: any, idx: number) => {
-          if (!sp) return undefined;
-          // Array style
-          if (Array.isArray(sp) && sp.length >= idx) return sp[idx - 1];
-          // Numeric keys
-          if (sp[String(idx)]) return sp[String(idx)];
-          if (sp[`point_${idx}`]) return sp[`point_${idx}`];
-          if (sp[`point${idx}`]) return sp[`point${idx}`];
-          // keys like '1_compressor_inlet' or starting with `${idx}_`
-          const keyMatch = Object.keys(sp || {}).find((k) => k && k.toString().startsWith(`${idx}_`));
-          if (keyMatch) return sp[keyMatch];
-          // fallback to ordered values
-          const values = Object.values(sp);
-          if (values && values.length >= idx) return values[idx - 1];
-          return undefined;
-        };
-
-        const getStatePointValue = (sp: any, idx: number, propCandidates: string[]) => {
-          const p = getStatePoint(sp, idx);
-          if (!p) return null;
-          for (const k of propCandidates) {
-            if (p[k] !== undefined && p[k] !== null) {
-              const n = Number(p[k]);
-              if (!Number.isNaN(n)) return n;
-              // try parse strings with units
-              const parsed = Number(String(p[k]).replace(/[^0-9eE+\-\.]/g, ''));
-              if (!Number.isNaN(parsed)) return parsed;
-            }
-          }
-          return null;
-        };
-
         return (
           <div className="space-y-6">
             <div>
