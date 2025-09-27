@@ -1509,7 +1509,9 @@ export function EnhancedStandardCycleContent() {
                             </svg>
                             <div>
                               <div className="text-sm font-medium">
-                                Critical Press
+                                <TechTerm term="critical_pressure">
+                                  Critical Pressure
+                                </TechTerm>
                               </div>
                               <div className="text-sm text-gray-600">
                                 {selectedRefrigerant?.limits
