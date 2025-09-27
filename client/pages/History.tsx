@@ -364,9 +364,10 @@ export function History() {
               {/* Tag / Label filter */}
               <Input
                 placeholder="Filter by tag or label"
-                value={undefined}
-                onChange={() => {}}
+                value={tagFilter}
+                onChange={(e) => setTagFilter(e.target.value)}
                 className="md:col-span-1"
+                aria-label="Filter by tag"
               />
 
               <Select value={sortBy} onValueChange={setSortBy}>
