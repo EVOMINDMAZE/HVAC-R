@@ -37,7 +37,7 @@ export function ErrorModal() {
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{message}</DialogDescription>
+          <DialogDescription aria-live="assertive">{message}</DialogDescription>
         </DialogHeader>
 
         <div className="mt-4">
