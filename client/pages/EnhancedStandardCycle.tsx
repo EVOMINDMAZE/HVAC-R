@@ -1606,7 +1606,12 @@ export function EnhancedStandardCycleContent() {
                         </div>
                       </div>
                       <div>
-                        <span className="font-medium">Min Temperature:</span>
+                        <span className="font-medium">
+                          <TechTerm term="minimum_temperature">
+                            Minimum Temperature
+                          </TechTerm>
+                          :
+                        </span>
                         <div>
                           {selectedRefrigerant.limits.min_temp_c.toFixed(1)}°C
                         </div>
