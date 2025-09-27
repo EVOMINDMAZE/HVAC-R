@@ -1617,7 +1617,12 @@ export function EnhancedStandardCycleContent() {
                         </div>
                       </div>
                       <div>
-                        <span className="font-medium">Max Temperature:</span>
+                        <span className="font-medium">
+                          <TechTerm term="maximum_temperature">
+                            Maximum Temperature
+                          </TechTerm>
+                          :
+                        </span>
                         <div>
                           {selectedRefrigerant.limits.max_temp_c.toFixed(1)}°C
                         </div>
