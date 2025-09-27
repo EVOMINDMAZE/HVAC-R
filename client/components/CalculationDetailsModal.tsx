@@ -341,18 +341,25 @@ export function CalculationDetailsModal({ calculation }: CalculationDetailsModal
         );
         
       case "Cascade Cycle":
-        // Accept multiple shapes for saved results
-        const cascade = pick(results, [["data"], ["data", "data"], ["cascade"], []]) || {};
+        // Use deepPick to search multiple potential roots (results, results.data, etc.)
+        const deepPick = (paths: string[][]) => {
+          const bases = [results, results?.data, results?.data?.data, results?.cascade, results?.data?.cascade];
+          for (const base of bases) {
+            const val = pick(base, paths as any);
+            if (val !== undefined) return val;
+          }
+          return undefined;
+        };
 
-        // Try to compute overall COP if missing by using lt/ht perf values
-        const maybeOverall = readNumber([pick(cascade, [["overall_performance", "cop"], ["overallCOP"], ["overall_performance", "COP"]])]);
-        const ltPerf = pick(cascade, [["lt_cycle_performance"], ["lt_cycle", "performance"], ["lt_cycle_performance", "performance"], ["lt_cycle"], []]) || {};
-        const htPerf = pick(cascade, [["ht_cycle_performance"], ["ht_cycle", "performance"], ["ht_cycle_performance", "performance"], ["ht_cycle"], []]) || {};
+        // Try to compute overall COP if missing by using lt/ht perf values (searching multiple roots)
+        const maybeOverall = readNumber([deepPick([["overall_performance", "cop"], ["overallCOP"], ["overall_performance", "COP"]])]);
+        const ltPerf = deepPick([["lt_cycle_performance"], ["lt_cycle", "performance"], ["lt_cycle"], ["lt_cycle_performance", "performance"], ["lt_cycle_state_points"], ["lt_state_points"], ["lt_cycle_points"]]) || {};
+        const htPerf = deepPick([["ht_cycle_performance"], ["ht_cycle", "performance"], ["ht_cycle"], ["ht_cycle_performance", "performance"], ["ht_cycle_state_points"], ["ht_state_points"], ["ht_cycle_points"]]) || {};
 
-        const ltWork = readNumber([pick(ltPerf, [["work_of_compression_kj_kg"],["work_input_kj_kg"],["work_of_compression"],["work_kj_kg"]])]) || 0;
-        const htWork = readNumber([pick(htPerf, [["work_of_compression_kj_kg"],["work_input_kj_kg"],["work_of_compression"],["work_kj_kg"]])]) || 0;
-        const ltRe = readNumber([pick(ltPerf, [["refrigeration_effect_kj_kg"],["refrigeration_effect"],["refrig_kj_kg"]])]) || 0;
-        const htRe = readNumber([pick(htPerf, [["refrigeration_effect_kj_kg"],["refrigeration_effect"],["refrig_kj_kg"]])]) || 0;
+        const ltWork = readNumber([deepPick([["lt_cycle_performance", "work_of_compression_kj_kg"], ["lt_cycle_performance", "work_input_kj_kg"], ["lt_cycle", "work_of_compression_kj_kg"], ["lt_cycle", "work_input_kj_kg"], ["lt_cycle", "work_kj_kg"]])]) || 0;
+        const htWork = readNumber([deepPick([["ht_cycle_performance", "work_of_compression_kj_kg"], ["ht_cycle_performance", "work_input_kj_kg"], ["ht_cycle", "work_of_compression_kj_kg"], ["ht_cycle", "work_input_kj_kg"], ["ht_cycle", "work_kj_kg"]])]) || 0;
+        const ltRe = readNumber([deepPick([["lt_cycle_performance", "refrigeration_effect_kj_kg"], ["lt_cycle_performance", "refrigeration_effect"], ["lt_cycle", "refrigeration_effect_kj_kg"], ["lt_cycle", "refrigeration_effect"]])]) || 0;
+        const htRe = readNumber([deepPick([["ht_cycle_performance", "refrigeration_effect_kj_kg"], ["ht_cycle_performance", "refrigeration_effect"], ["ht_cycle", "refrigeration_effect_kj_kg"], ["ht_cycle", "refrigeration_effect"]])]) || 0;
 
         const computedOverall = (ltWork + htWork) > 0 ? (ltRe + htRe) / (ltWork + htWork) : null;
         const overallCop = maybeOverall !== null ? maybeOverall : computedOverall;
