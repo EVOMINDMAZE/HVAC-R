@@ -1073,11 +1073,30 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     const point3 = points[2]; // Condenser outlet
     const point4 = points[3]; // Expansion outlet
 
-    // Engineering calculations
-    const compressionRatio = point2.pressure / point1.pressure;
-    const temperatureLift = point2.temperature - point1.temperature;
-    const refrigerationEffect = point1.enthalpy - point4.enthalpy;
-    const compressionWork = point2.enthalpy - point1.enthalpy;
+    // Engineering calculations (guarded)
+    const safeNum = (v: any) => {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : null;
+    };
+
+    const p1 = safeNum(point1.pressure);
+    const p2 = safeNum(point2.pressure);
+    const t1 = safeNum(point1.temperature);
+    const t2 = safeNum(point2.temperature);
+    const h1 = safeNum(point1.enthalpy);
+    const h2 = safeNum(point2.enthalpy);
+    const h3 = safeNum(point3.enthalpy);
+    const h4 = safeNum(point4.enthalpy);
+
+    if (p1 === null || p2 === null || t1 === null || t2 === null || h1 === null || h2 === null || h3 === null || h4 === null) {
+      // Missing data, skip overlay to avoid exceptions
+      return;
+    }
+
+    const compressionRatio = p2 / p1;
+    const temperatureLift = t2 - t1;
+    const refrigerationEffect = h1 - h4;
+    const compressionWork = h2 - h1;
     const theoreticalCOP = refrigerationEffect / compressionWork;
 
     // Draw performance metrics overlay with enhanced styling
@@ -1216,29 +1235,50 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
   ) => {
     if (points.length < 4) return;
 
+    const safeNum = (v: any) => {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : null;
+    };
+
     const processes = [
       {
         from: points[0],
         to: points[1],
-        label: `ΔT: ${(points[1].temperature - points[0].temperature).toFixed(1)}°C`,
+        label: (() => {
+          const t1 = safeNum(points[0].temperature);
+          const t2 = safeNum(points[1].temperature);
+          return t1 !== null && t2 !== null ? `ΔT: ${(t2 - t1).toFixed(1)}°C` : "ΔT: N/A";
+        })(),
         color: "#dc2626",
       },
       {
         from: points[1],
         to: points[2],
-        label: `ΔP: ${((points[1].pressure - points[2].pressure) / 1000).toFixed(1)}MPa`,
+        label: (() => {
+          const p1 = safeNum(points[1].pressure);
+          const p2 = safeNum(points[2].pressure);
+          return p1 !== null && p2 !== null ? `ΔP: ${((p1 - p2) / 1000).toFixed(1)}MPa` : "ΔP: N/A";
+        })(),
         color: "#2563eb",
       },
       {
         from: points[2],
         to: points[3],
-        label: `ΔH: ${(points[2].enthalpy - points[3].enthalpy).toFixed(1)}kJ/kg`,
+        label: (() => {
+          const h2 = safeNum(points[2].enthalpy);
+          const h3 = safeNum(points[3].enthalpy);
+          return h2 !== null && h3 !== null ? `ΔH: ${(h2 - h3).toFixed(1)}kJ/kg` : "ΔH: N/A";
+        })(),
         color: "#059669",
       },
       {
         from: points[3],
         to: points[0],
-        label: `ΔH: ${(points[0].enthalpy - points[3].enthalpy).toFixed(1)}kJ/kg`,
+        label: (() => {
+          const h0 = safeNum(points[0].enthalpy);
+          const h3 = safeNum(points[3].enthalpy);
+          return h0 !== null && h3 !== null ? `ΔH: ${(h0 - h3).toFixed(1)}kJ/kg` : "ΔH: N/A";
+        })(),
         color: "#d97706",
       },
     ];
@@ -1276,12 +1316,21 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       const x = margin + point.x;
       const y = margin + point.y;
 
-      // Enhanced point labels with key properties
-      const labels = [
-        `${point.temperature.toFixed(1)}°C`,
-        `${(point.pressure / 1000).toFixed(1)}MPa`,
-        `${point.enthalpy.toFixed(0)}kJ/kg`,
-      ];
+      // Enhanced point labels with key properties (guarded)
+    const safeNum = (v: any) => {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : null;
+    };
+
+    const temp = safeNum(point.temperature);
+    const pres = safeNum(point.pressure);
+    const enth = safeNum(point.enthalpy);
+
+    const labels = [
+      temp !== null ? `${temp.toFixed(1)}°C` : "N/A",
+      pres !== null ? `${(pres / 1000).toFixed(1)}MPa` : "N/A",
+      enth !== null ? `${enth.toFixed(0)}kJ/kg` : "N/A",
+    ];
 
       // Background for labels
       ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
