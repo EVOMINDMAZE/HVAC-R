@@ -981,6 +981,12 @@ export function ProfessionalFeatures({
   // Export data as a human-friendly CSV (instead of raw JSON)
   const exportData = () => {
     try {
+      if (!isPro) {
+        try {
+          window.dispatchEvent(new CustomEvent('app:error', { detail: { title: 'Upgrade required', message: 'Exporting data is available on Professional plans only.', upgradeRequired: true } }));
+        } catch (e) {}
+        return;
+      }
       const rows: string[] = [];
       const pushKV = (k: string, v: any) => rows.push(`"${k.replace(/"/g,'""')}","${String(v ?? '').replace(/"/g,'""')}"`);
 
