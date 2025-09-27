@@ -130,12 +130,30 @@ class ApiClient {
           };
         }
 
-        return {
+        const payload = {
           success: false,
           error: errorData.error || "Request failed",
           details: errorData.details,
           upgradeRequired: errorData.upgradeRequired,
         };
+
+        // Emit global error event for centralized UI handling
+        try {
+          window.dispatchEvent(
+            new CustomEvent('app:error', {
+              detail: {
+                title: 'Request failed',
+                message: payload.error || 'Request failed',
+                upgradeRequired: !!payload.upgradeRequired,
+                details: payload.details,
+              },
+            }),
+          );
+        } catch (e) {
+          // ignore when running in non-browser environments
+        }
+
+        return payload;
       }
 
       const data = await response.json();
