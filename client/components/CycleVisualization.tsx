@@ -1416,9 +1416,18 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     });
   };
 
-  const selectedPointData = cycleData?.points.find(
-    (p) => p.id === selectedPoint,
-  );
+  const selectedPointData = cycleData?.points.find((p) => p.id === selectedPoint);
+
+  // Safe number formatters for rendering
+  const fmt = (v: any, digits = 2) => {
+    const n = Number(v);
+    return Number.isFinite(n) ? n.toFixed(digits) : "N/A";
+  };
+
+  const fmtPressureMPa = (v: any, digits = 2) => {
+    const n = Number(v);
+    return Number.isFinite(n) ? (n / 1000).toFixed(digits) + " MPa" : "N/A";
+  };
 
   return (
     <Card className="w-full">
