@@ -469,7 +469,6 @@ export function UnifiedDashboard({
       <div className="mt-6">
         <MCPRecommendations />
       </div>
-
     </div>
   );
 }

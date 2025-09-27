@@ -2148,7 +2148,14 @@ export function ProfessionalFeatures({
                         <FileText className="h-4 w-4" />
                         <span className="ml-2 truncate flex items-center">
                           Export Data (.CSV)
-                          {!isPro && <Badge variant="destructive" className="ml-2 text-xs">Pro</Badge>}
+                          {!isPro && (
+                            <Badge
+                              variant="destructive"
+                              className="ml-2 text-xs"
+                            >
+                              Pro
+                            </Badge>
+                          )}
                         </span>
                       </Button>
                       <div className="text-xs text-muted-foreground text-center mt-2">
