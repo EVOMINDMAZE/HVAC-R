@@ -428,7 +428,7 @@ export function CalculationDetailsModal({ calculation }: CalculationDetailsModal
                   <div>
                     <span className="font-medium">2 - Compressor Outlet:</span>
                     <div>{(() => {
-                      const val = getStatePointValue(pick(cascade, [["lt_cycle"],["lt_cycle","state_points"],["lt_cycle","points"]]) || pick(cascade, [["lt_cycle"],["lt_cycle"]]), 2, ["temperature","temp_c","t","temp","temperature_c"]);
+                      const val = getStatePointValue(deepPick([["lt_cycle"],["lt_cycle","state_points"],["lt_cycle","points"]]) || deepPick([["lt_cycle"],["lt_cycle"]]), 2, ["temperature","temp_c","t","temp","temperature_c"]);
                       return val !== null ? `${val.toFixed(1)}°C` : "N/A";
                     })()}</div>
                   </div>
@@ -436,7 +436,7 @@ export function CalculationDetailsModal({ calculation }: CalculationDetailsModal
                   <div>
                     <span className="font-medium">3 - Expansion Valve Inlet:</span>
                     <div>{(() => {
-                      const val = getStatePointValue(pick(cascade, [["lt_cycle"],["lt_cycle","state_points"],["lt_cycle","points"]]) || pick(cascade, [["lt_cycle"],["lt_cycle"]]), 3, ["temperature","temp_c","t","temp","temperature_c"]);
+                      const val = getStatePointValue(deepPick([["lt_cycle"],["lt_cycle","state_points"],["lt_cycle","points"]]) || deepPick([["lt_cycle"],["lt_cycle"]]), 3, ["temperature","temp_c","t","temp","temperature_c"]);
                       return val !== null ? `${val.toFixed(1)}°C` : "N/A";
                     })()}</div>
                   </div>
@@ -444,7 +444,7 @@ export function CalculationDetailsModal({ calculation }: CalculationDetailsModal
                   <div>
                     <span className="font-medium">4 - Evaporator Inlet:</span>
                     <div>{(() => {
-                      const q = getStatePointValue(pick(cascade, [["lt_cycle"],["lt_cycle","state_points"],["lt_cycle","points"]]) || pick(cascade, [["lt_cycle"],["lt_cycle"]]), 4, ["vapor_quality","quality","x"]);
+                      const q = getStatePointValue(deepPick([["lt_cycle"],["lt_cycle","state_points"],["lt_cycle","points"]]) || deepPick([["lt_cycle"],["lt_cycle"]]), 4, ["vapor_quality","quality","x"]);
                       return q !== null ? `Quality: ${q.toFixed(3)}` : "Quality: N/A";
                     })()}</div>
                   </div>
