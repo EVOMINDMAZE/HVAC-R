@@ -1075,6 +1075,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
     // Engineering calculations (guarded)
     const safeNum = (v: any) => {
+      if (v === null || v === undefined) return null;
       const n = Number(v);
       return Number.isFinite(n) ? n : null;
     };
@@ -1236,6 +1237,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     if (points.length < 4) return;
 
     const safeNum = (v: any) => {
+      if (v === null || v === undefined) return null;
       const n = Number(v);
       return Number.isFinite(n) ? n : null;
     };
@@ -1318,6 +1320,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
       // Enhanced point labels with key properties (guarded)
     const safeNum = (v: any) => {
+      if (v === null || v === undefined) return null;
       const n = Number(v);
       return Number.isFinite(n) ? n : null;
     };
@@ -1420,11 +1423,13 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
   // Safe number formatters for rendering
   const fmt = (v: any, digits = 2) => {
+    if (v === null || v === undefined || v === "") return "N/A";
     const n = Number(v);
     return Number.isFinite(n) ? n.toFixed(digits) : "N/A";
   };
 
   const fmtPressureMPa = (v: any, digits = 2) => {
+    if (v === null || v === undefined || v === "") return "N/A";
     const n = Number(v);
     return Number.isFinite(n) ? (n / 1000).toFixed(digits) + " MPa" : "N/A";
   };
