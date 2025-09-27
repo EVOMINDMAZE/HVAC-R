@@ -305,7 +305,7 @@ export function useSupabaseCalculations() {
 
       return true;
     } catch (error: any) {
-      console.error('Error updating calculation:', error);
+      logError('updateCalculation', error);
 
       // Better error message handling
       let errorMessage = 'Unknown error occurred';
