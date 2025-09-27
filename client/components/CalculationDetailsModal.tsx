@@ -259,30 +259,33 @@ export function CalculationDetailsModal({ calculation }: CalculationDetailsModal
         );
         
       case "Refrigerant Comparison":
-        const comparisonResults = results?.data?.results || results?.data || [];
-        
+        const comparisonResults = pick(results, [["data","results"], ["data"], ["results"], []]) || [];
+
         return (
           <div className="space-y-4">
             <h5 className="font-semibold text-green-600 mb-3">Comparison Results</h5>
-            {comparisonResults.map((result: any, index: number) => (
-              <div key={index} className="p-4 border rounded-lg">
-                <h6 className="font-semibold text-blue-600 mb-2">{result.refrigerant}</h6>
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div>
-                    <span className="font-medium">COP:</span>
-                    <span className="ml-2">{result.performance?.cop?.toFixed(3) || "N/A"}</span>
-                  </div>
-                  <div>
-                    <span className="font-medium">Refrigeration Effect:</span>
-                    <span className="ml-2">{result.performance?.refrigeration_effect_kj_kg?.toFixed(1) || "N/A"} kJ/kg</span>
-                  </div>
-                  <div>
-                    <span className="font-medium">Work Input:</span>
-                    <span className="ml-2">{result.performance?.work_of_compression_kj_kg?.toFixed(1) || "N/A"} kJ/kg</span>
+            {comparisonResults.map((result: any, index: number) => {
+              const perf = pick(result, [["performance"], ["data","performance"], ["result","performance" ]]) || {};
+              return (
+                <div key={index} className="p-4 border rounded-lg">
+                  <h6 className="font-semibold text-blue-600 mb-2">{result.refrigerant || result.name || `Result ${index+1}`}</h6>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div>
+                      <span className="font-medium">COP:</span>
+                      <span className="ml-2">{fmt(pick(perf, [["cop"], ["COP"]]), 3)}</span>
+                    </div>
+                    <div>
+                      <span className="font-medium">Refrigeration Effect:</span>
+                      <span className="ml-2">{fmt(pick(perf, [["refrigeration_effect_kj_kg"], ["refrigeration_effect"]]), 1)} kJ/kg</span>
+                    </div>
+                    <div>
+                      <span className="font-medium">Work Input:</span>
+                      <span className="ml-2">{fmt(pick(perf, [["work_of_compression_kj_kg"], ["work_input_kj_kg"], ["work_of_compression"]]), 1)} kJ/kg</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         );
         
