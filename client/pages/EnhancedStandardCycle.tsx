@@ -1419,7 +1419,9 @@ export function EnhancedStandardCycleContent() {
                               <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
                             </svg>
                             <div>
-                              <div className="text-sm font-medium">GWP</div>
+                              <div className="text-sm font-medium">
+                                <TechTerm term="gwp">GWP</TechTerm>
+                              </div>
                               <div className="text-sm text-gray-600">
                                 {selectedRefrigerant?.globalWarmingPotential ??
                                   selectedRefrigerant?.gwp ??
