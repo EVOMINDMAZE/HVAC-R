@@ -1489,12 +1489,24 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
                           <div className="space-y-2 text-sm">
                             <div className="flex justify-between items-center">
                               <span className="text-sm text-gray-600">Pressure Ratio</span>
-                              <span className="font-mono text-lg font-semibold">{cycleData.points[1] && cycleData.points[0] ? (cycleData.points[1].pressure / cycleData.points[0].pressure).toFixed(2) : "N/A"}</span>
+                              <span className="font-mono text-lg font-semibold">{(() => {
+                                const p0 = Number(cycleData.points[0]?.pressure);
+                                const p1 = Number(cycleData.points[1]?.pressure);
+                                return Number.isFinite(p0) && Number.isFinite(p1) && p0 !== 0
+                                  ? (p1 / p0).toFixed(2)
+                                  : "N/A";
+                              })()}</span>
                             </div>
 
                             <div className="flex justify-between items-center">
                               <span className="text-sm text-gray-600">Temperature Lift</span>
-                              <span className="font-mono text-lg font-semibold">{cycleData.points[1] && cycleData.points[0] ? `${(cycleData.points[1].temperature - cycleData.points[0].temperature).toFixed(1)} °C` : "N/A"}</span>
+                              <span className="font-mono text-lg font-semibold">{(() => {
+                                const t0 = Number(cycleData.points[0]?.temperature);
+                                const t1 = Number(cycleData.points[1]?.temperature);
+                                return Number.isFinite(t0) && Number.isFinite(t1)
+                                  ? `${(t1 - t0).toFixed(1)} °C`
+                                  : "N/A";
+                              })()}</span>
                             </div>
 
                             <div className="flex justify-between items-center">
@@ -1516,25 +1528,25 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
                             <div className="grid grid-cols-2 gap-3 text-sm">
                               <div>
                                 <div className="text-xs text-gray-500">Temperature</div>
-                                <div className="font-mono text-lg font-semibold">{selectedPointData.temperature.toFixed(2)} °C</div>
+                                <div className="font-mono text-lg font-semibold">{fmt(selectedPointData.temperature, 2)} °C</div>
                               </div>
                               <div>
                                 <div className="text-xs text-gray-500">Pressure</div>
-                                <div className="font-mono text-lg font-semibold">{(selectedPointData.pressure / 1000).toFixed(2)} MPa</div>
+                                <div className="font-mono text-lg font-semibold">{fmtPressureMPa(selectedPointData.pressure, 2)}</div>
                               </div>
                               <div>
                                 <div className="text-xs text-gray-500">Enthalpy</div>
-                                <div className="font-mono">{selectedPointData.enthalpy.toFixed(1)} kJ/kg</div>
+                                <div className="font-mono">{fmt(selectedPointData.enthalpy, 1)} kJ/kg</div>
                               </div>
                               <div>
                                 <div className="text-xs text-gray-500">Entropy</div>
-                                <div className="font-mono">{selectedPointData.entropy.toFixed(3)} kJ/kg·K</div>
+                                <div className="font-mono">{fmt(selectedPointData.entropy, 3)} kJ/kg��K</div>
                               </div>
                             </div>
 
-                            {selectedPointData.quality !== undefined && (
+                            {selectedPointData.quality !== undefined && Number.isFinite(Number(selectedPointData.quality)) && (
                               <div className="p-2 bg-blue-50 rounded">
-                                <Badge variant="secondary" className="w-full justify-center">Vapor Quality: {(selectedPointData.quality * 100).toFixed(1)}%</Badge>
+                                <Badge variant="secondary" className="w-full justify-center">Vapor Quality: {(Number(selectedPointData.quality) * 100).toFixed(1)}%</Badge>
                               </div>
                             )}
 
