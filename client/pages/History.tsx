@@ -66,6 +66,7 @@ export function History() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("newest");
+  const [tagFilter, setTagFilter] = useState<string>("");
   const [selectedCalculation, setSelectedCalculation] =
     useState<Calculation | null>(null);
   const [showDetails, setShowDetails] = useState(false);
