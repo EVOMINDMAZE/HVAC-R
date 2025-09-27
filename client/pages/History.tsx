@@ -135,9 +135,17 @@ export function History() {
 
   const formatResultSummary = (calc: Calculation) => {
     try {
-      const results = calc.results || {};
+      let results: any = calc.results || {};
+      if (typeof results === 'string') {
+        try {
+          results = JSON.parse(results);
+        } catch (e) {
+          // ignore parse errors
+        }
+      }
 
       const pick = (obj: any, paths: string[][]) => {
+        if (typeof obj === 'string') return undefined;
         for (const path of paths) {
           let cur = obj;
           let ok = true;
