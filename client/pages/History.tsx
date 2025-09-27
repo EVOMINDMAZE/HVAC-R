@@ -190,7 +190,8 @@ export function History() {
             ? `${calc.inputs.refrigerants.length} refrigerants compared`
             : "Comparison data";
         case "Cascade Cycle": {
-          const overall = pick(results, [["data", "overall_performance", "cop"], ["overall_performance", "cop"], ["data", "performance", "overallCOP"], ["overallCOP"], ["data", "overallCOP"]]);
+          const overallRaw = pick(results, [["data", "overall_performance", "cop"], ["overall_performance", "cop"], ["data", "performance", "overallCOP"], ["overallCOP"], ["data", "overallCOP"]]);
+          const overall = readNum(overallRaw);
 
           if (overall !== undefined && overall !== null) return `Overall COP: ${Number(overall).toFixed(2)}`;
 
