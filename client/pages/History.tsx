@@ -170,9 +170,19 @@ export function History() {
         return undefined;
       };
 
+      const readNum = (v: any) => {
+        if (v === undefined || v === null) return null;
+        if (typeof v === 'number') return v;
+        const n = Number(v);
+        if (!Number.isNaN(n)) return n;
+        const parsed = Number(String(v).replace(/[^0-9eE+\-\.]/g, ""));
+        return Number.isNaN(parsed) ? null : parsed;
+      };
+
       switch (calc.calculation_type) {
         case "Standard Cycle": {
-          const cop = pick(results, [["data", "performance", "cop"], ["performance", "cop"], ["data", "cop"], ["cop"]]);
+          const copRaw = pick(results, [["data", "performance", "cop"], ["performance", "cop"], ["data", "cop"], ["cop"]]);
+          const cop = readNum(copRaw);
           return cop !== undefined && cop !== null ? `COP: ${Number(cop).toFixed(2)}` : "No COP data";
         }
         case "Refrigerant Comparison":
