@@ -135,20 +135,37 @@ export function History() {
 
   const formatResultSummary = (calc: Calculation) => {
     try {
-      const results = calc.results;
+      const results = calc.results || {};
+
+      const pick = (obj: any, paths: string[][]) => {
+        for (const path of paths) {
+          let cur = obj;
+          let ok = true;
+          for (const key of path) {
+            if (cur === undefined || cur === null) {
+              ok = false;
+              break;
+            }
+            cur = cur[key];
+          }
+          if (ok && cur !== undefined) return cur;
+        }
+        return undefined;
+      };
+
       switch (calc.calculation_type) {
-        case "Standard Cycle":
-          return results?.data?.performance?.cop
-            ? `COP: ${results.data.performance.cop.toFixed(2)}`
-            : "No COP data";
+        case "Standard Cycle": {
+          const cop = pick(results, [["data", "performance", "cop"], ["performance", "cop"], ["data", "cop"], ["cop"]]);
+          return cop !== undefined && cop !== null ? `COP: ${Number(cop).toFixed(2)}` : "No COP data";
+        }
         case "Refrigerant Comparison":
           return calc.inputs?.refrigerants
             ? `${calc.inputs.refrigerants.length} refrigerants compared`
             : "Comparison data";
-        case "Cascade Cycle":
-          return results?.data?.performance?.overallCOP
-            ? `Overall COP: ${results.data.performance.overallCOP.toFixed(2)}`
-            : "No COP data";
+        case "Cascade Cycle": {
+          const overall = pick(results, [["data", "overall_performance", "cop"], ["overall_performance", "cop"], ["data", "performance", "overallCOP"], ["data", "performance", "overallCOP"], ["overallCOP"], ["data", "overallCOP"]]);
+          return overall !== undefined && overall !== null ? `Overall COP: ${Number(overall).toFixed(2)}` : "No COP data";
+        }
         default:
           return "Calculation complete";
       }
