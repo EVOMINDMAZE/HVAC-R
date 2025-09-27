@@ -702,15 +702,69 @@ export function RefrigerantComparisonContent() {
 
       if (arr.length >= 4) {
         // Map first 4 to the expected labels and sanitize numeric fields
-        const toNumeric = (v: any): number | undefined => {
-          if (v === undefined || v === null) return undefined;
-          const n = Number(String(v).replace(/[^0-9eE+\-\.]/g, ""));
-          return Number.isFinite(n) ? n : undefined;
+        const toNumeric = (v: any): number | null => {
+          if (v === undefined || v === null) return null;
+          const cleaned = String(v).trim();
+          if (cleaned === "") return null;
+          // remove common non-numeric chars but allow exponentials and signs
+          const n = Number(cleaned.replace(/[^0-9eE+\-\.]/g, ""));
+          return Number.isFinite(n) ? n : null;
+        };
+
+        const pickFirstNumeric = (p: any, candidates: string[]) => {
+          for (const k of candidates) {
+            if (p[k] !== undefined && p[k] !== null) {
+              const val = toNumeric(p[k]);
+              if (val !== null) return val;
+            }
+          }
+          return null;
         };
 
         const sanitizePoint = (p: any, i: number) => {
-          return {
+          const tempKeys = [
+            "temperature",
+            "temperature_c",
+            "temp_c",
+            "t",
+            "tempC",
+          ];
+          const presKeys = [
+            "pressure",
+            "pressure_kpa",
+            "p",
+            "press_kpa",
+            "pressure_kpa",
+          ];
+          const enthKeys = [
+            "enthalpy",
+            "enthalpy_kj_kg",
+            "h",
+            "h_kj_kg",
+          ];
+          const entrKeys = [
+            "entropy",
+            "entropy_kj_kgk",
+            "entropy_kj_kg",
+            "s",
+          ];
+          const svKeys = [
+            "specific_volume",
+            "specificVolume",
+            "specific_volume_m3_kg",
+            "v",
+            "specificVolume_m3_kg",
+          ];
+          const qualityKeys = [
+            "quality",
+            "vapor_quality",
+            "vaporQuality",
+            "x",
+          ];
+
+          const sanitized = {
             ...p,
+            id: p.id !== undefined ? String(p.id) : String(i + 1),
             label:
               i === 0
                 ? "Evaporator Outlet"
@@ -719,18 +773,15 @@ export function RefrigerantComparisonContent() {
                 : i === 2
                 ? "Condenser Outlet"
                 : "Expansion Valve Outlet",
-            temperature: toNumeric(p.temperature),
-            pressure: toNumeric(p.pressure),
-            enthalpy: toNumeric(p.enthalpy),
-            entropy: toNumeric(p.entropy),
-            specific_volume:
-              p.specific_volume !== undefined
-                ? toNumeric(p.specific_volume)
-                : p.specificVolume !== undefined
-                ? toNumeric(p.specificVolume)
-                : undefined,
-            quality: p.quality !== undefined ? toNumeric(p.quality) : undefined,
+            temperature: pickFirstNumeric(p, tempKeys),
+            pressure: pickFirstNumeric(p, presKeys),
+            enthalpy: pickFirstNumeric(p, enthKeys),
+            entropy: pickFirstNumeric(p, entrKeys),
+            specificVolume: pickFirstNumeric(p, svKeys),
+            quality: pickFirstNumeric(p, qualityKeys),
           };
+
+          return sanitized;
         };
 
         const pts = arr.slice(0, 4).map((p: any, i: number) => sanitizePoint(p, i));
