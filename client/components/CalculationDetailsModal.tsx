@@ -150,13 +150,21 @@ export function CalculationDetailsModal({ calculation }: CalculationDetailsModal
   };
 
   const renderResults = () => {
-    const results = calculation.results;
+    let results: any = calculation.results;
+    // If results were saved as a JSON string, attempt to parse it
+    if (typeof results === 'string') {
+      try {
+        results = JSON.parse(results);
+      } catch (e) {
+        // leave as string if parsing fails
+        console.warn('Failed to parse calculation.results JSON string', e);
+      }
+    }
 
     // Helper to robustly read numeric values from several plausible paths
     const readNumber = (candidates: any[]) => {
       for (const v of candidates) {
         if (v === undefined || v === null) continue;
-        // If candidate is an object path marker like ['data','performance','cop'] we expect callers to pass actual values
         const n = Number(v);
         if (!Number.isNaN(n)) return n;
       }
@@ -170,6 +178,7 @@ export function CalculationDetailsModal({ calculation }: CalculationDetailsModal
 
     // Helper to fetch deep values with multiple fallback paths
     const pick = (obj: any, paths: string[][]) => {
+      if (typeof obj === 'string') return undefined;
       for (const path of paths) {
         let cur = obj;
         let ok = true;
