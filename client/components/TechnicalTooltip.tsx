@@ -39,6 +39,12 @@ const technicalTerms: Record<
     details:
       "Ensures complete condensation and improves system efficiency by providing more cooling capacity.",
   },
+  refrigerant: {
+    title: "Refrigerant",
+    description: "Working fluid that transfers heat within the refrigeration cycle.",
+    details:
+      "Refrigerants are selected based on application, efficiency, safety, and environmental impact. Examples include R134a, R290, and CO₂ (R744).",
+  },
   safety_class: {
     title: "Refrigerant Safety Classification",
     description: "ASHRAE safety rating based on toxicity and flammability.",
