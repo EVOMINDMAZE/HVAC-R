@@ -546,17 +546,32 @@ export function RefrigerantComparisonContent() {
             // attempt to compute from refrigeration effect * density
             ((): number | null => {
               const refEffect = getNumericValue(result, "refrigerationEffect");
+              // Try to obtain density via multiple approaches
               let density = getStatePointValue(result, [
                 "density_kg_m3",
                 "density",
                 "rho",
                 "rho_kg_m3",
               ]);
+
+              // If density not found, try to compute from specific volume (1 / v)
+              if (density === null) {
+                const specVol = getStatePointValue(result, [
+                  "specific_volume",
+                  "specific_volume_m3_kg",
+                  "v",
+                  "specificVolume",
+                ]);
+                if (specVol !== null && specVol !== 0) {
+                  density = specVol ? 1 / specVol : null;
+                }
+              }
+
               if (density === null) {
                 // try performance-level density
-                density =
-                  parseNumber(perf.density_kg_m3) ?? parseNumber(perf.density);
+                density = parseNumber(perf.density_kg_m3) ?? parseNumber(perf.density);
               }
+
               if (refEffect !== null && density !== null)
                 return refEffect * density;
               return null;
@@ -686,18 +701,39 @@ export function RefrigerantComparisonContent() {
       }
 
       if (arr.length >= 4) {
-        // Map first 4 to the expected labels
-        const pts = arr.slice(0, 4).map((p: any, i: number) => ({
-          ...p,
-          label:
-            i === 0
-              ? "Evaporator Outlet"
-              : i === 1
-              ? "Compressor Outlet"
-              : i === 2
-              ? "Condenser Outlet"
-              : "Expansion Valve Outlet",
-        }));
+        // Map first 4 to the expected labels and sanitize numeric fields
+        const toNumeric = (v: any): number | undefined => {
+          if (v === undefined || v === null) return undefined;
+          const n = Number(String(v).replace(/[^0-9eE+\-\.]/g, ""));
+          return Number.isFinite(n) ? n : undefined;
+        };
+
+        const sanitizePoint = (p: any, i: number) => {
+          return {
+            ...p,
+            label:
+              i === 0
+                ? "Evaporator Outlet"
+                : i === 1
+                ? "Compressor Outlet"
+                : i === 2
+                ? "Condenser Outlet"
+                : "Expansion Valve Outlet",
+            temperature: toNumeric(p.temperature),
+            pressure: toNumeric(p.pressure),
+            enthalpy: toNumeric(p.enthalpy),
+            entropy: toNumeric(p.entropy),
+            specific_volume:
+              p.specific_volume !== undefined
+                ? toNumeric(p.specific_volume)
+                : p.specificVolume !== undefined
+                ? toNumeric(p.specificVolume)
+                : undefined,
+            quality: p.quality !== undefined ? toNumeric(p.quality) : undefined,
+          };
+        };
+
+        const pts = arr.slice(0, 4).map((p: any, i: number) => sanitizePoint(p, i));
 
         return {
           points: pts,
