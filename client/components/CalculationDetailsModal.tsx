@@ -277,21 +277,30 @@ export function CalculationDetailsModal({ calculation }: CalculationDetailsModal
                 <div className="space-y-2 text-sm">
                   <div className="grid grid-cols-2 gap-4">
                     <span className="font-medium">1 - Compressor Inlet:</span>
-                    <span>{fmt(pick(statePoints, [["1_compressor_inlet", "temp_c"], ["1", "temp_c"], ["1", "t_c" ]]), 1)}°C</span>
+                    <span>{(() => {
+                      const val = getStatePointValue(statePoints, 1, ["temperature","temp_c","t","temp","temperature_c"]);
+                      return val !== null ? `${val.toFixed(1)}°C` : "N/A";
+                    })()}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <span className="font-medium">2 - Compressor Outlet:</span>
-                    <span>{fmt(pick(statePoints, [["2_compressor_outlet", "temp_c"], ["2", "temp_c"]]), 1)}°C</span>
+                    <span>{(() => {
+                      const val = getStatePointValue(statePoints, 2, ["temperature","temp_c","t","temp","temperature_c"]);
+                      return val !== null ? `${val.toFixed(1)}°C` : "N/A";
+                    })()}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <span className="font-medium">3 - Expansion Valve Inlet:</span>
-                    <span>{fmt(pick(statePoints, [["3_expansion_valve_inlet", "temp_c"], ["3", "temp_c"]]), 1)}°C</span>
+                    <span>{(() => {
+                      const val = getStatePointValue(statePoints, 3, ["temperature","temp_c","t","temp","temperature_c"]);
+                      return val !== null ? `${val.toFixed(1)}°C` : "N/A";
+                    })()}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <span className="font-medium">4 - Evaporator Inlet:</span>
-                    <span>Quality: {(() => {
-                      const q = readNumber([pick(statePoints, [["4_evaporator_inlet", "vapor_quality"], ["4", "vapor_quality"], ["4", "quality" ]])]);
-                      return q !== null ? q.toFixed(3) : "N/A";
+                    <span>{(() => {
+                      const q = getStatePointValue(statePoints, 4, ["vapor_quality","quality","x"]);
+                      return q !== null ? `Quality: ${q.toFixed(3)}` : "Quality: N/A";
                     })()}</span>
                   </div>
                 </div>
