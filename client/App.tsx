@@ -21,6 +21,8 @@ import { HelpCenter } from "@/pages/HelpCenter";
 import { ApiDocs } from "@/pages/ApiDocs";
 import { StripeDebug } from "@/pages/StripeDebug";
 import NotFound from "@/pages/NotFound";
+import { ErrorModal } from "@/components/ErrorModal";
+import { SupportBar } from "@/components/SupportBar";
 
 // Protected Route Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
