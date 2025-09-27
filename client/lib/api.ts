@@ -709,6 +709,19 @@ class ApiClient {
         );
       }
     } catch (error) {
+      try {
+        window.dispatchEvent(
+          new CustomEvent('app:error', {
+            detail: {
+              title: 'API Error',
+              message: error instanceof Error ? error.message : String(error),
+            },
+          }),
+        );
+      } catch (e) {
+        // ignore in non-browser
+      }
+
       if (error instanceof TypeError && error.message.includes("fetch")) {
         throw new Error(
           "Unable to connect to cascade calculation service. Please check your internet connection.",
