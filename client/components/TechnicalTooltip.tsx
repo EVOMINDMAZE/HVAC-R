@@ -228,6 +228,9 @@ export function TechnicalTooltip({
                 {termData.details}
               </div>
             )}
+            <div className="pt-2 border-t mt-2">
+              <a href={`/help-center?term=${encodeURIComponent(term)}`} className="text-xs text-blue-600 hover:underline">Learn more in Help Center</a>
+            </div>
           </div>
         </TooltipContent>
       </Tooltip>
