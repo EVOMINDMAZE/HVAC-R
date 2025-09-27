@@ -166,6 +166,9 @@ function App() {
       <SupabaseAuthProvider>
         <BrowserRouter>
           <AppRoutes />
+          {/* Global UI components */}
+          <ErrorModal />
+          <SupportBar />
         </BrowserRouter>
       </SupabaseAuthProvider>
     </ToastProvider>
