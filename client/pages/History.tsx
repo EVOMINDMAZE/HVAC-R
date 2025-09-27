@@ -171,8 +171,34 @@ export function History() {
             ? `${calc.inputs.refrigerants.length} refrigerants compared`
             : "Comparison data";
         case "Cascade Cycle": {
-          const overall = pick(results, [["data", "overall_performance", "cop"], ["overall_performance", "cop"], ["data", "performance", "overallCOP"], ["data", "performance", "overallCOP"], ["overallCOP"], ["data", "overallCOP"]]);
-          return overall !== undefined && overall !== null ? `Overall COP: ${Number(overall).toFixed(2)}` : "No COP data";
+          const overall = pick(results, [["data", "overall_performance", "cop"], ["overall_performance", "cop"], ["data", "performance", "overallCOP"], ["overallCOP"], ["data", "overallCOP"]]);
+
+          if (overall !== undefined && overall !== null) return `Overall COP: ${Number(overall).toFixed(2)}`;
+
+          // Try to compute overall COP from lt/ht perf if available in saved results
+          const lt = pick(results, [["data", "lt_cycle_performance"], ["lt_cycle_performance"], ["data", "lt_cycle"], ["lt_cycle"], ["data", "performance", "lt_cycle"], []]) || {};
+          const ht = pick(results, [["data", "ht_cycle_performance"], ["ht_cycle_performance"], ["data", "ht_cycle"], ["ht_cycle"], ["data", "performance", "ht_cycle"], []]) || {};
+
+          const readNum = (v: any) => {
+            if (v === undefined || v === null) return null;
+            const n = Number(v);
+            if (!Number.isNaN(n)) return n;
+            const parsed = Number(String(v).replace(/[^0-9eE+\-\.]/g, ""));
+            return Number.isNaN(parsed) ? null : parsed;
+          };
+
+          const ltWork = readNum(pick(lt, [["work_of_compression_kj_kg"],["work_input_kj_kg"],["work_of_compression"]])) || 0;
+          const htWork = readNum(pick(ht, [["work_of_compression_kj_kg"],["work_input_kj_kg"],["work_of_compression"]])) || 0;
+          const ltRe = readNum(pick(lt, [["refrigeration_effect_kj_kg"],["refrigeration_effect"]])) || 0;
+          const htRe = readNum(pick(ht, [["refrigeration_effect_kj_kg"],["refrigeration_effect"]])) || 0;
+
+          const totalWork = ltWork + htWork;
+          const totalRe = ltRe + htRe;
+          if (totalWork > 0 && Number.isFinite(totalRe)) {
+            return `Overall COP: ${(totalRe / totalWork).toFixed(2)}`;
+          }
+
+          return "No COP data";
         }
         default:
           return "Calculation complete";
