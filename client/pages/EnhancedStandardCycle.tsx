@@ -1578,7 +1578,10 @@ export function EnhancedStandardCycleContent() {
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
                         <span className="font-medium">
-                          Critical Temperature:
+                          <TechTerm term="critical_temperature">
+                            Critical Temperature
+                          </TechTerm>
+                          :
                         </span>
                         <div>
                           {selectedRefrigerant.limits.critical_temp_c.toFixed(
