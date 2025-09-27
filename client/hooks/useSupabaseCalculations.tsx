@@ -129,7 +129,10 @@ export function useSupabaseCalculations() {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        logError('saveCalculation.supabase.insert', error);
+        throw new Error(extractErrorMessage(error));
+      }
 
       // Add to local state
       // Ensure created_at is normalized for immediate local state updates
