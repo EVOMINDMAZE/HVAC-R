@@ -417,25 +417,62 @@ export function RefrigerantComparisonContent() {
     result: any,
     pathNames: string[],
   ): number | null => {
-    // Look into point_1..point_4 or points array for pressure/density
-    for (const p of ["point_1", "point_2", "point_3", "point_4", "points"]) {
-      const pt = result[p];
-      if (!pt) continue;
-      // points might be an array or object
-      const candidates = Array.isArray(pt)
-        ? pt
-        : typeof pt === "object"
-          ? Object.values(pt)
-          : [];
+    if (!result) return null;
+
+    const containers = [
+      "point_1",
+      "point_2",
+      "point_3",
+      "point_4",
+      "point1",
+      "point2",
+      "point3",
+      "point4",
+      "points",
+      "state_points",
+      "statePoints",
+      "state_points_array",
+    ];
+
+    for (const containerName of containers) {
+      const container = result[containerName];
+      if (!container) continue;
+
+      let candidates: any[] = [];
+      if (Array.isArray(container)) candidates = container;
+      else if (typeof container === "object") {
+        // If object has numeric keys or point_1 keys, use ordered values
+        const keys = Object.keys(container);
+        const numericKeys = keys.filter((k) => /^\d+$/.test(k)).sort((a, b) => Number(a) - Number(b));
+        if (numericKeys.length >= 1) {
+          candidates = numericKeys.map((k) => container[k]);
+        } else {
+          // fallback to object values
+          candidates = Object.values(container);
+        }
+      }
+
       for (const c of candidates) {
+        if (!c || typeof c !== "object") continue;
         for (const key of pathNames) {
-          if (c && c[key] !== undefined && c[key] !== null) {
+          if (c[key] !== undefined && c[key] !== null) {
             const parsed = parseNumber(c[key]);
             if (parsed !== null) return parsed;
           }
         }
+        // Some responses nest properties under 'properties' or 'state'
+        const nested = c.properties || c.state || c.values || null;
+        if (nested && typeof nested === "object") {
+          for (const key of pathNames) {
+            if (nested[key] !== undefined && nested[key] !== null) {
+              const parsed = parseNumber(nested[key]);
+              if (parsed !== null) return parsed;
+            }
+          }
+        }
       }
     }
+
     return null;
   };
 
@@ -593,41 +630,84 @@ export function RefrigerantComparisonContent() {
   };
 
   const getVisualizationData = (refrigerantResult: RefrigerantResult) => {
+    // Preferred: explicit point_1..point_4
     if (
-      !refrigerantResult.point_1 ||
-      !refrigerantResult.point_2 ||
-      !refrigerantResult.point_3 ||
-      !refrigerantResult.point_4
+      refrigerantResult.point_1 &&
+      refrigerantResult.point_2 &&
+      refrigerantResult.point_3 &&
+      refrigerantResult.point_4
     ) {
-      return null;
+      return {
+        points: [
+          {
+            ...refrigerantResult.point_1,
+            label: "Evaporator Outlet",
+            description: "Superheated vapor",
+          },
+          {
+            ...refrigerantResult.point_2,
+            label: "Compressor Outlet",
+            description: "High pressure vapor",
+          },
+          {
+            ...refrigerantResult.point_3,
+            label: "Condenser Outlet",
+            description: "Subcooled liquid",
+          },
+          {
+            ...refrigerantResult.point_4,
+            label: "Expansion Valve Outlet",
+            description: "Low pressure mixture",
+          },
+        ],
+        refrigerant: refrigerantResult.refrigerant,
+        cycleType: "standard" as const,
+      };
     }
 
-    return {
-      points: [
-        {
-          ...refrigerantResult.point_1,
-          label: "Evaporator Outlet",
-          description: "Superheated vapor",
-        },
-        {
-          ...refrigerantResult.point_2,
-          label: "Compressor Outlet",
-          description: "High pressure vapor",
-        },
-        {
-          ...refrigerantResult.point_3,
-          label: "Condenser Outlet",
-          description: "Subcooled liquid",
-        },
-        {
-          ...refrigerantResult.point_4,
-          label: "Expansion Valve Outlet",
-          description: "Low pressure mixture",
-        },
-      ],
-      refrigerant: refrigerantResult.refrigerant,
-      cycleType: "standard" as const,
-    };
+    // Fallback: look for state_points / points array / statePoints
+    const sources = [
+      (refrigerantResult as any).state_points,
+      (refrigerantResult as any).statePoints,
+      (refrigerantResult as any).points,
+      (refrigerantResult as any).point_array,
+    ];
+
+    for (const src of sources) {
+      if (!src) continue;
+      let arr: any[] = [];
+      if (Array.isArray(src)) arr = src;
+      else if (typeof src === "object") {
+        const keys = Object.keys(src);
+        const numericKeys = keys.filter((k) => /^\d+$/.test(k)).sort((a, b) => Number(a) - Number(b));
+        if (numericKeys.length >= 1) {
+          arr = numericKeys.map((k) => src[k]);
+        } else arr = Object.values(src);
+      }
+
+      if (arr.length >= 4) {
+        // Map first 4 to the expected labels
+        const pts = arr.slice(0, 4).map((p: any, i: number) => ({
+          ...p,
+          label:
+            i === 0
+              ? "Evaporator Outlet"
+              : i === 1
+              ? "Compressor Outlet"
+              : i === 2
+              ? "Condenser Outlet"
+              : "Expansion Valve Outlet",
+        }));
+
+        return {
+          points: pts,
+          refrigerant: refrigerantResult.refrigerant,
+          cycleType: "standard" as const,
+        };
+      }
+    }
+
+    return null;
   };
 
   const getTotalWarnings = () => {
