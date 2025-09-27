@@ -151,12 +151,47 @@ export function CalculationDetailsModal({ calculation }: CalculationDetailsModal
 
   const renderResults = () => {
     const results = calculation.results;
-    
+
+    // Helper to robustly read numeric values from several plausible paths
+    const readNumber = (candidates: any[]) => {
+      for (const v of candidates) {
+        if (v === undefined || v === null) continue;
+        // If candidate is an object path marker like ['data','performance','cop'] we expect callers to pass actual values
+        const n = Number(v);
+        if (!Number.isNaN(n)) return n;
+      }
+      return null;
+    };
+
+    const fmt = (v: any, digits = 2) => {
+      const n = readNumber([v]);
+      return n !== null ? n.toFixed(digits) : "N/A";
+    };
+
+    // Helper to fetch deep values with multiple fallback paths
+    const pick = (obj: any, paths: string[][]) => {
+      for (const path of paths) {
+        let cur = obj;
+        let ok = true;
+        for (const key of path) {
+          if (cur === undefined || cur === null) {
+            ok = false;
+            break;
+          }
+          cur = cur[key];
+        }
+        if (ok && cur !== undefined) return cur;
+      }
+      return undefined;
+    };
+
     switch (calculation.calculation_type) {
       case "Standard Cycle":
-        const performance = results?.data?.performance;
-        const statePoints = results?.data?.state_points;
-        
+        // Accept multiple shapes: results.performance, results.data.performance, results.data?.data?.performance
+        const perf =
+          pick(results, [["performance"], ["data", "performance"], ["data", "data", "performance"]]) || {};
+        const statePoints = pick(results, [["data", "state_points"], ["state_points"], ["data", "statePoints"], ["statePoints"]]);
+
         return (
           <div className="space-y-6">
             <div>
@@ -164,50 +199,58 @@ export function CalculationDetailsModal({ calculation }: CalculationDetailsModal
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-green-50 rounded-lg">
                   <div className="text-2xl font-bold text-green-600">
-                    {performance?.cop?.toFixed(3) || "N/A"}
+                    {fmt(pick(perf, [["cop"]]) ?? pick(perf, [["COP"], ["cop_approx"]]), 3)}
                   </div>
                   <div className="text-sm text-green-500">COP</div>
                 </div>
                 <div className="p-4 bg-blue-50 rounded-lg">
                   <div className="text-lg font-semibold text-blue-600">
-                    {performance?.refrigeration_effect_kj_kg?.toFixed(1) || "N/A"} kJ/kg
+                    {fmt(pick(perf, [["refrigeration_effect_kj_kg"], ["refrigeration_effect" ]] ), 1) === "N/A" ? "N/A" : fmt(pick(perf, [["refrigeration_effect_kj_kg"], ["refrigeration_effect"]]), 1) + " kJ/kg"}
                   </div>
                   <div className="text-sm text-blue-500">Refrigeration Effect</div>
                 </div>
                 <div className="p-4 bg-purple-50 rounded-lg">
                   <div className="text-lg font-semibold text-purple-600">
-                    {performance?.work_of_compression_kj_kg?.toFixed(1) || "N/A"} kJ/kg
+                    {fmt(pick(perf, [["work_of_compression_kj_kg"], ["work_input_kj_kg"], ["work_of_compression"]]), 1) === "N/A" ? "N/A" : fmt(pick(perf, [["work_of_compression_kj_kg"], ["work_input_kj_kg"], ["work_of_compression"]]), 1) + " kJ/kg"}
                   </div>
                   <div className="text-sm text-purple-500">Work Input</div>
                 </div>
                 <div className="p-4 bg-orange-50 rounded-lg">
                   <div className="text-lg font-semibold text-orange-600">
-                    {((performance?.refrigeration_effect_kj_kg || 0) + (performance?.work_of_compression_kj_kg || 0)).toFixed(1) || "N/A"} kJ/kg
+                    {(() => {
+                      const re = readNumber([pick(perf, [["refrigeration_effect_kj_kg"], ["refrigeration_effect"]])]) || 0;
+                      const wi = readNumber([pick(perf, [["work_of_compression_kj_kg"], ["work_input_kj_kg"], ["work_of_compression"]])]) || 0;
+                      const sum = re + wi;
+                      return Number.isFinite(sum) && sum !== 0 ? sum.toFixed(1) + " kJ/kg" : "N/A";
+                    })()}
                   </div>
                   <div className="text-sm text-orange-500">Heat Rejection</div>
                 </div>
               </div>
             </div>
-            
+
             {statePoints && (
               <div>
                 <h5 className="font-semibold text-indigo-600 mb-3">State Points</h5>
                 <div className="space-y-2 text-sm">
                   <div className="grid grid-cols-2 gap-4">
                     <span className="font-medium">1 - Compressor Inlet:</span>
-                    <span>{statePoints["1_compressor_inlet"]?.temp_c?.toFixed(1) || "N/A"}°C</span>
+                    <span>{fmt(pick(statePoints, [["1_compressor_inlet", "temp_c"], ["1", "temp_c"], ["1", "t_c" ]]), 1)}°C</span>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <span className="font-medium">2 - Compressor Outlet:</span>
-                    <span>{statePoints["2_compressor_outlet"]?.temp_c?.toFixed(1) || "N/A"}°C</span>
+                    <span>{fmt(pick(statePoints, [["2_compressor_outlet", "temp_c"], ["2", "temp_c"]]), 1)}°C</span>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <span className="font-medium">3 - Expansion Valve Inlet:</span>
-                    <span>{statePoints["3_expansion_valve_inlet"]?.temp_c?.toFixed(1) || "N/A"}°C</span>
+                    <span>{fmt(pick(statePoints, [["3_expansion_valve_inlet", "temp_c"], ["3", "temp_c"]]), 1)}°C</span>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <span className="font-medium">4 - Evaporator Inlet:</span>
-                    <span>Quality: {statePoints["4_evaporator_inlet"]?.vapor_quality?.toFixed(3) || "N/A"}</span>
+                    <span>Quality: {(() => {
+                      const q = readNumber([pick(statePoints, [["4_evaporator_inlet", "vapor_quality"], ["4", "vapor_quality"], ["4", "quality" ]])]);
+                      return q !== null ? q.toFixed(3) : "N/A";
+                    })()}</span>
                   </div>
                 </div>
               </div>
