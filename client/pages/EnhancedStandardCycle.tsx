@@ -1591,7 +1591,12 @@ export function EnhancedStandardCycleContent() {
                         </div>
                       </div>
                       <div>
-                        <span className="font-medium">Critical Pressure:</span>
+                        <span className="font-medium">
+                          <TechTerm term="critical_pressure">
+                            Critical Pressure
+                          </TechTerm>
+                          :
+                        </span>
                         <div>
                           {(
                             selectedRefrigerant.limits.critical_pressure_kpa /
