@@ -285,7 +285,10 @@ export function useSupabaseCalculations() {
         .eq('id', id)
         .eq('user_id', user.id);
 
-      if (error) throw error;
+      if (error) {
+        logError('updateCalculation.supabase.update', error);
+        throw new Error(extractErrorMessage(error));
+      }
 
       // Update local state
       setCalculations(prev =>
