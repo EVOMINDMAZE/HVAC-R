@@ -112,6 +112,32 @@ const technicalTerms: Record<
     details:
       "Full = Complete property data | Limited = Basic properties only | Partial = Some restrictions apply",
   },
+  critical_temperature: {
+    title: "Critical Temperature",
+    description:
+      "Highest temperature at which a refrigerant can exist as a liquid regardless of pressure.",
+    details:
+      "Above this point the refrigerant cannot condense. Staying below the critical temperature is essential for efficient condenser operation.",
+  },
+  critical_pressure: {
+    title: "Critical Pressure",
+    description:
+      "Minimum pressure required to liquefy a refrigerant at its critical temperature.",
+    details:
+      "Helps define safe operating ranges for compressors and condensers. Often expressed in megapascals (MPa).",
+  },
+  minimum_temperature: {
+    title: "Minimum Operating Temperature",
+    description: "Lowest recommended temperature for stable refrigerant properties.",
+    details:
+      "Below this limit the refrigerant may freeze or fall outside validated property data, leading to unreliable calculations.",
+  },
+  maximum_temperature: {
+    title: "Maximum Operating Temperature",
+    description: "Highest recommended temperature for maintaining reliable refrigerant data.",
+    details:
+      "Exceeding this temperature can degrade lubricant, reduce efficiency, or invalidate thermodynamic data.",
+  },
   density: {
     title: "Density",
     description: "Mass per unit volume of the refrigerant.",
