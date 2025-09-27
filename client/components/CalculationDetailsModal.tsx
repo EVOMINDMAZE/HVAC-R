@@ -290,53 +290,58 @@ export function CalculationDetailsModal({ calculation }: CalculationDetailsModal
         );
         
       case "Cascade Cycle":
-        const cascadeData = results?.data;
-        
+        // Accept multiple shapes for saved results
+        const cascade = pick(results, [["data"], ["data", "data"], ["cascade"], []]) || {};
+
+        const overallCop = readNumber([pick(cascade, [["overall_performance", "cop"], ["overallCOP"], ["overall_performance", "COP"]])]);
+        const ltPerf = pick(cascade, [["lt_cycle_performance"], ["lt_cycle", "performance"], ["lt_cycle_performance", "performance"], []]) || {};
+        const htPerf = pick(cascade, [["ht_cycle_performance"], ["ht_cycle", "performance"], ["ht_cycle_performance", "performance"], []]) || {};
+
         return (
           <div className="space-y-6">
             <div>
               <h5 className="font-semibold text-green-600 mb-3">Overall Performance</h5>
               <div className="p-4 bg-green-50 rounded-lg text-center">
                 <div className="text-3xl font-bold text-green-600">
-                  {cascadeData?.overall_performance?.cop?.toFixed(3) || "N/A"}
+                  {overallCop !== null ? overallCop.toFixed(3) : "N/A"}
                 </div>
                 <div className="text-sm text-green-500">Overall System COP</div>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <h6 className="font-semibold text-blue-600 mb-3">Low-Temperature Cycle</h6>
                 <div className="space-y-2 text-sm">
                   <div className="grid grid-cols-2 gap-2">
                     <span className="font-medium">COP:</span>
-                    <span>{cascadeData?.lt_cycle_performance?.cop?.toFixed(3) || "N/A"}</span>
+                    <span>{fmt(pick(ltPerf, [["cop"], ["COP"]]), 3)}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <span className="font-medium">Work Input:</span>
-                    <span>{cascadeData?.lt_cycle_performance?.work_of_compression_kj_kg?.toFixed(1) || "N/A"} kJ/kg</span>
+                    <span>{fmt(pick(ltPerf, [["work_of_compression_kj_kg"],["work_input_kj_kg"],["work_of_compression"]]), 1)} kJ/kg</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <span className="font-medium">Refrigeration Effect:</span>
-                    <span>{cascadeData?.lt_cycle_performance?.refrigeration_effect_kj_kg?.toFixed(1) || "N/A"} kJ/kg</span>
+                    <span>{fmt(pick(ltPerf, [["refrigeration_effect_kj_kg"],["refrigeration_effect"]]), 1)} kJ/kg</span>
                   </div>
                 </div>
               </div>
-              
+
               <div>
                 <h6 className="font-semibold text-red-600 mb-3">High-Temperature Cycle</h6>
                 <div className="space-y-2 text-sm">
                   <div className="grid grid-cols-2 gap-2">
                     <span className="font-medium">COP:</span>
-                    <span>{cascadeData?.ht_cycle_performance?.cop?.toFixed(3) || "N/A"}</span>
+                    <span>{fmt(pick(htPerf, [["cop"], ["COP"]]), 3)}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <span className="font-medium">Work Input:</span>
-                    <span>{cascadeData?.ht_cycle_performance?.work_of_compression_kj_kg?.toFixed(1) || "N/A"} kJ/kg</span>
+                    <span>{fmt(pick(htPerf, [["work_of_compression_kj_kg"],["work_input_kj_kg"],["work_of_compression"]]), 1)} kJ/kg</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     <span className="font-medium">Refrigeration Effect:</span>
-                    <span>{cascadeData?.ht_cycle_performance?.refrigeration_effect_kj_kg?.toFixed(1) || "N/A"} kJ/kg</span>
+                    <span>{fmt(pick(htPerf, [["refrigeration_effect_kj_kg"],["refrigeration_effect"]]), 1)} kJ/kg</span>
                   </div>
                 </div>
               </div>
