@@ -84,7 +84,15 @@ export function History() {
           : true;
         const matchesFilter =
           filterType === "all" || calc.calculation_type === filterType;
-        return matchesSearch && matchesFilter;
+
+        const tagLower = tagFilter.trim().toLowerCase();
+        const matchesTag = tagLower
+          ? ((calc.tags && Array.isArray(calc.tags) && calc.tags.join(' ').toLowerCase().includes(tagLower)) ||
+             (calc.inputs && JSON.stringify(calc.inputs).toLowerCase().includes(tagLower)) ||
+             (calc.results && JSON.stringify(calc.results).toLowerCase().includes(tagLower)))
+          : true;
+
+        return matchesSearch && matchesFilter && matchesTag;
       })
       .sort((a, b) => {
         switch (sortBy) {
@@ -106,7 +114,7 @@ export function History() {
             return 0;
         }
       });
-  }, [calculations, searchTerm, filterType, sortBy]);
+  }, [calculations, searchTerm, filterType, sortBy, tagFilter]);
 
   const getCalculationIcon = (type: string) => {
     switch (type) {
