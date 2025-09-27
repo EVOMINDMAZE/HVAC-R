@@ -254,7 +254,10 @@ export function Features() {
                       {feature.icon}
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg mb-2">{feature.title}</h3>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-lg mb-2">{feature.title}</h3>
+                        <Badge variant="secondary" className="text-xs">Pro</Badge>
+                      </div>
                       <p className="text-gray-600 text-sm">{feature.description}</p>
                     </div>
                   </div>
