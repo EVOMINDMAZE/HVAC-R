@@ -360,6 +360,14 @@ export function History() {
                 </SelectContent>
               </Select>
 
+              {/* Tag / Label filter */}
+              <Input
+                placeholder="Filter by tag or label"
+                value={undefined}
+                onChange={() => {}}
+                className="md:col-span-1"
+              />
+
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger>
                   <SelectValue placeholder="Sort by" />
