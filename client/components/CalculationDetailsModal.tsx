@@ -302,9 +302,51 @@ export function CalculationDetailsModal({ calculation }: CalculationDetailsModal
         // Accept multiple shapes for saved results
         const cascade = pick(results, [["data"], ["data", "data"], ["cascade"], []]) || {};
 
-        const overallCop = readNumber([pick(cascade, [["overall_performance", "cop"], ["overallCOP"], ["overall_performance", "COP"]])]);
-        const ltPerf = pick(cascade, [["lt_cycle_performance"], ["lt_cycle", "performance"], ["lt_cycle_performance", "performance"], []]) || {};
-        const htPerf = pick(cascade, [["ht_cycle_performance"], ["ht_cycle", "performance"], ["ht_cycle_performance", "performance"], []]) || {};
+        // Try to compute overall COP if missing by using lt/ht perf values
+        const maybeOverall = readNumber([pick(cascade, [["overall_performance", "cop"], ["overallCOP"], ["overall_performance", "COP"]])]);
+        const ltPerf = pick(cascade, [["lt_cycle_performance"], ["lt_cycle", "performance"], ["lt_cycle_performance", "performance"], ["lt_cycle"], []]) || {};
+        const htPerf = pick(cascade, [["ht_cycle_performance"], ["ht_cycle", "performance"], ["ht_cycle_performance", "performance"], ["ht_cycle"], []]) || {};
+
+        const ltWork = readNumber([pick(ltPerf, [["work_of_compression_kj_kg"],["work_input_kj_kg"],["work_of_compression"],["work_kj_kg"]])]) || 0;
+        const htWork = readNumber([pick(htPerf, [["work_of_compression_kj_kg"],["work_input_kj_kg"],["work_of_compression"],["work_kj_kg"]])]) || 0;
+        const ltRe = readNumber([pick(ltPerf, [["refrigeration_effect_kj_kg"],["refrigeration_effect"],["refrig_kj_kg"]])]) || 0;
+        const htRe = readNumber([pick(htPerf, [["refrigeration_effect_kj_kg"],["refrigeration_effect"],["refrig_kj_kg"]])]) || 0;
+
+        const computedOverall = (ltWork + htWork) > 0 ? (ltRe + htRe) / (ltWork + htWork) : null;
+        const overallCop = maybeOverall !== null ? maybeOverall : computedOverall;
+
+        // Helper to read state point values across common shapes
+        const getStatePoint = (sp: any, idx: number) => {
+          if (!sp) return undefined;
+          // Array style
+          if (Array.isArray(sp) && sp.length >= idx) return sp[idx - 1];
+          // Numeric keys
+          if (sp[String(idx)]) return sp[String(idx)];
+          if (sp[`point_${idx}`]) return sp[`point_${idx}`];
+          if (sp[`point${idx}`]) return sp[`point${idx}`];
+          // keys like '1_compressor_inlet' or starting with `${idx}_`
+          const keyMatch = Object.keys(sp || {}).find((k) => k && k.toString().startsWith(`${idx}_`));
+          if (keyMatch) return sp[keyMatch];
+          // fallback to ordered values
+          const values = Object.values(sp);
+          if (values && values.length >= idx) return values[idx - 1];
+          return undefined;
+        };
+
+        const getStatePointValue = (sp: any, idx: number, propCandidates: string[]) => {
+          const p = getStatePoint(sp, idx);
+          if (!p) return null;
+          for (const k of propCandidates) {
+            if (p[k] !== undefined && p[k] !== null) {
+              const n = Number(p[k]);
+              if (!Number.isNaN(n)) return n;
+              // try parse strings with units
+              const parsed = Number(String(p[k]).replace(/[^0-9eE+\-\.]/g, ''));
+              if (!Number.isNaN(parsed)) return parsed;
+            }
+          }
+          return null;
+        };
 
         return (
           <div className="space-y-6">
@@ -351,6 +393,44 @@ export function CalculationDetailsModal({ calculation }: CalculationDetailsModal
                   <div className="grid grid-cols-2 gap-2">
                     <span className="font-medium">Refrigeration Effect:</span>
                     <span>{fmt(pick(htPerf, [["refrigeration_effect_kj_kg"],["refrigeration_effect"]]), 1)} kJ/kg</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* State points: try multiple possible structures */}
+              <div className="md:col-span-2">
+                <h5 className="font-semibold text-indigo-600 mb-3">State Points</h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                  <div>
+                    <span className="font-medium">1 - Compressor Inlet:</span>
+                    <div>{(() => {
+                      const val = getStatePointValue(pick(cascade, [["lt_cycle"], ["lt_cycle", "state_points"], ["lt_cycle", "points"], ["lt_cycle", "statePoints"], ["lt_cycle_state_points"]]) || pick(cascade, [["lt_cycle"], ["lt_cycle"]]), 1, ["temperature","temp_c","t","temp","temperature_c"]);
+                      return val !== null ? `${val.toFixed(1)}°C` : "N/A";
+                    })()}</div>
+                  </div>
+
+                  <div>
+                    <span className="font-medium">2 - Compressor Outlet:</span>
+                    <div>{(() => {
+                      const val = getStatePointValue(pick(cascade, [["lt_cycle"],["lt_cycle","state_points"],["lt_cycle","points"]]) || pick(cascade, [["lt_cycle"],["lt_cycle"]]), 2, ["temperature","temp_c","t","temp","temperature_c"]);
+                      return val !== null ? `${val.toFixed(1)}°C` : "N/A";
+                    })()}</div>
+                  </div>
+
+                  <div>
+                    <span className="font-medium">3 - Expansion Valve Inlet:</span>
+                    <div>{(() => {
+                      const val = getStatePointValue(pick(cascade, [["lt_cycle"],["lt_cycle","state_points"],["lt_cycle","points"]]) || pick(cascade, [["lt_cycle"],["lt_cycle"]]), 3, ["temperature","temp_c","t","temp","temperature_c"]);
+                      return val !== null ? `${val.toFixed(1)}°C` : "N/A";
+                    })()}</div>
+                  </div>
+
+                  <div>
+                    <span className="font-medium">4 - Evaporator Inlet:</span>
+                    <div>{(() => {
+                      const q = getStatePointValue(pick(cascade, [["lt_cycle"],["lt_cycle","state_points"],["lt_cycle","points"]]) || pick(cascade, [["lt_cycle"],["lt_cycle"]]), 4, ["vapor_quality","quality","x"]);
+                      return q !== null ? `Quality: ${q.toFixed(3)}` : "Quality: N/A";
+                    })()}</div>
                   </div>
                 </div>
               </div>
