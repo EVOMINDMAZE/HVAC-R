@@ -253,7 +253,7 @@ export function useSupabaseCalculations() {
 
       return true;
     } catch (error: any) {
-      console.error('Error deleting calculation:', error);
+      logError('deleteCalculation', error);
 
       // Better error message handling
       let errorMessage = 'Unknown error occurred';
