@@ -41,8 +41,8 @@ export function useSupabaseCalculations() {
       console.log('Supabase response:', { data, error });
 
       if (error) {
-        console.error('Supabase error object:', error);
-        throw error;
+        logError('fetchCalculations.supabase', error);
+        throw new Error(extractErrorMessage(error));
       }
 
       console.log('Successfully fetched calculations:', data?.length || 0, 'items');
