@@ -24,6 +24,7 @@ import {
   Gauge,
   RefreshCw,
 } from "lucide-react";
+import { MCPRecommendations } from "@/components/MCPRecommendations";
 
 interface DashboardProps {
   recentCalculations?: any[];
