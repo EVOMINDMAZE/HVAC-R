@@ -67,6 +67,8 @@ const UNIT_SYSTEMS: Record<string, UnitSystem> = {
   },
 };
 
+import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
+
 export function ProfessionalFeatures({
   cycleData,
   results,
@@ -2020,7 +2022,7 @@ export function ProfessionalFeatures({
                       )}
                       <ul className="space-y-1 text-muted-foreground">
                         <li>• Plan for refrigerant transitions</li>
-                        <li>• Budget for preventive maintenance</li>
+                        <li>�� Budget for preventive maintenance</li>
                         <li>• Consider energy efficiency incentives</li>
                         <li>• Monitor regulatory changes</li>
                       </ul>
