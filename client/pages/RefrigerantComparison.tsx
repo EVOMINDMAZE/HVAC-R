@@ -661,7 +661,10 @@ export function RefrigerantComparisonContent() {
                     Select Refrigerants to Compare
                   </span>
                   {hasSelections && (
-                    <Badge variant="outline" className="border-blue-200 bg-blue-50 text-blue-700">
+                    <Badge
+                      variant="outline"
+                      className="border-blue-200 bg-blue-50 text-blue-700"
+                    >
                       {selectedCount} selected
                     </Badge>
                   )}
@@ -935,63 +938,72 @@ export function RefrigerantComparisonContent() {
                                   </span>
                                 )}
                               </td>
-                              {result.results.map((refrigerantResult, index) => {
-                                const cellValue = getValueForMetric(
-                                  refrigerantResult,
-                                  metric.key,
-                                );
-                                const isError = cellValue === "Error";
-                                const isNA = cellValue === "N/A";
-                                const isBest =
-                                  index === bestIndex && !isError && !isNA;
-                                const displayValue = isError ? "—" : cellValue;
+                              {result.results.map(
+                                (refrigerantResult, index) => {
+                                  const cellValue = getValueForMetric(
+                                    refrigerantResult,
+                                    metric.key,
+                                  );
+                                  const isError = cellValue === "Error";
+                                  const isNA = cellValue === "N/A";
+                                  const isBest =
+                                    index === bestIndex && !isError && !isNA;
+                                  const displayValue = isError
+                                    ? "—"
+                                    : cellValue;
 
-                                return (
-                                  <td
-                                    key={refrigerantResult.refrigerant || index}
-                                    className={`p-3 text-center align-top ${
-                                      isBest
-                                        ? "bg-green-50 text-green-800 font-semibold"
-                                        : "text-gray-700"
-                                    }`}
-                                  >
-                                    <div className="flex flex-col items-center gap-1">
-                                      <span
-                                        className={`font-mono ${
-                                          isNA
-                                            ? "text-gray-400"
-                                            : isBest
-                                              ? "text-green-800"
-                                              : "text-slate-700"
-                                        }`}
-                                      >
-                                        {displayValue}
-                                      </span>
-                                      {isBest && (
-                                        <Badge
-                                          variant="outline"
-                                          className="flex items-center gap-1 border-green-200 bg-green-100/70 text-[10px] uppercase tracking-wide text-green-800"
+                                  return (
+                                    <td
+                                      key={
+                                        refrigerantResult.refrigerant || index
+                                      }
+                                      className={`p-3 text-center align-top ${
+                                        isBest
+                                          ? "bg-green-50 text-green-800 font-semibold"
+                                          : "text-gray-700"
+                                      }`}
+                                    >
+                                      <div className="flex flex-col items-center gap-1">
+                                        <span
+                                          className={`font-mono ${
+                                            isNA
+                                              ? "text-gray-400"
+                                              : isBest
+                                                ? "text-green-800"
+                                                : "text-slate-700"
+                                          }`}
                                         >
-                                          <Trophy className="h-3 w-3" aria-hidden />
-                                          Best
-                                        </Badge>
-                                      )}
-                                      {isError && (
-                                        <Badge
-                                          variant="destructive"
-                                          className="flex items-center gap-1 text-[10px] uppercase tracking-wide"
-                                        >
-                                          <AlertTriangle
-                                            className="h-3 w-3"
-                                            aria-hidden
-                                          />
-                                          Error
-                                        </Badge>
-                                      )}
-                                    </div>
-                                  </td>
-                                );
-                              })}
+                                          {displayValue}
+                                        </span>
+                                        {isBest && (
+                                          <Badge
+                                            variant="outline"
+                                            className="flex items-center gap-1 border-green-200 bg-green-100/70 text-[10px] uppercase tracking-wide text-green-800"
+                                          >
+                                            <Trophy
+                                              className="h-3 w-3"
+                                              aria-hidden
+                                            />
+                                            Best
+                                          </Badge>
+                                        )}
+                                        {isError && (
+                                          <Badge
+                                            variant="destructive"
+                                            className="flex items-center gap-1 text-[10px] uppercase tracking-wide"
+                                          >
+                                            <AlertTriangle
+                                              className="h-3 w-3"
+                                              aria-hidden
+                                            />
+                                            Error
+                                          </Badge>
+                                        )}
+                                      </div>
+                                    </td>
+                                  );
+                                },
+                              )}
                             </tr>
                           );
                         })}
@@ -1002,7 +1014,6 @@ export function RefrigerantComparisonContent() {
                     <span className="inline-block w-4 h-4 bg-green-100 mr-2 rounded"></span>
                     Best performance for each metric
                   </div>
-
                 </CardContent>
               </Card>
             </TabsContent>

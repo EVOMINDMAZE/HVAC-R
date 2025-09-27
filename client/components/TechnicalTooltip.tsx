@@ -41,7 +41,8 @@ const technicalTerms: Record<
   },
   refrigerant: {
     title: "Refrigerant",
-    description: "Working fluid that transfers heat within the refrigeration cycle.",
+    description:
+      "Working fluid that transfers heat within the refrigeration cycle.",
     details:
       "Refrigerants are selected based on application, efficiency, safety, and environmental impact. Examples include R134a, R290, and CO₂ (R744).",
   },
@@ -128,13 +129,15 @@ const technicalTerms: Record<
   },
   minimum_temperature: {
     title: "Minimum Operating Temperature",
-    description: "Lowest recommended temperature for stable refrigerant properties.",
+    description:
+      "Lowest recommended temperature for stable refrigerant properties.",
     details:
       "Below this limit the refrigerant may freeze or fall outside validated property data, leading to unreliable calculations.",
   },
   maximum_temperature: {
     title: "Maximum Operating Temperature",
-    description: "Highest recommended temperature for maintaining reliable refrigerant data.",
+    description:
+      "Highest recommended temperature for maintaining reliable refrigerant data.",
     details:
       "Exceeding this temperature can degrade lubricant, reduce efficiency, or invalidate thermodynamic data.",
   },
@@ -170,7 +173,8 @@ const technicalTerms: Record<
   },
   volumetric_flow_rate: {
     title: "Volumetric Flow Rate",
-    description: "Volume of refrigerant flowing per unit time at compressor inlet conditions.",
+    description:
+      "Volume of refrigerant flowing per unit time at compressor inlet conditions.",
     details:
       "Measured in cubic meters per second (m³/s). Important for selecting compressor displacement.",
   },

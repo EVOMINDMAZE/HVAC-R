@@ -111,11 +111,7 @@ export function RenameCalculationDialog({
           >
             Cancel
           </Button>
-          <Button
-            type="button"
-            onClick={handleRename}
-            disabled={isUpdating}
-          >
+          <Button type="button" onClick={handleRename} disabled={isUpdating}>
             {isUpdating ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden />

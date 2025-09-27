@@ -806,13 +806,12 @@ export function CascadeCycleContent() {
           <Alert className="mb-6 border-blue-200 bg-blue-50 text-slate-800">
             <AlertTitle>Recommended starting point</AlertTitle>
             <AlertDescription>
-              Begin with CO₂ (R744) on the low stage and R134a on the high stage.
-              Aim for superheat between {RECOMMENDED_GUIDANCE.superheat.min}–
-              {RECOMMENDED_GUIDANCE.superheat.max}°C, subcooling between
-              {" "}
+              Begin with CO₂ (R744) on the low stage and R134a on the high
+              stage. Aim for superheat between{" "}
+              {RECOMMENDED_GUIDANCE.superheat.min}–
+              {RECOMMENDED_GUIDANCE.superheat.max}°C, subcooling between{" "}
               {RECOMMENDED_GUIDANCE.subcooling.min}–
-              {RECOMMENDED_GUIDANCE.subcooling.max}°C, and a cascade ΔT of
-              {" "}
+              {RECOMMENDED_GUIDANCE.subcooling.max}°C, and a cascade ΔT of{" "}
               {RECOMMENDED_GUIDANCE.cascadeDeltaT.min}–
               {RECOMMENDED_GUIDANCE.cascadeDeltaT.max}°C.
             </AlertDescription>
@@ -888,8 +887,7 @@ export function CascadeCycleContent() {
                       cascade heat exchanger.
                     </p>
                     <p className="text-xs text-gray-500">
-                      Recommended range:
-                      {" "}
+                      Recommended range:{" "}
                       {RECOMMENDED_GUIDANCE.cascadeDeltaT.min}–
                       {RECOMMENDED_GUIDANCE.cascadeDeltaT.max}°C
                     </p>
@@ -1188,7 +1186,6 @@ export function CascadeCycleContent() {
                   </CardContent>
                 </Card>
               </div>
-
             </div>
           )}
         </TabsContent>

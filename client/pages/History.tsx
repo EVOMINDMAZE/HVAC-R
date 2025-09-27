@@ -89,11 +89,13 @@ export function History() {
         switch (sortBy) {
           case "newest":
             return (
-              new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
             );
           case "oldest":
             return (
-              new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+              new Date(a.created_at).getTime() -
+              new Date(b.created_at).getTime()
             );
           case "name":
             return (a.name || a.calculation_type).localeCompare(
@@ -418,13 +420,17 @@ export function History() {
                         ) : (
                           <Copy className="h-3 w-3" />
                         )}
-                        {cloneLoadingId === calculation.id ? "Cloning" : "Clone"}
+                        {cloneLoadingId === calculation.id
+                          ? "Cloning"
+                          : "Clone"}
                       </Button>
                       <RenameCalculationDialog
                         calculationId={calculation.id}
                         initialName={calculation.name ?? undefined}
                         fallbackName={calculation.calculation_type}
-                        disabled={isDeleting || cloneLoadingId === calculation.id}
+                        disabled={
+                          isDeleting || cloneLoadingId === calculation.id
+                        }
                         className="!h-8"
                       />
                       <Button
@@ -463,7 +469,10 @@ export function History() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting} onClick={handleCancelDelete}>
+            <AlertDialogCancel
+              disabled={isDeleting}
+              onClick={handleCancelDelete}
+            >
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction

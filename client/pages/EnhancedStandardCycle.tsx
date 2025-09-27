@@ -116,16 +116,17 @@ export function EnhancedStandardCycleContent() {
     useState<RefrigerantProperties | null>(null);
   const [activeTab, setActiveTab] = useState("calculation");
   const [calculationComplete, setCalculationComplete] = useState(false);
-  const { saveCalculation, findMatchingCalculation } = useSupabaseCalculations();
+  const { saveCalculation, findMatchingCalculation } =
+    useSupabaseCalculations();
   const [showOnboarding, setShowOnboarding] = useState(() => {
     // Show onboarding for first-time users
     return !localStorage.getItem("hvac_platform_onboarding_completed");
   });
   const [onboardingStep, setOnboardingStep] = useState(0);
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
-  const [pendingPresetInputs, setPendingPresetInputs] = useState<
-    Partial<typeof formData> | null
-  >(null);
+  const [pendingPresetInputs, setPendingPresetInputs] = useState<Partial<
+    typeof formData
+  > | null>(null);
 
   const defaultCalculationName = useMemo(
     () => `Standard Cycle - ${new Date().toLocaleDateString()}`,
@@ -1705,7 +1706,8 @@ export function EnhancedStandardCycleContent() {
               <CheckCircle className="h-5 w-5" aria-hidden />
               <AlertTitle>Calculation complete</AlertTitle>
               <AlertDescription>
-                Outcomes generated with {formData.refrigerant}. Review, rename, or save this scenario to your history.
+                Outcomes generated with {formData.refrigerant}. Review, rename,
+                or save this scenario to your history.
               </AlertDescription>
             </Alert>
           )}
@@ -1859,7 +1861,10 @@ export function EnhancedStandardCycleContent() {
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span>
-                          <TechTerm term="mass_flow_rate">Mass Flow Rate</TechTerm>:
+                          <TechTerm term="mass_flow_rate">
+                            Mass Flow Rate
+                          </TechTerm>
+                          :
                         </span>
                         <span className="font-mono">
                           {formatValue(
@@ -1887,7 +1892,8 @@ export function EnhancedStandardCycleContent() {
                         <span>
                           <TechTerm term="volumetric_flow_rate">
                             Volumetric Flow Rate
-                          </TechTerm>:
+                          </TechTerm>
+                          :
                         </span>
                         <span className="font-mono">
                           {formatValue(volumetricFlowRate, "m³/s", 6)}

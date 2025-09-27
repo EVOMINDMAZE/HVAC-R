@@ -71,7 +71,8 @@ function UsageProgressCard({ stats, onUpgrade }: UsageProgressCardProps) {
               Free plan usage
             </p>
             <h3 className="mt-1 text-lg font-semibold text-foreground">
-              {stats.monthlyCalculations} of {stats.monthlyLimit} calculations used
+              {stats.monthlyCalculations} of {stats.monthlyLimit} calculations
+              used
             </h3>
             <p className="text-sm text-muted-foreground">
               Resets on {stats.billingCycleResetLabel}
@@ -90,7 +91,8 @@ function UsageProgressCard({ stats, onUpgrade }: UsageProgressCardProps) {
 
         <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-muted-foreground">
           <span>
-            {stats.remaining} calculation{stats.remaining === 1 ? "" : "s"} remaining this month
+            {stats.remaining} calculation{stats.remaining === 1 ? "" : "s"}{" "}
+            remaining this month
           </span>
           <Button size="sm" onClick={onUpgrade}>
             Upgrade plan
@@ -120,13 +122,15 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
             Welcome back{firstName ? `, ${firstName}` : ""} 👋
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Your workspace at a glance — quick access to recent activity and plan usage.
+            Your workspace at a glance — quick access to recent activity and
+            plan usage.
           </p>
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <OnboardingGuide userName={firstName} />
             {!stats.isUnlimited && (
               <Badge className="border border-primary/20 bg-primary/10 text-primary">
-                {stats.remaining} calculation{stats.remaining === 1 ? "" : "s"} left this month
+                {stats.remaining} calculation{stats.remaining === 1 ? "" : "s"}{" "}
+                left this month
               </Badge>
             )}
           </div>
@@ -276,9 +280,7 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm opacity-90">Remaining</p>
-                <p className="mt-1 text-3xl font-bold">
-                  {stats.remainingText}
-                </p>
+                <p className="mt-1 text-3xl font-bold">{stats.remainingText}</p>
                 <p className="mt-1 text-xs opacity-80">This month</p>
               </div>
               <TrendingUp className="h-8 w-8 text-white/80" />
@@ -591,10 +593,13 @@ export function Dashboard() {
     const isNearLimit = !isUnlimited && usagePercentage > 70;
     const isAtLimit = !isUnlimited && monthlyCalculations >= monthlyLimit;
     const billingCycleReset = new Date(currentYear, currentMonth + 1, 1);
-    const billingCycleResetLabel = billingCycleReset.toLocaleDateString(undefined, {
-      month: "long",
-      day: "numeric",
-    });
+    const billingCycleResetLabel = billingCycleReset.toLocaleDateString(
+      undefined,
+      {
+        month: "long",
+        day: "numeric",
+      },
+    );
 
     return {
       totalCalculations,

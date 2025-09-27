@@ -10,13 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import {
-  Calculator,
-  History,
-  Layers,
-  Sparkles,
-  Zap,
-} from "lucide-react";
+import { Calculator, History, Layers, Sparkles, Zap } from "lucide-react";
 
 const STORAGE_KEY = "simulateon:onboarding-complete";
 
@@ -96,35 +90,41 @@ export function OnboardingGuide({ userName, className }: OnboardingGuideProps) {
         Quick Guide
       </Button>
 
-      <Dialog open={open} onOpenChange={(next) => (next ? setOpen(true) : handleClose())}>
+      <Dialog
+        open={open}
+        onOpenChange={(next) => (next ? setOpen(true) : handleClose())}
+      >
         <DialogContent className="max-w-xl">
           <DialogHeader className="text-left">
             <DialogTitle className="text-2xl font-semibold">
               Welcome to Simulateon{userName ? `, ${userName}` : ""}
             </DialogTitle>
             <DialogDescription>
-              Follow these quick steps to run calculations and get the most out of your
-              dashboard.
+              Follow these quick steps to run calculations and get the most out
+              of your dashboard.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-6 pt-2">
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm font-medium">
-                <span>Step {activeStep + 1} of {steps.length}</span>
+                <span>
+                  Step {activeStep + 1} of {steps.length}
+                </span>
                 <Badge variant="secondary" className="uppercase tracking-wide">
                   {progressValue}% complete
                 </Badge>
               </div>
-              <Progress value={progressValue} aria-label="Onboarding progress" />
+              <Progress
+                value={progressValue}
+                aria-label="Onboarding progress"
+              />
             </div>
 
             <div className="flex items-start gap-4 rounded-lg border bg-muted/30 p-4">
               <StepIcon className="mt-1 h-6 w-6 text-primary" aria-hidden />
               <div>
-                <h3 className="text-lg font-semibold">
-                  {currentStep.title}
-                </h3>
+                <h3 className="text-lg font-semibold">{currentStep.title}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {currentStep.description}
                 </p>
@@ -182,7 +182,9 @@ export function OnboardingGuide({ userName, className }: OnboardingGuideProps) {
                   <Button
                     type="button"
                     onClick={() =>
-                      setActiveStep((prev) => Math.min(prev + 1, steps.length - 1))
+                      setActiveStep((prev) =>
+                        Math.min(prev + 1, steps.length - 1),
+                      )
                     }
                   >
                     Next
