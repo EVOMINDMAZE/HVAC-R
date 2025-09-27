@@ -160,6 +160,22 @@ class ApiClient {
       return data;
     } catch (error) {
       console.error("API request failed:", error);
+      try {
+        window.dispatchEvent(
+          new CustomEvent('app:error', {
+            detail: {
+              title: 'Network error',
+              message:
+                error instanceof Error && error.message
+                  ? error.message
+                  : 'Failed to connect to server',
+            },
+          }),
+        );
+      } catch (e) {
+        // ignore in non-browser contexts
+      }
+
       return {
         success: false,
         error: "Network error",
