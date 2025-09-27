@@ -619,8 +619,9 @@ export function validateCycleConditions(
       refrigerant.id.includes("410"))
   ) {
     warnings.push(
-      `${refrigerant.name} is a blend refrigerant. CoolProp may have limitations with two-phase calculations. ` +
-        "Consider using higher superheat (≥10°C) and subcooling (≥5°C) values to avoid calculation errors.",
+      `${refrigerant.name} is a blend refrigerant and may exhibit CoolProp limitations for two-phase property evaluations. ` +
+        "Actionable guidance: increase superheat to at least 8–12°C and subcooling to 4–6°C when possible; validate state points carefully, and inspect vapor quality at the evaporator outlet. `" +
+        ` Learn more: /help-center?topic=blend-refrigerants`,
     );
   }
 
