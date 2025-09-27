@@ -82,6 +82,9 @@ export function ProfessionalFeatures({
     return Number(value).toFixed(decimals);
   };
   const [unitSystem, setUnitSystem] = useState<"SI" | "Imperial">("SI");
+  const { user } = useSupabaseAuth();
+  const subscriptionPlan = (user as any)?.user_metadata?.subscription_plan || (user as any)?.user_metadata?.plan || (user as any)?.subscription_plan || (user as any)?.app_metadata?.plan || null;
+  const isPro = typeof subscriptionPlan === 'string' && /(pro|professional)/i.test(subscriptionPlan);
   const [reportConfig, setReportConfig] = useState({
     includeCalculations: true,
     includeDiagrams: true,
