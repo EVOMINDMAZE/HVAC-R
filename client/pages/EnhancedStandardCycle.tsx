@@ -1472,7 +1472,9 @@ export function EnhancedStandardCycleContent() {
                             </svg>
                             <div>
                               <div className="text-sm font-medium">
-                                Critical Temp
+                                <TechTerm term="critical_temperature">
+                                  Critical Temperature
+                                </TechTerm>
                               </div>
                               <div className="text-sm text-gray-600">
                                 {selectedRefrigerant?.limits?.critical_temp_c
