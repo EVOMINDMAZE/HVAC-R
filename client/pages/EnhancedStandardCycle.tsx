@@ -1110,7 +1110,9 @@ export function EnhancedStandardCycleContent() {
                 aria-label="Cycle parameters form"
               >
                 <div>
-                  <Label htmlFor="refrigerant">Refrigerant</Label>
+                  <Label htmlFor="refrigerant">
+                    <TechTerm term="refrigerant">Refrigerant</TechTerm>
+                  </Label>
                 </div>
 
                 <Separator />
