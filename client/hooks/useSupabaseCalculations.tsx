@@ -237,7 +237,10 @@ export function useSupabaseCalculations() {
         .eq('id', id)
         .eq('user_id', user.id);
 
-      if (error) throw error;
+      if (error) {
+        logError('deleteCalculation.supabase.delete', error);
+        throw new Error(extractErrorMessage(error));
+      }
 
       // Remove from local state
       setCalculations(prev => prev.filter(calc => calc.id !== id));
