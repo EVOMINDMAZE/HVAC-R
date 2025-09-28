@@ -85,6 +85,10 @@ export function useSupabaseCalculations() {
 
       if (!supabase) {
         errorMessage = 'Database service not configured. Please set up your Supabase credentials.';
+      } else if (error instanceof Error && error.message && error.message.includes('Cannot reach Supabase host')) {
+        errorMessage = error.message;
+      } else if (error instanceof TypeError && String(error.message).toLowerCase().includes('failed to fetch')) {
+        errorMessage = 'Network request failed while contacting Supabase. This can be caused by CORS, network connectivity, or an invalid Supabase URL.';
       } else {
         errorMessage = extractErrorMessage(error);
 
@@ -101,8 +105,22 @@ export function useSupabaseCalculations() {
       addToast({
         type: 'error',
         title: 'Failed to Load Calculations',
-        description: errorMessage
+        description: errorMessage,
       });
+
+      // When network errors occur, fallback to local storage if present
+      try {
+        const cached = localStorage.getItem('simulateon:calculations');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed)) {
+            setCalculations(parsed as Calculation[]);
+            addToast({ type: 'info', title: 'Offline mode', description: 'Loaded cached calculations from local storage.' });
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to load cached calculations', e);
+      }
     } finally {
       setIsLoading(false);
     }
