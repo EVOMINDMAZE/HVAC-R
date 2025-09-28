@@ -221,7 +221,6 @@ export function History() {
               ["data", "lt_cycle"],
               ["lt_cycle"],
               ["data", "performance", "lt_cycle"],
-              [],
             ]) || {};
           const ht =
             pick(results, [
@@ -230,7 +229,6 @@ export function History() {
               ["data", "ht_cycle"],
               ["ht_cycle"],
               ["data", "performance", "ht_cycle"],
-              [],
             ]) || {};
 
           const readNum = (v: any) => {
@@ -241,36 +239,25 @@ export function History() {
             return Number.isNaN(parsed) ? null : parsed;
           };
 
-          const ltWork =
-            readNum(
-              pick(lt, [
-                ["work_of_compression_kj_kg"],
-                ["work_input_kj_kg"],
-                ["work_of_compression"],
-              ]),
-            ) || 0;
-          const htWork =
-            readNum(
-              pick(ht, [
-                ["work_of_compression_kj_kg"],
-                ["work_input_kj_kg"],
-                ["work_of_compression"],
-              ]),
-            ) || 0;
-          const ltRe =
-            readNum(
-              pick(lt, [
-                ["refrigeration_effect_kj_kg"],
-                ["refrigeration_effect"],
-              ]),
-            ) || 0;
-          const htRe =
-            readNum(
-              pick(ht, [
-                ["refrigeration_effect_kj_kg"],
-                ["refrigeration_effect"],
-              ]),
-            ) || 0;
+          const deepFind = (obj: any, keys: string[]) => {
+            if (!obj) return null;
+            if (typeof obj !== 'object') return null;
+            for (const k of keys) {
+              if (obj[k] !== undefined && obj[k] !== null) return obj[k];
+            }
+            for (const val of Object.values(obj)) {
+              if (val && typeof val === 'object') {
+                const found = deepFind(val, keys);
+                if (found !== null && found !== undefined) return found;
+              }
+            }
+            return null;
+          };
+
+          const ltWork = readNum(pick(lt, [["work_of_compression_kj_kg"], ["work_input_kj_kg"], ["work_of_compression"], ["work_kj_kg"], ["work"]]) ?? deepFind(results, ["lt_work", "lt_work_kj_kg", "lt_work_kjkg", "work_lt"])) || 0;
+          const htWork = readNum(pick(ht, [["work_of_compression_kj_kg"], ["work_input_kj_kg"], ["work_of_compression"], ["work_kj_kg"], ["work"]]) ?? deepFind(results, ["ht_work", "ht_work_kj_kg", "ht_work_kjkg", "work_ht"])) || 0;
+          const ltRe = readNum(pick(lt, [["refrigeration_effect_kj_kg"], ["refrigeration_effect"], ["refrigeration_effect_kjkg"]]) ?? deepFind(results, ["lt_refrigeration_effect", "lt_re" ])) || 0;
+          const htRe = readNum(pick(ht, [["refrigeration_effect_kj_kg"], ["refrigeration_effect"], ["refrigeration_effect_kjkg"]]) ?? deepFind(results, ["ht_refrigeration_effect", "ht_re"])) || 0;
 
           const totalWork = ltWork + htWork;
           const totalRe = ltRe + htRe;
