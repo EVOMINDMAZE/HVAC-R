@@ -39,45 +39,63 @@ export function useSupabaseCalculations() {
 
       // First attempt: call internal server-side API to avoid browser->Supabase CORS/network issues
       try {
-        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-        // If we have a Supabase session token, forward it so server can authenticate via Supabase JWT
-        if (session && (session as any).access_token) {
-          headers.Authorization = `Bearer ${(session as any).access_token}`;
-        } else if (typeof window !== 'undefined') {
-          // Fallback to legacy token storage used by some flows
-          const token = localStorage.getItem('simulateon_token');
-          if (token) headers.Authorization = `Bearer ${token}`;
+        // Quick health check for server proxy to avoid throwing 'Failed to fetch' when server missing
+        let serverAvailable = false;
+        try {
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 1000);
+          try {
+            const h = await fetch('/api/health', { method: 'GET', signal: controller.signal });
+            serverAvailable = h.ok;
+          } finally {
+            clearTimeout(timeout);
+          }
+        } catch (healthErr) {
+          console.debug('Server health check failed, skipping server proxy:', healthErr);
+          serverAvailable = false;
         }
 
-        const resp = await fetch('/api/calculations', { method: 'GET', headers });
-        if (resp.ok) {
-          const payload = await resp.json();
-          if (payload && payload.success && Array.isArray(payload.data)) {
-            const normalized = payload.data.map((d: any) => ({
-              ...d,
-              created_at: (() => {
-                try {
-                  const dt = new Date(d?.created_at);
-                  if (!isNaN(dt.getTime())) return dt.toISOString();
-                  return String(d?.created_at ?? new Date().toISOString());
-                } catch (e) {
-                  return new Date().toISOString();
-                }
-              })(),
-            }));
-
-            setCalculations(normalized);
-            try { localStorage.setItem('simulateon:calculations', JSON.stringify(normalized)); } catch (e) { console.warn('Failed to cache calculations locally', e); }
-            return;
+        if (serverAvailable) {
+          const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+          // If we have a Supabase session token, forward it so server can authenticate via Supabase JWT
+          if (session && (session as any).access_token) {
+            headers.Authorization = `Bearer ${(session as any).access_token}`;
+          } else if (typeof window !== 'undefined') {
+            // Fallback to legacy token storage used by some flows
+            const token = localStorage.getItem('simulateon_token');
+            if (token) headers.Authorization = `Bearer ${token}`;
           }
 
-          // If server returned non-success payload, log and fall through to Supabase client
-          console.warn('Server /api/calculations returned unexpected payload', payload);
-        } else {
-          console.warn('/api/calculations responded with non-OK status', resp.status);
+          const resp = await fetch('/api/calculations', { method: 'GET', headers });
+          if (resp.ok) {
+            const payload = await resp.json();
+            if (payload && payload.success && Array.isArray(payload.data)) {
+              const normalized = payload.data.map((d: any) => ({
+                ...d,
+                created_at: (() => {
+                  try {
+                    const dt = new Date(d?.created_at);
+                    if (!isNaN(dt.getTime())) return dt.toISOString();
+                    return String(d?.created_at ?? new Date().toISOString());
+                  } catch (e) {
+                    return new Date().toISOString();
+                  }
+                })(),
+              }));
+
+              setCalculations(normalized);
+              try { localStorage.setItem('simulateon:calculations', JSON.stringify(normalized)); } catch (e) { console.warn('Failed to cache calculations locally', e); }
+              return;
+            }
+
+            // If server returned non-success payload, log and fall through to Supabase client
+            console.warn('Server /api/calculations returned unexpected payload', payload);
+          } else {
+            console.warn('/api/calculations responded with non-OK status', resp.status);
+          }
         }
       } catch (serverErr) {
-        console.warn('Internal API fetch failed, will fallback to Supabase client:', serverErr);
+        console.warn('Internal API fetch attempt failed, will fallback to Supabase client:', serverErr);
       }
 
       // Fallback: Query Supabase for calculations (legacy path)
