@@ -21,8 +21,24 @@ export function CalculationDetailsModal({ calculation }: CalculationDetailsModal
   };
 
   const renderInputs = () => {
-    const inputs = calculation.inputs;
-    
+    const inputs = calculation.inputs || {};
+
+    const getInputValue = (obj: any, candidates: string[]) => {
+      if (!obj) return null;
+      for (const key of candidates) {
+        if (obj[key] !== undefined && obj[key] !== null && obj[key] !== "") return obj[key];
+      }
+      // try nested lt_cycle/ht_cycle keys
+      for (const val of Object.values(obj)) {
+        if (val && typeof val === 'object') {
+          for (const key of candidates) {
+            if (val[key] !== undefined && val[key] !== null && val[key] !== "") return val[key];
+          }
+        }
+      }
+      return null;
+    };
+
     switch (calculation.calculation_type) {
       case "Standard Cycle":
         return (
