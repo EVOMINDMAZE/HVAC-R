@@ -3,7 +3,7 @@ import { supabase, getSupabaseConfig } from "@/lib/supabase";
 import { useSupabaseAuth } from "./useSupabaseAuth";
 import { useToast } from "./useToast";
 import { extractErrorMessage, logError } from "@/lib/errorUtils";
-import { API_BASE_URL } from '@/lib/api';
+import { API_BASE_URL } from "@/lib/api";
 
 export interface Calculation {
   id: string;
@@ -64,7 +64,9 @@ export function useSupabaseCalculations() {
 
         // Determine which proxy (local or external) to use for /api calls
         let usedProxyUrl: string | null = null;
-        const headers: Record<string, string> = { "Content-Type": "application/json" };
+        const headers: Record<string, string> = {
+          "Content-Type": "application/json",
+        };
         if (session && (session as any).access_token) {
           headers.Authorization = `Bearer ${(session as any).access_token}`;
         } else if (typeof window !== "undefined") {
@@ -77,10 +79,15 @@ export function useSupabaseCalculations() {
         } else {
           // Try external API_BASE_URL as fallback (production proxy)
           try {
-            const extHealth = await fetch(`${API_BASE_URL}/api/health`, { method: "GET" });
+            const extHealth = await fetch(`${API_BASE_URL}/api/health`, {
+              method: "GET",
+            });
             if (extHealth.ok) usedProxyUrl = `${API_BASE_URL}/api/calculations`;
           } catch (e) {
-            console.debug("External API health check failed, will not use external proxy", e);
+            console.debug(
+              "External API health check failed, will not use external proxy",
+              e,
+            );
           }
         }
 
@@ -103,13 +110,26 @@ export function useSupabaseCalculations() {
               }));
 
               setCalculations(normalized);
-              try { localStorage.setItem('simulateon:calculations', JSON.stringify(normalized)); } catch (e) { console.warn('Failed to cache calculations locally', e); }
+              try {
+                localStorage.setItem(
+                  "simulateon:calculations",
+                  JSON.stringify(normalized),
+                );
+              } catch (e) {
+                console.warn("Failed to cache calculations locally", e);
+              }
               return;
             }
 
-            console.warn(`${usedProxyUrl} returned unexpected payload`, payload);
+            console.warn(
+              `${usedProxyUrl} returned unexpected payload`,
+              payload,
+            );
           } else {
-            console.warn(`${usedProxyUrl} responded with non-OK status`, resp.status);
+            console.warn(
+              `${usedProxyUrl} responded with non-OK status`,
+              resp.status,
+            );
           }
         }
       } catch (serverErr) {
