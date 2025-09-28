@@ -129,6 +129,46 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/advanced-reporting"
+        element={
+          <ProtectedRoute>
+            <AdvancedReporting />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/troubleshooting"
+        element={
+          <ProtectedRoute>
+            <Troubleshooting />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/diy-calculators"
+        element={
+          <ProtectedRoute>
+            <DIYCalculators />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/estimate-builder"
+        element={
+          <ProtectedRoute>
+            <EstimateBuilder />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/projects"
+        element={
+          <ProtectedRoute>
+            <Projects />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/history"
         element={
           <ProtectedRoute>
