@@ -190,6 +190,34 @@ export function Header({ variant = "landing" }: HeaderProps) {
                   Cascade
                 </Link>
                 <Link
+                  to="/diy-calculators"
+                  className="text-gray-600 hover:text-blue-600 font-medium"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  DIY Calculators
+                </Link>
+                <Link
+                  to="/troubleshooting"
+                  className="text-gray-600 hover:text-blue-600 font-medium"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Troubleshooting
+                </Link>
+                <Link
+                  to="/estimate-builder"
+                  className="text-gray-600 hover:text-blue-600 font-medium"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Estimates
+                </Link>
+                <Link
+                  to="/projects"
+                  className="text-gray-600 hover:text-blue-600 font-medium"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Projects
+                </Link>
+                <Link
                   to="/history"
                   className="text-gray-600 hover:text-blue-600 font-medium"
                   onClick={() => setIsMobileMenuOpen(false)}
