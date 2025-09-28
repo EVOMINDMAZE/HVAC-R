@@ -45,23 +45,23 @@ export function CalculationDetailsModal({ calculation }: CalculationDetailsModal
           <div className="grid grid-cols-2 gap-4">
             <div>
               <span className="font-medium text-gray-700">Refrigerant:</span>
-              <span className="ml-2">{inputs.refrigerant}</span>
+              <span className="ml-2">{getInputValue(inputs, ['refrigerant','refrigerant_id','refrigerantName','ref']) || 'N/A'}</span>
             </div>
             <div>
               <span className="font-medium text-gray-700">Evaporator Temp:</span>
-              <span className="ml-2">{inputs.evaporatorTemp}°C</span>
+              <span className="ml-2">{(getInputValue(inputs, ['evaporatorTemp','evap_temp_c','evapTemp','evap_temp','evap']) !== null ? getInputValue(inputs, ['evaporatorTemp','evap_temp_c','evapTemp','evap_temp','evap']).toString() : 'N/A')}°C</span>
             </div>
             <div>
               <span className="font-medium text-gray-700">Condenser Temp:</span>
-              <span className="ml-2">{inputs.condenserTemp}°C</span>
+              <span className="ml-2">{(getInputValue(inputs, ['condenserTemp','cond_temp_c','condTemp','cond_temp','cond']) !== null ? getInputValue(inputs, ['condenserTemp','cond_temp_c','condTemp','cond_temp','cond']).toString() : 'N/A')}°C</span>
             </div>
             <div>
               <span className="font-medium text-gray-700">Superheat:</span>
-              <span className="ml-2">{inputs.superheat}°C</span>
+              <span className="ml-2">{(getInputValue(inputs, ['superheat','superheat_c','superheat_celsius']) !== null ? getInputValue(inputs, ['superheat','superheat_c','superheat_celsius']).toString() : 'N/A')}°C</span>
             </div>
             <div>
               <span className="font-medium text-gray-700">Subcooling:</span>
-              <span className="ml-2">{inputs.subcooling}°C</span>
+              <span className="ml-2">{(getInputValue(inputs, ['subcooling','subcooling_c','subcool']) !== null ? getInputValue(inputs, ['subcooling','subcooling_c','subcool']).toString() : 'N/A')}°C</span>
             </div>
           </div>
         );
