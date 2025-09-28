@@ -22,10 +22,12 @@ export function useSupabaseCalculations() {
 
   // Fetch user's calculations
   const fetchCalculations = async () => {
-    if (!user || !supabase) {
-      console.log('Skipping fetch - user or supabase not available:', { user: !!user, supabase: !!supabase });
+    if (!user) {
+      console.log('Skipping fetch - user not available:', { user: !!user });
       return;
     }
+
+    console.log('Supabase client present:', !!supabase);
 
     setIsLoading(true);
     try {
