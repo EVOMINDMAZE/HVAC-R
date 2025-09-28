@@ -136,41 +136,68 @@ Suggested fix: In your Supabase project settings add '${origin}' to the 'Allowed
       }
 
       // Fallback: Query Supabase for calculations (legacy path)
-      const { data, error } = await supabase
-        .from('calculations')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      console.log('Supabase response:', { data, error });
-
-      if (error) {
-        logError('fetchCalculations.supabase', error);
-        throw new Error(extractErrorMessage(error));
+      let data: any = null;
+      try {
+        const res = await supabase
+          .from('calculations')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+        // supabase-js returns { data, error }
+        if (Array.isArray((res as any).data) || (res as any).error) {
+          data = (res as any).data;
+          if ((res as any).error) {
+            logError('fetchCalculations.supabase', (res as any).error);
+            console.warn('Supabase client returned error, falling back to cache:', (res as any).error);
+          }
+        } else {
+          // Unexpected shape
+          console.warn('Unexpected Supabase response shape, falling back to cache', res);
+        }
+      } catch (err) {
+        logError('fetchCalculations.supabase.fetch', err);
+        console.warn('Supabase client fetch threw an error, likely network/CORS issue, falling back to cache:', err);
       }
 
-      console.log('Successfully fetched calculations:', data?.length || 0, 'items');
-      // Normalize created_at to ISO strings to avoid date parsing inconsistencies
-      const normalized = (data || []).map((d: any) => ({
-        ...d,
-        created_at: (() => {
-          try {
-            const dt = new Date(d?.created_at);
-            if (!isNaN(dt.getTime())) return dt.toISOString();
-            return String(d?.created_at ?? new Date().toISOString());
-          } catch (e) {
-            return new Date().toISOString();
+      if (data && Array.isArray(data)) {
+        console.log('Successfully fetched calculations via Supabase client:', data.length, 'items');
+        const normalized = (data || []).map((d: any) => ({
+          ...d,
+          created_at: (() => {
+            try {
+              const dt = new Date(d?.created_at);
+              if (!isNaN(dt.getTime())) return dt.toISOString();
+              return String(d?.created_at ?? new Date().toISOString());
+            } catch (e) {
+              return new Date().toISOString();
+            }
+          })(),
+        }));
+
+        setCalculations(normalized);
+
+        // Cache to local storage for offline fallback
+        try {
+          localStorage.setItem('simulateon:calculations', JSON.stringify(normalized));
+        } catch (e) {
+          console.warn('Failed to cache calculations locally', e);
+        }
+      } else {
+        // Supabase client unavailable or failed; fallback to cached calculations
+        try {
+          const cached = localStorage.getItem('simulateon:calculations');
+          if (cached) {
+            const parsed = JSON.parse(cached);
+            if (Array.isArray(parsed)) {
+              setCalculations(parsed as Calculation[]);
+              addToast({ type: 'info', title: 'Offline mode', description: 'Loaded cached calculations from local storage.' });
+            }
+          } else {
+            console.warn('No cached calculations found to fallback to');
           }
-        })(),
-      }));
-
-      setCalculations(normalized);
-
-      // Cache to local storage for offline fallback
-      try {
-        localStorage.setItem('simulateon:calculations', JSON.stringify(normalized));
-      } catch (e) {
-        console.warn('Failed to cache calculations locally', e);
+        } catch (e) {
+          console.warn('Failed to load cached calculations', e);
+        }
       }
     } catch (error: any) {
       // Use robust error logging
