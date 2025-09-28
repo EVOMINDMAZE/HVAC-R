@@ -76,6 +76,13 @@ export function useSupabaseCalculations() {
       }));
 
       setCalculations(normalized);
+
+      // Cache to local storage for offline fallback
+      try {
+        localStorage.setItem('simulateon:calculations', JSON.stringify(normalized));
+      } catch (e) {
+        console.warn('Failed to cache calculations locally', e);
+      }
     } catch (error: any) {
       // Use robust error logging
       logError('fetchCalculations', error);
