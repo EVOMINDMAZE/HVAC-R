@@ -27,6 +27,7 @@ import {
   createPaymentIntent,
 } from "./routes/subscriptions.ts";
 import billingRoutes from "./routes/billing.ts";
+import { supabaseDiag } from "./routes/diagnostics.ts";
 import { uploadAvatar } from "./routes/storage.ts";
 
 export function createServer() {
