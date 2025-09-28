@@ -3,6 +3,7 @@ import { supabase, getSupabaseConfig } from "@/lib/supabase";
 import { useSupabaseAuth } from "./useSupabaseAuth";
 import { useToast } from "./useToast";
 import { extractErrorMessage, logError } from "@/lib/errorUtils";
+import { API_BASE_URL } from '@/lib/api';
 
 export interface Calculation {
   id: string;
