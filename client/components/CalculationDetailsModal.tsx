@@ -356,10 +356,28 @@ export function CalculationDetailsModal({ calculation }: CalculationDetailsModal
         const ltPerf = deepPick([["lt_cycle_performance"], ["lt_cycle", "performance"], ["lt_cycle"], ["lt_cycle_performance", "performance"], ["lt_cycle_state_points"], ["lt_state_points"], ["lt_cycle_points"]]) || {};
         const htPerf = deepPick([["ht_cycle_performance"], ["ht_cycle", "performance"], ["ht_cycle"], ["ht_cycle_performance", "performance"], ["ht_cycle_state_points"], ["ht_state_points"], ["ht_cycle_points"]]) || {};
 
-        const ltWork = readNumber([deepPick([["lt_cycle_performance", "work_of_compression_kj_kg"], ["lt_cycle_performance", "work_input_kj_kg"], ["lt_cycle", "work_of_compression_kj_kg"], ["lt_cycle", "work_input_kj_kg"], ["lt_cycle", "work_kj_kg"]])]) || 0;
-        const htWork = readNumber([deepPick([["ht_cycle_performance", "work_of_compression_kj_kg"], ["ht_cycle_performance", "work_input_kj_kg"], ["ht_cycle", "work_of_compression_kj_kg"], ["ht_cycle", "work_input_kj_kg"], ["ht_cycle", "work_kj_kg"]])]) || 0;
+        // Read primary values
+        let ltWork = readNumber([deepPick([["lt_cycle_performance", "work_of_compression_kj_kg"], ["lt_cycle_performance", "work_input_kj_kg"], ["lt_cycle", "work_of_compression_kj_kg"], ["lt_cycle", "work_input_kj_kg"], ["lt_cycle", "work_kj_kg"]])]);
+        let htWork = readNumber([deepPick([["ht_cycle_performance", "work_of_compression_kj_kg"], ["ht_cycle_performance", "work_input_kj_kg"], ["ht_cycle", "work_of_compression_kj_kg"], ["ht_cycle", "work_input_kj_kg"], ["ht_cycle", "work_kj_kg"]])]);
         const ltRe = readNumber([deepPick([["lt_cycle_performance", "refrigeration_effect_kj_kg"], ["lt_cycle_performance", "refrigeration_effect"], ["lt_cycle", "refrigeration_effect_kj_kg"], ["lt_cycle", "refrigeration_effect"]])]) || 0;
         const htRe = readNumber([deepPick([["ht_cycle_performance", "refrigeration_effect_kj_kg"], ["ht_cycle_performance", "refrigeration_effect"], ["ht_cycle", "refrigeration_effect_kj_kg"], ["ht_cycle", "refrigeration_effect"]])]) || 0;
+
+        // If work is missing but COP and refrigeration effect exist, infer work = RE / COP
+        if ((!ltWork || ltWork === 0) && ltRe) {
+          const ltCopVal = readNumber([deepPick([["lt_cycle_performance", "cop"], ["lt_cycle", "cop"], ["lt_cycle_performance", "COP"], ["lt_cycle", "COP"]])]);
+          if (ltCopVal && ltCopVal !== 0) {
+            ltWork = ltRe / ltCopVal;
+          }
+        }
+        if ((!htWork || htWork === 0) && htRe) {
+          const htCopVal = readNumber([deepPick([["ht_cycle_performance", "cop"], ["ht_cycle", "cop"], ["ht_cycle_performance", "COP"], ["ht_cycle", "COP"]])]);
+          if (htCopVal && htCopVal !== 0) {
+            htWork = htRe / htCopVal;
+          }
+        }
+
+        ltWork = ltWork || 0;
+        htWork = htWork || 0;
 
         const computedOverall = (ltWork + htWork) > 0 ? (ltRe + htRe) / (ltWork + htWork) : null;
         const overallCop = maybeOverall !== null ? maybeOverall : computedOverall;
