@@ -32,18 +32,36 @@ export function useSupabaseCalculations() {
       console.log('Attempting to fetch calculations for user:', user.id);
 
       // Quick connectivity check to Supabase host to provide meaningful error messages
-      try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 3000);
-        await fetch((import.meta.env.VITE_SUPABASE_URL as string) || '', { method: 'GET', mode: 'cors', signal: controller.signal });
-        clearTimeout(timeout);
-      } catch (connErr) {
-        // If host unreachable, bail early with helpful message
-        logError('fetchCalculations.connectivity', connErr);
-        const friendly = connErr instanceof Error && connErr.message.includes('Failed to fetch')
-          ? 'Cannot reach Supabase host. Check VITE_SUPABASE_URL and network connectivity.'
-          : 'Supabase host appears unreachable. Check your network and Supabase configuration.';
-        throw new Error(friendly);
+      const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL as string) || '';
+      if (supabaseUrl) {
+        try {
+          const url = supabaseUrl.endsWith('/') ? supabaseUrl : `${supabaseUrl}/`;
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 3000);
+
+          // Prefer HEAD to minimize payload; fall back to GET if HEAD not allowed
+          try {
+            let res = await fetch(url, { method: 'HEAD', mode: 'cors', signal: controller.signal });
+            if (!res.ok) {
+              res = await fetch(url, { method: 'GET', mode: 'cors', signal: controller.signal });
+            }
+          } finally {
+            clearTimeout(timeout);
+          }
+        } catch (connErr) {
+          // If host unreachable, bail early with helpful message
+          logError('fetchCalculations.connectivity', connErr);
+          const msg = connErr instanceof Error ? connErr.message : String(connErr);
+          const friendly =
+            msg.toLowerCase().includes('failed to fetch') ||
+            msg.toLowerCase().includes('networkrequestfailed') ||
+            msg.toLowerCase().includes('network error')
+              ? `Cannot reach Supabase host (${supabaseUrl}). Check VITE_SUPABASE_URL, CORS and network connectivity.`
+              : `Supabase host appears unreachable (${supabaseUrl}). Check your network and Supabase configuration.`;
+          throw new Error(friendly);
+        }
+      } else {
+        console.warn('VITE_SUPABASE_URL not set; skipping connectivity preflight.');
       }
 
       // Query Supabase for calculations
