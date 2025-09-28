@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase, getSupabaseConfig } from '@/lib/supabase';
 import { useSupabaseAuth } from './useSupabaseAuth';
 import { useToast } from './useToast';
 import { extractErrorMessage, logError } from '@/lib/errorUtils';
