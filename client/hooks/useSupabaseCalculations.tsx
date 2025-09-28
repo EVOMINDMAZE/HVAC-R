@@ -460,11 +460,11 @@ export function useSupabaseCalculations() {
   // Fetch calculations when user changes
   useEffect(() => {
     console.log('useEffect triggered - user:', !!user, 'supabase:', !!supabase);
-    if (user && supabase) {
+    if (user) {
       console.log('User authenticated, fetching calculations...');
       fetchCalculations();
     } else {
-      console.log('User not authenticated or Supabase not configured, clearing calculations');
+      console.log('User not authenticated, clearing calculations');
       setCalculations([]);
     }
   }, [user]);
