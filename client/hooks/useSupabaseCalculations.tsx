@@ -61,23 +61,30 @@ export function useSupabaseCalculations() {
           serverAvailable = false;
         }
 
-        if (serverAvailable) {
-          const headers: Record<string, string> = {
-            "Content-Type": "application/json",
-          };
-          // If we have a Supabase session token, forward it so server can authenticate via Supabase JWT
-          if (session && (session as any).access_token) {
-            headers.Authorization = `Bearer ${(session as any).access_token}`;
-          } else if (typeof window !== "undefined") {
-            // Fallback to legacy token storage used by some flows
-            const token = localStorage.getItem("simulateon_token");
-            if (token) headers.Authorization = `Bearer ${token}`;
-          }
+        // Determine which proxy (local or external) to use for /api calls
+        let usedProxyUrl: string | null = null;
+        const headers: Record<string, string> = { "Content-Type": "application/json" };
+        if (session && (session as any).access_token) {
+          headers.Authorization = `Bearer ${(session as any).access_token}`;
+        } else if (typeof window !== "undefined") {
+          const token = localStorage.getItem("simulateon_token");
+          if (token) headers.Authorization = `Bearer ${token}`;
+        }
 
-          const resp = await fetch("/api/calculations", {
-            method: "GET",
-            headers,
-          });
+        if (serverAvailable) {
+          usedProxyUrl = "/api/calculations";
+        } else {
+          // Try external API_BASE_URL as fallback (production proxy)
+          try {
+            const extHealth = await fetch(`${API_BASE_URL}/api/health`, { method: "GET" });
+            if (extHealth.ok) usedProxyUrl = `${API_BASE_URL}/api/calculations`;
+          } catch (e) {
+            console.debug("External API health check failed, will not use external proxy", e);
+          }
+        }
+
+        if (usedProxyUrl) {
+          const resp = await fetch(usedProxyUrl, { method: "GET", headers });
           if (resp.ok) {
             const payload = await resp.json();
             if (payload && payload.success && Array.isArray(payload.data)) {
@@ -95,27 +102,13 @@ export function useSupabaseCalculations() {
               }));
 
               setCalculations(normalized);
-              try {
-                localStorage.setItem(
-                  "simulateon:calculations",
-                  JSON.stringify(normalized),
-                );
-              } catch (e) {
-                console.warn("Failed to cache calculations locally", e);
-              }
+              try { localStorage.setItem('simulateon:calculations', JSON.stringify(normalized)); } catch (e) { console.warn('Failed to cache calculations locally', e); }
               return;
             }
 
-            // If server returned non-success payload, log and fall through to Supabase client
-            console.warn(
-              "Server /api/calculations returned unexpected payload",
-              payload,
-            );
+            console.warn(`${usedProxyUrl} returned unexpected payload`, payload);
           } else {
-            console.warn(
-              "/api/calculations responded with non-OK status",
-              resp.status,
-            );
+            console.warn(`${usedProxyUrl} responded with non-OK status`, resp.status);
           }
         }
       } catch (serverErr) {
