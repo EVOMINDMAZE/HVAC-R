@@ -214,16 +214,57 @@ export function CalculationDetailsModal({ calculation }: CalculationDetailsModal
 
     const getStatePointValue = (sp: any, idx: number, propCandidates: string[]) => {
       const p = getStatePoint(sp, idx);
-      if (!p) return null;
-      for (const k of propCandidates) {
-        if (p[k] !== undefined && p[k] !== null) {
-          const n = Number(p[k]);
-          if (!Number.isNaN(n)) return n;
-          // try parse strings with units
-          const parsed = Number(String(p[k]).replace(/[^0-9eE+\-\.]/g, ''));
-          if (!Number.isNaN(parsed)) return parsed;
+      if (p) {
+        for (const k of propCandidates) {
+          if (p[k] !== undefined && p[k] !== null) {
+            const n = Number(p[k]);
+            if (!Number.isNaN(n)) return n;
+            // try parse strings with units
+            const parsed = Number(String(p[k]).replace(/[^0-9eE+\-\.]/g, ''));
+            if (!Number.isNaN(parsed)) return parsed;
+          }
         }
       }
+
+      // Fallback: deep search for an object that looks like a state point with required property
+      const queue = [sp];
+      const seen = new Set();
+      while (queue.length) {
+        const cur = queue.shift();
+        if (!cur || seen.has(cur)) continue;
+        seen.add(cur);
+        if (Array.isArray(cur)) {
+          if (cur.length >= idx) {
+            const candidate = cur[idx - 1];
+            if (candidate) {
+              for (const k of propCandidates) {
+                if (candidate[k] !== undefined && candidate[k] !== null) {
+                  const n = Number(candidate[k]);
+                  if (!Number.isNaN(n)) return n;
+                  const parsed = Number(String(candidate[k]).replace(/[^0-9eE+\-\.]/g, ''));
+                  if (!Number.isNaN(parsed)) return parsed;
+                }
+              }
+            }
+          }
+          for (const item of cur) queue.push(item);
+        } else if (typeof cur === 'object') {
+          // If object has numeric-like properties, try them
+          for (const k of propCandidates) {
+            if (cur[k] !== undefined && cur[k] !== null) {
+              const n = Number(cur[k]);
+              if (!Number.isNaN(n)) return n;
+              const parsed = Number(String(cur[k]).replace(/[^0-9eE+\-\.]/g, ''));
+              if (!Number.isNaN(parsed)) return parsed;
+            }
+          }
+          // enqueue nested objects
+          for (const v of Object.values(cur)) {
+            if (v && typeof v === 'object' && !seen.has(v)) queue.push(v);
+          }
+        }
+      }
+
       return null;
     };
 
