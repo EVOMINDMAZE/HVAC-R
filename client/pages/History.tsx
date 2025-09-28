@@ -265,6 +265,17 @@ export function History() {
             return `Overall COP: ${(totalRe / totalWork).toFixed(2)}`;
           }
 
+          // If we couldn't compute overall, show per-cycle COPs if available
+          const ltCop = readNum(pick(lt, [["cop"], ["COP"], ["cycle_cop"], ["cop_kj"]]) ?? deepFind(results, ["lt_cop", "ltCOP", "lowCOP"]));
+          const htCop = readNum(pick(ht, [["cop"], ["COP"], ["cycle_cop"], ["cop_kj"]]) ?? deepFind(results, ["ht_cop", "htCOP", "highCOP"]));
+
+          if ((ltCop !== null && ltCop !== undefined) || (htCop !== null && htCop !== undefined)) {
+            const parts: string[] = [];
+            if (ltCop !== null && ltCop !== undefined) parts.push(`LT COP: ${Number(ltCop).toFixed(3)}`);
+            if (htCop !== null && htCop !== undefined) parts.push(`HT COP: ${Number(htCop).toFixed(3)}`);
+            return parts.join(" • ");
+          }
+
           return "No COP data";
         }
         default:
