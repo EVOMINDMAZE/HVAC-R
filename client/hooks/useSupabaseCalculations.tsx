@@ -92,7 +92,50 @@ Suggested fix: In your Supabase project settings add '${origin}' to the 'Allowed
         throw preflightErr;
       }
 
-      // Query Supabase for calculations
+      // First attempt: call internal server-side API to avoid browser->Supabase CORS/network issues
+      try {
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        // If we have a Supabase session token, forward it so server can authenticate via Supabase JWT
+        if (session && (session as any).access_token) {
+          headers.Authorization = `Bearer ${(session as any).access_token}`;
+        } else if (typeof window !== 'undefined') {
+          // Fallback to legacy token storage used by some flows
+          const token = localStorage.getItem('simulateon_token');
+          if (token) headers.Authorization = `Bearer ${token}`;
+        }
+
+        const resp = await fetch('/api/calculations', { method: 'GET', headers });
+        if (resp.ok) {
+          const payload = await resp.json();
+          if (payload && payload.success && Array.isArray(payload.data)) {
+            const normalized = payload.data.map((d: any) => ({
+              ...d,
+              created_at: (() => {
+                try {
+                  const dt = new Date(d?.created_at);
+                  if (!isNaN(dt.getTime())) return dt.toISOString();
+                  return String(d?.created_at ?? new Date().toISOString());
+                } catch (e) {
+                  return new Date().toISOString();
+                }
+              })(),
+            }));
+
+            setCalculations(normalized);
+            try { localStorage.setItem('simulateon:calculations', JSON.stringify(normalized)); } catch (e) { console.warn('Failed to cache calculations locally', e); }
+            return;
+          }
+
+          // If server returned non-success payload, log and fall through to Supabase client
+          console.warn('Server /api/calculations returned unexpected payload', payload);
+        } else {
+          console.warn('/api/calculations responded with non-OK status', resp.status);
+        }
+      } catch (serverErr) {
+        console.warn('Internal API fetch failed, will fallback to Supabase client:', serverErr);
+      }
+
+      // Fallback: Query Supabase for calculations (legacy path)
       const { data, error } = await supabase
         .from('calculations')
         .select('*')
