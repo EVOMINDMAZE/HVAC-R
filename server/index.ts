@@ -127,6 +127,9 @@ export function createServer() {
   // Accept either the legacy session token (authenticateToken) or a Supabase JWT (authenticateSupabaseToken)
   app.post("/api/storage/upload", authenticateSupabaseToken, uploadAvatar);
 
+  // Diagnostics route to test server->Supabase connectivity
+  app.get('/api/diagnostics/supabase', supabaseDiag);
+
   // Middleware to accept either Supabase JWT (contains dots) or legacy session token
   const authenticateEither: import("express").RequestHandler = (
     req,
