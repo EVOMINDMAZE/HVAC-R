@@ -433,8 +433,17 @@ export function CalculationDetailsModal({
     const readNumber = (candidates: any[]) => {
       for (const v of candidates) {
         if (v === undefined || v === null) continue;
+        // Try direct numeric conversion
         const n = Number(v);
         if (!Number.isNaN(n)) return n;
+        // Fallback: strip non-numeric characters (except exponent, sign, dot) and parse
+        try {
+          const cleaned = String(v).replace(/[^0-9eE+\-\.]/g, "");
+          const n2 = Number(cleaned);
+          if (!Number.isNaN(n2)) return n2;
+        } catch (e) {
+          // ignore
+        }
       }
       return null;
     };
