@@ -843,41 +843,39 @@ export function CalculationDetailsModal({
             ["ht_cycle_points"],
           ]) || {};
 
-        // Read primary values
+        // Read primary values from the already-resolved ltPerf and htPerf objects
         let ltWork = readNumber([
-          deepPick([
-            ["lt_cycle_performance", "work_of_compression_kj_kg"],
-            ["lt_cycle_performance", "work_input_kj_kg"],
-            ["lt_cycle", "work_of_compression_kj_kg"],
-            ["lt_cycle", "work_input_kj_kg"],
-            ["lt_cycle", "work_kj_kg"],
+          pick(ltPerf, [
+            ["work_of_compression_kj_kg"],
+            ["work_input_kj_kg"],
+            ["work_of_compression"],
+            ["work_kj_kg"],
+            ["work"],
           ]),
         ]);
         let htWork = readNumber([
-          deepPick([
-            ["ht_cycle_performance", "work_of_compression_kj_kg"],
-            ["ht_cycle_performance", "work_input_kj_kg"],
-            ["ht_cycle", "work_of_compression_kj_kg"],
-            ["ht_cycle", "work_input_kj_kg"],
-            ["ht_cycle", "work_kj_kg"],
+          pick(htPerf, [
+            ["work_of_compression_kj_kg"],
+            ["work_input_kj_kg"],
+            ["work_of_compression"],
+            ["work_kj_kg"],
+            ["work"],
           ]),
         ]);
         const ltRe =
           readNumber([
-            deepPick([
-              ["lt_cycle_performance", "refrigeration_effect_kj_kg"],
-              ["lt_cycle_performance", "refrigeration_effect"],
-              ["lt_cycle", "refrigeration_effect_kj_kg"],
-              ["lt_cycle", "refrigeration_effect"],
+            pick(ltPerf, [
+              ["refrigeration_effect_kj_kg"],
+              ["refrigeration_effect"],
+              ["refrigeration_effect_kjkg"],
             ]),
           ]) || 0;
         const htRe =
           readNumber([
-            deepPick([
-              ["ht_cycle_performance", "refrigeration_effect_kj_kg"],
-              ["ht_cycle_performance", "refrigeration_effect"],
-              ["ht_cycle", "refrigeration_effect_kj_kg"],
-              ["ht_cycle", "refrigeration_effect"],
+            pick(htPerf, [
+              ["refrigeration_effect_kj_kg"],
+              ["refrigeration_effect"],
+              ["refrigeration_effect_kjkg"],
             ]),
           ]) || 0;
 
