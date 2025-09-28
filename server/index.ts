@@ -36,14 +36,32 @@ export function createServer() {
   console.log("Using Supabase for data storage, SQLite database disabled");
 
   // Middleware
+  // Configure CORS origins. Use ALLOWED_CORS_ORIGINS env var (comma-separated) when present.
+  // In development, allow localhost origins. In preview or unspecified environments, allow all origins
+  // to avoid blocking the preview iframe. For production, set ALLOWED_CORS_ORIGINS explicitly.
+  const defaultAllowed = process.env.NODE_ENV === 'production'
+    ? ["https://173ba54839db44079504686aa5642124-7d4f8c681adb406aa7578b14f.fly.dev"]
+    : ["http://localhost:8080", "http://localhost:3000"];
+
+  const envList = process.env.ALLOWED_CORS_ORIGINS
+    ? process.env.ALLOWED_CORS_ORIGINS.split(',').map(s => s.trim()).filter(Boolean)
+    : [];
+
+  const allowedOrigins = Array.from(new Set([...envList, ...defaultAllowed]));
+
   app.use(
     cors({
-      origin:
-        process.env.NODE_ENV === "production"
-          ? [
-              "https://173ba54839db44079504686aa5642124-7d4f8c681adb406aa7578b14f.fly.dev",
-            ]
-          : ["http://localhost:8080", "http://localhost:3000"],
+      origin: (origin, callback) => {
+        // Allow non-browser requests (like curl or server-to-server) with no origin
+        if (!origin) return callback(null, true);
+        // If ALLOWED_CORS_ORIGINS contains '*' allow all
+        if (allowedOrigins.includes('*')) return callback(null, true);
+        if (allowedOrigins.includes(origin)) return callback(null, true);
+        // For preview environments where origin may vary, allow if ALLOW_ALL_CORS is set
+        if (process.env.ALLOW_ALL_CORS === 'true') return callback(null, true);
+        console.warn(`Blocked CORS request from origin: ${origin}`);
+        return callback(new Error('Not allowed by CORS'));
+      },
       credentials: true,
     }),
   );
