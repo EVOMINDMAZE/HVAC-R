@@ -3,7 +3,13 @@ import { Header } from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Save } from "lucide-react";
@@ -81,15 +87,32 @@ export default function Troubleshooting() {
 
   const recommendations = useMemo(() => {
     const rec: string[] = [];
-    if (answers["airflow"] === "no") rec.push("Restore airflow: clean/replace filter, inspect blower & ducts.");
-    if (answers["charge"] === "low") rec.push("Check for leaks, evacuate, weigh-in correct charge.");
-    if (answers["charge"] === "high") rec.push("Recover excess, weigh charge to spec, verify subcooling.");
-    if (answers["leak"] === "leak") rec.push("Perform leak detection, repair, evacuate and recharge.");
-    if (answers["leak"] === "restriction") rec.push("Inspect filter drier/TEV/capillary for restriction, replace as needed.");
-    if (symptom === "icing" && answers["airflow"] !== "no") rec.push("Check TEV sensing bulb and superheat setting; verify defrost logic.");
-    if (symptom === "high_head" && answers["condenser"] === "dirty") rec.push("Clean condenser coil; ensure adequate ambient airflow.");
-    if (symptom === "high_head" && answers["condenser"] === "fan_issue") rec.push("Diagnose condenser fan motor/capacitor and replace if faulty.");
-    if (rec.length === 0) rec.push("No fault strongly indicated. Monitor operation and log detailed measurements.");
+    if (answers["airflow"] === "no")
+      rec.push(
+        "Restore airflow: clean/replace filter, inspect blower & ducts.",
+      );
+    if (answers["charge"] === "low")
+      rec.push("Check for leaks, evacuate, weigh-in correct charge.");
+    if (answers["charge"] === "high")
+      rec.push("Recover excess, weigh charge to spec, verify subcooling.");
+    if (answers["leak"] === "leak")
+      rec.push("Perform leak detection, repair, evacuate and recharge.");
+    if (answers["leak"] === "restriction")
+      rec.push(
+        "Inspect filter drier/TEV/capillary for restriction, replace as needed.",
+      );
+    if (symptom === "icing" && answers["airflow"] !== "no")
+      rec.push(
+        "Check TEV sensing bulb and superheat setting; verify defrost logic.",
+      );
+    if (symptom === "high_head" && answers["condenser"] === "dirty")
+      rec.push("Clean condenser coil; ensure adequate ambient airflow.");
+    if (symptom === "high_head" && answers["condenser"] === "fan_issue")
+      rec.push("Diagnose condenser fan motor/capacitor and replace if faulty.");
+    if (rec.length === 0)
+      rec.push(
+        "No fault strongly indicated. Monitor operation and log detailed measurements.",
+      );
     return rec;
   }, [answers, symptom]);
 
@@ -123,7 +146,9 @@ export default function Troubleshooting() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Header variant="dashboard" />
       <main className="max-w-4xl mx-auto p-4 md:p-6 space-y-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-blue-900">Troubleshooting Wizards</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-blue-900">
+          Troubleshooting Wizards
+        </h1>
 
         <Card>
           <CardHeader>
@@ -134,10 +159,14 @@ export default function Troubleshooting() {
               <div>
                 <Label>Primary symptom</Label>
                 <Select value={symptom} onValueChange={setSymptom}>
-                  <SelectTrigger className="mt-1"><SelectValue placeholder="Select" /></SelectTrigger>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
                   <SelectContent>
                     {SYMPTOMS.map((s) => (
-                      <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>
+                      <SelectItem key={s.id} value={s.id}>
+                        {s.label}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -170,9 +199,14 @@ export default function Troubleshooting() {
           </CardHeader>
           <CardContent className="space-y-6">
             {steps.map((st, idx) => (
-              <div key={st.id} className={`p-4 rounded border ${idx <= step ? "bg-white" : "bg-gray-50 opacity-70"}`}>
+              <div
+                key={st.id}
+                className={`p-4 rounded border ${idx <= step ? "bg-white" : "bg-gray-50 opacity-70"}`}
+              >
                 <div className="flex items-center gap-2 mb-2">
-                  <Badge variant={idx <= step ? "default" : "outline"}>Step {idx + 1}</Badge>
+                  <Badge variant={idx <= step ? "default" : "outline"}>
+                    Step {idx + 1}
+                  </Badge>
                   <div className="font-semibold">{st.title}</div>
                 </div>
                 <div className="mb-3 text-sm">{st.q}</div>
@@ -200,11 +234,17 @@ export default function Troubleshooting() {
           <CardContent>
             <ul className="list-disc pl-6 space-y-2">
               {recommendations.map((r, i) => (
-                <li key={i} className="text-sm">{r}</li>
+                <li key={i} className="text-sm">
+                  {r}
+                </li>
               ))}
             </ul>
             <div className="mt-4">
-              <Button onClick={handleSave} disabled={saving} className="inline-flex items-center gap-2">
+              <Button
+                onClick={handleSave}
+                disabled={saving}
+                className="inline-flex items-center gap-2"
+              >
                 <Save className="h-4 w-4" /> Save Session
               </Button>
             </div>

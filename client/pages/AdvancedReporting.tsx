@@ -17,15 +17,17 @@ export function AdvancedReporting() {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return calculations;
-    return calculations.filter((c) =>
-      (c.name || "").toLowerCase().includes(q) ||
-      (c.calculation_type || "").toLowerCase().includes(q),
+    return calculations.filter(
+      (c) =>
+        (c.name || "").toLowerCase().includes(q) ||
+        (c.calculation_type || "").toLowerCase().includes(q),
     );
   }, [calculations, query]);
 
-  const selected = useMemo(() =>
-    filtered.find((c) => c.id === selectedId) || null,
-  [filtered, selectedId]);
+  const selected = useMemo(
+    () => filtered.find((c) => c.id === selectedId) || null,
+    [filtered, selectedId],
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -68,10 +70,15 @@ export function AdvancedReporting() {
                     key={c.id}
                     onClick={() => setSelectedId(c.id)}
                     className={`w-full text-left p-3 rounded border hover:bg-blue-50 transition ${
-                      selectedId === c.id ? "border-blue-400 bg-blue-50" : "border-gray-200 bg-white"
+                      selectedId === c.id
+                        ? "border-blue-400 bg-blue-50"
+                        : "border-gray-200 bg-white"
                     }`}
                   >
-                    <div className="text-sm font-semibold truncate">{c.name || `${c.calculation_type} – ${new Date(c.created_at).toLocaleString()}`}</div>
+                    <div className="text-sm font-semibold truncate">
+                      {c.name ||
+                        `${c.calculation_type} – ${new Date(c.created_at).toLocaleString()}`}
+                    </div>
                     <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
                       <Badge variant="secondary">{c.calculation_type}</Badge>
                       <span>{new Date(c.created_at).toLocaleString()}</span>
@@ -87,7 +94,11 @@ export function AdvancedReporting() {
               <ProfessionalFeatures
                 cycleData={selected.inputs?.cycleData || selected.inputs}
                 results={selected.results}
-                refrigerant={selected.inputs?.refrigerant || selected.results?.refrigerant || "R134a"}
+                refrigerant={
+                  selected.inputs?.refrigerant ||
+                  selected.results?.refrigerant ||
+                  "R134a"
+                }
               />
             ) : (
               <Card>
@@ -96,7 +107,8 @@ export function AdvancedReporting() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    Choose a calculation from the list to generate a professional PDF/CSV and chart package.
+                    Choose a calculation from the list to generate a
+                    professional PDF/CSV and chart package.
                   </p>
                 </CardContent>
               </Card>

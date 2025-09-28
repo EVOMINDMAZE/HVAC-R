@@ -80,7 +80,11 @@ export default function DIYCalculators() {
         return;
       }
       setStdResult(payload.data);
-      await saveCalculation("DIY Calculator", { kind: "standard", ...body }, payload.data);
+      await saveCalculation(
+        "DIY Calculator",
+        { kind: "standard", ...body },
+        payload.data,
+      );
     } catch (e: any) {
       setStdError(e?.message || "Network error");
     } finally {
@@ -137,7 +141,11 @@ export default function DIYCalculators() {
         return;
       }
       setCasResult(payload.data);
-      await saveCalculation("DIY Calculator", { kind: "cascade", ...body }, payload.data);
+      await saveCalculation(
+        "DIY Calculator",
+        { kind: "cascade", ...body },
+        payload.data,
+      );
     } catch (e: any) {
       setCasError(e?.message || "Network error");
     } finally {
@@ -149,7 +157,9 @@ export default function DIYCalculators() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Header variant="dashboard" />
       <main className="max-w-5xl mx-auto p-4 md:p-6 space-y-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-blue-900">DIY Calculators</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-blue-900">
+          DIY Calculators
+        </h1>
 
         <Tabs defaultValue="standard">
           <TabsList>
@@ -172,33 +182,71 @@ export default function DIYCalculators() {
                 <div className="grid md:grid-cols-5 gap-3">
                   <div className="md:col-span-2">
                     <Label>Refrigerant</Label>
-                    <Input value={stdForm.refrigerant} onChange={(e) => setStdForm({ ...stdForm, refrigerant: e.target.value })} />
+                    <Input
+                      value={stdForm.refrigerant}
+                      onChange={(e) =>
+                        setStdForm({ ...stdForm, refrigerant: e.target.value })
+                      }
+                    />
                   </div>
                   <div>
                     <Label>Evap (°C)</Label>
-                    <Input type="number" value={stdForm.evap_temp_c} onChange={(e) => setStdForm({ ...stdForm, evap_temp_c: e.target.value })} />
+                    <Input
+                      type="number"
+                      value={stdForm.evap_temp_c}
+                      onChange={(e) =>
+                        setStdForm({ ...stdForm, evap_temp_c: e.target.value })
+                      }
+                    />
                   </div>
                   <div>
                     <Label>Cond (°C)</Label>
-                    <Input type="number" value={stdForm.cond_temp_c} onChange={(e) => setStdForm({ ...stdForm, cond_temp_c: e.target.value })} />
+                    <Input
+                      type="number"
+                      value={stdForm.cond_temp_c}
+                      onChange={(e) =>
+                        setStdForm({ ...stdForm, cond_temp_c: e.target.value })
+                      }
+                    />
                   </div>
                   <div>
                     <Label>Superheat (°C)</Label>
-                    <Input type="number" value={stdForm.superheat_c} onChange={(e) => setStdForm({ ...stdForm, superheat_c: e.target.value })} />
+                    <Input
+                      type="number"
+                      value={stdForm.superheat_c}
+                      onChange={(e) =>
+                        setStdForm({ ...stdForm, superheat_c: e.target.value })
+                      }
+                    />
                   </div>
                   <div>
                     <Label>Subcooling (°C)</Label>
-                    <Input type="number" value={stdForm.subcooling_c} onChange={(e) => setStdForm({ ...stdForm, subcooling_c: e.target.value })} />
+                    <Input
+                      type="number"
+                      value={stdForm.subcooling_c}
+                      onChange={(e) =>
+                        setStdForm({ ...stdForm, subcooling_c: e.target.value })
+                      }
+                    />
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <Button onClick={runStandard} disabled={stdLoading}>
-                    {stdLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin"/>Calculating…</> : "Calculate"}
+                    {stdLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Calculating…
+                      </>
+                    ) : (
+                      "Calculate"
+                    )}
                   </Button>
                 </div>
                 {stdResult && (
                   <div className="mt-4 p-3 rounded border bg-white">
-                    <pre className="text-xs overflow-auto">{JSON.stringify(stdResult, null, 2)}</pre>
+                    <pre className="text-xs overflow-auto">
+                      {JSON.stringify(stdResult, null, 2)}
+                    </pre>
                   </div>
                 )}
               </CardContent>
@@ -220,61 +268,132 @@ export default function DIYCalculators() {
                 <div className="grid md:grid-cols-5 gap-3">
                   <div className="md:col-span-2">
                     <Label>LT Refrigerant</Label>
-                    <Input value={lt.refrigerant} onChange={(e) => setLt({ ...lt, refrigerant: e.target.value })} />
+                    <Input
+                      value={lt.refrigerant}
+                      onChange={(e) =>
+                        setLt({ ...lt, refrigerant: e.target.value })
+                      }
+                    />
                   </div>
                   <div>
                     <Label>LT Evap (°C)</Label>
-                    <Input type="number" value={lt.evap_temp_c} onChange={(e) => setLt({ ...lt, evap_temp_c: e.target.value })} />
+                    <Input
+                      type="number"
+                      value={lt.evap_temp_c}
+                      onChange={(e) =>
+                        setLt({ ...lt, evap_temp_c: e.target.value })
+                      }
+                    />
                   </div>
                   <div>
                     <Label>LT Cond (°C)</Label>
-                    <Input type="number" value={lt.cond_temp_c} onChange={(e) => setLt({ ...lt, cond_temp_c: e.target.value })} />
+                    <Input
+                      type="number"
+                      value={lt.cond_temp_c}
+                      onChange={(e) =>
+                        setLt({ ...lt, cond_temp_c: e.target.value })
+                      }
+                    />
                   </div>
                   <div>
                     <Label>LT Superheat (°C)</Label>
-                    <Input type="number" value={lt.superheat_c} onChange={(e) => setLt({ ...lt, superheat_c: e.target.value })} />
+                    <Input
+                      type="number"
+                      value={lt.superheat_c}
+                      onChange={(e) =>
+                        setLt({ ...lt, superheat_c: e.target.value })
+                      }
+                    />
                   </div>
                   <div>
                     <Label>LT Subcooling (°C)</Label>
-                    <Input type="number" value={lt.subcooling_c} onChange={(e) => setLt({ ...lt, subcooling_c: e.target.value })} />
+                    <Input
+                      type="number"
+                      value={lt.subcooling_c}
+                      onChange={(e) =>
+                        setLt({ ...lt, subcooling_c: e.target.value })
+                      }
+                    />
                   </div>
                 </div>
                 <div className="grid md:grid-cols-5 gap-3">
                   <div className="md:col-span-2">
                     <Label>HT Refrigerant</Label>
-                    <Input value={ht.refrigerant} onChange={(e) => setHt({ ...ht, refrigerant: e.target.value })} />
+                    <Input
+                      value={ht.refrigerant}
+                      onChange={(e) =>
+                        setHt({ ...ht, refrigerant: e.target.value })
+                      }
+                    />
                   </div>
                   <div>
                     <Label>HT Evap (°C)</Label>
-                    <Input type="number" value={ht.evap_temp_c} onChange={(e) => setHt({ ...ht, evap_temp_c: e.target.value })} />
+                    <Input
+                      type="number"
+                      value={ht.evap_temp_c}
+                      onChange={(e) =>
+                        setHt({ ...ht, evap_temp_c: e.target.value })
+                      }
+                    />
                   </div>
                   <div>
                     <Label>HT Cond (°C)</Label>
-                    <Input type="number" value={ht.cond_temp_c} onChange={(e) => setHt({ ...ht, cond_temp_c: e.target.value })} />
+                    <Input
+                      type="number"
+                      value={ht.cond_temp_c}
+                      onChange={(e) =>
+                        setHt({ ...ht, cond_temp_c: e.target.value })
+                      }
+                    />
                   </div>
                   <div>
                     <Label>HT Superheat (°C)</Label>
-                    <Input type="number" value={ht.superheat_c} onChange={(e) => setHt({ ...ht, superheat_c: e.target.value })} />
+                    <Input
+                      type="number"
+                      value={ht.superheat_c}
+                      onChange={(e) =>
+                        setHt({ ...ht, superheat_c: e.target.value })
+                      }
+                    />
                   </div>
                   <div>
                     <Label>HT Subcooling (°C)</Label>
-                    <Input type="number" value={ht.subcooling_c} onChange={(e) => setHt({ ...ht, subcooling_c: e.target.value })} />
+                    <Input
+                      type="number"
+                      value={ht.subcooling_c}
+                      onChange={(e) =>
+                        setHt({ ...ht, subcooling_c: e.target.value })
+                      }
+                    />
                   </div>
                 </div>
                 <div className="grid md:grid-cols-5 gap-3">
                   <div>
                     <Label>HX ΔT (°C)</Label>
-                    <Input type="number" value={hxDeltaT} onChange={(e) => setHxDeltaT(e.target.value)} />
+                    <Input
+                      type="number"
+                      value={hxDeltaT}
+                      onChange={(e) => setHxDeltaT(e.target.value)}
+                    />
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <Button onClick={runCascade} disabled={casLoading}>
-                    {casLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin"/>Calculating…</> : "Calculate"}
+                    {casLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Calculating…
+                      </>
+                    ) : (
+                      "Calculate"
+                    )}
                   </Button>
                 </div>
                 {casResult && (
                   <div className="mt-4 p-3 rounded border bg-white">
-                    <pre className="text-xs overflow-auto">{JSON.stringify(casResult, null, 2)}</pre>
+                    <pre className="text-xs overflow-auto">
+                      {JSON.stringify(casResult, null, 2)}
+                    </pre>
                   </div>
                 )}
               </CardContent>
