@@ -31,7 +31,22 @@ export function useSupabaseCalculations() {
     try {
       console.log('Attempting to fetch calculations for user:', user.id);
 
-      // Test basic Supabase connection first
+      // Quick connectivity check to Supabase host to provide meaningful error messages
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 3000);
+        await fetch((import.meta.env.VITE_SUPABASE_URL as string) || '', { method: 'GET', mode: 'cors', signal: controller.signal });
+        clearTimeout(timeout);
+      } catch (connErr) {
+        // If host unreachable, bail early with helpful message
+        logError('fetchCalculations.connectivity', connErr);
+        const friendly = connErr instanceof Error && connErr.message.includes('Failed to fetch')
+          ? 'Cannot reach Supabase host. Check VITE_SUPABASE_URL and network connectivity.'
+          : 'Supabase host appears unreachable. Check your network and Supabase configuration.';
+        throw new Error(friendly);
+      }
+
+      // Query Supabase for calculations
       const { data, error } = await supabase
         .from('calculations')
         .select('*')
