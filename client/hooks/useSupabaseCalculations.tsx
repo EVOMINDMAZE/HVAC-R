@@ -32,36 +32,64 @@ export function useSupabaseCalculations() {
       console.log('Attempting to fetch calculations for user:', user.id);
 
       // Quick connectivity check to Supabase host to provide meaningful error messages
-      const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL as string) || '';
-      if (supabaseUrl) {
-        try {
-          const url = supabaseUrl.endsWith('/') ? supabaseUrl : `${supabaseUrl}/`;
-          const controller = new AbortController();
-          const timeout = setTimeout(() => controller.abort(), 3000);
+      // Enhanced connectivity preflight with retries and clearer diagnostics
+      try {
+        const { supabaseUrl, configured, isValidUrl } = getSupabaseConfig();
+        if (!configured) {
+          throw new Error('Supabase is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
+        }
+        if (!isValidUrl) {
+          throw new Error(`VITE_SUPABASE_URL appears invalid: ${supabaseUrl}`);
+        }
 
-          // Prefer HEAD to minimize payload; fall back to GET if HEAD not allowed
+        const url = supabaseUrl.endsWith('/') ? supabaseUrl : `${supabaseUrl}/`;
+
+        // Try up to 2 attempts with small backoff for transient network issues
+        const attempts = 2;
+        let lastErr: any = null;
+        for (let i = 0; i < attempts; i++) {
           try {
-            let res = await fetch(url, { method: 'HEAD', mode: 'cors', signal: controller.signal });
-            if (!res.ok) {
-              res = await fetch(url, { method: 'GET', mode: 'cors', signal: controller.signal });
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 3000);
+            try {
+              // Use HEAD first to reduce payload
+              let res = await fetch(url, { method: 'HEAD', mode: 'cors', signal: controller.signal });
+              if (!res.ok) {
+                res = await fetch(url, { method: 'GET', mode: 'cors', signal: controller.signal });
+              }
+              // If we reached here without throwing, connectivity seems OK
+              clearTimeout(timeout);
+              lastErr = null;
+              break;
+            } finally {
+              clearTimeout(timeout);
             }
-          } finally {
-            clearTimeout(timeout);
+          } catch (err) {
+            lastErr = err;
+            // small backoff
+            await new Promise(r => setTimeout(r, 300 * (i + 1)));
           }
-        } catch (connErr) {
-          // If host unreachable, bail early with helpful message
-          logError('fetchCalculations.connectivity', connErr);
-          const msg = connErr instanceof Error ? connErr.message : String(connErr);
+        }
+
+        if (lastErr) {
+          logError('fetchCalculations.connectivity', lastErr);
+          const msg = lastErr instanceof Error ? lastErr.message : String(lastErr);
+
+          // Build a more actionable message for the user
+          const origin = (typeof window !== 'undefined' && window.location && window.location.origin) ? window.location.origin : 'your app origin';
           const friendly =
             msg.toLowerCase().includes('failed to fetch') ||
             msg.toLowerCase().includes('networkrequestfailed') ||
             msg.toLowerCase().includes('network error')
-              ? `Cannot reach Supabase host (${supabaseUrl}). Check VITE_SUPABASE_URL, CORS and network connectivity.`
+              ? `Cannot reach Supabase host (${supabaseUrl}). Common causes: incorrect VITE_SUPABASE_URL, network connectivity, or Supabase CORS not allowing ${origin}.` +
+                `
+Suggested fix: In your Supabase project settings add '${origin}' to the 'Allowed CORS origins' and ensure SERVICE ROLE/anon key is correct.`
               : `Supabase host appears unreachable (${supabaseUrl}). Check your network and Supabase configuration.`;
           throw new Error(friendly);
         }
-      } else {
-        console.warn('VITE_SUPABASE_URL not set; skipping connectivity preflight.');
+      } catch (preflightErr) {
+        // Re-throw to be handled by outer catch
+        throw preflightErr;
       }
 
       // Query Supabase for calculations
