@@ -17,7 +17,7 @@ export interface Calculation {
 export function useSupabaseCalculations() {
   const [calculations, setCalculations] = useState<Calculation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { user } = useSupabaseAuth();
+  const { user, session } = useSupabaseAuth();
   const { addToast } = useToast();
 
   // Fetch user's calculations
