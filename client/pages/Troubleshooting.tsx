@@ -288,16 +288,50 @@ export default function Troubleshooting() {
                   </SelectContent>
                 </Select>
               </div>
+
               <div>
-                <Label>Ambient (°C)</Label>
+                <Label>Ambient</Label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    className="mt-1 w-full border rounded px-3 py-2"
+                    value={ambient}
+                    onChange={(e) => setAmbient(e.target.value)}
+                  />
+                  <div className="flex-shrink-0">
+                    <div className="inline-flex rounded-md border bg-white">
+                      <button
+                        className={`px-2 py-1 ${unit === "C" ? "bg-blue-500 text-white rounded" : "text-sm px-2"}`}
+                        onClick={() => setUnit("C")}
+                        type="button"
+                      >
+                        °C
+                      </button>
+                      <button
+                        className={`px-2 py-1 ${unit === "F" ? "bg-blue-500 text-white rounded" : "text-sm px-2"}`}
+                        onClick={() => setUnit("F")}
+                        type="button"
+                      >
+                        °F
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-xs text-muted-foreground mt-1">Acceptable range: -50 to 80 °C (or equivalent °F)</div>
+              </div>
+
+              <div>
+                <Label>Model / Serial</Label>
                 <input
-                  type="number"
+                  type="text"
                   className="mt-1 w-full border rounded px-3 py-2"
-                  value={ambient}
-                  onChange={(e) => setAmbient(e.target.value)}
+                  placeholder="Model or serial number"
+                  value={modelSerial}
+                  onChange={(e) => setModelSerial(e.target.value)}
                 />
               </div>
             </div>
+
             <div>
               <Label>Observations</Label>
               <Textarea
@@ -306,6 +340,41 @@ export default function Troubleshooting() {
                 value={observations}
                 onChange={(e) => setObservations(e.target.value)}
               />
+
+              <div className="mt-3">
+                <div className="text-sm font-medium mb-2">Measurements (optional)</div>
+                <div className="grid md:grid-cols-4 gap-2">
+                  <input className="border rounded px-2 py-1" placeholder="Suction press (kPa)" value={suctionPressure} onChange={(e) => setSuctionPressure(e.target.value)}/>
+                  <input className="border rounded px-2 py-1" placeholder="Head press (kPa)" value={headPressure} onChange={(e) => setHeadPressure(e.target.value)}/>
+                  <input className="border rounded px-2 py-1" placeholder="Voltage (V)" value={voltage} onChange={(e) => setVoltage(e.target.value)}/>
+                  <input className="border rounded px-2 py-1" placeholder="Current (A)" value={current} onChange={(e) => setCurrent(e.target.value)}/>
+                </div>
+
+                <div className="mt-3">
+                  <Label>Photos / Files</Label>
+                  <input
+                    type="file"
+                    accept="image/*,application/pdf"
+                    onChange={async (e) => {
+                      const f = e.target.files?.[0];
+                      if (!f) return;
+                      await uploadFile(f);
+                      // reset input
+                      (e.target as HTMLInputElement).value = "";
+                    }}
+                  />
+                  {uploading && <div className="text-sm text-muted-foreground mt-2">Uploading…</div>}
+                  {attachments.length > 0 && (
+                    <div className="mt-2 flex gap-2 flex-wrap">
+                      {attachments.map((a) => (
+                        <a key={a} href={a} target="_blank" rel="noreferrer" className="inline-block border rounded overflow-hidden">
+                          <img src={a} alt="attachment" className="h-20 w-28 object-cover" />
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
