@@ -147,34 +147,91 @@ export default function Troubleshooting() {
 
   const recommendations = useMemo(() => {
     const rec: string[] = [];
+
+    // Airflow
     if (answers["airflow"] === "no")
       rec.push(
         "Restore airflow: clean/replace filter, inspect blower & ducts.",
       );
+    if (answers["airflow"] === "partial")
+      rec.push("Partial airflow: check blower speed and damper positions.");
+
+    // Charge/work
     if (answers["charge"] === "low")
       rec.push("Check for leaks, evacuate, weigh-in correct charge.");
     if (answers["charge"] === "high")
       rec.push("Recover excess, weigh charge to spec, verify subcooling.");
+
+    // Leaks/restrictions
     if (answers["leak"] === "leak")
-      rec.push("Perform leak detection, repair, evacuate and recharge.");
+      rec.push("High risk of refrigerant leak — shut off and contact technician.");
     if (answers["leak"] === "restriction")
       rec.push(
         "Inspect filter drier/TEV/capillary for restriction, replace as needed.",
       );
-    if (symptom === "icing" && answers["airflow"] !== "no")
-      rec.push(
-        "Check TEV sensing bulb and superheat setting; verify defrost logic.",
-      );
+
+    // Condenser
     if (symptom === "high_head" && answers["condenser"] === "dirty")
       rec.push("Clean condenser coil; ensure adequate ambient airflow.");
     if (symptom === "high_head" && answers["condenser"] === "fan_issue")
       rec.push("Diagnose condenser fan motor/capacitor and replace if faulty.");
+
+    // No heat specific
+    if (symptom === "no_heat" && answers["power"] === "power_loss")
+      rec.push("Confirm power at panel and breakers; reset trip and retry.");
+    if (symptom === "no_heat" && answers["power"] === "fuel_loss")
+      rec.push("Check fuel supply/valves and pilot/ignition systems.");
+
+    // Default
     if (rec.length === 0)
       rec.push(
         "No fault strongly indicated. Monitor operation and log detailed measurements.",
       );
     return rec;
   }, [answers, symptom]);
+
+  const computeSeverity = () => {
+    // high: leak suspected, power loss, fan issue
+    if (answers["leak"] === "leak") return "high";
+    if (answers["condenser"] === "fan_issue") return "high";
+    if (answers["power"] === "power_loss") return "high";
+
+    // medium: airflow partial/blocked, charge issues
+    if (answers["airflow"] === "partial" || answers["airflow"] === "no") return "medium";
+    if (answers["charge"] === "low" || answers["charge"] === "high") return "medium";
+
+    return "low";
+  };
+
+  const severity = computeSeverity();
+
+  const uploadFile = async (file: File) => {
+    if (!file) return null;
+    setUploading(true);
+    try {
+      const { supabase } = await import("@/lib/supabase");
+      if (!supabase) throw new Error("Storage not configured");
+      const bucket = "troubleshooting-uploads";
+      const timestamp = Date.now();
+      const path = `${timestamp}_${file.name.replace(/[^a-zA-Z0-9_.-]/g, "_")}`;
+      const res = await supabase.storage.from(bucket).upload(path, file, { upsert: false });
+      if (res.error) throw res.error;
+      // get public url
+      const urlRes = supabase.storage.from(bucket).getPublicUrl(path);
+      const publicUrl = (urlRes && (urlRes as any).data?.publicUrl) || null;
+      if (publicUrl) {
+        setAttachments((prev) => [...prev, publicUrl]);
+        return publicUrl;
+      }
+      return null;
+    } catch (e) {
+      console.warn("Upload failed", e);
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
 
   const handleAnswer = (id: string, v: string) => {
     setAnswers((prev) => ({ ...prev, [id]: v }));
