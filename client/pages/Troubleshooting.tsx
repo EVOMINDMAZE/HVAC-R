@@ -82,6 +82,7 @@ export default function Troubleshooting() {
         ],
       },
     ];
+    // Symptom-specific tailored checks
     if (symptom === "high_head") {
       return [
         base[0],
@@ -99,6 +100,48 @@ export default function Troubleshooting() {
         base[2],
       ];
     }
+
+    if (symptom === "poor_airflow") {
+      return [
+        {
+          id: "airflow",
+          title: "Airflow",
+          q: "Is airflow unobstructed? Check filters, dampers, fans.",
+          options: [
+            { v: "yes", label: "Yes" },
+            { v: "no", label: "No (obstruction)" },
+            { v: "partial", label: "Partial / weak" },
+          ],
+        },
+        {
+          id: "ducts",
+          title: "Ducts & Registers",
+          q: "Any closed/blocked registers or damaged ducts?",
+          options: [
+            { v: "no", label: "No" },
+            { v: "blocked", label: "Blocked" },
+            { v: "leak", label: "Leak/damage" },
+          ],
+        },
+      ];
+    }
+
+    if (symptom === "no_heat") {
+      return [
+        {
+          id: "power",
+          title: "Power & Fuel",
+          q: "Is the unit receiving power and fuel (if applicable)?",
+          options: [
+            { v: "ok", label: "Yes" },
+            { v: "power_loss", label: "Power loss" },
+            { v: "fuel_loss", label: "Fuel issue" },
+          ],
+        },
+        base[1],
+      ];
+    }
+
     return base;
   }, [symptom]);
 
