@@ -35,10 +35,20 @@ export default function Troubleshooting() {
   const { saveCalculation } = useSupabaseCalculations();
   const [symptom, setSymptom] = useState<string>("no_cooling");
   const [ambient, setAmbient] = useState<string>("25");
+  const [unit, setUnit] = useState<"C"|"F">("C");
   const [observations, setObservations] = useState<string>("");
   const [step, setStep] = useState<number>(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
+  const [attachments, setAttachments] = useState<string[]>([]);
+  const [uploading, setUploading] = useState(false);
+
+  // Structured measurements
+  const [suctionPressure, setSuctionPressure] = useState<string>("");
+  const [headPressure, setHeadPressure] = useState<string>("");
+  const [voltage, setVoltage] = useState<string>("");
+  const [current, setCurrent] = useState<string>("");
+  const [modelSerial, setModelSerial] = useState<string>("");
 
   const steps = useMemo(() => {
     const base = [
