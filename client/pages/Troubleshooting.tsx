@@ -241,19 +241,42 @@ export default function Troubleshooting() {
   const handleSave = async () => {
     setSaving(true);
     try {
+      // convert ambient to C if necessary
+      let ambientC = Number(ambient);
+      if (unit === "F") {
+        ambientC = ((ambientC - 32) * 5) / 9;
+      }
+
       const inputs = {
         wizard: "hvac-basic",
         symptom,
-        ambient_c: Number(ambient),
+        ambient: {
+          value: Number(ambient),
+          unit,
+          ambient_c: Number(Number(ambientC).toFixed(2)),
+        },
+        measurements: {
+          suction_pressure_kpa: suctionPressure || null,
+          head_pressure_kpa: headPressure || null,
+          voltage_v: voltage || null,
+          current_a: current || null,
+          model_serial: modelSerial || null,
+        },
+        attachments,
         answers,
         notes: observations,
       };
       const results = {
         recommendations,
+        severity,
         status: "completed",
         summary: `${SYMPTOMS.find((s) => s.id === symptom)?.label || "Symptom"} – ${recommendations[0]}`,
       };
       await saveCalculation("Troubleshooting", inputs, results);
+      // show confirmation toast if available
+      try {
+        window.dispatchEvent(new CustomEvent("app:success", { detail: { title: "Session saved", message: "Troubleshooting session saved to your history." } }));
+      } catch (e) {}
     } finally {
       setSaving(false);
     }
