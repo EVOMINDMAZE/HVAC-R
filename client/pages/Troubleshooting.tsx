@@ -383,7 +383,20 @@ export default function Troubleshooting() {
           <CardHeader>
             <CardTitle>Guided Checks</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-4">
+            {/* Progress */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-sm font-medium">Progress</div>
+                <div className="text-xs text-muted-foreground">Step {Math.min(step + 1, steps.length)} of {steps.length}</div>
+              </div>
+              <div className="w-full">
+                <div className="relative h-3 bg-gray-200 rounded-full overflow-hidden">
+                  <div className={`absolute left-0 top-0 h-3 rounded-full ${severity === "high" ? "bg-red-500" : severity === "medium" ? "bg-yellow-400" : "bg-green-500"}`} style={{ width: `${Math.round(((step+1)/Math.max(1, steps.length))*100)}%` }} />
+                </div>
+              </div>
+            </div>
+
             {steps.map((st, idx) => (
               <div
                 key={st.id}
@@ -410,6 +423,19 @@ export default function Troubleshooting() {
                 </div>
               </div>
             ))}
+
+            {/* Quick advice */}
+            <div className="p-3 rounded border bg-white">
+              <div className="flex items-center justify-between">
+                <div className="font-semibold">Quick Advice</div>
+                <div className={`text-sm font-semibold ${severity === "high" ? "text-red-600" : severity === "medium" ? "text-yellow-600" : "text-green-600"}`}>
+                  {severity === "high" ? "Urgent" : severity === "medium" ? "Action recommended" : "Low priority"}
+                </div>
+              </div>
+              <div className="mt-2 text-sm text-muted-foreground">
+                {recommendations.slice(0,2).map((r,i) => (<div key={i} className="mb-1">• {r}</div>))}
+              </div>
+            </div>
           </CardContent>
         </Card>
 
