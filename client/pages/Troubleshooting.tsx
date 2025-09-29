@@ -17,10 +17,17 @@ import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 
 const SYMPTOMS = [
   { id: "no_cooling", label: "No/insufficient cooling" },
+  { id: "no_heat", label: "No heat" },
+  { id: "short_cycling", label: "Short cycling" },
+  { id: "no_startup", label: "No startup" },
+  { id: "system_noisy", label: "System noisy" },
+  { id: "air_quality", label: "Air quality issues" },
+  { id: "condensation", label: "Condensation / water" },
+  { id: "poor_airflow", label: "Poor airflow" },
+  { id: "odors", label: "Odors" },
   { id: "icing", label: "Evaporator icing" },
   { id: "high_head", label: "High head pressure" },
   { id: "low_suction", label: "Low suction pressure" },
-  { id: "short_cycling", label: "Short cycling" },
   { id: "noisy", label: "Unusual noise/vibration" },
 ];
 
