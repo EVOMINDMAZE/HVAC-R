@@ -213,21 +213,33 @@ export default function Troubleshooting() {
     if (!file) return null;
     setUploading(true);
     try {
-      const { supabase } = await import("@/lib/supabase");
-      if (!supabase) throw new Error("Storage not configured");
-      const bucket = "troubleshooting-uploads";
-      const timestamp = Date.now();
-      const path = `${timestamp}_${file.name.replace(/[^a-zA-Z0-9_.-]/g, "_")}`;
-      const res = await supabase.storage
-        .from(bucket)
-        .upload(path, file, { upsert: false });
-      if (res.error) throw res.error;
-      // get public url
-      const urlRes = supabase.storage.from(bucket).getPublicUrl(path);
-      const publicUrl = (urlRes && (urlRes as any).data?.publicUrl) || null;
-      if (publicUrl) {
-        setAttachments((prev) => [...prev, publicUrl]);
-        return publicUrl;
+      // read file as base64
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const fr = new FileReader();
+        fr.onload = () => resolve(String(fr.result || ""));
+        fr.onerror = (err) => reject(err);
+        fr.readAsDataURL(file);
+      });
+      const base64 = dataUrl.split(",")[1] || "";
+      const filename = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9_.-]/g, "_")}`;
+      const token = localStorage.getItem("simulateon_token") || undefined;
+      const resp = await fetch("/api/storage/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ filename, contentBase64: base64, bucket: "troubleshooting-uploads" }),
+      });
+      if (!resp.ok) {
+        const txt = await resp.text();
+        console.warn("Server upload failed", resp.status, txt);
+        return null;
+      }
+      const j = await resp.json();
+      if (j && j.publicUrl) {
+        setAttachments((prev) => [...prev, j.publicUrl]);
+        return j.publicUrl;
       }
       return null;
     } catch (e) {
