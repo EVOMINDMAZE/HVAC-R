@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Save } from "lucide-react";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
+import { apiClient } from "@/lib/api";
 
 const SYMPTOMS = [
   { id: "no_cooling", label: "No/insufficient cooling" },
@@ -42,6 +43,12 @@ export default function Troubleshooting() {
   const [saving, setSaving] = useState(false);
   const [attachments, setAttachments] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+
+  // AI state
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiResponse, setAiResponse] = useState<any>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [aiConversationId, setAiConversationId] = useState<string | null>(null);
 
   // Structured measurements
   const [suctionPressure, setSuctionPressure] = useState<string>("");
@@ -306,6 +313,54 @@ export default function Troubleshooting() {
     }
   };
 
+  const getAiAdvice = async () => {
+    setAiError(null);
+    setAiLoading(true);
+    setAiResponse(null);
+    try {
+      // prepare same inputs as save
+      let ambientC = Number(ambient);
+      if (unit === "F") ambientC = ((ambientC - 32) * 5) / 9;
+      const payload = {
+        payload: {
+          wizard: "hvac-basic",
+          symptom,
+          ambient: { value: Number(ambient), unit, ambient_c: Number(Number(ambientC).toFixed(2)) },
+          measurements: {
+            suction_pressure_kpa: suctionPressure || null,
+            head_pressure_kpa: headPressure || null,
+            voltage_v: voltage || null,
+            current_a: current || null,
+            model_serial: modelSerial || null,
+          },
+          attachments: attachments.map((url) => ({ url })),
+          answers,
+          notes: observations,
+        },
+        // userRole could be passed here if available from user profile
+      };
+
+      const resp = await apiClient.request<any>("/api/ai/troubleshoot", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+
+      if (!resp || !resp.success) {
+        const err = resp?.error || "AI service returned an error";
+        setAiError(err);
+        return;
+      }
+
+      setAiResponse(resp.data);
+      if (resp.data?.conversationId) setAiConversationId(resp.data.conversationId);
+    } catch (e: any) {
+      console.error("AI request failed", e);
+      setAiError(e?.message || String(e));
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Header variant="dashboard" />
@@ -553,7 +608,7 @@ export default function Troubleshooting() {
                 </li>
               ))}
             </ul>
-            <div className="mt-4">
+            <div className="mt-4 flex items-center gap-2">
               <Button
                 onClick={handleSave}
                 disabled={saving}
@@ -561,7 +616,66 @@ export default function Troubleshooting() {
               >
                 <Save className="h-4 w-4" /> Save Session
               </Button>
+              <Button onClick={getAiAdvice} disabled={aiLoading} variant="outline">
+                {aiLoading ? "Getting AI advice…" : "Get AI Expert Advice"}
+              </Button>
             </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>AI Expert Recommendation</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {aiLoading && <div className="text-sm text-muted-foreground">Analyzing with AI…</div>}
+            {aiError && <div className="text-sm text-red-600">{aiError}</div>}
+            {aiResponse && (
+              <div className="space-y-3">
+                {aiResponse.summary && (
+                  <div>
+                    <div className="font-semibold">Summary</div>
+                    <div className="text-sm text-muted-foreground">{aiResponse.summary}</div>
+                  </div>
+                )}
+                {aiResponse.probable_causes && aiResponse.probable_causes.length > 0 && (
+                  <div>
+                    <div className="font-semibold">Probable Causes</div>
+                    <ul className="list-disc pl-6">
+                      {aiResponse.probable_causes.map((c: any, idx: number) => (
+                        <li key={idx} className="text-sm">{(c.title || c) + (c.confidence ? ` — ${(c.confidence*100).toFixed(0)}%` : "")}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {aiResponse.steps && aiResponse.steps.length > 0 && (
+                  <div>
+                    <div className="font-semibold">Recommended Steps</div>
+                    <ol className="list-decimal pl-6">
+                      {aiResponse.steps.map((s: any, idx: number) => (
+                        <li key={idx} className="text-sm mb-1">{s.text || s}</li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+                {aiResponse.explanation && (
+                  <div>
+                    <div className="font-semibold">Reasoning</div>
+                    <div className="text-sm text-muted-foreground whitespace-pre-wrap">{aiResponse.explanation}</div>
+                  </div>
+                )}
+                {aiResponse.follow_up_questions && aiResponse.follow_up_questions.length > 0 && (
+                  <div>
+                    <div className="font-semibold">Follow-up Questions</div>
+                    <ul className="list-disc pl-6">
+                      {aiResponse.follow_up_questions.map((q: string, i: number) => (
+                        <li key={i} className="text-sm">{q}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
       </main>
