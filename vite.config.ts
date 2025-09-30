@@ -1,4 +1,5 @@
 import { defineConfig, Plugin } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
@@ -21,6 +22,13 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./client"),
       "@shared": path.resolve(__dirname, "./shared"),
     },
+  },
+  // Prevent Vite from trying to bundle server-only dependencies when pre-bundling the config
+  ssr: {
+    external: ["node-fetch"],
+  },
+  optimizeDeps: {
+    exclude: ["node-fetch"],
   },
 }));
 
