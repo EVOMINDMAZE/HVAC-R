@@ -362,7 +362,14 @@ export default function Troubleshooting() {
         setAiConversationId(resp.data.conversationId);
     } catch (e: any) {
       console.error("AI request failed", e);
-      setAiError(e?.message || String(e));
+      const message = e?.message || String(e);
+      if (message.includes("Unauthorized")) {
+        setAiError("You need to be signed in to request AI advice. Please log in and try again.");
+      } else if (message.includes("Missing authorization")) {
+        setAiError("Unable to authenticate with Supabase. Please refresh or sign in again.");
+      } else {
+        setAiError(message);
+      }
     } finally {
       setAiLoading(false);
     }
