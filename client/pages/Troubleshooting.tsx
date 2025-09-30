@@ -236,7 +236,11 @@ export default function Troubleshooting() {
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        body: JSON.stringify({ filename, contentBase64: base64, bucket: "troubleshooting-uploads" }),
+        body: JSON.stringify({
+          filename,
+          contentBase64: base64,
+          bucket: "troubleshooting-uploads",
+        }),
       });
       if (!resp.ok) {
         const txt = await resp.text();
@@ -325,7 +329,11 @@ export default function Troubleshooting() {
         payload: {
           wizard: "hvac-basic",
           symptom,
-          ambient: { value: Number(ambient), unit, ambient_c: Number(Number(ambientC).toFixed(2)) },
+          ambient: {
+            value: Number(ambient),
+            unit,
+            ambient_c: Number(Number(ambientC).toFixed(2)),
+          },
           measurements: {
             suction_pressure_kpa: suctionPressure || null,
             head_pressure_kpa: headPressure || null,
@@ -352,7 +360,8 @@ export default function Troubleshooting() {
       }
 
       setAiResponse(resp.data);
-      if (resp.data?.conversationId) setAiConversationId(resp.data.conversationId);
+      if (resp.data?.conversationId)
+        setAiConversationId(resp.data.conversationId);
     } catch (e: any) {
       console.error("AI request failed", e);
       setAiError(e?.message || String(e));
@@ -616,7 +625,11 @@ export default function Troubleshooting() {
               >
                 <Save className="h-4 w-4" /> Save Session
               </Button>
-              <Button onClick={getAiAdvice} disabled={aiLoading} variant="outline">
+              <Button
+                onClick={getAiAdvice}
+                disabled={aiLoading}
+                variant="outline"
+              >
                 {aiLoading ? "Getting AI advice…" : "Get AI Expert Advice"}
               </Button>
             </div>
@@ -628,32 +641,48 @@ export default function Troubleshooting() {
             <CardTitle>AI Expert Recommendation</CardTitle>
           </CardHeader>
           <CardContent>
-            {aiLoading && <div className="text-sm text-muted-foreground">Analyzing with AI…</div>}
+            {aiLoading && (
+              <div className="text-sm text-muted-foreground">
+                Analyzing with AI…
+              </div>
+            )}
             {aiError && <div className="text-sm text-red-600">{aiError}</div>}
             {aiResponse && (
               <div className="space-y-3">
                 {aiResponse.summary && (
                   <div>
                     <div className="font-semibold">Summary</div>
-                    <div className="text-sm text-muted-foreground">{aiResponse.summary}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {aiResponse.summary}
+                    </div>
                   </div>
                 )}
-                {aiResponse.probable_causes && aiResponse.probable_causes.length > 0 && (
-                  <div>
-                    <div className="font-semibold">Probable Causes</div>
-                    <ul className="list-disc pl-6">
-                      {aiResponse.probable_causes.map((c: any, idx: number) => (
-                        <li key={idx} className="text-sm">{(c.title || c) + (c.confidence ? ` — ${(c.confidence*100).toFixed(0)}%` : "")}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                {aiResponse.probable_causes &&
+                  aiResponse.probable_causes.length > 0 && (
+                    <div>
+                      <div className="font-semibold">Probable Causes</div>
+                      <ul className="list-disc pl-6">
+                        {aiResponse.probable_causes.map(
+                          (c: any, idx: number) => (
+                            <li key={idx} className="text-sm">
+                              {(c.title || c) +
+                                (c.confidence
+                                  ? ` — ${(c.confidence * 100).toFixed(0)}%`
+                                  : "")}
+                            </li>
+                          ),
+                        )}
+                      </ul>
+                    </div>
+                  )}
                 {aiResponse.steps && aiResponse.steps.length > 0 && (
                   <div>
                     <div className="font-semibold">Recommended Steps</div>
                     <ol className="list-decimal pl-6">
                       {aiResponse.steps.map((s: any, idx: number) => (
-                        <li key={idx} className="text-sm mb-1">{s.text || s}</li>
+                        <li key={idx} className="text-sm mb-1">
+                          {s.text || s}
+                        </li>
                       ))}
                     </ol>
                   </div>
@@ -661,19 +690,26 @@ export default function Troubleshooting() {
                 {aiResponse.explanation && (
                   <div>
                     <div className="font-semibold">Reasoning</div>
-                    <div className="text-sm text-muted-foreground whitespace-pre-wrap">{aiResponse.explanation}</div>
+                    <div className="text-sm text-muted-foreground whitespace-pre-wrap">
+                      {aiResponse.explanation}
+                    </div>
                   </div>
                 )}
-                {aiResponse.follow_up_questions && aiResponse.follow_up_questions.length > 0 && (
-                  <div>
-                    <div className="font-semibold">Follow-up Questions</div>
-                    <ul className="list-disc pl-6">
-                      {aiResponse.follow_up_questions.map((q: string, i: number) => (
-                        <li key={i} className="text-sm">{q}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                {aiResponse.follow_up_questions &&
+                  aiResponse.follow_up_questions.length > 0 && (
+                    <div>
+                      <div className="font-semibold">Follow-up Questions</div>
+                      <ul className="list-disc pl-6">
+                        {aiResponse.follow_up_questions.map(
+                          (q: string, i: number) => (
+                            <li key={i} className="text-sm">
+                              {q}
+                            </li>
+                          ),
+                        )}
+                      </ul>
+                    </div>
+                  )}
               </div>
             )}
           </CardContent>

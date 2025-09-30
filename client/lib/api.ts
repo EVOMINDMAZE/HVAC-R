@@ -230,7 +230,10 @@ class ApiClient {
     });
   }
 
-  async aiTroubleshoot(payload: { payload: any; userRole?: string }): Promise<ApiResponse<any>> {
+  async aiTroubleshoot(payload: {
+    payload: any;
+    userRole?: string;
+  }): Promise<ApiResponse<any>> {
     return this.request<any>("/api/ai/troubleshoot", {
       method: "POST",
       body: JSON.stringify(payload),

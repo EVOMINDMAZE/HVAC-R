@@ -1,9 +1,15 @@
 import { Request, Response } from "express";
-import { buildMessages, callOllama, normalizeOllamaResponse, TroubleshootPayload } from "../utils/ai.ts";
+import {
+  buildMessages,
+  callOllama,
+  normalizeOllamaResponse,
+  TroubleshootPayload,
+} from "../utils/ai.ts";
 
 export async function handleAiTroubleshoot(req: Request, res: Response) {
   try {
-    const body: { payload?: TroubleshootPayload; userRole?: string } = req.body || {};
+    const body: { payload?: TroubleshootPayload; userRole?: string } =
+      req.body || {};
     const payload = body.payload || {};
     const userRole = body.userRole || undefined;
 
@@ -25,6 +31,8 @@ export async function handleAiTroubleshoot(req: Request, res: Response) {
   } catch (err: any) {
     console.error("AI troubleshoot error:", err);
     const message = err?.message || String(err);
-    return res.status(500).json({ success: false, error: "AI service error: " + message });
+    return res
+      .status(500)
+      .json({ success: false, error: "AI service error: " + message });
   }
 }
