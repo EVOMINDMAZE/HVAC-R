@@ -23,13 +23,6 @@ export default defineConfig(({ mode }) => ({
       "@shared": path.resolve(__dirname, "./shared"),
     },
   },
-  // Prevent Vite from trying to bundle server-only dependencies when pre-bundling the config
-  ssr: {
-    external: ["node-fetch"],
-  },
-  optimizeDeps: {
-    exclude: ["node-fetch"],
-  },
 }));
 
 function expressPlugin(): Plugin {
