@@ -34,7 +34,8 @@
     "jsonwebtoken": "^9.0.2",
     "stripe": "^18.3.0",
     "uuid": "^11.1.0",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "@hookform/resolvers": "^3.9.0",
