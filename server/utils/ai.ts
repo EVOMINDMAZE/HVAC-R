@@ -42,7 +42,8 @@ export function buildMessages(payload: TroubleshootPayload, userRole?: string) {
 
   let userContent = "Here is the structured troubleshooting context (JSON):\n" + JSON.stringify(context, null, 2) + "\n";
   userContent += roleInstruction(userRole);
-  userContent += "\nPlease analyze the information, list probable root causes (with confidence), recommend prioritized diagnostic or corrective steps (with urgency), and explain reasoning step-by-step. If critical information is missing, list the exact follow-up questions needed.";
+  userContent += "\n" + SAFETY_GUIDELINES + "\n";
+  userContent += "\nPlease analyze the information, list probable root causes (with confidence as a number between 0 and 1), recommend prioritized diagnostic or corrective steps (with urgency: urgent|routine|monitor), and explain reasoning step-by-step. If critical information is missing, list the exact follow-up questions needed. Return results as JSON when possible, with keys: summary, probable_causes, steps, urgency, explanation, follow_up_questions.";
 
   messages.push({ role: "user", content: userContent });
   return messages;
