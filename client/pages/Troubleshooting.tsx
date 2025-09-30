@@ -352,7 +352,8 @@ export default function Troubleshooting() {
 
       if (!resp || !resp.success) {
         const err = resp?.error || "AI service returned an error";
-        setAiError(err);
+        const details = (resp as any)?.details;
+        setAiError(details ? `${err} (${details})` : err);
         return;
       }
 
