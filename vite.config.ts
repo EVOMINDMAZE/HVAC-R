@@ -38,12 +38,14 @@ function expressPlugin(): Plugin {
     apply: "serve", // Only apply during development (serve mode)
     configureServer(server) {
       // Import server dynamically to avoid database initialization during config
-      import("./server/index.ts").then(({ createServer }) => {
-        const app = createServer();
-        server.middlewares.use(app);
-      }).catch(error => {
-        console.error('Failed to start server:', error);
-      });
+      import("./server/index.ts")
+        .then(({ createServer }) => {
+          const app = createServer();
+          server.middlewares.use(app);
+        })
+        .catch((error) => {
+          console.error("Failed to start server:", error);
+        });
     },
   };
 }
