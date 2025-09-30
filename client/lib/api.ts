@@ -234,10 +234,35 @@ class ApiClient {
     payload: any;
     userRole?: string;
   }): Promise<ApiResponse<any>> {
-    return this.request<any>("/api/ai/troubleshoot", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+    if (!supabase) {
+      return {
+        success: false,
+        error: "Supabase not configured",
+        details: "VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY is missing",
+      };
+    }
+
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-troubleshoot", {
+        body: payload,
+      });
+
+      if (error) {
+        return {
+          success: false,
+          error: error.message || "AI request failed",
+          details: error as unknown as string,
+        };
+      }
+
+      return data as ApiResponse<any>;
+    } catch (err: any) {
+      console.error("Supabase AI function call failed", err);
+      return {
+        success: false,
+        error: err?.message || "AI request failed",
+      };
+    }
   }
 
   async getCalculations(): Promise<ApiResponse<CalculationData[]>> {
