@@ -39,7 +39,14 @@ supabase link --project-ref YOUR_PROJECT_REF
 supabase functions deploy billing
 ```
 
-## Step 5: Set Environment Variables in Supabase Dashboard
+## Step 5: Deploy the AI Troubleshooting Edge Function
+
+```bash
+# Deploy the AI troubleshooting function
+supabase functions deploy ai-troubleshoot
+```
+
+## Step 6: Set Environment Variables in Supabase Dashboard
 
 Go to your Supabase project dashboard → Settings → Environment Variables and add:
 
@@ -55,6 +62,17 @@ Go to your Supabase project dashboard → Settings → Environment Variables and
 - `VITE_STRIPE_PROFESSIONAL_YEARLY_PRICE_ID`
 - `VITE_STRIPE_ENTERPRISE_MONTHLY_PRICE_ID`
 - `VITE_STRIPE_ENTERPRISE_YEARLY_PRICE_ID`
+
+### AI / Ollama Configuration
+
+Add these Edge Function secrets in Supabase (Settings → Environment Variables → Edge Function Secrets or via `supabase secrets set`):
+
+- `OLLAMA_BASE_URL` – Base URL of your Ollama deployment (e.g. `https://ollama.example.com`). Do not include a trailing slash.
+- `OLLAMA_API_KEY` – Optional Bearer token if your Ollama endpoint requires authentication.
+- `OLLAMA_MODEL` *(optional)* – Default model name (defaults to `llama3`).
+- `OLLAMA_TIMEOUT_MS` *(optional)* – Request timeout in milliseconds (defaults to `30000`).
+
+After updating secrets, redeploy the AI function: `supabase functions deploy ai-troubleshoot`.
 
 ## Step 6: Update Stripe Webhook URL
 
