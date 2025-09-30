@@ -35,7 +35,7 @@ export default function Troubleshooting() {
   const { saveCalculation } = useSupabaseCalculations();
   const [symptom, setSymptom] = useState<string>("no_cooling");
   const [ambient, setAmbient] = useState<string>("25");
-  const [unit, setUnit] = useState<"C"|"F">("C");
+  const [unit, setUnit] = useState<"C" | "F">("C");
   const [observations, setObservations] = useState<string>("");
   const [step, setStep] = useState<number>(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -164,7 +164,9 @@ export default function Troubleshooting() {
 
     // Leaks/restrictions
     if (answers["leak"] === "leak")
-      rec.push("High risk of refrigerant leak — shut off and contact technician.");
+      rec.push(
+        "High risk of refrigerant leak — shut off and contact technician.",
+      );
     if (answers["leak"] === "restriction")
       rec.push(
         "Inspect filter drier/TEV/capillary for restriction, replace as needed.",
@@ -197,8 +199,10 @@ export default function Troubleshooting() {
     if (answers["power"] === "power_loss") return "high";
 
     // medium: airflow partial/blocked, charge issues
-    if (answers["airflow"] === "partial" || answers["airflow"] === "no") return "medium";
-    if (answers["charge"] === "low" || answers["charge"] === "high") return "medium";
+    if (answers["airflow"] === "partial" || answers["airflow"] === "no")
+      return "medium";
+    if (answers["charge"] === "low" || answers["charge"] === "high")
+      return "medium";
 
     return "low";
   };
@@ -214,7 +218,9 @@ export default function Troubleshooting() {
       const bucket = "troubleshooting-uploads";
       const timestamp = Date.now();
       const path = `${timestamp}_${file.name.replace(/[^a-zA-Z0-9_.-]/g, "_")}`;
-      const res = await supabase.storage.from(bucket).upload(path, file, { upsert: false });
+      const res = await supabase.storage
+        .from(bucket)
+        .upload(path, file, { upsert: false });
       if (res.error) throw res.error;
       // get public url
       const urlRes = supabase.storage.from(bucket).getPublicUrl(path);
@@ -231,7 +237,6 @@ export default function Troubleshooting() {
       setUploading(false);
     }
   };
-
 
   const handleAnswer = (id: string, v: string) => {
     setAnswers((prev) => ({ ...prev, [id]: v }));
@@ -275,7 +280,14 @@ export default function Troubleshooting() {
       await saveCalculation("Troubleshooting", inputs, results);
       // show confirmation toast if available
       try {
-        window.dispatchEvent(new CustomEvent("app:success", { detail: { title: "Session saved", message: "Troubleshooting session saved to your history." } }));
+        window.dispatchEvent(
+          new CustomEvent("app:success", {
+            detail: {
+              title: "Session saved",
+              message: "Troubleshooting session saved to your history.",
+            },
+          }),
+        );
       } catch (e) {}
     } finally {
       setSaving(false);
@@ -340,7 +352,9 @@ export default function Troubleshooting() {
                     </div>
                   </div>
                 </div>
-                <div className="text-xs text-muted-foreground mt-1">Acceptable range: -50 to 80 °C (or equivalent °F)</div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  Acceptable range: -50 to 80 °C (or equivalent °F)
+                </div>
               </div>
 
               <div>
@@ -365,12 +379,34 @@ export default function Troubleshooting() {
               />
 
               <div className="mt-3">
-                <div className="text-sm font-medium mb-2">Measurements (optional)</div>
+                <div className="text-sm font-medium mb-2">
+                  Measurements (optional)
+                </div>
                 <div className="grid md:grid-cols-4 gap-2">
-                  <input className="border rounded px-2 py-1" placeholder="Suction press (kPa)" value={suctionPressure} onChange={(e) => setSuctionPressure(e.target.value)}/>
-                  <input className="border rounded px-2 py-1" placeholder="Head press (kPa)" value={headPressure} onChange={(e) => setHeadPressure(e.target.value)}/>
-                  <input className="border rounded px-2 py-1" placeholder="Voltage (V)" value={voltage} onChange={(e) => setVoltage(e.target.value)}/>
-                  <input className="border rounded px-2 py-1" placeholder="Current (A)" value={current} onChange={(e) => setCurrent(e.target.value)}/>
+                  <input
+                    className="border rounded px-2 py-1"
+                    placeholder="Suction press (kPa)"
+                    value={suctionPressure}
+                    onChange={(e) => setSuctionPressure(e.target.value)}
+                  />
+                  <input
+                    className="border rounded px-2 py-1"
+                    placeholder="Head press (kPa)"
+                    value={headPressure}
+                    onChange={(e) => setHeadPressure(e.target.value)}
+                  />
+                  <input
+                    className="border rounded px-2 py-1"
+                    placeholder="Voltage (V)"
+                    value={voltage}
+                    onChange={(e) => setVoltage(e.target.value)}
+                  />
+                  <input
+                    className="border rounded px-2 py-1"
+                    placeholder="Current (A)"
+                    value={current}
+                    onChange={(e) => setCurrent(e.target.value)}
+                  />
                 </div>
 
                 <div className="mt-3">
@@ -386,12 +422,26 @@ export default function Troubleshooting() {
                       (e.target as HTMLInputElement).value = "";
                     }}
                   />
-                  {uploading && <div className="text-sm text-muted-foreground mt-2">Uploading…</div>}
+                  {uploading && (
+                    <div className="text-sm text-muted-foreground mt-2">
+                      Uploading…
+                    </div>
+                  )}
                   {attachments.length > 0 && (
                     <div className="mt-2 flex gap-2 flex-wrap">
                       {attachments.map((a) => (
-                        <a key={a} href={a} target="_blank" rel="noreferrer" className="inline-block border rounded overflow-hidden">
-                          <img src={a} alt="attachment" className="h-20 w-28 object-cover" />
+                        <a
+                          key={a}
+                          href={a}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-block border rounded overflow-hidden"
+                        >
+                          <img
+                            src={a}
+                            alt="attachment"
+                            className="h-20 w-28 object-cover"
+                          />
                         </a>
                       ))}
                     </div>
@@ -411,11 +461,18 @@ export default function Troubleshooting() {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <div className="text-sm font-medium">Progress</div>
-                <div className="text-xs text-muted-foreground">Step {Math.min(step + 1, steps.length)} of {steps.length}</div>
+                <div className="text-xs text-muted-foreground">
+                  Step {Math.min(step + 1, steps.length)} of {steps.length}
+                </div>
               </div>
               <div className="w-full">
                 <div className="relative h-3 bg-gray-200 rounded-full overflow-hidden">
-                  <div className={`absolute left-0 top-0 h-3 rounded-full ${severity === "high" ? "bg-red-500" : severity === "medium" ? "bg-yellow-400" : "bg-green-500"}`} style={{ width: `${Math.round(((step+1)/Math.max(1, steps.length))*100)}%` }} />
+                  <div
+                    className={`absolute left-0 top-0 h-3 rounded-full ${severity === "high" ? "bg-red-500" : severity === "medium" ? "bg-yellow-400" : "bg-green-500"}`}
+                    style={{
+                      width: `${Math.round(((step + 1) / Math.max(1, steps.length)) * 100)}%`,
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -451,12 +508,22 @@ export default function Troubleshooting() {
             <div className="p-3 rounded border bg-white">
               <div className="flex items-center justify-between">
                 <div className="font-semibold">Quick Advice</div>
-                <div className={`text-sm font-semibold ${severity === "high" ? "text-red-600" : severity === "medium" ? "text-yellow-600" : "text-green-600"}`}>
-                  {severity === "high" ? "Urgent" : severity === "medium" ? "Action recommended" : "Low priority"}
+                <div
+                  className={`text-sm font-semibold ${severity === "high" ? "text-red-600" : severity === "medium" ? "text-yellow-600" : "text-green-600"}`}
+                >
+                  {severity === "high"
+                    ? "Urgent"
+                    : severity === "medium"
+                      ? "Action recommended"
+                      : "Low priority"}
                 </div>
               </div>
               <div className="mt-2 text-sm text-muted-foreground">
-                {recommendations.slice(0,2).map((r,i) => (<div key={i} className="mb-1">• {r}</div>))}
+                {recommendations.slice(0, 2).map((r, i) => (
+                  <div key={i} className="mb-1">
+                    • {r}
+                  </div>
+                ))}
               </div>
             </div>
           </CardContent>
