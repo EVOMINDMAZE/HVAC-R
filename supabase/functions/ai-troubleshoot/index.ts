@@ -1,11 +1,20 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST,OPTIONS",
-  "Access-Control-Allow-Credentials": "true",
+const createCorsHeaders = (origin: string | null) => {
+  const allowedOrigin = origin && origin !== "null" ? origin : "*";
+  const headers: Record<string, string> = {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Headers":
+      "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST,OPTIONS",
+    Vary: "Origin",
+  };
+
+  if (allowedOrigin !== "*") {
+    headers["Access-Control-Allow-Credentials"] = "true";
+  }
+
+  return headers;
 };
 
 interface TroubleshootPayload {
@@ -42,6 +51,9 @@ const SAFETY_GUIDELINES =
   "Always prioritize safety. If any recommended action involves electrical isolation, hazardous refrigerants, or pressurized components, explicitly instruct the user to follow lockout-tagout procedures and manufacturer safety instructions. If the model is unsure, recommend contacting a licensed technician and list what information would be useful to provide.";
 
 serve(async (req) => {
+  const origin = req.headers.get("origin");
+  const corsHeaders = createCorsHeaders(origin);
+
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
