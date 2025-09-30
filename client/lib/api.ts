@@ -230,6 +230,13 @@ class ApiClient {
     });
   }
 
+  async aiTroubleshoot(payload: { payload: any; userRole?: string }): Promise<ApiResponse<any>> {
+    return this.request<any>("/api/ai/troubleshoot", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  }
+
   async getCalculations(): Promise<ApiResponse<CalculationData[]>> {
     return this.request<CalculationData[]>("/api/calculations");
   }
