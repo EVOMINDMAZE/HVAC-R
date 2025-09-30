@@ -14,20 +14,11 @@ export interface TroubleshootPayload {
   [k: string]: any;
 }
 
-const SYSTEM_PROMPT = `You are an expert HVAC troubleshooting assistant being integrated into a web application called Simulateon. Users (technicians, engineers, or homeowners) will describe HVAC system issues, provide measurements, and upload photos. Based on this information, generate clear, step-by-step diagnostics, identify possible causes, and suggest next actions or tests. Always prioritize safety and clarity, and ask for clarification if needed. Your advice will be shown to users after they submit their troubleshooting form in the Troubleshooting Wizards section. Adapt detail level to user type if specified.`;
+import { SYSTEM_PROMPT, getRoleInstruction, SAFETY_GUIDELINES } from "../config/ai-prompts.ts";
 
 function roleInstruction(userRole?: string) {
-  if (!userRole) return "";
-  switch (userRole) {
-    case "homeowner":
-      return "\nUser role: homeowner. Use plain language, avoid technical jargon, provide clear safety steps and when to call a professional.";
-    case "technician":
-      return "\nUser role: technician. Provide practical diagnostic steps, measurement checks, acceptable ranges, and likely component-level faults.";
-    case "engineer":
-      return "\nUser role: engineer. Provide root-cause hypotheses, system-level interactions, and recommend tests with expected numerical ranges when applicable.";
-    default:
-      return "";
-  }
+  const instr = getRoleInstruction(userRole);
+  return instr ? "\n" + instr : "";
 }
 
 export function buildMessages(payload: TroubleshootPayload, userRole?: string) {
