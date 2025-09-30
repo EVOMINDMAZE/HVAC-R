@@ -33,7 +33,17 @@ export const uploadAvatar: RequestHandler = async (req, res) => {
       return res.status(400).json({ error: 'Invalid file content' });
     }
 
-    const bucketName = bucket || (process.env.VITE_SUPABASE_AVATAR_BUCKET as string) || 'avatars';
+    const bucketName = bucket || (process.env.VITE_SUPABASE_AVATAR_BUCKET as string) || 'troubleshooting-uploads';
+
+    // Ensure bucket exists (best-effort). Create as public to allow easy access to thumbnails.
+    try {
+      // createBucket may fail if it already exists; ignore that error
+      // @ts-ignore - createBucket may exist on admin storage client
+      await admin.storage.createBucket(bucketName, { public: true });
+    } catch (e: any) {
+      // If bucket already exists, supabase may return an error we can ignore
+      console.warn('createBucket result:', e?.message || e);
+    }
 
     // Upload using the admin client
     const { data, error } = await admin.storage.from(bucketName).upload(filename, buf, { upsert: false });
