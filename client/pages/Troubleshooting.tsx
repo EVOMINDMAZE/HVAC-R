@@ -348,10 +348,7 @@ export default function Troubleshooting() {
         // userRole could be passed here if available from user profile
       };
 
-      const resp = await apiClient.request<any>("/api/ai/troubleshoot", {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
+      const resp = await apiClient.aiTroubleshoot(payload);
 
       if (!resp || !resp.success) {
         const err = resp?.error || "AI service returned an error";
