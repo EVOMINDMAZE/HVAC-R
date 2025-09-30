@@ -29,6 +29,7 @@ import {
 import billingRoutes from "./routes/billing.ts";
 import { supabaseDiag } from "./routes/diagnostics.ts";
 import { uploadAvatar } from "./routes/storage.ts";
+import { handleAiTroubleshoot } from "./routes/ai.ts";
 
 export function createServer() {
   const app = express();
@@ -126,6 +127,9 @@ export function createServer() {
   // Server-side storage upload (uses SUPABASE_SERVICE_ROLE_KEY)
   // Accept either the legacy session token (authenticateToken) or a Supabase JWT
   app.post("/api/storage/upload", authenticateEither, uploadAvatar);
+
+  // AI troubleshooting endpoint
+  app.post("/api/ai/troubleshoot", authenticateToken, handleAiTroubleshoot);
 
   // Diagnostics route to test server->Supabase connectivity
   app.get("/api/diagnostics/supabase", supabaseDiag);
