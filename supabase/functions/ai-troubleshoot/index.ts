@@ -13,7 +13,11 @@ interface TroubleshootPayload {
   symptom?: string;
   ambient?: Record<string, unknown> | null;
   measurements?: Record<string, unknown> | null;
-  attachments?: Array<{ url: string; filename?: string | null; caption?: string | null }>;
+  attachments?: Array<{
+    url: string;
+    filename?: string | null;
+    caption?: string | null;
+  }>;
   answers?: Record<string, unknown> | null;
   notes?: string | null;
   severity?: string | null;
@@ -52,10 +56,13 @@ serve(async (req) => {
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
-      return new Response(JSON.stringify({ error: "Missing authorization header" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ error: "Missing authorization header" }),
+        {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
     }
 
     const token = authHeader.replace("Bearer ", "");
@@ -72,20 +79,28 @@ serve(async (req) => {
     } = await supabaseClient.auth.getUser();
 
     if (userError || !user) {
-      return new Response(JSON.stringify({ error: "Invalid or expired token" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ error: "Invalid or expired token" }),
+        {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
     }
 
-    const { payload, userRole }: { payload?: TroubleshootPayload; userRole?: string } =
-      await req.json();
+    const {
+      payload,
+      userRole,
+    }: { payload?: TroubleshootPayload; userRole?: string } = await req.json();
 
     if (!payload || Object.keys(payload).length === 0) {
-      return new Response(JSON.stringify({ error: "Missing troubleshooting payload" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ error: "Missing troubleshooting payload" }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
     }
 
     const messages = buildMessages(payload, userRole);
@@ -145,12 +160,19 @@ function buildMessages(payload: TroubleshootPayload, userRole?: string) {
   return messages;
 }
 
-async function callOllama(messages: Array<{ role: string; content: string }>, modelHint?: string | null) {
-  const base = (Deno.env.get("OLLAMA_BASE_URL") ?? "http://localhost:11434").replace(/\/+$/, "");
+async function callOllama(
+  messages: Array<{ role: string; content: string }>,
+  modelHint?: string | null,
+) {
+  const base = (
+    Deno.env.get("OLLAMA_BASE_URL") ?? "http://localhost:11434"
+  ).replace(/\/+$/, "");
   const model = modelHint || Deno.env.get("OLLAMA_MODEL") || "llama3";
   const url = `${base}/api/chat`;
 
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
   const apiKey = Deno.env.get("OLLAMA_API_KEY");
   if (apiKey) {
     headers.Authorization = `Bearer ${apiKey}`;
@@ -210,7 +232,8 @@ function normalizeOllamaResponse(resp: any) {
     out.steps = parsed.steps ?? [];
     out.urgency = parsed.urgency ?? null;
     out.explanation = parsed.explanation ?? null;
-    out.follow_up_questions = parsed.follow_up_questions ?? parsed.questions ?? [];
+    out.follow_up_questions =
+      parsed.follow_up_questions ?? parsed.questions ?? [];
   } else {
     out.explanation = String(content);
     const lines = out.explanation.trim().split(/\n+/);

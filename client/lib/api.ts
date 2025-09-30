@@ -243,9 +243,12 @@ class ApiClient {
     }
 
     try {
-      const { data, error } = await supabase.functions.invoke("ai-troubleshoot", {
-        body: payload,
-      });
+      const { data, error } = await supabase.functions.invoke(
+        "ai-troubleshoot",
+        {
+          body: payload,
+        },
+      );
 
       if (error) {
         return {

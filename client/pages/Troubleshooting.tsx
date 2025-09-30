@@ -364,9 +364,13 @@ export default function Troubleshooting() {
       console.error("AI request failed", e);
       const message = e?.message || String(e);
       if (message.includes("Unauthorized")) {
-        setAiError("You need to be signed in to request AI advice. Please log in and try again.");
+        setAiError(
+          "You need to be signed in to request AI advice. Please log in and try again.",
+        );
       } else if (message.includes("Missing authorization")) {
-        setAiError("Unable to authenticate with Supabase. Please refresh or sign in again.");
+        setAiError(
+          "Unable to authenticate with Supabase. Please refresh or sign in again.",
+        );
       } else {
         setAiError(message);
       }

@@ -69,8 +69,8 @@ Add these Edge Function secrets in Supabase (Settings → Environment Variables 
 
 - `OLLAMA_BASE_URL` – Base URL of your Ollama deployment (e.g. `https://ollama.example.com`). Do not include a trailing slash.
 - `OLLAMA_API_KEY` – Optional Bearer token if your Ollama endpoint requires authentication.
-- `OLLAMA_MODEL` *(optional)* – Default model name (defaults to `llama3`).
-- `OLLAMA_TIMEOUT_MS` *(optional)* – Request timeout in milliseconds (defaults to `30000`).
+- `OLLAMA_MODEL` _(optional)_ – Default model name (defaults to `llama3`).
+- `OLLAMA_TIMEOUT_MS` _(optional)_ – Request timeout in milliseconds (defaults to `30000`).
 
 After updating secrets, redeploy the AI function: `supabase functions deploy ai-troubleshoot`.
 
