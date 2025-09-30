@@ -124,8 +124,8 @@ export function createServer() {
   app.use("/api/billing", billingRoutes);
 
   // Server-side storage upload (uses SUPABASE_SERVICE_ROLE_KEY)
-  // Accept either the legacy session token (authenticateToken) or a Supabase JWT (authenticateSupabaseToken)
-  app.post("/api/storage/upload", authenticateSupabaseToken, uploadAvatar);
+  // Accept either the legacy session token (authenticateToken) or a Supabase JWT
+  app.post("/api/storage/upload", authenticateEither, uploadAvatar);
 
   // Diagnostics route to test server->Supabase connectivity
   app.get("/api/diagnostics/supabase", supabaseDiag);
