@@ -120,10 +120,34 @@ serve(async (req) => {
       );
     }
 
-    const {
-      payload,
-      userRole,
-    }: { payload?: TroubleshootPayload; userRole?: string } = await req.json();
+    let parsedBody: { payload?: TroubleshootPayload; userRole?: string } | null = null;
+    try {
+      const rawBody = await req.text();
+      if (!rawBody || rawBody.trim().length === 0) {
+        return new Response(
+          JSON.stringify({ error: "Request body required" }),
+          {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          },
+        );
+      }
+      parsedBody = JSON.parse(rawBody);
+    } catch (bodyError) {
+      console.error("Failed to parse request body", bodyError);
+      return new Response(
+        JSON.stringify({
+          error: "Invalid JSON payload",
+          details: bodyError instanceof Error ? bodyError.message : String(bodyError),
+        }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
+
+    const { payload, userRole } = parsedBody ?? {};
 
     if (!payload || Object.keys(payload).length === 0) {
       return new Response(
