@@ -268,12 +268,25 @@ async function callOllama(
 
     clearTimeout(timeout);
 
+    const bodyText = await response.text();
+
     if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`Ollama API error ${response.status}: ${text}`);
+      throw new Error(`Ollama API error ${response.status}: ${bodyText}`);
     }
 
-    return await response.json();
+    if (!bodyText || bodyText.trim().length === 0) {
+      return { message: { content: "{}" } };
+    }
+
+    try {
+      return JSON.parse(bodyText);
+    } catch (parseError) {
+      throw new Error(
+        `Failed to parse Ollama response: ${
+          parseError instanceof Error ? parseError.message : String(parseError)
+        } | body: ${bodyText.slice(0, 500)}`,
+      );
+    }
   } catch (error) {
     clearTimeout(timeout);
     throw error;
