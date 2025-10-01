@@ -120,7 +120,10 @@ serve(async (req) => {
       );
     }
 
-    let parsedBody: { payload?: TroubleshootPayload; userRole?: string } | null = null;
+    let parsedBody: {
+      payload?: TroubleshootPayload;
+      userRole?: string;
+    } | null = null;
     try {
       const rawBody = await req.text();
       if (!rawBody || rawBody.trim().length === 0) {
@@ -138,7 +141,8 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({
           error: "Invalid JSON payload",
-          details: bodyError instanceof Error ? bodyError.message : String(bodyError),
+          details:
+            bodyError instanceof Error ? bodyError.message : String(bodyError),
         }),
         {
           status: 400,
