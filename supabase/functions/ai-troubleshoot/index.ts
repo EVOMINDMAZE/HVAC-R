@@ -84,6 +84,21 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error("Supabase credentials missing in edge function environment");
+      return new Response(
+        JSON.stringify({
+          error: "Edge function not fully configured",
+          details:
+            "Set SUPABASE_URL and SUPABASE_ANON_KEY secrets for the ai-troubleshoot function.",
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
+
     const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: `Bearer ${token}` } },
     });
@@ -118,8 +133,28 @@ serve(async (req) => {
       );
     }
 
-    const messages = buildMessages(payload, userRole);
-    const raw = await callOllama(messages, payload?.model);
+    let raw;
+    try {
+      const messages = buildMessages(payload, userRole);
+      raw = await callOllama(messages, payload?.model);
+    } catch (aiError) {
+      console.error("AI provider request failed", aiError);
+      const detail =
+        aiError instanceof Error && aiError.message
+          ? aiError.message
+          : String(aiError ?? "Unknown error");
+      return new Response(
+        JSON.stringify({
+          error: "AI provider unavailable",
+          details: detail,
+        }),
+        {
+          status: 502,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
+
     const normalized = normalizeOllamaResponse(raw);
 
     return new Response(JSON.stringify({ success: true, data: normalized }), {
