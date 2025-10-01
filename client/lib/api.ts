@@ -243,18 +243,47 @@ class ApiClient {
     }
 
     try {
-      const { data, error } = await supabase.functions.invoke(
-        "ai-troubleshoot",
-        {
-          body: payload,
-        },
-      );
+      // Attempt to obtain an authenticated session token
+      let token: string | null = null;
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        token = session?.access_token ?? null;
+      } catch (e) {
+        // Fallback to stored token if present
+        token = localStorage.getItem("simulateon_token") ?? null;
+      }
+
+      if (!token) {
+        return {
+          success: false,
+          error: "Not authenticated",
+          details: "You must be signed in to use AI troubleshooting. Please sign in and try again.",
+        };
+      }
+
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+
+      // Include anon key (apikey) header to satisfy Supabase functions auth checks
+      const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      if (anonKey) {
+        headers.apikey = String(anonKey);
+      }
+
+      const { data, error } = await supabase.functions.invoke("ai-troubleshoot", {
+        body: payload,
+        headers,
+      });
 
       if (error) {
         return {
           success: false,
           error: error.message || "AI request failed",
-          details: error as unknown as string,
+          details: JSON.stringify(error),
         };
       }
 
@@ -264,6 +293,7 @@ class ApiClient {
       return {
         success: false,
         error: err?.message || "AI request failed",
+        details: err?.message,
       };
     }
   }
