@@ -259,7 +259,8 @@ class ApiClient {
         return {
           success: false,
           error: "Not authenticated",
-          details: "You must be signed in to use AI troubleshooting. Please sign in and try again.",
+          details:
+            "You must be signed in to use AI troubleshooting. Please sign in and try again.",
         };
       }
 
@@ -274,10 +275,13 @@ class ApiClient {
         headers.apikey = String(anonKey);
       }
 
-      const { data, error } = await supabase.functions.invoke("ai-troubleshoot", {
-        body: payload,
-        headers,
-      });
+      const { data, error } = await supabase.functions.invoke(
+        "ai-troubleshoot",
+        {
+          body: payload,
+          headers,
+        },
+      );
 
       if (error) {
         return {
@@ -317,7 +321,10 @@ class ApiClient {
             details: parsed?.details || text || err?.message,
           };
         } catch (parseError) {
-          console.warn("Failed to parse error response from edge function", parseError);
+          console.warn(
+            "Failed to parse error response from edge function",
+            parseError,
+          );
         }
       }
 

@@ -85,7 +85,9 @@ serve(async (req) => {
     const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 
     if (!supabaseUrl || !supabaseAnonKey) {
-      console.error("Supabase credentials missing in edge function environment");
+      console.error(
+        "Supabase credentials missing in edge function environment",
+      );
       return new Response(
         JSON.stringify({
           error: "Edge function not fully configured",
