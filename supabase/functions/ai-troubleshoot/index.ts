@@ -1,5 +1,8 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { serve } from "https://deno.land/std/http/server.ts";
+
 const createCorsHeaders = (origin: string | null) => {
   const allowedOrigin = origin && origin !== "null" ? origin : "*";
   const headers: Record<string, string> = {
