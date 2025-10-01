@@ -290,6 +290,37 @@ class ApiClient {
       return data as ApiResponse<any>;
     } catch (err: any) {
       console.error("Supabase AI function call failed", err);
+
+      if (err?.context) {
+        try {
+          const response: Response = err.context;
+          const clone = response.clone();
+          const text = await clone.text();
+          let parsed: any = null;
+          if (text) {
+            try {
+              parsed = JSON.parse(text);
+            } catch (_) {
+              parsed = null;
+            }
+          }
+
+          const message =
+            parsed?.error ||
+            parsed?.message ||
+            err?.message ||
+            "AI request failed";
+
+          return {
+            success: false,
+            error: message,
+            details: parsed?.details || text || err?.message,
+          };
+        } catch (parseError) {
+          console.warn("Failed to parse error response from edge function", parseError);
+        }
+      }
+
       return {
         success: false,
         error: err?.message || "AI request failed",
