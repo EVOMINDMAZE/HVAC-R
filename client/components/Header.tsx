@@ -7,9 +7,10 @@ import { useState } from "react";
 
 interface HeaderProps {
   variant?: "landing" | "dashboard";
+  onOpenSearch?: () => void;
 }
 
-export function Header({ variant = "landing" }: HeaderProps) {
+export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
   const { user, isAuthenticated, signOut } = useSupabaseAuth();
   const navigate = useNavigate();
   const { addToast } = useToast();
