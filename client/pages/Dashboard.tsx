@@ -426,8 +426,8 @@ function QuickActions() {
   const navigate = useNavigate();
 
   return (
-    <Card className="bg-white shadow-md border">
-      <CardHeader className="bg-gradient-to-r from-emerald-600 to-teal-500 text-white">
+    <Card className="bg-white shadow-md border rounded-lg hover-lift animate-fade-in">
+      <CardHeader className="bg-gradient-to-r from-emerald-600 to-teal-500 text-white rounded-t-lg">
         <CardTitle className="flex items-center">
           <Plus className="h-5 w-5 mr-2" />
           Quick Actions
