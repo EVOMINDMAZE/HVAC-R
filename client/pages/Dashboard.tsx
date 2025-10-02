@@ -228,7 +228,7 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
       )}
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
-        <Card className="bg-gradient-to-r from-blue-600 to-sky-500 text-white">
+        <Card className="bg-gradient-to-r from-blue-600 to-sky-500 text-white rounded-lg hover-lift animate-fade-in">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
