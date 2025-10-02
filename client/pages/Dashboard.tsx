@@ -243,7 +243,7 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-r from-purple-600 to-violet-500 text-white">
+        <Card className="bg-gradient-to-r from-purple-600 to-violet-500 text-white rounded-lg hover-lift animate-fade-in">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
