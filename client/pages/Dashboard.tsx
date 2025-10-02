@@ -629,7 +629,6 @@ export function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-blue-50">
-      <Header variant="dashboard" />
 
       <main className="max-w-7xl mx-auto px-4 py-10">
         <SystemStatus />
