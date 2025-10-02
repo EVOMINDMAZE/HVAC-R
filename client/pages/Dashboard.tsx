@@ -289,7 +289,7 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
         </Card>
 
         <Card
-          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white cursor-pointer hover:from-orange-600 hover:to-orange-700 transition-all duration-200"
+          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white cursor-pointer hover:from-orange-600 hover:to-orange-700 transition-all duration-200 rounded-lg hover-lift animate-fade-in"
           onClick={handleUpgrade}
         >
           <CardContent className="p-6">
