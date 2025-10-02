@@ -48,7 +48,12 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     return <Navigate to="/signin" replace />;
   }
 
-  return <>{children}</>;
+  // Wrap protected pages in the app Layout for consistent navigation
+  return (
+    <Layout>
+      {children}
+    </Layout>
+  );
 }
 
 // Public Route Component (redirect if authenticated)
