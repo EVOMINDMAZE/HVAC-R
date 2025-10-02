@@ -324,7 +324,7 @@ function RecentCalculations({ isLoading }: any) {
   const recentCalculations = calculations.slice(0, 5);
 
   return (
-    <Card className="bg-white shadow-md border">
+    <Card className="bg-white shadow-md border rounded-lg hover-lift animate-fade-in">
       <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg">
         <CardTitle className="flex items-center">
           <HistoryIcon className="h-5 w-5 mr-2" />
