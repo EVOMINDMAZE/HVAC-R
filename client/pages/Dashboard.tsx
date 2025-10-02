@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { useSubscription } from "@/hooks/useStripe";
-import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SystemStatus } from "@/components/SystemStatus";
 import { OnboardingGuide } from "@/components/OnboardingGuide";
