@@ -37,220 +37,76 @@ export function Header({ variant = "landing" }: HeaderProps) {
   };
 
   if (variant === "dashboard") {
-    return (
-      <div className="bg-white shadow-sm border-b border-blue-200">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          {/* Prominent brand title above the header row */}
-          <div className="text-blue-900 font-extrabold text-[48.5px] leading-[45px] truncate">
-            Simulateon
-          </div>
+    const initials = user?.email ? user.email.split("@")[0].slice(0, 2).toUpperCase() : "U";
 
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-2">
-            <div className="flex items-center space-x-4 min-w-0">
-              <Link
-                to="/dashboard"
-                className="inline-flex items-center space-x-3 min-w-0"
-              />
-              <p className="text-sm text-gray-600 hidden sm:block truncate max-w-xs">
-                Welcome back, hanniz.riadus
-              </p>
+    return (
+      <div className="bg-white/90 backdrop-blur-sm border-b border-blue-100 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-4 min-w-0">
+              <div className="flex items-center gap-3">
+                <div className="rounded-md bg-gradient-to-br from-blue-600 to-sky-500 p-2 shadow-md">
+                  <Calculator className="h-6 w-6 text-white" />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-lg font-bold text-blue-900 truncate">
+                    Simulateon
+                  </div>
+                  <p className="text-xs text-muted-foreground truncate max-w-xs">Your workspace & analysis hub</p>
+                </div>
+              </div>
+
+              {/* Desktop search */}
+              <div className="hidden md:block ml-6">
+                <div className="relative">
+                  <input
+                    placeholder="Search calculations, projects or tools..."
+                    className="w-96 rounded-md border border-input bg-background px-4 py-2 text-sm focus:ring-2 focus:ring-blue-200"
+                  />
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">⌘K</div>
+                </div>
+              </div>
             </div>
 
-            <div className="flex items-center space-x-4 justify-end min-w-0">
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-600 hidden md:block truncate max-w-[12rem]">
-                  {user?.email}
-                </span>
-                <div className="hidden md:flex items-center space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => navigate("/profile")}
-                    className="whitespace-nowrap"
-                    style={{ backgroundColor: "rgba(184,210,245,1)" }}
-                  >
-                    <User className="h-4 w-4 mr-2" />
-                    Profile
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleSignOut}
-                    style={{ backgroundColor: "rgba(184,210,245,1)" }}
-                  >
-                    Sign Out
-                  </Button>
+            <div className="flex items-center gap-3">
+              <nav className="hidden md:flex items-center space-x-4 text-sm">
+                <Link to="/dashboard" className="text-gray-600 hover:text-blue-600 font-medium">Dashboard</Link>
+                <Link to="/standard-cycle" className="text-gray-600 hover:text-blue-600 font-medium">Standard</Link>
+                <Link to="/troubleshooting" className="text-gray-600 hover:text-blue-600 font-medium">Troubleshoot</Link>
+                <Link to="/history" className="text-gray-600 hover:text-blue-600 font-medium">History</Link>
+              </nav>
+
+              <div className="flex items-center gap-3">
+                <Button variant="ghost" className="hidden sm:inline-flex">Docs</Button>
+                <Button variant="ghost" className="hidden sm:inline-flex">Help</Button>
+
+                <div className="flex items-center space-x-3">
+                  <div className="hidden md:flex flex-col text-right">
+                    <span className="text-sm text-muted-foreground truncate max-w-[12rem]">{user?.email}</span>
+                    <span className="text-xs text-gray-400">{user?.user_metadata?.full_name ?? ''}</span>
+                  </div>
+                  <div className="h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold">{initials}</div>
                 </div>
 
-                {/* Mobile menu button */}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="md:hidden"
-                >
-                  {isMobileMenuOpen ? (
-                    <X className="h-5 w-5" />
-                  ) : (
-                    <Menu className="h-5 w-5" />
-                  )}
+                <Button variant="ghost" size="sm" className="md:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                  {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                 </Button>
               </div>
             </div>
           </div>
 
-          {/* Centered navigation row for symmetry */}
-          <nav className="mt-3 hidden md:flex items-center justify-center space-x-8 text-sm">
-            <Link
-              to="/dashboard"
-              className="text-gray-600 hover:text-blue-600 font-medium"
-            >
-              Dashboard
-            </Link>
-            <Link
-              to="/standard-cycle"
-              className="text-gray-600 hover:text-blue-600 font-medium"
-            >
-              Standard Cycle
-            </Link>
-            <Link
-              to="/refrigerant-comparison"
-              className="text-gray-600 hover:text-blue-600 font-medium"
-            >
-              Comparison
-            </Link>
-            <Link
-              to="/cascade-cycle"
-              className="text-gray-600 hover:text-blue-600 font-medium"
-            >
-              Cascade
-            </Link>
-            <Link
-              to="/diy-calculators"
-              className="text-gray-600 hover:text-blue-600 font-medium"
-            >
-              DIY Calculators
-            </Link>
-            <Link
-              to="/troubleshooting"
-              className="text-gray-600 hover:text-blue-600 font-medium"
-            >
-              Troubleshooting
-            </Link>
-            <Link
-              to="/estimate-builder"
-              className="text-gray-600 hover:text-blue-600 font-medium"
-            >
-              Estimates
-            </Link>
-            <Link
-              to="/projects"
-              className="text-gray-600 hover:text-blue-600 font-medium"
-            >
-              Projects
-            </Link>
-            <Link
-              to="/history"
-              className="text-gray-600 hover:text-blue-600 font-medium"
-            >
-              History
-            </Link>
-          </nav>
-
           {/* Mobile Navigation */}
           {isMobileMenuOpen && (
-            <div className="md:hidden mt-4 pt-4 border-t border-gray-200">
-              <nav className="flex flex-col space-y-4">
-                <Link
-                  to="/dashboard"
-                  className="text-gray-600 hover:text-blue-600 font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  to="/standard-cycle"
-                  className="text-gray-600 hover:text-blue-600 font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Standard Cycle
-                </Link>
-                <Link
-                  to="/refrigerant-comparison"
-                  className="text-gray-600 hover:text-blue-600 font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Comparison
-                </Link>
-                <Link
-                  to="/cascade-cycle"
-                  className="text-gray-600 hover:text-blue-600 font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Cascade
-                </Link>
-                <Link
-                  to="/diy-calculators"
-                  className="text-gray-600 hover:text-blue-600 font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  DIY Calculators
-                </Link>
-                <Link
-                  to="/troubleshooting"
-                  className="text-gray-600 hover:text-blue-600 font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Troubleshooting
-                </Link>
-                <Link
-                  to="/estimate-builder"
-                  className="text-gray-600 hover:text-blue-600 font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Estimates
-                </Link>
-                <Link
-                  to="/projects"
-                  className="text-gray-600 hover:text-blue-600 font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Projects
-                </Link>
-                <Link
-                  to="/history"
-                  className="text-gray-600 hover:text-blue-600 font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  History
-                </Link>
-                <div className="flex items-center space-x-2 pt-4 border-t border-gray-200">
-                  <span className="text-sm text-gray-600">{user?.email}</span>
-                </div>
-                <div className="flex space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      navigate("/profile");
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="flex-1"
-                  >
-                    <User className="h-4 w-4 mr-2" />
-                    Profile
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      handleSignOut();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="flex-1"
-                  >
-                    Sign Out
-                  </Button>
+            <div className="md:hidden mt-4 pt-4 border-t border-gray-100">
+              <nav className="flex flex-col space-y-3">
+                <Link to="/dashboard" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>Dashboard</Link>
+                <Link to="/standard-cycle" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>Standard Cycle</Link>
+                <Link to="/refrigerant-comparison" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>Comparison</Link>
+                <Link to="/troubleshooting" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>Troubleshooting</Link>
+                <Link to="/history" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>History</Link>
+                <div className="pt-3 border-t border-gray-100">
+                  <Button variant="outline" size="sm" className="w-full mb-2" onClick={() => { navigate('/profile'); setIsMobileMenuOpen(false); }}>Profile</Button>
+                  <Button variant="destructive" size="sm" className="w-full" onClick={() => { handleSignOut(); setIsMobileMenuOpen(false); }}>Sign Out</Button>
                 </div>
               </nav>
             </div>
