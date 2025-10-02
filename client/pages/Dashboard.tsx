@@ -138,7 +138,7 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
 
         <div className="flex flex-wrap items-center gap-2">
           <Button
-            className="bg-primary text-primary-foreground hover:opacity-95 whitespace-nowrap"
+            className="bg-primary text-primary-foreground hover:opacity-95 whitespace-nowrap rounded-full px-5 py-2 shadow-md"
             onClick={() => navigate("/standard-cycle")}
             aria-label="Start new calculation"
           >
