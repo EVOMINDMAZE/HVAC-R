@@ -325,7 +325,7 @@ function RecentCalculations({ isLoading }: any) {
 
   return (
     <Card className="bg-white shadow-md border">
-      <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+      <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg">
         <CardTitle className="flex items-center">
           <HistoryIcon className="h-5 w-5 mr-2" />
           Recent Calculations
