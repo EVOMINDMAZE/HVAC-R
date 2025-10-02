@@ -28,6 +28,7 @@ import { StripeDebug } from "@/pages/StripeDebug";
 import NotFound from "@/pages/NotFound";
 import { ErrorModal } from "@/components/ErrorModal";
 import { SupportBar } from "@/components/SupportBar";
+import { Layout } from "@/components/Layout";
 
 // Protected Route Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
