@@ -63,7 +63,7 @@ function UsageProgressCard({ stats, onUpgrade }: UsageProgressCardProps) {
   const roundedUsage = Math.round(stats.usagePercentage);
 
   return (
-    <Card className="border border-primary/20 bg-primary/5 shadow-sm">
+    <Card className="border border-primary/20 bg-primary/5 shadow-sm rounded-lg hover-lift animate-fade-in">
       <CardContent className="space-y-4 p-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
