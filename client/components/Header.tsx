@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
 import { useState } from "react";
+import { NAV_ITEMS } from "@/components/navigation";
 
 interface HeaderProps {
   variant?: "landing" | "dashboard";
@@ -100,11 +101,9 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
           {isMobileMenuOpen && (
             <div className="md:hidden mt-4 pt-4 border-t border-gray-100">
               <nav className="flex flex-col space-y-3">
-                <Link to="/dashboard" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>Dashboard</Link>
-                <Link to="/standard-cycle" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>Standard Cycle</Link>
-                <Link to="/refrigerant-comparison" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>Comparison</Link>
-                <Link to="/troubleshooting" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>Troubleshooting</Link>
-                <Link to="/history" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>History</Link>
+                {NAV_ITEMS.map((item) => (
+                  <Link key={item.to} to={item.to} className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>{item.label}</Link>
+                ))}
                 <div className="pt-3 border-t border-gray-100">
                   <Button variant="outline" size="sm" className="w-full mb-2" onClick={() => { navigate('/profile'); setIsMobileMenuOpen(false); }}>Profile</Button>
                   <Button variant="destructive" size="sm" className="w-full" onClick={() => { handleSignOut(); setIsMobileMenuOpen(false); }}>Sign Out</Button>
@@ -280,41 +279,11 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
         {isMobileMenuOpen && isAuthenticated && (
           <div className="md:hidden mt-4 pt-4 border-t border-gray-200">
             <nav className="flex flex-col space-y-4">
-              <Link
-                to="/dashboard"
-                className="text-gray-600 hover:text-blue-600 font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Dashboard
-              </Link>
-              <Link
-                to="/standard-cycle"
-                className="text-gray-600 hover:text-blue-600 font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Standard Cycle
-              </Link>
-              <Link
-                to="/refrigerant-comparison"
-                className="text-gray-600 hover:text-blue-600 font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Comparison
-              </Link>
-              <Link
-                to="/cascade-cycle"
-                className="text-gray-600 hover:text-blue-600 font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Cascade
-              </Link>
-              <Link
-                to="/history"
-                className="text-gray-600 hover:text-blue-600 font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                History
-              </Link>
+              {NAV_ITEMS.map((item) => (
+                <Link key={item.to} to={item.to} className="text-gray-600 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>
+                  {item.label}
+                </Link>
+              ))}
               <div className="flex items-center space-x-2 pt-4 border-t border-gray-200">
                 <span className="text-sm text-gray-600">{user?.email}</span>
               </div>

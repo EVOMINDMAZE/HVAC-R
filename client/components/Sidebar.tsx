@@ -1,15 +1,8 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Calculator, History as HistoryIcon, Wrench, FileText, Zap } from "lucide-react";
+import { NAV_ITEMS } from "@/components/navigation";
 
-const links = [
-  { to: "/dashboard", label: "Dashboard", icon: <Calculator className="h-4 w-4" /> },
-  { to: "/standard-cycle", label: "Standard", icon: <FileText className="h-4 w-4" /> },
-  { to: "/refrigerant-comparison", label: "Comparison", icon: <Zap className="h-4 w-4" /> },
-  { to: "/troubleshooting", label: "Troubleshoot", icon: <Wrench className="h-4 w-4" /> },
-  { to: "/history", label: "History", icon: <HistoryIcon className="h-4 w-4" /> },
-];
 
 export function Sidebar() {
   const location = useLocation();
@@ -27,18 +20,19 @@ export function Sidebar() {
       </div>
 
       <nav className="flex-1 px-2 space-y-2">
-        {links.map((l) => {
-          const active = location.pathname === l.to;
+        {NAV_ITEMS.map((item) => {
+          const active = location.pathname === item.to;
+          const Icon = item.icon;
           return (
-            <Link key={l.to} to={l.to} className="block">
+            <Link key={item.to} to={item.to} className="block">
               <Button
                 asChild
                 className={`w-full justify-start rounded-md ${active ? 'bg-blue-50 text-blue-700' : 'text-sidebar-foreground'} `}
                 variant={active ? "default" : "ghost"}
               >
                 <div className="flex items-center gap-3 px-3 py-2">
-                  <span className="text-blue-600">{l.icon}</span>
-                  <span className="text-sm font-medium truncate">{l.label}</span>
+                  <Icon className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium truncate">{item.label}</span>
                 </div>
               </Button>
             </Link>
