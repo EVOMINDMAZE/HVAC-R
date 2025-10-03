@@ -1092,7 +1092,7 @@ export function EnhancedStandardCycleContent() {
         </TabsList>
 
         <TabsContent value="calculation">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-1 sm:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
                 <CardTitle>Cycle Parameters</CardTitle>
@@ -1118,7 +1118,7 @@ export function EnhancedStandardCycleContent() {
 
                 <Separator />
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="evap_temp">
                       <TechTerm term="evaporator">
@@ -1362,7 +1362,7 @@ export function EnhancedStandardCycleContent() {
                         Apply Range
                       </Button>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <div className="font-medium">
                           Evaporator Temperature
@@ -1402,7 +1402,7 @@ export function EnhancedStandardCycleContent() {
                       </div>
 
                       <div className="p-6 pt-0 space-y-4">
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                           <div className="flex items-center gap-2">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -1576,7 +1576,7 @@ export function EnhancedStandardCycleContent() {
 
                 {selectedRefrigerant ? (
                   <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                       <div>
                         <span className="font-medium">
                           <TechTerm term="critical_temperature">
@@ -1733,7 +1733,7 @@ export function EnhancedStandardCycleContent() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-1 sm:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
                 <CardTitle>Cycle Performance</CardTitle>
@@ -1744,7 +1744,7 @@ export function EnhancedStandardCycleContent() {
               <CardContent>
                 {results && results.performance ? (
                   <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
                         <div className="text-2xl font-bold text-primary">
                           {formatValue(
@@ -1950,7 +1950,7 @@ export function EnhancedStandardCycleContent() {
                         >
                           {label}
                         </div>
-                        <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                           <div>
                             <TechTerm term="temperature">T</TechTerm>:{" "}
                             {formatValue(
@@ -2077,7 +2077,7 @@ export function EnhancedStandardCycleContent() {
                   <h3 className="text-lg font-semibold">
                     🎯 Built for Every Professional
                   </h3>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="p-4 bg-blue-50 rounded-lg border">
                       <div className="font-semibold text-blue-800">
                         Technicians & Field Engineers
@@ -2173,7 +2173,7 @@ export function EnhancedStandardCycleContent() {
                         </div>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-3 mt-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
                       <div className="p-3 bg-gray-50 rounded border">
                         <div className="text-sm font-semibold">
                           🌍 Dynamic Units
