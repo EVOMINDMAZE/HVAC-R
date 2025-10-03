@@ -1141,7 +1141,7 @@ export function EnhancedStandardCycleContent() {
                           void handleCalculate();
                         }
                       }}
-                      className="mt-1 focus:ring-2 focus:ring-sky-500 focus:outline-none"
+                      className="mt-1 w-full focus:ring-2 focus:ring-sky-500 focus:outline-none"
                       placeholder="e.g., -10"
                     />
                   </div>
@@ -1167,7 +1167,7 @@ export function EnhancedStandardCycleContent() {
                           void handleCalculate();
                         }
                       }}
-                      className="mt-1 focus:ring-2 focus:ring-sky-500 focus:outline-none"
+                      className="mt-1 w-full focus:ring-2 focus:ring-sky-500 focus:outline-none"
                       placeholder="e.g., 45"
                     />
                   </div>
@@ -1191,7 +1191,7 @@ export function EnhancedStandardCycleContent() {
                           void handleCalculate();
                         }
                       }}
-                      className="mt-1 focus:ring-2 focus:ring-sky-500 focus:outline-none"
+                      className="mt-1 w-full focus:ring-2 focus:ring-sky-500 focus:outline-none"
                       placeholder="e.g., 5"
                     />
                   </div>
@@ -1215,7 +1215,7 @@ export function EnhancedStandardCycleContent() {
                           void handleCalculate();
                         }
                       }}
-                      className="mt-1 focus:ring-2 focus:ring-sky-500 focus:outline-none"
+                      className="mt-1 w-full focus:ring-2 focus:ring-sky-500 focus:outline-none"
                       placeholder="e.g., 2"
                     />
                   </div>
