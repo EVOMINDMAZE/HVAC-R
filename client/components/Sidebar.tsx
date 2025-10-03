@@ -1,7 +1,7 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { NAV_ITEMS } from "@/components/navigation";
+import { NAV_ITEMS, UTIL_ITEMS } from "@/components/navigation";
 
 
 export function Sidebar() {
@@ -21,29 +21,44 @@ export function Sidebar() {
 
       <nav className="flex-1 px-2 space-y-2">
         {NAV_ITEMS.map((item) => {
-          const active = location.pathname === item.to;
           const Icon = item.icon;
           return (
-            <Link key={item.to} to={item.to} className="block">
-              <Button
-                asChild
-                className={`w-full justify-start rounded-md ${active ? 'bg-blue-50 text-blue-700' : 'text-sidebar-foreground'} `}
-                variant={active ? "default" : "ghost"}
-              >
-                <div className="flex items-center gap-3 px-3 py-2">
-                  <Icon className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm font-medium truncate">{item.label}</span>
-                </div>
-              </Button>
-            </Link>
+            <NavLink key={item.to} to={item.to} className={({ isActive }) => `block` }>
+              {({ isActive }) => (
+                <Button
+                  asChild
+                  className={`w-full justify-start rounded-md ${isActive ? 'bg-blue-50 text-blue-700' : 'text-sidebar-foreground'}`}
+                  variant={isActive ? "default" : "ghost"}
+                >
+                  <div className="flex items-center gap-3 px-3 py-2">
+                    <Icon className="h-4 w-4 text-blue-600" />
+                    <span className="text-sm font-medium truncate">{item.label}</span>
+                  </div>
+                </Button>
+              )}
+            </NavLink>
           );
         })}
       </nav>
 
       <div className="px-3 mt-6">
-        <Link to="/projects">
-          <Button className="w-full" variant="outline">Projects</Button>
-        </Link>
+        <div className="space-y-2">
+          {UTIL_ITEMS.map((u) => (
+            <NavLink key={u.to} to={u.to} className={({ isActive }) => `block` }>
+              {({ isActive }) => (
+                <Button asChild variant={isActive ? 'default' : 'ghost'} className={`w-full justify-start ${isActive ? 'bg-blue-50 text-blue-700' : ''}`}>
+                  <div className="flex items-center gap-3 px-3 py-2">
+                    {u.icon ? <u.icon className="h-4 w-4 text-muted-foreground" /> : null}
+                    <span className="text-sm font-medium truncate">{u.label}</span>
+                  </div>
+                </Button>
+              )}
+            </NavLink>
+          ))}
+          <NavLink to="/projects">
+            <Button className="w-full" variant="outline">Projects</Button>
+          </NavLink>
+        </div>
       </div>
     </aside>
   );
