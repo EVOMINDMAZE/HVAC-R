@@ -23,7 +23,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       <Header variant="dashboard" onOpenSearch={() => setSearchOpen(true)} />
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex gap-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex gap-6 lg:pr-24">
         <Sidebar />
         <main className="flex-1 min-h-[60vh] overflow-auto">{children}</main>
       </div>
