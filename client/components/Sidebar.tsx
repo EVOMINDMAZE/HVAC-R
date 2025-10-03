@@ -1,13 +1,13 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Calculator, History as HistoryIcon, Tool, FileText, Zap } from "lucide-react";
+import { Calculator, History as HistoryIcon, Wrench, FileText, Zap } from "lucide-react";
 
 const links = [
   { to: "/dashboard", label: "Dashboard", icon: <Calculator className="h-4 w-4" /> },
   { to: "/standard-cycle", label: "Standard", icon: <FileText className="h-4 w-4" /> },
   { to: "/refrigerant-comparison", label: "Comparison", icon: <Zap className="h-4 w-4" /> },
-  { to: "/troubleshooting", label: "Troubleshoot", icon: <Tool className="h-4 w-4" /> },
+  { to: "/troubleshooting", label: "Troubleshoot", icon: <Wrench className="h-4 w-4" /> },
   { to: "/history", label: "History", icon: <HistoryIcon className="h-4 w-4" /> },
 ];
 
