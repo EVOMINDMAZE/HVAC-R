@@ -79,7 +79,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               </nav>
 
               <div className="flex items-center gap-3">
-                <div className="hidden md:flex items-center space-x-4">
+                <div className="hidden md:flex lg:hidden items-center space-x-4">
                   {NAV_ITEMS.map((item) => (
                     <NavLink key={item.to} to={item.to} className={({ isActive }) => `text-sm font-medium px-2 py-1 border-b-2 ${isActive ? 'text-blue-600 border-blue-600' : 'text-gray-600 border-transparent hover:text-blue-600 hover:border-blue-100'}`}>
                       {item.label}
