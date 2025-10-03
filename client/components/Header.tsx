@@ -70,7 +70,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
             </div>
 
             <div className="flex items-center gap-3">
-              <nav className="hidden md:flex items-center space-x-4 text-sm">
+              <nav className="hidden md:flex lg:hidden items-center space-x-4 text-sm">
                 <Link to="/dashboard" className="text-gray-600 hover:text-blue-600 font-medium">Dashboard</Link>
                 <Link to="/standard-cycle" className="text-gray-600 hover:text-blue-600 font-medium">Standard</Link>
                 <Link to="/troubleshooting" className="text-gray-600 hover:text-blue-600 font-medium">Troubleshoot</Link>
@@ -172,7 +172,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 <Link to="/dashboard">
                   <Button
                     variant="ghost"
-                    className="text-blue-600 hover:text-blue-700"
+                    className="text-blue-600 hover:text-blue-700 lg:hidden"
                   >
                     Dashboard
                   </Button>
