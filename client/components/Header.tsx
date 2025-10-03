@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Calculator, User, Menu, X } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
 import { useState } from "react";
@@ -79,8 +79,13 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               </nav>
 
               <div className="flex items-center gap-3">
-                <Button variant="ghost" className="hidden sm:inline-flex">Docs</Button>
-                <Button variant="ghost" className="hidden sm:inline-flex">Help</Button>
+                <div className="hidden md:flex items-center space-x-4">
+                  {NAV_ITEMS.map((item) => (
+                    <NavLink key={item.to} to={item.to} className={({ isActive }) => `text-sm font-medium ${isActive ? 'text-blue-600' : 'text-gray-600 hover:text-blue-600'}`}>
+                      {item.label}
+                    </NavLink>
+                  ))}
+                </div>
 
                 <div className="flex items-center space-x-3">
                   <div className="hidden md:flex flex-col text-right">
