@@ -73,8 +73,9 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 // Public Route Component (redirect if authenticated)
 function PublicRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useSupabaseAuth();
+  const bypass = shouldBypassAuth();
 
-  if (isLoading) {
+  if (isLoading && !bypass) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">
@@ -85,7 +86,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (isAuthenticated) {
+  if (isAuthenticated || bypass) {
     return <Navigate to="/dashboard" replace />;
   }
 
