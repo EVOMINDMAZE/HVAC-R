@@ -63,7 +63,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 <div className="relative">
                   <input
                     placeholder="Search calculations, projects or tools..."
-                    className="w-96 rounded-md border border-input bg-background px-4 py-2 text-sm focus:ring-2 focus:ring-blue-200"
+                    className="w-48 md:w-96 rounded-md border border-input bg-background px-4 py-2 text-sm focus:ring-2 focus:ring-blue-200"
                   />
                   <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">⌘K</div>
                 </div>
