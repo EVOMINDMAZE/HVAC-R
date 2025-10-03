@@ -1,11 +1,16 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { useLocation } from 'react-router-dom';
 
 export function SupportBar() {
+  const location = useLocation();
+  const hideOn = ['/signin', '/signup'];
+  if (hideOn.includes(location.pathname)) return null;
+
   return (
     <>
-      {/* Desktop/tablet support bar */}
-      <div className="hidden md:flex fixed right-4 bottom-4 z-50">
+      {/* Desktop/tablet support bar - moved slightly away from content and lower z-index */}
+      <div className="hidden md:flex fixed right-8 bottom-8 z-40">
         <div className="flex flex-col items-end gap-2">
           <a href="/help-center" className="inline-flex">
             <Button
@@ -34,7 +39,7 @@ export function SupportBar() {
       </div>
 
       {/* Mobile compact help button */}
-      <div className="md:hidden fixed right-3 bottom-3 z-50">
+      <div className="md:hidden fixed right-3 bottom-3 z-40">
         <a href="/help-center" aria-label="Open Help Center">
           <button
             className="bg-white shadow rounded-full h-12 w-12 flex items-center justify-center text-sm"
