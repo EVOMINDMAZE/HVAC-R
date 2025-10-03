@@ -44,18 +44,21 @@ export function Sidebar() {
 
       <div className="px-3 mt-6">
         <div className="space-y-2">
-          {UTIL_ITEMS.map((u) => (
+          {UTIL_ITEMS.map((u) => {
+            const UIcon = u.icon;
+            return (
             <NavLink key={u.to} to={u.to} className={({ isActive }) => `block` }>
               {({ isActive }) => (
                 <Button asChild variant={isActive ? 'default' : 'ghost'} className={`w-full justify-start ${isActive ? 'bg-blue-50 text-blue-700' : ''}`}>
                   <div className="flex items-center gap-3 px-3 py-2">
-                    {u.icon ? <u.icon className="h-4 w-4 text-muted-foreground" /> : null}
+                    {UIcon ? <UIcon className="h-4 w-4 text-muted-foreground" /> : null}
                     <span className="text-sm font-medium truncate">{u.label}</span>
                   </div>
                 </Button>
               )}
             </NavLink>
-          ))}
+            );
+          })}
           <NavLink to="/projects">
             <Button className="w-full" variant="outline">Projects</Button>
           </NavLink>
