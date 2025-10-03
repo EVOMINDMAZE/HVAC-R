@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { NAV_ITEMS, UTIL_ITEMS } from "@/components/navigation";
+import { Calculator } from 'lucide-react';
 
 
 export function Sidebar() {
