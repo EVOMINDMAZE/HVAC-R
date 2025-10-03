@@ -25,7 +25,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <Header variant="dashboard" onOpenSearch={() => setSearchOpen(true)} />
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex gap-6">
         <Sidebar />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 min-h-[60vh] overflow-auto">{children}</main>
       </div>
       <QuickSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
     </div>
