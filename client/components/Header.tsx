@@ -71,11 +71,8 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
             </div>
 
             <div className="flex items-center gap-3">
-              <nav className="hidden md:flex lg:hidden items-center space-x-4 text-sm">
-                <Link to="/dashboard" className="text-gray-600 hover:text-blue-600 font-medium">Dashboard</Link>
-                <Link to="/standard-cycle" className="text-gray-600 hover:text-blue-600 font-medium">Standard</Link>
-                <Link to="/troubleshooting" className="text-gray-600 hover:text-blue-600 font-medium">Troubleshoot</Link>
-                <Link to="/history" className="text-gray-600 hover:text-blue-600 font-medium">History</Link>
+              <nav className="hidden">
+                {/* Header horizontal nav intentionally hidden for dashboard to avoid duplication with Sidebar */}
               </nav>
 
               <div className="flex items-center gap-3">
