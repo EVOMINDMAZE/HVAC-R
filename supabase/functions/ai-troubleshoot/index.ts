@@ -253,10 +253,12 @@ serve(async (req) => {
       );
     }
 
+    const payload = troubleshootPayload as TroubleshootPayload;
+
     let raw;
     try {
-      const messages = buildMessages(troubleshootPayload, userRole);
-      raw = await callOllama(messages, troubleshootPayload?.model);
+      const messages = buildMessages(payload, userRole);
+      raw = await callOllama(messages, payload?.model);
     } catch (aiError) {
       console.error("AI provider request failed", aiError);
       const detail =
