@@ -226,9 +226,10 @@ export function useSupabaseCalculations() {
         } catch (connErr) {
           logError("fetchCalculations.preflight", connErr);
           // Do not throw here; continue to attempt Supabase client which will report detailed error
+          const message = connErr instanceof Error ? connErr.message : String(connErr);
           console.warn(
-            "Supabase preflight failed, attempting Supabase client fetch which may surface detailed errors",
-            connErr,
+            "Supabase preflight failed, attempting Supabase client fetch which may surface detailed errors:",
+            message,
           );
         }
       }
