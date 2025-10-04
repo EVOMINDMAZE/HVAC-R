@@ -717,7 +717,7 @@ export default function Troubleshooting() {
                     <ol className="list-decimal pl-6">
                       {aiResponse.steps.map((s: any, idx: number) => (
                         <li key={idx} className="text-sm mb-1">
-                          {s.text || s}
+                          {formatAiStep(s, `Step ${idx + 1}`)}
                         </li>
                       ))}
                     </ol>
