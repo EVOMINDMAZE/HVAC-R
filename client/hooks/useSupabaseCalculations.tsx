@@ -92,43 +92,63 @@ export function useSupabaseCalculations() {
         }
 
         if (usedProxyUrl) {
-          const resp = await fetch(usedProxyUrl, { method: "GET", headers });
-          if (resp.ok) {
-            const payload = await resp.json();
-            if (payload && payload.success && Array.isArray(payload.data)) {
-              const normalized = payload.data.map((d: any) => ({
-                ...d,
-                created_at: (() => {
-                  try {
-                    const dt = new Date(d?.created_at);
-                    if (!isNaN(dt.getTime())) return dt.toISOString();
-                    return String(d?.created_at ?? new Date().toISOString());
-                  } catch (e) {
-                    return new Date().toISOString();
-                  }
-                })(),
-              }));
-
-              setCalculations(normalized);
+          try {
+            const sameOrigin = (() => {
               try {
-                localStorage.setItem(
-                  "simulateon:calculations",
-                  JSON.stringify(normalized),
-                );
-              } catch (e) {
-                console.warn("Failed to cache calculations locally", e);
+                const resolved = new URL(usedProxyUrl, window.location.origin);
+                return resolved.origin === window.location.origin;
+              } catch (_err) {
+                return true;
               }
-              return;
-            }
+            })();
 
+            const resp = await fetch(usedProxyUrl, {
+              method: "GET",
+              headers,
+              mode: sameOrigin ? "same-origin" : "cors",
+            });
+            if (resp.ok) {
+              const payload = await resp.json();
+              if (payload && payload.success && Array.isArray(payload.data)) {
+                const normalized = payload.data.map((d: any) => ({
+                  ...d,
+                  created_at: (() => {
+                    try {
+                      const dt = new Date(d?.created_at);
+                      if (!isNaN(dt.getTime())) return dt.toISOString();
+                      return String(d?.created_at ?? new Date().toISOString());
+                    } catch (e) {
+                      return new Date().toISOString();
+                    }
+                  })(),
+                }));
+
+                setCalculations(normalized);
+                try {
+                  localStorage.setItem(
+                    "simulateon:calculations",
+                    JSON.stringify(normalized),
+                  );
+                } catch (e) {
+                  console.warn("Failed to cache calculations locally", e);
+                }
+                return;
+              }
+
+              console.warn(
+                `${usedProxyUrl} returned unexpected payload`,
+                payload,
+              );
+            } else {
+              console.warn(
+                `${usedProxyUrl} responded with non-OK status`,
+                resp.status,
+              );
+            }
+          } catch (proxyError) {
             console.warn(
-              `${usedProxyUrl} returned unexpected payload`,
-              payload,
-            );
-          } else {
-            console.warn(
-              `${usedProxyUrl} responded with non-OK status`,
-              resp.status,
+              "Proxy calculation fetch failed, will fallback to Supabase client",
+              proxyError,
             );
           }
         }
