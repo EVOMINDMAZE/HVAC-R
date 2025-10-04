@@ -200,17 +200,20 @@ export function useSupabaseCalculations() {
           const timeout = setTimeout(() => controller.abort(), 3000);
           try {
             // Try a HEAD to keep payload minimal; some providers block HEAD so we fall back to GET
-            let res = await fetch(url, {
+            let res = await safeFetch(url, {
               method: "HEAD",
               mode: "cors",
               signal: controller.signal,
             });
-            if (!res.ok)
-              res = await fetch(url, {
+            if (!res?.ok)
+              res = await safeFetch(url, {
                 method: "GET",
                 mode: "cors",
                 signal: controller.signal,
               });
+            if (!res) {
+              throw new Error("Supabase host unreachable");
+            }
             // connectivity ok if we reach here
             clearTimeout(timeout);
           } finally {
