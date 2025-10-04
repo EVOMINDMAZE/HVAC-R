@@ -157,6 +157,10 @@ export function useSupabaseCalculations() {
                 `${usedProxyUrl} responded with non-OK status`,
                 resp.status,
               );
+            } else {
+              console.warn(
+                `${usedProxyUrl} request returned no response (network failure)`,
+              );
             }
           } catch (proxyError) {
             console.warn(
