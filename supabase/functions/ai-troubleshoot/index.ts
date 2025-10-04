@@ -172,6 +172,10 @@ serve(async (req) => {
         );
       }
 
+      if (Array.isArray(parsedBody)) {
+        parsedBody = parsedBody[0] ?? null;
+      }
+
       if (typeof parsedBody === "string") {
         try {
           parsedBody = JSON.parse(parsedBody);
@@ -192,6 +196,10 @@ serve(async (req) => {
             },
           );
         }
+      }
+
+      if (Array.isArray(parsedBody)) {
+        parsedBody = parsedBody[0] ?? null;
       }
     } catch (bodyError) {
       console.error("Failed to read request body", bodyError);
