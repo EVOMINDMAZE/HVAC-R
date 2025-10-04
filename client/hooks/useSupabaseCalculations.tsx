@@ -152,7 +152,7 @@ export function useSupabaseCalculations() {
                 `${usedProxyUrl} returned unexpected payload`,
                 payload,
               );
-            } else {
+            } else if (resp) {
               console.warn(
                 `${usedProxyUrl} responded with non-OK status`,
                 resp.status,
