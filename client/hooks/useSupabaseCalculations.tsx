@@ -216,7 +216,7 @@ export function useSupabaseCalculations() {
                 signal: controller.signal,
               });
             if (!res) {
-              throw new Error("Supabase host unreachable");
+              console.warn("Supabase host unreachable; continuing to client fallback");
             }
             // connectivity ok if we reach here
             clearTimeout(timeout);
