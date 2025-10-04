@@ -172,9 +172,11 @@ export function useSupabaseCalculations() {
           }
         }
       } catch (serverErr) {
+        const message =
+          serverErr instanceof Error ? serverErr.message : String(serverErr);
         console.warn(
           "Internal API fetch attempt failed, will fallback to Supabase client:",
-          serverErr,
+          message,
         );
       }
 
