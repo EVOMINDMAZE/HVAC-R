@@ -58,11 +58,11 @@ export function useSupabaseCalculations() {
           const controller = new AbortController();
           const timeout = setTimeout(() => controller.abort(), 1000);
           try {
-            const h = await fetch("/api/health", {
+            const h = await safeFetch("/api/health", {
               method: "GET",
               signal: controller.signal,
             });
-            serverAvailable = h.ok;
+            serverAvailable = Boolean(h?.ok);
           } finally {
             clearTimeout(timeout);
           }
