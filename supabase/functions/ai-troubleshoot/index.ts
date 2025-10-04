@@ -120,10 +120,7 @@ serve(async (req) => {
       );
     }
 
-    let parsedBody: {
-      payload?: TroubleshootPayload;
-      userRole?: string;
-    } | null = null;
+    let parsedBody: unknown = null;
     try {
       const rawBody = await req.text();
 
