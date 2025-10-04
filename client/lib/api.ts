@@ -278,16 +278,23 @@ class ApiClient {
       const { data, error } = await supabase.functions.invoke(
         "ai-troubleshoot",
         {
-          body: payload,
+          body: JSON.stringify(payload),
           headers,
         },
       );
 
       if (error) {
+        // Try to extract more info when available
+        let details = null;
+        try {
+          details = JSON.stringify(error);
+        } catch (_e) {
+          details = String(error);
+        }
         return {
           success: false,
           error: error.message || "AI request failed",
-          details: JSON.stringify(error),
+          details,
         };
       }
 
