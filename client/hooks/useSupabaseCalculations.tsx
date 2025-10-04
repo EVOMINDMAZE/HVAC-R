@@ -163,9 +163,11 @@ export function useSupabaseCalculations() {
               );
             }
           } catch (proxyError) {
+            const message =
+              proxyError instanceof Error ? proxyError.message : String(proxyError);
             console.warn(
-              "Proxy calculation fetch failed, will fallback to Supabase client",
-              proxyError,
+              "Proxy calculation fetch failed, will fallback to Supabase client:",
+              message,
             );
           }
         }
