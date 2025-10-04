@@ -91,10 +91,10 @@ export function useSupabaseCalculations() {
         } else {
           // Try external API_BASE_URL as fallback (production proxy)
           try {
-            const extHealth = await fetch(`${API_BASE_URL}/api/health`, {
+            const extHealth = await safeFetch(`${API_BASE_URL}/api/health`, {
               method: "GET",
             });
-            if (extHealth.ok) usedProxyUrl = `${API_BASE_URL}/api/calculations`;
+            if (extHealth?.ok) usedProxyUrl = `${API_BASE_URL}/api/calculations`;
           } catch (e) {
             console.debug(
               "External API health check failed, will not use external proxy",
