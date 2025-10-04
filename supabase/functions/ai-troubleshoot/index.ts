@@ -367,7 +367,7 @@ async function callOllama(
   const base = (
     Deno.env.get("OLLAMA_BASE_URL") ?? "http://localhost:11434"
   ).replace(/\/+$/, "");
-  const model = modelHint || Deno.env.get("OLLAMA_MODEL") || "llama3";
+  const model = modelHint || Deno.env.get("OLLAMA_MODEL") || "gpt-oss:120b";
   const url = `${base}/api/chat`;
 
   const headers: Record<string, string> = {
