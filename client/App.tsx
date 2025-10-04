@@ -25,6 +25,7 @@ import { Documentation } from "@/pages/Documentation";
 import { HelpCenter } from "@/pages/HelpCenter";
 import { ApiDocs } from "@/pages/ApiDocs";
 import { StripeDebug } from "@/pages/StripeDebug";
+import { AIFunctionTest } from "@/components/AIFunctionTest";
 import NotFound from "@/pages/NotFound";
 import { ErrorModal } from "@/components/ErrorModal";
 import { SupportBar } from "@/components/SupportBar";
@@ -130,6 +131,14 @@ function AppRoutes() {
       <Route path="/api-docs" element={<ApiDocs />} />
       <Route path="/help-center" element={<HelpCenter />} />
       <Route path="/stripe-debug" element={<StripeDebug />} />
+      <Route
+        path="/ai-test"
+        element={
+          <ProtectedRoute>
+            <AIFunctionTest />
+          </ProtectedRoute>
+        }
+      />
 
       {/* Protected routes */}
       <Route
