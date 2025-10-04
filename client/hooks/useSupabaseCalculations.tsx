@@ -94,6 +94,7 @@ export function useSupabaseCalculations() {
         if (usedProxyUrl) {
           try {
             const sameOrigin = (() => {
+              if (typeof window === "undefined") return true;
               try {
                 const resolved = new URL(usedProxyUrl, window.location.origin);
                 return resolved.origin === window.location.origin;
