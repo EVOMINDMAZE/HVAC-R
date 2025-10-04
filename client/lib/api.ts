@@ -319,7 +319,8 @@ class ApiClient {
       }
 
       if (!response.ok) {
-        const message = parsed?.error || parsed?.message || `HTTP ${response.status}`;
+        const message =
+          parsed?.error || parsed?.message || `HTTP ${response.status}`;
         return {
           success: false,
           error: message,

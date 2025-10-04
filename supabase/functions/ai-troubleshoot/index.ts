@@ -233,10 +233,12 @@ serve(async (req) => {
 
     const userRole =
       typeof container.userRole === "string" ? container.userRole : undefined;
-    let rawPayload: unknown =
-      Object.prototype.hasOwnProperty.call(container, "payload")
-        ? (container as Record<string, unknown>).payload
-        : container;
+    let rawPayload: unknown = Object.prototype.hasOwnProperty.call(
+      container,
+      "payload",
+    )
+      ? (container as Record<string, unknown>).payload
+      : container;
 
     if (Array.isArray(rawPayload)) {
       rawPayload = rawPayload[0] ?? null;
