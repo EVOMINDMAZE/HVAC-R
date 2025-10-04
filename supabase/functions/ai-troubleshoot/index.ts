@@ -126,21 +126,50 @@ serve(async (req) => {
     } | null = null;
     try {
       const rawBody = await req.text();
+
+      // Log body size and a preview to help debugging when functions receive empty/invalid payloads
+      try {
+        console.log("ai-troubleshoot: incoming request body length=", rawBody?.length ?? 0);
+        console.log("ai-troubleshoot: content-type=", req.headers.get("content-type"));
+        console.log("ai-troubleshoot: body preview=", rawBody ? rawBody.slice(0, 100) : "<empty>");
+      } catch (logErr) {
+        // no-op
+      }
+
       if (!rawBody || rawBody.trim().length === 0) {
         return new Response(
-          JSON.stringify({ error: "Request body required" }),
+          JSON.stringify({
+            error: "Request body required",
+            details:
+              "Empty request body received. Ensure the client sets Content-Type: application/json and calls JSON.stringify(payload) before sending.",
+          }),
           {
             status: 400,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
           },
         );
       }
-      parsedBody = JSON.parse(rawBody);
+
+      try {
+        parsedBody = JSON.parse(rawBody);
+      } catch (jsonErr) {
+        console.error("Failed to parse request body as JSON", jsonErr);
+        return new Response(
+          JSON.stringify({
+            error: "Invalid JSON payload",
+            details: `Failed to parse body as JSON. content-type=${req.headers.get("content-type")}, body_length=${rawBody.length}, body_preview=${rawBody.slice(0,200)}`,
+          }),
+          {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          },
+        );
+      }
     } catch (bodyError) {
-      console.error("Failed to parse request body", bodyError);
+      console.error("Failed to read request body", bodyError);
       return new Response(
         JSON.stringify({
-          error: "Invalid JSON payload",
+          error: "Failed to read request body",
           details:
             bodyError instanceof Error ? bodyError.message : String(bodyError),
         }),
