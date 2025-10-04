@@ -115,12 +115,12 @@ export function useSupabaseCalculations() {
               }
             })();
 
-            const resp = await fetch(usedProxyUrl, {
+            const resp = await safeFetch(usedProxyUrl, {
               method: "GET",
               headers,
               mode: sameOrigin ? "same-origin" : "cors",
             });
-            if (resp.ok) {
+            if (resp?.ok) {
               const payload = await resp.json();
               if (payload && payload.success && Array.isArray(payload.data)) {
                 const normalized = payload.data.map((d: any) => ({
