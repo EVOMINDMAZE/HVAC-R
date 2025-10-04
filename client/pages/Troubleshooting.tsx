@@ -698,16 +698,12 @@ export default function Troubleshooting() {
                     <div>
                       <div className="font-semibold">Probable Causes</div>
                       <ul className="list-disc pl-6">
-                        {aiResponse.probable_causes.map(
-                          (c: any, idx: number) => (
+                        {aiResponse.probable_causes.map((c: any, idx: number) => (
                             <li key={idx} className="text-sm">
-                              {(c.title || c) +
-                                (c.confidence
-                                  ? ` — ${(c.confidence * 100).toFixed(0)}%`
-                                  : "")}
+                              {formatAiStep(c, typeof c === 'string' ? c : c?.title ? c.title : `Cause ${idx + 1}`)}
+                              {c && typeof c === 'object' && c.confidence ? ` — ${(Number(c.confidence) * 100).toFixed(0)}%` : ""}
                             </li>
-                          ),
-                        )}
+                          ))}
                       </ul>
                     </div>
                   )}
