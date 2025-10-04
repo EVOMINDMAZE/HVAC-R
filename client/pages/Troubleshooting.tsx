@@ -348,6 +348,10 @@ export default function Troubleshooting() {
         // userRole could be passed here if available from user profile
       };
 
+      try {
+        console.debug("[Troubleshooting] Sending AI payload:", payload);
+      } catch (e) {}
+
       const resp = await apiClient.aiTroubleshoot(payload);
 
       if (!resp || !resp.success) {
