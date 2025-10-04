@@ -276,10 +276,11 @@ class ApiClient {
       }
 
       try {
-        // Avoid logging tokens; log only the payload shape and size for debugging
-        try {
-          console.debug("[api.aiTroubleshoot] invoking ai-troubleshoot function, payload type:", typeof payload, "payload keys:", Array.isArray(payload) ? `array(len=${payload.length})` : Object.keys(payload || {}).slice(0,20));
-        } catch (e) {}
+        const preview =
+          typeof payload === "string"
+            ? payload
+            : JSON.stringify(payload, null, 2);
+        console.log("[api.aiTroubleshoot] payload preview:", preview);
       } catch (e) {}
 
       const { data, error } = await supabase.functions.invoke(
