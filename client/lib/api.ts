@@ -300,13 +300,21 @@ class ApiClient {
         body: JSON.stringify(payload),
       });
 
-      const text = await response.text();
+      const responseClone = response.clone();
+      let text = "";
       let parsed: any = null;
-      if (text) {
-        try {
+      try {
+        text = await responseClone.text();
+        if (text) {
           parsed = JSON.parse(text);
-        } catch (parseError) {
-          console.warn("Failed to parse AI troubleshoot response", parseError, text);
+        }
+      } catch (parseError) {
+        if (text) {
+          console.warn(
+            "Failed to parse AI troubleshoot response",
+            parseError,
+            text,
+          );
         }
       }
 
@@ -319,7 +327,20 @@ class ApiClient {
         };
       }
 
-      return parsed as ApiResponse<any>;
+      if (parsed) {
+        return parsed as ApiResponse<any>;
+      }
+
+      const fallback = await response.json().catch(() => null);
+      if (fallback) {
+        return fallback as ApiResponse<any>;
+      }
+
+      return {
+        success: false,
+        error: "Empty response from AI troubleshoot",
+        details: null,
+      };
     } catch (err: any) {
       console.error("Supabase AI function call failed", err);
 
