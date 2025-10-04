@@ -275,6 +275,13 @@ class ApiClient {
         headers.apikey = String(anonKey);
       }
 
+      try {
+        // Avoid logging tokens; log only the payload shape and size for debugging
+        try {
+          console.debug("[api.aiTroubleshoot] invoking ai-troubleshoot function, payload type:", typeof payload, "payload keys:", Array.isArray(payload) ? `array(len=${payload.length})` : Object.keys(payload || {}).slice(0,20));
+        } catch (e) {}
+      } catch (e) {}
+
       const { data, error } = await supabase.functions.invoke(
         "ai-troubleshoot",
         {
