@@ -126,9 +126,18 @@ serve(async (req) => {
 
       // Log body size and a preview to help debugging when functions receive empty/invalid payloads
       try {
-        console.log("ai-troubleshoot: incoming request body length=", rawBody?.length ?? 0);
-        console.log("ai-troubleshoot: content-type=", req.headers.get("content-type"));
-        console.log("ai-troubleshoot: body preview=", rawBody ? rawBody.slice(0, 100) : "<empty>");
+        console.log(
+          "ai-troubleshoot: incoming request body length=",
+          rawBody?.length ?? 0,
+        );
+        console.log(
+          "ai-troubleshoot: content-type=",
+          req.headers.get("content-type"),
+        );
+        console.log(
+          "ai-troubleshoot: body preview=",
+          rawBody ? rawBody.slice(0, 100) : "<empty>",
+        );
       } catch (logErr) {
         // no-op
       }
@@ -154,7 +163,7 @@ serve(async (req) => {
         return new Response(
           JSON.stringify({
             error: "Invalid JSON payload",
-            details: `Failed to parse body as JSON. content-type=${req.headers.get("content-type")}, body_length=${rawBody.length}, body_preview=${rawBody.slice(0,200)}`,
+            details: `Failed to parse body as JSON. content-type=${req.headers.get("content-type")}, body_length=${rawBody.length}, body_preview=${rawBody.slice(0, 200)}`,
           }),
           {
             status: 400,
@@ -227,7 +236,8 @@ serve(async (req) => {
         return new Response(
           JSON.stringify({
             error: "Invalid JSON payload",
-            details: "Payload field was a string that could not be parsed as JSON.",
+            details:
+              "Payload field was a string that could not be parsed as JSON.",
           }),
           {
             status: 400,

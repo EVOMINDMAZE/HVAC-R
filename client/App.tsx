@@ -33,10 +33,11 @@ import { Layout } from "@/components/Layout";
 // Protected Route Component
 function shouldBypassAuth() {
   try {
-    if (typeof window === 'undefined') return false;
+    if (typeof window === "undefined") return false;
     const params = new URLSearchParams(window.location.search);
-    if (params.get('bypassAuth') === '1') return true;
-    if (localStorage && localStorage.getItem('DEBUG_BYPASS') === '1') return true;
+    if (params.get("bypassAuth") === "1") return true;
+    if (localStorage && localStorage.getItem("DEBUG_BYPASS") === "1")
+      return true;
   } catch (e) {
     // ignore
   }
@@ -63,11 +64,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   // Wrap protected pages in the app Layout for consistent navigation
-  return (
-    <Layout>
-      {children}
-    </Layout>
-  );
+  return <Layout>{children}</Layout>;
 }
 
 // Public Route Component (redirect if authenticated)
