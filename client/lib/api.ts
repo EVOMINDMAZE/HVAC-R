@@ -283,30 +283,43 @@ class ApiClient {
         console.log("[api.aiTroubleshoot] payload preview:", preview);
       } catch (e) {}
 
-      const { data, error } = await supabase.functions.invoke(
-        "ai-troubleshoot",
-        {
-          body: JSON.stringify(payload),
-          headers,
-        },
-      );
-
-      if (error) {
-        // Try to extract more info when available
-        let details = null;
-        try {
-          details = JSON.stringify(error);
-        } catch (_e) {
-          details = String(error);
-        }
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      if (!supabaseUrl) {
         return {
           success: false,
-          error: error.message || "AI request failed",
-          details,
+          error: "Supabase URL missing",
+          details: "VITE_SUPABASE_URL is not defined.",
         };
       }
 
-      return data as ApiResponse<any>;
+      const endpoint = `${supabaseUrl.replace(/\/?$/, "")}/functions/v1/ai-troubleshoot`;
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(payload),
+      });
+
+      const text = await response.text();
+      let parsed: any = null;
+      if (text) {
+        try {
+          parsed = JSON.parse(text);
+        } catch (parseError) {
+          console.warn("Failed to parse AI troubleshoot response", parseError, text);
+        }
+      }
+
+      if (!response.ok) {
+        const message = parsed?.error || parsed?.message || `HTTP ${response.status}`;
+        return {
+          success: false,
+          error: message,
+          details: parsed?.details || text || null,
+        };
+      }
+
+      return parsed as ApiResponse<any>;
     } catch (err: any) {
       console.error("Supabase AI function call failed", err);
 
