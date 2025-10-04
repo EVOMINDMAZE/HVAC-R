@@ -199,9 +199,51 @@ serve(async (req) => {
       );
     }
 
-    const { payload, userRole } = parsedBody ?? {};
+    if (!parsedBody || typeof parsedBody !== "object") {
+      return new Response(
+        JSON.stringify({
+          error: "Invalid request payload",
+          details: "Expected a JSON object with a payload field.",
+        }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
 
-    if (!payload || Object.keys(payload).length === 0) {
+    const container = parsedBody as Record<string, unknown>;
+    const userRole =
+      typeof container.userRole === "string" ? container.userRole : undefined;
+    const rawPayload = container.payload;
+
+    let troubleshootPayload: TroubleshootPayload | null = null;
+
+    if (typeof rawPayload === "string") {
+      try {
+        troubleshootPayload = JSON.parse(rawPayload) as TroubleshootPayload;
+      } catch (payloadParseError) {
+        console.error("Failed to parse payload string", payloadParseError);
+        return new Response(
+          JSON.stringify({
+            error: "Invalid JSON payload",
+            details: "Payload field was a string that could not be parsed as JSON.",
+          }),
+          {
+            status: 400,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          },
+        );
+      }
+    } else if (rawPayload && typeof rawPayload === "object") {
+      troubleshootPayload = rawPayload as TroubleshootPayload;
+    }
+
+    if (
+      !troubleshootPayload ||
+      (typeof troubleshootPayload === "object" &&
+        Object.keys(troubleshootPayload).length === 0)
+    ) {
       return new Response(
         JSON.stringify({ error: "Missing troubleshooting payload" }),
         {
@@ -213,8 +255,8 @@ serve(async (req) => {
 
     let raw;
     try {
-      const messages = buildMessages(payload, userRole);
-      raw = await callOllama(messages, payload?.model);
+      const messages = buildMessages(troubleshootPayload, userRole);
+      raw = await callOllama(messages, troubleshootPayload?.model);
     } catch (aiError) {
       console.error("AI provider request failed", aiError);
       const detail =
