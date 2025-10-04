@@ -230,9 +230,14 @@ serve(async (req) => {
     }
 
     const container = parsedBody as Record<string, unknown>;
+
     const userRole =
       typeof container.userRole === "string" ? container.userRole : undefined;
-    const rawPayload = container.payload;
+    let rawPayload = container.payload as unknown;
+
+    if (Array.isArray(rawPayload)) {
+      rawPayload = rawPayload[0] ?? null;
+    }
 
     let troubleshootPayload: TroubleshootPayload | null = null;
 
