@@ -199,6 +199,25 @@ export default function Troubleshooting() {
     return rec;
   }, [answers, symptom]);
 
+  const formatAiStep = (step: any, fallback: string) => {
+    if (!step) return fallback;
+    if (typeof step === "string") return step;
+    if (typeof step === "object") {
+      const segments: string[] = [];
+      if (step.step) segments.push(String(step.step));
+      if (step.action) segments.push(`Action: ${step.action}`);
+      if (step.urgency) segments.push(`Urgency: ${step.urgency}`);
+      if (step.safety) segments.push(`Safety: ${step.safety}`);
+      if (segments.length > 0) return segments.join(" — ");
+      try {
+        return JSON.stringify(step);
+      } catch (_err) {
+        return fallback;
+      }
+    }
+    return fallback;
+  };
+
   const computeSeverity = () => {
     // high: leak suspected, power loss, fan issue
     if (answers["leak"] === "leak") return "high";
