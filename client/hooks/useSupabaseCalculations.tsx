@@ -34,19 +34,19 @@ export function useSupabaseCalculations() {
     try {
       console.log("Attempting to fetch calculations for user:", user.id);
 
-    const safeFetch = async (
-      input: RequestInfo | URL,
-      init?: RequestInit,
-    ): Promise<Response | null> => {
-      try {
-        return await fetch(input, init);
-      } catch (err) {
-        console.debug("fetchCalculations.safeFetch failure", err);
-        return null;
-      }
-    };
+      const safeFetch = async (
+        input: RequestInfo | URL,
+        init?: RequestInit,
+      ): Promise<Response | null> => {
+        try {
+          return await fetch(input, init);
+        } catch (err) {
+          console.debug("fetchCalculations.safeFetch failure", err);
+          return null;
+        }
+      };
 
-    // Skipping direct Supabase preflight here. We will first try the server-side /api proxy
+      // Skipping direct Supabase preflight here. We will first try the server-side /api proxy
       // to avoid browser-to-Supabase CORS/network issues. If the server proxy is unavailable
       // we'll run a targeted preflight just before attempting the Supabase client.
 
@@ -94,7 +94,8 @@ export function useSupabaseCalculations() {
             const extHealth = await safeFetch(`${API_BASE_URL}/api/health`, {
               method: "GET",
             });
-            if (extHealth?.ok) usedProxyUrl = `${API_BASE_URL}/api/calculations`;
+            if (extHealth?.ok)
+              usedProxyUrl = `${API_BASE_URL}/api/calculations`;
           } catch (e) {
             console.debug(
               "External API health check failed, will not use external proxy",
@@ -164,7 +165,9 @@ export function useSupabaseCalculations() {
             }
           } catch (proxyError) {
             const message =
-              proxyError instanceof Error ? proxyError.message : String(proxyError);
+              proxyError instanceof Error
+                ? proxyError.message
+                : String(proxyError);
             console.warn(
               "Proxy calculation fetch failed, will fallback to Supabase client:",
               message,
@@ -216,7 +219,9 @@ export function useSupabaseCalculations() {
                 signal: controller.signal,
               });
             if (!res) {
-              console.warn("Supabase host unreachable; continuing to client fallback");
+              console.warn(
+                "Supabase host unreachable; continuing to client fallback",
+              );
             }
             // connectivity ok if we reach here
             clearTimeout(timeout);
@@ -226,7 +231,8 @@ export function useSupabaseCalculations() {
         } catch (connErr) {
           logError("fetchCalculations.preflight", connErr);
           // Do not throw here; continue to attempt Supabase client which will report detailed error
-          const message = connErr instanceof Error ? connErr.message : String(connErr);
+          const message =
+            connErr instanceof Error ? connErr.message : String(connErr);
           console.warn(
             "Supabase preflight failed, attempting Supabase client fetch which may surface detailed errors:",
             message,
