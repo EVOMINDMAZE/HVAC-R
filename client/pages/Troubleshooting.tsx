@@ -203,12 +203,27 @@ export default function Troubleshooting() {
     if (!step) return fallback;
     if (typeof step === "string") return step;
     if (typeof step === "object") {
+      // Simple probable-cause objects sometimes use `cause` + `confidence`
+      if (step.cause) return String(step.cause);
+
       const segments: string[] = [];
+
+      // Common keys used for step text
       if (step.step) segments.push(String(step.step));
-      if (step.action) segments.push(`Action: ${step.action}`);
+      if (step.action) segments.push(String(step.action));
+      if (step.description) segments.push(String(step.description));
+      if (step.text) segments.push(String(step.text));
+
+      // Metadata
       if (step.urgency) segments.push(`Urgency: ${step.urgency}`);
-      if (step.safety) segments.push(`Safety: ${step.safety}`);
+      if (step.severity) segments.push(`Urgency: ${step.severity}`);
+
+      // Safety notes may be named differently depending on the model
+      const safety = step.safety || step.safety_notes || step.safetyNote || step.safetyNotes;
+      if (safety) segments.push(`Safety: ${safety}`);
+
       if (segments.length > 0) return segments.join(" — ");
+
       try {
         return JSON.stringify(step);
       } catch (_err) {
