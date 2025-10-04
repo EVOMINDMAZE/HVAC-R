@@ -34,7 +34,19 @@ export function useSupabaseCalculations() {
     try {
       console.log("Attempting to fetch calculations for user:", user.id);
 
-      // Skipping direct Supabase preflight here. We will first try the server-side /api proxy
+    const safeFetch = async (
+      input: RequestInfo | URL,
+      init?: RequestInit,
+    ): Promise<Response | null> => {
+      try {
+        return await fetch(input, init);
+      } catch (err) {
+        console.debug("fetchCalculations.safeFetch failure", err);
+        return null;
+      }
+    };
+
+    // Skipping direct Supabase preflight here. We will first try the server-side /api proxy
       // to avoid browser-to-Supabase CORS/network issues. If the server proxy is unavailable
       // we'll run a targeted preflight just before attempting the Supabase client.
 
