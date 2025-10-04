@@ -349,7 +349,11 @@ export default function Troubleshooting() {
       };
 
       try {
-        console.debug("[Troubleshooting] Sending AI payload:", payload);
+        console.log("[Troubleshooting] payload object", payload);
+        console.log(
+          "[Troubleshooting] payload JSON",
+          JSON.stringify(payload, null, 2),
+        );
       } catch (e) {}
 
       const resp = await apiClient.aiTroubleshoot(payload);
