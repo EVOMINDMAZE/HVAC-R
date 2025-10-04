@@ -162,6 +162,28 @@ serve(async (req) => {
           },
         );
       }
+
+      if (typeof parsedBody === "string") {
+        try {
+          parsedBody = JSON.parse(parsedBody);
+        } catch (nestedError) {
+          console.error(
+            "Request body was a JSON string but failed nested parsing",
+            nestedError,
+          );
+          return new Response(
+            JSON.stringify({
+              error: "Invalid JSON payload",
+              details:
+                "Request body resolved to a string that could not be parsed. Ensure the client sends a JSON object without double stringifying.",
+            }),
+            {
+              status: 400,
+              headers: { ...corsHeaders, "Content-Type": "application/json" },
+            },
+          );
+        }
+      }
     } catch (bodyError) {
       console.error("Failed to read request body", bodyError);
       return new Response(
