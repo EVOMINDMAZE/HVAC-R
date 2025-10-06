@@ -129,6 +129,9 @@ export function useSupabaseCalculations() {
                 if (available) {
                   usedProxyUrl = `${API_BASE_URL}/api/calculations`;
                 }
+              } catch (abortErr) {
+                // AbortError is expected when timeout fires, suppress it
+                externalApiHealthCache = { available: false, timestamp: now };
               } finally {
                 clearTimeout(timeout);
               }
