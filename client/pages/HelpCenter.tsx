@@ -156,10 +156,10 @@ export function HelpCenter() {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-4 gap-8 isolate">
+        <div className="grid lg:grid-cols-4 gap-8">
           {/* Sidebar */}
-          <div className="lg:col-span-1 lg:fixed lg:top-24 lg:left-8 lg:w-72 lg:self-start lg:z-10">
-            <Card className="bg-white shadow-none lg:shadow-lg border-blue-200 relative z-0">
+          <div className="lg:col-span-1">
+            <Card className="bg-white shadow-lg border-blue-200 sticky top-32 z-30">
               <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
                 <CardTitle className="flex items-center">
                   <HelpCircle className="h-5 w-5 mr-2" />
@@ -190,7 +190,7 @@ export function HelpCenter() {
             </Card>
 
             {/* Quick Links */}
-            <Card className="bg-white shadow-lg border-gray-200 mt-4 lg:mt-6 relative z-0">
+            <Card className="bg-white shadow-lg border-gray-200 mt-6">
               <CardHeader>
                 <CardTitle className="text-lg">Need More Help?</CardTitle>
               </CardHeader>
@@ -212,7 +212,7 @@ export function HelpCenter() {
           </div>
 
           {/* FAQ Content */}
-          <div className="lg:col-span-3 lg:ml-80">
+          <div className="lg:col-span-3">
             <div className="space-y-6">
               {filteredFaqs.map((category) => (
                 <Card key={category.category} className="bg-white shadow-lg border-gray-200">
