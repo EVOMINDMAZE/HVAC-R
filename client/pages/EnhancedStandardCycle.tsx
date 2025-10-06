@@ -114,6 +114,56 @@ export function EnhancedStandardCycleContent() {
     formData.refrigerant,
     { auto: true }
   );
+  const [aiNotesExpanded, setAiNotesExpanded] = useState(false);
+  const formattedAiNotes = useMemo(() => {
+    const raw = aiRange?.notes;
+    if (!raw || typeof raw !== 'string') return null;
+    let s = raw.trim();
+    // Remove code fences and surrounding backticks
+    s = s.replace(/```+/g, '');
+    s = s.replace(/^`+|`+$/g, '');
+    s = s.trim();
+
+    // If it looks like JSON, try to parse and extract notes or build user-friendly text
+    try {
+      const parsed = JSON.parse(s);
+      if (parsed && typeof parsed === 'object') {
+        if (typeof parsed.notes === 'string' && parsed.notes.trim().length > 0) {
+          return parsed.notes.trim();
+        }
+        // Build a short friendly summary if structured values present
+        const parts: string[] = [];
+        if (parsed.evap_temp_c != null) parts.push(`Evaporator: ${parsed.evap_temp_c} °C`);
+        if (parsed.cond_temp_c != null) parts.push(`Condenser: ${parsed.cond_temp_c} °C`);
+        if (parsed.superheat_c != null) parts.push(`Superheat: ${parsed.superheat_c} °C`);
+        if (parsed.subcooling_c != null) parts.push(`Subcooling: ${parsed.subcooling_c} °C`);
+        if (parts.length > 0) return parts.join('; ');
+        // fallback to stringified object
+        return JSON.stringify(parsed);
+      }
+    } catch (e) {
+      // not JSON
+    }
+
+    // If the note includes a JSON blob followed by explanatory text, try to remove the JSON prefix
+    const jsonIdx = s.indexOf('{');
+    if (jsonIdx > 0) {
+      const maybeText = s.slice(0, jsonIdx).trim();
+      const maybeJson = s.slice(jsonIdx).trim();
+      try {
+        const parsed = JSON.parse(maybeJson);
+        if (parsed && parsed.notes) return String(parsed.notes).trim();
+      } catch (_e) {
+        // ignore
+      }
+      if (maybeText.length > 0) return maybeText;
+    }
+
+    // Clean up long whitespace and limit size
+    const cleaned = s.replace(/\s+/g, ' ').trim();
+    return cleaned.length > 0 ? cleaned : null;
+  }, [aiRange?.notes]);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
@@ -1394,8 +1444,20 @@ export function EnhancedStandardCycleContent() {
                         <div>Recommended: {aiRange?.subcooling_c ?? "N/A"} °C</div>
                       </div>
                     </div>
-                    {aiRange?.notes && (
-                      <div className="text-xs text-gray-600 mt-2">{aiRange.notes}</div>
+                    {formattedAiNotes && (
+                      <div className="mt-2">
+                        <div className="text-xs text-gray-600">
+                          {aiNotesExpanded ? formattedAiNotes : formattedAiNotes.length > 220 ? `${String(formattedAiNotes).slice(0,220)}…` : formattedAiNotes}
+                        </div>
+                        {String(formattedAiNotes).length > 220 && (
+                          <button
+                            className="text-xs text-sky-600 underline mt-1"
+                            onClick={() => setAiNotesExpanded((s) => !s)}
+                          >
+                            {aiNotesExpanded ? 'Show less' : 'Show details'}
+                          </button>
+                        )}
+                      </div>
                     )}
                   </div>
 
