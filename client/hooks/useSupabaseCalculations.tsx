@@ -76,55 +76,34 @@ export function useSupabaseCalculations() {
             let timeoutId: NodeJS.Timeout | null = null;
             let completed = false;
 
-            try {
-              const healthPromise = safeFetch("/api/health", {
-                method: "GET",
-                signal: controller.signal,
-              });
+            const healthPromise = safeFetch("/api/health", {
+              method: "GET",
+              signal: controller.signal,
+            });
 
-              // Set timeout to abort if request takes too long
-              timeoutId = setTimeout(() => {
-                if (!completed) {
-                  try {
-                    controller.abort();
-                  } catch (e) {
-                    // Ignore abort errors
-                  }
-                }
-                timeoutId = null;
-              }, 500);
-
-              const h = await healthPromise;
-              completed = true;
-
-              // Clear timeout if request completed
-              if (timeoutId) {
-                clearTimeout(timeoutId);
-                timeoutId = null;
+            // Set timeout to abort if request takes too long
+            timeoutId = setTimeout(() => {
+              if (!completed) {
+                completed = true;
+                controller.abort();
               }
+            }, 500);
 
-              serverAvailable = Boolean(h?.ok);
-              const prevFailures = serverHealthCache?.failureCount || 0;
-              serverHealthCache = {
-                available: serverAvailable,
-                timestamp: now,
-                failureCount: serverAvailable ? 0 : prevFailures + 1
-              };
-            } catch (abortErr) {
-              // AbortError is expected when timeout fires, suppress it
+            const h = await healthPromise;
+            if (!completed) {
               completed = true;
               if (timeoutId) {
                 clearTimeout(timeoutId);
-                timeoutId = null;
               }
-              serverAvailable = false;
-              const prevFailures = serverHealthCache?.failureCount || 0;
-              serverHealthCache = {
-                available: false,
-                timestamp: now,
-                failureCount: prevFailures + 1
-              };
             }
+
+            serverAvailable = Boolean(h?.ok);
+            const prevFailures = serverHealthCache?.failureCount || 0;
+            serverHealthCache = {
+              available: serverAvailable,
+              timestamp: now,
+              failureCount: serverAvailable ? 0 : prevFailures + 1
+            };
           } catch (healthErr) {
             serverAvailable = false;
             const prevFailures = serverHealthCache?.failureCount || 0;
@@ -166,56 +145,36 @@ export function useSupabaseCalculations() {
               let timeoutId: NodeJS.Timeout | null = null;
               let completed = false;
 
-              try {
-                const healthPromise = safeFetch(`${API_BASE_URL}/api/health`, {
-                  method: "GET",
-                  signal: controller.signal,
-                });
+              const healthPromise = safeFetch(`${API_BASE_URL}/api/health`, {
+                method: "GET",
+                signal: controller.signal,
+              });
 
-                // Set timeout to abort if request takes too long
-                timeoutId = setTimeout(() => {
-                  if (!completed) {
-                    try {
-                      controller.abort();
-                    } catch (e) {
-                      // Ignore abort errors
-                    }
-                  }
-                  timeoutId = null;
-                }, 500);
-
-                const extHealth = await healthPromise;
-                completed = true;
-
-                // Clear timeout if request completed
-                if (timeoutId) {
-                  clearTimeout(timeoutId);
-                  timeoutId = null;
+              // Set timeout to abort if request takes too long
+              timeoutId = setTimeout(() => {
+                if (!completed) {
+                  completed = true;
+                  controller.abort();
                 }
+              }, 500);
 
-                const available = Boolean(extHealth?.ok);
-                const prevFailures = externalApiHealthCache?.failureCount || 0;
-                externalApiHealthCache = {
-                  available,
-                  timestamp: now,
-                  failureCount: available ? 0 : prevFailures + 1
-                };
-                if (available) {
-                  usedProxyUrl = `${API_BASE_URL}/api/calculations`;
-                }
-              } catch (abortErr) {
-                // AbortError is expected when timeout fires, suppress it
+              const extHealth = await healthPromise;
+              if (!completed) {
                 completed = true;
                 if (timeoutId) {
                   clearTimeout(timeoutId);
-                  timeoutId = null;
                 }
-                const prevFailures = externalApiHealthCache?.failureCount || 0;
-                externalApiHealthCache = {
-                  available: false,
-                  timestamp: now,
-                  failureCount: prevFailures + 1
-                };
+              }
+
+              const available = Boolean(extHealth?.ok);
+              const prevFailures = externalApiHealthCache?.failureCount || 0;
+              externalApiHealthCache = {
+                available,
+                timestamp: now,
+                failureCount: available ? 0 : prevFailures + 1
+              };
+              if (available) {
+                usedProxyUrl = `${API_BASE_URL}/api/calculations`;
               }
             } catch (e) {
               const prevFailures = externalApiHealthCache?.failureCount || 0;
