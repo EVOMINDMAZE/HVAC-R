@@ -98,9 +98,20 @@ export function extractErrorMessage(error: any): string {
  */
 export function logError(context: string, error: any): void {
   console.group(`🚨 Error in ${context}`);
-  
+
   try {
-    console.error('Original error:', error);
+    // Improved error logging that handles objects better
+    if (error && typeof error === 'object') {
+      console.error('Error:', error.message || error.toString());
+      console.log('Error details:', {
+        name: error.name,
+        message: error.message,
+        code: error.code,
+        stack: error.stack
+      });
+    } else {
+      console.error('Original error:', error);
+    }
     console.log('Error type:', typeof error);
     console.log('Error constructor:', error?.constructor?.name);
     
