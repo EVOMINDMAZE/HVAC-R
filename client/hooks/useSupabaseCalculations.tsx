@@ -76,6 +76,10 @@ export function useSupabaseCalculations() {
               });
               serverAvailable = Boolean(h?.ok);
               serverHealthCache = { available: serverAvailable, timestamp: now };
+            } catch (abortErr) {
+              // AbortError is expected when timeout fires, suppress it
+              serverAvailable = false;
+              serverHealthCache = { available: false, timestamp: now };
             } finally {
               clearTimeout(timeout);
             }
