@@ -4,13 +4,13 @@ import { useLocation } from 'react-router-dom';
 
 export function SupportBar() {
   const location = useLocation();
-  const hideOn = ['/signin', '/signup'];
+  const hideOn = ['/signin', '/signup', '/dashboard'];
   if (hideOn.includes(location.pathname)) return null;
 
   return (
     <>
       {/* Desktop/tablet support bar - moved slightly away from content and lower z-index */}
-      <div className="hidden md:flex fixed right-6 bottom-6 z-20">
+      <div className="hidden md:flex fixed right-8 bottom-6 z-10">
         <div className="flex flex-col items-end gap-2">
           <a href="/help-center" className="inline-flex">
             <Button
