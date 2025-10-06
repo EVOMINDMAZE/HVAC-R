@@ -158,8 +158,8 @@ export function HelpCenter() {
 
         <div className="grid lg:grid-cols-4 gap-8 isolate">
           {/* Sidebar */}
-          <div className="lg:col-span-1">
-            <Card className="bg-white shadow-none lg:shadow-lg border-blue-200 relative z-0 lg:sticky lg:top-24 lg:z-20">
+          <div className="lg:col-span-1 lg:sticky lg:top-24 lg:self-start lg:z-10">
+            <Card className="bg-white shadow-none lg:shadow-lg border-blue-200 relative z-0">
               <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
                 <CardTitle className="flex items-center">
                   <HelpCircle className="h-5 w-5 mr-2" />
