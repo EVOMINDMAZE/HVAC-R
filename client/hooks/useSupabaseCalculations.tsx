@@ -62,7 +62,12 @@ export function useSupabaseCalculations() {
 
         // Check cache first to avoid repeated failed requests
         const now = Date.now();
-        if (serverHealthCache && (now - serverHealthCache.timestamp) < SERVER_HEALTH_CACHE_TTL) {
+
+        // Skip check if we've failed too many times
+        if (serverHealthCache && serverHealthCache.failureCount >= MAX_FAILURES_BEFORE_DISABLE) {
+          serverAvailable = false;
+          console.debug("Server health checks disabled after repeated failures");
+        } else if (serverHealthCache && (now - serverHealthCache.timestamp) < SERVER_HEALTH_CACHE_TTL) {
           serverAvailable = serverHealthCache.available;
           console.debug("Using cached server health status:", serverAvailable);
         } else {
@@ -99,7 +104,12 @@ export function useSupabaseCalculations() {
               }
 
               serverAvailable = Boolean(h?.ok);
-              serverHealthCache = { available: serverAvailable, timestamp: now };
+              const prevFailures = serverHealthCache?.failureCount || 0;
+              serverHealthCache = {
+                available: serverAvailable,
+                timestamp: now,
+                failureCount: serverAvailable ? 0 : prevFailures + 1
+              };
             } catch (abortErr) {
               // AbortError is expected when timeout fires, suppress it
               completed = true;
@@ -108,11 +118,21 @@ export function useSupabaseCalculations() {
                 timeoutId = null;
               }
               serverAvailable = false;
-              serverHealthCache = { available: false, timestamp: now };
+              const prevFailures = serverHealthCache?.failureCount || 0;
+              serverHealthCache = {
+                available: false,
+                timestamp: now,
+                failureCount: prevFailures + 1
+              };
             }
           } catch (healthErr) {
             serverAvailable = false;
-            serverHealthCache = { available: false, timestamp: now };
+            const prevFailures = serverHealthCache?.failureCount || 0;
+            serverHealthCache = {
+              available: false,
+              timestamp: now,
+              failureCount: prevFailures + 1
+            };
           }
         }
 
