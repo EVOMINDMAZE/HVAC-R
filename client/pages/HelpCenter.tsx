@@ -264,7 +264,7 @@ export function HelpCenter() {
                     <MessageCircle className="h-4 w-4 mr-2" />
                     Start Live Chat
                   </Button>
-                  <Button variant="outline" className="border-white text-white hover:bg-white/10">
+                  <Button variant="outline" className="border-white text-white bg-transparent hover:bg-white/10">
                     <Mail className="h-4 w-4 mr-2" />
                     Email Support
                   </Button>
