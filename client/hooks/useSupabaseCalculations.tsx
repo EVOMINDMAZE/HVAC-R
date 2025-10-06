@@ -105,17 +105,36 @@ export function useSupabaseCalculations() {
           usedProxyUrl = "/api/calculations";
         } else {
           // Try external API_BASE_URL as fallback (production proxy)
-          try {
-            const extHealth = await safeFetch(`${API_BASE_URL}/api/health`, {
-              method: "GET",
-            });
-            if (extHealth?.ok)
+          // Check cache first
+          if (externalApiHealthCache && (now - externalApiHealthCache.timestamp) < SERVER_HEALTH_CACHE_TTL) {
+            if (externalApiHealthCache.available) {
               usedProxyUrl = `${API_BASE_URL}/api/calculations`;
-          } catch (e) {
-            console.debug(
-              "External API health check failed, will not use external proxy",
-              e,
-            );
+            }
+            console.debug("Using cached external API health status:", externalApiHealthCache.available);
+          } else {
+            try {
+              const controller = new AbortController();
+              const timeout = setTimeout(() => controller.abort(), 500);
+              try {
+                const extHealth = await safeFetch(`${API_BASE_URL}/api/health`, {
+                  method: "GET",
+                  signal: controller.signal,
+                });
+                const available = Boolean(extHealth?.ok);
+                externalApiHealthCache = { available, timestamp: now };
+                if (available) {
+                  usedProxyUrl = `${API_BASE_URL}/api/calculations`;
+                }
+              } finally {
+                clearTimeout(timeout);
+              }
+            } catch (e) {
+              console.debug(
+                "External API health check failed, will not use external proxy",
+                e,
+              );
+              externalApiHealthCache = { available: false, timestamp: now };
+            }
           }
         }
 
