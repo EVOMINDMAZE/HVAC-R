@@ -1587,6 +1587,9 @@ export function EnhancedStandardCycleContent() {
                       cond_temp_c: cond,
                     }))
                   }
+                  aiRange={aiRange}
+                  aiLoading={aiLoading}
+                  aiError={aiError}
                   showDetails={false}
                   className="mt-2"
                 />
