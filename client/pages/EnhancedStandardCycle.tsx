@@ -115,24 +115,26 @@ export function EnhancedStandardCycleContent() {
     { auto: true }
   );
   const formattedAiNotes = useMemo(() => {
-    // Produce a concise one-line summary for UX
+    // Produce a concise one-line summary with a short explanation
     if (!aiRange) return null;
     const parts: string[] = [];
     if (aiRange.evap_temp_c != null) parts.push(`Evap ${aiRange.evap_temp_c}°C`);
     if (aiRange.cond_temp_c != null) parts.push(`Cond ${aiRange.cond_temp_c}°C`);
     if (aiRange.superheat_c != null) parts.push(`SH ${aiRange.superheat_c}°C`);
     if (aiRange.subcooling_c != null) parts.push(`SC ${aiRange.subcooling_c}°C`);
-    if (parts.length > 0) return parts.join(' • ');
+    const suffix = 'Good starting point — adjust for ambient and load.';
+    if (parts.length > 0) return `${parts.join(' • ')} • ${suffix}`;
 
     const raw = aiRange.notes;
-    if (!raw || typeof raw !== 'string') return null;
+    if (!raw || typeof raw !== 'string') return suffix;
     let s = raw.trim();
     // remove code fences and JSON fragments
     s = s.replace(/```+/g, '').replace(/^`+|`+$/g, '').trim();
     // take first sentence-ish up to 120 chars
     const cleaned = s.replace(/\s+/g, ' ').trim();
-    if (cleaned.length === 0) return null;
-    return cleaned.length > 120 ? `${cleaned.slice(0,120)}…` : cleaned;
+    if (cleaned.length === 0) return suffix;
+    const first = cleaned.length > 120 ? `${cleaned.slice(0,120)}…` : cleaned;
+    return `${first} — ${suffix}`;
   }, [aiRange]);
 
   const [loading, setLoading] = useState(false);
