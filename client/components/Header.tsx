@@ -40,6 +40,26 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
 
   if (variant === "dashboard") {
     const initials = user?.email ? user.email.split("@")[0].slice(0, 2).toUpperCase() : "U";
+    const [isAvatarOpen, setIsAvatarOpen] = useState(false);
+    const avatarRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+      function handleDocClick(e: MouseEvent) {
+        if (!avatarRef.current) return;
+        if (e.target instanceof Node && !avatarRef.current.contains(e.target)) {
+          setIsAvatarOpen(false);
+        }
+      }
+      function handleKey(e: KeyboardEvent) {
+        if (e.key === "Escape") setIsAvatarOpen(false);
+      }
+      document.addEventListener("click", handleDocClick);
+      document.addEventListener("keydown", handleKey);
+      return () => {
+        document.removeEventListener("click", handleDocClick);
+        document.removeEventListener("keydown", handleKey);
+      };
+    }, []);
 
     return (
       <div className="bg-white/90 backdrop-blur-sm border-b border-blue-100 shadow-sm">
