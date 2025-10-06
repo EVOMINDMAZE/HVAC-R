@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { serve } from "https://deno.land/std/http/server.ts";
 
 const createCorsHeaders = (origin: string | null) => {
@@ -286,8 +287,7 @@ function maybeNumber(v: unknown): number | null {
   if (v === null || v === undefined) return null;
   if (typeof v === "number") return v;
   if (typeof v === "string") {
-    const n = Number(v.replace(/[^
-0-9.-]+/g, ""));
+    const n = Number(v.replace(/[^0-9.-]+/g, ""));
     return Number.isFinite(n) ? n : null;
   }
   return null;
