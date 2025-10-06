@@ -133,12 +133,28 @@ export function useSupabaseCalculations() {
           } else {
             try {
               const controller = new AbortController();
-              const timeout = setTimeout(() => controller.abort(), 500);
+              let timeoutId: NodeJS.Timeout | null = null;
+
               try {
-                const extHealth = await safeFetch(`${API_BASE_URL}/api/health`, {
+                const healthPromise = safeFetch(`${API_BASE_URL}/api/health`, {
                   method: "GET",
                   signal: controller.signal,
                 });
+
+                // Set timeout to abort if request takes too long
+                timeoutId = setTimeout(() => {
+                  controller.abort();
+                  timeoutId = null;
+                }, 500);
+
+                const extHealth = await healthPromise;
+
+                // Clear timeout if request completed
+                if (timeoutId) {
+                  clearTimeout(timeoutId);
+                  timeoutId = null;
+                }
+
                 const available = Boolean(extHealth?.ok);
                 externalApiHealthCache = { available, timestamp: now };
                 if (available) {
@@ -146,15 +162,13 @@ export function useSupabaseCalculations() {
                 }
               } catch (abortErr) {
                 // AbortError is expected when timeout fires, suppress it
+                if (timeoutId) {
+                  clearTimeout(timeoutId);
+                  timeoutId = null;
+                }
                 externalApiHealthCache = { available: false, timestamp: now };
-              } finally {
-                clearTimeout(timeout);
               }
             } catch (e) {
-              console.debug(
-                "External API health check failed, will not use external proxy",
-                e,
-              );
               externalApiHealthCache = { available: false, timestamp: now };
             }
           }
