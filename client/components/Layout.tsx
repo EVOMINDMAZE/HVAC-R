@@ -2,8 +2,10 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
 import { QuickSearch } from "@/components/QuickSearch";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated } = useSupabaseAuth();
   const [searchOpen, setSearchOpen] = useState(false);
 
   const onKeyDown = useCallback((e: KeyboardEvent) => {
@@ -22,7 +24,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header variant="dashboard" onOpenSearch={() => setSearchOpen(true)} />
+      <Header variant={isAuthenticated ? "dashboard" : "landing"} onOpenSearch={() => setSearchOpen(true)} />
       <Sidebar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <main className="min-h-[60vh] overflow-auto">{children}</main>
