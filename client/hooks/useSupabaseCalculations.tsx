@@ -145,36 +145,53 @@ export function useSupabaseCalculations() {
               let timeoutId: NodeJS.Timeout | null = null;
               let completed = false;
 
-              const healthPromise = safeFetch(`${API_BASE_URL}/api/health`, {
-                method: "GET",
-                signal: controller.signal,
-              });
+              try {
+                const healthPromise = safeFetch(`${API_BASE_URL}/api/health`, {
+                  method: "GET",
+                  signal: controller.signal,
+                });
 
-              // Set timeout to abort if request takes too long
-              timeoutId = setTimeout(() => {
+                // Set timeout to abort if request takes too long
+                timeoutId = setTimeout(() => {
+                  if (!completed) {
+                    completed = true;
+                    try {
+                      controller.abort();
+                    } catch (abortErr) {
+                      // Silently ignore abort errors
+                    }
+                  }
+                }, 500);
+
+                const extHealth = await healthPromise;
                 if (!completed) {
                   completed = true;
-                  controller.abort();
+                  if (timeoutId) {
+                    clearTimeout(timeoutId);
+                  }
                 }
-              }, 500);
 
-              const extHealth = await healthPromise;
-              if (!completed) {
-                completed = true;
-                if (timeoutId) {
+                const available = Boolean(extHealth?.ok);
+                const prevFailures = externalApiHealthCache?.failureCount || 0;
+                externalApiHealthCache = {
+                  available,
+                  timestamp: now,
+                  failureCount: available ? 0 : prevFailures + 1
+                };
+                if (available) {
+                  usedProxyUrl = `${API_BASE_URL}/api/calculations`;
+                }
+              } catch (innerErr) {
+                // Catch any abort or network errors
+                if (!completed && timeoutId) {
                   clearTimeout(timeoutId);
                 }
-              }
-
-              const available = Boolean(extHealth?.ok);
-              const prevFailures = externalApiHealthCache?.failureCount || 0;
-              externalApiHealthCache = {
-                available,
-                timestamp: now,
-                failureCount: available ? 0 : prevFailures + 1
-              };
-              if (available) {
-                usedProxyUrl = `${API_BASE_URL}/api/calculations`;
+                const prevFailures = externalApiHealthCache?.failureCount || 0;
+                externalApiHealthCache = {
+                  available: false,
+                  timestamp: now,
+                  failureCount: prevFailures + 1
+                };
               }
             } catch (e) {
               const prevFailures = externalApiHealthCache?.failureCount || 0;
