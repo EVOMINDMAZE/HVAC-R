@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import type { RecommendedRangeData } from "@/hooks/useOllamaRecommendedRange";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -43,6 +44,9 @@ interface EnhancedRefrigerantSelectorProps {
   showValidation?: boolean;
   showDetails?: boolean;
   className?: string;
+  aiRange?: RecommendedRangeData | null;
+  aiLoading?: boolean;
+  aiError?: string | null;
 }
 
 export function EnhancedRefrigerantSelector({
@@ -54,6 +58,9 @@ export function EnhancedRefrigerantSelector({
   showValidation = true,
   showDetails = true,
   className,
+  aiRange,
+  aiLoading,
+  aiError,
 }: EnhancedRefrigerantSelectorProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -103,8 +110,13 @@ export function EnhancedRefrigerantSelector({
   }, [value, evaporatorTemp, condenserTemp, showValidation]);
 
   const handleSuggestedRangeApply = () => {
-    if (!selectedRefrigerant || !onSuggestedRangeApply) return;
-
+    if (!onSuggestedRangeApply) return;
+    // Prefer AI range if available, else fallback to static suggested range
+    if (aiRange && aiRange.evap_temp_c != null && aiRange.cond_temp_c != null) {
+      onSuggestedRangeApply(aiRange.evap_temp_c, aiRange.cond_temp_c);
+      return;
+    }
+    if (!selectedRefrigerant) return;
     const range = getSuggestedOperatingRange(value);
     if (range) {
       onSuggestedRangeApply(
@@ -322,6 +334,22 @@ export function EnhancedRefrigerantSelector({
                   </Button>
                 </div>
                 {(() => {
+                  if (aiLoading) return <div className="text-sm text-gray-600">Loading AI range...</div>;
+                  if (aiError) return <div className="text-sm text-red-700">{aiError}</div>;
+                  if (aiRange) {
+                    return (
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <div className="font-medium">Evaporator Temperature</div>
+                          <div>Recommended: {aiRange.evap_temp_c ?? "N/A"}°C</div>
+                        </div>
+                        <div>
+                          <div className="font-medium">Condenser Temperature</div>
+                          <div>Recommended: {aiRange.cond_temp_c ?? "N/A"}°C</div>
+                        </div>
+                      </div>
+                    );
+                  }
                   const range = getSuggestedOperatingRange(value);
                   if (!range) return null;
                   return (
