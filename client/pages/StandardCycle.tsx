@@ -1,5 +1,4 @@
 import React from "react";
-import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ApiServiceStatus } from "@/components/ApiServiceStatus";
 import { EnhancedStandardCycleContent } from "@/pages/EnhancedStandardCycle";
