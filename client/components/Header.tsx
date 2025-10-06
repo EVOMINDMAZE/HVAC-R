@@ -3,7 +3,7 @@ import { Calculator, User, Menu, X } from "lucide-react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { NAV_ITEMS } from "@/components/navigation";
 
 interface HeaderProps {
