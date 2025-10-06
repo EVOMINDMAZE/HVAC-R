@@ -269,7 +269,7 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
         </Card>
 
         <Card
-          className={`bg-gradient-to-r ${
+          className={`bg-gradient-to-r rounded-lg hover-lift animate-fade-in ${
             stats.remainingValue <= 2
               ? "from-red-600 to-red-500"
               : "from-emerald-600 to-green-500"
