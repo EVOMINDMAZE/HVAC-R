@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
+import React, { useState, useRef, useEffect } from 'react';
 import { Calculator, User, Menu, X } from "lucide-react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
-import { useState, useRef, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 import { NAV_ITEMS } from "@/components/navigation";
 
 interface HeaderProps {
@@ -71,9 +71,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                   <Calculator className="h-6 w-6 text-white" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-lg font-bold text-blue-900 truncate">
-                    Simulateon
-                  </div>
+                  <div className="text-lg font-bold text-blue-900 truncate">Simulateon</div>
                   <p className="text-xs text-muted-foreground truncate max-w-xs">Your workspace & analysis hub</p>
                 </div>
               </div>
@@ -91,14 +89,10 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
             </div>
 
             <div className="flex items-center gap-3">
-              <nav className="hidden">
-                {/* Header horizontal nav intentionally hidden for dashboard to avoid duplication with Sidebar */}
-              </nav>
+              <nav className="hidden">{/* Header horizontal nav intentionally hidden for dashboard to avoid duplication with Sidebar */}</nav>
 
               <div className="flex items-center gap-3">
-                <div className="hidden">
-                  {/* NAV_ITEMS hidden in header on dashboard - use Sidebar for navigation */}
-                </div>
+                <div className="hidden">{/* NAV_ITEMS hidden in header on dashboard - use Sidebar for navigation */}</div>
 
                 <div className="flex items-center space-x-3">
                   <div className="hidden md:flex flex-col text-right">
@@ -107,7 +101,8 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                   </div>
                   <div className="relative" ref={avatarRef}>
                     <button
-                      aria-haspopup="true"
+                      type="button"
+                      aria-haspopup="menu"
                       aria-expanded={isAvatarOpen}
                       onClick={() => setIsAvatarOpen((s) => !s)}
                       className="h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-200"
@@ -117,11 +112,11 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                     </button>
 
                     {isAvatarOpen && (
-                      <div className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-50">
+                      <div role="menu" className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-60">
                         <nav className="flex flex-col p-2">
-                          <Link to="/profile" onClick={() => setIsAvatarOpen(false)} className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded">Profile</Link>
-                          <Link to="/settings" onClick={() => setIsAvatarOpen(false)} className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded">Settings</Link>
-                          <button onClick={() => { setIsAvatarOpen(false); handleSignOut(); }} className="text-left px-3 py-2 text-sm text-red-600 hover:bg-gray-50 rounded">Sign Out</button>
+                          <Link to="/profile" onClick={() => setIsAvatarOpen(false)} role="menuitem" tabIndex={0} className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded">Profile</Link>
+                          <Link to="/settings" onClick={() => setIsAvatarOpen(false)} role="menuitem" tabIndex={0} className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded">Settings</Link>
+                          <button onClick={() => { setIsAvatarOpen(false); handleSignOut(); }} role="menuitem" className="text-left px-3 py-2 text-sm text-red-600 hover:bg-gray-50 rounded">Sign Out</button>
                         </nav>
                       </div>
                     )}
@@ -163,9 +158,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
             <div>
               <h1 className="text-2xl font-bold text-blue-900">Simulateon</h1>
               {!isAuthenticated && (
-                <p className="text-xs text-blue-600 font-medium">
-                  Professional Refrigeration Analysis
-                </p>
+                <p className="text-xs text-blue-600 font-medium">Professional Refrigeration Analysis</p>
               )}
             </div>
           </div>
@@ -173,97 +166,35 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
           {/* Navigation for non-authenticated users */}
           {!isAuthenticated && (
             <nav className="hidden md:flex items-center space-x-6">
-              <Link
-                to="/features"
-                className="text-gray-700 hover:text-blue-600 font-medium"
-              >
-                Features
-              </Link>
-              <Link
-                to="/pricing"
-                className="text-gray-700 hover:text-blue-600 font-medium"
-              >
-                Pricing
-              </Link>
-              <Link
-                to="/api-docs"
-                className="text-gray-700 hover:text-blue-600 font-medium"
-              >
-                API Docs
-              </Link>
-              <Link
-                to="/about"
-                className="text-gray-700 hover:text-blue-600 font-medium"
-              >
-                About
-              </Link>
+              <Link to="/features" className="text-gray-700 hover:text-blue-600 font-medium">Features</Link>
+              <Link to="/pricing" className="text-gray-700 hover:text-blue-600 font-medium">Pricing</Link>
+              <Link to="/api-docs" className="text-gray-700 hover:text-blue-600 font-medium">API Docs</Link>
+              <Link to="/about" className="text-gray-700 hover:text-blue-600 font-medium">About</Link>
             </nav>
           )}
 
           <div className="flex items-center space-x-4">
             {isAuthenticated ? (
               <>
-                <span className="text-sm text-gray-600 hidden md:block">
-                  {user?.email}
-                </span>
+                <span className="text-sm text-gray-600 hidden md:block">{user?.email}</span>
                 <Link to="/dashboard">
-                  <Button
-                    variant="ghost"
-                    className="text-blue-600 hover:text-blue-700 lg:hidden"
-                  >
-                    Dashboard
-                  </Button>
+                  <Button variant="ghost" className="text-blue-600 hover:text-blue-700 lg:hidden">Dashboard</Button>
                 </Link>
-                <Button
-                  variant="outline"
-                  onClick={handleSignOut}
-                  className="hidden md:flex"
-                >
-                  Sign Out
-                </Button>
+                <Button variant="outline" onClick={handleSignOut} className="hidden md:flex">Sign Out</Button>
 
                 {/* Mobile menu for authenticated users */}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="md:hidden"
-                >
-                  {isMobileMenuOpen ? (
-                    <X className="h-5 w-5" />
-                  ) : (
-                    <Menu className="h-5 w-5" />
-                  )}
+                <Button variant="ghost" size="sm" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden">
+                  {isMobileMenuOpen ? (<X className="h-5 w-5" />) : (<Menu className="h-5 w-5" />)}
                 </Button>
               </>
             ) : (
               <>
-                <Link to="/signin">
-                  <Button
-                    variant="ghost"
-                    className="text-blue-600 hover:text-blue-700"
-                  >
-                    Sign In
-                  </Button>
-                </Link>
-                <Link to="/signup">
-                  <Button className="bg-blue-600 hover:bg-blue-700 font-semibold px-6">
-                    Start Free Trial
-                  </Button>
-                </Link>
+                <Link to="/signin"><Button variant="ghost" className="text-blue-600 hover:text-blue-700">Sign In</Button></Link>
+                <Link to="/signup"><Button className="bg-blue-600 hover:bg-blue-700 font-semibold px-6">Start Free Trial</Button></Link>
 
                 {/* Mobile menu for non-authenticated users */}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="md:hidden"
-                >
-                  {isMobileMenuOpen ? (
-                    <X className="h-5 w-5" />
-                  ) : (
-                    <Menu className="h-5 w-5" />
-                  )}
+                <Button variant="ghost" size="sm" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden">
+                  {isMobileMenuOpen ? (<X className="h-5 w-5" />) : (<Menu className="h-5 w-5" />)}
                 </Button>
               </>
             )}
@@ -274,39 +205,13 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
         {isMobileMenuOpen && !isAuthenticated && (
           <div className="md:hidden mt-4 pt-4 border-t border-gray-200">
             <nav className="flex flex-col space-y-4">
-              <Link
-                to="/features"
-                className="text-gray-700 hover:text-blue-600 font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Features
-              </Link>
-              <Link
-                to="/pricing"
-                className="text-gray-700 hover:text-blue-600 font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Pricing
-              </Link>
-              <Link
-                to="/api-docs"
-                className="text-gray-700 hover:text-blue-600 font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                API Docs
-              </Link>
-              <Link
-                to="/about"
-                className="text-gray-700 hover:text-blue-600 font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                About
-              </Link>
+              <Link to="/features" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>Features</Link>
+              <Link to="/pricing" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>Pricing</Link>
+              <Link to="/api-docs" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>API Docs</Link>
+              <Link to="/about" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>About</Link>
               <div className="pt-4 border-t border-gray-200">
                 <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 font-semibold">
-                    Start Free Trial
-                  </Button>
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 font-semibold">Start Free Trial</Button>
                 </Link>
               </div>
             </nav>
@@ -318,37 +223,14 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
           <div className="md:hidden mt-4 pt-4 border-t border-gray-200">
             <nav className="flex flex-col space-y-4">
               {NAV_ITEMS.map((item) => (
-                <Link key={item.to} to={item.to} className="text-gray-600 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>
-                  {item.label}
-                </Link>
+                <Link key={item.to} to={item.to} className="text-gray-600 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>{item.label}</Link>
               ))}
               <div className="flex items-center space-x-2 pt-4 border-t border-gray-200">
                 <span className="text-sm text-gray-600">{user?.email}</span>
               </div>
               <div className="flex space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    navigate("/profile");
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="flex-1"
-                >
-                  <User className="h-4 w-4 mr-2" />
-                  Profile
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    handleSignOut();
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="flex-1"
-                >
-                  Sign Out
-                </Button>
+                <Button variant="outline" size="sm" onClick={() => { navigate("/profile"); setIsMobileMenuOpen(false); }} className="flex-1"><User className="h-4 w-4 mr-2"/>Profile</Button>
+                <Button variant="outline" size="sm" onClick={() => { handleSignOut(); setIsMobileMenuOpen(false); }} className="flex-1">Sign Out</Button>
               </div>
             </nav>
           </div>

@@ -165,6 +165,8 @@
   /* Hover transitions */
   .hover-lift {
     @apply transition-all duration-200 hover:-translate-y-1 hover:shadow-lg;
+    /* Hint the browser to optimize transform animations */
+    will-change: transform;
   }
 
   .hover-glow {
