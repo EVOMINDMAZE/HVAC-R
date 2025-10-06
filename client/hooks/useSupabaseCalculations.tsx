@@ -69,26 +69,40 @@ export function useSupabaseCalculations() {
         } else {
           try {
             const controller = new AbortController();
-            const timeout = setTimeout(() => controller.abort(), 500); // Reduced timeout
+            let timeoutId: NodeJS.Timeout | null = null;
+
             try {
-              const h = await safeFetch("/api/health", {
+              const healthPromise = safeFetch("/api/health", {
                 method: "GET",
                 signal: controller.signal,
               });
+
+              // Set timeout to abort if request takes too long
+              timeoutId = setTimeout(() => {
+                controller.abort();
+                timeoutId = null;
+              }, 500);
+
+              const h = await healthPromise;
+
+              // Clear timeout if request completed
+              if (timeoutId) {
+                clearTimeout(timeoutId);
+                timeoutId = null;
+              }
+
               serverAvailable = Boolean(h?.ok);
               serverHealthCache = { available: serverAvailable, timestamp: now };
             } catch (abortErr) {
               // AbortError is expected when timeout fires, suppress it
+              if (timeoutId) {
+                clearTimeout(timeoutId);
+                timeoutId = null;
+              }
               serverAvailable = false;
               serverHealthCache = { available: false, timestamp: now };
-            } finally {
-              clearTimeout(timeout);
             }
           } catch (healthErr) {
-            console.debug(
-              "Server health check failed, skipping server proxy:",
-              healthErr,
-            );
             serverAvailable = false;
             serverHealthCache = { available: false, timestamp: now };
           }
