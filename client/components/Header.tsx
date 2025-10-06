@@ -40,6 +40,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
 
   if (variant === "dashboard") {
     const initials = user?.email ? user.email.split("@")[0].slice(0, 2).toUpperCase() : "U";
+    const avatarUrl = (user as any)?.user_metadata?.avatar_url || (user as any)?.user_metadata?.avatar || null;
     const [isAvatarOpen, setIsAvatarOpen] = useState(false);
     const avatarRef = useRef<HTMLDivElement | null>(null);
 
