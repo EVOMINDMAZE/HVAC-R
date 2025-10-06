@@ -212,7 +212,7 @@ export function HelpCenter() {
           </div>
 
           {/* FAQ Content */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 lg:ml-80">
             <div className="space-y-6">
               {filteredFaqs.map((category) => (
                 <Card key={category.category} className="bg-white shadow-lg border-gray-200">
