@@ -159,12 +159,16 @@ export function SignIn() {
                       handleInputChange("password", e.target.value)
                     }
                     className="pl-10 pr-10 border-blue-200 focus:border-blue-500"
+                    aria-describedby={error ? "signin-error" : undefined}
+                    aria-invalid={error ? true : false}
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                    aria-pressed={showPassword}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4" />
