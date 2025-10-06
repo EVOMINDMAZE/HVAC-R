@@ -105,7 +105,27 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                     <span className="text-sm text-muted-foreground truncate max-w-[12rem]">{user?.email}</span>
                     <span className="text-xs text-gray-400">{user?.user_metadata?.full_name ?? ''}</span>
                   </div>
-                  <Link to="/profile" className="h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold" aria-label="Open profile">{initials}</Link>
+                  <div className="relative" ref={avatarRef}>
+                    <button
+                      aria-haspopup="true"
+                      aria-expanded={isAvatarOpen}
+                      onClick={() => setIsAvatarOpen((s) => !s)}
+                      className="h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-200"
+                      aria-label="Account menu"
+                    >
+                      {initials}
+                    </button>
+
+                    {isAvatarOpen && (
+                      <div className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-50">
+                        <nav className="flex flex-col p-2">
+                          <Link to="/profile" onClick={() => setIsAvatarOpen(false)} className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded">Profile</Link>
+                          <Link to="/settings" onClick={() => setIsAvatarOpen(false)} className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded">Settings</Link>
+                          <button onClick={() => { setIsAvatarOpen(false); handleSignOut(); }} className="text-left px-3 py-2 text-sm text-red-600 hover:bg-gray-50 rounded">Sign Out</button>
+                        </nav>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <Button variant="ghost" size="sm" className="md:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
