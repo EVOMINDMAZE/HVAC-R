@@ -442,7 +442,9 @@ export function RefrigerantComparisonContent() {
       else if (typeof container === "object") {
         // If object has numeric keys or point_1 keys, use ordered values
         const keys = Object.keys(container);
-        const numericKeys = keys.filter((k) => /^\d+$/.test(k)).sort((a, b) => Number(a) - Number(b));
+        const numericKeys = keys
+          .filter((k) => /^\d+$/.test(k))
+          .sort((a, b) => Number(a) - Number(b));
         if (numericKeys.length >= 1) {
           candidates = numericKeys.map((k) => container[k]);
         } else {
@@ -568,7 +570,8 @@ export function RefrigerantComparisonContent() {
 
               if (density === null) {
                 // try performance-level density
-                density = parseNumber(perf.density_kg_m3) ?? parseNumber(perf.density);
+                density =
+                  parseNumber(perf.density_kg_m3) ?? parseNumber(perf.density);
               }
 
               if (refEffect !== null && density !== null)
@@ -693,7 +696,9 @@ export function RefrigerantComparisonContent() {
       if (Array.isArray(src)) arr = src;
       else if (typeof src === "object") {
         const keys = Object.keys(src);
-        const numericKeys = keys.filter((k) => /^\d+$/.test(k)).sort((a, b) => Number(a) - Number(b));
+        const numericKeys = keys
+          .filter((k) => /^\d+$/.test(k))
+          .sort((a, b) => Number(a) - Number(b));
         if (numericKeys.length >= 1) {
           arr = numericKeys.map((k) => src[k]);
         } else arr = Object.values(src);
@@ -735,18 +740,8 @@ export function RefrigerantComparisonContent() {
             "press_kpa",
             "pressure_kpa",
           ];
-          const enthKeys = [
-            "enthalpy",
-            "enthalpy_kj_kg",
-            "h",
-            "h_kj_kg",
-          ];
-          const entrKeys = [
-            "entropy",
-            "entropy_kj_kgk",
-            "entropy_kj_kg",
-            "s",
-          ];
+          const enthKeys = ["enthalpy", "enthalpy_kj_kg", "h", "h_kj_kg"];
+          const entrKeys = ["entropy", "entropy_kj_kgk", "entropy_kj_kg", "s"];
           const svKeys = [
             "specific_volume",
             "specificVolume",
@@ -754,12 +749,7 @@ export function RefrigerantComparisonContent() {
             "v",
             "specificVolume_m3_kg",
           ];
-          const qualityKeys = [
-            "quality",
-            "vapor_quality",
-            "vaporQuality",
-            "x",
-          ];
+          const qualityKeys = ["quality", "vapor_quality", "vaporQuality", "x"];
 
           const sanitized = {
             ...p,
@@ -768,10 +758,10 @@ export function RefrigerantComparisonContent() {
               i === 0
                 ? "Evaporator Outlet"
                 : i === 1
-                ? "Compressor Outlet"
-                : i === 2
-                ? "Condenser Outlet"
-                : "Expansion Valve Outlet",
+                  ? "Compressor Outlet"
+                  : i === 2
+                    ? "Condenser Outlet"
+                    : "Expansion Valve Outlet",
             temperature: pickFirstNumeric(p, tempKeys),
             pressure: pickFirstNumeric(p, presKeys),
             enthalpy: pickFirstNumeric(p, enthKeys),
@@ -783,7 +773,9 @@ export function RefrigerantComparisonContent() {
           return sanitized;
         };
 
-        const pts = arr.slice(0, 4).map((p: any, i: number) => sanitizePoint(p, i));
+        const pts = arr
+          .slice(0, 4)
+          .map((p: any, i: number) => sanitizePoint(p, i));
 
         return {
           points: pts,

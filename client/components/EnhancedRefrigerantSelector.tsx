@@ -329,23 +329,43 @@ export function EnhancedRefrigerantSelector({
                     <TrendingUp className="h-4 w-4" />
                     Recommended Operating Range
                   </h4>
-                  <Button size="sm" onClick={handleSuggestedRangeApply} className="focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                  <Button
+                    size="sm"
+                    onClick={handleSuggestedRangeApply}
+                    className="focus:ring-2 focus:ring-sky-500 focus:outline-none"
+                  >
                     Apply Range
                   </Button>
                 </div>
                 {(() => {
-                  if (aiLoading) return <div className="text-sm text-gray-600">Loading AI range...</div>;
-                  if (aiError) return <div className="text-sm text-red-700">{aiError}</div>;
+                  if (aiLoading)
+                    return (
+                      <div className="text-sm text-gray-600">
+                        Loading AI range...
+                      </div>
+                    );
+                  if (aiError)
+                    return (
+                      <div className="text-sm text-red-700">{aiError}</div>
+                    );
                   if (aiRange) {
                     return (
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <div className="font-medium">Evaporator Temperature</div>
-                          <div>Recommended: {aiRange.evap_temp_c ?? "N/A"}°C</div>
+                          <div className="font-medium">
+                            Evaporator Temperature
+                          </div>
+                          <div>
+                            Recommended: {aiRange.evap_temp_c ?? "N/A"}°C
+                          </div>
                         </div>
                         <div>
-                          <div className="font-medium">Condenser Temperature</div>
-                          <div>Recommended: {aiRange.cond_temp_c ?? "N/A"}°C</div>
+                          <div className="font-medium">
+                            Condenser Temperature
+                          </div>
+                          <div>
+                            Recommended: {aiRange.cond_temp_c ?? "N/A"}°C
+                          </div>
                         </div>
                       </div>
                     );

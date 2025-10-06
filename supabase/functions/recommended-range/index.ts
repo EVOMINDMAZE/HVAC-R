@@ -103,13 +103,10 @@ serve(async (req) => {
 
     const rawBody = await req.text();
     if (!rawBody || rawBody.trim().length === 0) {
-      return new Response(
-        JSON.stringify({ error: "Request body required" }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
-      );
+      return new Response(JSON.stringify({ error: "Request body required" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     let body: any = null;
@@ -120,13 +117,10 @@ serve(async (req) => {
         // attempt nested parse
         body = JSON.parse(JSON.parse(rawBody));
       } catch (_e) {
-        return new Response(
-          JSON.stringify({ error: "Invalid JSON payload" }),
-          {
-            status: 400,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          },
-        );
+        return new Response(JSON.stringify({ error: "Invalid JSON payload" }), {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       }
     }
 
@@ -151,7 +145,8 @@ serve(async (req) => {
         "You are an expert refrigeration cycle engineer assistant. When given a refrigerant and optional context (ambient, load, application), recommend safe, practical operating parameters for a typical vapor-compression refrigeration cycle. Return results as a JSON object with keys: evap_temp_c, cond_temp_c, superheat_c, subcooling_c, notes. Provide numeric values in degrees Celsius and numbers for superheat/subcooling. If uncertain, give a reasonable range and explain in notes.",
     });
 
-    let userContent = "Please produce recommended operating parameters as JSON.";
+    let userContent =
+      "Please produce recommended operating parameters as JSON.";
     if (payload.refrigerant) {
       userContent += ` Refrigerant: ${String(payload.refrigerant)}.`;
     }
@@ -186,7 +181,8 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error("recommended-range function error:", error);
-    const message = error instanceof Error && error.message ? error.message : "Unknown error";
+    const message =
+      error instanceof Error && error.message ? error.message : "Unknown error";
     return new Response(JSON.stringify({ success: false, error: message }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
@@ -198,7 +194,9 @@ async function callOllama(
   messages: Array<{ role: string; content: string }>,
   modelHint?: string | null,
 ) {
-  const base = (Deno.env.get("OLLAMA_BASE_URL") ?? "http://localhost:11434").replace(/\/+$/, "");
+  const base = (
+    Deno.env.get("OLLAMA_BASE_URL") ?? "http://localhost:11434"
+  ).replace(/\/+$/, "");
   const model = modelHint || Deno.env.get("OLLAMA_MODEL") || "gpt-oss:120b";
   const url = `${base}/api/chat`;
 
@@ -298,21 +296,31 @@ function extractNumbersFromText(text: string) {
   const lower = text.toLowerCase();
 
   // Evaporator temperature (look for evap or evaporator)
-  const evapMatch = lower.match(/(?:evap|evaporator)[^0-9\-\n]*([-+]?[0-9]{1,3}(?:\.[0-9]+)?)/);
+  const evapMatch = lower.match(
+    /(?:evap|evaporator)[^0-9\-\n]*([-+]?[0-9]{1,3}(?:\.[0-9]+)?)/,
+  );
   if (evapMatch) out.evap = Number(evapMatch[1]);
 
-  const condMatch = lower.match(/(?:cond|condenser)[^0-9\-\n]*([-+]?[0-9]{1,3}(?:\.[0-9]+)?)/);
+  const condMatch = lower.match(
+    /(?:cond|condenser)[^0-9\-\n]*([-+]?[0-9]{1,3}(?:\.[0-9]+)?)/,
+  );
   if (condMatch) out.cond = Number(condMatch[1]);
 
-  const superheatMatch = lower.match(/superheat[^0-9\-\n]*([-+]?[0-9]{1,3}(?:\.[0-9]+)?)/);
+  const superheatMatch = lower.match(
+    /superheat[^0-9\-\n]*([-+]?[0-9]{1,3}(?:\.[0-9]+)?)/,
+  );
   if (superheatMatch) out.superheat = Number(superheatMatch[1]);
 
-  const subcoolMatch = lower.match(/subcool(?:ing)?[^0-9\-\n]*([-+]?[0-9]{1,3}(?:\.[0-9]+)?)/);
+  const subcoolMatch = lower.match(
+    /subcool(?:ing)?[^0-9\-\n]*([-+]?[0-9]{1,3}(?:\.[0-9]+)?)/,
+  );
   if (subcoolMatch) out.subcooling = Number(subcoolMatch[1]);
 
   // As a last resort, capture first two temperature-like numbers as evap/cond
   if (out.evap === undefined || out.cond === undefined) {
-    const temps = Array.from(text.matchAll(/([-+]?[0-9]{1,3}(?:\.[0-9]+)?)[\s]*°?[cC]?/g)).map((m) => Number(m[1]));
+    const temps = Array.from(
+      text.matchAll(/([-+]?[0-9]{1,3}(?:\.[0-9]+)?)[\s]*°?[cC]?/g),
+    ).map((m) => Number(m[1]));
     if (temps.length >= 1 && out.evap === undefined) out.evap = temps[0];
     if (temps.length >= 2 && out.cond === undefined) out.cond = temps[1];
   }

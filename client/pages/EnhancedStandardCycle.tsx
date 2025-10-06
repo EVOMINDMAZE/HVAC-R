@@ -110,30 +110,38 @@ export function EnhancedStandardCycleContent() {
   });
 
   const [results, setResults] = useState<CalculationResults | null>(null);
-  const { data: aiRange, loading: aiLoading, error: aiError, refresh: refreshAi } = useOllamaRecommendedRange(
-    formData.refrigerant,
-    { auto: true }
-  );
+  const {
+    data: aiRange,
+    loading: aiLoading,
+    error: aiError,
+    refresh: refreshAi,
+  } = useOllamaRecommendedRange(formData.refrigerant, { auto: true });
   const formattedAiNotes = useMemo(() => {
     // Produce a concise one-line summary with a short explanation
     if (!aiRange) return null;
     const parts: string[] = [];
-    if (aiRange.evap_temp_c != null) parts.push(`Evap ${aiRange.evap_temp_c}°C`);
-    if (aiRange.cond_temp_c != null) parts.push(`Cond ${aiRange.cond_temp_c}°C`);
+    if (aiRange.evap_temp_c != null)
+      parts.push(`Evap ${aiRange.evap_temp_c}°C`);
+    if (aiRange.cond_temp_c != null)
+      parts.push(`Cond ${aiRange.cond_temp_c}°C`);
     if (aiRange.superheat_c != null) parts.push(`SH ${aiRange.superheat_c}°C`);
-    if (aiRange.subcooling_c != null) parts.push(`SC ${aiRange.subcooling_c}°C`);
-    const suffix = 'Good starting point — adjust for ambient and load.';
-    if (parts.length > 0) return `${parts.join(' • ')} • ${suffix}`;
+    if (aiRange.subcooling_c != null)
+      parts.push(`SC ${aiRange.subcooling_c}°C`);
+    const suffix = "Good starting point — adjust for ambient and load.";
+    if (parts.length > 0) return `${parts.join(" • ")} • ${suffix}`;
 
     const raw = aiRange.notes;
-    if (!raw || typeof raw !== 'string') return suffix;
+    if (!raw || typeof raw !== "string") return suffix;
     let s = raw.trim();
     // remove code fences and JSON fragments
-    s = s.replace(/```+/g, '').replace(/^`+|`+$/g, '').trim();
+    s = s
+      .replace(/```+/g, "")
+      .replace(/^`+|`+$/g, "")
+      .trim();
     // take first sentence-ish up to 120 chars
-    const cleaned = s.replace(/\s+/g, ' ').trim();
+    const cleaned = s.replace(/\s+/g, " ").trim();
     if (cleaned.length === 0) return suffix;
-    const first = cleaned.length > 120 ? `${cleaned.slice(0,120)}…` : cleaned;
+    const first = cleaned.length > 120 ? `${cleaned.slice(0, 120)}…` : cleaned;
     return `${first} — ${suffix}`;
   }, [aiRange]);
 
@@ -246,7 +254,9 @@ export function EnhancedStandardCycleContent() {
         setValidationWarnings(warnings);
       }
       setError(null);
-      try { refreshAi(); } catch (_) {}
+      try {
+        refreshAi();
+      } catch (_) {}
     },
     [
       formData.evap_temp_c,
@@ -1385,10 +1395,14 @@ export function EnhancedStandardCycleContent() {
                         onClick={() =>
                           setFormData((prev) => ({
                             ...prev,
-                            evap_temp_c: (aiRange?.evap_temp_c ?? prev.evap_temp_c) as number,
-                            cond_temp_c: (aiRange?.cond_temp_c ?? prev.cond_temp_c) as number,
-                            superheat_c: (aiRange?.superheat_c ?? prev.superheat_c) as number,
-                            subcooling_c: (aiRange?.subcooling_c ?? prev.subcooling_c) as number,
+                            evap_temp_c: (aiRange?.evap_temp_c ??
+                              prev.evap_temp_c) as number,
+                            cond_temp_c: (aiRange?.cond_temp_c ??
+                              prev.cond_temp_c) as number,
+                            superheat_c: (aiRange?.superheat_c ??
+                              prev.superheat_c) as number,
+                            subcooling_c: (aiRange?.subcooling_c ??
+                              prev.subcooling_c) as number,
                           }))
                         }
                         aria-busy={aiLoading}
@@ -1401,25 +1415,37 @@ export function EnhancedStandardCycleContent() {
                     )}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                       <div>
-                        <div className="font-medium">Evaporator Temperature</div>
-                        <div>Recommended: {aiRange?.evap_temp_c ?? "N/A"} °C</div>
+                        <div className="font-medium">
+                          Evaporator Temperature
+                        </div>
+                        <div>
+                          Recommended: {aiRange?.evap_temp_c ?? "N/A"} °C
+                        </div>
                       </div>
                       <div>
                         <div className="font-medium">Condenser Temperature</div>
-                        <div>Recommended: {aiRange?.cond_temp_c ?? "N/A"} °C</div>
+                        <div>
+                          Recommended: {aiRange?.cond_temp_c ?? "N/A"} °C
+                        </div>
                       </div>
                       <div>
                         <div className="font-medium">Superheat</div>
-                        <div>Recommended: {aiRange?.superheat_c ?? "N/A"} °C</div>
+                        <div>
+                          Recommended: {aiRange?.superheat_c ?? "N/A"} °C
+                        </div>
                       </div>
                       <div>
                         <div className="font-medium">Subcooling</div>
-                        <div>Recommended: {aiRange?.subcooling_c ?? "N/A"} °C</div>
+                        <div>
+                          Recommended: {aiRange?.subcooling_c ?? "N/A"} °C
+                        </div>
                       </div>
                     </div>
                     {formattedAiNotes && (
                       <div className="mt-2">
-                        <div className="text-xs text-gray-500">{formattedAiNotes}</div>
+                        <div className="text-xs text-gray-500">
+                          {formattedAiNotes}
+                        </div>
                       </div>
                     )}
                   </div>
