@@ -63,7 +63,6 @@ export function Blog() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <Header variant="landing" />
       
       <div className="max-w-7xl mx-auto px-4 py-16">
         {/* Header */}
