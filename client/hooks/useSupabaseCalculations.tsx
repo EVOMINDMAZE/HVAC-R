@@ -311,8 +311,10 @@ export function useSupabaseCalculations() {
         }
       }
     } catch (error: any) {
-      // Use robust error logging
-      logError("fetchCalculations", error);
+      // Skip logging for AbortError - these are expected from health check timeouts
+      if (error?.name !== 'AbortError') {
+        logError("fetchCalculations", error);
+      }
 
       // Extract readable error message
       let errorMessage = "Unknown error occurred";
