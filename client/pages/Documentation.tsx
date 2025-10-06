@@ -106,20 +106,20 @@ export function Documentation() {
       
       <div className="max-w-7xl mx-auto px-4 py-16">
         {/* Header */}
-        <div className="text-center mb-16">
-          <Badge variant="secondary" className="mb-4 text-blue-600 bg-blue-100">
-            Documentation
-          </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Engineering 
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              {" "}Documentation
-            </span>
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Comprehensive guides, tutorials, and reference materials to help you master 
-            HVAC&R calculations and get the most out of our tools.
-          </p>
+        <div className="flex items-start justify-between mb-16">
+          <div>
+            <Badge variant="secondary" className="mb-4 text-blue-600 bg-blue-100">Documentation</Badge>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Engineering
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{" "}Documentation</span>
+            </h1>
+            <p className="text-xl text-gray-600 max-w-3xl leading-relaxed">
+              Comprehensive guides, tutorials, and reference materials to help you master HVAC&R calculations and get the most out of our tools.
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <BackButton fallback="/" />
+          </div>
         </div>
 
         {/* Search and Navigation */}
