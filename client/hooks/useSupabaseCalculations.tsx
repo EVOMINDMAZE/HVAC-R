@@ -329,6 +329,12 @@ export function useSupabaseCalculations() {
         logError("fetchCalculations", error);
       }
 
+      // Skip toast notifications for expected network errors
+      if (isExpectedError) {
+        console.debug("Suppressed expected network error:", error?.message);
+        return;
+      }
+
       // Extract readable error message
       let errorMessage = "Unknown error occurred";
 
