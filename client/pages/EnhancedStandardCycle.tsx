@@ -36,6 +36,7 @@ import { TechnicalTooltip, TechTerm } from "../components/TechnicalTooltip";
 import { SaveCalculation } from "../components/SaveCalculation";
 import { RenameCalculationDialog } from "../components/RenameCalculationDialog";
 import { ProfessionalFeatures } from "../components/ProfessionalFeatures";
+import { useOllamaRecommendedRange } from "@/hooks/useOllamaRecommendedRange";
 import { useSupabaseCalculations } from "../hooks/useSupabaseCalculations";
 import { consumeCalculationPreset } from "@/lib/historyPresets";
 import {
@@ -109,6 +110,10 @@ export function EnhancedStandardCycleContent() {
   });
 
   const [results, setResults] = useState<CalculationResults | null>(null);
+  const { data: aiRange, loading: aiLoading, error: aiError, refresh: refreshAi } = useOllamaRecommendedRange(
+    formData.refrigerant,
+    { auto: true }
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
@@ -218,12 +223,14 @@ export function EnhancedStandardCycleContent() {
         setValidationWarnings(warnings);
       }
       setError(null);
+      try { refreshAi(); } catch (_) {}
     },
     [
       formData.evap_temp_c,
       formData.cond_temp_c,
       formData.superheat_c,
       formData.subcooling_c,
+      refreshAi,
     ],
   );
 
@@ -1324,7 +1331,7 @@ export function EnhancedStandardCycleContent() {
                     </div>
                   )}
 
-                  {/* Recommended Operating Range (left column) */}
+                  {/* Recommended Operating Range (AI) */}
                   <div
                     className="mt-4 rounded-lg border bg-sky-50 p-4 mb-4"
                     aria-live="polite"
@@ -1351,35 +1358,45 @@ export function EnhancedStandardCycleContent() {
                       <Button
                         variant="default"
                         size="sm"
+                        disabled={aiLoading || !aiRange}
                         onClick={() =>
                           setFormData((prev) => ({
                             ...prev,
-                            evap_temp_c: -46.1,
-                            cond_temp_c: 13.9,
+                            evap_temp_c: (aiRange?.evap_temp_c ?? prev.evap_temp_c) as number,
+                            cond_temp_c: (aiRange?.cond_temp_c ?? prev.cond_temp_c) as number,
+                            superheat_c: (aiRange?.superheat_c ?? prev.superheat_c) as number,
+                            subcooling_c: (aiRange?.subcooling_c ?? prev.subcooling_c) as number,
                           }))
                         }
+                        aria-busy={aiLoading}
                       >
-                        Apply Range
+                        {aiLoading ? "Loading..." : "Apply Range"}
                       </Button>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {aiError && (
+                      <div className="text-red-700 text-sm mb-2">{aiError}</div>
+                    )}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                       <div>
-                        <div className="font-medium">
-                          Evaporator Temperature
-                        </div>
-                        <div className="text-sm">Recommended: -46.1 °C</div>
-                        <div className="text-sm text-gray-600">
-                          Range: -93.3 °C to -36.1 °C
-                        </div>
+                        <div className="font-medium">Evaporator Temperature</div>
+                        <div>Recommended: {aiRange?.evap_temp_c ?? "N/A"} °C</div>
                       </div>
                       <div>
                         <div className="font-medium">Condenser Temperature</div>
-                        <div className="text-sm">Recommended: 13.9 °C</div>
-                        <div className="text-sm text-gray-600">
-                          Range: -16.1 °C to 91.1 °C
-                        </div>
+                        <div>Recommended: {aiRange?.cond_temp_c ?? "N/A"} °C</div>
+                      </div>
+                      <div>
+                        <div className="font-medium">Superheat</div>
+                        <div>Recommended: {aiRange?.superheat_c ?? "N/A"} °C</div>
+                      </div>
+                      <div>
+                        <div className="font-medium">Subcooling</div>
+                        <div>Recommended: {aiRange?.subcooling_c ?? "N/A"} °C</div>
                       </div>
                     </div>
+                    {aiRange?.notes && (
+                      <div className="text-xs text-gray-600 mt-2">{aiRange.notes}</div>
+                    )}
                   </div>
 
                   <div className="space-y-4 mt-2">
