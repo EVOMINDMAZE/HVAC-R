@@ -132,7 +132,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
 
           {/* Navigation for non-authenticated users */}
           {!isAuthenticated && (
-            <nav className="hidden md:flex lg:hidden items-center space-x-6">
+            <nav className="hidden md:flex items-center space-x-6">
               <Link
                 to="/features"
                 className="text-gray-700 hover:text-blue-600 font-medium"
