@@ -46,7 +46,8 @@ export function useSupabaseCalculations() {
         try {
           return await fetch(input, init);
         } catch (err) {
-          console.debug("fetchCalculations.safeFetch failure", err);
+          // Silently catch network errors - these are expected when servers are unavailable
+          // The browser may still log "Failed to fetch" which cannot be suppressed
           return null;
         }
       };
