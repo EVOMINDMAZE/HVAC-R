@@ -17,7 +17,7 @@ export function SupportBar() {
   return (
     <>
       {/* Desktop/tablet support bar */}
-      <div className="hidden md:flex fixed right-8 bottom-6 z-40">
+      <div className="hidden md:flex fixed right-8 bottom-6 z-20">
         <div className="flex flex-col items-end gap-2">
           <a href="/help-center" className="inline-flex">
             <Button
