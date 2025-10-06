@@ -152,8 +152,10 @@ export function useSupabaseCalculations() {
           usedProxyUrl = "/api/calculations";
         } else {
           // Try external API_BASE_URL as fallback (production proxy)
-          // Check cache first
-          if (externalApiHealthCache && (now - externalApiHealthCache.timestamp) < SERVER_HEALTH_CACHE_TTL) {
+          // Skip check if we've failed too many times
+          if (externalApiHealthCache && externalApiHealthCache.failureCount >= MAX_FAILURES_BEFORE_DISABLE) {
+            console.debug("External API health checks disabled after repeated failures");
+          } else if (externalApiHealthCache && (now - externalApiHealthCache.timestamp) < SERVER_HEALTH_CACHE_TTL) {
             if (externalApiHealthCache.available) {
               usedProxyUrl = `${API_BASE_URL}/api/calculations`;
             }
@@ -192,7 +194,12 @@ export function useSupabaseCalculations() {
                 }
 
                 const available = Boolean(extHealth?.ok);
-                externalApiHealthCache = { available, timestamp: now };
+                const prevFailures = externalApiHealthCache?.failureCount || 0;
+                externalApiHealthCache = {
+                  available,
+                  timestamp: now,
+                  failureCount: available ? 0 : prevFailures + 1
+                };
                 if (available) {
                   usedProxyUrl = `${API_BASE_URL}/api/calculations`;
                 }
@@ -203,10 +210,20 @@ export function useSupabaseCalculations() {
                   clearTimeout(timeoutId);
                   timeoutId = null;
                 }
-                externalApiHealthCache = { available: false, timestamp: now };
+                const prevFailures = externalApiHealthCache?.failureCount || 0;
+                externalApiHealthCache = {
+                  available: false,
+                  timestamp: now,
+                  failureCount: prevFailures + 1
+                };
               }
             } catch (e) {
-              externalApiHealthCache = { available: false, timestamp: now };
+              const prevFailures = externalApiHealthCache?.failureCount || 0;
+              externalApiHealthCache = {
+                available: false,
+                timestamp: now,
+                failureCount: prevFailures + 1
+              };
             }
           }
         }
