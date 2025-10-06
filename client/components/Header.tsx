@@ -106,10 +106,14 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                       aria-haspopup="menu"
                       aria-expanded={isAvatarOpen}
                       onClick={() => setIsAvatarOpen((s) => !s)}
-                      className="h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-200"
+                      className="h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-200"
                       aria-label="Account menu"
                     >
-                      {initials}
+                      {avatarUrl ? (
+                        <img src={avatarUrl} alt="User avatar" className="h-9 w-9 object-cover rounded-full" />
+                      ) : (
+                        <span className="text-sm font-semibold">{initials}</span>
+                      )}
                     </button>
 
                     {isAvatarOpen && (
