@@ -9,7 +9,6 @@ import { Link } from "react-router-dom";
 export function Landing() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      <Header variant="landing" />
 
       <div className="max-w-7xl mx-auto px-4 pt-4">
         <SupabaseStatus />
