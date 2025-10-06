@@ -17,6 +17,7 @@ import {
   Users,
   Zap
 } from "lucide-react";
+import { BackButton } from "@/components/BackButton";
 
 const faqs = [
   {
