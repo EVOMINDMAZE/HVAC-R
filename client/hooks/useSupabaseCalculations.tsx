@@ -72,56 +72,21 @@ export function useSupabaseCalculations() {
           console.debug("Using cached server health status:", serverAvailable);
         } else {
           try {
-            const controller = new AbortController();
-            let timeoutId: NodeJS.Timeout | null = null;
-            let completed = false;
-
-            try {
-              const healthPromise = safeFetch("/api/health", {
+            const healthPromise = Promise.race([
+              safeFetch("/api/health", {
                 method: "GET",
-                signal: controller.signal,
-              });
+              }),
+              new Promise<null>((resolve) => setTimeout(() => resolve(null), 500))
+            ]);
 
-              // Set timeout to abort if request takes too long
-              timeoutId = setTimeout(() => {
-                if (!completed) {
-                  completed = true;
-                  try {
-                    controller.abort();
-                  } catch (abortErr) {
-                    // Silently ignore abort errors
-                  }
-                }
-              }, 500);
-
-              const h = await healthPromise;
-              if (!completed) {
-                completed = true;
-                if (timeoutId) {
-                  clearTimeout(timeoutId);
-                }
-              }
-
-              serverAvailable = Boolean(h?.ok);
-              const prevFailures = serverHealthCache?.failureCount || 0;
-              serverHealthCache = {
-                available: serverAvailable,
-                timestamp: now,
-                failureCount: serverAvailable ? 0 : prevFailures + 1
-              };
-            } catch (innerErr) {
-              // Catch any abort or network errors
-              if (!completed && timeoutId) {
-                clearTimeout(timeoutId);
-              }
-              serverAvailable = false;
-              const prevFailures = serverHealthCache?.failureCount || 0;
-              serverHealthCache = {
-                available: false,
-                timestamp: now,
-                failureCount: prevFailures + 1
-              };
-            }
+            const h = await healthPromise;
+            serverAvailable = Boolean(h?.ok);
+            const prevFailures = serverHealthCache?.failureCount || 0;
+            serverHealthCache = {
+              available: serverAvailable,
+              timestamp: now,
+              failureCount: serverAvailable ? 0 : prevFailures + 1
+            };
           } catch (healthErr) {
             serverAvailable = false;
             const prevFailures = serverHealthCache?.failureCount || 0;
