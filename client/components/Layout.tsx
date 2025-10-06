@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import React, { useState, useCallback, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
 import { QuickSearch } from "@/components/QuickSearch";
