@@ -43,13 +43,11 @@ export function useSupabaseCalculations() {
         input: RequestInfo | URL,
         init?: RequestInit,
       ): Promise<Response | null> => {
-        try {
-          return await fetch(input, init);
-        } catch (err) {
-          // Silently catch network errors - these are expected when servers are unavailable
-          // The browser may still log "Failed to fetch" which cannot be suppressed
-          return null;
-        }
+        return new Promise((resolve) => {
+          fetch(input, init)
+            .then(resolve)
+            .catch(() => resolve(null));
+        });
       };
 
       // Skipping direct Supabase preflight here. We will first try the server-side /api proxy
