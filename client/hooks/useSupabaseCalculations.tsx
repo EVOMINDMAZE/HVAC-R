@@ -357,8 +357,14 @@ export function useSupabaseCalculations() {
         }
       }
     } catch (error: any) {
-      // Skip logging for AbortError - these are expected from health check timeouts
-      if (error?.name !== 'AbortError') {
+      // Skip logging for expected errors (AbortError, network timeouts, fetch failures)
+      const isExpectedError =
+        error?.name === 'AbortError' ||
+        error?.message?.includes('Failed to fetch') ||
+        error?.message?.includes('signal is aborted') ||
+        error?.code === 'ECONNABORTED';
+
+      if (!isExpectedError) {
         logError("fetchCalculations", error);
       }
 
