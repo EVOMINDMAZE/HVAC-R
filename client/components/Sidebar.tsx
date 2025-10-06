@@ -11,16 +11,6 @@ export function Sidebar() {
   return (
     <nav className="w-full border-b border-sidebar-border bg-sidebar-background">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
-        <div className="flex items-center gap-3">
-          <div className="rounded-md bg-gradient-to-br from-blue-600 to-sky-500 p-2 shadow-sm">
-            <Calculator className="h-5 w-5 text-white" />
-          </div>
-          <div>
-            <div className="text-sm font-semibold text-sidebar-primary">Simulateon</div>
-            <div className="text-xs text-sidebar-accent">Workspace & analysis hub</div>
-          </div>
-        </div>
-
         <div className="hidden md:flex items-center gap-2">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
