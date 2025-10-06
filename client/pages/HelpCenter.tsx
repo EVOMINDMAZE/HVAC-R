@@ -139,9 +139,7 @@ export function HelpCenter() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="outline" onClick={() => { if (window.history.length > 1) window.history.back(); else window.location.href = '/dashboard'; }}>
-              ← Back
-            </Button>
+            <BackButton fallback="/dashboard" />
           </div>
         </div>
 
