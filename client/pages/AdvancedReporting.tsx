@@ -31,7 +31,6 @@ export function AdvancedReporting() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <Header variant="dashboard" />
       <main className="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl md:text-3xl font-bold text-blue-900 flex items-center gap-2">
