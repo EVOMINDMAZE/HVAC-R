@@ -217,62 +217,8 @@ export function useSupabaseCalculations() {
         );
       }
 
-      // Fallback: Query Supabase for calculations (legacy path)
-      // If server proxy failed and we have a supabase client, perform a targeted preflight to avoid
-      // surfacing ambiguous network errors. This preflight is done only when we must talk to Supabase from the browser.
-      if (supabase) {
-        try {
-          const { supabaseUrl, configured, isValidUrl } = getSupabaseConfig();
-          if (!configured) {
-            throw new Error(
-              "Supabase is not configured for browser use. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.",
-            );
-          }
-          if (!isValidUrl) {
-            throw new Error(
-              `VITE_SUPABASE_URL appears invalid: ${supabaseUrl}`,
-            );
-          }
-
-          const url = supabaseUrl.endsWith("/")
-            ? supabaseUrl
-            : `${supabaseUrl}/`;
-          const controller = new AbortController();
-          const timeout = setTimeout(() => controller.abort(), 3000);
-          try {
-            // Try a HEAD to keep payload minimal; some providers block HEAD so we fall back to GET
-            let res = await safeFetch(url, {
-              method: "HEAD",
-              mode: "cors",
-              signal: controller.signal,
-            });
-            if (!res?.ok)
-              res = await safeFetch(url, {
-                method: "GET",
-                mode: "cors",
-                signal: controller.signal,
-              });
-            if (!res) {
-              console.warn(
-                "Supabase host unreachable; continuing to client fallback",
-              );
-            }
-            // connectivity ok if we reach here
-            clearTimeout(timeout);
-          } finally {
-            clearTimeout(timeout);
-          }
-        } catch (connErr) {
-          logError("fetchCalculations.preflight", connErr);
-          // Do not throw here; continue to attempt Supabase client which will report detailed error
-          const message =
-            connErr instanceof Error ? connErr.message : String(connErr);
-          console.warn(
-            "Supabase preflight failed, attempting Supabase client fetch which may surface detailed errors:",
-            message,
-          );
-        }
-      }
+      // Fallback: Query Supabase for calculations directly
+      // Skip preflight checks - Supabase client handles connectivity internally
       let data: any = null;
       try {
         const res = await supabase
