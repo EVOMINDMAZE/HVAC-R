@@ -111,7 +111,9 @@
 
   /* Focus styles */
   *:focus-visible {
-    @apply outline-none ring-2 ring-blue-500 ring-offset-2;
+    @apply outline-none ring-2 ring-offset-2;
+    /* Use theme ring color variable for accessibility focus */
+    box-shadow: 0 0 0 3px hsl(var(--ring) / 0.15);
   }
 }
 
