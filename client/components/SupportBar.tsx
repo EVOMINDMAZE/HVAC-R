@@ -4,8 +4,8 @@ import { useLocation } from 'react-router-dom';
 
 export function SupportBar() {
   const location = useLocation();
-  const hideOn = ['/signin', '/signup', '/dashboard', '/help-center'];
-  if (hideOn.includes(location.pathname)) return null;
+  const showOn = ['/', '/features', '/pricing', '/api-docs', '/about', '/contact'];
+  if (!showOn.includes(location.pathname)) return null;
 
   return (
     <>
