@@ -46,7 +46,7 @@ export function SupportBar() {
       </div>
 
       {/* Mobile compact help button */}
-      <div className="md:hidden fixed right-3 bottom-3 z-30">
+      <div className="md:hidden fixed right-3 bottom-3 z-20">
         <a href="/help-center" aria-label="Open Help Center">
           <button
             className="bg-white shadow rounded-full h-12 w-12 flex items-center justify-center text-sm"
