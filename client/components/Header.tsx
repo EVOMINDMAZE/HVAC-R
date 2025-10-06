@@ -112,7 +112,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                     </button>
 
                     {isAvatarOpen && (
-                      <div role="menu" className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-60">
+                      <div role="menu" className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-[9999]">
                         <nav className="flex flex-col p-2">
                           <Link to="/profile" onClick={() => setIsAvatarOpen(false)} role="menuitem" tabIndex={0} className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded">Profile</Link>
                           <Link to="/settings" onClick={() => setIsAvatarOpen(false)} role="menuitem" tabIndex={0} className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded">Settings</Link>
