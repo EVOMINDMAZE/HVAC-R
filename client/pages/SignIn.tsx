@@ -138,6 +138,8 @@ export function SignIn() {
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
                     className="pl-10 border-blue-200 focus:border-blue-500"
+                    aria-invalid={error ? true : false}
+                    aria-describedby={error ? "signin-error" : undefined}
                     required
                   />
                 </div>
