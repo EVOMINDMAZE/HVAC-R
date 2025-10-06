@@ -156,7 +156,7 @@ export function HelpCenter() {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-4 gap-8">
+        <div className="grid lg:grid-cols-4 gap-8 isolate">
           {/* Sidebar */}
           <div className="lg:col-span-1">
             <Card className="bg-white shadow-none lg:shadow-lg border-blue-200 relative z-0 lg:sticky lg:top-24 lg:z-20">
