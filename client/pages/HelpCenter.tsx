@@ -124,20 +124,24 @@ export function HelpCenter() {
       
       <div className="max-w-7xl mx-auto px-4 py-16">
         {/* Header */}
-        <div className="text-center mb-16">
-          <Badge variant="secondary" className="mb-4 text-blue-600 bg-blue-100">
-            Help Center
-          </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            How can we 
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              {" "}help you?
-            </span>
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Find answers to common questions, get technical support, and learn how to 
-            make the most of our HVAC&R calculation tools.
-          </p>
+        <div className="flex items-start justify-between mb-8">
+          <div className="max-w-3xl">
+            <Badge variant="secondary" className="mb-4 text-blue-600 bg-blue-100">
+              Help Center
+            </Badge>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
+              How can we
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> help you?</span>
+            </h1>
+            <p className="text-xl text-gray-600 mt-3">
+              Find answers to common questions, get technical support, and learn how to make the most of our HVAC&R calculation tools.
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" onClick={() => { if (window.history.length > 1) window.history.back(); else window.location.href = '/dashboard'; }}>
+              ← Back
+            </Button>
+          </div>
         </div>
 
         {/* Search */}
