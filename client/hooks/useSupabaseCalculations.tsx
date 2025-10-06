@@ -16,9 +16,10 @@ export interface Calculation {
 }
 
 // Cache server availability to avoid repeated failed fetch attempts
-let serverHealthCache: { available: boolean; timestamp: number } | null = null;
-let externalApiHealthCache: { available: boolean; timestamp: number } | null = null;
-const SERVER_HEALTH_CACHE_TTL = 30000; // 30 seconds
+let serverHealthCache: { available: boolean; timestamp: number; failureCount: number } | null = null;
+let externalApiHealthCache: { available: boolean; timestamp: number; failureCount: number } | null = null;
+const SERVER_HEALTH_CACHE_TTL = 60000; // 60 seconds
+const MAX_FAILURES_BEFORE_DISABLE = 2; // Stop checking after 2 failures
 
 export function useSupabaseCalculations() {
   const [calculations, setCalculations] = useState<Calculation[]>([]);
