@@ -190,7 +190,7 @@ export function HelpCenter() {
             </Card>
 
             {/* Quick Links */}
-            <Card className="bg-white shadow-lg border-gray-200 mt-6">
+            <Card className="bg-white shadow-lg border-gray-200 mt-6 relative z-0">
               <CardHeader>
                 <CardTitle className="text-lg">Need More Help?</CardTitle>
               </CardHeader>
