@@ -134,6 +134,7 @@ export function useSupabaseCalculations() {
             try {
               const controller = new AbortController();
               let timeoutId: NodeJS.Timeout | null = null;
+              let completed = false;
 
               try {
                 const healthPromise = safeFetch(`${API_BASE_URL}/api/health`, {
@@ -143,11 +144,18 @@ export function useSupabaseCalculations() {
 
                 // Set timeout to abort if request takes too long
                 timeoutId = setTimeout(() => {
-                  controller.abort();
+                  if (!completed) {
+                    try {
+                      controller.abort();
+                    } catch (e) {
+                      // Ignore abort errors
+                    }
+                  }
                   timeoutId = null;
                 }, 500);
 
                 const extHealth = await healthPromise;
+                completed = true;
 
                 // Clear timeout if request completed
                 if (timeoutId) {
@@ -162,6 +170,7 @@ export function useSupabaseCalculations() {
                 }
               } catch (abortErr) {
                 // AbortError is expected when timeout fires, suppress it
+                completed = true;
                 if (timeoutId) {
                   clearTimeout(timeoutId);
                   timeoutId = null;
