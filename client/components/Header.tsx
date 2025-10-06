@@ -85,7 +85,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                     <span className="text-sm text-muted-foreground truncate max-w-[12rem]">{user?.email}</span>
                     <span className="text-xs text-gray-400">{user?.user_metadata?.full_name ?? ''}</span>
                   </div>
-                  <div className="h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold">{initials}</div>
+                  <Link to="/profile" className="h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold" aria-label="Open profile">{initials}</Link>
                 </div>
 
                 <Button variant="ghost" size="sm" className="md:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
