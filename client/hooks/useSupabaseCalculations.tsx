@@ -15,6 +15,10 @@ export interface Calculation {
   name?: string;
 }
 
+// Cache server availability to avoid repeated failed fetch attempts
+let serverHealthCache: { available: boolean; timestamp: number } | null = null;
+const SERVER_HEALTH_CACHE_TTL = 30000; // 30 seconds
+
 export function useSupabaseCalculations() {
   const [calculations, setCalculations] = useState<Calculation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -54,24 +58,34 @@ export function useSupabaseCalculations() {
       try {
         // Quick health check for server proxy to avoid throwing 'Failed to fetch' when server missing
         let serverAvailable = false;
-        try {
-          const controller = new AbortController();
-          const timeout = setTimeout(() => controller.abort(), 1000);
+
+        // Check cache first to avoid repeated failed requests
+        const now = Date.now();
+        if (serverHealthCache && (now - serverHealthCache.timestamp) < SERVER_HEALTH_CACHE_TTL) {
+          serverAvailable = serverHealthCache.available;
+          console.debug("Using cached server health status:", serverAvailable);
+        } else {
           try {
-            const h = await safeFetch("/api/health", {
-              method: "GET",
-              signal: controller.signal,
-            });
-            serverAvailable = Boolean(h?.ok);
-          } finally {
-            clearTimeout(timeout);
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 500); // Reduced timeout
+            try {
+              const h = await safeFetch("/api/health", {
+                method: "GET",
+                signal: controller.signal,
+              });
+              serverAvailable = Boolean(h?.ok);
+              serverHealthCache = { available: serverAvailable, timestamp: now };
+            } finally {
+              clearTimeout(timeout);
+            }
+          } catch (healthErr) {
+            console.debug(
+              "Server health check failed, skipping server proxy:",
+              healthErr,
+            );
+            serverAvailable = false;
+            serverHealthCache = { available: false, timestamp: now };
           }
-        } catch (healthErr) {
-          console.debug(
-            "Server health check failed, skipping server proxy:",
-            healthErr,
-          );
-          serverAvailable = false;
         }
 
         // Determine which proxy (local or external) to use for /api calls
