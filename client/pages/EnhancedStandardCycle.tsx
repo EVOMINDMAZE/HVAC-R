@@ -1523,157 +1523,180 @@ export function EnhancedStandardCycleContent() {
 
                     {/* Refrigerant Details and Validation Card */}
                     <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
-                      <div className="flex flex-col space-y-1.5 p-6">
-                        <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
-                          <div
-                            className="w-4 h-4 rounded-full"
-                            style={{
-                              backgroundColor: selectedRefrigerant?.color,
-                            }}
-                          />
-                          {selectedRefrigerant
-                            ? `${selectedRefrigerant.name} - ${selectedRefrigerant.fullName}`
-                            : "Refrigerant"}
-                        </h3>
-                      </div>
-
-                      <div className="p-6 pt-0 space-y-4">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                          <div className="flex items-center gap-2">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="h-4 w-4 text-green-500"
-                            >
-                              <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
-                              <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-                            </svg>
-                            <div>
-                              <div className="text-sm font-medium">
-                                <TechTerm term="gwp">GWP</TechTerm>
-                              </div>
-                              <div className="text-sm text-gray-600">
-                                {selectedRefrigerant?.globalWarmingPotential ??
-                                  selectedRefrigerant?.gwp ??
-                                  "N/A"}
-                              </div>
-                            </div>
+                      {selectedRefrigerant ? (
+                        <>
+                          <div className="flex flex-col space-y-1.5 p-6">
+                            <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                              <div
+                                className="w-4 h-4 rounded-full"
+                                style={{
+                                  backgroundColor: selectedRefrigerant?.color,
+                                }}
+                              />
+                              {`${selectedRefrigerant.name} - ${selectedRefrigerant.fullName}`}
+                            </h3>
                           </div>
 
-                          <div className="flex items-center gap-2">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="h-4 w-4 text-blue-500"
-                            >
-                              <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
-                            </svg>
+                          <div className="p-6 pt-0 space-y-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                              <div className="flex items-center gap-2">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="20"
+                                  height="20"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  className="h-4 w-4 text-green-500"
+                                >
+                                  <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                                  <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                                </svg>
+                                <div>
+                                  <div className="text-sm font-medium">
+                                    <TechTerm term="gwp">GWP</TechTerm>
+                                  </div>
+                                  <div className="text-sm text-gray-600">
+                                    {selectedRefrigerant?.globalWarmingPotential ??
+                                      selectedRefrigerant?.gwp ??
+                                      "N/A"}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-2">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="20"
+                                  height="20"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  className="h-4 w-4 text-blue-500"
+                                >
+                                  <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+                                </svg>
+                                <div>
+                                  <div className="text-sm font-medium">
+                                    <TechTerm term="safety_class">Safety</TechTerm>
+                                  </div>
+                                  <div className="text-sm text-gray-600">
+                                    {selectedRefrigerant?.safety ?? "N/A"}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-2">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="20"
+                                  height="20"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  className="h-4 w-4 text-red-500"
+                                >
+                                  <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" />
+                                </svg>
+                                <div>
+                                  <div className="text-sm font-medium">
+                                    <TechTerm term="critical_temperature">
+                                      Critical Temperature
+                                    </TechTerm>
+                                  </div>
+                                  <div className="text-sm text-gray-600">
+                                    {selectedRefrigerant?.limits?.critical_temp_c
+                                      ? selectedRefrigerant.limits.critical_temp_c.toFixed(
+                                          1,
+                                        ) + " °C"
+                                      : selectedRefrigerant?.limits?.criticalTemp
+                                        ? (
+                                            selectedRefrigerant.limits
+                                              .criticalTemp - 273.15
+                                          ).toFixed(1) + " °C"
+                                        : "N/A"}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-2">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="20"
+                                  height="20"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  className="h-4 w-4 text-purple-500"
+                                >
+                                  <path d="m12 14 4-4" />
+                                  <path d="M3.34 19a10 10 0 1 1 17.32 0" />
+                                </svg>
+                                <div>
+                                  <div className="text-sm font-medium">
+                                    <TechTerm term="critical_pressure">
+                                      Critical Pressure
+                                    </TechTerm>
+                                  </div>
+                                  <div className="text-sm text-gray-600">
+                                    {selectedRefrigerant?.limits
+                                      ?.critical_pressure_kpa
+                                      ? selectedRefrigerant.limits.critical_pressure_kpa.toFixed(
+                                          0,
+                                        ) + " kPa"
+                                      : selectedRefrigerant?.limits
+                                            ?.criticalPressure
+                                        ? Math.round(
+                                            selectedRefrigerant.limits
+                                              .criticalPressure / 1000,
+                                          ) + " kPa"
+                                        : "N/A"}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
                             <div>
-                              <div className="text-sm font-medium">
-                                <TechTerm term="safety_class">Safety</TechTerm>
-                              </div>
-                              <div className="text-sm text-gray-600">
-                                {selectedRefrigerant?.safety ?? "N/A"}
-                              </div>
+                              <p className="text-sm text-gray-700">
+                                {selectedRefrigerant?.description}
+                              </p>
                             </div>
                           </div>
-
-                          <div className="flex items-center gap-2">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="h-4 w-4 text-red-500"
+                        </>
+                      ) : (
+                        <div className="p-8 text-center">
+                          <svg className="mx-auto h-12 w-12 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                            <path d="M12 2v6" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M12 22v-6" strokeLinecap="round" strokeLinejoin="round"/>
+                            <circle cx="12" cy="12" r="8" />
+                          </svg>
+                          <div className="mt-4 text-lg font-medium">Select a refrigerant to view properties</div>
+                          <div className="mt-2 text-sm text-muted-foreground">Choose a refrigerant from the selector to populate properties like GWP, safety, and critical values.</div>
+                          <div className="mt-4">
+                            <Button
+                              variant="outline"
+                              onClick={() => {
+                                const el = document.getElementById("refrigerant-selector");
+                                if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+                              }}
                             >
-                              <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" />
-                            </svg>
-                            <div>
-                              <div className="text-sm font-medium">
-                                <TechTerm term="critical_temperature">
-                                  Critical Temperature
-                                </TechTerm>
-                              </div>
-                              <div className="text-sm text-gray-600">
-                                {selectedRefrigerant?.limits?.critical_temp_c
-                                  ? selectedRefrigerant.limits.critical_temp_c.toFixed(
-                                      1,
-                                    ) + " °C"
-                                  : selectedRefrigerant?.limits?.criticalTemp
-                                    ? (
-                                        selectedRefrigerant.limits
-                                          .criticalTemp - 273.15
-                                      ).toFixed(1) + " °C"
-                                    : "N/A"}
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-2">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="h-4 w-4 text-purple-500"
-                            >
-                              <path d="m12 14 4-4" />
-                              <path d="M3.34 19a10 10 0 1 1 17.32 0" />
-                            </svg>
-                            <div>
-                              <div className="text-sm font-medium">
-                                <TechTerm term="critical_pressure">
-                                  Critical Pressure
-                                </TechTerm>
-                              </div>
-                              <div className="text-sm text-gray-600">
-                                {selectedRefrigerant?.limits
-                                  ?.critical_pressure_kpa
-                                  ? selectedRefrigerant.limits.critical_pressure_kpa.toFixed(
-                                      0,
-                                    ) + " kPa"
-                                  : selectedRefrigerant?.limits
-                                        ?.criticalPressure
-                                    ? Math.round(
-                                        selectedRefrigerant.limits
-                                          .criticalPressure / 1000,
-                                      ) + " kPa"
-                                    : "N/A"}
-                              </div>
-                            </div>
+                              Choose Refrigerant
+                            </Button>
                           </div>
                         </div>
-
-                        <div>
-                          <p className="text-sm text-gray-700">
-                            {selectedRefrigerant?.description}
-                          </p>
-                        </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                 </div>
