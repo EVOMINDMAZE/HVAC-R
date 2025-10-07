@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Save, Copy, AlertTriangle, Clock, CheckCircle, HelpCircle } from "lucide-react";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { apiClient } from "@/lib/api";
+import { consumeCalculationPreset } from "@/lib/historyPresets";
 
 const SYMPTOMS = [
   { id: "no_cooling", label: "No/insufficient cooling" },
