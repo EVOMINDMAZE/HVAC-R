@@ -787,6 +787,39 @@ export function CalculationDetailsModal({
           </div>
         );
 
+      case "Troubleshooting": {
+        // results expected: { recommendations: string[], severity: string, summary: string }
+        const recs = (results && (results.recommendations || results.recs || results.data?.recommendations)) || [];
+        const severity = results?.severity || (results?.data && results.data.severity) || 'unknown';
+        const summary = results?.summary || (results?.data && results.data.summary) || null;
+        return (
+          <div className="space-y-4">
+            {summary && (
+              <div>
+                <h5 className="font-semibold text-gray-900 mb-2">Summary</h5>
+                <div className="text-sm text-muted-foreground">{summary}</div>
+              </div>
+            )}
+            <div>
+              <h5 className="font-semibold text-green-600 mb-2">Recommendations</h5>
+              {Array.isArray(recs) && recs.length > 0 ? (
+                <ul className="list-disc pl-6 space-y-1 text-sm">
+                  {recs.map((r: any, i: number) => (
+                    <li key={i}>{typeof r === 'string' ? r : JSON.stringify(r)}</li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="text-gray-500">No recommendations available</div>
+              )}
+            </div>
+            <div>
+              <span className="font-medium text-gray-700">Severity</span>
+              <div className="mt-1 text-sm">{String(severity)}</div>
+            </div>
+          </div>
+        );
+      }
+
       case "Refrigerant Comparison":
         const comparisonResults =
           pick(results, [["data", "results"], ["data"], ["results"], []]) || [];
