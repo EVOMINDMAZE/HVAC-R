@@ -1824,8 +1824,11 @@ export function EnhancedStandardCycleContent() {
               <CheckCircle className="h-5 w-5" aria-hidden />
               <AlertTitle>Calculation complete</AlertTitle>
               <AlertDescription>
-                Outcomes generated with {formData.refrigerant}. Review, rename,
-                or save this scenario to your history.
+                {formData.refrigerant ? (
+                  <>Outcomes generated with {formData.refrigerant}. Review, rename, or save this scenario to your history.</>
+                ) : (
+                  <>Outcomes generated. Review, rename, or save this scenario to your history.</>
+                )}
               </AlertDescription>
             </Alert>
           )}
@@ -2115,7 +2118,7 @@ export function EnhancedStandardCycleContent() {
                           </div>
                           <div>
                             <TechTerm term="density">ρ</TechTerm>:{" "}
-                            {formatValue(getDensity(point), "kg/m��")}
+                            {formatValue(getDensity(point), "kg/m³")}
                           </div>
                           {getPropertyValue(point, [
                             "vapor_quality",
