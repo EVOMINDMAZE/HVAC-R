@@ -412,6 +412,58 @@ export function CalculationDetailsModal({
           </div>
         );
 
+      case "Troubleshooting":
+        // Show common troubleshooting inputs
+        return (
+          <div className="space-y-4">
+            <div>
+              <div className="font-medium text-gray-700">Symptom</div>
+              <div className="ml-2 text-sm">{inputs?.symptom || 'N/A'}</div>
+            </div>
+            <div>
+              <div className="font-medium text-gray-700">Ambient</div>
+              <div className="ml-2 text-sm">{inputs?.ambient?.value ?? 'N/A'} {inputs?.ambient?.unit || ''}</div>
+            </div>
+            <div>
+              <div className="font-medium text-gray-700">Measurements</div>
+              <div className="ml-2 text-sm space-y-1">
+                <div>Suction pressure: {inputs?.measurements?.suction_pressure_kpa ?? 'N/A'}</div>
+                <div>Head pressure: {inputs?.measurements?.head_pressure_kpa ?? 'N/A'}</div>
+                <div>Voltage: {inputs?.measurements?.voltage_v ?? 'N/A'}</div>
+                <div>Current: {inputs?.measurements?.current_a ?? 'N/A'}</div>
+              </div>
+            </div>
+            <div>
+              <div className="font-medium text-gray-700">Answers</div>
+              <div className="ml-2 text-sm space-y-1">
+                {inputs?.answers && Object.keys(inputs.answers).length > 0 ? (
+                  Object.entries(inputs.answers).map(([k, v]) => (
+                    <div key={k}>{k}: {String(v)}</div>
+                  ))
+                ) : (
+                  <div className="text-gray-500">No answers provided</div>
+                )}
+              </div>
+            </div>
+            <div>
+              <div className="font-medium text-gray-700">Notes</div>
+              <div className="ml-2 text-sm">{inputs?.notes || 'N/A'}</div>
+            </div>
+            {inputs?.attachments && inputs.attachments.length > 0 && (
+              <div>
+                <div className="font-medium text-gray-700">Attachments</div>
+                <div className="ml-2 flex gap-2 mt-2 flex-wrap">
+                  {inputs.attachments.map((a: any, i: number) => (
+                    <a key={i} href={a} target="_blank" rel="noreferrer" className="inline-block border rounded overflow-hidden">
+                      <img src={a} alt={`attachment-${i}`} className="h-20 w-28 object-cover" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+
       default:
         return <div className="text-gray-500">No input details available</div>;
     }
