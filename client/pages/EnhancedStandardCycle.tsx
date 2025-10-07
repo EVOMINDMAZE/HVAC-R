@@ -1304,7 +1304,7 @@ export function EnhancedStandardCycleContent() {
 
                 <Button
                   onClick={() => void handleCalculate()}
-                  disabled={loading}
+                  disabled={loading || !formData.refrigerant}
                   className="w-full focus:ring-2 focus:ring-sky-500 focus:outline-none"
                   size="lg"
                   aria-label="Calculate cycle"
@@ -2115,7 +2115,7 @@ export function EnhancedStandardCycleContent() {
                           </div>
                           <div>
                             <TechTerm term="density">ρ</TechTerm>:{" "}
-                            {formatValue(getDensity(point), "kg/m³")}
+                            {formatValue(getDensity(point), "kg/m��")}
                           </div>
                           {getPropertyValue(point, [
                             "vapor_quality",
