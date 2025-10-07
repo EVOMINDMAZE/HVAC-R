@@ -850,6 +850,7 @@ export function CalculationDetailsModal({
         );
 
       case "Cascade Cycle":
+        // fallthrough to existing cascade rendering
         // Use deepPick to search multiple potential roots (results, results.data, etc.)
         const deepPick = (paths: string[][]) => {
           const bases = [
