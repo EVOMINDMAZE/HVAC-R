@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Save } from "lucide-react";
+import { Save, Copy, AlertTriangle, Clock, CheckCircle, HelpCircle } from "lucide-react";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { apiClient } from "@/lib/api";
 
@@ -48,6 +48,7 @@ export default function Troubleshooting() {
   const [aiResponse, setAiResponse] = useState<any>(null);
   const [aiError, setAiError] = useState<string | null>(null);
   const [aiConversationId, setAiConversationId] = useState<string | null>(null);
+  const [copiedQuestionIndex, setCopiedQuestionIndex] = useState<number | null>(null);
 
   // Structured measurements
   const [suctionPressure, setSuctionPressure] = useState<string>("");
@@ -445,6 +446,16 @@ export default function Troubleshooting() {
     }
   };
 
+  const copyText = async (text: string, idx?: number) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      if (typeof idx === "number") setCopiedQuestionIndex(idx);
+      window.setTimeout(() => setCopiedQuestionIndex(null), 2000);
+    } catch (e) {
+      console.warn("Clipboard copy failed", e);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <main className="max-w-4xl mx-auto p-4 md:p-6 space-y-6">
@@ -722,75 +733,128 @@ export default function Troubleshooting() {
             )}
             {aiError && <div className="text-sm text-red-600">{aiError}</div>}
             {aiResponse && (
-              <div className="space-y-3">
+              <div className="space-y-4">
+                {/* Summary */}
                 {aiResponse.summary && (
-                  <div>
-                    <div className="font-semibold">Summary</div>
-                    <div className="text-sm text-muted-foreground">
-                      {aiResponse.summary}
-                    </div>
-                  </div>
+                  <Card className="bg-white border">
+                    <CardHeader>
+                      <div className="flex items-center justify-between w-full">
+                        <CardTitle>AI Summary</CardTitle>
+                        <Badge className="ml-2">
+                          {aiResponse.urgency ? String(aiResponse.urgency).toUpperCase() : "INFO"}
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-sm text-muted-foreground">
+                        {aiResponse.summary}
+                      </div>
+                    </CardContent>
+                  </Card>
                 )}
-                {aiResponse.probable_causes &&
-                  aiResponse.probable_causes.length > 0 && (
-                    <div>
-                      <div className="font-semibold">Probable Causes</div>
-                      <ul className="list-disc pl-6">
-                        {aiResponse.probable_causes.map(
-                          (c: any, idx: number) => (
-                            <li key={idx} className="text-sm">
-                              {formatAiStep(
-                                c,
-                                typeof c === "string"
-                                  ? c
-                                  : c?.title
-                                    ? c.title
-                                    : `Cause ${idx + 1}`,
+
+                {/* Probable Causes */}
+                {aiResponse.probable_causes && aiResponse.probable_causes.length > 0 && (
+                  <Card className="bg-white border">
+                    <CardHeader>
+                      <CardTitle>Probable Causes</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {aiResponse.probable_causes.map((c: any, idx: number) => {
+                          const title = formatAiStep(
+                            c,
+                            typeof c === "string" ? c : c?.cause ? c.cause : `Cause ${idx + 1}`,
+                          );
+                          const confidence = c && typeof c === "object" && c.confidence ? Number(c.confidence) : null;
+                          return (
+                            <div key={idx} className="flex items-center justify-between">
+                              <div className="flex-1 pr-4">
+                                <div className="text-sm font-medium">{title}</div>
+                                {confidence !== null && (
+                                  <div className="text-xs text-muted-foreground">Confidence: {(confidence * 100).toFixed(0)}%</div>
+                                )}
+                              </div>
+                              {confidence !== null && (
+                                <div className="w-32">
+                                  <div className="h-2 bg-gray-200 rounded overflow-hidden">
+                                    <div
+                                      className={`h-2 rounded ${confidence > 0.66 ? 'bg-green-500' : confidence > 0.33 ? 'bg-yellow-400' : 'bg-red-500'}`}
+                                      style={{ width: `${Math.round(confidence * 100)}%` }}
+                                    />
+                                  </div>
+                                </div>
                               )}
-                              {c && typeof c === "object" && c.confidence
-                                ? ` — ${(Number(c.confidence) * 100).toFixed(0)}%`
-                                : ""}
-                            </li>
-                          ),
-                        )}
-                      </ul>
-                    </div>
-                  )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Steps */}
                 {aiResponse.steps && aiResponse.steps.length > 0 && (
-                  <div>
-                    <div className="font-semibold">Recommended Steps</div>
-                    <ol className="list-decimal pl-6">
-                      {aiResponse.steps.map((s: any, idx: number) => (
-                        <li key={idx} className="text-sm mb-1">
-                          {formatAiStep(s, `Step ${idx + 1}`)}
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
-                )}
-                {aiResponse.explanation && (
-                  <div>
-                    <div className="font-semibold">Reasoning</div>
-                    <div className="text-sm text-muted-foreground whitespace-pre-wrap">
-                      {aiResponse.explanation}
-                    </div>
-                  </div>
-                )}
-                {aiResponse.follow_up_questions &&
-                  aiResponse.follow_up_questions.length > 0 && (
-                    <div>
-                      <div className="font-semibold">Follow-up Questions</div>
-                      <ul className="list-disc pl-6">
-                        {aiResponse.follow_up_questions.map(
-                          (q: string, i: number) => (
-                            <li key={i} className="text-sm">
-                              {q}
+                  <Card className="bg-white border">
+                    <CardHeader>
+                      <CardTitle>Recommended Steps</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ol className="list-decimal pl-6 space-y-2">
+                        {aiResponse.steps.map((s: any, idx: number) => {
+                          const text = formatAiStep(s, `Step ${idx + 1}`);
+                          const urgency = s && typeof s === 'object' && s.urgency ? String(s.urgency) : undefined;
+                          const color = urgency === 'urgent' ? 'bg-red-100 text-red-700' : urgency === 'monitor' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-50 text-blue-700';
+                          return (
+                            <li key={idx} className="flex items-start gap-3">
+                              <div className="flex-1 text-sm">
+                                <div className="mb-1">{text}</div>
+                                {s.note && <div className="text-xs text-muted-foreground">{s.note}</div>}
+                              </div>
+                              <div className={`px-2 py-1 rounded-full text-xs font-medium ${color}`}>{urgency || 'routine'}</div>
                             </li>
-                          ),
-                        )}
-                      </ul>
-                    </div>
-                  )}
+                          );
+                        })}
+                      </ol>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Explanation */}
+                {aiResponse.explanation && (
+                  <Card className="bg-white border">
+                    <CardHeader>
+                      <CardTitle>Reasoning</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-sm text-muted-foreground whitespace-pre-wrap">{aiResponse.explanation}</div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Follow-up Questions */}
+                {aiResponse.follow_up_questions && aiResponse.follow_up_questions.length > 0 && (
+                  <Card className="bg-white border">
+                    <CardHeader>
+                      <CardTitle>Follow-up Questions</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        {aiResponse.follow_up_questions.map((q: string, i: number) => (
+                          <div key={i} className="flex items-center justify-between">
+                            <div className="text-sm">{q}</div>
+                            <div className="flex items-center gap-2">
+                              <Button variant="ghost" size="sm" onClick={() => copyText(q, i)}>
+                                <Copy className="h-4 w-4" />
+                              </Button>
+                              {copiedQuestionIndex === i && <div className="text-xs text-green-600">Copied</div>}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             )}
           </CardContent>
