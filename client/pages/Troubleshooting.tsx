@@ -11,7 +11,14 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Save, Copy, AlertTriangle, Clock, CheckCircle, HelpCircle } from "lucide-react";
+import {
+  Save,
+  Copy,
+  AlertTriangle,
+  Clock,
+  CheckCircle,
+  HelpCircle,
+} from "lucide-react";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { apiClient } from "@/lib/api";
 import { consumeCalculationPreset } from "@/lib/historyPresets";
@@ -49,7 +56,9 @@ export default function Troubleshooting() {
   const [aiResponse, setAiResponse] = useState<any>(null);
   const [aiError, setAiError] = useState<string | null>(null);
   const [aiConversationId, setAiConversationId] = useState<string | null>(null);
-  const [copiedQuestionIndex, setCopiedQuestionIndex] = useState<number | null>(null);
+  const [copiedQuestionIndex, setCopiedQuestionIndex] = useState<number | null>(
+    null,
+  );
 
   // Structured measurements
   const [suctionPressure, setSuctionPressure] = useState<string>("");
@@ -62,13 +71,15 @@ export default function Troubleshooting() {
   useEffect(() => {
     try {
       const preset = consumeCalculationPreset();
-      if (!preset || preset.type !== "Troubleshooting" || !preset.inputs) return;
+      if (!preset || preset.type !== "Troubleshooting" || !preset.inputs)
+        return;
       const inputs: any = preset.inputs;
       // symptom
       if (inputs.symptom) setSymptom(String(inputs.symptom));
       // ambient may be { value, unit }
       if (inputs.ambient) {
-        if (inputs.ambient.value !== undefined) setAmbient(String(inputs.ambient.value));
+        if (inputs.ambient.value !== undefined)
+          setAmbient(String(inputs.ambient.value));
         if (inputs.ambient.unit) setUnit(String(inputs.ambient.unit));
       }
       // measurements
@@ -77,16 +88,25 @@ export default function Troubleshooting() {
           setSuctionPressure(String(inputs.measurements.suction_pressure_kpa));
         if (inputs.measurements.head_pressure_kpa)
           setHeadPressure(String(inputs.measurements.head_pressure_kpa));
-        if (inputs.measurements.voltage_v) setVoltage(String(inputs.measurements.voltage_v));
-        if (inputs.measurements.current_a) setCurrent(String(inputs.measurements.current_a));
-        if (inputs.measurements.model_serial) setModelSerial(String(inputs.measurements.model_serial));
+        if (inputs.measurements.voltage_v)
+          setVoltage(String(inputs.measurements.voltage_v));
+        if (inputs.measurements.current_a)
+          setCurrent(String(inputs.measurements.current_a));
+        if (inputs.measurements.model_serial)
+          setModelSerial(String(inputs.measurements.model_serial));
       }
       // notes/observations
       if (inputs.notes) setObservations(String(inputs.notes));
       // answers (wizard answers)
-      if (inputs.answers && typeof inputs.answers === "object") setAnswers(inputs.answers);
+      if (inputs.answers && typeof inputs.answers === "object")
+        setAnswers(inputs.answers);
       // attachments
-      if (Array.isArray(inputs.attachments)) setAttachments(inputs.attachments.map((a: any) => (typeof a === 'string' ? a : a.url || '')));
+      if (Array.isArray(inputs.attachments))
+        setAttachments(
+          inputs.attachments.map((a: any) =>
+            typeof a === "string" ? a : a.url || "",
+          ),
+        );
       // results
       if (preset.results) setAiResponse(preset.results);
     } catch (e) {
@@ -441,12 +461,17 @@ export default function Troubleshooting() {
         if (typeof s !== "string") return s;
         try {
           // Remove fenced code blocks
-          let cleaned = s.replace(/```(?:json)?\n?/gi, "").replace(/```/g, "").trim();
+          let cleaned = s
+            .replace(/```(?:json)?\n?/gi, "")
+            .replace(/```/g, "")
+            .trim();
 
           // If the string contains an embedded JSON object/array, attempt to parse it.
           const firstBrace = cleaned.indexOf("{");
           const firstBracket = cleaned.indexOf("[");
-          const firstJsonIdx = [firstBrace, firstBracket].filter((i) => i >= 0).sort((a, b) => a - b)[0];
+          const firstJsonIdx = [firstBrace, firstBracket]
+            .filter((i) => i >= 0)
+            .sort((a, b) => a - b)[0];
 
           if (typeof firstJsonIdx === "number") {
             const candidate = cleaned.substring(firstJsonIdx);
@@ -500,7 +525,8 @@ export default function Troubleshooting() {
       }
 
       setAiResponse(merged);
-      if (resp.data?.conversationId) setAiConversationId(resp.data.conversationId);
+      if (resp.data?.conversationId)
+        setAiConversationId(resp.data.conversationId);
     } catch (e: any) {
       console.error("AI request failed", e);
       const message = e?.message || String(e);
@@ -857,7 +883,9 @@ export default function Troubleshooting() {
                       <div className="flex items-center justify-between w-full">
                         <CardTitle>AI Summary</CardTitle>
                         <Badge className="ml-2">
-                          {aiResponse.urgency ? String(aiResponse.urgency).toUpperCase() : "INFO"}
+                          {aiResponse.urgency
+                            ? String(aiResponse.urgency).toUpperCase()
+                            : "INFO"}
                         </Badge>
                       </div>
                     </CardHeader>
@@ -870,44 +898,64 @@ export default function Troubleshooting() {
                 )}
 
                 {/* Probable Causes */}
-                {aiResponse.probable_causes && aiResponse.probable_causes.length > 0 && (
-                  <Card className="bg-white border">
-                    <CardHeader>
-                      <CardTitle>Probable Causes</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        {aiResponse.probable_causes.map((c: any, idx: number) => {
-                          const title = formatAiStep(
-                            c,
-                            typeof c === "string" ? c : c?.cause ? c.cause : `Cause ${idx + 1}`,
-                          );
-                          const confidence = c && typeof c === "object" && c.confidence ? Number(c.confidence) : null;
-                          return (
-                            <div key={idx} className="flex items-center justify-between">
-                              <div className="flex-1 pr-4">
-                                <div className="text-sm font-medium">{title}</div>
-                                {confidence !== null && (
-                                  <div className="text-xs text-muted-foreground">Confidence: {(confidence * 100).toFixed(0)}%</div>
-                                )}
-                              </div>
-                              {confidence !== null && (
-                                <div className="w-32">
-                                  <div className="h-2 bg-gray-200 rounded overflow-hidden">
-                                    <div
-                                      className={`h-2 rounded ${confidence > 0.66 ? 'bg-green-500' : confidence > 0.33 ? 'bg-yellow-400' : 'bg-red-500'}`}
-                                      style={{ width: `${Math.round(confidence * 100)}%` }}
-                                    />
+                {aiResponse.probable_causes &&
+                  aiResponse.probable_causes.length > 0 && (
+                    <Card className="bg-white border">
+                      <CardHeader>
+                        <CardTitle>Probable Causes</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          {aiResponse.probable_causes.map(
+                            (c: any, idx: number) => {
+                              const title = formatAiStep(
+                                c,
+                                typeof c === "string"
+                                  ? c
+                                  : c?.cause
+                                    ? c.cause
+                                    : `Cause ${idx + 1}`,
+                              );
+                              const confidence =
+                                c && typeof c === "object" && c.confidence
+                                  ? Number(c.confidence)
+                                  : null;
+                              return (
+                                <div
+                                  key={idx}
+                                  className="flex items-center justify-between"
+                                >
+                                  <div className="flex-1 pr-4">
+                                    <div className="text-sm font-medium">
+                                      {title}
+                                    </div>
+                                    {confidence !== null && (
+                                      <div className="text-xs text-muted-foreground">
+                                        Confidence:{" "}
+                                        {(confidence * 100).toFixed(0)}%
+                                      </div>
+                                    )}
                                   </div>
+                                  {confidence !== null && (
+                                    <div className="w-32">
+                                      <div className="h-2 bg-gray-200 rounded overflow-hidden">
+                                        <div
+                                          className={`h-2 rounded ${confidence > 0.66 ? "bg-green-500" : confidence > 0.33 ? "bg-yellow-400" : "bg-red-500"}`}
+                                          style={{
+                                            width: `${Math.round(confidence * 100)}%`,
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
+                              );
+                            },
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
 
                 {/* Steps */}
                 {aiResponse.steps && aiResponse.steps.length > 0 && (
@@ -919,15 +967,31 @@ export default function Troubleshooting() {
                       <ol className="list-decimal pl-6 space-y-2">
                         {aiResponse.steps.map((s: any, idx: number) => {
                           const text = formatAiStep(s, `Step ${idx + 1}`);
-                          const urgency = s && typeof s === 'object' && s.urgency ? String(s.urgency) : undefined;
-                          const color = urgency === 'urgent' ? 'bg-red-100 text-red-700' : urgency === 'monitor' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-50 text-blue-700';
+                          const urgency =
+                            s && typeof s === "object" && s.urgency
+                              ? String(s.urgency)
+                              : undefined;
+                          const color =
+                            urgency === "urgent"
+                              ? "bg-red-100 text-red-700"
+                              : urgency === "monitor"
+                                ? "bg-yellow-100 text-yellow-700"
+                                : "bg-blue-50 text-blue-700";
                           return (
                             <li key={idx} className="flex items-start gap-3">
                               <div className="flex-1 text-sm">
                                 <div className="mb-1">{text}</div>
-                                {s.note && <div className="text-xs text-muted-foreground">{s.note}</div>}
+                                {s.note && (
+                                  <div className="text-xs text-muted-foreground">
+                                    {s.note}
+                                  </div>
+                                )}
                               </div>
-                              <div className={`px-2 py-1 rounded-full text-xs font-medium ${color}`}>{urgency || 'routine'}</div>
+                              <div
+                                className={`px-2 py-1 rounded-full text-xs font-medium ${color}`}
+                              >
+                                {urgency || "routine"}
+                              </div>
                             </li>
                           );
                         })}
@@ -943,34 +1007,50 @@ export default function Troubleshooting() {
                       <CardTitle>Reasoning</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-sm text-muted-foreground whitespace-pre-wrap">{aiResponse.explanation}</div>
+                      <div className="text-sm text-muted-foreground whitespace-pre-wrap">
+                        {aiResponse.explanation}
+                      </div>
                     </CardContent>
                   </Card>
                 )}
 
                 {/* Follow-up Questions */}
-                {aiResponse.follow_up_questions && aiResponse.follow_up_questions.length > 0 && (
-                  <Card className="bg-white border">
-                    <CardHeader>
-                      <CardTitle>Follow-up Questions</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2">
-                        {aiResponse.follow_up_questions.map((q: string, i: number) => (
-                          <div key={i} className="flex items-center justify-between">
-                            <div className="text-sm">{q}</div>
-                            <div className="flex items-center gap-2">
-                              <Button variant="ghost" size="sm" onClick={() => copyText(q, i)}>
-                                <Copy className="h-4 w-4" />
-                              </Button>
-                              {copiedQuestionIndex === i && <div className="text-xs text-green-600">Copied</div>}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
+                {aiResponse.follow_up_questions &&
+                  aiResponse.follow_up_questions.length > 0 && (
+                    <Card className="bg-white border">
+                      <CardHeader>
+                        <CardTitle>Follow-up Questions</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2">
+                          {aiResponse.follow_up_questions.map(
+                            (q: string, i: number) => (
+                              <div
+                                key={i}
+                                className="flex items-center justify-between"
+                              >
+                                <div className="text-sm">{q}</div>
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => copyText(q, i)}
+                                  >
+                                    <Copy className="h-4 w-4" />
+                                  </Button>
+                                  {copiedQuestionIndex === i && (
+                                    <div className="text-xs text-green-600">
+                                      Copied
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            ),
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
               </div>
             )}
           </CardContent>

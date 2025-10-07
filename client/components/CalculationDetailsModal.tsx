@@ -418,19 +418,27 @@ export function CalculationDetailsModal({
           <div className="space-y-4">
             <div>
               <div className="font-medium text-gray-700">Symptom</div>
-              <div className="ml-2 text-sm">{inputs?.symptom || 'N/A'}</div>
+              <div className="ml-2 text-sm">{inputs?.symptom || "N/A"}</div>
             </div>
             <div>
               <div className="font-medium text-gray-700">Ambient</div>
-              <div className="ml-2 text-sm">{inputs?.ambient?.value ?? 'N/A'} {inputs?.ambient?.unit || ''}</div>
+              <div className="ml-2 text-sm">
+                {inputs?.ambient?.value ?? "N/A"} {inputs?.ambient?.unit || ""}
+              </div>
             </div>
             <div>
               <div className="font-medium text-gray-700">Measurements</div>
               <div className="ml-2 text-sm space-y-1">
-                <div>Suction pressure: {inputs?.measurements?.suction_pressure_kpa ?? 'N/A'}</div>
-                <div>Head pressure: {inputs?.measurements?.head_pressure_kpa ?? 'N/A'}</div>
-                <div>Voltage: {inputs?.measurements?.voltage_v ?? 'N/A'}</div>
-                <div>Current: {inputs?.measurements?.current_a ?? 'N/A'}</div>
+                <div>
+                  Suction pressure:{" "}
+                  {inputs?.measurements?.suction_pressure_kpa ?? "N/A"}
+                </div>
+                <div>
+                  Head pressure:{" "}
+                  {inputs?.measurements?.head_pressure_kpa ?? "N/A"}
+                </div>
+                <div>Voltage: {inputs?.measurements?.voltage_v ?? "N/A"}</div>
+                <div>Current: {inputs?.measurements?.current_a ?? "N/A"}</div>
               </div>
             </div>
             <div>
@@ -438,7 +446,9 @@ export function CalculationDetailsModal({
               <div className="ml-2 text-sm space-y-1">
                 {inputs?.answers && Object.keys(inputs.answers).length > 0 ? (
                   Object.entries(inputs.answers).map(([k, v]) => (
-                    <div key={k}>{k}: {String(v)}</div>
+                    <div key={k}>
+                      {k}: {String(v)}
+                    </div>
                   ))
                 ) : (
                   <div className="text-gray-500">No answers provided</div>
@@ -447,15 +457,25 @@ export function CalculationDetailsModal({
             </div>
             <div>
               <div className="font-medium text-gray-700">Notes</div>
-              <div className="ml-2 text-sm">{inputs?.notes || 'N/A'}</div>
+              <div className="ml-2 text-sm">{inputs?.notes || "N/A"}</div>
             </div>
             {inputs?.attachments && inputs.attachments.length > 0 && (
               <div>
                 <div className="font-medium text-gray-700">Attachments</div>
                 <div className="ml-2 flex gap-2 mt-2 flex-wrap">
                   {inputs.attachments.map((a: any, i: number) => (
-                    <a key={i} href={a} target="_blank" rel="noreferrer" className="inline-block border rounded overflow-hidden">
-                      <img src={a} alt={`attachment-${i}`} className="h-20 w-28 object-cover" />
+                    <a
+                      key={i}
+                      href={a}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-block border rounded overflow-hidden"
+                    >
+                      <img
+                        src={a}
+                        alt={`attachment-${i}`}
+                        className="h-20 w-28 object-cover"
+                      />
                     </a>
                   ))}
                 </div>
@@ -789,9 +809,18 @@ export function CalculationDetailsModal({
 
       case "Troubleshooting": {
         // results expected: { recommendations: string[], severity: string, summary: string }
-        const recs = (results && (results.recommendations || results.recs || results.data?.recommendations)) || [];
-        const severity = results?.severity || (results?.data && results.data.severity) || 'unknown';
-        const summary = results?.summary || (results?.data && results.data.summary) || null;
+        const recs =
+          (results &&
+            (results.recommendations ||
+              results.recs ||
+              results.data?.recommendations)) ||
+          [];
+        const severity =
+          results?.severity ||
+          (results?.data && results.data.severity) ||
+          "unknown";
+        const summary =
+          results?.summary || (results?.data && results.data.summary) || null;
         return (
           <div className="space-y-4">
             {summary && (
@@ -801,15 +830,21 @@ export function CalculationDetailsModal({
               </div>
             )}
             <div>
-              <h5 className="font-semibold text-green-600 mb-2">Recommendations</h5>
+              <h5 className="font-semibold text-green-600 mb-2">
+                Recommendations
+              </h5>
               {Array.isArray(recs) && recs.length > 0 ? (
                 <ul className="list-disc pl-6 space-y-1 text-sm">
                   {recs.map((r: any, i: number) => (
-                    <li key={i}>{typeof r === 'string' ? r : JSON.stringify(r)}</li>
+                    <li key={i}>
+                      {typeof r === "string" ? r : JSON.stringify(r)}
+                    </li>
                   ))}
                 </ul>
               ) : (
-                <div className="text-gray-500">No recommendations available</div>
+                <div className="text-gray-500">
+                  No recommendations available
+                </div>
               )}
             </div>
             <div>
