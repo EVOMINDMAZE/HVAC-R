@@ -399,7 +399,28 @@ export default function Troubleshooting() {
         return;
       }
 
-      setAiResponse(resp.data);
+      const sanitizeString = (s: any) => {
+        if (typeof s !== "string") return s;
+        try {
+          return s.replace(/```(?:json)?\n?/gi, "").replace(/```/g, "").trim();
+        } catch (e) {
+          return s;
+        }
+      };
+
+      const sanitizeObj = (obj: any): any => {
+        if (obj == null) return obj;
+        if (typeof obj === "string") return sanitizeString(obj);
+        if (Array.isArray(obj)) return obj.map(sanitizeObj);
+        if (typeof obj === "object") {
+          const res: any = {};
+          for (const k in obj) res[k] = sanitizeObj(obj[k]);
+          return res;
+        }
+        return obj;
+      };
+
+      setAiResponse(sanitizeObj(resp.data));
       if (resp.data?.conversationId)
         setAiConversationId(resp.data.conversationId);
     } catch (e: any) {
