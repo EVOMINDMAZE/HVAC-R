@@ -1374,7 +1374,9 @@ export function EnhancedStandardCycleContent() {
                       <div className="absolute inset-0 flex items-center justify-center rounded-lg z-20 bg-white/60 backdrop-blur-sm">
                         <div className="flex flex-col items-center gap-2">
                           <Loader2 className="h-10 w-10 animate-spin text-sky-600" />
-                          <div className="text-sm font-medium text-sky-700">Generating recommended range…</div>
+                          <div className="text-sm font-medium text-sky-700">
+                            Generating recommended range…
+                          </div>
                         </div>
                       </div>
                     )}
@@ -1475,7 +1477,9 @@ export function EnhancedStandardCycleContent() {
                           {aiLoading ? (
                             <Skeleton className="h-4 w-20" />
                           ) : (
-                            <>Recommended: {aiRange?.subcooling_c ?? "N/A"} °C</>
+                            <>
+                              Recommended: {aiRange?.subcooling_c ?? "N/A"} °C
+                            </>
                           )}
                         </div>
                       </div>
@@ -1483,7 +1487,11 @@ export function EnhancedStandardCycleContent() {
                     {formattedAiNotes && (
                       <div className="mt-2">
                         <div className="text-xs text-gray-500">
-                          {aiLoading ? <Skeleton className="h-3 w-full max-w-xs" /> : formattedAiNotes}
+                          {aiLoading ? (
+                            <Skeleton className="h-3 w-full max-w-xs" />
+                          ) : (
+                            formattedAiNotes
+                          )}
                         </div>
                       </div>
                     )}

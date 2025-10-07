@@ -14,17 +14,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
-    Loader2,
-    AlertTriangle,
-    CheckCircle,
-    Info,
-    Thermometer,
-    Gauge,
-    Leaf,
-    Shield,
-    Search,
-    TrendingUp,
-    Star,
+  Loader2,
+  AlertTriangle,
+  CheckCircle,
+  Info,
+  Thermometer,
+  Gauge,
+  Leaf,
+  Shield,
+  Search,
+  TrendingUp,
+  Star,
 } from "lucide-react";
 import {
   REFRIGERANT_DATABASE,
@@ -330,7 +330,9 @@ export function EnhancedRefrigerantSelector({
                   <div className="absolute inset-0 flex items-center justify-center rounded-lg z-20 bg-white/60 backdrop-blur-sm">
                     <div className="flex flex-col items-center gap-2">
                       <Loader2 className="h-10 w-10 animate-spin text-sky-600" />
-                      <div className="text-sm font-medium text-sky-700">Generating AI range…</div>
+                      <div className="text-sm font-medium text-sky-700">
+                        Generating AI range…
+                      </div>
                     </div>
                   </div>
                 )}
@@ -357,11 +359,15 @@ export function EnhancedRefrigerantSelector({
                         </div>
                         <div className="grid grid-cols-2 gap-4 text-sm w-full">
                           <div>
-                            <div className="font-medium">Evaporator Temperature</div>
+                            <div className="font-medium">
+                              Evaporator Temperature
+                            </div>
                             <Skeleton className="h-4 w-24 mt-1" />
                           </div>
                           <div>
-                            <div className="font-medium">Condenser Temperature</div>
+                            <div className="font-medium">
+                              Condenser Temperature
+                            </div>
                             <Skeleton className="h-4 w-24 mt-1" />
                           </div>
                         </div>
