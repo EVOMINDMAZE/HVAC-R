@@ -345,6 +345,7 @@ export function History() {
       "Standard Cycle": "/standard-cycle",
       "Refrigerant Comparison": "/refrigerant-comparison",
       "Cascade Cycle": "/cascade-cycle",
+      "Troubleshooting": "/troubleshooting",
     }),
     [],
   );
