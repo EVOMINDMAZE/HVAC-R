@@ -103,7 +103,7 @@ interface CalculationResults {
 // Content-only version for embedding in other pages
 export function EnhancedStandardCycleContent() {
   const [formData, setFormData] = useState({
-    refrigerant: "R134a",
+    refrigerant: "",
     evap_temp_c: -10,
     cond_temp_c: 45,
     superheat_c: 5,
