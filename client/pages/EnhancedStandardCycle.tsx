@@ -1367,9 +1367,17 @@ export function EnhancedStandardCycleContent() {
 
                   {/* Recommended Operating Range (AI) */}
                   <div
-                    className="mt-4 rounded-lg border bg-sky-50 p-4 mb-4"
+                    className="mt-4 rounded-lg border bg-sky-50 p-4 mb-4 relative"
                     aria-live="polite"
                   >
+                    {aiLoading && (
+                      <div className="absolute inset-0 flex items-center justify-center rounded-lg z-20 bg-white/60 backdrop-blur-sm">
+                        <div className="flex flex-col items-center gap-2">
+                          <Loader2 className="h-10 w-10 animate-spin text-sky-600" />
+                          <div className="text-sm font-medium text-sky-700">Generating recommended range…</div>
+                        </div>
+                      </div>
+                    )}
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2 text-sky-700 font-medium">
                         <svg
