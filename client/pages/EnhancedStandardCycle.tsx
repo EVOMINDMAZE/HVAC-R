@@ -29,6 +29,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { API_BASE_URL } from "@/lib/api";
+import { Skeleton } from "@/components/ui/skeleton";
 import { EnhancedRefrigerantSelector } from "../components/EnhancedRefrigerantSelector";
 import { CycleVisualization } from "../components/CycleVisualization";
 import { EquipmentDiagrams } from "../components/EquipmentDiagrams";
@@ -1386,7 +1387,14 @@ export function EnhancedStandardCycleContent() {
                           <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
                           <polyline points="16 7 22 7 22 13" />
                         </svg>
-                        Recommended Operating Range
+                        {aiLoading ? (
+                          <span className="flex items-center gap-2">
+                            <Loader2 className="h-4 w-4 animate-spin text-sky-600" />
+                            Loading recommendations...
+                          </span>
+                        ) : (
+                          "Recommended Operating Range"
+                        )}
                       </div>
                       <Button
                         variant="default"
@@ -1407,7 +1415,14 @@ export function EnhancedStandardCycleContent() {
                         }
                         aria-busy={aiLoading}
                       >
-                        {aiLoading ? "Loading..." : "Apply Range"}
+                        {aiLoading ? (
+                          <span className="flex items-center gap-2">
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            Applying...
+                          </span>
+                        ) : (
+                          "Apply Range"
+                        )}
                       </Button>
                     </div>
                     {aiError && (
@@ -1419,32 +1434,48 @@ export function EnhancedStandardCycleContent() {
                           Evaporator Temperature
                         </div>
                         <div>
-                          Recommended: {aiRange?.evap_temp_c ?? "N/A"} °C
+                          {aiLoading ? (
+                            <Skeleton className="h-4 w-24" />
+                          ) : (
+                            <>Recommended: {aiRange?.evap_temp_c ?? "N/A"} °C</>
+                          )}
                         </div>
                       </div>
                       <div>
                         <div className="font-medium">Condenser Temperature</div>
                         <div>
-                          Recommended: {aiRange?.cond_temp_c ?? "N/A"} °C
+                          {aiLoading ? (
+                            <Skeleton className="h-4 w-24" />
+                          ) : (
+                            <>Recommended: {aiRange?.cond_temp_c ?? "N/A"} °C</>
+                          )}
                         </div>
                       </div>
                       <div>
                         <div className="font-medium">Superheat</div>
                         <div>
-                          Recommended: {aiRange?.superheat_c ?? "N/A"} °C
+                          {aiLoading ? (
+                            <Skeleton className="h-4 w-20" />
+                          ) : (
+                            <>Recommended: {aiRange?.superheat_c ?? "N/A"} °C</>
+                          )}
                         </div>
                       </div>
                       <div>
                         <div className="font-medium">Subcooling</div>
                         <div>
-                          Recommended: {aiRange?.subcooling_c ?? "N/A"} °C
+                          {aiLoading ? (
+                            <Skeleton className="h-4 w-20" />
+                          ) : (
+                            <>Recommended: {aiRange?.subcooling_c ?? "N/A"} °C</>
+                          )}
                         </div>
                       </div>
                     </div>
                     {formattedAiNotes && (
                       <div className="mt-2">
                         <div className="text-xs text-gray-500">
-                          {formattedAiNotes}
+                          {aiLoading ? <Skeleton className="h-3 w-full max-w-xs" /> : formattedAiNotes}
                         </div>
                       </div>
                     )}
