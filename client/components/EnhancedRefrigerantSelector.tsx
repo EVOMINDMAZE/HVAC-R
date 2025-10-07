@@ -14,16 +14,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
-  AlertTriangle,
-  CheckCircle,
-  Info,
-  Thermometer,
-  Gauge,
-  Leaf,
-  Shield,
-  Search,
-  TrendingUp,
-  Star,
+    Loader2,
+    AlertTriangle,
+    CheckCircle,
+    Info,
+    Thermometer,
+    Gauge,
+    Leaf,
+    Shield,
+    Search,
+    TrendingUp,
+    Star,
 } from "lucide-react";
 import {
   REFRIGERANT_DATABASE,
@@ -34,6 +35,7 @@ import {
   getRefrigerantsByPopularity,
   POPULAR_REFRIGERANTS,
 } from "@/lib/refrigerants";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface EnhancedRefrigerantSelectorProps {
   value: string;
@@ -340,8 +342,21 @@ export function EnhancedRefrigerantSelector({
                 {(() => {
                   if (aiLoading)
                     return (
-                      <div className="text-sm text-gray-600">
-                        Loading AI range...
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <Loader2 className="h-4 w-4 animate-spin text-sky-600" />
+                          <span>Loading AI range...</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4 text-sm w-full">
+                          <div>
+                            <div className="font-medium">Evaporator Temperature</div>
+                            <Skeleton className="h-4 w-24 mt-1" />
+                          </div>
+                          <div>
+                            <div className="font-medium">Condenser Temperature</div>
+                            <Skeleton className="h-4 w-24 mt-1" />
+                          </div>
+                        </div>
                       </div>
                     );
                   if (aiError)
