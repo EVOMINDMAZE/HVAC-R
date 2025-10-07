@@ -403,10 +403,30 @@ export default function Troubleshooting() {
       const sanitizeString = (s: any) => {
         if (typeof s !== "string") return s;
         try {
-          return s
-            .replace(/```(?:json)?\n?/gi, "")
-            .replace(/```/g, "")
-            .trim();
+          // Remove fenced code blocks
+          let cleaned = s.replace(/```(?:json)?\n?/gi, "").replace(/```/g, "").trim();
+
+          // If the string contains an embedded JSON object/array, attempt to parse it.
+          const firstBrace = cleaned.indexOf("{");
+          const firstBracket = cleaned.indexOf("[");
+          const firstJsonIdx = [firstBrace, firstBracket].filter((i) => i >= 0).sort((a, b) => a - b)[0];
+
+          if (typeof firstJsonIdx === "number") {
+            const candidate = cleaned.substring(firstJsonIdx);
+            try {
+              const parsed = JSON.parse(candidate);
+              return parsed;
+            } catch (e) {
+              // fallthrough to try parsing whole string
+            }
+          }
+
+          try {
+            return JSON.parse(cleaned);
+          } catch (e) {
+            // Not JSON, return cleaned string
+            return cleaned;
+          }
         } catch (e) {
           return s;
         }
@@ -424,9 +444,26 @@ export default function Troubleshooting() {
         return obj;
       };
 
-      setAiResponse(sanitizeObj(resp.data));
-      if (resp.data?.conversationId)
-        setAiConversationId(resp.data.conversationId);
+      const sanitized = sanitizeObj(resp.data);
+
+      // If the AI returned a nested structured "explanation" that itself contains the main fields,
+      // merge them into the top-level object for simpler rendering.
+      let merged = sanitized;
+      try {
+        if (
+          sanitized &&
+          typeof sanitized === "object" &&
+          sanitized.explanation &&
+          typeof sanitized.explanation === "object"
+        ) {
+          merged = { ...sanitized, ...sanitizeObj(sanitized.explanation) };
+        }
+      } catch (e) {
+        // ignore merge errors
+      }
+
+      setAiResponse(merged);
+      if (resp.data?.conversationId) setAiConversationId(resp.data.conversationId);
     } catch (e: any) {
       console.error("AI request failed", e);
       const message = e?.message || String(e);
