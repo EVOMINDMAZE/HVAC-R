@@ -402,7 +402,10 @@ export default function Troubleshooting() {
       const sanitizeString = (s: any) => {
         if (typeof s !== "string") return s;
         try {
-          return s.replace(/```(?:json)?\n?/gi, "").replace(/```/g, "").trim();
+          return s
+            .replace(/```(?:json)?\n?/gi, "")
+            .replace(/```/g, "")
+            .trim();
         } catch (e) {
           return s;
         }
