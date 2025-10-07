@@ -1694,24 +1694,26 @@ export function EnhancedStandardCycleContent() {
               </CardHeader>
               <CardContent>
                 {/* Refrigerant Selection (moved here for improved layout) */}
-                <EnhancedRefrigerantSelector
-                  value={formData.refrigerant}
-                  onChange={handleRefrigerantChange}
-                  evaporatorTemp={formData.evap_temp_c}
-                  condenserTemp={formData.cond_temp_c}
-                  onSuggestedRangeApply={(evap, cond) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      evap_temp_c: evap,
-                      cond_temp_c: cond,
-                    }))
-                  }
-                  aiRange={aiRange}
-                  aiLoading={aiLoading}
-                  aiError={aiError}
-                  showDetails={false}
-                  className="mt-2"
-                />
+                <div id="refrigerant-selector">
+                  <EnhancedRefrigerantSelector
+                    value={formData.refrigerant}
+                    onChange={handleRefrigerantChange}
+                    evaporatorTemp={formData.evap_temp_c}
+                    condenserTemp={formData.cond_temp_c}
+                    onSuggestedRangeApply={(evap, cond) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        evap_temp_c: evap,
+                        cond_temp_c: cond,
+                      }))
+                    }
+                    aiRange={aiRange}
+                    aiLoading={aiLoading}
+                    aiError={aiError}
+                    showDetails={false}
+                    className="mt-2"
+                  />
+                </div>
 
                 {selectedRefrigerant ? (
                   <div className="space-y-4">
