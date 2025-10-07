@@ -1366,136 +1366,157 @@ export function EnhancedStandardCycleContent() {
                   )}
 
                   {/* Recommended Operating Range (AI) */}
-                  <div
-                    className="mt-4 rounded-lg border bg-sky-50 p-4 mb-4 relative"
-                    aria-live="polite"
-                  >
-                    {aiLoading && (
-                      <div className="absolute inset-0 flex items-center justify-center rounded-lg z-20 bg-white/60 backdrop-blur-sm">
-                        <div className="flex flex-col items-center gap-2">
-                          <Loader2 className="h-10 w-10 animate-spin text-sky-600" />
-                          <div className="text-sm font-medium text-sky-700">
-                            Generating recommended range…
+                  {formData.refrigerant ? (
+                    <div
+                      className="mt-4 rounded-lg border bg-sky-50 p-4 mb-4 relative"
+                      aria-live="polite"
+                    >
+                      {aiLoading && (
+                        <div className="absolute inset-0 flex items-center justify-center rounded-lg z-20 bg-white/60 backdrop-blur-sm">
+                          <div className="flex flex-col items-center gap-2">
+                            <Loader2 className="h-10 w-10 animate-spin text-sky-600" />
+                            <div className="text-sm font-medium text-sky-700">Generating recommended range…</div>
+                          </div>
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2 text-sky-700 font-medium">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="h-4 w-4 text-green-600"
+                          >
+                            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                            <polyline points="16 7 22 7 22 13" />
+                          </svg>
+                          {aiLoading ? (
+                            <span className="flex items-center gap-2">
+                              <Loader2 className="h-4 w-4 animate-spin text-sky-600" />
+                              Loading recommendations...
+                            </span>
+                          ) : (
+                            "Recommended Operating Range"
+                          )}
+                        </div>
+                        <Button
+                          variant="default"
+                          size="sm"
+                          disabled={aiLoading || !aiRange}
+                          onClick={() =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              evap_temp_c: (aiRange?.evap_temp_c ??
+                                prev.evap_temp_c) as number,
+                              cond_temp_c: (aiRange?.cond_temp_c ??
+                                prev.cond_temp_c) as number,
+                              superheat_c: (aiRange?.superheat_c ??
+                                prev.superheat_c) as number,
+                              subcooling_c: (aiRange?.subcooling_c ??
+                                prev.subcooling_c) as number,
+                            }))
+                          }
+                          aria-busy={aiLoading}
+                        >
+                          {aiLoading ? (
+                            <span className="flex items-center gap-2">
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              Applying...
+                            </span>
+                          ) : (
+                            "Apply Range"
+                          )}
+                        </Button>
+                      </div>
+                      {aiError && (
+                        <div className="text-red-700 text-sm mb-2">{aiError}</div>
+                      )}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <div className="font-medium">
+                            Evaporator Temperature
+                          </div>
+                          <div>
+                            {aiLoading ? (
+                              <Skeleton className="h-4 w-24" />
+                            ) : (
+                              <>Recommended: {aiRange?.evap_temp_c ?? "N/A"} °C</>
+                            )}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="font-medium">Condenser Temperature</div>
+                          <div>
+                            {aiLoading ? (
+                              <Skeleton className="h-4 w-24" />
+                            ) : (
+                              <>Recommended: {aiRange?.cond_temp_c ?? "N/A"} °C</>
+                            )}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="font-medium">Superheat</div>
+                          <div>
+                            {aiLoading ? (
+                              <Skeleton className="h-4 w-20" />
+                            ) : (
+                              <>Recommended: {aiRange?.superheat_c ?? "N/A"} °C</>
+                            )}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="font-medium">Subcooling</div>
+                          <div>
+                            {aiLoading ? (
+                              <Skeleton className="h-4 w-20" />
+                            ) : (
+                              <>Recommended: {aiRange?.subcooling_c ?? "N/A"} °C</>
+                            )}
                           </div>
                         </div>
                       </div>
-                    )}
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2 text-sky-700 font-medium">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="h-4 w-4 text-green-600"
-                        >
-                          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
-                          <polyline points="16 7 22 7 22 13" />
+                      {formattedAiNotes && (
+                        <div className="mt-2">
+                          <div className="text-xs text-gray-500">
+                            {aiLoading ? (
+                              <Skeleton className="h-3 w-full max-w-xs" />
+                            ) : (
+                              formattedAiNotes
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="mt-4 rounded-lg border border-dashed border-sky-200 bg-sky-50 p-8 mb-4 text-center">
+                      <div className="flex flex-col items-center gap-4">
+                        <svg className="h-12 w-12 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                          <path d="M12 2v6" strokeLinecap="round" strokeLinejoin="round"/>
+                          <path d="M12 22v-6" strokeLinecap="round" strokeLinejoin="round"/>
+                          <circle cx="12" cy="12" r="8" />
                         </svg>
-                        {aiLoading ? (
-                          <span className="flex items-center gap-2">
-                            <Loader2 className="h-4 w-4 animate-spin text-sky-600" />
-                            Loading recommendations...
-                          </span>
-                        ) : (
-                          "Recommended Operating Range"
-                        )}
-                      </div>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        disabled={aiLoading || !aiRange}
-                        onClick={() =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            evap_temp_c: (aiRange?.evap_temp_c ??
-                              prev.evap_temp_c) as number,
-                            cond_temp_c: (aiRange?.cond_temp_c ??
-                              prev.cond_temp_c) as number,
-                            superheat_c: (aiRange?.superheat_c ??
-                              prev.superheat_c) as number,
-                            subcooling_c: (aiRange?.subcooling_c ??
-                              prev.subcooling_c) as number,
-                          }))
-                        }
-                        aria-busy={aiLoading}
-                      >
-                        {aiLoading ? (
-                          <span className="flex items-center gap-2">
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            Applying...
-                          </span>
-                        ) : (
-                          "Apply Range"
-                        )}
-                      </Button>
-                    </div>
-                    {aiError && (
-                      <div className="text-red-700 text-sm mb-2">{aiError}</div>
-                    )}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <div className="font-medium">
-                          Evaporator Temperature
-                        </div>
+                        <div className="text-lg font-medium text-sky-700">Choose a refrigerant to see recommendations</div>
+                        <div className="text-sm text-sky-600">Recommended operating range will appear here after selecting a refrigerant.</div>
                         <div>
-                          {aiLoading ? (
-                            <Skeleton className="h-4 w-24" />
-                          ) : (
-                            <>Recommended: {aiRange?.evap_temp_c ?? "N/A"} °C</>
-                          )}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="font-medium">Condenser Temperature</div>
-                        <div>
-                          {aiLoading ? (
-                            <Skeleton className="h-4 w-24" />
-                          ) : (
-                            <>Recommended: {aiRange?.cond_temp_c ?? "N/A"} °C</>
-                          )}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="font-medium">Superheat</div>
-                        <div>
-                          {aiLoading ? (
-                            <Skeleton className="h-4 w-20" />
-                          ) : (
-                            <>Recommended: {aiRange?.superheat_c ?? "N/A"} °C</>
-                          )}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="font-medium">Subcooling</div>
-                        <div>
-                          {aiLoading ? (
-                            <Skeleton className="h-4 w-20" />
-                          ) : (
-                            <>
-                              Recommended: {aiRange?.subcooling_c ?? "N/A"} °C
-                            </>
-                          )}
+                          <Button
+                            variant="outline"
+                            onClick={() => {
+                              const el = document.getElementById("refrigerant-selector");
+                              if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+                            }}
+                          >
+                            Choose Refrigerant
+                          </Button>
                         </div>
                       </div>
                     </div>
-                    {formattedAiNotes && (
-                      <div className="mt-2">
-                        <div className="text-xs text-gray-500">
-                          {aiLoading ? (
-                            <Skeleton className="h-3 w-full max-w-xs" />
-                          ) : (
-                            formattedAiNotes
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  )}
 
                   <div className="space-y-4 mt-2">
                     {/* Refrigerant Selection Card */}
