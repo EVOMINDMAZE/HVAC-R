@@ -58,6 +58,42 @@ export default function Troubleshooting() {
   const [current, setCurrent] = useState<string>("");
   const [modelSerial, setModelSerial] = useState<string>("");
 
+  // Apply any preset saved via History 'Re-run'
+  useEffect(() => {
+    try {
+      const preset = consumeCalculationPreset();
+      if (!preset || preset.type !== "Troubleshooting" || !preset.inputs) return;
+      const inputs: any = preset.inputs;
+      // symptom
+      if (inputs.symptom) setSymptom(String(inputs.symptom));
+      // ambient may be { value, unit }
+      if (inputs.ambient) {
+        if (inputs.ambient.value !== undefined) setAmbient(String(inputs.ambient.value));
+        if (inputs.ambient.unit) setUnit(String(inputs.ambient.unit));
+      }
+      // measurements
+      if (inputs.measurements) {
+        if (inputs.measurements.suction_pressure_kpa)
+          setSuctionPressure(String(inputs.measurements.suction_pressure_kpa));
+        if (inputs.measurements.head_pressure_kpa)
+          setHeadPressure(String(inputs.measurements.head_pressure_kpa));
+        if (inputs.measurements.voltage_v) setVoltage(String(inputs.measurements.voltage_v));
+        if (inputs.measurements.current_a) setCurrent(String(inputs.measurements.current_a));
+        if (inputs.measurements.model_serial) setModelSerial(String(inputs.measurements.model_serial));
+      }
+      // notes/observations
+      if (inputs.notes) setObservations(String(inputs.notes));
+      // answers (wizard answers)
+      if (inputs.answers && typeof inputs.answers === "object") setAnswers(inputs.answers);
+      // attachments
+      if (Array.isArray(inputs.attachments)) setAttachments(inputs.attachments.map((a: any) => (typeof a === 'string' ? a : a.url || '')));
+      // results
+      if (preset.results) setAiResponse(preset.results);
+    } catch (e) {
+      console.warn("Failed to apply calculation preset", e);
+    }
+  }, []);
+
   const steps = useMemo(() => {
     const base = [
       {
