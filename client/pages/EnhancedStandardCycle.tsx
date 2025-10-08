@@ -1375,7 +1375,9 @@ export function EnhancedStandardCycleContent() {
                         <div className="absolute inset-0 flex items-center justify-center rounded-lg z-20 bg-white/60 backdrop-blur-sm">
                           <div className="flex flex-col items-center gap-2">
                             <Loader2 className="h-10 w-10 animate-spin text-sky-600" />
-                            <div className="text-sm font-medium text-sky-700">Generating recommended range…</div>
+                            <div className="text-sm font-medium text-sky-700">
+                              Generating recommended range…
+                            </div>
                           </div>
                         </div>
                       )}
@@ -1435,7 +1437,9 @@ export function EnhancedStandardCycleContent() {
                         </Button>
                       </div>
                       {aiError && (
-                        <div className="text-red-700 text-sm mb-2">{aiError}</div>
+                        <div className="text-red-700 text-sm mb-2">
+                          {aiError}
+                        </div>
                       )}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                         <div>
@@ -1446,17 +1450,23 @@ export function EnhancedStandardCycleContent() {
                             {aiLoading ? (
                               <Skeleton className="h-4 w-24" />
                             ) : (
-                              <>Recommended: {aiRange?.evap_temp_c ?? "N/A"} °C</>
+                              <>
+                                Recommended: {aiRange?.evap_temp_c ?? "N/A"} °C
+                              </>
                             )}
                           </div>
                         </div>
                         <div>
-                          <div className="font-medium">Condenser Temperature</div>
+                          <div className="font-medium">
+                            Condenser Temperature
+                          </div>
                           <div>
                             {aiLoading ? (
                               <Skeleton className="h-4 w-24" />
                             ) : (
-                              <>Recommended: {aiRange?.cond_temp_c ?? "N/A"} °C</>
+                              <>
+                                Recommended: {aiRange?.cond_temp_c ?? "N/A"} °C
+                              </>
                             )}
                           </div>
                         </div>
@@ -1466,7 +1476,9 @@ export function EnhancedStandardCycleContent() {
                             {aiLoading ? (
                               <Skeleton className="h-4 w-20" />
                             ) : (
-                              <>Recommended: {aiRange?.superheat_c ?? "N/A"} °C</>
+                              <>
+                                Recommended: {aiRange?.superheat_c ?? "N/A"} °C
+                              </>
                             )}
                           </div>
                         </div>
@@ -1476,7 +1488,9 @@ export function EnhancedStandardCycleContent() {
                             {aiLoading ? (
                               <Skeleton className="h-4 w-20" />
                             ) : (
-                              <>Recommended: {aiRange?.subcooling_c ?? "N/A"} °C</>
+                              <>
+                                Recommended: {aiRange?.subcooling_c ?? "N/A"} °C
+                              </>
                             )}
                           </div>
                         </div>
@@ -1496,19 +1510,44 @@ export function EnhancedStandardCycleContent() {
                   ) : (
                     <div className="mt-4 rounded-lg border border-dashed border-sky-200 bg-sky-50 p-8 mb-4 text-center">
                       <div className="flex flex-col items-center gap-4">
-                        <svg className="h-12 w-12 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                          <path d="M12 2v6" strokeLinecap="round" strokeLinejoin="round"/>
-                          <path d="M12 22v-6" strokeLinecap="round" strokeLinejoin="round"/>
+                        <svg
+                          className="h-12 w-12 text-sky-500"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                        >
+                          <path
+                            d="M12 2v6"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M12 22v-6"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
                           <circle cx="12" cy="12" r="8" />
                         </svg>
-                        <div className="text-lg font-medium text-sky-700">Choose a refrigerant to see recommendations</div>
-                        <div className="text-sm text-sky-600">Recommended operating range will appear here after selecting a refrigerant.</div>
+                        <div className="text-lg font-medium text-sky-700">
+                          Choose a refrigerant to see recommendations
+                        </div>
+                        <div className="text-sm text-sky-600">
+                          Recommended operating range will appear here after
+                          selecting a refrigerant.
+                        </div>
                         <div>
                           <Button
                             variant="outline"
                             onClick={() => {
-                              const el = document.getElementById("refrigerant-selector");
-                              if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+                              const el = document.getElementById(
+                                "refrigerant-selector",
+                              );
+                              if (el)
+                                el.scrollIntoView({
+                                  behavior: "smooth",
+                                  block: "center",
+                                });
                             }}
                           >
                             Choose Refrigerant
@@ -1584,7 +1623,9 @@ export function EnhancedStandardCycleContent() {
                                 </svg>
                                 <div>
                                   <div className="text-sm font-medium">
-                                    <TechTerm term="safety_class">Safety</TechTerm>
+                                    <TechTerm term="safety_class">
+                                      Safety
+                                    </TechTerm>
                                   </div>
                                   <div className="text-sm text-gray-600">
                                     {selectedRefrigerant?.safety ?? "N/A"}
@@ -1614,11 +1655,13 @@ export function EnhancedStandardCycleContent() {
                                     </TechTerm>
                                   </div>
                                   <div className="text-sm text-gray-600">
-                                    {selectedRefrigerant?.limits?.critical_temp_c
+                                    {selectedRefrigerant?.limits
+                                      ?.critical_temp_c
                                       ? selectedRefrigerant.limits.critical_temp_c.toFixed(
                                           1,
                                         ) + " °C"
-                                      : selectedRefrigerant?.limits?.criticalTemp
+                                      : selectedRefrigerant?.limits
+                                            ?.criticalTemp
                                         ? (
                                             selectedRefrigerant.limits
                                               .criticalTemp - 273.15
@@ -1677,19 +1720,44 @@ export function EnhancedStandardCycleContent() {
                         </>
                       ) : (
                         <div className="p-8 text-center">
-                          <svg className="mx-auto h-12 w-12 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                            <path d="M12 2v6" strokeLinecap="round" strokeLinejoin="round"/>
-                            <path d="M12 22v-6" strokeLinecap="round" strokeLinejoin="round"/>
+                          <svg
+                            className="mx-auto h-12 w-12 text-gray-400"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                          >
+                            <path
+                              d="M12 2v6"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M12 22v-6"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
                             <circle cx="12" cy="12" r="8" />
                           </svg>
-                          <div className="mt-4 text-lg font-medium">Select a refrigerant to view properties</div>
-                          <div className="mt-2 text-sm text-muted-foreground">Choose a refrigerant from the selector to populate properties like GWP, safety, and critical values.</div>
+                          <div className="mt-4 text-lg font-medium">
+                            Select a refrigerant to view properties
+                          </div>
+                          <div className="mt-2 text-sm text-muted-foreground">
+                            Choose a refrigerant from the selector to populate
+                            properties like GWP, safety, and critical values.
+                          </div>
                           <div className="mt-4">
                             <Button
                               variant="outline"
                               onClick={() => {
-                                const el = document.getElementById("refrigerant-selector");
-                                if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+                                const el = document.getElementById(
+                                  "refrigerant-selector",
+                                );
+                                if (el)
+                                  el.scrollIntoView({
+                                    behavior: "smooth",
+                                    block: "center",
+                                  });
                               }}
                             >
                               Choose Refrigerant
@@ -1871,9 +1939,15 @@ export function EnhancedStandardCycleContent() {
               <AlertTitle>Calculation complete</AlertTitle>
               <AlertDescription>
                 {formData.refrigerant ? (
-                  <>Outcomes generated with {formData.refrigerant}. Review, rename, or save this scenario to your history.</>
+                  <>
+                    Outcomes generated with {formData.refrigerant}. Review,
+                    rename, or save this scenario to your history.
+                  </>
                 ) : (
-                  <>Outcomes generated. Review, rename, or save this scenario to your history.</>
+                  <>
+                    Outcomes generated. Review, rename, or save this scenario to
+                    your history.
+                  </>
                 )}
               </AlertDescription>
             </Alert>
