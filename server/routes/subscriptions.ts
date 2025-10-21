@@ -1,28 +1,108 @@
 import { RequestHandler } from "express";
 import { planDb, userDb } from "../database/index.ts";
 
+// Fallback subscription plans data when database is unavailable
+const FALLBACK_PLANS = [
+  {
+    id: "plan-free",
+    name: "free",
+    display_name: "Free",
+    price_monthly: 0,
+    price_yearly: 0,
+    calculations_limit: 10,
+    features: [
+      "10 calculations per month",
+      "Standard cycle analysis",
+      "Basic refrigerant comparison",
+      "Email support",
+      "Basic results export",
+    ],
+    is_active: true,
+  },
+  {
+    id: "plan-professional",
+    name: "professional",
+    display_name: "Professional",
+    price_monthly: 29,
+    price_yearly: 290,
+    calculations_limit: 500,
+    features: [
+      "500 calculations per month",
+      "All calculation tools",
+      "Advanced refrigerant database",
+      "Cascade system analysis",
+      "Priority email support",
+      "Detailed PDF reports",
+      "Data export (CSV, Excel)",
+      "Calculation history",
+      "API access (basic)",
+    ],
+    is_active: true,
+    savings: 22,
+  },
+  {
+    id: "plan-enterprise",
+    name: "enterprise",
+    display_name: "Enterprise",
+    price_monthly: 99,
+    price_yearly: 990,
+    calculations_limit: -1, // Unlimited
+    features: [
+      "Unlimited calculations",
+      "All professional features",
+      "Custom refrigerant properties",
+      "Batch processing",
+      "Full API access",
+      "Phone support",
+      "Custom integrations",
+      "Team collaboration",
+      "Advanced analytics",
+      "Custom reporting",
+      "SLA guarantee",
+    ],
+    is_active: true,
+    savings: 18,
+  },
+];
+
 export const getSubscriptionPlans: RequestHandler = async (req, res) => {
   try {
-    const plans = planDb.getAll.all();
-    
-    const formattedPlans = plans.map(plan => ({
-      ...plan,
-      features: JSON.parse(plan.features),
-      savings: plan.price_yearly < (plan.price_monthly * 12) 
-        ? Math.round(((plan.price_monthly * 12 - plan.price_yearly) / (plan.price_monthly * 12)) * 100)
-        : 0
-    }));
+    let plans = [];
+
+    try {
+      // Try to get plans from database
+      const dbPlans = planDb.getAll.all();
+
+      if (dbPlans && dbPlans.length > 0) {
+        plans = dbPlans.map(plan => ({
+          ...plan,
+          features: typeof plan.features === 'string' ? JSON.parse(plan.features) : plan.features,
+          savings: plan.price_yearly < (plan.price_monthly * 12)
+            ? Math.round(((plan.price_monthly * 12 - plan.price_yearly) / (plan.price_monthly * 12)) * 100)
+            : 0
+        }));
+      } else {
+        // If database is empty, use fallback
+        console.warn('No subscription plans found in database, using fallback data');
+        plans = FALLBACK_PLANS;
+      }
+    } catch (dbError) {
+      // If database access fails, use fallback
+      console.warn('Database access failed, using fallback subscription plans:', dbError);
+      plans = FALLBACK_PLANS;
+    }
 
     res.json({
       success: true,
-      data: formattedPlans
+      data: plans
     });
 
   } catch (error) {
     console.error('Get subscription plans error:', error);
-    res.status(500).json({
-      error: 'Internal server error',
-      details: 'Failed to retrieve subscription plans'
+    // Always return fallback plans to prevent pricing page from breaking
+    res.json({
+      success: true,
+      data: FALLBACK_PLANS
     });
   }
 };
