@@ -110,23 +110,44 @@ export const getSubscriptionPlans: RequestHandler = async (req, res) => {
 export const getCurrentSubscription: RequestHandler = async (req, res) => {
   try {
     const user = (req as any).user;
-    const currentPlan = planDb.findByName.get(user.subscription_plan);
 
-    if (!currentPlan) {
-      return res.status(404).json({
-        error: 'Subscription plan not found'
+    try {
+      const currentPlan = planDb.findByName.get(user.subscription_plan);
+
+      if (!currentPlan) {
+        // Use fallback plan data
+        const fallbackPlan = FALLBACK_PLANS.find(p => p.name === user.subscription_plan) || FALLBACK_PLANS[0];
+        return res.json({
+          success: true,
+          data: {
+            ...fallbackPlan,
+            status: user.subscription_status || 'active',
+            trialEndsAt: user.trial_ends_at
+          }
+        });
+      }
+
+      res.json({
+        success: true,
+        data: {
+          ...currentPlan,
+          features: typeof currentPlan.features === 'string' ? JSON.parse(currentPlan.features) : currentPlan.features,
+          status: user.subscription_status || 'active',
+          trialEndsAt: user.trial_ends_at
+        }
+      });
+    } catch (dbError) {
+      console.warn('Database access failed, using fallback for current subscription:', dbError);
+      const fallbackPlan = FALLBACK_PLANS.find(p => p.name === user.subscription_plan) || FALLBACK_PLANS[0];
+      return res.json({
+        success: true,
+        data: {
+          ...fallbackPlan,
+          status: user.subscription_status || 'active',
+          trialEndsAt: user.trial_ends_at
+        }
       });
     }
-
-    res.json({
-      success: true,
-      data: {
-        ...currentPlan,
-        features: JSON.parse(currentPlan.features),
-        status: user.subscription_status,
-        trialEndsAt: user.trial_ends_at
-      }
-    });
 
   } catch (error) {
     console.error('Get current subscription error:', error);
