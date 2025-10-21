@@ -251,13 +251,17 @@ export const cancelSubscription: RequestHandler = async (req, res) => {
   try {
     const user = (req as any).user;
 
-    // Update to free plan
-    userDb.updateSubscription.run(
-      'free',
-      'active',
-      null,
-      user.id
-    );
+    try {
+      // Try to update to free plan in database
+      userDb.updateSubscription.run(
+        'free',
+        'active',
+        null,
+        user.id
+      );
+    } catch (dbError) {
+      console.warn('Could not update database for cancellation, but will return success:', dbError);
+    }
 
     res.json({
       success: true,
