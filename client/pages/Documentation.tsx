@@ -305,6 +305,12 @@ export function Documentation() {
                     {category.articles.map((article, index) => (
                       <div
                         key={index}
+                        onClick={() => setSelectedArticle(article.title)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") setSelectedArticle(article.title);
+                        }}
                         className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all cursor-pointer group"
                       >
                         <div className="flex items-start justify-between mb-2">
