@@ -10,7 +10,7 @@ function slugify(title: string) {
     .replace(/\s+/g, "-");
 }
 
-// Minimal Markdown to HTML converter for docs (supports headings, lists, code blocks, links)
+// Minimal Markdown to HTML converter for docs (supports headings, lists, code blocks, links, blockquotes, inline code)
 function mdToHtml(md: string) {
   if (!md) return "";
 
@@ -25,20 +25,33 @@ function mdToHtml(md: string) {
     return `<pre class="rounded bg-slate-900 text-slate-100 p-4 overflow-auto"><code>${code.replace(/&lt;/g, "<").replace(/&gt;/g, ">")}</code></pre>`;
   });
 
-  // Headings - add id attributes using slugify
-  out = out.replace(/^######\s?(.*$)/gim, (_, t) => `<h6 id=\"${slugify(t)}\" class=\"text-sm font-semibold mt-4\">${t}</h6>`);
-  out = out.replace(/^#####\s?(.*$)/gim, (_, t) => `<h5 id=\"${slugify(t)}\" class=\"text-sm font-semibold mt-4\">${t}</h5>`);
-  out = out.replace(/^####\s?(.*$)/gim, (_, t) => `<h4 id=\"${slugify(t)}\" class=\"text-lg font-semibold mt-4\">${t}</h4>`);
-  out = out.replace(/^###\s?(.*$)/gim, (_, t) => `<h3 id=\"${slugify(t)}\" class=\"text-xl font-semibold mt-4\">${t}</h3>`);
-  out = out.replace(/^##\s?(.*$)/gim, (_, t) => `<h2 id=\"${slugify(t)}\" class=\"text-2xl font-bold mt-6\">${t}</h2>`);
-  out = out.replace(/^#\s?(.*$)/gim, (_, t) => `<h1 id=\"${slugify(t)}\" class=\"text-3xl font-bold mt-6\">${t}</h1>`);
+  // Blockquotes
+  out = out.replace(/^>\s?(.*$)/gim, (_, t) => `<blockquote class=\"border-l-4 border-slate-200 pl-4 italic text-slate-600 mt-4\">${t}</blockquote>`);
+
+  // Headings - add id attributes using slugify and subtle anchor link
+  out = out.replace(/^######\s?(.*$)/gim, (_, t) => `<h6 id=\"${slugify(t)}\" class=\"text-sm font-semibold mt-4 group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h6>`);
+  out = out.replace(/^#####\s?(.*$)/gim, (_, t) => `<h5 id=\"${slugify(t)}\" class=\"text-sm font-semibold mt-4 group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h5>`);
+  out = out.replace(/^####\s?(.*$)/gim, (_, t) => `<h4 id=\"${slugify(t)}\" class=\"text-lg font-semibold mt-4 group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h4>`);
+  out = out.replace(/^###\s?(.*$)/gim, (_, t) => `<h3 id=\"${slugify(t)}\" class=\"text-xl font-semibold mt-4 group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h3>`);
+  out = out.replace(/^##\s?(.*$)/gim, (_, t) => `<h2 id=\"${slugify(t)}\" class=\"text-2xl font-bold mt-6 group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h2>`);
+  out = out.replace(/^#\s?(.*$)/gim, (_, t) => `<h1 id=\"${slugify(t)}\" class=\"text-3xl font-bold mt-6 group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h1>`);
+
+  // Inline code
+  out = out.replace(/`([^`]+)`/gim, '<code class=\"rounded bg-slate-100 px-1 py-0.5 text-sm text-rose-600\">$1</code>');
 
   // Bold and italic
   out = out.replace(/\*\*(.*?)\*\*/gim, "<strong>$1</strong>");
   out = out.replace(/\*(.*?)\*/gim, "<em>$1</em>");
 
   // Links [text](url)
-  out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a class="text-blue-600 underline" href="$2" target="_blank" rel="noreferrer">$1</a>');
+  out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a class=\"text-blue-600 underline\" href="$2" target=\"_blank\" rel=\"noreferrer\">$1</a>');
+
+  // Ordered lists
+  out = out.replace(/(^|\n)\d+\.\s+(.*)/gim, "$1<li>$2</li>");
+  out = out.replace(/(<li>[\s\S]*?<\/li>)/gim, (m) => {
+    // wrap contiguous li blocks in ol if numeric lines were used, otherwise ul will handle - items
+    return `<ol class=\"list-decimal ml-6 mt-2\">${m}</ol>`;
+  });
 
   // Unordered lists
   // Convert lines starting with - to <li>
@@ -53,7 +66,7 @@ function mdToHtml(md: string) {
   const paragraphs = out.split(/\n\n/).map((p) => p.trim()).filter(Boolean);
   out = paragraphs
     .map((p) => {
-      if (p.startsWith("<h") || p.startsWith("<ul") || p.startsWith("<pre")) return p;
+      if (p.startsWith("<h") || p.startsWith("<ul") || p.startsWith("<pre") || p.startsWith("<ol") || p.startsWith("<blockquote")) return p;
       return `<p class=\"text-gray-700 mt-3 leading-relaxed\">${p.replace(/\n/g, "<br />")}</p>`;
     })
     .join("\n");
