@@ -399,7 +399,68 @@ export function Documentation() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Quick Links */}
+        <div className="mt-16 grid md:grid-cols-3 gap-8">
+          <Card className="bg-white shadow-lg border-blue-200">
+            <CardContent className="p-6 text-center">
+              <Download className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                PDF Guides
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Download comprehensive guides for offline reading
+              </p>
+              <Button
+                variant="outline"
+                className="border-blue-200 hover:bg-blue-50"
+              >
+                Download All
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white shadow-lg border-green-200">
+            <CardContent className="p-6 text-center">
+              <PlayCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Video Tutorials
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Step-by-step video guides and walkthroughs
+              </p>
+              <Button
+                variant="outline"
+                className="border-green-200 hover:bg-green-50"
+              >
+                Watch Videos
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white shadow-lg border-purple-200">
+            <CardContent className="p-6 text-center">
+              <Users className="h-12 w-12 text-purple-600 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Community Forum
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Get help from other engineers and share knowledge
+              </p>
+              <Button
+                variant="outline"
+                className="border-purple-200 hover:bg-purple-50"
+              >
+                Join Forum
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       </div>
+
+      {selectedArticle && (
+        <DocsViewer title={selectedArticle} onClose={() => setSelectedArticle(null)} />
+      )}
     </div>
   );
 }
