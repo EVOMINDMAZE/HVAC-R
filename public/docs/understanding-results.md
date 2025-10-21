@@ -1,20 +1,21 @@
 # Understanding Results
 
-After a calculation completes, the results panel shows several key metrics.
+This guide explains common outputs from the standard cycle calculation and how to interpret them.
 
-Core metrics
-- COP (Coefficient of Performance): ratio of useful cooling to compressor work.
-- Capacity: cooling capacity typically in kW.
-- Compressor Work: power input to the compressor.
-- Mass Flow: refrigerant mass flow rate.
+## Key Outputs
 
-Cycle state points
-- Evaporator outlet (compressor inlet) — superheat corrected conditions.
-- Compressor discharge (condenser inlet) — after compression.
-- Condenser outlet — subcooled liquid.
+- Capacity: Cooling capacity (kW) delivered by the evaporator.
+- COP: Coefficient of performance — ratio of cooling provided to power input.
+- Mass flow: Refrigerant mass flow rate through the cycle.
+- Compressor work: Power required by the compressor.
+- State points: Thermodynamic states at key locations (inlet/outlet of evaporator/condenser).
 
-Diagnostics
-- Check if compressor discharge temperature is exceptionally high — may indicate mismatch.
-- Low COP might indicate high condensing temperature or excessive pressure drop.
+## How to interpret
 
-Use the visualization and table exports to compare runs and optimize operating conditions.
+- COP decreases as condensing temperature increases — lower condensing temperatures improve efficiency.
+- Large superheat may indicate insufficient evaporator surface area or low refrigerant charge.
+- Subcooling helps prevent flash at the expansion device and can improve capacity.
+
+## Visualization
+
+Use the Cycle Visualization page to inspect T-s and P-h diagrams and to validate expected behavior.

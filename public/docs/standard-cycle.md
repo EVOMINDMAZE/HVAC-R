@@ -1,27 +1,25 @@
 # Standard Cycle Analysis
 
-This document covers theory and practical guidance for standard single-stage vapor-compression refrigeration cycles.
+An overview of the single-stage vapor-compression refrigeration cycle and practical guidance for simulations.
 
 ## Basic Theory
-- The cycle consists of evaporator, compressor, condenser, and expansion device.
-- Key thermodynamic processes: isobaric heat addition/removal and near-isentropic compression.
+
+- Components: evaporator, compressor, condenser, expansion device.
+- The cycle moves heat from the evaporator to the condenser using refrigerant as the working fluid.
 
 ## Input Parameters
-- Evaporator temperature (T_evap)
-- Condenser temperature (T_cond)
-- Superheat and subcooling
-- Refrigerant selection (critical for properties)
+
+- Evaporator temperature (`T_evap`), condenser temperature (`T_cond`), superheat, and subcooling are the primary inputs.
+- Be consistent with units (temperatures in °C, pressures in kPa).
 
 ## Refrigerant Properties
-- Different refrigerants have different critical temps, GWP, and performance.
-- Use the refrigerant selector to choose fluids like R134a, R290, R744.
+
+- Each refrigerant has a unique saturation curve; check critical temperature and safety properties before selection.
 
 ## Performance Metrics
-- COP: function of T_evap and T_cond — lower condensing temp increases COP.
-- Capacity: depends on mass flow and enthalpy difference across evaporator.
+
+- COP, capacity, and compressor work are the primary metrics. Track mass flow and state points for diagnostics.
 
 ## Best Practices
-- Keep subcooling moderate (1–5°C) to avoid flash gas at expansion.
-- Optimize superheat to ensure compressor suction isn't flooded.
 
-Use the API endpoints to programmatically run standard cycle calculations (see API Reference).
+- Maintain moderate subcooling (1–5°C) and tune superheat to avoid liquid carryover into the compressor.

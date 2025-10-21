@@ -1,21 +1,18 @@
 # Contributing
 
-We welcome contributions. Please follow these guidelines.
+Thank you for contributing! This guide explains how to get started and the standards we follow.
 
 ## Getting started
-- Fork the repo and create a feature branch.
-- Run npm install and npm run dev to start the dev server.
+- Fork the repository and create a feature branch for your changes.
 
 ## Code style
-- Use TypeScript and adhere to existing code patterns.
-- Keep UI components modular and small.
+- Use TypeScript and follow existing code patterns and linting rules.
 
 ## Tests
-- Add unit tests for new logic; update existing tests if behavior changes.
+- Add unit tests for new logic and update tests for behavior changes.
 
 ## Pull requests
-- Include a clear description and link to any related issues.
-- Ensure formatting and linting pass.
+- Provide a clear description and link to related issues or tickets.
 
 ## Security
-- Do not commit secrets or keys. Use environment variables and the DevServerControl tool to set secrets when necessary.
+- Do not commit secrets. Use environment variables or the DevServerControl tool when necessary.

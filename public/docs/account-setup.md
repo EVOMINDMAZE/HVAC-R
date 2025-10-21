@@ -1,19 +1,29 @@
 # Account Setup
 
+Welcome to Simulateon — this guide helps you create and configure your account so you can start running refrigeration and HVAC&R calculations quickly.
+
 ## Creating an account
-- Visit /signup and fill name, email, and password.
-- Confirm your email if verification is enabled.
+
+- Visit `/signup` and provide your name, email, and a secure password.
+- Verify your email address if email confirmation is enabled — this activates secured features like billing and API access.
 
 ## Profile
-- Update your name, company, and contact info in /profile.
-- Upload an avatar (optional).
+
+- Open `/profile` to update your personal details: name, company, and contact information.
+- Upload a profile photo (optional) to help teammates recognize you.
+- Configure notification preferences and time zone for consistent timestamps.
 
 ## Billing & Subscriptions
-- Visit /pricing to view plans.
-- Upgrade from Free → Professional or Enterprise.
-- Manage your subscription from Profile → Manage Billing (opens Stripe customer portal).
+
+- Visit `/pricing` to review available plans and features.
+- Upgrade or downgrade plans from your Profile → Manage Billing (this opens the Stripe customer portal).
+- Team and enterprise features (user management, SSO) are available on higher-tier plans.
 
 ## Access & Permissions
-- Team/enterprise features rely on subscription level. Enterprise plan includes team management and SSO in future releases.
 
-Need help? Contact billing@simulateon.com.
+- Users inherit permissions based on their role and subscription tier. Enterprise accounts can manage teams and roles.
+- For SSO or custom provisioning, contact support to enable enterprise integrations.
+
+## Support
+
+If you need help with account setup or billing, contact support@simulateon.com with your account email and a brief description of the issue.

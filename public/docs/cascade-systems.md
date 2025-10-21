@@ -1,19 +1,21 @@
 # Cascade Systems
 
-Two-stage (cascade) refrigeration systems allow very low evaporator temperatures by staging compression.
+A concise guide to designing and analyzing cascade refrigeration systems.
 
 ## Cascade Theory
-- Low-temperature (LT) cycle provides the cold stage; high-temperature (HT) cycle rejects heat to ambient.
-- Cascade heat exchanger connects LT condenser to HT evaporator; delta-T is critical.
+
+- A cascade uses two (or more) cycles: a low-temperature (LT) cycle for the cold stage and a high-temperature (HT) cycle to reject heat to ambient.
 
 ## System Design
-- Choose refrigerants optimized for each stage (e.g., R744 for LT, R134a for HT).
-- Design cascade HX with sufficient area and low pressure drop.
+
+- Choose refrigerants optimized for each stage (e.g., R744 for LT, R134a for HT) and balance heat exchanger sizing.
+- Ensure proper control strategy for cascade heat exchanger delta-T and compressor staging.
 
 ## Optimization
-- Balance condenser and evaporator loads.
-- Minimize cascade HX delta-T to improve LT performance while respecting approach temperature limits.
+
+- Balance condenser and evaporator loads for best system efficiency.
+- Validate operating windows across expected ambient and load ranges.
 
 ## Troubleshooting
-- If LT performance is poor, check HT condensing conditions and cascade HX fouling.
-- Verify proper charge distribution between stages.
+
+- If LT performance is poor, check HT condensing conditions and cascade HX cleanliness.

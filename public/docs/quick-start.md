@@ -1,17 +1,13 @@
 # Quick Start Guide
 
-Get a calculation running in under 5 minutes.
+Get up and running with Simulateon in five minutes.
 
-1. Sign up and sign in.
-2. From the dashboard click "New Calculation" or go to Standard Cycle.
-3. Choose a refrigerant from the selector.
-4. Enter evaporator and condenser temperatures (°C), plus superheat and subcooling.
-5. Click "Calculate" and review results.
+1. Create an account at `/signup` and verify your email.
+2. Sign in and open the `Standard Cycle` page from the dashboard.
+3. Choose a refrigerant, set evaporator and condenser temperatures, and click `Calculate`.
+4. Review results and open the Cycle Visualization to inspect state points.
 
-Tips
-- If you see "N/A" values, ensure a refrigerant is selected.
-- If calculations fail, check the API Service Status widget on the page.
+Tips:
 
-Common Shortcuts
-- Use the recommended operating range (AI suggestions) to pick sensible temperatures.
-- Save calculations to history for later reuse.
+- Use example presets if you are unsure about input values.
+- Check the API examples to automate workflows.

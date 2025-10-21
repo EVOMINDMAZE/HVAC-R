@@ -1,23 +1,25 @@
 # Architecture
 
-Overview of the Simulateon system architecture.
+A high-level overview of the Simulateon system architecture.
 
 ## High-level Components
-- Frontend: React + TypeScript SPA served to users.
-- Backend: Node/Express server for API and server-side endpoints.
-- Supabase: Authentication, Edge Functions, and storage.
-- Stripe: Billing and checkout (optional; requires keys).
-- Calculation backend: External service (or internal logic) accessible via HTTP.
 
-## Deployment Notes
-- Environment variables for Supabase and Stripe must be set in production.
-- Use ALLOWED_CORS_ORIGINS to restrict origins.
-- Netlify is used for deployment (connect via MCP if needed).
+- Frontend: React + TypeScript single-page application served to users.
+- Backend: Node/Express services that perform calculation workloads and orchestrate data storage and billing.
+- Database: Postgres (via Supabase) for user and metadata storage.
+- Billing: Stripe for subscriptions and payments.
+
+## Deployment
+
+- Environment variables (Supabase keys, Stripe keys) must be set in production.
+- Use CI pipelines to run tests and a controlled deployment to the hosting environment.
 
 ## Observability
-- Use Sentry for error reporting and logs for server requests.
-- Health checks available at /api/health and API Service Status UI component.
 
-Security
-- Protect endpoints with Supabase JWT or session tokens.
-- Do not commit secret keys to source control.
+- Use Sentry for error reporting, logs for request tracing, and metrics for performance monitoring.
+- Capture request IDs and correlate backend logs with frontend traces for easier debugging.
+
+## Security
+
+- Keep API keys and service role keys out of source control; use environment variables or secret management.
+- Enforce HTTPS and rate limiting for public APIs.

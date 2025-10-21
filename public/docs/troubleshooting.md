@@ -1,25 +1,21 @@
 # Troubleshooting
 
-Common issues and how to resolve them.
+This page lists common issues and how to resolve them.
 
 ## 404 on Privacy/Terms
-- Ensure routes /privacy and /terms exist in the frontend router.
+- Ensure routes `/privacy` and `/terms` exist in the frontend router.
 
 ## Pricing or Billing Failures
-- Verify SUPABASE and STRIPE env vars are set.
-- Check server logs for Stripe key missing errors.
-- Use fallback plans if DB unavailable.
+- Verify `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, and Stripe environment variables are set in the deployment.
 
 ## Calculation Failures
-- Check API Service Status card.
-- If external calculation service returns HTML or non-JSON, check the service health.
-- Validate refrigerant selection and input ranges.
+- Check the API service status (service may be down or network blocked).
+- Inspect browser console for network or CORS errors.
 
 ## Auth Errors
-- Ensure tokens are present and valid; use debug bypass for local testing.
+- Ensure authentication tokens exist and are valid. Use the debugging tools in the profile area for local testing.
 
 ## Debugging Steps
-1. Reproduce the issue locally.
-2. Check server logs (server console prints each request).
-3. Inspect network tab for API responses and payload shapes.
-4. Check Supabase Edge Function logs if used.
+1. Reproduce the issue and capture network logs.
+2. Check backend logs for correlated request IDs.
+3. Reach out to support with steps to reproduce and relevant logs.

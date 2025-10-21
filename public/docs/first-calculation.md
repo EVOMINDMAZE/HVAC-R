@@ -1,24 +1,22 @@
 # First Calculation
 
-This guide walks through creating your first Standard Cycle calculation.
+This walkthrough helps you run your first standard cycle calculation and interpret the output.
 
-1. Navigate to Standard Cycle.
-2. Choose a refrigerant (e.g., R134a).
-3. Fill in the following fields:
-   - Evaporator temperature (°C)
-   - Condenser temperature (°C)
-   - Superheat (°C)
-   - Subcooling (°C)
-4. Click "Calculate".
+## Steps
 
-Understanding the output
-- COP: Coefficient of Performance.
-- Cooling capacity: Device cooling power (kW or similar).
-- Mass flow: Refrigerant mass flow rate.
-- State points: Pressure/temperature points for evaporator, condenser, compressor inlet/outlet.
+1. Navigate to the Standard Cycle page.
+2. Select a refrigerant (e.g., R134a) and enter boundary conditions:
+   - Evaporator temperature: e.g., -10 °C
+   - Condensing temperature: e.g., 45 °C
+   - Superheat: 5 °C
+   - Subcooling: 2 °C
+3. Click `Calculate` and wait for the results.
 
-Save & Export
-- Click Save to add to calculation history.
-- Export CSV or PDF for offline analysis.
+## Interpreting the results
 
-If the calculation fails, check the API Service Status card or visit Troubleshooting.
+- Review COP, capacity, and compressor work.
+- Open the Cycle Visualization to see T-s and P-h diagrams for deeper insight.
+
+## Troubleshooting
+
+- If the calculation fails, check network connectivity and ensure the backend API is reachable.
