@@ -337,7 +337,7 @@ export function Documentation() {
                         onKeyDown={(e) => {
                           if (e.key === "Enter") setSelectedArticle(article.title);
                         }}
-                        className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all cursor-pointer group"
+                        className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
                       >
                         <div className="flex items-start justify-between mb-2">
                           <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
