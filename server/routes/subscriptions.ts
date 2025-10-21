@@ -281,15 +281,24 @@ export const cancelSubscription: RequestHandler = async (req, res) => {
 export const createPaymentIntent: RequestHandler = async (req, res) => {
   try {
     const { planName, billingCycle } = req.body;
-    
-    const plan = planDb.findByName.get(planName);
-    if (!plan) {
+
+    // Validate plan exists in fallback data
+    let fallbackPlan = FALLBACK_PLANS.find(p => p.name === planName);
+    if (!fallbackPlan) {
       return res.status(400).json({
         error: 'Invalid subscription plan'
       });
     }
 
-    const amount = billingCycle === 'yearly' ? plan.price_yearly : plan.price_monthly;
+    let plan = null;
+    try {
+      plan = planDb.findByName.get(planName);
+    } catch (dbError) {
+      console.warn('Could not fetch plan from database, using fallback:', dbError);
+    }
+
+    const planToUse = plan || fallbackPlan;
+    const amount = billingCycle === 'yearly' ? planToUse.price_yearly : planToUse.price_monthly;
 
     // In a real app, you'd create a payment intent with your payment processor
     const mockPaymentIntent = {
