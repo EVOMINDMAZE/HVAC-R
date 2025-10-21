@@ -25,6 +25,8 @@ import { Documentation } from "@/pages/Documentation";
 import { HelpCenter } from "@/pages/HelpCenter";
 import { ApiDocs } from "@/pages/ApiDocs";
 import { StripeDebug } from "@/pages/StripeDebug";
+import { Privacy } from "@/pages/Privacy";
+import { TermsOfService } from "@/pages/TermsOfService";
 import NotFound from "@/pages/NotFound";
 import { ErrorModal } from "@/components/ErrorModal";
 import { SupportBar } from "@/components/SupportBar";
