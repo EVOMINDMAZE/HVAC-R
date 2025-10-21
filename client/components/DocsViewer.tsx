@@ -162,7 +162,6 @@ export function DocsViewer({
         <aside className="hidden lg:block col-span-1 border-l p-4 overflow-auto" style={{ maxHeight: '90vh' }}>
           <h4 className="text-sm font-semibold mb-2">On this page</h4>
           <nav className="space-y-2 text-sm">
-            {headings.length === 0 && <div className="text-gray-400">No headings</div>}
             {headings.map((h) => (
               <button
                 key={h.id}
