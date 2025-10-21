@@ -259,7 +259,9 @@ export function Documentation() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Search documentation..."
+                ref={searchRef}
+                placeholder="Search documentation (press / to focus)..."
+                aria-label="Search documentation"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 border-blue-200 focus:border-blue-500"
