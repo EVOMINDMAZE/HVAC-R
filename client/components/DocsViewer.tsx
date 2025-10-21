@@ -26,12 +26,12 @@ function mdToHtml(md: string) {
   });
 
   // Headings - add id attributes using slugify
-  out = out.replace(/^######\s?(.*$)/gim, (_, t) => `<h6 id=\"${slugify(_(t))}\" class=\"text-sm font-semibold mt-4\">${t}</h6>`);
-  out = out.replace(/^#####\s?(.*$)/gim, (_, t) => `<h5 id=\"${slugify(_(t))}\" class=\"text-sm font-semibold mt-4\">${t}</h5>`);
-  out = out.replace(/^####\s?(.*$)/gim, (_, t) => `<h4 id=\"${slugify(_(t))}\" class=\"text-lg font-semibold mt-4\">${t}</h4>`);
-  out = out.replace(/^###\s?(.*$)/gim, (_, t) => `<h3 id=\"${slugify(_(t))}\" class=\"text-xl font-semibold mt-4\">${t}</h3>`);
-  out = out.replace(/^##\s?(.*$)/gim, (_, t) => `<h2 id=\"${slugify(_(t))}\" class=\"text-2xl font-bold mt-6\">${t}</h2>`);
-  out = out.replace(/^#\s?(.*$)/gim, (_, t) => `<h1 id=\"${slugify(_(t))}\" class=\"text-3xl font-bold mt-6\">${t}</h1>`);
+  out = out.replace(/^######\s?(.*$)/gim, (_, t) => `<h6 id=\"${slugify(t)}\" class=\"text-sm font-semibold mt-4\">${t}</h6>`);
+  out = out.replace(/^#####\s?(.*$)/gim, (_, t) => `<h5 id=\"${slugify(t)}\" class=\"text-sm font-semibold mt-4\">${t}</h5>`);
+  out = out.replace(/^####\s?(.*$)/gim, (_, t) => `<h4 id=\"${slugify(t)}\" class=\"text-lg font-semibold mt-4\">${t}</h4>`);
+  out = out.replace(/^###\s?(.*$)/gim, (_, t) => `<h3 id=\"${slugify(t)}\" class=\"text-xl font-semibold mt-4\">${t}</h3>`);
+  out = out.replace(/^##\s?(.*$)/gim, (_, t) => `<h2 id=\"${slugify(t)}\" class=\"text-2xl font-bold mt-6\">${t}</h2>`);
+  out = out.replace(/^#\s?(.*$)/gim, (_, t) => `<h1 id=\"${slugify(t)}\" class=\"text-3xl font-bold mt-6\">${t}</h1>`);
 
   // Bold and italic
   out = out.replace(/\*\*(.*?)\*\*/gim, "<strong>$1</strong>");
