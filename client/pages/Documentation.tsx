@@ -182,9 +182,12 @@ const documentation = [
   },
 ];
 
+import DocsViewer from "@/components/DocsViewer";
+
 export function Documentation() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedArticle, setSelectedArticle] = useState<string | null>(null);
 
   const filteredDocs = documentation
     .filter(
