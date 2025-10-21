@@ -128,6 +128,8 @@ function AppRoutes() {
       <Route path="/documentation" element={<Documentation />} />
       <Route path="/api-docs" element={<ApiDocs />} />
       <Route path="/help-center" element={<HelpCenter />} />
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/terms" element={<TermsOfService />} />
       <Route path="/stripe-debug" element={<StripeDebug />} />
 
       {/* Protected routes */}
