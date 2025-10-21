@@ -16,6 +16,8 @@ import {
   Download,
 } from "lucide-react";
 
+import { useEffect, useRef, useState } from "react";
+
 const documentation = [
   {
     category: "Getting Started",
