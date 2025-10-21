@@ -82,16 +82,17 @@ export function DocsViewer({
       try {
         const slug = slugify(title || "");
         const path = `/docs/${slug}.md`;
-        // Use Vite glob to load raw files
-        const modules = import.meta.glob("/docs/*.md", { as: "raw" });
-        if (modules && (modules as any)[path]) {
-          const raw = await (modules as any)[path]();
-          const html = mdToHtml(raw as string);
-          setContent(html);
-        } else {
-          // try fallback: replace spaces with - and lowercase
-          throw new Error("Document not found");
+
+        // Fetch markdown file from public directory
+        const response = await fetch(path);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: Document not found`);
         }
+
+        const raw = await response.text();
+        const html = mdToHtml(raw);
+        setContent(html);
       } catch (err: any) {
         console.error("Failed to load doc:", err);
         setContent(`<p class=\"text-red-600\">Document not found: ${title}</p>`);
