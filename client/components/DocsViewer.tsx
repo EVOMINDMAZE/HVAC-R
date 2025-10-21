@@ -70,10 +70,13 @@ export function DocsViewer({
 }) {
   const [content, setContent] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [headings, setHeadings] = useState<{ id: string; text: string; level: number }[]>([]);
+  const contentRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!title) {
       setContent(null);
+      setHeadings([]);
       return;
     }
 
@@ -93,9 +96,22 @@ export function DocsViewer({
         const raw = await response.text();
         const html = mdToHtml(raw);
         setContent(html);
+
+        // Parse headings for TOC
+        try {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, "text/html");
+          const nodes = Array.from(doc.querySelectorAll("h1, h2, h3, h4, h5, h6"));
+          const hs = nodes.map((n) => ({ id: n.id || slugify(n.textContent || ""), text: n.textContent || "", level: Number(n.tagName.replace("H", "")) }));
+          setHeadings(hs);
+        } catch (e) {
+          setHeadings([]);
+        }
+
       } catch (err: any) {
         console.error("Failed to load doc:", err);
         setContent(`<p class=\"text-red-600\">Document not found: ${title}</p>`);
+        setHeadings([]);
       } finally {
         setLoading(false);
       }
@@ -108,25 +124,46 @@ export function DocsViewer({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-start justify-center p-6">
-      <div className="w-full max-w-5xl bg-white rounded-lg shadow-xl overflow-auto max-h-[90vh]">
-        <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-bold">{title}</h2>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
+      <div className="w-full max-w-6xl bg-white rounded-lg shadow-xl overflow-hidden max-h-[90vh] grid grid-cols-1 lg:grid-cols-4">
+        <div className="col-span-1 lg:col-span-3 overflow-auto" style={{ maxHeight: '90vh' }}>
+          <div className="flex items-center justify-between p-6 border-b sticky top-0 bg-white z-10">
+            <h2 className="text-xl font-bold">{title}</h2>
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" onClick={onClose}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+          <div ref={contentRef} className="p-6 prose max-w-none overflow-auto">
+            {loading ? (
+              <div className="flex items-center justify-center py-20">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mr-4"></div>
+                <div className="text-gray-700">Loading article…</div>
+              </div>
+            ) : (
+              <div dangerouslySetInnerHTML={{ __html: content || "" }} />
+            )}
           </div>
         </div>
-        <div className="p-6 prose max-w-none">
-          {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mr-4"></div>
-              <div className="text-gray-700">Loading article…</div>
-            </div>
-          ) : (
-            <div dangerouslySetInnerHTML={{ __html: content || "" }} />
-          )}
-        </div>
+
+        <aside className="hidden lg:block col-span-1 border-l p-4 overflow-auto" style={{ maxHeight: '90vh' }}>
+          <h4 className="text-sm font-semibold mb-2">On this page</h4>
+          <nav className="space-y-2 text-sm">
+            {headings.length === 0 && <div className="text-gray-400">No headings</div>}
+            {headings.map((h) => (
+              <button
+                key={h.id}
+                className={`w-full text-left truncate hover:text-blue-600 ${h.level > 2 ? 'pl-4' : ''}`}
+                onClick={() => {
+                  const el = contentRef.current?.querySelector(`#${h.id}`);
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+              >
+                {h.text}
+              </button>
+            ))}
+          </nav>
+        </aside>
       </div>
     </div>
   );
