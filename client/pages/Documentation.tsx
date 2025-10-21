@@ -186,20 +186,41 @@ import DocsViewer from "@/components/DocsViewer";
 
 export function Documentation() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<string | null>(null);
+  const searchRef = useRef<HTMLInputElement | null>(null);
+
+  // Debounce search input for better UX
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(searchTerm.trim()), 300);
+    return () => clearTimeout(t);
+  }, [searchTerm]);
+
+  // Keyboard shortcut: press '/' to focus search (unless focused in an input)
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "/" && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const filteredDocs = documentation
-    .filter(
-      (category) => !selectedCategory || category.category === selectedCategory,
-    )
+    .filter((category) => !selectedCategory || category.category === selectedCategory)
     .map((category) => ({
       ...category,
-      articles: category.articles.filter(
-        (article) =>
-          article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          article.description.toLowerCase().includes(searchTerm.toLowerCase()),
-      ),
+      articles: category.articles.filter((article) => {
+        const q = debouncedSearch.toLowerCase();
+        if (!q) return true;
+        return (
+          article.title.toLowerCase().includes(q) ||
+          article.description.toLowerCase().includes(q)
+        );
+      }),
     }))
     .filter((category) => category.articles.length > 0);
 
