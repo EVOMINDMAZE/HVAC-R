@@ -96,21 +96,42 @@ export function DocsViewer({
     const load = async () => {
       setLoading(true);
       try {
-        const slug = slugify(title || "");
-        const path = `/docs/${slug}.md`;
+        const tryFetch = async (slugCandidate: string) => {
+          const path = `/docs/${slugCandidate}.md`;
+          const res = await fetch(path);
+          if (!res.ok) return { ok: false, text: null, htmlLike: false };
+          const text = await res.text();
+          const isHtml = /^\s*<(?:!doctype|html)/i.test(text) || (res.headers.get("content-type") || "").includes("text/html");
+          return { ok: true, text, htmlLike: isHtml };
+        };
 
-        // Fetch markdown file from public directory
-        const response = await fetch(path);
+        const baseSlug = slugify(title || "");
+        const candidates = new Set<string>();
+        candidates.add(baseSlug);
 
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: Document not found`);
+        if (baseSlug.endsWith("-guide")) candidates.add(baseSlug.replace(/-guide$/, ""));
+        candidates.add(baseSlug.replace(/-[^-]+$/, ""));
+        const firstTwo = (title || "").toLowerCase().split(/\s+/).slice(0, 2).join("-").replace(/[^a-z0-9-]/g, "");
+        if (firstTwo) candidates.add(firstTwo);
+
+        let raw: string | null = null;
+        for (const s of candidates) {
+          const r = await tryFetch(s);
+          if (!r.ok) continue;
+          if (r.htmlLike) continue;
+          raw = r.text;
+          break;
         }
 
-        const raw = await response.text();
-        const html = mdToHtml(raw);
+        if (!raw) {
+          const final = await tryFetch(baseSlug);
+          if (!final.ok || !final.text) throw new Error("Document not found");
+          raw = final.text;
+        }
+
+        const html = mdToHtml(raw || "");
         setContent(html);
 
-        // Parse headings for TOC
         try {
           const parser = new DOMParser();
           const doc = parser.parseFromString(html, "text/html");
