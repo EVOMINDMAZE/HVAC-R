@@ -10,7 +10,7 @@ function slugify(title: string) {
     .replace(/\s+/g, "-");
 }
 
-// Minimal Markdown to HTML converter for docs (supports headings, lists, code blocks, links, blockquotes, inline code)
+// Minimal Markdown to HTML converter for docs (supports headings, lists, code blocks, links, blockquotes, inline code, images, tables)
 function mdToHtml(md: string) {
   if (!md) return "";
 
@@ -20,22 +20,43 @@ function mdToHtml(md: string) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 
-  // Code blocks ```
-  out = out.replace(/```([\s\S]*?)```/g, (_, code) => {
+  // Fenced code blocks with optional language ```lang
+  out = out.replace(/```\s*([a-zA-Z0-9_-]+)?\n([\s\S]*?)```/g, (_, lang, code) => {
     const escaped = code.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
-    return `<pre class="rounded-md bg-slate-900 text-slate-100 p-4 overflow-auto text-sm mb-4"><code class=\"block code-block\">${escaped}</code></pre>`;
+    const langClass = lang ? ` language-${lang}` : "";
+    return `<pre class=\"rounded-md bg-slate-900 text-slate-100 p-4 overflow-auto text-sm mb-6\"><code class=\"block code-block${langClass}\">${escaped}</code></pre>`;
+  });
+
+  // Horizontal rules
+  out = out.replace(/^(-{3,}|\*{3,})$/gim, '<hr class="my-6 border-slate-200" />');
+
+  // Images ![alt](url)
+  out = out.replace(/!\[([^\]]*)\]\(([^)]+)\)/gim, (_, alt, src) => {
+    return `<figure class=\"my-6\"><img src=\"${src}\" alt=\"${alt}\" class=\"rounded w-full\" /><figcaption class=\"text-sm text-gray-500 mt-2\">${alt}</figcaption></figure>`;
   });
 
   // Blockquotes
   out = out.replace(/^>\s?(.*$)/gim, (_, t) => `<blockquote class=\"bg-slate-50 border-l-4 border-slate-200 pl-4 py-2 rounded mt-4 text-slate-700\">${t}</blockquote>`);
 
-  // Headings - add id attributes using slugify and subtle anchor link (lean on prose for sizes)
-  out = out.replace(/^######\s?(.*$)/gim, (_, t) => `<h6 id=\"${slugify(t)}\" class=\"group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h6>`);
-  out = out.replace(/^#####\s?(.*$)/gim, (_, t) => `<h5 id=\"${slugify(t)}\" class=\"group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h5>`);
-  out = out.replace(/^####\s?(.*$)/gim, (_, t) => `<h4 id=\"${slugify(t)}\" class=\"group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h4>`);
-  out = out.replace(/^###\s?(.*$)/gim, (_, t) => `<h3 id=\"${slugify(t)}\" class=\"group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h3>`);
-  out = out.replace(/^##\s?(.*$)/gim, (_, t) => `<h2 id=\"${slugify(t)}\" class=\"group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h2>`);
-  out = out.replace(/^#\s?(.*$)/gim, (_, t) => `<h1 id=\"${slugify(t)}\" class=\"group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h1>`);
+  // Headings - add id attributes using slugify and subtle anchor link (prose controls sizes)
+  out = out.replace(/^######\s?(.*$)/gim, (_, t) => `<h6 id=\"${slugify(t)}\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h6>`);
+  out = out.replace(/^#####\s?(.*$)/gim, (_, t) => `<h5 id=\"${slugify(t)}\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h5>`);
+  out = out.replace(/^####\s?(.*$)/gim, (_, t) => `<h4 id=\"${slugify(t)}\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h4>`);
+  out = out.replace(/^###\s?(.*$)/gim, (_, t) => `<h3 id=\"${slugify(t)}\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h3>`);
+  out = out.replace(/^##\s?(.*$)/gim, (_, t) => `<h2 id=\"${slugify(t)}\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h2>`);
+  out = out.replace(/^#\s?(.*$)/gim, (_, t) => `<h1 id=\"${slugify(t)}\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h1>`);
+
+  // Tables (simple pipe tables)
+  out = out.replace(/(^\|.+\|\n\|[-: \|]+\|\n([\s\S]*?\n)*?)(?=\n|$)/gm, (m) => {
+    // naive convert: split lines
+    const lines = m.trim().split('\n').filter(Boolean);
+    if (lines.length < 2) return m;
+    const header = lines[0].replace(/^\||\|$/g, '').split('|').map(s => s.trim());
+    const rows = lines.slice(2).map(l => l.replace(/^\||\|$/g, '').split('|').map(s => s.trim()));
+    const thead = `<thead class=\"bg-slate-50 text-left\"><tr>${header.map(h => `<th class=\"px-3 py-2\">${h}</th>`).join('')}</tr></thead>`;
+    const tbody = `<tbody>${rows.map(r => `<tr>${r.map(c => `<td class=\"px-3 py-2 border-t\">${c}</td>`).join('')}</tr>`).join('')}</tbody>`;
+    return `<div class=\"overflow-auto my-4\"><table class=\"min-w-full border-collapse\">${thead}${tbody}</table></div>`;
+  });
 
   // Inline code
   out = out.replace(/`([^`]+)`/gim, '<code class=\"rounded bg-slate-100 px-1 py-0.5 text-sm text-rose-600\">$1</code>');
