@@ -20,11 +20,20 @@ curl -X POST https://simulateon-backend.onrender.com/calculate-standard \
 
 ```js
 async function calculateStandard() {
-  const resp = await fetch('https://simulateon-backend.onrender.com/calculate-standard', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ refrigerant: 'R134a', evap_temp_c: -10, cond_temp_c: 45, superheat_c: 5, subcooling_c: 2 })
-  });
+  const resp = await fetch(
+    "https://simulateon-backend.onrender.com/calculate-standard",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        refrigerant: "R134a",
+        evap_temp_c: -10,
+        cond_temp_c: 45,
+        superheat_c: 5,
+        subcooling_c: 2,
+      }),
+    },
+  );
   const data = await resp.json();
   if (data.error) throw new Error(data.error);
   return data.data;

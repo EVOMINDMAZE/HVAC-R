@@ -201,7 +201,11 @@ export function Documentation() {
   // Keyboard shortcut: press '/' to focus search (unless focused in an input)
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === "/" && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") {
+      if (
+        e.key === "/" &&
+        document.activeElement?.tagName !== "INPUT" &&
+        document.activeElement?.tagName !== "TEXTAREA"
+      ) {
         e.preventDefault();
         searchRef.current?.focus();
       }
@@ -211,7 +215,9 @@ export function Documentation() {
   }, []);
 
   const filteredDocs = documentation
-    .filter((category) => !selectedCategory || category.category === selectedCategory)
+    .filter(
+      (category) => !selectedCategory || category.category === selectedCategory,
+    )
     .map((category) => ({
       ...category,
       articles: category.articles.filter((article) => {
@@ -349,7 +355,8 @@ export function Documentation() {
                         role="button"
                         tabIndex={0}
                         onKeyDown={(e) => {
-                          if (e.key === "Enter") setSelectedArticle(article.title);
+                          if (e.key === "Enter")
+                            setSelectedArticle(article.title);
                         }}
                         className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
                       >
@@ -439,7 +446,10 @@ export function Documentation() {
       </div>
 
       {selectedArticle && (
-        <DocsViewer title={selectedArticle} onClose={() => setSelectedArticle(null)} />
+        <DocsViewer
+          title={selectedArticle}
+          onClose={() => setSelectedArticle(null)}
+        />
       )}
     </div>
   );

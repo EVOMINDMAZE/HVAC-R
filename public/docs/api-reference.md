@@ -9,6 +9,7 @@ All calculations are performed by the Simulateon backend API. Use HTTPS POST req
 ## Endpoints
 
 ### Standard Cycle Calculation
+
 - URL: `/calculate-standard`
 - Method: `POST`
 - Request body (example):
@@ -22,10 +23,12 @@ All calculations are performed by the Simulateon backend API. Use HTTPS POST req
   "subcooling_c": 2
 }
 ```
+
 - Success response: `{ "data": { /* calculation results */ } }`
 - Error response: `{ "error": "message" }`
 
 ### Refrigerant Comparison
+
 - URL: `/compare-refrigerants`
 - Method: `POST`
 - Request body (example):
@@ -44,6 +47,7 @@ All calculations are performed by the Simulateon backend API. Use HTTPS POST req
 ```
 
 ### Cascade Cycle Calculation
+
 - URL: `/calculate-cascade`
 - Method: `POST`
 - Request body (example):
