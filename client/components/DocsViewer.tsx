@@ -127,14 +127,56 @@ export function DocsViewer({
           return { ok: true, text, htmlLike: isHtml };
         };
 
-        const baseSlug = slugify(title || "");
-        const candidates = new Set<string>();
-        candidates.add(baseSlug);
+        // Known mapping from article titles to doc filenames
+    const titleToFile: Record<string, string> = {
+      "Quick Start Guide": "quick-start.md",
+      "Account Setup": "account-setup.md",
+      "First Calculation": "first-calculation.md",
+      "Understanding Results": "understanding-results.md",
+      "Basic Cycle Theory": "standard-cycle.md",
+      "Input Parameters": "standard-cycle.md",
+      "Refrigerant Properties": "standard-cycle.md",
+      "Performance Metrics": "standard-cycle.md",
+      "Comparison Methodology": "refrigerant-comparison.md",
+      "Environmental Impact": "refrigerant-comparison.md",
+      "Performance Analysis": "refrigerant-comparison.md",
+      "Best Practices": "refrigerant-comparison.md",
+      "Cascade Theory": "cascade-systems.md",
+      "System Design": "cascade-systems.md",
+      "Optimization": "cascade-systems.md",
+      "Troubleshooting": "cascade-systems.md",
+      "API Overview": "api-reference.md",
+      "Authentication": "api-reference.md",
+      "Endpoints": "api-reference.md",
+      "Examples": "api-examples.md",
+      "Custom Properties": "advanced-topics.md",
+      "Batch Processing": "advanced-topics.md",
+      "Data Export": "advanced-topics.md",
+      "Integration": "advanced-topics.md",
+      "Getting Started": "getting-started.md",
+      "FAQs": "faqs.md",
+      "Troubleshooting": "troubleshooting.md",
+      "Contributing": "contributing.md",
+      "Architecture": "architecture.md",
+      "Release Notes": "release-notes.md",
+      "License": "license.md",
+    };
 
-        if (baseSlug.endsWith("-guide")) candidates.add(baseSlug.replace(/-guide$/, ""));
-        candidates.add(baseSlug.replace(/-[^-]+$/, ""));
-        const firstTwo = (title || "").toLowerCase().split(/\s+/).slice(0, 2).join("-").replace(/[^a-z0-9-]/g, "");
-        if (firstTwo) candidates.add(firstTwo);
+    const baseSlug = slugify(title || "");
+    const candidates = new Set<string>();
+
+    // prefer explicit mapping if available
+    if (title && titleToFile[title]) {
+      const fname = titleToFile[title];
+      candidates.add(fname.replace(/\.md$/, ""));
+    }
+
+    candidates.add(baseSlug);
+
+    if (baseSlug.endsWith("-guide")) candidates.add(baseSlug.replace(/-guide$/, ""));
+    candidates.add(baseSlug.replace(/-[^-]+$/, ""));
+    const firstTwo = (title || "").toLowerCase().split(/\s+/).slice(0, 2).join("-").replace(/[^a-z0-9-]/g, "");
+    if (firstTwo) candidates.add(firstTwo);
 
         let raw: string | null = null;
         for (const s of candidates) {
