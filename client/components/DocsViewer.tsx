@@ -137,7 +137,14 @@ export function DocsViewer({
           const parser = new DOMParser();
           const doc = parser.parseFromString(html, "text/html");
           const nodes = Array.from(doc.querySelectorAll("h1, h2, h3, h4, h5, h6"));
-          const hs = nodes.map((n) => ({ id: n.id || slugify(n.textContent || ""), text: n.textContent || "", level: Number(n.tagName.replace("H", "")) }));
+          const hs = nodes.map((n) => {
+            // prefer the first text node so trailing anchor text (e.g. '#') isn't included
+            const firstText = (n.childNodes && n.childNodes.length && n.childNodes[0].textContent)
+              ? String(n.childNodes[0].textContent).trim()
+              : (n.textContent || "").trim();
+            const cleanText = firstText.replace(/\s*#\s*$/g, "");
+            return { id: n.id || slugify(cleanText), text: cleanText, level: Number(n.tagName.replace("H", "")) };
+          });
           setHeadings(hs);
         } catch (e) {
           setHeadings([]);
