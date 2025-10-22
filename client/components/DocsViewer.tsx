@@ -38,13 +38,13 @@ function mdToHtml(md: string) {
   // Blockquotes
   out = out.replace(/^>\s?(.*$)/gim, (_, t) => `<blockquote class=\"bg-slate-50 border-l-4 border-slate-200 pl-4 py-2 rounded mt-4 text-slate-700\">${t}</blockquote>`);
 
-  // Headings - add id attributes using slugify and subtle anchor link (prose controls sizes)
-  out = out.replace(/^######\s?(.*$)/gim, (_, t) => `<h6 id=\"${slugify(t)}\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h6>`);
-  out = out.replace(/^#####\s?(.*$)/gim, (_, t) => `<h5 id=\"${slugify(t)}\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h5>`);
-  out = out.replace(/^####\s?(.*$)/gim, (_, t) => `<h4 id=\"${slugify(t)}\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h4>`);
-  out = out.replace(/^###\s?(.*$)/gim, (_, t) => `<h3 id=\"${slugify(t)}\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h3>`);
-  out = out.replace(/^##\s?(.*$)/gim, (_, t) => `<h2 id=\"${slugify(t)}\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h2>`);
-  out = out.replace(/^#\s?(.*$)/gim, (_, t) => `<h1 id=\"${slugify(t)}\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h1>`);
+  // Headings - add id attributes and spacing classes for better typography
+  out = out.replace(/^######\s?(.*$)/gim, (_, t) => `<h6 id=\"${slugify(t)}\" class=\"text-sm font-semibold mt-4 mb-2 group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h6>`);
+  out = out.replace(/^#####\s?(.*$)/gim, (_, t) => `<h5 id=\"${slugify(t)}\" class=\"text-sm font-semibold mt-4 mb-2 group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h5>`);
+  out = out.replace(/^####\s?(.*$)/gim, (_, t) => `<h4 id=\"${slugify(t)}\" class=\"text-lg font-semibold mt-6 mb-3 group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h4>`);
+  out = out.replace(/^###\s?(.*$)/gim, (_, t) => `<h3 id=\"${slugify(t)}\" class=\"text-xl font-semibold mt-6 mb-3 group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h3>`);
+  out = out.replace(/^##\s?(.*$)/gim, (_, t) => `<h2 id=\"${slugify(t)}\" class=\"text-2xl font-bold mt-8 mb-4 group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h2>`);
+  out = out.replace(/^#\s?(.*$)/gim, (_, t) => `<h1 id=\"${slugify(t)}\" class=\"text-3xl font-extrabold mt-8 mb-6 group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h1>`);
 
   // Tables (simple pipe tables)
   out = out.replace(/(^\|.+\|\n\|[-: \|]+\|\n([\s\S]*?\n)*?)(?=\n|$)/gm, (m) => {
@@ -89,7 +89,7 @@ function mdToHtml(md: string) {
   out = paragraphs
     .map((p) => {
       if (p.startsWith("<h") || p.startsWith("<ul") || p.startsWith("<pre") || p.startsWith("<ol") || p.startsWith("<blockquote")) return p;
-      return `<p class=\"text-gray-700 mt-3 leading-relaxed\">${p.replace(/\n/g, "<br />")}</p>`;
+      return `<p class=\"text-gray-700 mt-4 leading-relaxed text-base\">${p.replace(/\n/g, "<br />")}</p>`;
     })
     .join("\n");
 
@@ -253,11 +253,11 @@ export function DocsViewer({
 
         <aside className="hidden lg:block col-span-1 border-l p-4 overflow-auto" style={{ maxHeight: '90vh' }}>
           <h4 className="text-sm font-semibold mb-2">On this page</h4>
-          <nav className="space-y-2 text-sm">
+          <nav className="space-y-1 text-sm">
             {headings.map((h) => (
               <button
                 key={h.id}
-                className={`w-full text-left truncate hover:text-blue-600 ${h.level > 2 ? 'pl-4' : ''}`}
+                className={`w-full text-left truncate hover:text-blue-600 py-1 text-sm ${h.level > 2 ? 'pl-4 text-gray-600' : 'font-medium text-gray-800'}`}
                 onClick={() => {
                   const el = contentRef.current?.querySelector(`#${h.id}`);
                   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
