@@ -169,7 +169,7 @@ export function DocsViewer({
               </Button>
             </div>
           </div>
-          <div ref={contentRef} className="p-6 prose prose-slate max-w-none overflow-auto">
+          <div ref={contentRef} className="p-6 prose prose-slate prose-lg max-w-none overflow-auto prose-a:text-blue-600 prose-a:underline prose-blockquote:bg-slate-50 prose-pre:bg-slate-900">
             {loading ? (
               <div className="flex items-center justify-center py-20">
                 <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mr-4"></div>
