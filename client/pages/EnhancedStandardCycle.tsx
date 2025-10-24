@@ -462,10 +462,17 @@ export function EnhancedStandardCycleContent() {
             `CoolProp limitation: ${refrigerantName} is a blend refrigerant and two-phase calculations are not supported. Automatic retry failed. Try using a pure refrigerant (e.g., R134a) or adjust operating conditions to avoid two-phase calculations.`,
           );
         }
-      } else if (errorMessage.includes("PropsSI")) {
-        setError(
-          "CoolProp calculation error: The specified operating conditions may be outside the valid range for this refrigerant. Please check your temperature and pressure values.",
-        );
+      } else if (errorMessage.includes("PropsSI") || errorMessage.includes("QT_flash") || errorMessage.includes("Temperature to QT_flash")) {
+        // Detect CoolProp QT_flash temperature-range errors and provide actionable guidance
+        if (errorMessage.includes("Temperature to QT_flash") || errorMessage.includes("QT_flash")) {
+          setError(
+            "Thermodynamic property error: A two-phase property lookup was attempted outside the valid temperature range for the selected refrigerant (e.g., above critical temperature). Please review your evaporator/condenser temperatures, select a different refrigerant, or use a transcritical/cascade workflow if appropriate.",
+          );
+        } else {
+          setError(
+            "CoolProp calculation error: The specified operating conditions may be outside the valid range for this refrigerant. Please check your temperature and pressure values.",
+          );
+        }
       } else {
         setError(errorMessage);
       }
