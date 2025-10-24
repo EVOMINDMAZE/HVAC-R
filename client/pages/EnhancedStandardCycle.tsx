@@ -269,18 +269,64 @@ export function EnhancedStandardCycleContent() {
   );
 
   const validateInputs = useCallback(() => {
+    // Basic logical checks
+    if (!formData.refrigerant) {
+      setError("Please select a refrigerant before calculating the cycle.");
+      return false;
+    }
+
     if (formData.evap_temp_c >= formData.cond_temp_c) {
       setError(
         "Evaporator temperature must be lower than condenser temperature",
       );
       return false;
     }
+
     if (formData.superheat_c < 0 || formData.subcooling_c < 0) {
       setError("Superheat and subcooling must be positive values");
       return false;
     }
+
+    // Validate against refrigerant-specific limits when available
+    if (selectedRefrigerant && selectedRefrigerant.limits) {
+      const limits = selectedRefrigerant.limits;
+
+      if (formData.evap_temp_c < limits.min_temp_c) {
+        setError(
+          `Evaporator temperature ${formData.evap_temp_c}°C is below the supported limit for ${selectedRefrigerant.name} (${limits.min_temp_c.toFixed(1)}°C). Please increase the evaporator temperature or choose a different refrigerant.`,
+        );
+        return false;
+      }
+
+      if (formData.cond_temp_c > limits.max_temp_c) {
+        setError(
+          `Condenser temperature ${formData.cond_temp_c}°C exceeds the supported maximum for ${selectedRefrigerant.name} (${limits.max_temp_c.toFixed(1)}°C). Please lower the condenser temperature or select a refrigerant rated for higher temperatures.`,
+        );
+        return false;
+      }
+
+      // Protect against two-phase queries above critical point (e.g., CO2/transcritical)
+      if (formData.cond_temp_c > limits.critical_temp_c) {
+        // For CO2 (R744) specifically, this means transcritical operation which requires different handling
+        if (selectedRefrigerant.id === "R744") {
+          setError(
+            `Condenser temperature ${formData.cond_temp_c}°C is above the critical temperature for ${selectedRefrigerant.name} (${limits.critical_temp_c.toFixed(2)}°C). Transcritical operation is not supported by the current calculation mode. Consider using the Cascade or Transcritical analysis workflow, or lower the condenser temperature to below the critical temperature.`,
+          );
+          return false;
+        }
+
+        // Generic refrigerant — disallow two-phase lookups above critical temperature
+        setError(
+          `Condenser temperature ${formData.cond_temp_c}°C is above the critical temperature (${limits.critical_temp_c.toFixed(1)}°C) for ${selectedRefrigerant.name}. Two-phase property lookups will be invalid. Please adjust temperatures.`,
+        );
+        return false;
+      }
+    }
+
+    // All checks passed
+    setError(null);
     return true;
-  }, [formData]);
+  }, [formData, selectedRefrigerant]);
 
   const handleCalculate = async (
     overrideParams: Partial<typeof formData> | null = null,
