@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
 import { SupabaseStatus } from "@/components/SupabaseStatus";
 import {
   ArrowRight,
@@ -16,6 +17,8 @@ import { Link } from "react-router-dom";
 export function Landing() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <Header variant="landing" />
+
       <div className="max-w-7xl mx-auto px-4 pt-4">
         <SupabaseStatus />
       </div>
