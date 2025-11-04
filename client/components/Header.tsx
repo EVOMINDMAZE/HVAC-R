@@ -217,6 +217,9 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               <Link to="/pricing" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>Pricing</Link>
               <Link to="/api-docs" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>API Docs</Link>
               <Link to="/about" className="text-gray-700 hover:text-blue-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>About</Link>
+              <div className="h-px bg-gray-200"></div>
+              <Link to="/help-center" className="text-gray-700 hover:text-blue-600 font-medium text-sm" onClick={() => setIsMobileMenuOpen(false)}>Help Center</Link>
+              <a href="mailto:support@simulateon.io" className="text-gray-700 hover:text-blue-600 font-medium text-sm">Contact Support</a>
               <div className="pt-4 border-t border-gray-200">
                 <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button className="w-full bg-blue-600 hover:bg-blue-700 font-semibold">Start Free Trial</Button>
