@@ -175,6 +175,9 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               <Link to="/pricing" className="text-gray-700 hover:text-blue-600 font-medium">Pricing</Link>
               <Link to="/api-docs" className="text-gray-700 hover:text-blue-600 font-medium">API Docs</Link>
               <Link to="/about" className="text-gray-700 hover:text-blue-600 font-medium">About</Link>
+              <div className="w-px h-6 bg-gray-300"></div>
+              <Link to="/help-center" className="text-gray-700 hover:text-blue-600 font-medium text-sm">Help</Link>
+              <a href="mailto:support@simulateon.io" className="text-gray-700 hover:text-blue-600 font-medium text-sm">Support</a>
             </nav>
           )}
 
