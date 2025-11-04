@@ -120,16 +120,6 @@ export function createServer() {
     createPaymentIntent,
   );
 
-  // Billing routes (Stripe)
-  app.use("/api/billing", billingRoutes);
-
-  // Server-side storage upload (uses SUPABASE_SERVICE_ROLE_KEY)
-  // Accept either the legacy session token (authenticateToken) or a Supabase JWT
-  app.post("/api/storage/upload", authenticateEither, uploadAvatar);
-
-  // Diagnostics route to test server->Supabase connectivity
-  app.get("/api/diagnostics/supabase", supabaseDiag);
-
   // Middleware to accept either Supabase JWT (contains dots) or legacy session token
   const authenticateEither: import("express").RequestHandler = (
     req,
@@ -145,6 +135,16 @@ export function createServer() {
     }
     return authenticateToken(req, res, next);
   };
+
+  // Billing routes (Stripe)
+  app.use("/api/billing", billingRoutes);
+
+  // Server-side storage upload (uses SUPABASE_SERVICE_ROLE_KEY)
+  // Accept either the legacy session token (authenticateToken) or a Supabase JWT
+  app.post("/api/storage/upload", authenticateEither, uploadAvatar);
+
+  // Diagnostics route to test server->Supabase connectivity
+  app.get("/api/diagnostics/supabase", supabaseDiag);
 
   // Server-side PDF report generation
   app.post("/api/reports/generate", authenticateEither, generateReportPdf);
