@@ -2,17 +2,9 @@ import { Button } from "@/components/ui/button";
 import { useLocation } from 'react-router-dom';
 
 export function SupportBar() {
-  const location = useLocation();
-  const pathname = location.pathname;
-
-  // Only show support actions on marketing / public pages.
-  const showOnPrefixes = ['/', '/features', '/pricing', '/api-docs', '/about', '/contact'];
-  const excludedPrefixes = ['/dashboard', '/standard-cycle', '/refrigerant-comparison', '/cascade-cycle', '/help-center', '/signin', '/signup', '/profile', '/settings'];
-
-  const shouldShow = showOnPrefixes.some(p => pathname === p || pathname.startsWith(p + '/'))
-    && !excludedPrefixes.some(p => pathname === p || pathname.startsWith(p + '/'));
-
-  if (!shouldShow) return null;
+  // Support links moved to Header component for better UX
+  // Floating bar disabled to avoid obstruction and design mismatch
+  return null;
 
   return (
     <>
