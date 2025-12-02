@@ -27,6 +27,7 @@ import {
   Info,
   CheckCircle,
   ArrowRight,
+  Download,
 } from "lucide-react";
 import { API_BASE_URL } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -45,6 +46,7 @@ import {
   validateCycleConditions,
   getRefrigerantById,
 } from "../lib/refrigerants";
+import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 
 interface StatePoint {
   temp_c?: number;
@@ -102,13 +104,23 @@ interface CalculationResults {
 
 // Content-only version for embedding in other pages
 export function EnhancedStandardCycleContent() {
-  const [formData, setFormData] = useState({
-    refrigerant: "",
-    evap_temp_c: -10,
-    cond_temp_c: 45,
-    superheat_c: 5,
-    subcooling_c: 2,
+  const [formData, setFormData] = useState(() => {
+    const saved = localStorage.getItem("standard_cycle_inputs");
+    return saved ? JSON.parse(saved) : {
+      refrigerant: "",
+      evap_temp_c: -10,
+      cond_temp_c: 45,
+      superheat_c: 5,
+      subcooling_c: 2,
+    };
+
+
+
   });
+
+  useEffect(() => {
+    localStorage.setItem("standard_cycle_inputs", JSON.stringify(formData));
+  }, [formData]);
 
   const [results, setResults] = useState<CalculationResults | null>(null);
   const {
@@ -257,7 +269,7 @@ export function EnhancedStandardCycleContent() {
       setError(null);
       try {
         refreshAi();
-      } catch (_) {}
+      } catch (_) { }
     },
     [
       formData.evap_temp_c,
@@ -395,7 +407,7 @@ export function EnhancedStandardCycleContent() {
       ) {
         throw new Error(
           "Invalid response format - missing state_points or performance data. Available keys: " +
-            Object.keys(responseData).join(", "),
+          Object.keys(responseData).join(", "),
         );
       }
 
@@ -483,6 +495,82 @@ export function EnhancedStandardCycleContent() {
     }
   };
 
+  const handleExportPDF = async () => {
+    if (!results) return;
+
+    try {
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage();
+      const { width, height } = page.getSize();
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+      let y = height - 50;
+      const fontSize = 12;
+      const lineHeight = 15;
+
+      // Title
+      page.drawText('Standard Cycle Calculation Report', {
+        x: 50,
+        y,
+        size: 18,
+        font: boldFont,
+        color: rgb(0, 0, 0),
+      });
+      y -= 30;
+
+      // Date
+      page.drawText(`Date: ${new Date().toLocaleString()}`, {
+        x: 50,
+        y,
+        size: 10,
+        font,
+      });
+      y -= 20;
+
+      // Inputs
+      page.drawText('Inputs:', { x: 50, y, size: 14, font: boldFont });
+      y -= 20;
+      page.drawText(`Refrigerant: ${formData.refrigerant}`, { x: 50, y, size: fontSize, font });
+      y -= lineHeight;
+      page.drawText(`Evaporator Temp: ${formData.evap_temp_c}°C`, { x: 50, y, size: fontSize, font });
+      y -= lineHeight;
+      page.drawText(`Condenser Temp: ${formData.cond_temp_c}°C`, { x: 50, y, size: fontSize, font });
+      y -= lineHeight;
+      page.drawText(`Superheat: ${formData.superheat_c}°C`, { x: 50, y, size: fontSize, font });
+      y -= lineHeight;
+      page.drawText(`Subcooling: ${formData.subcooling_c}°C`, { x: 50, y, size: fontSize, font });
+      y -= 30;
+
+      // Results
+      page.drawText('Key Performance Indicators:', { x: 50, y, size: 14, font: boldFont });
+      y -= 20;
+
+      const cop = getPerformanceValue(results.performance, ['cop']);
+      const capacity = getPerformanceValue(results.performance, ['cooling_capacity_kw', 'cooling_capacity']);
+      const work = getPerformanceValue(results.performance, ['compressor_work_kw', 'compressor_power']);
+
+      page.drawText(`COP: ${formatValue(cop, '')}`, { x: 50, y, size: fontSize, font });
+      y -= lineHeight;
+      page.drawText(`Cooling Capacity: ${formatValue(capacity, 'kW')}`, { x: 50, y, size: fontSize, font });
+      y -= lineHeight;
+      page.drawText(`Compressor Work: ${formatValue(work, 'kW')}`, { x: 50, y, size: fontSize, font });
+
+      // Save
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `calculation-report-${Date.now()}.pdf`;
+      link.click();
+
+    } catch (err) {
+      console.error("Failed to generate PDF", err);
+      setError("Failed to generate PDF report");
+    }
+  };
+
+
   const formatValue = (
     value: number | undefined,
     unit: string,
@@ -493,6 +581,9 @@ export function EnhancedStandardCycleContent() {
     }
     return `${value.toFixed(decimals)} ${unit}`;
   };
+
+
+
 
   // Comprehensive property extraction with enhanced CoolProp compatibility
   const getPropertyValue = (
@@ -510,6 +601,9 @@ export function EnhancedStandardCycleContent() {
       const numericValue = Number(value);
       return Number.isFinite(numericValue) ? numericValue : undefined;
     };
+
+
+
 
     const propertyMap: Record<string, string[]> = {
       temperature: [
@@ -615,6 +709,9 @@ export function EnhancedStandardCycleContent() {
       ],
     };
 
+
+
+
     for (const name of propertyNames) {
       const numericValue = toNumeric(obj[name]);
       if (numericValue !== undefined) {
@@ -659,6 +756,9 @@ export function EnhancedStandardCycleContent() {
     return undefined;
   };
 
+
+
+
   // Helpers specific to density/specific volume extraction
   const getSpecificVolume = (point?: StatePoint): number | undefined => {
     return (
@@ -678,6 +778,9 @@ export function EnhancedStandardCycleContent() {
       ]) ?? undefined
     );
   };
+
+
+
 
   // Estimate specific gas constant R (J/kg·K) from any points that include P, T, and ρ
   const estimateSpecificGasConstant = (): number | undefined => {
@@ -722,6 +825,9 @@ export function EnhancedStandardCycleContent() {
     return estimates.reduce((a, b) => a + b, 0) / estimates.length;
   };
 
+
+
+
   const getDensity = (point?: StatePoint): number | undefined => {
     const direct = getPropertyValue(point, [
       "density_kg_m3",
@@ -755,6 +861,9 @@ export function EnhancedStandardCycleContent() {
     return undefined;
   };
 
+
+
+
   const getPerformanceValue = (
     perf: any,
     variants: string[],
@@ -770,6 +879,9 @@ export function EnhancedStandardCycleContent() {
       }
       return undefined;
     };
+
+
+
 
     // 1) Try exact variants
     const exact = searchExact(variants);
@@ -915,23 +1027,26 @@ export function EnhancedStandardCycleContent() {
     return undefined;
   };
 
+
+
+
   // Derived flow values for display
   const massFlowRate = results?.performance
     ? getPerformanceValue(results.performance, [
-        "mass_flow_rate_kg_s",
-        "mass_flow_rate",
-        "mdot",
-        "m_dot",
-        "mass_flow",
-        "flow_rate",
-        "mass_flow_kg_s",
-        "refrigerant_flow_rate",
-        "flow_rate_mass",
-        "mass_rate",
-        "kg_per_s",
-        "mass_flux",
-        "circulation_rate",
-      ])
+      "mass_flow_rate_kg_s",
+      "mass_flow_rate",
+      "mdot",
+      "m_dot",
+      "mass_flow",
+      "flow_rate",
+      "mass_flow_kg_s",
+      "refrigerant_flow_rate",
+      "flow_rate_mass",
+      "mass_rate",
+      "kg_per_s",
+      "mass_flux",
+      "circulation_rate",
+    ])
     : undefined;
 
   const densityAtSuction = results
@@ -940,170 +1055,170 @@ export function EnhancedStandardCycleContent() {
 
   const volumetricFlowRate = results?.performance
     ? (getPerformanceValue(results.performance, [
-        "volumetric_flow_rate_m3_s",
-        "volumetric_flow_rate",
-        "volume_flow",
-        "V_dot",
-        "v_dot",
-        "volumetric_flow",
-        "volume_flow_rate",
-        "vol_flow_rate",
-        "suction_volume_flow",
-        "displacement",
-        "volume_rate",
-        "m3_per_s",
-      ]) ??
+      "volumetric_flow_rate_m3_s",
+      "volumetric_flow_rate",
+      "volume_flow",
+      "V_dot",
+      "v_dot",
+      "volumetric_flow",
+      "volume_flow_rate",
+      "vol_flow_rate",
+      "suction_volume_flow",
+      "displacement",
+      "volume_rate",
+      "m3_per_s",
+    ]) ??
       (massFlowRate !== undefined &&
-      densityAtSuction !== undefined &&
-      densityAtSuction !== 0
+        densityAtSuction !== undefined &&
+        densityAtSuction !== 0
         ? massFlowRate / densityAtSuction
         : undefined))
     : undefined;
 
   const cycleData = results
     ? {
-        points: [
-          {
-            id: "1",
-            name: "Evaporator Outlet",
-            temperature:
-              getPropertyValue(results.state_points?.["1"], [
-                "temperature_c",
-                "temp_c",
-                "temperature",
-              ]) || 0,
-            pressure:
-              getPropertyValue(results.state_points?.["1"], [
-                "pressure_kpa",
-                "pressure",
-              ]) || 0,
-            enthalpy:
-              getPropertyValue(results.state_points?.["1"], [
-                "enthalpy_kj_kg",
-                "enthalpy",
-              ]) || 0,
-            entropy:
-              getPropertyValue(results.state_points?.["1"], [
-                "entropy_kj_kgk",
-                "entropy_kj_kg_k",
-                "entropy",
-              ]) || 0,
-            specificVolume: getSpecificVolume(results.state_points?.["1"]) || 0,
-            density: getDensity(results.state_points?.["1"]),
-            quality: getPropertyValue(results.state_points?.["1"], [
-              "vapor_quality",
-              "quality",
-            ]),
-            x: 0, // Will be calculated by CycleVisualization
-            y: 0,
-          },
-          {
-            id: "2",
-            name: "Compressor Outlet",
-            temperature:
-              getPropertyValue(results.state_points?.["2"], [
-                "temperature_c",
-                "temp_c",
-                "temperature",
-              ]) || 0,
-            pressure:
-              getPropertyValue(results.state_points?.["2"], [
-                "pressure_kpa",
-                "pressure",
-              ]) || 0,
-            enthalpy:
-              getPropertyValue(results.state_points?.["2"], [
-                "enthalpy_kj_kg",
-                "enthalpy",
-              ]) || 0,
-            entropy:
-              getPropertyValue(results.state_points?.["2"], [
-                "entropy_kj_kgk",
-                "entropy_kj_kg_k",
-                "entropy",
-              ]) || 0,
-            specificVolume: getSpecificVolume(results.state_points?.["2"]) || 0,
-            density: getDensity(results.state_points?.["2"]),
-            quality: getPropertyValue(results.state_points?.["2"], [
-              "vapor_quality",
-              "quality",
-            ]),
-            x: 0,
-            y: 0,
-          },
-          {
-            id: "3",
-            name: "Condenser Outlet",
-            temperature:
-              getPropertyValue(results.state_points?.["3"], [
-                "temperature_c",
-                "temp_c",
-                "temperature",
-              ]) || 0,
-            pressure:
-              getPropertyValue(results.state_points?.["3"], [
-                "pressure_kpa",
-                "pressure",
-              ]) || 0,
-            enthalpy:
-              getPropertyValue(results.state_points?.["3"], [
-                "enthalpy_kj_kg",
-                "enthalpy",
-              ]) || 0,
-            entropy:
-              getPropertyValue(results.state_points?.["3"], [
-                "entropy_kj_kgk",
-                "entropy_kj_kg_k",
-                "entropy",
-              ]) || 0,
-            specificVolume: getSpecificVolume(results.state_points?.["3"]) || 0,
-            density: getDensity(results.state_points?.["3"]),
-            quality: getPropertyValue(results.state_points?.["3"], [
-              "vapor_quality",
-              "quality",
-            ]),
-            x: 0,
-            y: 0,
-          },
-          {
-            id: "4",
-            name: "Expansion Valve Outlet",
-            temperature:
-              getPropertyValue(results.state_points?.["4"], [
-                "temperature_c",
-                "temp_c",
-                "temperature",
-              ]) || 0,
-            pressure:
-              getPropertyValue(results.state_points?.["4"], [
-                "pressure_kpa",
-                "pressure",
-              ]) || 0,
-            enthalpy:
-              getPropertyValue(results.state_points?.["4"], [
-                "enthalpy_kj_kg",
-                "enthalpy",
-              ]) || 0,
-            entropy:
-              getPropertyValue(results.state_points?.["4"], [
-                "entropy_kj_kgk",
-                "entropy_kj_kg_k",
-                "entropy",
-              ]) || 0,
-            specificVolume: getSpecificVolume(results.state_points?.["4"]) || 0,
-            density: getDensity(results.state_points?.["4"]),
-            quality: getPropertyValue(results.state_points?.["4"], [
-              "vapor_quality",
-              "quality",
-            ]),
-            x: 0,
-            y: 0,
-          },
-        ],
-        refrigerant: results.refrigerant || formData.refrigerant,
-        cycleType: "standard" as const,
-        saturationDome: results.saturation_dome,
-      }
+      points: [
+        {
+          id: "1",
+          name: "Evaporator Outlet",
+          temperature:
+            getPropertyValue(results.state_points?.["1"], [
+              "temperature_c",
+              "temp_c",
+              "temperature",
+            ]) || 0,
+          pressure:
+            getPropertyValue(results.state_points?.["1"], [
+              "pressure_kpa",
+              "pressure",
+            ]) || 0,
+          enthalpy:
+            getPropertyValue(results.state_points?.["1"], [
+              "enthalpy_kj_kg",
+              "enthalpy",
+            ]) || 0,
+          entropy:
+            getPropertyValue(results.state_points?.["1"], [
+              "entropy_kj_kgk",
+              "entropy_kj_kg_k",
+              "entropy",
+            ]) || 0,
+          specificVolume: getSpecificVolume(results.state_points?.["1"]) || 0,
+          density: getDensity(results.state_points?.["1"]),
+          quality: getPropertyValue(results.state_points?.["1"], [
+            "vapor_quality",
+            "quality",
+          ]),
+          x: 0, // Will be calculated by CycleVisualization
+          y: 0,
+        },
+        {
+          id: "2",
+          name: "Compressor Outlet",
+          temperature:
+            getPropertyValue(results.state_points?.["2"], [
+              "temperature_c",
+              "temp_c",
+              "temperature",
+            ]) || 0,
+          pressure:
+            getPropertyValue(results.state_points?.["2"], [
+              "pressure_kpa",
+              "pressure",
+            ]) || 0,
+          enthalpy:
+            getPropertyValue(results.state_points?.["2"], [
+              "enthalpy_kj_kg",
+              "enthalpy",
+            ]) || 0,
+          entropy:
+            getPropertyValue(results.state_points?.["2"], [
+              "entropy_kj_kgk",
+              "entropy_kj_kg_k",
+              "entropy",
+            ]) || 0,
+          specificVolume: getSpecificVolume(results.state_points?.["2"]) || 0,
+          density: getDensity(results.state_points?.["2"]),
+          quality: getPropertyValue(results.state_points?.["2"], [
+            "vapor_quality",
+            "quality",
+          ]),
+          x: 0,
+          y: 0,
+        },
+        {
+          id: "3",
+          name: "Condenser Outlet",
+          temperature:
+            getPropertyValue(results.state_points?.["3"], [
+              "temperature_c",
+              "temp_c",
+              "temperature",
+            ]) || 0,
+          pressure:
+            getPropertyValue(results.state_points?.["3"], [
+              "pressure_kpa",
+              "pressure",
+            ]) || 0,
+          enthalpy:
+            getPropertyValue(results.state_points?.["3"], [
+              "enthalpy_kj_kg",
+              "enthalpy",
+            ]) || 0,
+          entropy:
+            getPropertyValue(results.state_points?.["3"], [
+              "entropy_kj_kgk",
+              "entropy_kj_kg_k",
+              "entropy",
+            ]) || 0,
+          specificVolume: getSpecificVolume(results.state_points?.["3"]) || 0,
+          density: getDensity(results.state_points?.["3"]),
+          quality: getPropertyValue(results.state_points?.["3"], [
+            "vapor_quality",
+            "quality",
+          ]),
+          x: 0,
+          y: 0,
+        },
+        {
+          id: "4",
+          name: "Expansion Valve Outlet",
+          temperature:
+            getPropertyValue(results.state_points?.["4"], [
+              "temperature_c",
+              "temp_c",
+              "temperature",
+            ]) || 0,
+          pressure:
+            getPropertyValue(results.state_points?.["4"], [
+              "pressure_kpa",
+              "pressure",
+            ]) || 0,
+          enthalpy:
+            getPropertyValue(results.state_points?.["4"], [
+              "enthalpy_kj_kg",
+              "enthalpy",
+            ]) || 0,
+          entropy:
+            getPropertyValue(results.state_points?.["4"], [
+              "entropy_kj_kgk",
+              "entropy_kj_kg_k",
+              "entropy",
+            ]) || 0,
+          specificVolume: getSpecificVolume(results.state_points?.["4"]) || 0,
+          density: getDensity(results.state_points?.["4"]),
+          quality: getPropertyValue(results.state_points?.["4"], [
+            "vapor_quality",
+            "quality",
+          ]),
+          x: 0,
+          y: 0,
+        },
+      ],
+      refrigerant: results.refrigerant || formData.refrigerant,
+      cycleType: "standard" as const,
+      saturationDome: results.saturation_dome,
+    }
     : undefined;
 
   useEffect(() => {
@@ -1711,14 +1826,14 @@ export function EnhancedStandardCycleContent() {
                                     {selectedRefrigerant?.limits
                                       ?.critical_temp_c
                                       ? selectedRefrigerant.limits.critical_temp_c.toFixed(
-                                          1,
-                                        ) + " °C"
+                                        1,
+                                      ) + " °C"
                                       : selectedRefrigerant?.limits
-                                            ?.criticalTemp
+                                        ?.criticalTemp
                                         ? (
-                                            selectedRefrigerant.limits
-                                              .criticalTemp - 273.15
-                                          ).toFixed(1) + " °C"
+                                          selectedRefrigerant.limits
+                                            .criticalTemp - 273.15
+                                        ).toFixed(1) + " °C"
                                         : "N/A"}
                                   </div>
                                 </div>
@@ -1750,14 +1865,14 @@ export function EnhancedStandardCycleContent() {
                                     {selectedRefrigerant?.limits
                                       ?.critical_pressure_kpa
                                       ? selectedRefrigerant.limits.critical_pressure_kpa.toFixed(
-                                          0,
-                                        ) + " kPa"
+                                        0,
+                                      ) + " kPa"
                                       : selectedRefrigerant?.limits
-                                            ?.criticalPressure
+                                        ?.criticalPressure
                                         ? Math.round(
-                                            selectedRefrigerant.limits
-                                              .criticalPressure / 1000,
-                                          ) + " kPa"
+                                          selectedRefrigerant.limits
+                                            .criticalPressure / 1000,
+                                        ) + " kPa"
                                         : "N/A"}
                                   </div>
                                 </div>
@@ -2297,17 +2412,17 @@ export function EnhancedStandardCycleContent() {
                             "vapor_quality",
                             "quality",
                           ]) !== undefined && (
-                            <div>
-                              <TechTerm term="quality">x</TechTerm>:{" "}
-                              {formatValue(
-                                (getPropertyValue(point, [
-                                  "vapor_quality",
-                                  "quality",
-                                ]) || 0) * 100,
-                                "%",
-                              )}
-                            </div>
-                          )}
+                              <div>
+                                <TechTerm term="quality">x</TechTerm>:{" "}
+                                {formatValue(
+                                  (getPropertyValue(point, [
+                                    "vapor_quality",
+                                    "quality",
+                                  ]) || 0) * 100,
+                                  "%",
+                                )}
+                              </div>
+                            )}
                         </div>
                       </div>
                     ))}

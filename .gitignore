@@ -26,3 +26,11 @@ dist-ssr
 .config/
 !.env
 .env
+
+# Supabase
+supabase/.temp
+supabase/.branches
+
+# Test results
+test-results/
+coverage/

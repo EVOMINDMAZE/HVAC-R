@@ -30,33 +30,8 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // Get initial session with error handling, but first verify Supabase host is reachable
+    // Get initial session
     const getInitialSession = async () => {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-
-      // Quick connectivity check to avoid unhandled fetch failures from supabase-js
-      if (supabaseUrl) {
-        try {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 3000);
-          await fetch(supabaseUrl, { method: 'GET', mode: 'cors', signal: controller.signal });
-          clearTimeout(timeoutId);
-        } catch (err: any) {
-          console.warn('Supabase host unreachable, disabling auth: ', err?.message || err);
-          // Clear any existing stored session tokens to prevent supabase-js from attempting refresh
-          try {
-            localStorage.removeItem('supabase.auth.token');
-            sessionStorage.removeItem('supabase.auth.token');
-          } catch (e) {
-            // ignore
-          }
-          setIsLoading(false);
-          setSession(null);
-          setUser(null);
-          return;
-        }
-      }
-
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
 
@@ -86,7 +61,7 @@ export function SupabaseAuthProvider({ children }: { children: ReactNode }) {
     getInitialSession();
 
     // Listen for auth changes with error handling
-    let subscription: any = { unsubscribe: () => {} };
+    let subscription: any = { unsubscribe: () => { } };
     try {
       const sub = supabase.auth.onAuthStateChange(
         async (event, session) => {

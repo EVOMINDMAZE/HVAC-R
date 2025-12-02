@@ -3,7 +3,7 @@ import { supabase } from "./supabase";
 
 export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
-  "https://simulateon-backend.onrender.com";
+  "http://localhost:8000";
 
 interface ApiResponse<T> {
   success: boolean;
@@ -38,7 +38,7 @@ interface AuthResponse {
 
 interface CalculationData {
   id?: number;
-  type: "Standard Cycle" | "Refrigerant Comparison" | "Cascade Cycle";
+  type: "Standard Cycle" | "Refrigerant Comparison" | "Cascade Cycle" | "A2L Safety";
   name?: string;
   notes?: string;
   parameters: any;
@@ -281,7 +281,7 @@ class ApiClient {
             ? payload
             : JSON.stringify(payload, null, 2);
         console.log("[api.aiTroubleshoot] payload preview:", preview);
-      } catch (e) {}
+      } catch (e) { }
 
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       if (!supabaseUrl) {

@@ -79,7 +79,7 @@ export function History() {
         const lowered = searchTerm.toLowerCase();
         const matchesSearch = lowered
           ? (calc.name || "")?.toLowerCase().includes(lowered) ||
-            calc.calculation_type.toLowerCase().includes(lowered)
+          calc.calculation_type.toLowerCase().includes(lowered)
           : true;
         const matchesFilter =
           filterType === "all" || calc.calculation_type === filterType;
@@ -87,12 +87,12 @@ export function History() {
         const tagLower = tagFilter.trim().toLowerCase();
         const matchesTag = tagLower
           ? (calc.tags &&
-              Array.isArray(calc.tags) &&
-              calc.tags.join(" ").toLowerCase().includes(tagLower)) ||
-            (calc.inputs &&
-              JSON.stringify(calc.inputs).toLowerCase().includes(tagLower)) ||
-            (calc.results &&
-              JSON.stringify(calc.results).toLowerCase().includes(tagLower))
+            Array.isArray(calc.tags) &&
+            calc.tags.join(" ").toLowerCase().includes(tagLower)) ||
+          (calc.inputs &&
+            JSON.stringify(calc.inputs).toLowerCase().includes(tagLower)) ||
+          (calc.results &&
+            JSON.stringify(calc.results).toLowerCase().includes(tagLower))
           : true;
 
         return matchesSearch && matchesFilter && matchesTag;
@@ -262,12 +262,12 @@ export function History() {
                 ["work_kj_kg"],
                 ["work"],
               ]) ??
-                deepFind(results, [
-                  "lt_work",
-                  "lt_work_kj_kg",
-                  "lt_work_kjkg",
-                  "work_lt",
-                ]),
+              deepFind(results, [
+                "lt_work",
+                "lt_work_kj_kg",
+                "lt_work_kjkg",
+                "work_lt",
+              ]),
             ) || 0;
           const htWork =
             readNum(
@@ -278,12 +278,12 @@ export function History() {
                 ["work_kj_kg"],
                 ["work"],
               ]) ??
-                deepFind(results, [
-                  "ht_work",
-                  "ht_work_kj_kg",
-                  "ht_work_kjkg",
-                  "work_ht",
-                ]),
+              deepFind(results, [
+                "ht_work",
+                "ht_work_kj_kg",
+                "ht_work_kjkg",
+                "work_ht",
+              ]),
             ) || 0;
           const ltRe =
             readNum(
@@ -311,11 +311,11 @@ export function History() {
           // If we couldn't compute overall, show per-cycle COPs if available
           const ltCop = readNum(
             pick(lt, [["cop"], ["COP"], ["cycle_cop"], ["cop_kj"]]) ??
-              deepFind(results, ["lt_cop", "ltCOP", "lowCOP"]),
+            deepFind(results, ["lt_cop", "ltCOP", "lowCOP"]),
           );
           const htCop = readNum(
             pick(ht, [["cop"], ["COP"], ["cycle_cop"], ["cop_kj"]]) ??
-              deepFind(results, ["ht_cop", "htCOP", "highCOP"]),
+            deepFind(results, ["ht_cop", "htCOP", "highCOP"]),
           );
 
           if (
@@ -451,6 +451,13 @@ export function History() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
+          <Button
+            variant="ghost"
+            className="mb-4 pl-0 hover:bg-transparent hover:text-blue-600"
+            onClick={() => navigate(-1)}
+          >
+            ← Back
+          </Button>
           <div className="flex items-center space-x-3 mb-4">
             <HistoryIcon className="h-8 w-8 text-blue-600" />
             <h1 className="text-3xl font-bold text-gray-900">

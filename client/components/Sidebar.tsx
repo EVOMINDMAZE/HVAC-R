@@ -22,32 +22,32 @@ export function Sidebar() {
         <div className="hidden md:flex items-center gap-2">
           {isAuthenticated
             ? NAV_ITEMS.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <NavLink key={item.to} to={item.to} className={({ isActive }) => `inline-block`}>
-                    {({ isActive }) => (
-                      <Button
-                        asChild
-                        variant={isActive ? 'default' : 'ghost'}
-                        className={`rounded-md px-3 py-2 ${isActive ? 'bg-blue-50 text-blue-700' : 'text-sidebar-foreground'}`}>
-                        <div className="flex items-center gap-2">
-                          <Icon className="h-4 w-4 text-blue-600" />
-                          <span className="text-sm font-medium">{item.label}</span>
-                        </div>
-                      </Button>
-                    )}
-                  </NavLink>
-                );
-              })
+              const Icon = item.icon;
+              return (
+                <NavLink key={item.to} to={item.to} className={({ isActive }) => `inline-block`}>
+                  {({ isActive }) => (
+                    <Button
+                      asChild
+                      variant={isActive ? 'default' : 'ghost'}
+                      className={`rounded-md px-3 py-2 ${isActive ? 'bg-blue-50 text-blue-700' : 'text-sidebar-foreground'}`}>
+                      <div className="flex items-center gap-2">
+                        <Icon className="h-4 w-4 text-blue-600" />
+                        <span className="text-sm font-medium">{item.label}</span>
+                      </div>
+                    </Button>
+                  )}
+                </NavLink>
+              );
+            })
             : LANDING_ITEMS.map((item) => (
-                <Link key={item.to} to={item.to} className="inline-block">
-                  <Button asChild variant="ghost" className="rounded-md px-3 py-2 text-sidebar-foreground">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium">{item.label}</span>
-                    </div>
-                  </Button>
-                </Link>
-              ))}
+              <Link key={item.to} to={item.to} className="inline-block">
+                <Button asChild variant="ghost" className="rounded-md px-3 py-2 text-sidebar-foreground">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium">{item.label}</span>
+                  </div>
+                </Button>
+              </Link>
+            ))}
         </div>
 
         {/* Utility and projects - always visible */}
@@ -68,8 +68,8 @@ export function Sidebar() {
             );
           })}
 
-          <NavLink to="/projects">
-            <Button variant="outline" className="ml-2">Projects</Button>
+          <NavLink to="/jobs">
+            <Button variant="outline" className="ml-2">Jobs</Button>
           </NavLink>
         </div>
       </div>

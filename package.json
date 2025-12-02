@@ -24,7 +24,6 @@
   "dependencies": {
     "@stripe/stripe-js": "^7.6.1",
     "@supabase/supabase-js": "^2.52.1",
-    "pdf-lib": "^1.17.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/uuid": "^10.0.0",
@@ -33,12 +32,14 @@
     "dotenv": "^17.2.0",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
+    "pdf-lib": "^1.17.1",
     "stripe": "^18.3.0",
     "uuid": "^11.1.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@hookform/resolvers": "^3.9.0",
+    "@playwright/test": "^1.40.0",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-aspect-ratio": "^1.1.0",
@@ -109,7 +110,7 @@
     "typescript": "^5.5.3",
     "vaul": "^0.9.3",
     "vite": "^6.2.2",
-    "vitest": "^3.1.4",
-    "@playwright/test": "^1.40.0"
+    "vite-plugin-pwa": "^1.2.0",
+    "vitest": "^3.1.4"
   }
 }

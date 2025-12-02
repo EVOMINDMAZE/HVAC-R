@@ -3,87 +3,96 @@
 @tailwind utilities;
 
 @layer base {
+
   /**
-   * Tailwind CSS theme
-   * tailwind.config.ts expects the following color variables to be expressed as HSL values.
-   * A different format will require also updating the theme in tailwind.config.ts.
+   * Tailwind CSS theme - Premium "ChargePro" Design
+   * Deep blues, crisp whites, and vibrant accents.
    */
   :root {
-    --background: 210 20% 98%;
-    --foreground: 215 25% 15%;
+    /* Background: Very subtle cool gray/blue tint for depth */
+    --background: 210 40% 98%;
+    /* Foreground: Deep navy for high contrast text */
+    --foreground: 222 47% 11%;
 
+    /* Card: Pure white with subtle shadow */
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 15%;
+    --card-foreground: 222 47% 11%;
 
+    /* Popover: Pure white */
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 15%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 210 100% 50%;
-    --primary-foreground: 0 0% 100%;
+    /* Primary: Vibrant Electric Blue */
+    --primary: 221 83% 53%;
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 215 25% 15%;
+    /* Secondary: Soft Slate Blue */
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222 47% 11.2%;
 
-    --muted: 210 40% 95%;
-    --muted-foreground: 215 16% 47%;
+    /* Muted: Cool Gray */
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 195 100% 48%;
-    --accent-foreground: 0 0% 100%;
+    /* Accent: Cyan/Teal for highlights */
+    --accent: 199 89% 48%;
+    --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 84% 60%;
+    /* Destructive: Soft Red */
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 210 30% 88%;
-    --input: 210 30% 88%;
-    --ring: 210 100% 50%;
+    /* Border: Subtle blue-gray */
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221 83% 53%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+    /* Slightly more rounded for modern feel */
 
+    /* Sidebar */
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 215 28% 8%;
+    /* Background: Deep Slate/Navy */
+    --background: 222 47% 11%;
     --foreground: 210 40% 98%;
 
-    --card: 215 28% 10%;
+    /* Card: Slightly lighter navy */
+    --card: 217 33% 17%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 215 28% 10%;
+    --popover: 217 33% 17%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 100% 55%;
-    --primary-foreground: 215 28% 8%;
+    /* Primary: Bright Blue for dark mode */
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47.4% 11.2%;
 
-    --secondary: 215 25% 15%;
+    --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 215 25% 15%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 195 100% 55%;
-    --accent-foreground: 215 28% 8%;
+    --accent: 199 89% 48%;
+    --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 63% 31%;
+    --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 215 25% 18%;
-    --input: 215 25% 18%;
-    --ring: 210 100% 55%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -104,9 +113,11 @@
     @apply bg-background text-foreground;
   }
 
-  /* Smooth scrolling */
+  /* Smooth scrolling & Font smoothing */
   html {
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   /* Focus styles */
@@ -118,6 +129,7 @@
 }
 
 @layer utilities {
+
   /* Custom animations */
   .animate-fade-in {
     animation: fadeIn 0.3s ease-in-out;
@@ -135,6 +147,7 @@
     from {
       opacity: 0;
     }
+
     to {
       opacity: 1;
     }
@@ -145,6 +158,7 @@
       opacity: 0;
       transform: translateY(10px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -156,6 +170,7 @@
       opacity: 0;
       transform: scale(0.95);
     }
+
     to {
       opacity: 1;
       transform: scale(1);
@@ -164,13 +179,25 @@
 
   /* Hover transitions */
   .hover-lift {
-    @apply transition-all duration-200 hover:-translate-y-1 hover:shadow-lg;
-    /* Hint the browser to optimize transform animations */
-    will-change: transform;
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-xl;
+    will-change: transform, box-shadow;
   }
 
   .hover-glow {
-    @apply transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/20;
+    @apply transition-all duration-300 hover:shadow-lg hover:shadow-primary/25;
+  }
+
+  /* Glassmorphism */
+  .glass {
+    @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-lg;
+  }
+
+  .glass-dark {
+    @apply bg-slate-900/70 backdrop-blur-lg border border-white/10 shadow-lg;
+  }
+
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-md border border-white/40 shadow-xl rounded-xl;
   }
 }
 
@@ -179,12 +206,15 @@
   .card-title {
     @apply text-lg;
   }
+
   .card-body {
     @apply text-sm px-4 py-4;
   }
+
   .hero-title {
     @apply text-3xl;
   }
+
   .hide-on-mobile {
     display: none !important;
   }

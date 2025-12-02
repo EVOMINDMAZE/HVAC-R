@@ -1,9 +1,7 @@
-import { useMemo } from "react";
-import type { User } from "@supabase/supabase-js";
 import { useNavigate } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
-import { useSubscription } from "@/hooks/useStripe";
+import { useDashboardStats, DashboardStats } from "@/hooks/useDashboardStats";
 import { Footer } from "@/components/Footer";
 import { SystemStatus } from "@/components/SystemStatus";
 import { OnboardingGuide } from "@/components/OnboardingGuide";
@@ -24,27 +22,14 @@ import {
   Target,
   RefreshCw,
   Loader2,
+  ArrowRight,
+  Sparkles,
+  Layers,
 } from "lucide-react";
-
-interface DashboardStats {
-  totalCalculations: number;
-  monthlyCalculations: number;
-  plan: string;
-  planDisplayName: string;
-  isUnlimited: boolean;
-  remaining: number;
-  remainingText: string;
-  monthlyLimit: number;
-  usagePercentage: number;
-  isNearLimit: boolean;
-  isAtLimit: boolean;
-  remainingValue: number;
-  billingCycleResetLabel: string;
-}
 
 interface QuickStatsProps {
   stats: DashboardStats;
-  user: User | null;
+  user: any;
   isLoading: boolean;
   onRefresh: () => void;
 }
@@ -62,7 +47,7 @@ function UsageProgressCard({ stats, onUpgrade }: UsageProgressCardProps) {
   const roundedUsage = Math.round(stats.usagePercentage);
 
   return (
-    <Card className="border border-primary/20 bg-primary/5 shadow-sm rounded-lg hover-lift animate-fade-in">
+    <Card className="glass-card border-primary/20 bg-primary/5 hover-lift animate-fade-in">
       <CardContent className="space-y-4 p-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
@@ -77,7 +62,7 @@ function UsageProgressCard({ stats, onUpgrade }: UsageProgressCardProps) {
               Resets on {stats.billingCycleResetLabel}
             </p>
           </div>
-          <Badge className="border border-primary/20 bg-primary/10 text-primary">
+          <Badge className="glass border-primary/20 text-primary">
             {roundedUsage}% used
           </Badge>
         </div>
@@ -85,7 +70,7 @@ function UsageProgressCard({ stats, onUpgrade }: UsageProgressCardProps) {
         <Progress
           value={stats.usagePercentage}
           aria-label="Monthly calculation usage"
-          className="h-2 bg-white/60"
+          className="h-2 bg-white/40"
         />
 
         <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-muted-foreground">
@@ -93,7 +78,7 @@ function UsageProgressCard({ stats, onUpgrade }: UsageProgressCardProps) {
             {stats.remaining} calculation{stats.remaining === 1 ? "" : "s"}{" "}
             remaining this month
           </span>
-          <Button size="sm" onClick={onUpgrade}>
+          <Button size="sm" onClick={onUpgrade} className="glass hover:bg-primary/20 text-primary border-primary/20">
             Upgrade plan
           </Button>
         </div>
@@ -114,20 +99,19 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
   const handleUpgrade = () => navigate("/pricing");
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+    <div className="space-y-8">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between animate-fade-in">
         <div>
-          <h2 className="text-2xl font-semibold">
-            Welcome back{firstName ? `, ${firstName}` : ""} 👋
+          <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Welcome back{firstName ? `, ${firstName}` : ""} <span className="inline-block animate-bounce">👋</span>
           </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Your workspace at a glance — quick access to recent activity and
-            plan usage.
+          <p className="mt-2 text-lg text-slate-500 dark:text-slate-400">
+            Your workspace is ready. Here's what's happening today.
           </p>
-          <div className="mt-3 flex flex-wrap items-center gap-2">
+          <div className="mt-4 flex flex-wrap items-center gap-3">
             <OnboardingGuide userName={firstName} />
             {!stats.isUnlimited && (
-              <Badge className="border border-primary/20 bg-primary/10 text-primary">
+              <Badge variant="outline" className="glass text-primary px-3 py-1">
                 {stats.remaining} calculation{stats.remaining === 1 ? "" : "s"}{" "}
                 left this month
               </Badge>
@@ -135,83 +119,65 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-3">
           <Button
-            className="bg-primary text-primary-foreground hover:opacity-95 whitespace-nowrap rounded-full px-5 py-2 shadow-md"
+            className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-0.5 rounded-full px-6"
             onClick={() => navigate("/standard-cycle")}
-            aria-label="Start new calculation"
           >
-            <Calculator className="h-4 w-4" />
+            <Calculator className="h-4 w-4 mr-2" />
             New Calculation
           </Button>
 
           <Button
-            variant="ghost"
-            className="hidden sm:inline-flex items-center"
+            variant="outline"
+            className="glass hover-lift hidden sm:inline-flex items-center"
             onClick={onRefresh}
-            aria-label="Refresh dashboard data"
             disabled={isLoading}
           >
             {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
             ) : (
-              <RefreshCw className="h-4 w-4" />
+              <RefreshCw className="h-4 w-4 mr-2" />
             )}
             Refresh
-          </Button>
-
-          <Button
-            variant="outline"
-            className="hidden sm:inline-flex whitespace-nowrap"
-            onClick={() => navigate("/history")}
-            aria-label="View calculation history"
-          >
-            <HistoryIcon className="h-4 w-4" />
-            View History
           </Button>
         </div>
       </div>
 
       {stats.isNearLimit && (
         <Card
-          className={`border-2 ${
-            stats.isAtLimit
-              ? "border-destructive bg-destructive/10"
-              : "border-yellow-500 bg-yellow-50"
-          }`}
+          className={`glass-card border-l-4 ${stats.isAtLimit
+            ? "border-l-destructive bg-destructive/5"
+            : "border-l-amber-500 bg-amber-50/50"
+            } animate-slide-up`}
         >
           <CardContent className="p-4">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center space-x-3">
                 <div
-                  className={`h-3 w-3 rounded-full ${stats.isAtLimit ? "bg-red-500" : "bg-yellow-500"}`}
-                />
+                  className={`p-2 rounded-full ${stats.isAtLimit ? "bg-red-100 text-red-600" : "bg-amber-100 text-amber-600"}`}
+                >
+                  <Sparkles className="h-5 w-5" />
+                </div>
                 <div>
-                  <p
-                    className={`font-semibold ${
-                      stats.isAtLimit ? "text-red-800" : "text-yellow-800"
-                    }`}
-                  >
+                  <p className="font-semibold text-slate-900 dark:text-white">
                     {stats.isAtLimit
-                      ? "Monthly Limit Reached!"
+                      ? "Monthly Limit Reached"
                       : "Approaching Monthly Limit"}
                   </p>
-                  <p
-                    className={`text-sm ${
-                      stats.isAtLimit ? "text-red-600" : "text-yellow-600"
-                    }`}
-                  >
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
                     {stats.isAtLimit
-                      ? "You've reached your monthly calculation cap. Upgrade to continue."
-                      : `You've used ${stats.monthlyCalculations}/${stats.monthlyLimit} calculations this month.`}
+                      ? "Upgrade to Pro for unlimited calculations."
+                      : `You've used ${stats.monthlyCalculations}/${stats.monthlyLimit} calculations.`}
                   </p>
                 </div>
               </div>
               <Button
+                size="sm"
                 className={
                   stats.isAtLimit
-                    ? "bg-destructive text-white"
-                    : "bg-yellow-600 text-white"
+                    ? "bg-destructive text-white hover:bg-destructive/90"
+                    : "bg-amber-500 text-white hover:bg-amber-600"
                 }
                 onClick={handleUpgrade}
               >
@@ -227,93 +193,77 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
       )}
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
-        <Card className="bg-gradient-to-r from-blue-600 to-sky-500 text-white rounded-lg hover-lift animate-fade-in">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm opacity-90">Total Calculations</p>
-                <p className="mt-1 text-3xl font-bold">
-                  {formatNumber(stats.totalCalculations)}
-                </p>
-                <p className="mt-1 text-xs opacity-80">All time</p>
-              </div>
-              <Calculator className="h-8 w-8 text-white/80" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-r from-purple-600 to-violet-500 text-white rounded-lg hover-lift animate-fade-in">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm opacity-90">This Month</p>
-                <p className="mt-1 text-3xl font-bold">
-                  {formatNumber(stats.monthlyCalculations)}
-                  {!stats.isUnlimited && (
-                    <span className="text-base font-medium">
-                      /{stats.monthlyLimit}
-                    </span>
-                  )}
-                </p>
-                {!stats.isUnlimited ? (
-                  <p className="mt-2 text-sm opacity-80">
-                    {Math.round(stats.usagePercentage)}% of allowance used
-                  </p>
-                ) : (
-                  <p className="mt-2 text-sm opacity-80">Unlimited</p>
-                )}
-              </div>
-              <FileText className="h-8 w-8 text-white/80" />
-            </div>
-          </CardContent>
-        </Card>
-
+        <StatsCard
+          title="Total Calculations"
+          value={formatNumber(stats.totalCalculations)}
+          subtitle="All time"
+          icon={Calculator}
+          gradient="from-blue-500 to-indigo-600"
+          delay={0}
+        />
+        <StatsCard
+          title="This Month"
+          value={`${formatNumber(stats.monthlyCalculations)}${!stats.isUnlimited ? `/${stats.monthlyLimit}` : ''}`}
+          subtitle={!stats.isUnlimited ? `${Math.round(stats.usagePercentage)}% used` : "Unlimited"}
+          icon={FileText}
+          gradient="from-violet-500 to-purple-600"
+          delay={100}
+        />
+        <StatsCard
+          title="Remaining"
+          value={stats.remainingText}
+          subtitle="This month"
+          icon={TrendingUp}
+          gradient={stats.remainingValue <= 2 ? "from-red-500 to-rose-600" : "from-emerald-500 to-teal-600"}
+          delay={200}
+        />
         <Card
-          className={`bg-gradient-to-r rounded-lg hover-lift animate-fade-in ${
-            stats.remainingValue <= 2
-              ? "from-red-600 to-red-500"
-              : "from-emerald-600 to-green-500"
-          } text-white`}
-        >
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm opacity-90">Remaining</p>
-                <p className="mt-1 text-3xl font-bold">{stats.remainingText}</p>
-                <p className="mt-1 text-xs opacity-80">This month</p>
-              </div>
-              <TrendingUp className="h-8 w-8 text-white/80" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card
-          className="bg-gradient-to-r from-orange-500 to-orange-600 text-white cursor-pointer hover:from-orange-600 hover:to-orange-700 transition-all duration-200 rounded-lg hover-lift animate-fade-in"
+          className="glass-card hover-lift cursor-pointer group relative overflow-hidden"
           onClick={handleUpgrade}
         >
-          <CardContent className="p-6">
+          <div className="absolute inset-0 bg-gradient-to-br from-amber-400/20 to-orange-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <CardContent className="p-6 relative z-10">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm opacity-90">Current Plan</p>
-                <p className="mt-1 text-xl font-semibold">
+                <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Current Plan</p>
+                <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">
                   {stats.planDisplayName}
                 </p>
-                <p className="mt-1 text-xs opacity-80">
-                  {stats.plan === "free"
-                    ? "Click to upgrade"
-                    : "Manage subscription"}
+                <p className="mt-1 text-xs text-primary flex items-center">
+                  {stats.plan === "free" ? "Upgrade to Pro" : "Manage Subscription"}
+                  <ArrowRight className="h-3 w-3 ml-1 group-hover:translate-x-1 transition-transform" />
                 </p>
               </div>
-              {stats.plan === "free" ? (
-                <BarChart3 className="h-8 w-8 text-white/80" />
-              ) : (
-                <Crown className="h-8 w-8 text-white/80" />
-              )}
+              <div className="p-3 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-lg">
+                {stats.plan === "free" ? <BarChart3 className="h-6 w-6" /> : <Crown className="h-6 w-6" />}
+              </div>
             </div>
           </CardContent>
         </Card>
       </div>
     </div>
+  );
+}
+
+function StatsCard({ title, value, subtitle, icon: Icon, gradient, delay }: any) {
+  return (
+    <Card className="glass-card hover-lift overflow-hidden relative group" style={{ animationDelay: `${delay}ms` }}>
+      <div className={`absolute top-0 right-0 p-20 bg-gradient-to-br ${gradient} opacity-10 blur-3xl rounded-full -mr-10 -mt-10 transition-opacity group-hover:opacity-20`} />
+      <CardContent className="p-6 relative z-10">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{title}</p>
+            <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
+              {value}
+            </p>
+            <p className="mt-1 text-xs text-slate-400 font-medium">{subtitle}</p>
+          </div>
+          <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient} text-white shadow-lg transform group-hover:scale-110 transition-transform duration-300`}>
+            <Icon className="h-6 w-6" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -323,99 +273,70 @@ function RecentCalculations({ isLoading }: any) {
   const recentCalculations = calculations.slice(0, 5);
 
   return (
-    <Card className="bg-white shadow-md border rounded-lg hover-lift animate-fade-in">
-      <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-lg">
-        <CardTitle className="flex items-center">
-          <HistoryIcon className="h-5 w-5 mr-2" />
-          Recent Calculations
+    <Card className="glass-card h-full flex flex-col animate-slide-up" style={{ animationDelay: '300ms' }}>
+      <CardHeader className="border-b border-slate-100 dark:border-slate-800 pb-4">
+        <CardTitle className="flex items-center text-lg font-semibold text-slate-900 dark:text-white">
+          <HistoryIcon className="h-5 w-5 mr-2 text-primary" />
+          Recent Activity
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-6">
+      <CardContent className="p-0 flex-1">
         {isLoading ? (
-          <div className="space-y-3">
+          <div className="p-6 space-y-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="animate-pulse p-3 bg-slate-50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-slate-200 rounded-md" />
-                  <div className="flex-1">
-                    <div className="h-4 bg-slate-200 rounded w-3/5 mb-2" />
-                    <div className="h-3 bg-slate-200 rounded w-1/3" />
-                  </div>
+              <div key={i} className="animate-pulse flex items-center gap-4">
+                <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-3/4" />
+                  <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded w-1/2" />
                 </div>
               </div>
             ))}
           </div>
         ) : recentCalculations.length === 0 ? (
-          <div className="text-center py-8">
-            <Calculator className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <div className="flex flex-col items-center justify-center h-64 text-center p-6">
+            <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
+              <Calculator className="h-8 w-8 text-slate-300" />
+            </div>
+            <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
               No calculations yet
             </h3>
-            <p className="text-gray-600 mb-4">
-              Start by running your first calculation — it's quick and easy.
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-xs">
+              Start your first calculation to see it appear here.
             </p>
-            <div className="max-w-xs mx-auto">
-              <Button
-                className="w-full"
-                onClick={() => navigate("/standard-cycle")}
-              >
-                Run First Calculation
-              </Button>
-            </div>
+            <Button onClick={() => navigate("/standard-cycle")} className="glass text-primary hover:bg-primary/10">
+              Start Calculation
+            </Button>
           </div>
         ) : (
-          <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {recentCalculations.map((calc: any) => (
               <div
                 key={calc.id}
-                className="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+                className="group flex items-center justify-between p-4 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
+                onClick={() => navigate(`/calculations/${calc.id}`)}
               >
-                <div className="flex items-center space-x-3 min-w-0">
-                  <div className="w-10 h-10 bg-blue-100 rounded-md flex items-center justify-center flex-shrink-0">
-                    <Calculator className="h-5 w-5 text-blue-600" />
+                <div className="flex items-center gap-4 min-w-0">
+                  <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
+                    <Calculator className="h-5 w-5" />
                   </div>
                   <div className="min-w-0">
-                    <h4 className="font-medium text-gray-900 truncate max-w-[28ch]">
+                    <h4 className="font-medium text-slate-900 dark:text-white truncate">
                       {calc.name || calc.calculation_type}
                     </h4>
-                    <div className="flex items-center space-x-2 text-sm text-gray-600 mt-1">
+                    <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
                       <Clock className="h-3 w-3" />
-                      <span>{new Date(calc.created_at).toLocaleString()}</span>
+                      <span>{new Date(calc.created_at).toLocaleDateString()}</span>
+                      <span className="w-1 h-1 bg-slate-300 rounded-full" />
+                      <span className="uppercase tracking-wider font-medium text-[10px]">{calc.calculation_type}</span>
                     </div>
                   </div>
                 </div>
-
-                <div className="flex items-center space-x-2 flex-shrink-0">
-                  <Badge variant="secondary">{calc.calculation_type}</Badge>
-                  <Button
-                    variant="ghost"
-                    className="text-sm px-3 py-1"
-                    onClick={() => navigate(`/calculations/${calc.id}`)}
-                  >
-                    Details
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="text-sm px-3 py-1"
-                    onClick={() => navigate("/standard-cycle")}
-                  >
-                    Run
-                  </Button>
-                </div>
+                <ArrowRight className="h-4 w-4 text-slate-300 group-hover:text-primary group-hover:translate-x-1 transition-all" />
               </div>
             ))}
           </div>
         )}
-
-        <div className="mt-6 text-center">
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => navigate("/history")}
-          >
-            View All Calculations
-          </Button>
-        </div>
       </CardContent>
     </Card>
   );
@@ -424,47 +345,39 @@ function RecentCalculations({ isLoading }: any) {
 function QuickActions() {
   const navigate = useNavigate();
 
+  const actions = [
+    { label: "Standard Cycle", icon: Calculator, path: "/standard-cycle", color: "text-blue-600", bg: "bg-blue-50" },
+    { label: "Compare Refrigerants", icon: TrendingUp, path: "/refrigerant-comparison", color: "text-emerald-600", bg: "bg-emerald-50" },
+    { label: "Cascade Analysis", icon: BarChart3, path: "/cascade-cycle", color: "text-purple-600", bg: "bg-purple-50" },
+    { label: "Reports & PDF", icon: FileText, path: "/advanced-reporting", color: "text-amber-600", bg: "bg-amber-50" },
+    { label: "My Projects", icon: Layers, path: "/projects", color: "text-indigo-600", bg: "bg-indigo-50" },
+  ];
+
   return (
-    <Card className="bg-white shadow-md border rounded-lg hover-lift animate-fade-in">
-      <CardHeader className="bg-gradient-to-r from-emerald-600 to-teal-500 text-white rounded-t-lg">
-        <CardTitle className="flex items-center">
-          <Plus className="h-5 w-5 mr-2" />
+    <Card className="glass-card animate-slide-up" style={{ animationDelay: '400ms' }}>
+      <CardHeader className="border-b border-slate-100 dark:border-slate-800 pb-4">
+        <CardTitle className="flex items-center text-lg font-semibold text-slate-900 dark:text-white">
+          <Zap className="h-5 w-5 mr-2 text-amber-500" />
           Quick Actions
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-6 space-y-3">
-        <Button
-          className="w-full justify-start"
-          variant="outline"
-          onClick={() => navigate("/standard-cycle")}
-        >
-          <Calculator className="h-4 w-4 mr-2" />
-          New Standard Cycle
-        </Button>
-        <Button
-          className="w-full justify-start"
-          variant="outline"
-          onClick={() => navigate("/refrigerant-comparison")}
-        >
-          <TrendingUp className="h-4 w-4 mr-2" />
-          Compare Refrigerants
-        </Button>
-        <Button
-          className="w-full justify-start"
-          variant="outline"
-          onClick={() => navigate("/cascade-cycle")}
-        >
-          <BarChart3 className="h-4 w-4 mr-2" />
-          Cascade Analysis
-        </Button>
-        <Button
-          className="w-full justify-start"
-          variant="outline"
-          onClick={() => navigate("/history")}
-        >
-          <FileText className="h-4 w-4 mr-2" />
-          View History
-        </Button>
+      <CardContent className="p-4 grid grid-cols-1 gap-3">
+        {actions.map((action) => (
+          <Button
+            key={action.path}
+            variant="ghost"
+            className="w-full justify-start h-auto py-3 px-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 border border-transparent hover:border-slate-100 dark:hover:border-slate-700 transition-all group"
+            onClick={() => navigate(action.path)}
+          >
+            <div className={`p-2 rounded-lg ${action.bg} ${action.color} mr-3 group-hover:scale-110 transition-transform`}>
+              <action.icon className="h-4 w-4" />
+            </div>
+            <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white">
+              {action.label}
+            </span>
+            <ArrowRight className="ml-auto h-4 w-4 text-slate-300 opacity-0 group-hover:opacity-100 transition-all" />
+          </Button>
+        ))}
       </CardContent>
     </Card>
   );
@@ -474,236 +387,75 @@ function ValueProposition() {
   const navigate = useNavigate();
 
   return (
-    <Card className="rounded-xl overflow-hidden shadow-xl">
-      <div className="bg-gradient-to-r from-blue-600 to-violet-700 text-white p-10">
-        <div className="max-w-4xl mx-auto text-center">
-          <Crown
-            className="h-16 w-16 text-yellow-300 mx-auto mb-4"
-            aria-hidden
-          />
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-3">
-            Unlock Professional Features
-          </h2>
-          <p className="text-md opacity-90 mb-8">
-            Powerful tools for engineers: faster analysis, sharing and export.
-          </p>
+    <Card className="relative overflow-hidden border-0 shadow-2xl bg-gradient-to-br from-slate-900 to-slate-800 text-white animate-slide-up" style={{ animationDelay: '500ms' }}>
+      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-[100px] rounded-full -mr-16 -mt-16 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/20 blur-[80px] rounded-full -ml-12 -mb-12 pointer-events-none" />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div className="text-center">
-              <Zap
-                className="h-8 w-8 text-yellow-300 mx-auto mb-3"
-                aria-hidden
-              />
-              <h3 className="font-semibold">
-                Unlimited
-                <br />
-                Calculations
-              </h3>
-              <p className="text-sm opacity-85 mt-1">
-                No monthly limits on your analysis
-              </p>
-            </div>
-
-            <div className="text-center">
-              <Target
-                className="h-8 w-8 text-yellow-300 mx-auto mb-3"
-                aria-hidden
-              />
-              <h3 className="font-semibold">Advanced Analytics</h3>
-              <p className="text-sm opacity-85 mt-1">
-                Detailed reports & optimization tips
-              </p>
-            </div>
-
-            <div className="text-center">
-              <FileText
-                className="h-8 w-8 text-yellow-300 mx-auto mb-3"
-                aria-hidden
-              />
-              <h3 className="font-semibold">Export & Share</h3>
-              <p className="text-sm opacity-85 mt-1">
-                PDF reports & team collaboration
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-white/12 rounded-lg p-6 mb-6 backdrop-blur-sm border border-white/10">
-            <p className="text-lg font-semibold text-yellow-300 mb-1">
-              Save 20+ hours per month
-            </p>
-            <p className="text-sm opacity-90">
-              Professional engineers save an average of $2,400/month in
-              consulting time
-            </p>
-          </div>
-
-          <div className="flex justify-center">
-            <Button
-              className="bg-yellow-400 hover:bg-yellow-500 text-purple-900 font-bold px-8 py-3 rounded-full shadow-lg"
-              onClick={() => navigate("/pricing")}
-            >
-              Upgrade Now - Start Free Trial
-            </Button>
-          </div>
+      <CardContent className="p-8 relative z-10 text-center">
+        <div className="inline-flex p-3 rounded-2xl bg-white/10 backdrop-blur-md mb-6 shadow-xl border border-white/10">
+          <Crown className="h-8 w-8 text-amber-400" />
         </div>
-      </div>
+
+        <h2 className="text-2xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-300">
+          Unlock Professional Power
+        </h2>
+
+        <p className="text-slate-300 mb-8 max-w-sm mx-auto leading-relaxed">
+          Get unlimited calculations, PDF exports, and advanced team features.
+        </p>
+
+        <div className="grid grid-cols-3 gap-4 mb-8 text-center">
+          {[
+            { label: "Unlimited", icon: Zap },
+            { label: "Analytics", icon: Target },
+            { label: "Exports", icon: FileText },
+          ].map((item) => (
+            <div key={item.label} className="flex flex-col items-center gap-2">
+              <div className="p-2 rounded-lg bg-white/5 border border-white/10">
+                <item.icon className="h-4 w-4 text-slate-300" />
+              </div>
+              <span className="text-xs font-medium text-slate-400">{item.label}</span>
+            </div>
+          ))}
+        </div>
+
+        <Button
+          className="w-full bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-bold shadow-lg shadow-orange-500/25 border-0"
+          onClick={() => navigate("/pricing")}
+        >
+          Upgrade Now
+        </Button>
+      </CardContent>
     </Card>
   );
 }
 
 export function Dashboard() {
   const { user } = useSupabaseAuth();
-  const {
-    calculations,
-    isLoading: calculationsLoading,
-    refetch,
-  } = useSupabaseCalculations();
-  const {
-    subscription,
-    loading: subscriptionLoading,
-    refetch: subscriptionRefetch,
-  } = useSubscription();
-
-  const stats = useMemo(() => {
-    const totalCalculations = calculations.length;
-    const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
-    const monthlyCalculations = calculations.filter((calc: any) => {
-      const calcDate = new Date(calc.created_at);
-      return (
-        calcDate.getMonth() === currentMonth &&
-        calcDate.getFullYear() === currentYear
-      );
-    }).length;
-
-    const plan = subscription?.plan || "free";
-    const planDisplayName =
-      plan.charAt(0).toUpperCase() + plan.slice(1).replace("_", " ");
-    const isUnlimited = plan !== "free";
-    const monthlyLimit = isUnlimited ? monthlyCalculations || 0 : 10;
-    const remaining = isUnlimited
-      ? -1
-      : Math.max(0, monthlyLimit - monthlyCalculations);
-    const remainingText = remaining === -1 ? "Unlimited" : remaining.toString();
-    const usagePercentage = isUnlimited
-      ? 0
-      : Math.min((monthlyCalculations / monthlyLimit) * 100, 100);
-    const isNearLimit = !isUnlimited && usagePercentage > 70;
-    const isAtLimit = !isUnlimited && monthlyCalculations >= monthlyLimit;
-    const billingCycleReset = new Date(currentYear, currentMonth + 1, 1);
-    const billingCycleResetLabel = billingCycleReset.toLocaleDateString(
-      undefined,
-      {
-        month: "long",
-        day: "numeric",
-      },
-    );
-
-    return {
-      totalCalculations,
-      monthlyCalculations,
-      plan,
-      planDisplayName,
-      isUnlimited,
-      remaining,
-      remainingText,
-      monthlyLimit,
-      usagePercentage,
-      isNearLimit,
-      isAtLimit,
-      remainingValue: remaining,
-      billingCycleResetLabel,
-    };
-  }, [calculations, subscription]);
-
-  const isLoading = calculationsLoading || subscriptionLoading;
-
-  const handleRefresh = async () => {
-    try {
-      await Promise.all([refetch(), subscriptionRefetch?.()]);
-    } catch (e) {
-      // silent - errors handled by hooks/toast
-    }
-  };
+  const { stats, isLoading, refreshStats } = useDashboardStats();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-blue-50">
-
-      <main className="max-w-7xl mx-auto px-4 py-10">
+    <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950 transition-colors duration-500">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         <SystemStatus />
 
-        <section className="mb-6">
-          <QuickStats
-            stats={stats}
-            user={user}
-            isLoading={isLoading}
-            onRefresh={handleRefresh}
-          />
-        </section>
+        <QuickStats
+          stats={stats}
+          user={user}
+          isLoading={isLoading}
+          onRefresh={refreshStats}
+        />
 
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8">
             <RecentCalculations isLoading={isLoading} />
-
-            <Card className="p-4 shadow-md">
-              <h3 className="text-base font-semibold text-gray-800 mb-3">
-                Tips
-              </h3>
-              <ul className="text-sm text-gray-600 space-y-2">
-                <li>Use comparators to evaluate refrigerants quickly.</li>
-                <li>Run batch calculations from the History page.</li>
-                <li>Upgrade for export and team collaboration.</li>
-              </ul>
-            </Card>
-
-            <ValueProposition />
           </div>
 
-          <aside className="space-y-6 lg:sticky lg:top-24">
+          <aside className="space-y-8 lg:sticky lg:top-24">
             <QuickActions />
-
-            <Card className="p-4 shadow-md">
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">
-                Usage
-              </h3>
-              <p className="text-xs text-gray-500">
-                Monthly usage and quick insights
-              </p>
-              <div className="mt-4">
-                <div className="w-full h-16 bg-gradient-to-r from-white to-white/50 rounded-md flex items-center justify-center">
-                  <svg
-                    width="100%"
-                    height="40"
-                    viewBox="0 0 120 40"
-                    className="mx-2"
-                  >
-                    <polyline
-                      fill="none"
-                      stroke="#3b82f6"
-                      strokeWidth="2"
-                      points="0,30 20,22 40,10 60,14 80,8 100,12 120,6"
-                    />
-                  </svg>
-                </div>
-                <div className="flex items-center justify-between mt-3 text-sm">
-                  <div>
-                    <div className="text-xs text-gray-500">This month</div>
-                    <div className="text-lg font-bold">
-                      {formatNumber(stats.monthlyCalculations)}
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-xs text-gray-500">Remaining</div>
-                    <div className="text-lg font-semibold text-green-600">
-                      {stats.remainingText}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Card>
+            <ValueProposition />
           </aside>
-        </section>
+        </div>
       </main>
 
       <Footer />

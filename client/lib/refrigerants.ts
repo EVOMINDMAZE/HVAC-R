@@ -19,14 +19,14 @@ export interface RefrigerantProperties {
   name: string;
   fullName: string;
   category:
-    | "Natural"
-    | "HFC"
-    | "HFO"
-    | "HCFC"
-    | "CFC"
-    | "CO2"
-    | "Hydrocarbon"
-    | "Ammonia";
+  | "Natural"
+  | "HFC"
+  | "HFO"
+  | "HCFC"
+  | "CFC"
+  | "CO2"
+  | "Hydrocarbon"
+  | "Ammonia";
   ozoneDepleteionPotential: number;
   globalWarmingPotential: number;
   safety: "A1" | "A2" | "A2L" | "A3" | "B1" | "B2" | "B2L" | "B3";
@@ -40,6 +40,7 @@ export interface RefrigerantProperties {
   alternativeNames?: string[];
   description: string;
   color: string; // For visualization
+  LFL?: number; // Lower Flammability Limit (kg/m^3)
 }
 
 export const REFRIGERANT_DATABASE: RefrigerantProperties[] = [
@@ -207,6 +208,38 @@ export const REFRIGERANT_DATABASE: RefrigerantProperties[] = [
     coolpropSupport: "full",
     description: "Lower GWP alternative to R-410A",
     color: "#8B5CF6",
+    LFL: 0.307,
+  },
+  {
+    id: "R454B",
+    name: "R-454B",
+    fullName: "Opteon XL41",
+    category: "HFO",
+    ozoneDepleteionPotential: 0,
+    globalWarmingPotential: 466,
+    safety: "A2L",
+    odp: 0,
+    gwp: 466,
+    safety_class: "A2L",
+    applications: ["Air Conditioning", "Heat Pumps"],
+    limits: {
+      min_temp_c: -60.0,
+      max_temp_c: 150.0,
+      critical_temp_c: 77.0,
+      critical_pressure_kpa: 5200.0,
+      normal_boiling_point_c: -50.0,
+      minTemp: 213.15,
+      maxTemp: 423.15,
+      minPressure: 1000,
+      maxPressure: 5200000,
+      criticalTemp: 350.15,
+      criticalPressure: 5200000,
+      normalBoilingPoint: 223.15,
+    },
+    coolpropSupport: "limited",
+    description: "Low-GWP replacement for R-410A",
+    color: "#6366F1",
+    LFL: 0.303,
   },
   {
     id: "R448A",
@@ -368,6 +401,7 @@ export const REFRIGERANT_DATABASE: RefrigerantProperties[] = [
     coolpropSupport: "full",
     description: "Low-GWP automotive refrigerant",
     color: "#06B6D4",
+    LFL: 0.289,
   },
   {
     id: "R1234ze(E)",
@@ -398,6 +432,7 @@ export const REFRIGERANT_DATABASE: RefrigerantProperties[] = [
     coolpropSupport: "full",
     description: "Low-GWP refrigerant for large systems",
     color: "#84CC16",
+    LFL: 0.303,
   },
   {
     id: "R600a",
@@ -620,8 +655,8 @@ export function validateCycleConditions(
   ) {
     warnings.push(
       `${refrigerant.name} is a blend refrigerant and may exhibit CoolProp limitations for two-phase property evaluations. ` +
-        "Actionable guidance: increase superheat to at least 8–12°C and subcooling to 4–6°C when possible; validate state points carefully, and inspect vapor quality at the evaporator outlet. `" +
-        ` Learn more: /help-center?topic=blend-refrigerants`,
+      "Actionable guidance: increase superheat to at least 8–12°C and subcooling to 4–6°C when possible; validate state points carefully, and inspect vapor quality at the evaporator outlet. `" +
+      ` Learn more: /help-center?topic=blend-refrigerants`,
     );
   }
 

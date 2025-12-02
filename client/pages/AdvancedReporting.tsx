@@ -1,17 +1,20 @@
 import React, { useMemo, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { ProfessionalFeatures } from "@/components/ProfessionalFeatures";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
-import { FileText, Search } from "lucide-react";
+import { FileText, Search, Download, Loader2, FileBarChart } from "lucide-react";
+import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { useToast } from "@/hooks/use-toast";
 
 export function AdvancedReporting() {
   const { calculations, isLoading } = useSupabaseCalculations();
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [generatingPdf, setGeneratingPdf] = useState(false);
+  const { toast } = useToast();
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -28,67 +31,244 @@ export function AdvancedReporting() {
     [filtered, selectedId],
   );
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <main className="max-w-7xl mx-auto p-4 md:p-6 space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-bold text-blue-900 flex items-center gap-2">
-            <FileText className="h-6 w-6 text-blue-600" /> Advanced Reporting
-          </h1>
-        </div>
+  const generatePDF = async () => {
+    if (!selected) return;
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <Card className="lg:col-span-1">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                History
-                <Badge variant="outline">{calculations.length}</Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-2 mb-3">
-                <Input
-                  placeholder="Search by name or type"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                />
-                <Button variant="outline" size="icon" aria-label="search">
-                  <Search className="h-4 w-4" />
+    try {
+      setGeneratingPdf(true);
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage();
+      const { width, height } = page.getSize();
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+      const fontSize = 12;
+      const titleSize = 24;
+      const margin = 50;
+      let yPosition = height - margin;
+
+      // Title
+      page.drawText('HVAC-R Professional Report', {
+        x: margin,
+        y: yPosition,
+        size: titleSize,
+        font: boldFont,
+        color: rgb(0, 0.53, 0.71),
+      });
+      yPosition -= 40;
+
+      // Meta Info
+      page.drawText(`Date: ${new Date(selected.created_at).toLocaleDateString()}`, {
+        x: margin,
+        y: yPosition,
+        size: fontSize,
+        font,
+      });
+      yPosition -= 20;
+
+      page.drawText(`Calculation Type: ${selected.calculation_type}`, {
+        x: margin,
+        y: yPosition,
+        size: fontSize,
+        font,
+      });
+      yPosition -= 20;
+
+      if (selected.name) {
+        page.drawText(`Project/Name: ${selected.name}`, {
+          x: margin,
+          y: yPosition,
+          size: fontSize,
+          font,
+        });
+        yPosition -= 30;
+      }
+
+      // Divider
+      page.drawLine({
+        start: { x: margin, y: yPosition },
+        end: { x: width - margin, y: yPosition },
+        thickness: 1,
+        color: rgb(0.8, 0.8, 0.8),
+      });
+      yPosition -= 30;
+
+      // Results Section
+      page.drawText('Results Summary', {
+        x: margin,
+        y: yPosition,
+        size: 18,
+        font: boldFont,
+      });
+      yPosition -= 30;
+
+      const results = selected.results || {};
+      const inputs = selected.inputs || {};
+
+      // Helper to print object key-values
+      const printObj = (obj: any, prefix = '') => {
+        Object.entries(obj).forEach(([key, value]) => {
+          if (typeof value === 'object' && value !== null) {
+            // skip nested objects for simple report
+            return;
+          }
+
+          // Format key
+          const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+          const text = `${prefix}${label}: ${value}`;
+
+          if (yPosition < margin) {
+            // Add new page if needed
+            // For simplicity in this demo, we just stop or would need logic to add page
+            return;
+          }
+
+          page.drawText(text, {
+            x: margin,
+            y: yPosition,
+            size: fontSize,
+            font,
+          });
+          yPosition -= 20;
+        });
+      };
+
+      printObj(results);
+
+      yPosition -= 20;
+      page.drawText('Input Parameters', {
+        x: margin,
+        y: yPosition,
+        size: 18,
+        font: boldFont,
+      });
+      yPosition -= 30;
+
+      printObj(inputs);
+
+      // Footer
+      page.drawText('Generated by HVAC-R Field Tools', {
+        x: margin,
+        y: 30,
+        size: 10,
+        font: font,
+        color: rgb(0.5, 0.5, 0.5),
+      });
+
+      const pdfBytes = await pdfDoc.save();
+
+      // Trigger download
+      const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `hvac-report-${selected.id.slice(0, 8)}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast({
+        title: "Success",
+        description: "Report generated successfully.",
+      });
+    } catch (error) {
+      console.error('PDF Generation Error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate PDF report.",
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingPdf(false);
+    }
+  };
+
+  return (
+    <div className="p-4 md:p-8 space-y-8 max-w-7xl mx-auto animate-fade-in">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+            <FileBarChart className="h-8 w-8 text-primary" />
+            Advanced Reporting
+          </h1>
+          <p className="text-slate-500 dark:text-slate-400 mt-1">
+            Generate professional reports from your calculation history
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card className="lg:col-span-1 glass-card border-0 h-[calc(100vh-200px)] flex flex-col">
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center justify-between text-lg">
+              History
+              <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20">
+                {calculations.length}
+              </Badge>
+            </CardTitle>
+            <div className="relative mt-2">
+              <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+              <Input
+                placeholder="Search..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="pl-9 bg-white/50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-700"
+              />
+            </div>
+          </CardHeader>
+          <CardContent className="flex-1 overflow-hidden p-0">
+            <div className="h-full overflow-y-auto p-4 space-y-2 custom-scrollbar">
+              {isLoading && (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                </div>
+              )}
+              {!isLoading && filtered.length === 0 && (
+                <div className="text-center py-8 text-slate-500 text-sm">No items found</div>
+              )}
+              {filtered.map((c) => (
+                <button
+                  key={c.id}
+                  onClick={() => setSelectedId(c.id)}
+                  className={`w-full text-left p-3 rounded-xl border transition-all duration-200 group ${selectedId === c.id
+                    ? "border-primary bg-primary/5 shadow-sm"
+                    : "border-transparent hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                    }`}
+                >
+                  <div className={`text-sm font-semibold truncate ${selectedId === c.id ? "text-primary" : "text-slate-700 dark:text-slate-200"}`}>
+                    {c.name || `${c.calculation_type}`}
+                  </div>
+                  <div className="flex items-center justify-between mt-1">
+                    <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 font-normal border-slate-200 dark:border-slate-700 text-slate-500">
+                      {c.calculation_type}
+                    </Badge>
+                    <span className="text-[10px] text-slate-400">
+                      {new Date(c.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="lg:col-span-2 space-y-4">
+          {selected ? (
+            <div className="space-y-4 animate-slide-up">
+              <div className="flex justify-end">
+                <Button
+                  onClick={generatePDF}
+                  disabled={generatingPdf}
+                  className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all hover:-translate-y-0.5"
+                >
+                  {generatingPdf ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4 mr-2" />
+                  )}
+                  Download PDF Report
                 </Button>
               </div>
-              <div className="space-y-2 max-h-[65vh] overflow-auto">
-                {isLoading && (
-                  <div className="text-sm text-muted-foreground">Loading…</div>
-                )}
-                {!isLoading && filtered.length === 0 && (
-                  <div className="text-sm text-muted-foreground">No items</div>
-                )}
-                {filtered.map((c) => (
-                  <button
-                    key={c.id}
-                    onClick={() => setSelectedId(c.id)}
-                    className={`w-full text-left p-3 rounded border hover:bg-blue-50 transition ${
-                      selectedId === c.id
-                        ? "border-blue-400 bg-blue-50"
-                        : "border-gray-200 bg-white"
-                    }`}
-                  >
-                    <div className="text-sm font-semibold truncate">
-                      {c.name ||
-                        `${c.calculation_type} – ${new Date(c.created_at).toLocaleString()}`}
-                    </div>
-                    <div className="text-xs text-muted-foreground flex items-center gap-2 mt-1">
-                      <Badge variant="secondary">{c.calculation_type}</Badge>
-                      <span>{new Date(c.created_at).toLocaleString()}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
 
-          <div className="lg:col-span-2 space-y-4">
-            {selected ? (
               <ProfessionalFeatures
                 cycleData={selected.inputs?.cycleData || selected.inputs}
                 results={selected.results}
@@ -98,22 +278,22 @@ export function AdvancedReporting() {
                   "R134a"
                 }
               />
-            ) : (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Select an item to build a report</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Choose a calculation from the list to generate a
-                    professional PDF/CSV and chart package.
-                  </p>
-                </CardContent>
-              </Card>
-            )}
-          </div>
+            </div>
+          ) : (
+            <Card className="glass-card border-dashed border-2 border-slate-200 dark:border-slate-700 bg-transparent h-full flex items-center justify-center min-h-[400px]">
+              <CardContent className="text-center max-w-sm">
+                <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4">
+                  <FileText className="w-8 h-8 text-slate-400" />
+                </div>
+                <h3 className="text-lg font-medium text-slate-900 dark:text-white">Select a Calculation</h3>
+                <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm">
+                  Choose a calculation from the history list to view details and generate a professional PDF report.
+                </p>
+              </CardContent>
+            </Card>
+          )}
         </div>
-      </main>
+      </div>
     </div>
   );
 }

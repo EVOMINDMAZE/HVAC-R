@@ -157,7 +157,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                             Profile
                           </Link>
                           <Link
-                            to="/settings"
+                            to="/profile"
                             onClick={() => setIsAvatarOpen(false)}
                             role="menuitem"
                             tabIndex={0}

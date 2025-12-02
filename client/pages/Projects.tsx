@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
-import { Plus } from "lucide-react";
+import { Plus, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Projects() {
   const { calculations, saveCalculation } = useSupabaseCalculations();
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -57,6 +59,13 @@ export default function Projects() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <main className="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
+        <Button
+          variant="ghost"
+          className="mb-2 pl-0 hover:bg-transparent hover:text-blue-600"
+          onClick={() => navigate('/dashboard')}
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" /> Back
+        </Button>
         <div className="flex items-center justify-between">
           <h1 className="text-2xl md:text-3xl font-bold text-blue-900">
             Personal Project Dashboard
@@ -152,7 +161,7 @@ export default function Projects() {
                         {new Date(p.created_at).toLocaleString()}
                       </div>
                       <div className="text-sm mt-2">
-                        {p.inputs?.description || p.notes || ""}
+                        {p.inputs?.description || ""}
                       </div>
                     </div>
                   ))}

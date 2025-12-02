@@ -81,6 +81,73 @@ export interface Database {
           results?: any;
         };
       };
+      jobs: {
+        Row: {
+          id: string;
+          created_at: string;
+          user_id: string;
+          client_name: string;
+          job_name: string;
+          status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
+          address: string | null;
+          notes: string | null;
+          photos: string[] | null;
+        };
+        Insert: {
+          id?: string;
+          created_at?: string;
+          user_id?: string;
+          client_name: string;
+          job_name: string;
+          status?: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
+          address?: string | null;
+          notes?: string | null;
+          photos?: string[] | null;
+        };
+        Update: {
+          id?: string;
+          created_at?: string;
+          user_id?: string;
+          client_name?: string;
+          job_name?: string;
+          status?: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
+          address?: string | null;
+          notes?: string | null;
+          photos?: string[] | null;
+        };
+      };
+      subscriptions: {
+        Row: {
+          id: string;
+          user_id: string;
+          stripe_customer_id: string | null;
+          stripe_subscription_id: string | null;
+          status: 'active' | 'past_due' | 'canceled' | 'inactive';
+          price_id: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          stripe_customer_id?: string | null;
+          stripe_subscription_id?: string | null;
+          status?: 'active' | 'past_due' | 'canceled' | 'inactive';
+          price_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          stripe_customer_id?: string | null;
+          stripe_subscription_id?: string | null;
+          status?: 'active' | 'past_due' | 'canceled' | 'inactive';
+          price_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
     };
   };
 }

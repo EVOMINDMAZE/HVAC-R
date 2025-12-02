@@ -31,9 +31,6 @@ api_url = "http://localhost:54321"
 
 # Email testing server. Emails sent with the local dev setup are not actually sent - rather, they
 # are monitored, and you can view the emails that would have been sent from the web interface.
-[ingest]
-# Port to use for the ingest server.
-port = 54324
 
 [storage]
 # The maximum file size allowed (e.g. "5MB", "500KB").
@@ -213,8 +210,3 @@ secret = "env(SUPABASE_AUTH_EXTERNAL_ZOOM_SECRET)"
 redirect_uri = ""
 url = ""
 
-[edge_functions]
-enabled = true
-
-[[edge_functions.meta]]
-name = "billing"
