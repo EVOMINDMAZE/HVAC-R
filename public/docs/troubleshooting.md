@@ -4,23 +4,23 @@ This page lists common issues and how to resolve them.
 
 ## 404 on Privacy/Terms
 
-- Ensure routes `/privacy` and `/terms` exist in the frontend router.
+- Ensure routes `/privacy` and `/terms` can be accessed.
 
 ## Pricing or Billing Failures
 
-- Verify `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, and Stripe environment variables are set in the deployment.
+- Verify your internet connection and ensure your payment details are up to date.
 
 ## Calculation Failures
 
-- Check the API service status (service may be down or network blocked).
-- Inspect browser console for network or CORS errors.
+- Check the system service status (service may be experiencing high load).
+- Refresh the page and try the calculation again.
 
 ## Auth Errors
 
-- Ensure authentication tokens exist and are valid. Use the debugging tools in the profile area for local testing.
+- Ensure you are logged in. Try signing out and signing back in.
 
 ## Debugging Steps
 
-1. Reproduce the issue and capture network logs.
-2. Check backend logs for correlated request IDs.
-3. Reach out to support with steps to reproduce and relevant logs.
+1. Refresh the page to clear temporary states.
+2. Clear your browser cache if issues persist.
+3. Reach out to support with details of the problem.

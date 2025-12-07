@@ -1,6 +1,7 @@
+
 import React, { useState, useRef, useEffect } from "react";
-import { Calculator, User, Menu, X } from "lucide-react";
-import { NavLink, Link, useNavigate } from "react-router-dom";
+import { Calculator, User, Menu, X, Flame, ArrowLeft } from "lucide-react"; // Changed Calculator to Flame for Thermo vibe? Or keep Calculator. Let's keep Calculator but maybe add Flame if it's "Thermo".
+import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
@@ -14,15 +15,17 @@ interface HeaderProps {
 export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
   const { user, isAuthenticated, signOut } = useSupabaseAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const { addToast } = useToast();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Show back button on any page that is not Landing or Dashboard
+  const showBackButton = location.pathname !== "/" && location.pathname !== "/dashboard";
+
   const handleSignOut = async () => {
     try {
-      const { error } = await signOut();
-      if (error) {
-        throw error;
-      }
+      await signOut();
+      // Always treat as success for UX - clear state and redirect
       addToast({
         type: "success",
         title: "Signed Out",
@@ -30,11 +33,9 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
       });
       navigate("/");
     } catch (err: any) {
-      addToast({
-        type: "error",
-        title: "Sign Out Failed",
-        description: err.message || "Failed to sign out",
-      });
+      // Even if API fails, we redirect user
+      console.error("Sign out error:", err);
+      navigate("/");
     }
   };
 
@@ -68,17 +69,29 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
     }, []);
 
     return (
-      <div className="bg-white/90 backdrop-blur-sm border-b border-blue-100 shadow-sm">
+      <div className="bg-white/90 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-4 min-w-0">
+              {showBackButton && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => navigate(-1)}
+                  className="mr-2 mt-2"
+                  title="Go Back"
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
+              )}
+
               <div className="flex items-center gap-3">
-                <div className="rounded-md bg-gradient-to-br from-blue-600 to-sky-500 p-2 shadow-md">
+                <div className="rounded-md bg-gradient-to-br from-slate-900 to-slate-700 p-2 shadow-md">
                   <Calculator className="h-6 w-6 text-white" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-lg font-bold text-blue-900 truncate">
-                    Simulateon
+                  <div className="text-lg font-bold text-slate-900 dark:text-white truncate">
+                    ThermoNeural
                   </div>
                   <p className="text-xs text-muted-foreground truncate max-w-xs">
                     Your workspace & analysis hub
@@ -91,7 +104,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 <div className="relative">
                   <input
                     placeholder="Search calculations, projects or tools..."
-                    className="w-48 md:w-96 rounded-md border border-input bg-background px-4 py-2 text-sm focus:ring-2 focus:ring-blue-200"
+                    className="w-48 md:w-96 rounded-md border border-input bg-background px-4 py-2 text-sm focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-900"
                   />
                   <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
                     ⌘K
@@ -125,7 +138,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                       aria-haspopup="menu"
                       aria-expanded={isAvatarOpen}
                       onClick={() => setIsAvatarOpen((s) => !s)}
-                      className="h-9 w-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-200"
+                      className="h-9 w-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-300 font-semibold overflow-hidden focus:outline-none focus:ring-2 focus:ring-slate-200"
                       aria-label="Account menu"
                     >
                       {avatarUrl ? (
@@ -205,7 +218,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                   <Link
                     key={item.to}
                     to={item.to}
-                    className="text-gray-700 hover:text-blue-600 font-medium"
+                    className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {item.label}
@@ -244,61 +257,68 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
   }
 
   return (
-    <header className="bg-white/95 backdrop-blur-md border-b border-blue-200 sticky top-0 z-50 shadow-sm">
+    <header className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
-            <Calculator className="h-8 w-8 text-blue-600" />
-            <div>
-              <h1 className="text-2xl font-bold text-blue-900">Simulateon</h1>
-              {!isAuthenticated && (
-                <p className="text-xs text-blue-600 font-medium">
-                  Professional Refrigeration Analysis
-                </p>
-              )}
-            </div>
+            {showBackButton && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate(-1)}
+                className="mr-2 mt-2"
+                title="Go Back"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+            )}
+
+            <Link to="/" className="flex items-center space-x-2">
+              <Calculator className="h-8 w-8 text-orange-600" />
+              <div>
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-white">ThermoNeural</h1>
+                {!isAuthenticated && (
+                  <p className="text-xs text-slate-500 font-medium">
+                    Professional Thermal Engineering
+                  </p>
+                )}
+              </div>
+            </Link>
           </div>
 
-          {/* Navigation for non-authenticated users */}
           {!isAuthenticated && (
             <nav className="hidden md:flex items-center space-x-6">
               <Link
                 to="/features"
-                className="text-gray-700 hover:text-blue-600 font-medium"
+                className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-medium"
               >
                 Features
               </Link>
               <Link
                 to="/pricing"
-                className="text-gray-700 hover:text-blue-600 font-medium"
+                className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-medium"
               >
                 Pricing
               </Link>
               <Link
-                to="/api-docs"
-                className="text-gray-700 hover:text-blue-600 font-medium"
-              >
-                API Docs
-              </Link>
-              <Link
                 to="/about"
-                className="text-gray-700 hover:text-blue-600 font-medium"
+                className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-medium"
               >
                 About
               </Link>
-              <div className="w-px h-6 bg-gray-300"></div>
+              <div className="w-px h-6 bg-slate-200 dark:bg-slate-800"></div>
               <Link
                 to="/help-center"
-                className="text-gray-700 hover:text-blue-600 font-medium text-sm"
+                className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-medium text-sm"
               >
                 Help
               </Link>
-              <a
-                href="mailto:support@simulateon.io"
-                className="text-gray-700 hover:text-blue-600 font-medium text-sm"
+              <Link
+                to="/contact"
+                className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-medium text-sm"
               >
                 Support
-              </a>
+              </Link>
             </nav>
           )}
 
@@ -343,13 +363,13 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 <Link to="/signin">
                   <Button
                     variant="ghost"
-                    className="text-blue-600 hover:text-blue-700"
+                    className="text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
                   >
                     Sign In
                   </Button>
                 </Link>
                 <Link to="/signup">
-                  <Button className="bg-blue-600 hover:bg-blue-700 font-semibold px-6">
+                  <Button className="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-6 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
                     Start Free Trial
                   </Button>
                 </Link>
@@ -378,28 +398,22 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
             <nav className="flex flex-col space-y-4">
               <Link
                 to="/features"
-                className="text-gray-700 hover:text-blue-600 font-medium"
+                className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Features
               </Link>
               <Link
                 to="/pricing"
-                className="text-gray-700 hover:text-blue-600 font-medium"
+                className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Pricing
               </Link>
-              <Link
-                to="/api-docs"
-                className="text-gray-700 hover:text-blue-600 font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                API Docs
-              </Link>
+
               <Link
                 to="/about"
-                className="text-gray-700 hover:text-blue-600 font-medium"
+                className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 About
@@ -407,20 +421,20 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               <div className="h-px bg-gray-200"></div>
               <Link
                 to="/help-center"
-                className="text-gray-700 hover:text-blue-600 font-medium text-sm"
+                className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium text-sm"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Help Center
               </Link>
-              <a
-                href="mailto:support@simulateon.io"
-                className="text-gray-700 hover:text-blue-600 font-medium text-sm"
+              <Link
+                to="/contact"
+                className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium text-sm"
               >
                 Contact Support
-              </a>
-              <div className="pt-4 border-t border-gray-200">
+              </Link>
+              <div className="pt-4 border-t border-gray-200 dark:border-slate-800">
                 <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 font-semibold">
+                  <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
                     Start Free Trial
                   </Button>
                 </Link>
@@ -437,7 +451,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className="text-gray-600 hover:text-blue-600 font-medium"
+                  className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-medium"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.label}

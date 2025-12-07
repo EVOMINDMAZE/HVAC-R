@@ -86,9 +86,9 @@ export function History() {
 
         const tagLower = tagFilter.trim().toLowerCase();
         const matchesTag = tagLower
-          ? (calc.tags &&
-            Array.isArray(calc.tags) &&
-            calc.tags.join(" ").toLowerCase().includes(tagLower)) ||
+          ? ((calc as any).tags &&
+            Array.isArray((calc as any).tags) &&
+            (calc as any).tags.join(" ").toLowerCase().includes(tagLower)) ||
           (calc.inputs &&
             JSON.stringify(calc.inputs).toLowerCase().includes(tagLower)) ||
           (calc.results &&
@@ -230,13 +230,8 @@ export function History() {
               ["data", "performance", "ht_cycle"],
             ]) || {};
 
-          const readNum = (v: any) => {
-            if (v === undefined || v === null) return null;
-            const n = Number(v);
-            if (!Number.isNaN(n)) return n;
-            const parsed = Number(String(v).replace(/[^0-9eE+\-\.]/g, ""));
-            return Number.isNaN(parsed) ? null : parsed;
-          };
+
+          // Use the outer readNum function instead of redeclaring it
 
           const deepFind = (obj: any, keys: string[]) => {
             if (!obj) return null;

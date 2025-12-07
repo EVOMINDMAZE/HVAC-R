@@ -16,17 +16,17 @@ interface ServiceStatus {
 export function ApiServiceStatus() {
   const [services, setServices] = useState<ServiceStatus[]>([
     {
-      name: "Standard Cycle API",
+      name: "Standard Cycle Service",
       endpoint: "/calculate-standard",
       status: "checking",
     },
     {
-      name: "Refrigerant Comparison API",
+      name: "Refrigerant Comparison Service",
       endpoint: "/compare-refrigerants",
       status: "checking",
     },
     {
-      name: "Cascade Cycle API",
+      name: "Cascade Cycle Service",
       endpoint: "/calculate-cascade",
       status: "checking",
     },
@@ -140,7 +140,7 @@ export function ApiServiceStatus() {
           <AlertTriangle
             className={`h-5 w-5 mr-2 ${hasOfflineServices ? "text-red-600" : "text-yellow-600"}`}
           />
-          API Service Status
+          System Service Status
         </CardTitle>
       </CardHeader>
       <CardContent className="p-4">
@@ -151,7 +151,7 @@ export function ApiServiceStatus() {
               cause calculations to fail.
             </p>
             <p className="text-red-700 text-xs mt-1">
-              The external calculation API may be experiencing downtime. Please
+              The calculation service may be experiencing downtime. Please
               try again later.
             </p>
           </div>
@@ -209,7 +209,7 @@ export function ApiServiceStatus() {
               <li>• Check your internet connection</li>
               <li>• Try refreshing the page</li>
               <li>
-                • The API server may be starting up (this can take 30-60
+                • The service may be starting up (this can take 30-60
                 seconds)
               </li>
               <li>• If problems persist, contact support</li>

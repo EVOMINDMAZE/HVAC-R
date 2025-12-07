@@ -80,7 +80,8 @@ export default function Troubleshooting() {
       if (inputs.ambient) {
         if (inputs.ambient.value !== undefined)
           setAmbient(String(inputs.ambient.value));
-        if (inputs.ambient.unit) setUnit(String(inputs.ambient.unit));
+        if (inputs.ambient.unit)
+          setUnit(String(inputs.ambient.unit) as "C" | "F");
       }
       // measurements
       if (inputs.measurements) {
@@ -403,7 +404,7 @@ export default function Troubleshooting() {
             },
           }),
         );
-      } catch (e) {}
+      } catch (e) { }
     } finally {
       setSaving(false);
     }
@@ -446,7 +447,7 @@ export default function Troubleshooting() {
           "[Troubleshooting] payload JSON",
           JSON.stringify(payload, null, 2),
         );
-      } catch (e) {}
+      } catch (e) { }
 
       const resp = await apiClient.aiTroubleshoot(payload);
 
@@ -593,7 +594,7 @@ export default function Troubleshooting() {
     try {
       // eslint-disable-next-line no-alert
       window.prompt("Copy the text below:", text);
-    } catch (e) {}
+    } catch (e) { }
 
     return false;
   };

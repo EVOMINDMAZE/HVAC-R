@@ -3,7 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useNavigate } from "react-router-dom";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import {
   HelpCircle,
   Search,
@@ -16,7 +17,6 @@ import {
   Users,
   Zap,
 } from "lucide-react";
-import { BackButton } from "@/components/BackButton";
 
 const faqs = [
   {
@@ -104,6 +104,15 @@ const faqs = [
       },
     ],
   },
+  {
+    category: "Cascade Troubleshooting", // Renamed from "Troubleshooting" to match documentation updates
+    questions: [
+      {
+        question: "How do I troubleshoot cascade system convergence issues?",
+        answer: "Ensure your intermediate temperature guesses are reasonable and that the heat exchanger approach temperature is feasible (typically > 3-5K)."
+      }
+    ]
+  }
 ];
 
 export function HelpCenter() {
@@ -138,31 +147,37 @@ export function HelpCenter() {
     .filter((category) => category.questions.length > 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-8">
-          <div className="max-w-3xl">
+    <div className="min-h-screen bg-white text-slate-900 selection:bg-orange-100 selection:text-orange-900">
+      <Header variant="landing" />
+
+      {/* Warm/Thermo Background */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-orange-100/50 blur-[100px] animate-pulse" />
+        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-amber-100/40 blur-[100px] animate-pulse delay-1000" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-red-100/30 blur-[100px] animate-pulse delay-2000" />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 py-16">
+        {/* Hero Section */}
+        <div className="flex flex-col md:flex-row items-center justify-between mb-12">
+          <div className="max-w-3xl mb-8 md:mb-0">
             <Badge
               variant="secondary"
-              className="mb-4 text-blue-600 bg-blue-100"
+              className="mb-4 text-orange-700 bg-orange-100 border-orange-200"
             >
               Help Center
             </Badge>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
+            <h1 className="text-4xl md:text-5xl font-bold text-slate-900">
               How can we
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
                 {" "}
                 help you?
               </span>
             </h1>
-            <p className="text-xl text-gray-600 mt-3">
+            <p className="text-xl text-slate-600 mt-3">
               Find answers to common questions, get technical support, and learn
               how to make the most of our HVAC&R calculation tools.
             </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <BackButton fallback="/dashboard" />
           </div>
         </div>
 
@@ -174,23 +189,23 @@ export function HelpCenter() {
               placeholder="Search for answers..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 pr-4 py-4 text-lg border-blue-200 focus:border-blue-500 rounded-xl"
+              className="pl-12 pr-4 py-6 text-lg border-slate-200 focus:border-orange-500 focus:ring-orange-500 rounded-xl shadow-sm bg-white/80 backdrop-blur-sm"
             />
           </div>
         </div>
 
         <div className="grid lg:grid-cols-4 gap-8">
           {/* Sidebar */}
-          <div className="lg:col-span-1">
-            <Card className="bg-white shadow-lg border-gray-200">
+          <div className="lg:col-span-1 space-y-6">
+            <Card className="bg-white/80 backdrop-blur-sm shadow-lg border-slate-200">
               <CardHeader>
-                <CardTitle className="text-lg">Categories</CardTitle>
+                <CardTitle className="text-lg text-slate-900">Categories</CardTitle>
               </CardHeader>
               <CardContent className="p-4">
                 <div className="space-y-2">
                   <Button
                     variant={selectedCategory === null ? "default" : "ghost"}
-                    className="w-full justify-start"
+                    className={`w-full justify-start ${selectedCategory === null ? 'bg-orange-600 hover:bg-orange-700 text-white' : 'text-slate-600 hover:text-orange-600 hover:bg-orange-50'}`}
                     onClick={() => setSelectedCategory(null)}
                   >
                     All Topics
@@ -203,7 +218,7 @@ export function HelpCenter() {
                           ? "default"
                           : "ghost"
                       }
-                      className="w-full justify-start"
+                      className={`w-full justify-start ${selectedCategory === category.category ? 'bg-orange-600 hover:bg-orange-700 text-white' : 'text-slate-600 hover:text-orange-600 hover:bg-orange-50'}`}
                       onClick={() => setSelectedCategory(category.category)}
                     >
                       {category.category}
@@ -214,20 +229,20 @@ export function HelpCenter() {
             </Card>
 
             {/* Quick Links */}
-            <Card className="bg-white shadow-lg border-gray-200 mt-6">
+            <Card className="bg-white/80 backdrop-blur-sm shadow-lg border-slate-200">
               <CardHeader>
-                <CardTitle className="text-lg">Need More Help?</CardTitle>
+                <CardTitle className="text-lg text-slate-900">Need More Help?</CardTitle>
               </CardHeader>
               <CardContent className="p-4 space-y-3">
-                <Button variant="outline" className="w-full justify-start">
+                <Button variant="outline" className="w-full justify-start hover:bg-orange-50 hover:text-orange-700 border-slate-200">
                   <MessageCircle className="h-4 w-4 mr-2" />
                   Live Chat
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Button variant="outline" className="w-full justify-start hover:bg-orange-50 hover:text-orange-700 border-slate-200">
                   <Mail className="h-4 w-4 mr-2" />
                   Email Support
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Button variant="outline" className="w-full justify-start hover:bg-orange-50 hover:text-orange-700 border-slate-200">
                   <Phone className="h-4 w-4 mr-2" />
                   Call Us
                 </Button>
@@ -241,10 +256,10 @@ export function HelpCenter() {
               {filteredFaqs.map((category) => (
                 <Card
                   key={category.category}
-                  className="bg-white shadow-lg border-gray-200"
+                  className="bg-white/80 backdrop-blur-sm shadow-md border-slate-200"
                 >
-                  <CardHeader className="bg-gray-50 border-b">
-                    <CardTitle className="text-xl text-gray-900">
+                  <CardHeader className="bg-slate-50/50 border-b border-slate-100">
+                    <CardTitle className="text-xl text-slate-900">
                       {category.category}
                     </CardTitle>
                   </CardHeader>
@@ -254,25 +269,25 @@ export function HelpCenter() {
                       const isExpanded = expandedQuestions.has(questionId);
 
                       return (
-                        <div key={index} className="border-b last:border-b-0">
+                        <div key={index} className="border-b last:border-b-0 border-slate-100">
                           <button
-                            className="w-full p-6 text-left hover:bg-gray-50 transition-colors focus:outline-none focus:bg-gray-50"
+                            className="w-full p-6 text-left hover:bg-orange-50/50 transition-colors focus:outline-none"
                             onClick={() => toggleQuestion(questionId)}
                           >
                             <div className="flex items-center justify-between">
-                              <h3 className="text-lg font-medium text-gray-900 pr-8">
+                              <h3 className="text-lg font-medium text-slate-900 pr-8">
                                 {faq.question}
                               </h3>
                               {isExpanded ? (
-                                <ChevronUp className="h-5 w-5 text-gray-500" />
+                                <ChevronUp className="h-5 w-5 text-orange-500" />
                               ) : (
-                                <ChevronDown className="h-5 w-5 text-gray-500" />
+                                <ChevronDown className="h-5 w-5 text-slate-400" />
                               )}
                             </div>
                           </button>
                           {isExpanded && (
-                            <div className="px-6 pb-6">
-                              <p className="text-gray-600 leading-relaxed">
+                            <div className="px-6 pb-6 bg-orange-50/30">
+                              <p className="text-slate-600 leading-relaxed">
                                 {faq.answer}
                               </p>
                             </div>
@@ -286,16 +301,16 @@ export function HelpCenter() {
             </div>
 
             {/* Contact Section */}
-            <Card className="bg-gradient-to-r from-blue-600 to-purple-600 text-white mt-12">
+            <Card className="bg-gradient-to-r from-orange-600 to-red-600 text-white mt-12 border-none shadow-xl">
               <CardContent className="p-8 text-center">
                 <h3 className="text-2xl font-bold mb-4">Still Need Help?</h3>
-                <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
+                <p className="text-orange-100 mb-6 max-w-2xl mx-auto">
                   Can't find what you're looking for? Our engineering support
                   team is here to help with technical questions, account issues,
                   and everything in between.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button className="bg-white text-blue-600 hover:bg-gray-100">
+                  <Button className="bg-white text-orange-600 hover:bg-orange-50">
                     <MessageCircle className="h-4 w-4 mr-2" />
                     Start Live Chat
                   </Button>
@@ -314,54 +329,54 @@ export function HelpCenter() {
 
         {/* Resource Cards */}
         <div className="mt-16 grid md:grid-cols-3 gap-8">
-          <Card className="bg-white shadow-lg border-green-200">
+          <Card className="bg-white/80 backdrop-blur-sm shadow-lg border-green-200 hover:-translate-y-1 transition-all">
             <CardContent className="p-6 text-center">
               <Book className="h-12 w-12 text-green-600 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-slate-900 mb-2">
                 Documentation
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-slate-600 mb-4">
                 Comprehensive guides and technical references
               </p>
               <Button
                 variant="outline"
-                className="border-green-200 hover:bg-green-50"
+                className="border-green-200 hover:bg-green-50 text-green-700"
               >
                 Browse Docs
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="bg-white shadow-lg border-blue-200">
+          <Card className="bg-white/80 backdrop-blur-sm shadow-lg border-orange-200 hover:-translate-y-1 transition-all">
             <CardContent className="p-6 text-center">
-              <Users className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <Users className="h-12 w-12 text-orange-600 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-slate-900 mb-2">
                 Community
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-slate-600 mb-4">
                 Connect with other engineers and share knowledge
               </p>
               <Button
                 variant="outline"
-                className="border-blue-200 hover:bg-blue-50"
+                className="border-orange-200 hover:bg-orange-50 text-orange-700"
               >
                 Join Community
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="bg-white shadow-lg border-orange-200">
+          <Card className="bg-white/80 backdrop-blur-sm shadow-lg border-red-200 hover:-translate-y-1 transition-all">
             <CardContent className="p-6 text-center">
-              <Zap className="h-12 w-12 text-orange-600 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <Zap className="h-12 w-12 text-red-600 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-slate-900 mb-2">
                 Quick Start
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-slate-600 mb-4">
                 Get up and running with step-by-step tutorials
               </p>
               <Button
                 variant="outline"
-                className="border-orange-200 hover:bg-orange-50"
+                className="border-red-200 hover:bg-red-50 text-red-700"
               >
                 Get Started
               </Button>
@@ -369,6 +384,7 @@ export function HelpCenter() {
           </Card>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

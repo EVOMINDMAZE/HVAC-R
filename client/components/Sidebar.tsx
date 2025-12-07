@@ -29,9 +29,9 @@ export function Sidebar() {
                     <Button
                       asChild
                       variant={isActive ? 'default' : 'ghost'}
-                      className={`rounded-md px-3 py-2 ${isActive ? 'bg-blue-50 text-blue-700' : 'text-sidebar-foreground'}`}>
+                      className={`rounded-md px-3 py-2 ${isActive ? 'bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white' : 'text-sidebar-foreground hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}>
                       <div className="flex items-center gap-2">
-                        <Icon className="h-4 w-4 text-blue-600" />
+                        <Icon className={`h-4 w-4 ${isActive ? 'text-orange-600 dark:text-orange-400' : 'text-slate-500 dark:text-slate-400'}`} />
                         <span className="text-sm font-medium">{item.label}</span>
                       </div>
                     </Button>
@@ -57,7 +57,7 @@ export function Sidebar() {
             return (
               <NavLink key={u.to} to={u.to} className={({ isActive }) => `inline-block`}>
                 {({ isActive }) => (
-                  <Button asChild variant={isActive ? 'default' : 'ghost'} className={`${isActive ? 'bg-blue-50 text-blue-700' : ''} px-2 py-1`}>
+                  <Button asChild variant={isActive ? 'default' : 'ghost'} className={`${isActive ? 'bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white' : 'text-slate-600 dark:text-slate-400'} px-2 py-1`}>
                     <div className="flex items-center gap-2">
                       {UIcon ? <UIcon className="h-4 w-4 text-muted-foreground" /> : null}
                       <span className="text-sm">{u.label}</span>

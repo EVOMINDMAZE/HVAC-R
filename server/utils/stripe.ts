@@ -66,7 +66,7 @@ export async function cancelSubscription(subscriptionId: string) {
 // Update subscription
 export async function updateSubscription(subscriptionId: string, newPriceId: string) {
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-  
+
   const updatedSubscription = await stripe.subscriptions.update(subscriptionId, {
     items: [
       {

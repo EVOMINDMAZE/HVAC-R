@@ -10,8 +10,8 @@ export function TermsOfService() {
       <header className="bg-white/80 backdrop-blur-md border-b border-blue-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <Link to="/" className="flex items-center space-x-2">
-            <Calculator className="h-8 w-8 text-blue-600" />
-            <h1 className="text-2xl font-bold text-blue-900">Simulateon</h1>
+            <Calculator className="h-8 w-8 text-orange-600" />
+            <h1 className="text-2xl font-bold text-slate-900">ThermoNeural</h1>
           </Link>
           <Link to="/">
             <Button variant="ghost" className="flex items-center gap-2">
@@ -34,7 +34,7 @@ export function TermsOfService() {
               1. Agreement to Terms
             </h2>
             <p className="text-gray-700">
-              By accessing and using the Simulateon website and services
+              By accessing and using the ThermoNeural website and services
               ("Services"), you accept and agree to be bound by the terms and
               provision of this agreement. If you do not agree to abide by the
               above, please do not use this service.
@@ -246,7 +246,7 @@ export function TermsOfService() {
             </p>
             <div className="space-y-2 text-gray-700">
               <p>
-                <strong>Email:</strong> legal@simulateon.com
+                <strong>Email:</strong> legal@thermoneural.com
               </p>
               <p>
                 <strong>Address:</strong> San Francisco, CA, United States

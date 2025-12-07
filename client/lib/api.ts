@@ -97,12 +97,12 @@ class ApiClient {
   ): Promise<ApiResponse<T>> {
     // Return mock failure when no backend server is configured
     if (!API_BASE_URL) {
-      console.warn("No backend API server configured - returning mock failure");
+      console.warn("No backend service configured - returning mock failure");
       return {
         success: false,
-        error: "Backend API not configured",
+        error: "Backend service not configured",
         details:
-          "No internal API server is currently configured. Using fallback data where available.",
+          "No internal calculation service is currently configured. Using fallback data where available.",
       };
     }
 
@@ -576,7 +576,7 @@ class ApiClient {
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(
-          `API Error (${response.status}): ${response.statusText}. ${errorText.includes("<!doctype") || errorText.includes("<html") ? "API server may be down or misconfigured." : errorText}`,
+          `Service Error (${response.status}): ${response.statusText}. ${errorText.includes("<!doctype") || errorText.includes("<html") ? "Service may be down or misconfigured." : errorText}`,
         );
       }
 
@@ -605,7 +605,7 @@ class ApiClient {
           responseText: responseText.substring(0, 500),
         });
         throw new Error(
-          "API server returned HTML instead of JSON. The calculation service may be temporarily unavailable.",
+          "Service returned HTML instead of JSON. The calculation service may be temporarily unavailable.",
         );
       }
 
@@ -644,7 +644,7 @@ class ApiClient {
         window.dispatchEvent(
           new CustomEvent("app:error", {
             detail: {
-              title: "Calculation API Error",
+              title: "Calculation Service Error",
               message: error instanceof Error ? error.message : String(error),
             },
           }),
@@ -685,7 +685,7 @@ class ApiClient {
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(
-          `API Error (${response.status}): ${response.statusText}. ${errorText.includes("<!doctype") || errorText.includes("<html") ? "API server may be down or misconfigured." : errorText}`,
+          `Service Error (${response.status}): ${response.statusText}. ${errorText.includes("<!doctype") || errorText.includes("<html") ? "Service may be down or misconfigured." : errorText}`,
         );
       }
 
@@ -714,7 +714,7 @@ class ApiClient {
           responseText: responseText.substring(0, 500),
         });
         throw new Error(
-          "API server returned HTML instead of JSON. The comparison service may be temporarily unavailable.",
+          "Service returned HTML instead of JSON. The comparison service may be temporarily unavailable.",
         );
       }
 
@@ -753,7 +753,7 @@ class ApiClient {
         window.dispatchEvent(
           new CustomEvent("app:error", {
             detail: {
-              title: "API Error",
+              title: "Service Error",
               message: error instanceof Error ? error.message : String(error),
             },
           }),

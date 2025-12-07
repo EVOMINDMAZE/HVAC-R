@@ -33,14 +33,14 @@ const staggerContainer = {
 
 export function Landing() {
   return (
-    <div className="min-h-screen bg-slate-50 overflow-hidden selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-white text-slate-900 selection:bg-orange-100 selection:text-orange-900">
       <Header variant="landing" />
 
-      {/* Aurora Background */}
+      {/* Warm/Thermo Background */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-400/20 blur-[100px] animate-pulse" />
-        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-purple-400/20 blur-[100px] animate-pulse delay-1000" />
-        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-indigo-400/20 blur-[100px] animate-pulse delay-2000" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-orange-100/50 blur-[100px] animate-pulse" />
+        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-amber-100/40 blur-[100px] animate-pulse delay-1000" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-red-100/30 blur-[100px] animate-pulse delay-2000" />
       </div>
 
       <div className="relative z-10">
@@ -59,10 +59,9 @@ export function Landing() {
             <motion.div variants={fadeInUp}>
               <Badge
                 variant="secondary"
-                className="mb-6 text-blue-700 bg-blue-100/50 backdrop-blur-sm border-blue-200 px-4 py-1.5 text-sm font-medium"
               >
-                <Zap className="w-3 h-3 mr-2 fill-blue-700" />
-                Professional HVAC&R Engineering Tool
+                <Zap className="w-3 h-3 mr-2 fill-orange-500 text-orange-600" />
+                <span className="text-orange-700">Professional Thermal Engineering Intelligence</span>
               </Badge>
             </motion.div>
 
@@ -72,7 +71,7 @@ export function Landing() {
             >
               Advanced Refrigeration
               <br />
-              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent drop-shadow-sm">
+              <span className="bg-gradient-to-r from-orange-600 via-red-600 to-amber-600 bg-clip-text text-transparent drop-shadow-sm">
                 Cycle Analysis
               </span>
             </motion.h1>
@@ -93,7 +92,7 @@ export function Landing() {
               <Link to="/signup">
                 <Button
                   size="lg"
-                  className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-6 h-auto shadow-lg shadow-blue-600/20 hover:shadow-blue-600/30 transition-all hover:-translate-y-1"
+                  className="bg-slate-900 hover:bg-slate-800 text-white text-lg px-8 py-6 h-auto shadow-lg shadow-slate-900/10 hover:shadow-slate-900/20 transition-all hover:-translate-y-1"
                 >
                   Start Free Trial
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -102,7 +101,7 @@ export function Landing() {
               <Button
                 size="lg"
                 variant="outline"
-                className="text-lg px-8 py-6 h-auto border-slate-200 hover:bg-white/80 hover:text-blue-600 backdrop-blur-sm transition-all hover:-translate-y-1"
+                className="text-lg px-8 py-6 h-auto border-slate-200 hover:bg-slate-50 hover:text-slate-900 backdrop-blur-sm transition-all hover:-translate-y-1"
               >
                 View Demo
               </Button>
@@ -122,22 +121,22 @@ export function Landing() {
                 title: "Standard Cycle Analysis",
                 desc: "Calculate COP, refrigeration effect, and state points for standard vapor compression cycles.",
                 icon: Calculator,
-                color: "text-blue-600",
-                bg: "bg-blue-100",
+                color: "text-slate-700",
+                bg: "bg-slate-100",
               },
               {
                 title: "Refrigerant Comparison",
                 desc: "Compare performance metrics across multiple refrigerants to optimize your system design.",
                 icon: TrendingUp,
-                color: "text-purple-600",
-                bg: "bg-purple-100",
+                color: "text-orange-600",
+                bg: "bg-orange-100",
               },
               {
                 title: "Cascade Systems",
                 desc: "Analyze complex two-stage cascade refrigeration systems for ultra-low temperature applications.",
                 icon: Shield,
-                color: "text-indigo-600",
-                bg: "bg-indigo-100",
+                color: "text-red-600",
+                bg: "bg-red-100",
               },
             ].map((feature, index) => (
               <Card
@@ -198,7 +197,7 @@ export function Landing() {
           <div className="max-w-7xl mx-auto px-4">
             <div className="text-center mb-20">
               <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
-                Why Choose Simulateon?
+                Why Choose ThermoNeural?
               </h2>
               <p className="text-xl text-slate-600 max-w-2xl mx-auto">
                 Built by engineers, for engineers. Get accurate results with
@@ -238,8 +237,8 @@ export function Landing() {
                   transition={{ delay: index * 0.1 }}
                   className="text-center p-6 rounded-2xl hover:bg-white/50 hover:shadow-lg transition-all duration-300"
                 >
-                  <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <benefit.icon className="h-8 w-8 text-blue-600" />
+                  <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <benefit.icon className="h-8 w-8 text-orange-600" />
                   </div>
                   <h3 className="text-lg font-bold text-slate-900 mb-3">
                     {benefit.title}
@@ -301,7 +300,7 @@ export function Landing() {
             initial={{ scale: 0.95, opacity: 0 }}
             whileInView={{ scale: 1, opacity: 1 }}
             viewport={{ once: true }}
-            className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-12 md:p-24 text-white shadow-2xl shadow-blue-900/20 relative overflow-hidden"
+            className="bg-slate-900 rounded-3xl p-12 md:p-24 text-white shadow-2xl shadow-slate-900/20 relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
@@ -310,8 +309,8 @@ export function Landing() {
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
                 Ready to Start Calculating?
               </h2>
-              <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
-                Join thousands of engineers using Simulateon for their
+              <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">
+                Join thousands of engineers using ThermoNeural for their
                 refrigeration calculations.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

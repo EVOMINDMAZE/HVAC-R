@@ -121,39 +121,13 @@ const documentation = [
         readTime: "15 min",
       },
       {
-        title: "Troubleshooting",
+        title: "Cascade Troubleshooting",
         description: "Common issues and solutions",
         readTime: "12 min",
       },
     ],
   },
-  {
-    category: "API Reference",
-    icon: FileText,
-    color: "from-gray-600 to-gray-700",
-    articles: [
-      {
-        title: "API Overview",
-        description: "Getting started with our calculation API",
-        readTime: "8 min",
-      },
-      {
-        title: "Authentication",
-        description: "API keys and security",
-        readTime: "5 min",
-      },
-      {
-        title: "Endpoints",
-        description: "Complete list of available endpoints",
-        readTime: "12 min",
-      },
-      {
-        title: "Examples",
-        description: "Code examples and use cases",
-        readTime: "20 min",
-      },
-    ],
-  },
+
   {
     category: "Advanced Topics",
     icon: Users,
@@ -175,7 +149,7 @@ const documentation = [
         readTime: "10 min",
       },
       {
-        title: "Integration",
+        title: "Data Integration",
         description: "Integrating with other engineering tools",
         readTime: "30 min",
       },
@@ -308,11 +282,10 @@ export function Documentation() {
                       ? "default"
                       : "outline"
                   }
-                  className={`justify-start text-sm h-auto p-3 ${
-                    selectedCategory === category.category
-                      ? "bg-blue-600 hover:bg-blue-700"
-                      : "border-gray-200 hover:bg-gray-50"
-                  }`}
+                  className={`justify-start text-sm h-auto p-3 ${selectedCategory === category.category
+                    ? "bg-blue-600 hover:bg-blue-700"
+                    : "border-gray-200 hover:bg-gray-50"
+                    }`}
                   onClick={() =>
                     setSelectedCategory(
                       selectedCategory === category.category

@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import {
   Calculator,
   TrendingUp,
@@ -26,7 +28,7 @@ import {
 export function Features() {
   const coreFeatures = [
     {
-      icon: <Calculator className="h-12 w-12 text-blue-600" />,
+      icon: <Calculator className="h-12 w-12 text-orange-600" />,
       title: "Standard Cycle Analysis",
       description:
         "Complete thermodynamic analysis of vapor compression refrigeration cycles with detailed state point calculations.",
@@ -39,7 +41,7 @@ export function Features() {
       ],
     },
     {
-      icon: <TrendingUp className="h-12 w-12 text-purple-600" />,
+      icon: <TrendingUp className="h-12 w-12 text-red-600" />,
       title: "Refrigerant Comparison",
       description:
         "Side-by-side performance comparison of different refrigerants under identical operating conditions.",
@@ -52,7 +54,7 @@ export function Features() {
       ],
     },
     {
-      icon: <BarChart3 className="h-12 w-12 text-green-600" />,
+      icon: <BarChart3 className="h-12 w-12 text-amber-600" />,
       title: "Cascade Systems",
       description:
         "Advanced analysis of two-stage cascade refrigeration systems for ultra-low temperature applications.",
@@ -68,219 +70,155 @@ export function Features() {
 
   const professionalFeatures = [
     {
-      icon: <Database className="h-8 w-8" />,
+      icon: <Database className="h-8 w-8 text-orange-600" />,
       title: "Calculation History",
       description:
         "Comprehensive database of all your calculations with powerful search and organization tools.",
     },
     {
-      icon: <Download className="h-8 w-8" />,
+      icon: <Download className="h-8 w-8 text-orange-600" />,
       title: "Export Capabilities",
       description:
         "Export results to PDF, Excel, or JSON formats for reporting and further analysis.",
     },
     {
-      icon: <Shield className="h-8 w-8" />,
+      icon: <Shield className="h-8 w-8 text-orange-600" />,
       title: "Data Security",
       description:
-        "Enterprise-grade security with encrypted data storage and secure API access.",
+        "Enterprise-grade security with encrypted data storage.",
     },
     {
-      icon: <Zap className="h-8 w-8" />,
+      icon: <Zap className="h-8 w-8 text-orange-600" />,
       title: "High-Speed Calculations",
       description:
         "Optimized algorithms providing instant results even for complex multi-variable analyses.",
     },
     {
-      icon: <Users className="h-8 w-8" />,
+      icon: <Users className="h-8 w-8 text-orange-600" />,
       title: "Team Collaboration",
       description:
         "Share calculations and collaborate with team members on projects.",
     },
     {
-      icon: <Clock className="h-8 w-8" />,
-      title: "Real-time Updates",
+      icon: <Clock className="h-8 w-8 text-orange-600" />,
+      title: "Project Management",
       description:
-        "Automatic synchronization across devices with real-time calculation updates.",
+        "Organize calculations into projects and track progress over time.",
     },
   ];
 
   const technicalSpecs = [
     {
-      category: "Refrigerants Supported",
+      title: "Thermodynamics",
       items: [
-        "R-134a",
-        "R-410A",
-        "R-404A",
-        "R-448A",
-        "R-290 (Propane)",
-        "R-32",
-        "R-744 (CO₂)",
-        "R-1234yf",
-        "And 50+ more",
+        { icon: <Thermometer className="h-5 w-5 text-orange-500" />, text: "NIST Refprop Interface" },
+        { icon: <Gauge className="h-5 w-5 text-orange-500" />, text: "Real Gas Equations of State" },
+        { icon: <Settings className="h-5 w-5 text-orange-500" />, text: "Transport Properties" },
+        { icon: <CheckCircle className="h-5 w-5 text-orange-500" />, text: "Mixture Properties" },
       ],
     },
     {
-      category: "Temperature Range",
+      title: "Reporting",
       items: [
-        "-80°C to +150°C",
-        "Automatic range validation",
-        "Unit conversion (°C/°F/K)",
-        "Precision to 0.1°C",
+        { icon: <FileText className="h-5 w-5 text-orange-500" />, text: "Professional PDF Reports" },
+        { icon: <LineChart className="h-5 w-5 text-orange-500" />, text: "Interactive Phase Diagrams" },
+        { icon: <Database className="h-5 w-5 text-orange-500" />, text: "CSV/Excel Data Export" },
+        { icon: <Globe className="h-5 w-5 text-orange-500" />, text: "Cloud Synchronization" },
       ],
     },
     {
-      category: "Pressure Range",
+      title: "Support",
       items: [
-        "0.1 kPa to 10 MPa",
-        "Multiple pressure units",
-        "Vacuum applications",
-        "High-pressure systems",
-      ],
-    },
-    {
-      category: "Accuracy",
-      items: [
-        "±0.1% thermodynamic properties",
-        "NIST REFPROP validated",
-        "Industry-standard correlations",
-        "Peer-reviewed algorithms",
+        { icon: <Mail className="h-5 w-5 text-orange-500" />, text: "Priority Email Support" },
+        { icon: <Users className="h-5 w-5 text-orange-500" />, text: "Community Access" },
+        { icon: <FileText className="h-5 w-5 text-orange-500" />, text: "Comprehensive Documentation" },
+        { icon: <Zap className="h-5 w-5 text-orange-500" />, text: "Video Tutorials" },
       ],
     },
   ];
 
   const industryApplications = [
     {
-      icon: <Thermometer className="h-8 w-8 text-blue-600" />,
+      icon: <Thermometer className="h-8 w-8 text-orange-600" />,
       title: "HVAC Systems",
       description:
         "Design and optimize commercial and residential air conditioning systems.",
-      useCases: [
-        "Building cooling loads",
-        "Energy efficiency optimization",
-        "Equipment sizing",
-        "Seasonal performance",
+      items: [
+        "Chiller optimization",
+        "Heat load calculations",
+        "System sizing",
       ],
     },
     {
-      icon: <Gauge className="h-8 w-8 text-purple-600" />,
+      icon: <Gauge className="h-8 w-8 text-red-600" />,
       title: "Industrial Refrigeration",
       description:
         "Large-scale refrigeration for food processing, chemical storage, and manufacturing.",
-      useCases: [
+      items: [
         "Cold storage design",
         "Process cooling",
-        "Freeze drying",
-        "Cryogenic applications",
+        "Energy efficiency audits",
       ],
     },
     {
-      icon: <Settings className="h-8 w-8 text-green-600" />,
+      icon: <Settings className="h-8 w-8 text-amber-600" />,
       title: "Heat Pumps",
       description:
         "Analysis and optimization of heat pump systems for heating and cooling applications.",
-      useCases: [
-        "Ground source systems",
-        "Air source heat pumps",
-        "Water heating",
-        "Space conditioning",
-      ],
-    },
-    {
-      icon: <LineChart className="h-8 w-8 text-orange-600" />,
-      title: "Energy Recovery",
-      description:
-        "Waste heat recovery and energy efficiency improvement in industrial processes.",
-      useCases: [
-        "Heat recovery wheels",
-        "Thermal storage",
-        "Waste heat utilization",
-        "Energy audits",
+      items: [
+        "COP improvement",
+        "Alternative refrigerants",
+        "System retrofitting",
       ],
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-blue-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <Link to="/" className="flex items-center space-x-2">
-            <Calculator className="h-8 w-8 text-blue-600" />
-            <h1 className="text-2xl font-bold text-blue-900">Simulateon</h1>
-          </Link>
-          <div className="flex items-center space-x-4">
-            <Link to="/pricing">
-              <Button
-                variant="ghost"
-                className="text-blue-600 hover:text-blue-700"
-              >
-                Pricing
-              </Button>
-            </Link>
-            <Link to="/signin">
-              <Button
-                variant="ghost"
-                className="text-blue-600 hover:text-blue-700"
-              >
-                Sign In
-              </Button>
-            </Link>
-            <Link to="/signup">
-              <Button className="bg-blue-600 hover:bg-blue-700">
-                Get Started
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-white text-slate-900 selection:bg-orange-100 selection:text-orange-900">
+      <Header variant="landing" />
 
-      <div className="max-w-7xl mx-auto px-4 py-16">
+      {/* Warm/Thermo Background */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-orange-100/50 blur-[100px] animate-pulse" />
+        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-amber-100/40 blur-[100px] animate-pulse delay-1000" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-red-100/30 blur-[100px] animate-pulse delay-2000" />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 py-16">
         {/* Hero Section */}
         <div className="text-center mb-20">
-          <Badge variant="secondary" className="mb-6 text-blue-600 bg-blue-100">
+          <Badge variant="secondary" className="mb-6 text-orange-700 bg-orange-100 border-orange-200">
             Professional HVAC&R Engineering Software
           </Badge>
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+          <h1 className="text-5xl md:text-6xl font-bold text-slate-900 mb-6">
             Powerful Features for
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-orange-600 via-red-600 to-amber-600 bg-clip-text text-transparent">
               {" "}
               Modern Engineers
             </span>
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Everything you need for professional refrigeration cycle analysis,
-            from basic calculations to complex multi-stage systems.
+          <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+            Everything you need to analyze, optimize, and validate refrigeration
+            systems in one professional platform.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
             <Link to="/signup">
-              <Button
-                size="lg"
-                className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-4"
-              >
-                Try All Features Free
+              <Button size="lg" className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-6 text-lg h-auto shadow-lg shadow-orange-900/10 mb-4 sm:mb-0">
+                Start Free Trial
                 <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-            <Link to="/pricing">
-              <Button
-                size="lg"
-                variant="outline"
-                className="text-lg px-8 py-4 border-blue-200 hover:bg-blue-50"
-              >
-                View Pricing
               </Button>
             </Link>
           </div>
         </div>
 
         {/* Core Features */}
-        <section className="mb-20">
+        <section className="mb-32">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl font-bold text-slate-900 mb-4">
               Core Calculation Engines
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-slate-600">
               Industry-standard thermodynamic calculations with unmatched
               accuracy
             </p>
@@ -290,19 +228,21 @@ export function Features() {
             {coreFeatures.map((feature, index) => (
               <Card
                 key={index}
-                className="bg-white shadow-xl border-blue-200 hover:shadow-2xl transition-all duration-300"
+                className="border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-white/80 backdrop-blur-sm"
               >
                 <CardHeader className="text-center pb-4">
-                  <div className="flex justify-center mb-4">{feature.icon}</div>
-                  <CardTitle className="text-2xl">{feature.title}</CardTitle>
+                  <div className="flex justify-center mb-4 p-3 bg-orange-50 rounded-2xl w-fit mx-auto">
+                    {feature.icon}
+                  </div>
+                  <CardTitle className="text-2xl text-slate-900">{feature.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-gray-600 mb-6">{feature.description}</p>
-                  <ul className="space-y-2">
+                  <p className="text-slate-600 mb-6 leading-relaxed">{feature.description}</p>
+                  <ul className="space-y-3">
                     {feature.features.map((item, idx) => (
-                      <li key={idx} className="flex items-center text-sm">
-                        <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                        {item}
+                      <li key={idx} className="flex items-start text-slate-700">
+                        <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0" />
+                        <span className="text-sm">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -312,74 +252,57 @@ export function Features() {
           </div>
         </section>
 
-        {/* Professional Features */}
-        <section className="mb-20">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Professional Tools
+        {/* Professional Tools Section */}
+        <section className="mb-32">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+              Professional Engineering Tools
             </h2>
-            <p className="text-xl text-gray-600">
-              Advanced features for professional engineering workflows
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Built for accuracy, speed, and collaboration.
             </p>
           </div>
-
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {professionalFeatures.map((feature, index) => (
-              <Card
+              <div
                 key={index}
-                className="bg-white shadow-lg border-gray-200 hover:shadow-xl transition-shadow"
+                className="flex flex-col p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
               >
-                <CardContent className="p-6">
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 p-3 bg-blue-100 rounded-lg">
-                      {feature.icon}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-lg mb-2">
-                          {feature.title}
-                        </h3>
-                        <Badge variant="secondary" className="text-xs">
-                          Pro
-                        </Badge>
-                      </div>
-                      <p className="text-gray-600 text-sm">
-                        {feature.description}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                <div className="mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-slate-600">{feature.description}</p>
+              </div>
             ))}
           </div>
         </section>
 
-        {/* Technical Specifications */}
-        <section className="mb-20">
-          <div className="bg-white rounded-2xl shadow-xl p-8">
-            <div className="text-center mb-8">
-              <h2 className="text-4xl font-bold text-gray-900 mb-4">
-                Technical Specifications
-              </h2>
-              <p className="text-xl text-gray-600">
-                Built on industry-standard data and validated algorithms
+        {/* Technical Specs */}
+        <div className="rounded-3xl bg-slate-900 text-white p-8 md:p-12 mb-32 overflow-hidden relative">
+          <div className="absolute top-0 right-0 p-12 opacity-10">
+            <Calculator className="w-64 h-64" />
+          </div>
+
+          <div className="relative z-10">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">Technical Specifications</h2>
+              <p className="text-slate-300">
+                Powered by industry-standard libraries and validated models
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid md:grid-cols-3 gap-8">
               {technicalSpecs.map((spec, index) => (
-                <div key={index} className="space-y-4">
-                  <h3 className="font-bold text-lg text-blue-900">
-                    {spec.category}
+                <div key={index} className="bg-slate-800/50 rounded-xl p-6 backdrop-blur">
+                  <h3 className="text-xl font-semibold mb-6 flex items-center">
+                    {spec.title}
                   </h3>
-                  <ul className="space-y-2">
-                    {spec.items.map((item, idx) => (
-                      <li
-                        key={idx}
-                        className="flex items-center text-sm text-gray-600"
-                      >
-                        <CheckCircle className="h-3 w-3 text-green-500 mr-2 flex-shrink-0" />
-                        {item}
+                  <ul className="space-y-4">
+                    {spec.items.map((item, i) => (
+                      <li key={i} className="flex items-center text-slate-300">
+                        <span className="mr-3">{item.icon}</span>
+                        {item.text}
                       </li>
                     ))}
                   </ul>
@@ -387,143 +310,66 @@ export function Features() {
               ))}
             </div>
           </div>
-        </section>
+        </div>
 
         {/* Industry Applications */}
-        <section className="mb-20">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+        <section className="mb-32">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
               Industry Applications
             </h2>
-            <p className="text-xl text-gray-600">
-              Trusted by engineers across diverse industries and applications
+            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+              Solutions for every sector of the HVAC&R industry
             </p>
           </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-3 gap-8">
             {industryApplications.map((app, index) => (
-              <Card key={index} className="bg-white shadow-lg border-gray-200">
-                <CardHeader>
-                  <div className="flex items-center space-x-4">
-                    <div className="p-3 bg-blue-100 rounded-lg">{app.icon}</div>
-                    <div>
-                      <CardTitle className="text-xl">{app.title}</CardTitle>
-                    </div>
+              <Card key={index} className="bg-white border-slate-200 shadow-md hover:shadow-lg transition-all">
+                <CardContent className="p-8 text-center">
+                  <div className="flex justify-center mb-6 p-4 bg-orange-50 rounded-full w-fit mx-auto">
+                    {app.icon}
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4">{app.description}</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {app.useCases.map((useCase, idx) => (
-                      <div
-                        key={idx}
-                        className="flex items-center text-sm text-gray-600"
-                      >
-                        <CheckCircle className="h-3 w-3 text-green-500 mr-2 flex-shrink-0" />
-                        {useCase}
-                      </div>
+                  <h3 className="text-xl font-bold text-slate-900 mb-3">{app.title}</h3>
+                  <p className="text-slate-600 mb-6">{app.description}</p>
+                  <ul className="text-left space-y-2">
+                    {app.items.map((item, i) => (
+                      <li key={i} className="flex items-center text-slate-700 text-sm">
+                        <CheckCircle className="h-4 w-4 text-orange-500 mr-2" />
+                        {item}
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 </CardContent>
               </Card>
             ))}
           </div>
         </section>
 
-        {/* Integration & API */}
-        <section className="mb-20">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 text-white">
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div>
-                <h2 className="text-4xl font-bold mb-4">API & Integrations</h2>
-                <p className="text-xl mb-6 opacity-90">
-                  Seamlessly integrate Simulateon into your existing engineering
-                  workflows with our powerful API.
-                </p>
-                <ul className="space-y-3 mb-8">
-                  <li className="flex items-center">
-                    <CheckCircle className="h-5 w-5 mr-3" />
-                    RESTful API with comprehensive documentation
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-5 w-5 mr-3" />
-                    Webhook support for real-time updates
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-5 w-5 mr-3" />
-                    SDKs for Python, JavaScript, and MATLAB
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-5 w-5 mr-3" />
-                    Enterprise SSO and user management
-                  </li>
-                </ul>
-                <div className="flex space-x-4">
-                  <Link to="/api-docs">
-                    <Button variant="secondary" size="lg">
-                      <FileText className="mr-2 h-5 w-5" />
-                      API Documentation
-                    </Button>
-                  </Link>
-                  <Link to="/contact">
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      className="bg-transparent border-white text-white hover:bg-white hover:text-blue-600"
-                    >
-                      <Mail className="mr-2 h-5 w-5" />
-                      Contact Sales
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-              <div className="text-center">
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                  <Globe className="h-24 w-24 mx-auto mb-4 opacity-80" />
-                  <h3 className="text-xl font-semibold mb-2">
-                    Enterprise Ready
-                  </h3>
-                  <p className="opacity-80">
-                    Scale from individual calculations to enterprise-wide
-                    deployment
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* CTA Section */}
-        <div className="text-center bg-white rounded-2xl shadow-xl p-12">
-          <h3 className="text-3xl font-bold text-gray-900 mb-4">
-            Ready to Experience Professional HVAC&R Calculations?
-          </h3>
-          <p className="text-xl text-gray-600 mb-8">
-            Start your free trial today and see why thousands of engineers trust
-            Simulateon.
+        <div className="text-center mb-20 bg-gradient-to-r from-orange-50 to-amber-50 rounded-3xl p-12 border border-orange-100">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
+            Ready to optimize your systems?
+          </h2>
+          <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
+            Join thousands of HVAC&R professionals using Simulateon for accurate
+            thermodynamic calculations.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/signup">
-              <Button
-                size="lg"
-                className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-4"
-              >
+              <Button size="lg" className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-6 h-auto text-lg shadow-lg shadow-orange-600/20">
                 Start Free Trial
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Link to="/contact">
-              <Button
-                size="lg"
-                variant="outline"
-                className="text-lg px-8 py-4 border-blue-200 hover:bg-blue-50"
-              >
-                Schedule Demo
+            <Link to="/pricing">
+              <Button variant="outline" size="lg" className="px-8 py-6 h-auto text-lg border-slate-300 text-slate-700 hover:bg-white hover:text-orange-700">
+                View Pricing
               </Button>
             </Link>
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

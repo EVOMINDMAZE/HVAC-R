@@ -1,6 +1,6 @@
 # Advanced Topics
 
-This section covers advanced features and workflows for power users and system integrators.
+This section covers advanced features and workflows for power users.
 
 ## Custom Properties
 
@@ -8,18 +8,18 @@ You can define custom refrigerant property sets for proprietary fluids — these
 
 ## Batch Processing
 
-For large-scale studies, batch requests can be executed by calling the standard cycle endpoint repeatedly or using the comparison endpoint to process multiple refrigerants in parallel.
+For large-scale studies, calculations can be executed repeatedly or multiple refrigerants can be processed in parallel using the comparison tool.
 
 ## Data Export
 
 - Export CSV for numerical analysis and PDF for report-ready outputs.
 - Keep units consistent across exports (e.g., temperatures in °C, pressures in kPa).
 
-## Integration
+## Data Integration
 
-Integrate calculations with CI/CD or analytics pipelines by calling the API from scripts, serverless functions, or job schedulers.
+Exported data can be integrated into your analytics pipelines or other engineering tools for further processing.
 
 ## Tips
 
-- Validate inputs before sending to the API to avoid wasted runs.
+- Validate inputs before running calculations to avoid errors.
 - Use sensible tolerances for numerical comparisons and store raw results for reproducibility.

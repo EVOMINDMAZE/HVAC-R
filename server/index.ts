@@ -43,14 +43,14 @@ export function createServer() {
   const defaultAllowed =
     process.env.NODE_ENV === "production"
       ? [
-          "https://173ba54839db44079504686aa5642124-7d4f8c681adb406aa7578b14f.fly.dev",
-        ]
+        "https://173ba54839db44079504686aa5642124-7d4f8c681adb406aa7578b14f.fly.dev",
+      ]
       : ["http://localhost:8080", "http://localhost:3000"];
 
   const envList = process.env.ALLOWED_CORS_ORIGINS
     ? process.env.ALLOWED_CORS_ORIGINS.split(",")
-        .map((s) => s.trim())
-        .filter(Boolean)
+      .map((s) => s.trim())
+      .filter(Boolean)
     : [];
 
   const allowedOrigins = Array.from(new Set([...envList, ...defaultAllowed]));
@@ -169,11 +169,18 @@ export function createServer() {
   );
 
   // 404 handler
-  app.use((req, res) => {
-    res.status(404).json({
-      error: "Not found",
-      message: `Route ${req.method} ${req.path} not found`,
-    });
+  // 404 handler
+  // 404 handler
+  // 404 handler for API routes
+  app.use((req, res, next) => {
+    if (req.path.startsWith("/api")) {
+      res.status(404).json({
+        error: "Not found",
+        message: `Route ${req.method} ${req.path} not found`,
+      });
+    } else {
+      next();
+    }
   });
 
   return app;

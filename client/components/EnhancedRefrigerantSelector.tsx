@@ -192,7 +192,7 @@ export function EnhancedRefrigerantSelector({
               <SelectTrigger className="focus:ring-2 focus:ring-sky-500 focus:outline-none">
                 <SelectValue placeholder="Choose a refrigerant" />
               </SelectTrigger>
-              <SelectContent className="max-h-96">
+              <SelectContent className="max-h-96 z-[9999]" position="popper">
                 {filteredRefrigerants.map((refrigerant) => (
                   <SelectItem key={refrigerant.id} value={refrigerant.id}>
                     <div className="flex items-center justify-between w-full">

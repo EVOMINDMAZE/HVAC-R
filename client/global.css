@@ -5,76 +5,76 @@
 @layer base {
 
   /**
-   * Tailwind CSS theme - Premium "ChargePro" Design
-   * Deep blues, crisp whites, and vibrant accents.
+   * Tailwind CSS theme - ThermoNeural Vision
+   * "Notion meets Stripe" - Clean, Deep Slates, Vibrant Orange/Blue Gradients.
    */
   :root {
-    /* Background: Very subtle cool gray/blue tint for depth */
-    --background: 210 40% 98%;
-    /* Foreground: Deep navy for high contrast text */
+    /* Background: Pure White / Very slight Warmth */
+    --background: 0 0% 100%;
+    /* Foreground: Deep Slate (almost black) */
     --foreground: 222 47% 11%;
 
-    /* Card: Pure white with subtle shadow */
+    /* Card: White with border */
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
 
-    /* Popover: Pure white */
+    /* Popover: White */
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    /* Primary: Vibrant Electric Blue */
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary: Deep Slate (Notion/Vercel style) */
+    --primary: 222 47% 11%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Secondary: Soft Slate Blue */
+    /* Secondary: Soft Gray/Blue for subtle elements */
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222 47% 11.2%;
 
-    /* Muted: Cool Gray */
+    /* Muted: Text or background */
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    /* Accent: Cyan/Teal for highlights */
-    --accent: 199 89% 48%;
-    --accent-foreground: 210 40% 98%;
+    /* Accent: Thermo Orange (for selection/highlights) */
+    --accent: 25 95% 53%;
+    --accent-foreground: 0 0% 100%;
 
     /* Destructive: Soft Red */
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    /* Border: Subtle blue-gray */
+    /* Border: Subtle Slate */
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221 83% 53%;
+    --ring: 25 95% 53%;
+    /* Orange Ring */
 
     --radius: 0.75rem;
-    /* Slightly more rounded for modern feel */
 
     /* Sidebar */
-    --sidebar-background: 0 0% 98%;
+    --sidebar-background: 0 0% 99%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary: 222 47% 11%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-accent: 210 40% 96.1%;
+    --sidebar-accent-foreground: 222 47% 11%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 25 95% 53%;
   }
 
   .dark {
-    /* Background: Deep Slate/Navy */
-    --background: 222 47% 11%;
+    /* Background: Deepest Slate (Notion Dark) */
+    --background: 224 71% 4%;
     --foreground: 210 40% 98%;
 
-    /* Card: Slightly lighter navy */
-    --card: 217 33% 17%;
+    /* Card: Slightly lighter slate */
+    --card: 222 47% 11%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 217 33% 17%;
+    --popover: 222 47% 11%;
     --popover-foreground: 210 40% 98%;
 
-    /* Primary: Bright Blue for dark mode */
-    --primary: 217 91% 60%;
+    /* Primary: White on Dark */
+    --primary: 210 40% 98%;
     --primary-foreground: 222 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -83,7 +83,8 @@
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 199 89% 48%;
+    /* Accent: Orange */
+    --accent: 25 95% 53%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
@@ -91,16 +92,16 @@
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --ring: 25 95% 53%;
 
-    --sidebar-background: 240 5.9% 10%;
+    --sidebar-background: 224 71% 4%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 25 95% 53%;
   }
 }
 
@@ -109,15 +110,20 @@
     @apply border-border transition-colors;
   }
 
-  body {
-    @apply bg-background text-foreground;
-  }
-
-  /* Smooth scrolling & Font smoothing */
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
   }
 
   /* Focus styles */

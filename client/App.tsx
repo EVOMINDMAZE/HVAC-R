@@ -4,6 +4,7 @@ import { SupabaseAuthProvider, useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { ToastProvider, useToast } from "@/hooks/useToast";
 import "@/utils/authErrorHandler"; // Import to setup global error handling
 import { Landing } from "@/pages/Landing";
+import { A2LLandingPage } from "@/pages/A2LLandingPage";
 import { Features } from "@/pages/Features";
 import Pricing from "@/pages/Pricing";
 import { SignIn } from "@/pages/SignIn";
@@ -25,7 +26,6 @@ import { Blog } from "@/pages/Blog";
 import { Contact } from "@/pages/Contact";
 import { Documentation } from "@/pages/Documentation";
 import { HelpCenter } from "@/pages/HelpCenter";
-import { ApiDocs } from "@/pages/ApiDocs";
 import { StripeDebug } from "@/pages/StripeDebug";
 import { Privacy } from "@/pages/Privacy";
 import { TermsOfService } from "@/pages/TermsOfService";
@@ -55,10 +55,10 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   if (isLoading && !bypass) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-blue-600">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-primary">Loading...</p>
         </div>
       </div>
     );
@@ -79,10 +79,10 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 
   if (isLoading && !bypass) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-blue-600">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-primary">Loading...</p>
         </div>
       </div>
     );
@@ -127,6 +127,16 @@ function AppRoutes() {
           }
         />
         <Route
+          path="/calculators/a2l-refrigerant-charge"
+          element={
+            <PublicRoute>
+              <PageTransition>
+                <A2LLandingPage />
+              </PageTransition>
+            </PublicRoute>
+          }
+        />
+        <Route
           path="/signin"
           element={
             <PublicRoute>
@@ -152,13 +162,11 @@ function AppRoutes() {
         <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
         <Route path="/documentation" element={<PageTransition><Documentation /></PageTransition>} />
-        <Route path="/api-docs" element={<PageTransition><ApiDocs /></PageTransition>} />
         <Route path="/help-center" element={<PageTransition><HelpCenter /></PageTransition>} />
         <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
         <Route path="/terms" element={<PageTransition><TermsOfService /></PageTransition>} />
         <Route path="/stripe-debug" element={<PageTransition><StripeDebug /></PageTransition>} />
 
-        {/* Protected routes */}
         {/* Protected routes */}
         <Route element={<ProtectedRoute><Outlet /></ProtectedRoute>}>
           <Route path="/dashboard" element={<PageTransition><Dashboard /></PageTransition>} />
@@ -212,16 +220,14 @@ function App() {
   }, [addToast]);
 
   return (
-    <ToastProvider>
-      <SupabaseAuthProvider>
-        <BrowserRouter>
-          <AppRoutes />
-          {/* Global UI components */}
-          <ErrorModal />
-          <SupportBar />
-        </BrowserRouter>
-      </SupabaseAuthProvider>
-    </ToastProvider>
+    <SupabaseAuthProvider>
+      <BrowserRouter>
+        <AppRoutes />
+        {/* Global UI components */}
+        <ErrorModal />
+        <SupportBar />
+      </BrowserRouter>
+    </SupabaseAuthProvider>
   );
 }
 

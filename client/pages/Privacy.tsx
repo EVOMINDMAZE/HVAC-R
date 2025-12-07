@@ -11,7 +11,7 @@ export function Privacy() {
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <Link to="/" className="flex items-center space-x-2">
             <Calculator className="h-8 w-8 text-blue-600" />
-            <h1 className="text-2xl font-bold text-blue-900">Simulateon</h1>
+            <h1 className="text-2xl font-bold text-slate-900">ThermoNeural</h1>
           </Link>
           <Link to="/">
             <Button variant="ghost" className="flex items-center gap-2">
@@ -34,7 +34,7 @@ export function Privacy() {
               Introduction
             </h2>
             <p className="text-gray-700 mb-4">
-              Simulateon ("we," "us," "our," or "Company") is committed to
+              ThermoNeural ("we," "us," "our," or "Company") is committed to
               protecting your privacy. This Privacy Policy explains how we
               collect, use, disclose, and safeguard your information when you
               visit our website and use our services.
@@ -191,7 +191,7 @@ export function Privacy() {
             </p>
             <div className="mt-4 space-y-2 text-gray-700">
               <p>
-                <strong>Email:</strong> privacy@simulateon.com
+                <strong>Email:</strong> privacy@thermoneural.com
               </p>
               <p>
                 <strong>Mailing Address:</strong> San Francisco, CA, United
