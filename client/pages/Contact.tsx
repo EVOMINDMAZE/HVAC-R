@@ -194,45 +194,32 @@ export function Contact() {
               <CardHeader className="bg-gradient-to-r from-blue-600 to-red-600 text-white">
                 <CardTitle>Contact Information</CardTitle>
               </CardHeader>
-              <CardContent className="p-6 space-y-4">
-                <div className="flex items-start space-x-3">
-                  <Mail className="h-5 w-5 text-blue-600 mt-1" />
-                  <div className="ml-4">
-                    <p className="font-medium text-slate-900">Email</p>
-                    <p className="text-slate-600">support@thermoneural.com</p>
-                    <p className="text-slate-600">sales@thermoneural.com</p>
+              <CardContent className="p-6 space-y-6">
+                <div className="flex items-start space-x-4">
+                  <div className="mt-1 bg-blue-100/10 p-2 rounded-lg">
+                    <Mail className="h-6 w-6 text-blue-500" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-slate-900 mb-1">Technical Support</h3>
+                    <p className="text-sm text-slate-600 mb-2">For account assistance, bug reports, and technical inquiries.</p>
+                    <a href="mailto:support@thermoneural.com" className="text-blue-600 hover:text-blue-700 font-medium">
+                      support@thermoneural.com
+                    </a>
                   </div>
                 </div>
-                <div className="flex items-start space-x-3">
-                  <Phone className="h-5 w-5 text-blue-600 mt-1" />
-                  <div>
-                    <p className="font-medium text-slate-900">Phone</p>
-                    <p className="text-slate-600">+1 (555) 123-4567</p>
-                    <p className="text-sm text-slate-500">Mon-Fri 9AM-5PM EST</p>
+
+                <div className="w-full h-px bg-slate-100" />
+
+                <div className="flex items-start space-x-4">
+                  <div className="mt-1 bg-red-100/10 p-2 rounded-lg">
+                    <Send className="h-6 w-6 text-red-500" />
                   </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <MapPin className="h-5 w-5 text-blue-600 mt-1" />
                   <div>
-                    <p className="font-medium text-slate-900">Address</p>
-                    <p className="text-slate-600">
-                      123 Engineering Plaza
-                      <br />
-                      Suite 456
-                      <br />
-                      Tech City, TC 12345
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <Clock className="h-5 w-5 text-blue-600 mt-1" />
-                  <div>
-                    <p className="font-medium text-slate-900">Support Hours</p>
-                    <p className="text-slate-600">
-                      Monday - Friday
-                      <br />
-                      9:00 AM - 5:00 PM EST
-                    </p>
+                    <h3 className="font-semibold text-slate-900 mb-1">Inquiries & Partnerships</h3>
+                    <p className="text-sm text-slate-600 mb-2">For demos, enterprise solutions, and general questions.</p>
+                    <a href="mailto:hello@thermoneural.com" className="text-blue-600 hover:text-blue-700 font-medium">
+                      hello@thermoneural.com
+                    </a>
                   </div>
                 </div>
               </CardContent>
@@ -249,7 +236,7 @@ export function Contact() {
                       Technical Support
                     </p>
                     <p className="text-sm text-slate-600">
-                      Typical response time: 2-4 hours during business hours
+                      Priority assistance for all technical issues.
                     </p>
                   </div>
                   <div>
@@ -257,7 +244,7 @@ export function Contact() {
                       Sales Inquiries
                     </p>
                     <p className="text-sm text-slate-600">
-                      Typical response time: 1-2 business days
+                      Get a custom quote or schedule a demo.
                     </p>
                   </div>
                   <div>
@@ -265,7 +252,7 @@ export function Contact() {
                       Enterprise Solutions
                     </p>
                     <p className="text-sm text-slate-600">
-                      We'll schedule a call within 24 hours
+                      Scalable solutions for large engineering teams.
                     </p>
                   </div>
                 </div>

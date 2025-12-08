@@ -191,11 +191,7 @@ export function Privacy() {
             </p>
             <div className="mt-4 space-y-2 text-gray-700">
               <p>
-                <strong>Email:</strong> privacy@thermoneural.com
-              </p>
-              <p>
-                <strong>Mailing Address:</strong> San Francisco, CA, United
-                States
+                <strong>Email:</strong> <a href="mailto:support@thermoneural.com" className="text-blue-600 hover:underline">support@thermoneural.com</a>
               </p>
             </div>
           </section>

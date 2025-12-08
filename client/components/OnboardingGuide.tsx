@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Calculator, History, Layers, Sparkles, Zap } from "lucide-react";
 
-const STORAGE_KEY = "simulateon:onboarding-complete";
+const STORAGE_KEY = "thermoneural:onboarding-complete";
 
 const steps = [
   {
@@ -97,7 +97,7 @@ export function OnboardingGuide({ userName, className }: OnboardingGuideProps) {
         <DialogContent className="max-w-xl">
           <DialogHeader className="text-left">
             <DialogTitle className="text-2xl font-semibold">
-              Welcome to Simulateon{userName ? `, ${userName}` : ""}
+              Welcome to ThermoNeural{userName ? `, ${userName}` : ""}
             </DialogTitle>
             <DialogDescription>
               Follow these quick steps to run calculations and get the most out

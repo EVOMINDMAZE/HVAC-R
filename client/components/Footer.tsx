@@ -112,20 +112,24 @@ export function Footer() {
           {/* Contact Column */}
           <div>
             <h4 className="text-lg font-semibold mb-4">Get In Touch</h4>
-            <ul className="space-y-3 text-gray-300">
-              <li className="flex items-center space-x-2">
-                <Mail className="h-4 w-4 text-orange-500" />
-                <a href="mailto:support@thermoneural.com" className="hover:text-orange-400 transition-colors">
-                  support@thermoneural.com
-                </a>
+            <ul className="space-y-4 text-gray-300">
+              <li className="flex items-start space-x-3">
+                <Mail className="h-5 w-5 text-orange-500 mt-0.5" />
+                <div>
+                  <span className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Technical Support</span>
+                  <a href="mailto:support@thermoneural.com" className="hover:text-orange-400 transition-colors text-sm">
+                    support@thermoneural.com
+                  </a>
+                </div>
               </li>
-              <li className="flex items-center space-x-2">
-                <Phone className="h-4 w-4 text-orange-500" />
-                <span>+1 (555) 123-4567</span>
-              </li>
-              <li className="flex items-center space-x-2">
-                <MapPin className="h-4 w-4 text-orange-500" />
-                <span>San Francisco, CA</span>
+              <li className="flex items-start space-x-3">
+                <Mail className="h-5 w-5 text-orange-500 mt-0.5" />
+                <div>
+                  <span className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-0.5">Inquiries & Partnerships</span>
+                  <a href="mailto:hello@thermoneural.com" className="hover:text-orange-400 transition-colors text-sm">
+                    hello@thermoneural.com
+                  </a>
+                </div>
               </li>
             </ul>
 

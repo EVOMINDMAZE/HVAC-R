@@ -351,7 +351,7 @@ export function Features() {
             Ready to optimize your systems?
           </h2>
           <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
-            Join thousands of HVAC&R professionals using Simulateon for accurate
+            Join thousands of HVAC&R professionals using ThermoNeural for accurate
             thermodynamic calculations.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -21,7 +21,7 @@ export function About() {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <Badge variant="secondary" className="mb-4 text-orange-700 bg-orange-100 border-orange-200">
-            About Simulateon
+            About ThermoNeural
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
             Engineering Excellence in

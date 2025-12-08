@@ -234,17 +234,13 @@ export function HelpCenter() {
                 <CardTitle className="text-lg text-slate-900">Need More Help?</CardTitle>
               </CardHeader>
               <CardContent className="p-4 space-y-3">
-                <Button variant="outline" className="w-full justify-start hover:bg-blue-50 hover:text-blue-700 border-slate-200">
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  Live Chat
-                </Button>
-                <Button variant="outline" className="w-full justify-start hover:bg-blue-50 hover:text-blue-700 border-slate-200">
+                <Button variant="outline" className="w-full justify-start hover:bg-blue-50 hover:text-blue-700 border-slate-200" onClick={() => window.location.href = 'mailto:support@thermoneural.com'}>
                   <Mail className="h-4 w-4 mr-2" />
                   Email Support
                 </Button>
-                <Button variant="outline" className="w-full justify-start hover:bg-blue-50 hover:text-blue-700 border-slate-200">
-                  <Phone className="h-4 w-4 mr-2" />
-                  Call Us
+                <Button variant="outline" className="w-full justify-start hover:bg-blue-50 hover:text-blue-700 border-slate-200" onClick={() => window.location.href = 'mailto:hello@thermoneural.com'}>
+                  <Mail className="h-4 w-4 mr-2" />
+                  Partnerships
                 </Button>
               </CardContent>
             </Card>
@@ -310,16 +306,12 @@ export function HelpCenter() {
                   and everything in between.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button className="bg-white text-blue-600 hover:bg-blue-50">
-                    <MessageCircle className="h-4 w-4 mr-2" />
-                    Start Live Chat
-                  </Button>
                   <Button
-                    variant="outline"
-                    className="border-white text-white bg-transparent hover:bg-white/10"
+                    className="bg-white text-blue-600 hover:bg-blue-50"
+                    onClick={() => window.location.href = 'mailto:support@thermoneural.com'}
                   >
                     <Mail className="h-4 w-4 mr-2" />
-                    Email Support
+                    Contact Support
                   </Button>
                 </div>
               </CardContent>

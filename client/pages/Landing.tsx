@@ -257,13 +257,15 @@ export function Landing() {
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
                   </Link>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="text-lg px-8 py-6 h-auto bg-transparent border-white/30 text-white hover:bg-white/10 hover:text-white hover:border-white transition-all"
-                  >
-                    Contact Sales
-                  </Button>
+                  <Link to="/contact">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="text-lg px-8 py-6 h-auto bg-transparent border-white/30 text-white hover:bg-white/10 hover:text-white hover:border-white transition-all"
+                    >
+                      Contact Sales
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </motion.div>
