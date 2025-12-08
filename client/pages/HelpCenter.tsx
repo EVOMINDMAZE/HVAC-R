@@ -147,14 +147,14 @@ export function HelpCenter() {
     .filter((category) => category.questions.length > 0);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 selection:bg-orange-100 selection:text-orange-900">
+    <div className="min-h-screen bg-white text-slate-900 selection:bg-blue-100 selection:text-blue-900">
       <Header variant="landing" />
 
       {/* Warm/Thermo Background */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-orange-100/50 blur-[100px] animate-pulse" />
-        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-amber-100/40 blur-[100px] animate-pulse delay-1000" />
-        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-red-100/30 blur-[100px] animate-pulse delay-2000" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-100/50 blur-[100px] animate-pulse" />
+        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-red-100/40 blur-[100px] animate-pulse delay-1000" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-indigo-100/30 blur-[100px] animate-pulse delay-2000" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-16">
@@ -163,13 +163,13 @@ export function HelpCenter() {
           <div className="max-w-3xl mb-8 md:mb-0">
             <Badge
               variant="secondary"
-              className="mb-4 text-orange-700 bg-orange-100 border-orange-200"
+              className="mb-4 text-blue-700 bg-blue-100 border-blue-200"
             >
               Help Center
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold text-slate-900">
               How can we
-              <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-blue-600 to-red-600 bg-clip-text text-transparent">
                 {" "}
                 help you?
               </span>
@@ -189,7 +189,7 @@ export function HelpCenter() {
               placeholder="Search for answers..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 pr-4 py-6 text-lg border-slate-200 focus:border-orange-500 focus:ring-orange-500 rounded-xl shadow-sm bg-white/80 backdrop-blur-sm"
+              className="pl-12 pr-4 py-6 text-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 rounded-xl shadow-sm bg-white/80 backdrop-blur-sm"
             />
           </div>
         </div>
@@ -205,7 +205,7 @@ export function HelpCenter() {
                 <div className="space-y-2">
                   <Button
                     variant={selectedCategory === null ? "default" : "ghost"}
-                    className={`w-full justify-start ${selectedCategory === null ? 'bg-orange-600 hover:bg-orange-700 text-white' : 'text-slate-600 hover:text-orange-600 hover:bg-orange-50'}`}
+                    className={`w-full justify-start ${selectedCategory === null ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'text-slate-600 hover:text-blue-600 hover:bg-blue-50'}`}
                     onClick={() => setSelectedCategory(null)}
                   >
                     All Topics
@@ -218,7 +218,7 @@ export function HelpCenter() {
                           ? "default"
                           : "ghost"
                       }
-                      className={`w-full justify-start ${selectedCategory === category.category ? 'bg-orange-600 hover:bg-orange-700 text-white' : 'text-slate-600 hover:text-orange-600 hover:bg-orange-50'}`}
+                      className={`w-full justify-start ${selectedCategory === category.category ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'text-slate-600 hover:text-blue-600 hover:bg-blue-50'}`}
                       onClick={() => setSelectedCategory(category.category)}
                     >
                       {category.category}
@@ -234,15 +234,15 @@ export function HelpCenter() {
                 <CardTitle className="text-lg text-slate-900">Need More Help?</CardTitle>
               </CardHeader>
               <CardContent className="p-4 space-y-3">
-                <Button variant="outline" className="w-full justify-start hover:bg-orange-50 hover:text-orange-700 border-slate-200">
+                <Button variant="outline" className="w-full justify-start hover:bg-blue-50 hover:text-blue-700 border-slate-200">
                   <MessageCircle className="h-4 w-4 mr-2" />
                   Live Chat
                 </Button>
-                <Button variant="outline" className="w-full justify-start hover:bg-orange-50 hover:text-orange-700 border-slate-200">
+                <Button variant="outline" className="w-full justify-start hover:bg-blue-50 hover:text-blue-700 border-slate-200">
                   <Mail className="h-4 w-4 mr-2" />
                   Email Support
                 </Button>
-                <Button variant="outline" className="w-full justify-start hover:bg-orange-50 hover:text-orange-700 border-slate-200">
+                <Button variant="outline" className="w-full justify-start hover:bg-blue-50 hover:text-blue-700 border-slate-200">
                   <Phone className="h-4 w-4 mr-2" />
                   Call Us
                 </Button>
@@ -271,7 +271,7 @@ export function HelpCenter() {
                       return (
                         <div key={index} className="border-b last:border-b-0 border-slate-100">
                           <button
-                            className="w-full p-6 text-left hover:bg-orange-50/50 transition-colors focus:outline-none"
+                            className="w-full p-6 text-left hover:bg-blue-50/50 transition-colors focus:outline-none"
                             onClick={() => toggleQuestion(questionId)}
                           >
                             <div className="flex items-center justify-between">
@@ -279,14 +279,14 @@ export function HelpCenter() {
                                 {faq.question}
                               </h3>
                               {isExpanded ? (
-                                <ChevronUp className="h-5 w-5 text-orange-500" />
+                                <ChevronUp className="h-5 w-5 text-blue-500" />
                               ) : (
                                 <ChevronDown className="h-5 w-5 text-slate-400" />
                               )}
                             </div>
                           </button>
                           {isExpanded && (
-                            <div className="px-6 pb-6 bg-orange-50/30">
+                            <div className="px-6 pb-6 bg-blue-50/30">
                               <p className="text-slate-600 leading-relaxed">
                                 {faq.answer}
                               </p>
@@ -301,16 +301,16 @@ export function HelpCenter() {
             </div>
 
             {/* Contact Section */}
-            <Card className="bg-gradient-to-r from-orange-600 to-red-600 text-white mt-12 border-none shadow-xl">
+            <Card className="bg-gradient-to-r from-blue-600 to-red-600 text-white mt-12 border-none shadow-xl">
               <CardContent className="p-8 text-center">
                 <h3 className="text-2xl font-bold mb-4">Still Need Help?</h3>
-                <p className="text-orange-100 mb-6 max-w-2xl mx-auto">
+                <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
                   Can't find what you're looking for? Our engineering support
                   team is here to help with technical questions, account issues,
                   and everything in between.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button className="bg-white text-orange-600 hover:bg-orange-50">
+                  <Button className="bg-white text-blue-600 hover:bg-blue-50">
                     <MessageCircle className="h-4 w-4 mr-2" />
                     Start Live Chat
                   </Button>
@@ -347,9 +347,9 @@ export function HelpCenter() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white/80 backdrop-blur-sm shadow-lg border-orange-200 hover:-translate-y-1 transition-all">
+          <Card className="bg-white/80 backdrop-blur-sm shadow-lg border-blue-200 hover:-translate-y-1 transition-all">
             <CardContent className="p-6 text-center">
-              <Users className="h-12 w-12 text-orange-600 mx-auto mb-4" />
+              <Users className="h-12 w-12 text-blue-600 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-slate-900 mb-2">
                 Community
               </h3>
@@ -358,7 +358,7 @@ export function HelpCenter() {
               </p>
               <Button
                 variant="outline"
-                className="border-orange-200 hover:bg-orange-50 text-orange-700"
+                className="border-blue-200 hover:bg-blue-50 text-blue-700"
               >
                 Join Community
               </Button>

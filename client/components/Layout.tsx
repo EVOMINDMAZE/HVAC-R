@@ -25,7 +25,7 @@ export function Layout({ children }: { children?: React.ReactNode }) {
   }, [onKeyDown]);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       <Header variant={isAuthenticated ? "dashboard" : "landing"} onOpenSearch={() => setSearchOpen(true)} />
       <Sidebar />
       <main className="flex-1 w-full">

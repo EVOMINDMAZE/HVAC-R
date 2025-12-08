@@ -37,25 +37,25 @@ export function Contact() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 selection:bg-orange-100 selection:text-orange-900">
+    <div className="min-h-screen bg-white text-slate-900 selection:bg-blue-100 selection:text-blue-900">
       <Header variant="landing" />
 
       {/* Warm/Thermo Background */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-orange-100/50 blur-[100px] animate-pulse" />
-        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-amber-100/40 blur-[100px] animate-pulse delay-1000" />
-        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-red-100/30 blur-[100px] animate-pulse delay-2000" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-100/50 blur-[100px] animate-pulse" />
+        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-red-100/40 blur-[100px] animate-pulse delay-1000" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-indigo-100/30 blur-[100px] animate-pulse delay-2000" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-16">
         {/* Hero Section */}
         <div className="text-center mb-16">
-          <Badge variant="secondary" className="mb-4 text-orange-700 bg-orange-100 border-orange-200">
+          <Badge variant="secondary" className="mb-4 text-blue-700 bg-blue-100 border-blue-200">
             Get in Touch
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
             Contact
-            <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-600 to-red-600 bg-clip-text text-transparent">
               {" "}
               ThermoNeural
             </span>
@@ -87,7 +87,7 @@ export function Contact() {
                         onChange={(e) =>
                           handleInputChange("name", e.target.value)
                         }
-                        className="border-slate-200 focus:border-orange-500 focus:ring-orange-500"
+                        className="border-slate-200 focus:border-blue-500 focus:ring-blue-500"
                         required
                       />
                     </div>
@@ -100,7 +100,7 @@ export function Contact() {
                         onChange={(e) =>
                           handleInputChange("email", e.target.value)
                         }
-                        className="border-slate-200 focus:border-orange-500 focus:ring-orange-500"
+                        className="border-slate-200 focus:border-blue-500 focus:ring-blue-500"
                         required
                       />
                     </div>
@@ -115,7 +115,7 @@ export function Contact() {
                         onChange={(e) =>
                           handleInputChange("company", e.target.value)
                         }
-                        className="border-slate-200 focus:border-orange-500 focus:ring-orange-500"
+                        className="border-slate-200 focus:border-blue-500 focus:ring-blue-500"
                       />
                     </div>
                     <div className="space-y-2">
@@ -126,7 +126,7 @@ export function Contact() {
                           handleInputChange("category", value)
                         }
                       >
-                        <SelectTrigger className="border-slate-200 focus:border-orange-500 focus:ring-orange-500">
+                        <SelectTrigger className="border-slate-200 focus:border-blue-500 focus:ring-blue-500">
                           <SelectValue placeholder="Select category" />
                         </SelectTrigger>
                         <SelectContent>
@@ -191,12 +191,12 @@ export function Contact() {
           {/* Contact Information */}
           <div className="space-y-6">
             <Card className="bg-white/80 backdrop-blur-sm shadow-lg border-slate-200">
-              <CardHeader className="bg-gradient-to-r from-orange-600 to-red-600 text-white">
+              <CardHeader className="bg-gradient-to-r from-blue-600 to-red-600 text-white">
                 <CardTitle>Contact Information</CardTitle>
               </CardHeader>
               <CardContent className="p-6 space-y-4">
                 <div className="flex items-start space-x-3">
-                  <Mail className="h-5 w-5 text-orange-600 mt-1" />
+                  <Mail className="h-5 w-5 text-blue-600 mt-1" />
                   <div className="ml-4">
                     <p className="font-medium text-slate-900">Email</p>
                     <p className="text-slate-600">support@thermoneural.com</p>
@@ -204,7 +204,7 @@ export function Contact() {
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <Phone className="h-5 w-5 text-orange-600 mt-1" />
+                  <Phone className="h-5 w-5 text-blue-600 mt-1" />
                   <div>
                     <p className="font-medium text-slate-900">Phone</p>
                     <p className="text-slate-600">+1 (555) 123-4567</p>
@@ -212,7 +212,7 @@ export function Contact() {
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <MapPin className="h-5 w-5 text-orange-600 mt-1" />
+                  <MapPin className="h-5 w-5 text-blue-600 mt-1" />
                   <div>
                     <p className="font-medium text-slate-900">Address</p>
                     <p className="text-slate-600">
@@ -225,7 +225,7 @@ export function Contact() {
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <Clock className="h-5 w-5 text-orange-600 mt-1" />
+                  <Clock className="h-5 w-5 text-blue-600 mt-1" />
                   <div>
                     <p className="font-medium text-slate-900">Support Hours</p>
                     <p className="text-slate-600">

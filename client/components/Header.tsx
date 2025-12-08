@@ -85,26 +85,20 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 </Button>
               )}
 
-              <div className="flex items-center gap-3">
-                <div className="rounded-md bg-gradient-to-br from-slate-900 to-slate-700 p-2 shadow-md">
-                  <Calculator className="h-6 w-6 text-white" />
-                </div>
-                <div className="min-w-0">
-                  <div className="text-lg font-bold text-slate-900 dark:text-white truncate">
-                    ThermoNeural
-                  </div>
-                  <p className="text-xs text-muted-foreground truncate max-w-xs">
-                    Your workspace & analysis hub
-                  </p>
-                </div>
-              </div>
+              <Link to="/dashboard" className="flex items-center gap-3 hover:opacity-90 transition-opacity py-1">
+                <img
+                  src="/logo-landscape.png"
+                  alt="ThermoNeural"
+                  className="h-10 md:h-12 w-auto object-contain mix-blend-multiply scale-[1.25] origin-left"
+                />
+              </Link>
 
               {/* Desktop search */}
               <div className="hidden md:block ml-6">
                 <div className="relative">
                   <input
                     placeholder="Search calculations, projects or tools..."
-                    className="w-48 md:w-96 rounded-md border border-input bg-background px-4 py-2 text-sm focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-900"
+                    className="w-48 md:w-96 rounded-md border border-input bg-background px-4 py-2 text-sm focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900"
                   />
                   <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
                     ⌘K
@@ -273,49 +267,45 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               </Button>
             )}
 
-            <Link to="/" className="flex items-center space-x-2">
-              <Calculator className="h-8 w-8 text-orange-600" />
-              <div>
-                <h1 className="text-2xl font-bold text-slate-900 dark:text-white">ThermoNeural</h1>
-                {!isAuthenticated && (
-                  <p className="text-xs text-slate-500 font-medium">
-                    Professional Thermal Engineering
-                  </p>
-                )}
-              </div>
+            <Link to="/" className="flex items-center space-x-2 py-1">
+              <img
+                src="/logo-landscape.png"
+                alt="ThermoNeural Logo"
+                className="h-12 md:h-14 w-auto object-contain mix-blend-multiply scale-[1.25] origin-left"
+              />
             </Link>
           </div>
 
           {!isAuthenticated && (
-            <nav className="hidden md:flex items-center space-x-6">
+            <nav className="hidden md:flex items-center space-x-8">
               <Link
                 to="/features"
-                className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-medium"
+                className="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-white font-medium transition-colors font-display"
               >
                 Features
               </Link>
               <Link
                 to="/pricing"
-                className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-medium"
+                className="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-white font-medium transition-colors font-display"
               >
                 Pricing
               </Link>
               <Link
                 to="/about"
-                className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-medium"
+                className="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-white font-medium transition-colors font-display"
               >
                 About
               </Link>
               <div className="w-px h-6 bg-slate-200 dark:bg-slate-800"></div>
               <Link
                 to="/help-center"
-                className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-medium text-sm"
+                className="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-white font-medium text-sm transition-colors font-display"
               >
                 Help
               </Link>
               <Link
                 to="/contact"
-                className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-medium text-sm"
+                className="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-white font-medium text-sm transition-colors font-display"
               >
                 Support
               </Link>
@@ -369,7 +359,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                   </Button>
                 </Link>
                 <Link to="/signup">
-                  <Button className="bg-slate-900 hover:bg-slate-800 text-white font-semibold px-6 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 shadow-md shadow-blue-500/20 transition-all hover:scale-105">
                     Start Free Trial
                   </Button>
                 </Link>
@@ -434,7 +424,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               </Link>
               <div className="pt-4 border-t border-gray-200 dark:border-slate-800">
                 <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold">
                     Start Free Trial
                   </Button>
                 </Link>

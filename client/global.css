@@ -34,19 +34,22 @@
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    /* Accent: Thermo Orange (for selection/highlights) */
-    --accent: 25 95% 53%;
+
+    /* Accent: Brand Blue (Royal Blue) */
+    --accent: 221 83% 53%;
+    /* #2563EB */
     --accent-foreground: 0 0% 100%;
 
-    /* Destructive: Soft Red */
-    --destructive: 0 84.2% 60.2%;
+    /* Destructive: Brand Red */
+    --destructive: 0 72% 51%;
+    /* #DC2626 */
     --destructive-foreground: 210 40% 98%;
 
     /* Border: Subtle Slate */
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 25 95% 53%;
-    /* Orange Ring */
+    --ring: 221 83% 53%;
+    /* Brand Blue Ring */
 
     --radius: 0.75rem;
 
@@ -116,14 +119,20 @@
     -moz-osx-font-smoothing: grayscale;
     width: 100%;
     overflow-x: hidden;
+    overscroll-behavior-y: none !important;
+    background-color: #111827;
+    /* gray-900 to match footer */
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
     margin: 0;
     padding: 0;
     width: 100%;
     overflow-x: hidden;
+    overscroll-behavior-y: none !important;
+    background-color: #111827;
+    /* gray-900 to match footer */
   }
 
   /* Focus styles */

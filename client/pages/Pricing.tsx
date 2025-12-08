@@ -73,21 +73,21 @@ export default function Pricing() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 selection:bg-orange-100 selection:text-orange-900">
+    <div className="min-h-screen bg-white text-slate-900 selection:bg-blue-100 selection:text-blue-900">
       <Header variant="landing" />
 
       {/* Warm/Thermo Background */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-orange-100/50 blur-[100px] animate-pulse" />
-        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-amber-100/40 blur-[100px] animate-pulse delay-1000" />
-        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-red-100/30 blur-[100px] animate-pulse delay-2000" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-100/50 blur-[100px] animate-pulse" />
+        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-red-100/40 blur-[100px] animate-pulse delay-1000" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-indigo-100/30 blur-[100px] animate-pulse delay-2000" />
       </div>
 
       <div className="relative z-10 w-full px-4 py-8 md:py-12">
         <div className="mx-auto max-w-5xl">
           <Button
             variant="ghost"
-            className="mb-8 pl-0 hover:bg-transparent hover:text-orange-600"
+            className="mb-8 pl-0 hover:bg-transparent hover:text-blue-600"
             onClick={() => navigate(isAuthenticated ? '/dashboard' : '/')}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -96,7 +96,7 @@ export default function Pricing() {
 
           <div className="text-center">
             <h1 className="mb-4 text-4xl font-bold tracking-tight text-slate-900 md:text-5xl">
-              Upgrade to <span className="text-orange-600">Pro</span>
+              Upgrade to <span className="text-blue-600">Pro</span>
             </h1>
             <p className="mb-12 text-lg text-slate-600 md:text-xl">
               Unlock professional tools to manage jobs, generate reports, and grow your HVAC business.
@@ -132,38 +132,38 @@ export default function Pricing() {
               </Card>
 
               {/* Pro Plan */}
-              <Card className="relative flex flex-col border-orange-200 bg-orange-50/50 shadow-lg ring-1 ring-orange-200 transition-all hover:shadow-xl overflow-visible backdrop-blur-sm">
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-orange-600 px-4 py-1 text-sm font-medium text-white shadow-md z-10">
+              <Card className="relative flex flex-col border-blue-200 bg-blue-50/50 shadow-lg ring-1 ring-blue-200 transition-all hover:shadow-xl overflow-visible backdrop-blur-sm">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-blue-600 px-4 py-1 text-sm font-medium text-white shadow-md z-10">
                   Most Popular
                 </div>
                 <CardHeader>
-                  <CardTitle className="text-2xl text-orange-900">Professional</CardTitle>
-                  <CardDescription className="text-orange-700">For serious HVAC businesses</CardDescription>
+                  <CardTitle className="text-2xl text-blue-900">Professional</CardTitle>
+                  <CardDescription className="text-blue-700">For serious HVAC businesses</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-1">
-                  <div className="mb-6 text-4xl font-bold text-orange-900">$29<span className="text-lg font-normal text-orange-600">/mo</span></div>
+                  <div className="mb-6 text-4xl font-bold text-blue-900">$29<span className="text-lg font-normal text-blue-600">/mo</span></div>
                   <ul className="space-y-3 text-left">
                     <li className="flex items-center text-slate-700">
-                      <ShieldCheck className="mr-2 h-5 w-5 text-orange-600" />
+                      <ShieldCheck className="mr-2 h-5 w-5 text-blue-600" />
                       <strong>Job Management</strong> (Clients, Status)
                     </li>
                     <li className="flex items-center text-slate-700">
-                      <ShieldCheck className="mr-2 h-5 w-5 text-orange-600" />
+                      <ShieldCheck className="mr-2 h-5 w-5 text-blue-600" />
                       <strong>PDF Reports</strong> & Export
                     </li>
                     <li className="flex items-center text-slate-700">
-                      <ShieldCheck className="mr-2 h-5 w-5 text-orange-600" />
+                      <ShieldCheck className="mr-2 h-5 w-5 text-blue-600" />
                       Cloud Sync & Backup
                     </li>
                     <li className="flex items-center text-slate-700">
-                      <ShieldCheck className="mr-2 h-5 w-5 text-orange-600" />
+                      <ShieldCheck className="mr-2 h-5 w-5 text-blue-600" />
                       Priority Support
                     </li>
                   </ul>
                 </CardContent>
                 <CardFooter>
                   <Button
-                    className="w-full bg-orange-600 text-lg hover:bg-orange-700 text-white shadow-lg shadow-orange-500/20"
+                    className="w-full bg-blue-600 text-lg hover:bg-blue-700 text-white shadow-lg shadow-blue-500/20"
                     size="lg"
                     onClick={handleSubscribe}
                     disabled={loading}

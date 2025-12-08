@@ -1,15 +1,17 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Calculator, Mail, Phone, MapPin } from "lucide-react";
 import { Button } from "./ui/button";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 
 export function Footer() {
   const { isAuthenticated } = useSupabaseAuth();
+  const location = useLocation();
+  const isLandingPage = location.pathname === "/";
 
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-gray-900 text-white pb-0 mb-0" style={{ paddingBottom: 0, marginBottom: 0 }}>
       {/* Value proposition banner for non-authenticated users */}
-      {!isAuthenticated && (
+      {!isAuthenticated && !isLandingPage && (
         <div className="bg-gradient-to-r from-slate-900 to-slate-800 py-12 border-b border-slate-700">
           <div className="max-w-7xl mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Thermal Engineering?</h2>
@@ -35,7 +37,7 @@ export function Footer() {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="max-w-7xl mx-auto px-4 pt-12 pb-0">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand Column */}
           <div className="space-y-4">
@@ -141,18 +143,18 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400 text-sm">
+        <div className="border-t border-slate-800 mt-2 pt-1 pb-0 flex flex-col md:flex-row justify-between items-center bg-gray-900 !mb-0 !pb-0 min-h-0 leading-none" style={{ paddingBottom: 0, marginBottom: 0 }}>
+          <p className="text-gray-400 text-sm m-0 p-0 leading-none" style={{ marginBottom: 0, paddingBottom: 0 }}>
             © 2024 ThermoNeural. All rights reserved.
           </p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link to="/privacy" className="text-gray-400 hover:text-blue-400 text-sm transition-colors">
+          <div className="flex space-x-6 mt-0 md:mt-0 leading-none">
+            <Link to="/privacy" className="text-gray-400 hover:text-blue-400 text-sm transition-colors block">
               Privacy Policy
             </Link>
-            <Link to="/terms" className="text-gray-400 hover:text-blue-400 text-sm transition-colors">
+            <Link to="/terms" className="text-gray-400 hover:text-blue-400 text-sm transition-colors block">
               Terms of Service
             </Link>
-            <Link to="/contact" className="text-gray-400 hover:text-blue-400 text-sm transition-colors">
+            <Link to="/contact" className="text-gray-400 hover:text-blue-400 text-sm transition-colors block">
               Contact
             </Link>
           </div>

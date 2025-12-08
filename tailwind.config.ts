@@ -13,6 +13,10 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
+        display: ["Montserrat", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -57,6 +61,11 @@ export default {
           red: "#dc2626",
           purple: "#9333ea",
           indigo: "#4338ca",
+        },
+        brand: {
+          blue: "#2563EB", // Royal Blue
+          red: "#DC2626",  // Bright Red
+          dark: "#0F172A", // Slate 900
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

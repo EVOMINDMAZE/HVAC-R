@@ -109,12 +109,12 @@ export function SignUp() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 selection:bg-orange-100 selection:text-orange-900 overflow-hidden relative">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 selection:bg-blue-100 selection:text-blue-900 overflow-hidden relative">
       {/* Warm/Thermo Background */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-orange-100/50 blur-[100px] animate-pulse" />
-        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-amber-100/40 blur-[100px] animate-pulse delay-1000" />
-        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-red-100/30 blur-[100px] animate-pulse delay-2000" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-100/50 blur-[100px] animate-pulse" />
+        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-red-100/40 blur-[100px] animate-pulse delay-1000" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-indigo-100/30 blur-[100px] animate-pulse delay-2000" />
       </div>
 
       <div className="w-full max-w-md relative z-10">
@@ -124,8 +124,11 @@ export function SignUp() {
             to="/"
             className="flex items-center justify-center space-x-2 mb-4 no-underline"
           >
-            <Calculator className="h-10 w-10 text-orange-600" />
-            <h1 className="text-3xl font-bold text-slate-900">ThermoNeural</h1>
+            <img
+              src="/logo-stacked.png"
+              alt="ThermoNeural"
+              className="h-24 w-auto object-contain"
+            />
           </Link>
           <p className="text-gray-600">Create your account</p>
         </div>
@@ -152,7 +155,7 @@ export function SignUp() {
                     placeholder="john.doe@company.com"
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
-                    className="pl-10 border-slate-200 focus:border-orange-500 focus:ring-orange-500"
+                    className="pl-10 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
                     required
                   />
                 </div>
@@ -171,7 +174,7 @@ export function SignUp() {
                     onChange={(e) =>
                       handleInputChange("password", e.target.value)
                     }
-                    className="pl-10 pr-10 border-slate-200 focus:border-orange-500 focus:ring-orange-500"
+                    className="pl-10 pr-10 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
                     required
                   />
                   <button
@@ -201,7 +204,7 @@ export function SignUp() {
                     onChange={(e) =>
                       handleInputChange("confirmPassword", e.target.value)
                     }
-                    className="pl-10 pr-10 border-slate-200 focus:border-orange-500 focus:ring-orange-500"
+                    className="pl-10 pr-10 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
                     required
                   />
                   <button
@@ -275,7 +278,7 @@ export function SignUp() {
               Already have an account?{" "}
               <Link
                 to="/signin"
-                className="text-orange-600 hover:text-orange-700 hover:underline font-medium"
+                className="text-blue-600 hover:text-blue-700 hover:underline font-medium"
               >
                 Sign in
               </Link>
