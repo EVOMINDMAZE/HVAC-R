@@ -16,11 +16,13 @@ import {
   Layers,
   Sparkles,
   ChevronDown,
+  Lock,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -122,55 +124,201 @@ function HeroSection() {
 }
 
 function ProductPreview() {
+  const [activeTab, setActiveTab] = useState("overview");
+  const [data, setData] = useState([
+    { name: '0s', value: 400 }, { name: '10s', value: 300 }, { name: '20s', value: 200 },
+    { name: '30s', value: 278 }, { name: '40s', value: 189 }, { name: '50s', value: 239 },
+    { name: '60s', value: 349 },
+  ]);
+
+  // Simulate live data
+  useEffect(() => {
+    if (activeTab !== "overview") return;
+    const interval = setInterval(() => {
+      setData(prev => {
+        const lastValue = prev[prev.length - 1].value;
+        const newValue = Math.max(100, Math.min(500, lastValue + (Math.random() - 0.5) * 100));
+        const newTime = parseInt(prev[prev.length - 1].name) + 10 + 's';
+        const newArray = [...prev.slice(1), { name: newTime, value: newValue }];
+        return newArray;
+      });
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [activeTab]);
+
   return (
-    <section className="py-12 px-4 relative z-10">
+    <section className="py-24 px-4 relative z-10 overflow-hidden">
       <div className="max-w-6xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 100, rotateX: 20 }}
-          whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          style={{ transformPerspective: "1200px" }}
-          className="relative rounded-xl bg-slate-900/5 dark:bg-white/5 p-2 sm:p-4 border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-xl shadow-2xl"
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
         >
-          {/* Mock Window Header */}
-          <div className="absolute top-0 left-0 right-0 h-10 bg-slate-100/50 dark:bg-slate-800/50 border-b border-slate-200/50 dark:border-slate-700/50 rounded-t-xl flex items-center px-4 space-x-2">
-            <div className="w-3 h-3 rounded-full bg-red-400/80" />
-            <div className="w-3 h-3 rounded-full bg-amber-400/80" />
-            <div className="w-3 h-3 rounded-full bg-green-400/80" />
+          <Badge variant="secondary" className="mb-4 bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+            Interactive Preview
+          </Badge>
+          <h2 className="text-3xl md:text-5xl font-bold mb-4">Experience the Power</h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            Try the interactive dashboard below. See how ThermoNeural visualizes complex thermodynamic data in real-time.
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 100, rotateX: 10 }}
+          whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          style={{ transformPerspective: "1000px" }}
+          className="relative rounded-xl bg-slate-950 dark:bg-slate-900 p-2 border border-slate-800 shadow-2xl overflow-hidden"
+        >
+          {/* Window Controls */}
+          <div className="absolute top-0 left-0 right-0 h-9 bg-slate-900 border-b border-slate-800 rounded-t-xl flex items-center px-4 space-x-2 z-20">
+            <div className="w-3 h-3 rounded-full bg-red-500/80" />
+            <div className="w-3 h-3 rounded-full bg-amber-500/80" />
+            <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
+            <div className="ml-4 text-xs text-slate-500 font-mono">dashboard.thermoneural.app</div>
           </div>
 
-          {/* Abstract Interface Content */}
-          <div className="mt-8 grid grid-cols-12 gap-4 h-[300px] sm:h-[500px] overflow-hidden rounded-lg bg-background/50 relative">
-            <div className="col-span-3 hidden md:flex flex-col gap-3 p-4 border-r border-border/50">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="h-8 w-full bg-slate-200/50 dark:bg-slate-800/50 rounded animate-pulse" style={{ animationDelay: `${i * 100}ms` }} />
+          {/* App Shell */}
+          <div className="mt-9 flex h-[500px] bg-slate-950 text-slate-200 font-sans">
+            {/* Sidebar */}
+            <div className="w-16 md:w-64 border-r border-slate-800 flex flex-col p-4 gap-2 bg-slate-900/50">
+              <div className="flex items-center gap-2 mb-6 px-2">
+                <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shrink-0">
+                  <Zap className="text-white w-5 h-5" />
+                </div>
+                <span className="font-bold text-lg tracking-tight hidden md:block">ThermoNeural</span>
+              </div>
+
+              {[
+                { id: "overview", label: "Overview", icon: TrendingUp },
+                { id: "analysis", label: "Cycle Analysis", icon: Calculator },
+                { id: "projects", label: "Projects", icon: Layers },
+                { id: "team", label: "Team", icon: Users },
+              ].map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveTab(item.id)}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${activeTab === item.id
+                    ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
+                    : "text-slate-400 hover:bg-slate-800 hover:text-slate-100"
+                    }`}
+                >
+                  <item.icon className="w-5 h-5" />
+                  <span className="hidden md:block font-medium">{item.label}</span>
+                </button>
               ))}
             </div>
-            <div className="col-span-12 md:col-span-9 p-6 flex flex-col gap-6">
-              <div className="flex gap-4 mb-4">
-                <div className="h-32 w-full bg-blue-500/10 border border-blue-500/20 rounded-xl flex items-center justify-center">
-                  <TrendingUp className="h-8 w-8 text-blue-500 opacity-50" />
+
+            {/* Main Content */}
+            <div className="flex-1 flex flex-col min-w-0 bg-slate-950/50">
+              {/* Header */}
+              <div className="h-16 border-b border-slate-800 flex items-center justify-between px-6 bg-slate-900/20 backdrop-blur-sm">
+                <div className="text-sm text-slate-400">
+                  Workspace / <span className="text-slate-100 font-medium capitalize">{activeTab}</span>
                 </div>
-                <div className="h-32 w-full bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center">
-                  <Zap className="h-8 w-8 text-emerald-500 opacity-50" />
+                <div className="flex items-center gap-4">
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 border border-white/10" />
                 </div>
               </div>
-              <div className="flex-1 bg-slate-100/50 dark:bg-slate-800/30 rounded-xl border border-border/50 p-4 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10" />
-                {/* Mock Graph Lines */}
-                <svg className="w-full h-full text-blue-500 opacity-20" viewBox="0 0 100 50" preserveAspectRatio="none">
-                  <path d="M0,50 Q25,10 50,30 T100,20 L100,50 Z" fill="currentColor" />
-                </svg>
+
+              {/* Content Area */}
+              <div className="flex-1 p-6 overflow-hidden">
+                {activeTab === "overview" && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="h-full flex flex-col gap-6"
+                  >
+                    {/* Stats Row */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {[
+                        { label: "System Efficiency", value: "94.2%", trend: "+2.4%", color: "text-emerald-400" },
+                        { label: "Power Consumption", value: "482 kW", trend: "-1.2%", color: "text-blue-400" },
+                        { label: "Active Cycles", value: "12", trend: "Running", color: "text-amber-400" },
+                      ].map((stat, i) => (
+                        <div key={i} className="p-4 rounded-xl bg-slate-900 border border-slate-800">
+                          <div className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">{stat.label}</div>
+                          <div className="flex items-end justify-between">
+                            <div className="text-2xl font-bold text-white">{stat.value}</div>
+                            <div className={`text-xs font-medium ${stat.color} bg-white/5 px-2 py-1 rounded`}>{stat.trend}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Chart Area */}
+                    <div className="flex-1 rounded-xl bg-slate-900 border border-slate-800 p-4 min-h-0 flex flex-col">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-semibold text-slate-200">Real-time Performance</h3>
+                        <div className="flex gap-2">
+                          <div className="px-2 py-1 rounded bg-slate-800 text-xs text-slate-300 border border-slate-700">Live</div>
+                        </div>
+                      </div>
+                      <div className="flex-1 w-full min-h-0">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <AreaChart data={data}>
+                            <defs>
+                              <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+                                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                              </linearGradient>
+                            </defs>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+                            <XAxis
+                              dataKey="name"
+                              stroke="#64748b"
+                              tick={{ fontSize: 12 }}
+                              tickLine={false}
+                              axisLine={false}
+                            />
+                            <YAxis
+                              stroke="#64748b"
+                              tick={{ fontSize: 12 }}
+                              tickLine={false}
+                              axisLine={false}
+                              domain={[0, 600]}
+                            />
+                            <Tooltip
+                              contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', color: '#f1f5f9' }}
+                              itemStyle={{ color: '#60a5fa' }}
+                            />
+                            <Area
+                              type="monotone"
+                              dataKey="value"
+                              stroke="#3b82f6"
+                              strokeWidth={3}
+                              fillOpacity={1}
+                              fill="url(#colorValue)"
+                              animationDuration={1000}
+                            />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {activeTab !== "overview" && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="h-full flex items-center justify-center flex-col text-slate-500"
+                  >
+                    <div className="w-16 h-16 rounded-full bg-slate-900 flex items-center justify-center mb-4">
+                      <Lock className="w-8 h-8 opacity-50" />
+                    </div>
+                    <p className="text-lg font-medium">Authentication Required</p>
+                    <p className="text-sm max-w-xs text-center mt-2">Sign up to access full {activeTab} features interactively.</p>
+                    <Link to="/signup" className="mt-6">
+                      <Button size="sm" className="bg-blue-600 hover:bg-blue-700">Create Account</Button>
+                    </Link>
+                  </motion.div>
+                )}
               </div>
             </div>
-          </div>
-
-          {/* Overlay Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent pointer-events-none rounded-xl" />
-
-          <div className="absolute bottom-8 left-0 right-0 text-center z-20">
-            <p className="text-sm font-medium text-muted-foreground uppercase tracking-widest">Interactive Dashboard Preview</p>
           </div>
         </motion.div>
       </div>
