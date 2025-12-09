@@ -90,7 +90,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 <img
                   src="/logo-landscape.png"
                   alt="ThermoNeural"
-                  className="h-10 md:h-12 w-auto object-contain mix-blend-multiply scale-[1.25] origin-left"
+                  className="h-10 md:h-12 w-auto object-contain mix-blend-multiply dark:mix-blend-screen dark:invert scale-[1.25] origin-left"
                 />
               </Link>
 
@@ -276,7 +276,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               <img
                 src="/logo-landscape.png"
                 alt="ThermoNeural Logo"
-                className="h-12 md:h-14 w-auto object-contain mix-blend-multiply scale-[1.25] origin-left"
+                className="h-12 md:h-14 w-auto object-contain mix-blend-multiply dark:mix-blend-screen dark:invert scale-[1.25] origin-left"
               />
             </Link>
           </div>

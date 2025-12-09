@@ -118,7 +118,7 @@ export function SignIn() {
             <img
               src="/logo-stacked.png"
               alt="ThermoNeural"
-              className="h-24 w-auto object-contain"
+              className="h-24 w-auto object-contain mix-blend-multiply dark:mix-blend-screen dark:invert"
             />
           </Link>
           <p className="text-muted-foreground">Sign in to your account</p>
