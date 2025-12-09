@@ -33,7 +33,7 @@ const staggerContainer = {
 
 export function Landing() {
   return (
-    <div className="min-h-screen w-full overflow-hidden overscroll-none bg-[#111827] text-slate-900 selection:bg-blue-100 selection:text-blue-900 flex flex-col">
+    <div className="min-h-screen w-full overflow-x-hidden overscroll-none bg-[#111827] text-slate-900 selection:bg-blue-100 selection:text-blue-900 flex flex-col">
       <div className="bg-white flex-grow flex flex-col">
         <Header variant="landing" />
 
