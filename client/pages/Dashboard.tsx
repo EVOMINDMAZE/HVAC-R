@@ -70,7 +70,7 @@ function UsageProgressCard({ stats, onUpgrade }: UsageProgressCardProps) {
         <Progress
           value={stats.usagePercentage}
           aria-label="Monthly calculation usage"
-          className="h-2 bg-white/40"
+          className="h-2 bg-muted"
         />
 
         <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-muted-foreground">
@@ -102,10 +102,10 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
     <div className="space-y-8">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between animate-fade-in">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <h2 className="text-3xl font-bold tracking-tight text-foreground">
             Welcome back{firstName ? `, ${firstName}` : ""} <span className="inline-block animate-bounce">👋</span>
           </h2>
-          <p className="mt-2 text-lg text-slate-500 dark:text-slate-400">
+          <p className="mt-2 text-lg text-muted-foreground">
             Your workspace is ready. Here's what's happening today.
           </p>
           <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -148,24 +148,24 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
         <Card
           className={`glass-card border-l-4 ${stats.isAtLimit
             ? "border-l-destructive bg-destructive/5"
-            : "border-l-amber-500 bg-amber-50/50"
+            : "border-l-amber-500 bg-amber-50/50 dark:bg-amber-950/20"
             } animate-slide-up`}
         >
           <CardContent className="p-4">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center space-x-3">
                 <div
-                  className={`p-2 rounded-full ${stats.isAtLimit ? "bg-red-100 text-red-600" : "bg-amber-100 text-amber-600"}`}
+                  className={`p-2 rounded-full ${stats.isAtLimit ? "bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-400" : "bg-amber-100 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400"}`}
                 >
                   <Sparkles className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="font-semibold text-slate-900 dark:text-white">
+                  <p className="font-semibold text-foreground">
                     {stats.isAtLimit
                       ? "Monthly Limit Reached"
                       : "Approaching Monthly Limit"}
                   </p>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                  <p className="text-sm text-muted-foreground">
                     {stats.isAtLimit
                       ? "Upgrade to Pro for unlimited calculations."
                       : `You've used ${stats.monthlyCalculations}/${stats.monthlyLimit} calculations.`}
@@ -225,8 +225,8 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
           <CardContent className="p-6 relative z-10">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Current Plan</p>
-                <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">
+                <p className="text-sm font-medium text-muted-foreground">Current Plan</p>
+                <p className="mt-2 text-2xl font-bold text-foreground">
                   {stats.planDisplayName}
                 </p>
                 <p className="mt-1 text-xs text-primary flex items-center">
@@ -252,11 +252,11 @@ function StatsCard({ title, value, subtitle, icon: Icon, gradient, delay }: any)
       <CardContent className="p-6 relative z-10">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{title}</p>
-            <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+            <p className="mt-2 text-3xl font-bold text-foreground tracking-tight">
               {value}
             </p>
-            <p className="mt-1 text-xs text-slate-400 font-medium">{subtitle}</p>
+            <p className="mt-1 text-xs text-muted-foreground font-medium">{subtitle}</p>
           </div>
           <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient} text-white shadow-lg transform group-hover:scale-110 transition-transform duration-300`}>
             <Icon className="h-6 w-6" />
@@ -274,8 +274,8 @@ function RecentCalculations({ isLoading }: any) {
 
   return (
     <Card className="glass-card h-full flex flex-col animate-slide-up" style={{ animationDelay: '300ms' }}>
-      <CardHeader className="border-b border-slate-100 dark:border-slate-800 pb-4">
-        <CardTitle className="flex items-center text-lg font-semibold text-slate-900 dark:text-white">
+      <CardHeader className="border-b border-border pb-4">
+        <CardTitle className="flex items-center text-lg font-semibold text-foreground">
           <HistoryIcon className="h-5 w-5 mr-2 text-primary" />
           Recent Activity
         </CardTitle>
@@ -285,23 +285,23 @@ function RecentCalculations({ isLoading }: any) {
           <div className="p-6 space-y-4">
             {[1, 2, 3].map((i) => (
               <div key={i} className="animate-pulse flex items-center gap-4">
-                <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg" />
+                <div className="w-10 h-10 bg-muted rounded-lg" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-3/4" />
-                  <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded w-1/2" />
+                  <div className="h-4 bg-muted rounded w-3/4" />
+                  <div className="h-3 bg-muted rounded w-1/2" />
                 </div>
               </div>
             ))}
           </div>
         ) : recentCalculations.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 text-center p-6">
-            <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
-              <Calculator className="h-8 w-8 text-slate-300" />
+            <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mb-4">
+              <Calculator className="h-8 w-8 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
+            <h3 className="text-lg font-medium text-foreground mb-2">
               No calculations yet
             </h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 max-w-xs">
+            <p className="text-sm text-muted-foreground mb-6 max-w-xs">
               Start your first calculation to see it appear here.
             </p>
             <Button onClick={() => navigate("/standard-cycle")} className="glass text-primary hover:bg-primary/10">
@@ -309,11 +309,11 @@ function RecentCalculations({ isLoading }: any) {
             </Button>
           </div>
         ) : (
-          <div className="divide-y divide-slate-100 dark:divide-slate-800">
+          <div className="divide-y divide-border">
             {recentCalculations.map((calc: any) => (
               <div
                 key={calc.id}
-                className="group flex items-center justify-between p-4 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
+                className="group flex items-center justify-between p-4 hover:bg-muted/50 transition-colors cursor-pointer"
                 onClick={() => navigate(`/calculations/${calc.id}`)}
               >
                 <div className="flex items-center gap-4 min-w-0">
@@ -321,18 +321,18 @@ function RecentCalculations({ isLoading }: any) {
                     <Calculator className="h-5 w-5" />
                   </div>
                   <div className="min-w-0">
-                    <h4 className="font-medium text-slate-900 dark:text-white truncate">
+                    <h4 className="font-medium text-foreground truncate">
                       {calc.name || calc.calculation_type}
                     </h4>
-                    <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
                       <Clock className="h-3 w-3" />
                       <span>{new Date(calc.created_at).toLocaleDateString()}</span>
-                      <span className="w-1 h-1 bg-slate-300 rounded-full" />
+                      <span className="w-1 h-1 bg-muted-foreground rounded-full" />
                       <span className="uppercase tracking-wider font-medium text-[10px]">{calc.calculation_type}</span>
                     </div>
                   </div>
                 </div>
-                <ArrowRight className="h-4 w-4 text-slate-300 group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
               </div>
             ))}
           </div>
@@ -346,17 +346,17 @@ function QuickActions() {
   const navigate = useNavigate();
 
   const actions = [
-    { label: "Standard Cycle", icon: Calculator, path: "/standard-cycle", color: "text-blue-600", bg: "bg-blue-50" },
-    { label: "Compare Refrigerants", icon: TrendingUp, path: "/refrigerant-comparison", color: "text-emerald-600", bg: "bg-emerald-50" },
-    { label: "Cascade Analysis", icon: BarChart3, path: "/cascade-cycle", color: "text-purple-600", bg: "bg-purple-50" },
-    { label: "Reports & PDF", icon: FileText, path: "/advanced-reporting", color: "text-amber-600", bg: "bg-amber-50" },
-    { label: "My Projects", icon: Layers, path: "/projects", color: "text-indigo-600", bg: "bg-indigo-50" },
+    { label: "Standard Cycle", icon: Calculator, path: "/standard-cycle", color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-900/20" },
+    { label: "Compare Refrigerants", icon: TrendingUp, path: "/refrigerant-comparison", color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-900/20" },
+    { label: "Cascade Analysis", icon: BarChart3, path: "/cascade-cycle", color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-50 dark:bg-purple-900/20" },
+    { label: "Reports & PDF", icon: FileText, path: "/advanced-reporting", color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-50 dark:bg-amber-900/20" },
+    { label: "My Projects", icon: Layers, path: "/projects", color: "text-indigo-600 dark:text-indigo-400", bg: "bg-indigo-50 dark:bg-indigo-900/20" },
   ];
 
   return (
     <Card className="glass-card animate-slide-up" style={{ animationDelay: '400ms' }}>
-      <CardHeader className="border-b border-slate-100 dark:border-slate-800 pb-4">
-        <CardTitle className="flex items-center text-lg font-semibold text-slate-900 dark:text-white">
+      <CardHeader className="border-b border-border pb-4">
+        <CardTitle className="flex items-center text-lg font-semibold text-foreground">
           <Zap className="h-5 w-5 mr-2 text-amber-500" />
           Quick Actions
         </CardTitle>
@@ -366,16 +366,16 @@ function QuickActions() {
           <Button
             key={action.path}
             variant="ghost"
-            className="w-full justify-start h-auto py-3 px-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 border border-transparent hover:border-slate-100 dark:hover:border-slate-700 transition-all group"
+            className="w-full justify-start h-auto py-3 px-4 hover:bg-muted/50 border border-transparent hover:border-border transition-all group"
             onClick={() => navigate(action.path)}
           >
             <div className={`p-2 rounded-lg ${action.bg} ${action.color} mr-3 group-hover:scale-110 transition-transform`}>
               <action.icon className="h-4 w-4" />
             </div>
-            <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white">
+            <span className="font-medium text-muted-foreground group-hover:text-foreground">
               {action.label}
             </span>
-            <ArrowRight className="ml-auto h-4 w-4 text-slate-300 opacity-0 group-hover:opacity-100 transition-all" />
+            <ArrowRight className="ml-auto h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-all" />
           </Button>
         ))}
       </CardContent>
@@ -435,7 +435,7 @@ export function Dashboard() {
   const { stats, isLoading, refreshStats } = useDashboardStats();
 
   return (
-    <div className="min-h-screen bg-slate-50/50 dark:bg-slate-950 transition-colors duration-500">
+    <div className="min-h-screen bg-background transition-colors duration-500">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         <SystemStatus />
 

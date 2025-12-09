@@ -5,6 +5,7 @@ import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/mode-toggle";
 import { NAV_ITEMS } from "@/components/navigation";
 
 interface HeaderProps {
@@ -111,6 +112,10 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               <nav className="hidden">
                 {/* Header horizontal nav intentionally hidden for dashboard to avoid duplication with Sidebar */}
               </nav>
+
+              <div className="mr-2">
+                <ModeToggle />
+              </div>
 
               <div className="flex items-center gap-3">
                 <div className="hidden">
@@ -313,6 +318,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
           )}
 
           <div className="flex items-center space-x-4">
+            <ModeToggle />
             {isAuthenticated ? (
               <>
                 <span className="text-sm text-gray-600 hidden md:block">

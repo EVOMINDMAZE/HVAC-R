@@ -37,7 +37,7 @@ export function Contact() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-background text-foreground selection:bg-blue-100 selection:text-blue-900">
       <Header variant="landing" />
 
       {/* Warm/Thermo Background */}
@@ -53,14 +53,14 @@ export function Contact() {
           <Badge variant="secondary" className="mb-4 text-blue-700 bg-blue-100 border-blue-200">
             Get in Touch
           </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
             Contact
             <span className="bg-gradient-to-r from-blue-600 to-red-600 bg-clip-text text-transparent">
               {" "}
               ThermoNeural
             </span>
           </h1>
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Have questions about our tools, need technical support, or want to
             discuss enterprise solutions? We're here to help.
           </p>
@@ -69,8 +69,8 @@ export function Contact() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Contact Form */}
           <div className="lg:col-span-2">
-            <Card className="bg-white/80 backdrop-blur-sm shadow-lg border-slate-200">
-              <CardHeader className="bg-slate-900 text-white">
+            <Card className="bg-card/80 backdrop-blur-sm shadow-lg border-border">
+              <CardHeader className="bg-slate-900 text-white dark:bg-slate-950">
                 <CardTitle className="flex items-center">
                   <Send className="h-5 w-5 mr-2" />
                   Send us a Message
@@ -87,7 +87,7 @@ export function Contact() {
                         onChange={(e) =>
                           handleInputChange("name", e.target.value)
                         }
-                        className="border-slate-200 focus:border-blue-500 focus:ring-blue-500"
+                        className="border-input focus:border-blue-500 focus:ring-blue-500"
                         required
                       />
                     </div>
@@ -100,7 +100,7 @@ export function Contact() {
                         onChange={(e) =>
                           handleInputChange("email", e.target.value)
                         }
-                        className="border-slate-200 focus:border-blue-500 focus:ring-blue-500"
+                        className="border-input focus:border-blue-500 focus:ring-blue-500"
                         required
                       />
                     </div>
@@ -115,7 +115,7 @@ export function Contact() {
                         onChange={(e) =>
                           handleInputChange("company", e.target.value)
                         }
-                        className="border-slate-200 focus:border-blue-500 focus:ring-blue-500"
+                        className="border-input focus:border-blue-500 focus:ring-blue-500"
                       />
                     </div>
                     <div className="space-y-2">
@@ -126,7 +126,7 @@ export function Contact() {
                           handleInputChange("category", value)
                         }
                       >
-                        <SelectTrigger className="border-slate-200 focus:border-blue-500 focus:ring-blue-500">
+                        <SelectTrigger className="border-input focus:border-blue-500 focus:ring-blue-500">
                           <SelectValue placeholder="Select category" />
                         </SelectTrigger>
                         <SelectContent>
@@ -157,7 +157,7 @@ export function Contact() {
                       onChange={(e) =>
                         handleInputChange("subject", e.target.value)
                       }
-                      className="border-slate-200 focus:border-orange-500 focus:ring-orange-500"
+                      className="border-input focus:border-orange-500 focus:ring-orange-500"
                       required
                     />
                   </div>
@@ -170,7 +170,7 @@ export function Contact() {
                       onChange={(e) =>
                         handleInputChange("message", e.target.value)
                       }
-                      className="border-slate-200 focus:border-orange-500 focus:ring-orange-500 min-h-[120px]"
+                      className="border-input focus:border-orange-500 focus:ring-orange-500 min-h-[120px]"
                       placeholder="Please provide details about your inquiry..."
                       required
                     />
@@ -178,7 +178,7 @@ export function Contact() {
 
                   <Button
                     type="submit"
-                    className="w-full bg-slate-900 hover:bg-slate-800 text-white"
+                    className="w-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200"
                   >
                     <Send className="h-4 w-4 mr-2" />
                     Send Message
@@ -190,7 +190,7 @@ export function Contact() {
 
           {/* Contact Information */}
           <div className="space-y-6">
-            <Card className="bg-white/80 backdrop-blur-sm shadow-lg border-slate-200">
+            <Card className="bg-card/80 backdrop-blur-sm shadow-lg border-border">
               <CardHeader className="bg-gradient-to-r from-blue-600 to-red-600 text-white">
                 <CardTitle>Contact Information</CardTitle>
               </CardHeader>
@@ -200,9 +200,9 @@ export function Contact() {
                     <Mail className="h-6 w-6 text-blue-500" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-900 mb-1">Technical Support</h3>
-                    <p className="text-sm text-slate-600 mb-2">For account assistance, bug reports, and technical inquiries.</p>
-                    <a href="mailto:support@thermoneural.com" className="text-blue-600 hover:text-blue-700 font-medium">
+                    <h3 className="font-semibold text-foreground mb-1">Technical Support</h3>
+                    <p className="text-sm text-muted-foreground mb-2">For account assistance, bug reports, and technical inquiries.</p>
+                    <a href="mailto:support@thermoneural.com" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium">
                       support@thermoneural.com
                     </a>
                   </div>
@@ -215,9 +215,9 @@ export function Contact() {
                     <Send className="h-6 w-6 text-red-500" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-900 mb-1">Inquiries & Partnerships</h3>
-                    <p className="text-sm text-slate-600 mb-2">For demos, enterprise solutions, and general questions.</p>
-                    <a href="mailto:hello@thermoneural.com" className="text-blue-600 hover:text-blue-700 font-medium">
+                    <h3 className="font-semibold text-foreground mb-1">Inquiries & Partnerships</h3>
+                    <p className="text-sm text-muted-foreground mb-2">For demos, enterprise solutions, and general questions.</p>
+                    <a href="mailto:hello@thermoneural.com" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium">
                       hello@thermoneural.com
                     </a>
                   </div>
@@ -225,33 +225,33 @@ export function Contact() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white/80 backdrop-blur-sm shadow-lg border-slate-200">
+            <Card className="bg-card/80 backdrop-blur-sm shadow-lg border-border">
               <CardHeader className="bg-slate-800 text-white">
                 <CardTitle>Quick Response</CardTitle>
               </CardHeader>
               <CardContent className="p-6">
                 <div className="space-y-4">
                   <div>
-                    <p className="font-medium text-slate-900 mb-2">
+                    <p className="font-medium text-foreground mb-2">
                       Technical Support
                     </p>
-                    <p className="text-sm text-slate-600">
+                    <p className="text-sm text-muted-foreground">
                       Priority assistance for all technical issues.
                     </p>
                   </div>
                   <div>
-                    <p className="font-medium text-slate-900 mb-2">
+                    <p className="font-medium text-foreground mb-2">
                       Sales Inquiries
                     </p>
-                    <p className="text-sm text-slate-600">
+                    <p className="text-sm text-muted-foreground">
                       Get a custom quote or schedule a demo.
                     </p>
                   </div>
                   <div>
-                    <p className="font-medium text-slate-900 mb-2">
+                    <p className="font-medium text-foreground mb-2">
                       Enterprise Solutions
                     </p>
-                    <p className="text-sm text-slate-600">
+                    <p className="text-sm text-muted-foreground">
                       Scalable solutions for large engineering teams.
                     </p>
                   </div>

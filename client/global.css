@@ -120,8 +120,7 @@
     width: 100%;
     overflow-x: hidden;
     overscroll-behavior-y: none !important;
-    background-color: #111827;
-    /* gray-900 to match footer */
+    @apply bg-background;
   }
 
   body {
@@ -131,8 +130,7 @@
     width: 100%;
     overflow-x: hidden;
     overscroll-behavior-y: none !important;
-    background-color: #111827;
-    /* gray-900 to match footer */
+    @apply bg-background;
   }
 
   /* Focus styles */

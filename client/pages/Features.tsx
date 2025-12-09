@@ -174,7 +174,7 @@ export function Features() {
   ];
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 selection:bg-orange-100 selection:text-orange-900">
+    <div className="min-h-screen bg-background text-foreground selection:bg-orange-100 selection:text-orange-900">
       <Header variant="landing" />
 
       {/* Warm/Thermo Background */}
@@ -190,14 +190,14 @@ export function Features() {
           <Badge variant="secondary" className="mb-6 text-orange-700 bg-orange-100 border-orange-200">
             Professional HVAC&R Engineering Software
           </Badge>
-          <h1 className="text-5xl md:text-6xl font-bold text-slate-900 mb-6">
+          <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6">
             Powerful Features for
             <span className="bg-gradient-to-r from-orange-600 via-red-600 to-amber-600 bg-clip-text text-transparent">
               {" "}
               Modern Engineers
             </span>
           </h1>
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Everything you need to analyze, optimize, and validate refrigeration
             systems in one professional platform.
           </p>
@@ -215,10 +215,10 @@ export function Features() {
         {/* Core Features */}
         <section className="mb-32">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-slate-900 mb-4">
+            <h2 className="text-4xl font-bold text-foreground mb-4">
               Core Calculation Engines
             </h2>
-            <p className="text-xl text-slate-600">
+            <p className="text-xl text-muted-foreground">
               Industry-standard thermodynamic calculations with unmatched
               accuracy
             </p>
@@ -228,19 +228,19 @@ export function Features() {
             {coreFeatures.map((feature, index) => (
               <Card
                 key={index}
-                className="border-slate-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-white/80 backdrop-blur-sm"
+                className="border-border shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-card/80 backdrop-blur-sm"
               >
                 <CardHeader className="text-center pb-4">
-                  <div className="flex justify-center mb-4 p-3 bg-orange-50 rounded-2xl w-fit mx-auto">
+                  <div className="flex justify-center mb-4 p-3 bg-orange-50 dark:bg-orange-950/30 rounded-2xl w-fit mx-auto">
                     {feature.icon}
                   </div>
-                  <CardTitle className="text-2xl text-slate-900">{feature.title}</CardTitle>
+                  <CardTitle className="text-2xl text-foreground">{feature.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-slate-600 mb-6 leading-relaxed">{feature.description}</p>
+                  <p className="text-muted-foreground mb-6 leading-relaxed">{feature.description}</p>
                   <ul className="space-y-3">
                     {feature.features.map((item, idx) => (
-                      <li key={idx} className="flex items-start text-slate-700">
+                      <li key={idx} className="flex items-start text-muted-foreground">
                         <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0" />
                         <span className="text-sm">{item}</span>
                       </li>
@@ -266,13 +266,13 @@ export function Features() {
             {professionalFeatures.map((feature, index) => (
               <div
                 key={index}
-                className="flex flex-col p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
+                className="flex flex-col p-6 rounded-2xl bg-card border border-border shadow-sm hover:shadow-md transition-shadow"
               >
                 <div className="mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                <h3 className="text-xl font-semibold text-foreground mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-slate-600">{feature.description}</p>
+                <p className="text-muted-foreground">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -324,16 +324,16 @@ export function Features() {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {industryApplications.map((app, index) => (
-              <Card key={index} className="bg-white border-slate-200 shadow-md hover:shadow-lg transition-all">
+              <Card key={index} className="bg-card border-border shadow-md hover:shadow-lg transition-all">
                 <CardContent className="p-8 text-center">
-                  <div className="flex justify-center mb-6 p-4 bg-orange-50 rounded-full w-fit mx-auto">
+                  <div className="flex justify-center mb-6 p-4 bg-orange-50 dark:bg-orange-950/30 rounded-full w-fit mx-auto">
                     {app.icon}
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 mb-3">{app.title}</h3>
-                  <p className="text-slate-600 mb-6">{app.description}</p>
+                  <h3 className="text-xl font-bold text-foreground mb-3">{app.title}</h3>
+                  <p className="text-muted-foreground mb-6">{app.description}</p>
                   <ul className="text-left space-y-2">
                     {app.items.map((item, i) => (
-                      <li key={i} className="flex items-center text-slate-700 text-sm">
+                      <li key={i} className="flex items-center text-muted-foreground text-sm">
                         <CheckCircle className="h-4 w-4 text-orange-500 mr-2" />
                         {item}
                       </li>
@@ -346,11 +346,11 @@ export function Features() {
         </section>
 
         {/* CTA Section */}
-        <div className="text-center mb-20 bg-gradient-to-r from-orange-50 to-amber-50 rounded-3xl p-12 border border-orange-100">
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
+        <div className="text-center mb-20 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 rounded-3xl p-12 border border-orange-100 dark:border-orange-900/50">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
             Ready to optimize your systems?
           </h2>
-          <p className="text-xl text-slate-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
             Join thousands of HVAC&R professionals using ThermoNeural for accurate
             thermodynamic calculations.
           </p>
@@ -362,7 +362,7 @@ export function Features() {
               </Button>
             </Link>
             <Link to="/pricing">
-              <Button variant="outline" size="lg" className="px-8 py-6 h-auto text-lg border-slate-300 text-slate-700 hover:bg-white hover:text-orange-700">
+              <Button variant="outline" size="lg" className="px-8 py-6 h-auto text-lg border-border text-foreground hover:bg-background hover:text-orange-700">
                 View Pricing
               </Button>
             </Link>

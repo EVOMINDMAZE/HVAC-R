@@ -109,12 +109,12 @@ export function SignUp() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 selection:bg-blue-100 selection:text-blue-900 overflow-hidden relative">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 selection:bg-blue-100 selection:text-blue-900 dark:selection:bg-blue-900 dark:selection:text-blue-100 overflow-hidden relative">
       {/* Warm/Thermo Background */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-100/50 blur-[100px] animate-pulse" />
-        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-red-100/40 blur-[100px] animate-pulse delay-1000" />
-        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-indigo-100/30 blur-[100px] animate-pulse delay-2000" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-100/50 dark:bg-blue-900/20 blur-[100px] animate-pulse" />
+        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-red-100/40 dark:bg-red-900/20 blur-[100px] animate-pulse delay-1000" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-indigo-100/30 dark:bg-indigo-900/20 blur-[100px] animate-pulse delay-2000" />
       </div>
 
       <div className="w-full max-w-md relative z-10">
@@ -130,15 +130,15 @@ export function SignUp() {
               className="h-24 w-auto object-contain"
             />
           </Link>
-          <p className="text-gray-600">Create your account</p>
+          <p className="text-muted-foreground">Create your account</p>
         </div>
 
-        <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-xl">
+        <Card className="bg-card/80 backdrop-blur-sm border-border shadow-xl">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center text-gray-900">
+            <CardTitle className="text-2xl text-center text-foreground">
               Join ThermoNeural
             </CardTitle>
-            <p className="text-center text-gray-600">
+            <p className="text-center text-muted-foreground">
               Get started with professional HVAC&R calculations
             </p>
           </CardHeader>
@@ -148,14 +148,16 @@ export function SignUp() {
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="email"
                     type="email"
                     placeholder="john.doe@company.com"
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
-                    className="pl-10 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
+                    className="pl-10 border-input focus:border-blue-500 focus:ring-blue-500"
+                    aria-invalid={error ? true : false}
+                    aria-describedby={error ? "signup-error" : undefined}
                     required
                   />
                 </div>
@@ -165,7 +167,7 @@ export function SignUp() {
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
@@ -174,13 +176,13 @@ export function SignUp() {
                     onChange={(e) =>
                       handleInputChange("password", e.target.value)
                     }
-                    className="pl-10 pr-10 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
+                    className="pl-10 pr-10 border-input focus:border-blue-500 focus:ring-blue-500"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -195,7 +197,7 @@ export function SignUp() {
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
                     id="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
@@ -204,13 +206,13 @@ export function SignUp() {
                     onChange={(e) =>
                       handleInputChange("confirmPassword", e.target.value)
                     }
-                    className="pl-10 pr-10 border-slate-200 focus:border-blue-500 focus:ring-blue-500"
+                    className="pl-10 pr-10 border-input focus:border-blue-500 focus:ring-blue-500"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
                   >
                     {showConfirmPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -222,14 +224,14 @@ export function SignUp() {
               </div>
 
               {error && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-                  <p className="text-red-700 text-sm">{error}</p>
+                <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-md">
+                  <p className="text-destructive text-sm">{error}</p>
                 </div>
               )}
 
               <Button
                 type="submit"
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                 disabled={loading}
               >
                 {loading ? "Creating account..." : "Create Account"}
@@ -238,10 +240,10 @@ export function SignUp() {
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-gray-300" />
+                <span className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="bg-white px-2 text-gray-500">
+                <span className="bg-white dark:bg-slate-950 px-2 text-muted-foreground">
                   Or continue with
                 </span>
               </div>
@@ -250,7 +252,7 @@ export function SignUp() {
             <Button
               onClick={handleGoogleSignIn}
               variant="outline"
-              className="w-full border-gray-300 hover:bg-gray-50"
+              className="w-full border-input hover:bg-accent hover:text-accent-foreground"
               disabled={loading}
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
@@ -274,11 +276,11 @@ export function SignUp() {
               Continue with Google
             </Button>
 
-            <div className="text-center text-sm text-gray-600 mt-4">
+            <div className="text-center text-sm text-muted-foreground mt-4">
               Already have an account?{" "}
               <Link
                 to="/signin"
-                className="text-blue-600 hover:text-blue-700 hover:underline font-medium"
+                className="text-primary hover:text-primary/90 hover:underline font-medium"
               >
                 Sign in
               </Link>

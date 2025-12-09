@@ -73,7 +73,7 @@ export default function Pricing() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-background text-foreground selection:bg-blue-100 selection:text-blue-900">
       <Header variant="landing" />
 
       {/* Warm/Thermo Background */}
@@ -95,32 +95,32 @@ export default function Pricing() {
           </Button>
 
           <div className="text-center">
-            <h1 className="mb-4 text-4xl font-bold tracking-tight text-slate-900 md:text-5xl">
+            <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground md:text-5xl">
               Upgrade to <span className="text-blue-600">Pro</span>
             </h1>
-            <p className="mb-12 text-lg text-slate-600 md:text-xl">
+            <p className="mb-12 text-lg text-muted-foreground md:text-xl">
               Unlock professional tools to manage jobs, generate reports, and grow your HVAC business.
             </p>
 
             <div className="grid gap-8 md:grid-cols-2 lg:gap-12 mt-16 max-w-4xl mx-auto">
               {/* Free Plan */}
-              <Card className="relative flex flex-col border-slate-200 shadow-sm transition-all hover:shadow-md bg-white/80 backdrop-blur-sm">
+              <Card className="relative flex flex-col border-border shadow-sm transition-all hover:shadow-md bg-card/80 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="text-2xl">Starter</CardTitle>
                   <CardDescription>Essential tools for every technician</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-1">
-                  <div className="mb-6 text-4xl font-bold text-slate-900">$0<span className="text-lg font-normal text-slate-500">/mo</span></div>
+                  <div className="mb-6 text-4xl font-bold text-foreground">$0<span className="text-lg font-normal text-muted-foreground">/mo</span></div>
                   <ul className="space-y-3 text-left">
-                    <li className="flex items-center text-slate-600">
+                    <li className="flex items-center text-muted-foreground">
                       <Check className="mr-2 h-5 w-5 text-green-500" />
                       Standard Superheat/Subcool
                     </li>
-                    <li className="flex items-center text-slate-600">
+                    <li className="flex items-center text-muted-foreground">
                       <Check className="mr-2 h-5 w-5 text-green-500" />
                       Airflow Calculator
                     </li>
-                    <li className="flex items-center text-slate-600">
+                    <li className="flex items-center text-muted-foreground">
                       <Check className="mr-2 h-5 w-5 text-green-500" />
                       Basic History (Local)
                     </li>
@@ -132,30 +132,30 @@ export default function Pricing() {
               </Card>
 
               {/* Pro Plan */}
-              <Card className="relative flex flex-col border-blue-200 bg-blue-50/50 shadow-lg ring-1 ring-blue-200 transition-all hover:shadow-xl overflow-visible backdrop-blur-sm">
+              <Card className="relative flex flex-col border-blue-200 dark:border-blue-900/50 bg-blue-50/50 dark:bg-blue-950/20 shadow-lg ring-1 ring-blue-200 dark:ring-blue-900/50 transition-all hover:shadow-xl overflow-visible backdrop-blur-sm">
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-blue-600 px-4 py-1 text-sm font-medium text-white shadow-md z-10">
                   Most Popular
                 </div>
                 <CardHeader>
-                  <CardTitle className="text-2xl text-blue-900">Professional</CardTitle>
-                  <CardDescription className="text-blue-700">For serious HVAC businesses</CardDescription>
+                  <CardTitle className="text-2xl text-blue-900 dark:text-blue-100">Professional</CardTitle>
+                  <CardDescription className="text-blue-700 dark:text-blue-300">For serious HVAC businesses</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-1">
-                  <div className="mb-6 text-4xl font-bold text-blue-900">$29<span className="text-lg font-normal text-blue-600">/mo</span></div>
+                  <div className="mb-6 text-4xl font-bold text-blue-900 dark:text-blue-100">$29<span className="text-lg font-normal text-blue-600 dark:text-blue-400">/mo</span></div>
                   <ul className="space-y-3 text-left">
-                    <li className="flex items-center text-slate-700">
+                    <li className="flex items-center text-slate-700 dark:text-slate-300">
                       <ShieldCheck className="mr-2 h-5 w-5 text-blue-600" />
                       <strong>Job Management</strong> (Clients, Status)
                     </li>
-                    <li className="flex items-center text-slate-700">
+                    <li className="flex items-center text-slate-700 dark:text-slate-300">
                       <ShieldCheck className="mr-2 h-5 w-5 text-blue-600" />
                       <strong>PDF Reports</strong> & Export
                     </li>
-                    <li className="flex items-center text-slate-700">
+                    <li className="flex items-center text-slate-700 dark:text-slate-300">
                       <ShieldCheck className="mr-2 h-5 w-5 text-blue-600" />
                       Cloud Sync & Backup
                     </li>
-                    <li className="flex items-center text-slate-700">
+                    <li className="flex items-center text-slate-700 dark:text-slate-300">
                       <ShieldCheck className="mr-2 h-5 w-5 text-blue-600" />
                       Priority Support
                     </li>

@@ -326,15 +326,15 @@ export function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-slate-950 dark:to-slate-900">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-blue-200">
+      <div className="bg-background shadow-sm border-b border-border">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="flex items-center space-x-4">
             <Button variant="ghost" onClick={() => navigate("/dashboard")}>
               ← Back to Dashboard
             </Button>
-            <h1 className="text-3xl font-bold text-blue-900">
+            <h1 className="text-3xl font-bold text-foreground">
               Account Settings
             </h1>
           </div>
@@ -343,28 +343,28 @@ export function Profile() {
 
       <div className="max-w-4xl mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8 bg-white border border-blue-200">
+          <TabsList className="grid w-full grid-cols-4 mb-8 bg-muted border border-border">
             <TabsTrigger
               value="profile"
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               Profile
             </TabsTrigger>
             <TabsTrigger
               value="security"
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               Security
             </TabsTrigger>
             <TabsTrigger
               value="billing"
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               Billing
             </TabsTrigger>
             <TabsTrigger
               value="preferences"
-              className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               Preferences
             </TabsTrigger>
@@ -372,7 +372,7 @@ export function Profile() {
 
           {/* Profile Tab */}
           <TabsContent value="profile" className="space-y-6">
-            <Card className="bg-white shadow-lg border-blue-200">
+            <Card className="bg-card shadow-lg border-border">
               <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
                 <CardTitle>Profile Information</CardTitle>
               </CardHeader>
@@ -415,11 +415,11 @@ export function Profile() {
                     </div>
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-semibold text-gray-900">
+                    <h3 className="text-xl font-semibold text-foreground">
                       {user.firstName} {user.lastName}
                     </h3>
-                    <p className="text-gray-600">{user.role}</p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-muted-foreground">{user.role}</p>
+                    <p className="text-sm text-muted-foreground">
                       Member since{" "}
                       {new Date(user.joinedDate).toLocaleDateString()}
                     </p>
@@ -429,7 +429,7 @@ export function Profile() {
                         size="sm"
                         onClick={handleAvatarRemove}
                         disabled={uploading}
-                        className="mt-2 text-red-600 border-red-300 hover:bg-red-50"
+                        className="mt-2 text-destructive border-destructive/20 hover:bg-destructive/10"
                       >
                         Remove Photo
                       </Button>
@@ -442,14 +442,14 @@ export function Profile() {
                   <div className="space-y-2">
                     <Label htmlFor="firstName">First Name</Label>
                     <div className="relative">
-                      <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="firstName"
                         value={user.firstName}
                         onChange={(e) =>
                           handleInputChange("firstName", e.target.value)
                         }
-                        className="pl-10 border-blue-200 focus:border-blue-500"
+                        className="pl-10 border-input focus:border-blue-500"
                       />
                     </div>
                   </div>
@@ -462,14 +462,14 @@ export function Profile() {
                       onChange={(e) =>
                         handleInputChange("lastName", e.target.value)
                       }
-                      className="border-blue-200 focus:border-blue-500"
+                      className="border-input focus:border-blue-500"
                     />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="email"
                         type="email"
@@ -477,7 +477,7 @@ export function Profile() {
                         onChange={(e) =>
                           handleInputChange("email", e.target.value)
                         }
-                        className="pl-10 border-blue-200 focus:border-blue-500"
+                        className="pl-10 border-input focus:border-blue-500"
                       />
                     </div>
                   </div>
@@ -485,14 +485,14 @@ export function Profile() {
                   <div className="space-y-2">
                     <Label htmlFor="phone">Phone</Label>
                     <div className="relative">
-                      <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="phone"
                         value={user.phone}
                         onChange={(e) =>
                           handleInputChange("phone", e.target.value)
                         }
-                        className="pl-10 border-blue-200 focus:border-blue-500"
+                        className="pl-10 border-input focus:border-blue-500"
                       />
                     </div>
                   </div>
@@ -500,14 +500,14 @@ export function Profile() {
                   <div className="space-y-2">
                     <Label htmlFor="company">Company</Label>
                     <div className="relative">
-                      <Building className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <Building className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="company"
                         value={user.company}
                         onChange={(e) =>
                           handleInputChange("company", e.target.value)
                         }
-                        className="pl-10 border-blue-200 focus:border-blue-500"
+                        className="pl-10 border-input focus:border-blue-500"
                       />
                     </div>
                   </div>
@@ -515,14 +515,14 @@ export function Profile() {
                   <div className="space-y-2">
                     <Label htmlFor="location">Location</Label>
                     <div className="relative">
-                      <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="location"
                         value={user.location}
                         onChange={(e) =>
                           handleInputChange("location", e.target.value)
                         }
-                        className="pl-10 border-blue-200 focus:border-blue-500"
+                        className="pl-10 border-input focus:border-blue-500"
                       />
                     </div>
                   </div>
@@ -533,7 +533,7 @@ export function Profile() {
                   <Button
                     onClick={handleSave}
                     disabled={loading}
-                    className="bg-blue-600 hover:bg-blue-700"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground"
                   >
                     {loading ? "Saving..." : "Save Changes"}
                   </Button>
@@ -544,7 +544,7 @@ export function Profile() {
 
           {/* Security Tab */}
           <TabsContent value="security" className="space-y-6">
-            <Card className="bg-white shadow-lg border-blue-200">
+            <Card className="bg-card shadow-lg border-border">
               <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
                 <CardTitle className="flex items-center">
                   <Shield className="h-5 w-5 mr-2" />
@@ -567,7 +567,7 @@ export function Profile() {
                             currentPassword: e.target.value,
                           }))
                         }
-                        className="border-blue-200 focus:border-blue-500"
+                        className="border-input focus:border-blue-500"
                         required
                       />
                     </div>
@@ -583,7 +583,7 @@ export function Profile() {
                             newPassword: e.target.value,
                           }))
                         }
-                        className="border-blue-200 focus:border-blue-500"
+                        className="border-input focus:border-blue-500"
                         minLength={6}
                         required
                       />
@@ -602,7 +602,7 @@ export function Profile() {
                             confirmNewPassword: e.target.value,
                           }))
                         }
-                        className="border-blue-200 focus:border-blue-500"
+                        className="border-input focus:border-blue-500"
                         minLength={6}
                         required
                       />
@@ -621,7 +621,7 @@ export function Profile() {
                   <h3 className="text-lg font-semibold mb-4">
                     Two-Factor Authentication
                   </h3>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-muted-foreground mb-4">
                     Add an extra layer of security to your account by enabling
                     two-factor authentication.
                   </p>
@@ -636,7 +636,7 @@ export function Profile() {
 
           {/* Billing Tab */}
           <TabsContent value="billing" className="space-y-6">
-            <Card className="bg-white shadow-lg border-blue-200">
+            <Card className="bg-card shadow-lg border-border">
               <CardHeader className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
                 <CardTitle className="flex items-center">
                   <CreditCard className="h-5 w-5 mr-2" />
@@ -647,45 +647,45 @@ export function Profile() {
                 {subscriptionLoading ? (
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-                    <p className="text-gray-600 mt-2">
+                    <p className="text-muted-foreground mt-2">
                       Loading subscription details...
                     </p>
                   </div>
                 ) : (
                   <div className="space-y-6">
                     {/* Current Plan */}
-                    <div className="bg-blue-50 p-6 rounded-lg">
-                      <h3 className="text-lg font-semibold text-blue-900 mb-2">
+                    <div className="bg-primary/5 dark:bg-primary/20 p-6 rounded-lg">
+                      <h3 className="text-lg font-semibold text-foreground mb-2">
                         Current Plan: {subscription?.plan || "Free"}
                       </h3>
                       {subscription?.subscription ? (
                         <div className="space-y-2">
-                          <p className="text-blue-700">
+                          <p className="text-muted-foreground">
                             Status:{" "}
                             <span className="capitalize">
                               {subscription.subscription.status}
                             </span>
                           </p>
-                          <p className="text-blue-700">
+                          <p className="text-muted-foreground">
                             ${subscription.subscription.amount}/
                             {subscription.subscription.interval}
                           </p>
-                          <p className="text-blue-700">
+                          <p className="text-muted-foreground">
                             Next billing:{" "}
                             {new Date(
                               subscription.subscription.current_period_end *
-                                1000,
+                              1000,
                             ).toLocaleDateString()}
                           </p>
                           {subscription.subscription.cancel_at_period_end && (
-                            <p className="text-red-600 font-semibold">
+                            <p className="text-destructive font-semibold">
                               Subscription will cancel at the end of current
                               period
                             </p>
                           )}
                         </div>
                       ) : (
-                        <p className="text-blue-700">
+                        <p className="text-primary">
                           You have used {user.calculationsUsed} of{" "}
                           {user.calculationsLimit} calculations this month.
                         </p>
@@ -698,7 +698,7 @@ export function Profile() {
                         <Button
                           onClick={openCustomerPortal}
                           disabled={portalLoading}
-                          className="justify-start bg-blue-600 hover:bg-blue-700 text-white"
+                          className="justify-start bg-primary hover:bg-primary/90 text-primary-foreground"
                         >
                           <CreditCard className="h-4 w-4 mr-2" />
                           {portalLoading ? "Loading..." : "Manage Subscription"}
@@ -706,7 +706,7 @@ export function Profile() {
                       ) : (
                         <Button
                           onClick={() => navigate("/pricing")}
-                          className="justify-start bg-blue-600 hover:bg-blue-700 text-white"
+                          className="justify-start bg-primary hover:bg-primary/90 text-primary-foreground"
                         >
                           <CreditCard className="h-4 w-4 mr-2" />
                           Upgrade Plan
@@ -719,10 +719,10 @@ export function Profile() {
                     </div>
 
                     <div className="border-t pt-6">
-                      <h4 className="font-semibold text-red-600 mb-2">
+                      <h4 className="font-semibold text-destructive mb-2">
                         Danger Zone
                       </h4>
-                      <p className="text-gray-600 mb-4">
+                      <p className="text-muted-foreground mb-4">
                         Once you delete your account, there is no going back.
                         Please be certain.
                       </p>
@@ -739,8 +739,8 @@ export function Profile() {
 
           {/* Preferences Tab */}
           <TabsContent value="preferences" className="space-y-6">
-            <Card className="bg-white shadow-lg border-blue-200">
-              <CardHeader className="bg-gradient-to-r from-orange-600 to-red-600 text-white">
+            <Card className="bg-card shadow-lg border-border">
+              <CardHeader className="bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-900 dark:to-red-900 text-white">
                 <CardTitle className="flex items-center">
                   <Bell className="h-5 w-5 mr-2" />
                   Preferences
@@ -751,7 +751,7 @@ export function Profile() {
                   <h3 className="text-lg font-semibold">Notifications</h3>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-700">
+                      <span className="text-foreground">
                         Email notifications for calculation results
                       </span>
                       <input
@@ -766,11 +766,11 @@ export function Profile() {
                             },
                           }))
                         }
-                        className="rounded border-blue-300 text-blue-600 focus:ring-blue-500"
+                        className="rounded border-input text-primary focus:ring-ring"
                       />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-700">
+                      <span className="text-foreground">
                         Weekly usage summary
                       </span>
                       <input
@@ -785,11 +785,11 @@ export function Profile() {
                             },
                           }))
                         }
-                        className="rounded border-blue-300 text-blue-600 focus:ring-blue-500"
+                        className="rounded border-input text-primary focus:ring-ring"
                       />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-700">
+                      <span className="text-foreground">
                         Product updates and news
                       </span>
                       <input
@@ -804,11 +804,11 @@ export function Profile() {
                             },
                           }))
                         }
-                        className="rounded border-blue-300 text-blue-600 focus:ring-blue-500"
+                        className="rounded border-input text-primary focus:ring-ring"
                       />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-700">Security alerts</span>
+                      <span className="text-foreground">Security alerts</span>
                       <input
                         type="checkbox"
                         checked={preferences.notifications.securityAlerts}
@@ -821,7 +821,7 @@ export function Profile() {
                             },
                           }))
                         }
-                        className="rounded border-blue-300 text-blue-600 focus:ring-blue-500"
+                        className="rounded border-input text-primary focus:ring-ring"
                       />
                     </div>
                   </div>
@@ -848,7 +848,7 @@ export function Profile() {
                           }))
                         }
                       >
-                        <SelectTrigger className="border-blue-200 focus:border-blue-500">
+                        <SelectTrigger className="border-input focus:ring-ring">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -877,7 +877,7 @@ export function Profile() {
                           }))
                         }
                       >
-                        <SelectTrigger className="border-blue-200 focus:border-blue-500">
+                        <SelectTrigger className="border-input focus:ring-ring">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -912,7 +912,7 @@ export function Profile() {
                     Reset to Defaults
                   </Button>
                   <Button
-                    className="bg-orange-600 hover:bg-orange-700"
+                    className="bg-orange-600 hover:bg-orange-700 text-white"
                     onClick={handlePreferencesSave}
                     disabled={preferencesLoading}
                   >

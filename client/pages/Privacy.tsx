@@ -5,13 +5,13 @@ import { Calculator, ArrowLeft } from "lucide-react";
 
 export function Privacy() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-blue-200 sticky top-0 z-50">
+      <header className="bg-background/80 backdrop-blur-md border-b border-border sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <Link to="/" className="flex items-center space-x-2">
-            <Calculator className="h-8 w-8 text-blue-600" />
-            <h1 className="text-2xl font-bold text-slate-900">ThermoNeural</h1>
+            <Calculator className="h-8 w-8 text-blue-600 dark:text-blue-500" />
+            <h1 className="text-2xl font-bold text-foreground">ThermoNeural</h1>
           </Link>
           <Link to="/">
             <Button variant="ghost" className="flex items-center gap-2">
@@ -23,17 +23,17 @@ export function Privacy() {
       </header>
 
       <div className="max-w-4xl mx-auto px-4 py-16">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <h1 className="text-4xl font-bold text-foreground mb-4">
           Privacy Policy
         </h1>
-        <p className="text-gray-600 mb-8">Last updated: December 2024</p>
+        <p className="text-muted-foreground mb-8">Last updated: December 2024</p>
 
-        <div className="bg-white rounded-lg shadow-lg p-8 space-y-8">
+        <div className="bg-card rounded-lg shadow-lg p-8 space-y-8 border border-border">
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl font-bold text-foreground mb-4">
               Introduction
             </h2>
-            <p className="text-gray-700 mb-4">
+            <p className="text-muted-foreground mb-4">
               ThermoNeural ("we," "us," "our," or "Company") is committed to
               protecting your privacy. This Privacy Policy explains how we
               collect, use, disclose, and safeguard your information when you
@@ -42,12 +42,12 @@ export function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl font-bold text-foreground mb-4">
               1. Information We Collect
             </h2>
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-muted-foreground">
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">
+                <h3 className="font-semibold text-foreground mb-2">
                   Personal Information
                 </h3>
                 <p>
@@ -63,7 +63,7 @@ export function Privacy() {
                 </ul>
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">
+                <h3 className="font-semibold text-foreground mb-2">
                   Usage Information
                 </h3>
                 <p>
@@ -81,13 +81,13 @@ export function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl font-bold text-foreground mb-4">
               2. How We Use Your Information
             </h2>
-            <p className="text-gray-700 mb-4">
+            <p className="text-muted-foreground mb-4">
               We use the information we collect to:
             </p>
-            <ul className="list-disc list-inside space-y-2 text-gray-700">
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
               <li>Provide, maintain, and improve our services</li>
               <li>Process transactions and send related information</li>
               <li>Send promotional communications (with your consent)</li>
@@ -99,14 +99,14 @@ export function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl font-bold text-foreground mb-4">
               3. Information Sharing
             </h2>
-            <p className="text-gray-700">
+            <p className="text-muted-foreground">
               We do not sell, trade, or rent your personal information to third
               parties. We may share your information with:
             </p>
-            <ul className="list-disc list-inside space-y-2 text-gray-700 mt-4">
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground mt-4">
               <li>
                 Service providers who assist us in operating our website and
                 conducting our business
@@ -118,10 +118,10 @@ export function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl font-bold text-foreground mb-4">
               4. Data Security
             </h2>
-            <p className="text-gray-700">
+            <p className="text-muted-foreground">
               We implement appropriate technical and organizational measures to
               protect your personal information against unauthorized access,
               alteration, disclosure, or destruction. However, no method of
@@ -131,10 +131,10 @@ export function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl font-bold text-foreground mb-4">
               5. Cookies and Tracking
             </h2>
-            <p className="text-gray-700">
+            <p className="text-muted-foreground">
               We use cookies and similar tracking technologies to enhance your
               experience. You can control cookie preferences through your
               browser settings. Please note that disabling cookies may affect
@@ -143,14 +143,14 @@ export function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl font-bold text-foreground mb-4">
               6. Your Rights
             </h2>
-            <p className="text-gray-700 mb-4">
+            <p className="text-muted-foreground mb-4">
               Depending on your location, you may have certain rights regarding
               your personal information:
             </p>
-            <ul className="list-disc list-inside space-y-2 text-gray-700">
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
               <li>Right to access your personal information</li>
               <li>Right to correct inaccurate data</li>
               <li>Right to request deletion of your data</li>
@@ -160,10 +160,10 @@ export function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl font-bold text-foreground mb-4">
               7. Third-Party Links
             </h2>
-            <p className="text-gray-700">
+            <p className="text-muted-foreground">
               Our website may contain links to third-party websites. We are not
               responsible for the privacy practices of external sites. Please
               review their privacy policies before providing your information.
@@ -171,10 +171,10 @@ export function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl font-bold text-foreground mb-4">
               8. Changes to This Policy
             </h2>
-            <p className="text-gray-700">
+            <p className="text-muted-foreground">
               We may update this Privacy Policy from time to time. We will
               notify you of any significant changes by posting the new policy on
               this page and updating the "Last updated" date.
@@ -182,16 +182,16 @@ export function Privacy() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl font-bold text-foreground mb-4">
               9. Contact Us
             </h2>
-            <p className="text-gray-700">
+            <p className="text-muted-foreground">
               If you have questions about this Privacy Policy or our privacy
               practices, please contact us:
             </p>
-            <div className="mt-4 space-y-2 text-gray-700">
+            <div className="mt-4 space-y-2 text-muted-foreground">
               <p>
-                <strong>Email:</strong> <a href="mailto:support@thermoneural.com" className="text-blue-600 hover:underline">support@thermoneural.com</a>
+                <strong>Email:</strong> <a href="mailto:support@thermoneural.com" className="text-blue-600 hover:underline dark:text-blue-400">support@thermoneural.com</a>
               </p>
             </div>
           </section>

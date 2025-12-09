@@ -33,8 +33,8 @@ const staggerContainer = {
 
 export function Landing() {
   return (
-    <div className="min-h-screen w-full overflow-x-hidden overscroll-none bg-[#111827] text-slate-900 selection:bg-blue-100 selection:text-blue-900 flex flex-col">
-      <div className="bg-white flex-grow flex flex-col">
+    <div className="min-h-screen w-full overflow-x-hidden overscroll-none bg-background text-foreground selection:bg-blue-100 selection:text-blue-900 flex flex-col">
+      <div className="bg-background flex-grow flex flex-col">
         <Header variant="landing" />
 
         {/* Warm/Thermo Background */}
@@ -68,7 +68,7 @@ export function Landing() {
 
               <motion.h1
                 variants={fadeInUp}
-                className="text-5xl md:text-7xl font-bold text-slate-900 mb-8 tracking-tight"
+                className="text-5xl md:text-7xl font-bold text-foreground mb-8 tracking-tight"
               >
                 Advanced Refrigeration
                 <br />
@@ -79,7 +79,7 @@ export function Landing() {
 
               <motion.p
                 variants={fadeInUp}
-                className="text-xl text-slate-600 mb-10 max-w-3xl mx-auto leading-relaxed"
+                className="text-xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed"
               >
                 Professional-grade thermodynamic calculations for HVAC&R engineers.
                 Analyze standard cycles, compare refrigerants, and optimize cascade
@@ -142,7 +142,7 @@ export function Landing() {
               ].map((feature, index) => (
                 <Card
                   key={index}
-                  className="group relative bg-white/70 backdrop-blur-md border-slate-200/60 hover:border-blue-300/50 hover:shadow-xl hover:shadow-blue-900/5 transition-all duration-500 overflow-hidden"
+                  className="group relative bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border-slate-200/60 dark:border-slate-800/60 hover:border-blue-300/50 hover:shadow-xl hover:shadow-blue-900/5 transition-all duration-500 overflow-hidden"
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <CardHeader className="text-center relative z-10">
@@ -151,12 +151,12 @@ export function Landing() {
                     >
                       <feature.icon className={`h-8 w-8 ${feature.color}`} />
                     </div>
-                    <CardTitle className="text-xl text-slate-900 font-semibold">
+                    <CardTitle className="text-xl text-foreground font-semibold">
                       {feature.title}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="text-center relative z-10">
-                    <p className="text-slate-600 leading-relaxed">
+                    <p className="text-muted-foreground leading-relaxed">
                       {feature.desc}
                     </p>
                   </CardContent>
@@ -169,10 +169,10 @@ export function Landing() {
           <section className="py-32 relative">
             <div className="max-w-7xl mx-auto px-4">
               <div className="text-center mb-20">
-                <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
+                <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
                   Why Choose ThermoNeural?
                 </h2>
-                <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                   Built by engineers, for engineers. Get accurate results with
                   industry-standard calculations.
                 </p>
@@ -210,13 +210,13 @@ export function Landing() {
                     transition={{ delay: index * 0.1 }}
                     className="text-center p-6 rounded-2xl hover:bg-white/50 hover:shadow-lg transition-all duration-300"
                   >
-                    <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <div className="w-16 h-16 bg-slate-100 dark:bg-slate-900 rounded-2xl flex items-center justify-center mx-auto mb-6">
                       <benefit.icon className="h-8 w-8 text-orange-600" />
                     </div>
-                    <h3 className="text-lg font-bold text-slate-900 mb-3">
+                    <h3 className="text-lg font-bold text-foreground mb-3">
                       {benefit.title}
                     </h3>
-                    <p className="text-slate-600 text-sm leading-relaxed">
+                    <p className="text-muted-foreground text-sm leading-relaxed">
                       {benefit.description}
                     </p>
                   </motion.div>

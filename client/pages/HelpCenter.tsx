@@ -147,7 +147,7 @@ export function HelpCenter() {
     .filter((category) => category.questions.length > 0);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-background text-foreground selection:bg-blue-100 selection:text-blue-900">
       <Header variant="landing" />
 
       {/* Warm/Thermo Background */}
@@ -167,14 +167,14 @@ export function HelpCenter() {
             >
               Help Center
             </Badge>
-            <h1 className="text-4xl md:text-5xl font-bold text-slate-900">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground">
               How can we
               <span className="bg-gradient-to-r from-blue-600 to-red-600 bg-clip-text text-transparent">
                 {" "}
                 help you?
               </span>
             </h1>
-            <p className="text-xl text-slate-600 mt-3">
+            <p className="text-xl text-muted-foreground mt-3">
               Find answers to common questions, get technical support, and learn
               how to make the most of our HVAC&R calculation tools.
             </p>
@@ -184,12 +184,12 @@ export function HelpCenter() {
         {/* Search */}
         <div className="mb-12">
           <div className="relative max-w-2xl mx-auto">
-            <Search className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
+            <Search className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
             <Input
               placeholder="Search for answers..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 pr-4 py-6 text-lg border-slate-200 focus:border-blue-500 focus:ring-blue-500 rounded-xl shadow-sm bg-white/80 backdrop-blur-sm"
+              className="pl-12 pr-4 py-6 text-lg border-input focus:border-blue-500 focus:ring-blue-500 rounded-xl shadow-sm bg-card/80 backdrop-blur-sm"
             />
           </div>
         </div>
@@ -197,15 +197,15 @@ export function HelpCenter() {
         <div className="grid lg:grid-cols-4 gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
-            <Card className="bg-white/80 backdrop-blur-sm shadow-lg border-slate-200">
+            <Card className="bg-card/80 backdrop-blur-sm shadow-lg border-border">
               <CardHeader>
-                <CardTitle className="text-lg text-slate-900">Categories</CardTitle>
+                <CardTitle className="text-lg text-foreground">Categories</CardTitle>
               </CardHeader>
               <CardContent className="p-4">
                 <div className="space-y-2">
                   <Button
                     variant={selectedCategory === null ? "default" : "ghost"}
-                    className={`w-full justify-start ${selectedCategory === null ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'text-slate-600 hover:text-blue-600 hover:bg-blue-50'}`}
+                    className={`w-full justify-start ${selectedCategory === null ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'}`}
                     onClick={() => setSelectedCategory(null)}
                   >
                     All Topics
@@ -218,7 +218,7 @@ export function HelpCenter() {
                           ? "default"
                           : "ghost"
                       }
-                      className={`w-full justify-start ${selectedCategory === category.category ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'text-slate-600 hover:text-blue-600 hover:bg-blue-50'}`}
+                      className={`w-full justify-start ${selectedCategory === category.category ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'}`}
                       onClick={() => setSelectedCategory(category.category)}
                     >
                       {category.category}
@@ -229,16 +229,16 @@ export function HelpCenter() {
             </Card>
 
             {/* Quick Links */}
-            <Card className="bg-white/80 backdrop-blur-sm shadow-lg border-slate-200">
+            <Card className="bg-card/80 backdrop-blur-sm shadow-lg border-border">
               <CardHeader>
-                <CardTitle className="text-lg text-slate-900">Need More Help?</CardTitle>
+                <CardTitle className="text-lg text-foreground">Need More Help?</CardTitle>
               </CardHeader>
               <CardContent className="p-4 space-y-3">
-                <Button variant="outline" className="w-full justify-start hover:bg-blue-50 hover:text-blue-700 border-slate-200" onClick={() => window.location.href = 'mailto:support@thermoneural.com'}>
+                <Button variant="outline" className="w-full justify-start hover:bg-accent hover:text-accent-foreground border-border" onClick={() => window.location.href = 'mailto:support@thermoneural.com'}>
                   <Mail className="h-4 w-4 mr-2" />
                   Email Support
                 </Button>
-                <Button variant="outline" className="w-full justify-start hover:bg-blue-50 hover:text-blue-700 border-slate-200" onClick={() => window.location.href = 'mailto:hello@thermoneural.com'}>
+                <Button variant="outline" className="w-full justify-start hover:bg-accent hover:text-accent-foreground border-border" onClick={() => window.location.href = 'mailto:hello@thermoneural.com'}>
                   <Mail className="h-4 w-4 mr-2" />
                   Partnerships
                 </Button>
@@ -252,10 +252,10 @@ export function HelpCenter() {
               {filteredFaqs.map((category) => (
                 <Card
                   key={category.category}
-                  className="bg-white/80 backdrop-blur-sm shadow-md border-slate-200"
+                  className="bg-card/80 backdrop-blur-sm shadow-md border-border"
                 >
-                  <CardHeader className="bg-slate-50/50 border-b border-slate-100">
-                    <CardTitle className="text-xl text-slate-900">
+                  <CardHeader className="bg-muted/50 border-b border-border">
+                    <CardTitle className="text-xl text-foreground">
                       {category.category}
                     </CardTitle>
                   </CardHeader>
@@ -265,25 +265,25 @@ export function HelpCenter() {
                       const isExpanded = expandedQuestions.has(questionId);
 
                       return (
-                        <div key={index} className="border-b last:border-b-0 border-slate-100">
+                        <div key={index} className="border-b last:border-b-0 border-border">
                           <button
-                            className="w-full p-6 text-left hover:bg-blue-50/50 transition-colors focus:outline-none"
+                            className="w-full p-6 text-left hover:bg-accent/50 transition-colors focus:outline-none"
                             onClick={() => toggleQuestion(questionId)}
                           >
                             <div className="flex items-center justify-between">
-                              <h3 className="text-lg font-medium text-slate-900 pr-8">
+                              <h3 className="text-lg font-medium text-foreground pr-8">
                                 {faq.question}
                               </h3>
                               {isExpanded ? (
                                 <ChevronUp className="h-5 w-5 text-blue-500" />
                               ) : (
-                                <ChevronDown className="h-5 w-5 text-slate-400" />
+                                <ChevronDown className="h-5 w-5 text-muted-foreground" />
                               )}
                             </div>
                           </button>
                           {isExpanded && (
-                            <div className="px-6 pb-6 bg-blue-50/30">
-                              <p className="text-slate-600 leading-relaxed">
+                            <div className="px-6 pb-6 bg-accent/30">
+                              <p className="text-muted-foreground leading-relaxed">
                                 {faq.answer}
                               </p>
                             </div>
@@ -321,54 +321,54 @@ export function HelpCenter() {
 
         {/* Resource Cards */}
         <div className="mt-16 grid md:grid-cols-3 gap-8">
-          <Card className="bg-white/80 backdrop-blur-sm shadow-lg border-green-200 hover:-translate-y-1 transition-all">
+          <Card className="bg-card/80 backdrop-blur-sm shadow-lg border-green-200 dark:border-green-800 hover:-translate-y-1 transition-all">
             <CardContent className="p-6 text-center">
-              <Book className="h-12 w-12 text-green-600 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">
+              <Book className="h-12 w-12 text-green-600 dark:text-green-500 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-foreground mb-2">
                 Documentation
               </h3>
-              <p className="text-slate-600 mb-4">
+              <p className="text-muted-foreground mb-4">
                 Comprehensive guides and technical references
               </p>
               <Button
                 variant="outline"
-                className="border-green-200 hover:bg-green-50 text-green-700"
+                className="border-green-200 dark:border-green-800 hover:bg-green-50 dark:hover:bg-green-900/30 text-green-700 dark:text-green-400"
               >
                 Browse Docs
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/80 backdrop-blur-sm shadow-lg border-blue-200 hover:-translate-y-1 transition-all">
+          <Card className="bg-card/80 backdrop-blur-sm shadow-lg border-blue-200 dark:border-blue-800 hover:-translate-y-1 transition-all">
             <CardContent className="p-6 text-center">
-              <Users className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">
+              <Users className="h-12 w-12 text-blue-600 dark:text-blue-500 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-foreground mb-2">
                 Community
               </h3>
-              <p className="text-slate-600 mb-4">
+              <p className="text-muted-foreground mb-4">
                 Connect with other engineers and share knowledge
               </p>
               <Button
                 variant="outline"
-                className="border-blue-200 hover:bg-blue-50 text-blue-700"
+                className="border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-400"
               >
                 Join Community
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/80 backdrop-blur-sm shadow-lg border-red-200 hover:-translate-y-1 transition-all">
+          <Card className="bg-card/80 backdrop-blur-sm shadow-lg border-red-200 dark:border-red-800 hover:-translate-y-1 transition-all">
             <CardContent className="p-6 text-center">
-              <Zap className="h-12 w-12 text-red-600 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">
+              <Zap className="h-12 w-12 text-red-600 dark:text-red-500 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-foreground mb-2">
                 Quick Start
               </h3>
-              <p className="text-slate-600 mb-4">
+              <p className="text-muted-foreground mb-4">
                 Get up and running with step-by-step tutorials
               </p>
               <Button
                 variant="outline"
-                className="border-red-200 hover:bg-red-50 text-red-700"
+                className="border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-700 dark:text-red-400"
               >
                 Get Started
               </Button>
