@@ -119,7 +119,6 @@
     -moz-osx-font-smoothing: grayscale;
     width: 100%;
     overflow-x: hidden;
-    overscroll-behavior-y: none !important;
     @apply bg-background;
   }
 
@@ -129,7 +128,6 @@
     padding: 0;
     width: 100%;
     overflow-x: hidden;
-    overscroll-behavior-y: none !important;
     @apply bg-background;
   }
 

@@ -104,7 +104,7 @@ const PageTransition = ({ children }: { children: React.ReactNode }) => (
     animate={{ opacity: 1, filter: "blur(0px)" }}
     exit={{ opacity: 0, filter: "blur(5px)" }}
     transition={{ duration: 0.3, ease: "easeInOut" }}
-    className="w-full h-full"
+    className="w-full"
   >
     {children}
   </motion.div>
