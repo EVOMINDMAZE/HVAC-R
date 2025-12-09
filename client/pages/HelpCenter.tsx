@@ -16,7 +16,9 @@ import {
   Book,
   Users,
   Zap,
+  ArrowRight
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const faqs = [
   {
@@ -105,7 +107,7 @@ const faqs = [
     ],
   },
   {
-    category: "Cascade Troubleshooting", // Renamed from "Troubleshooting" to match documentation updates
+    category: "Cascade Troubleshooting",
     questions: [
       {
         question: "How do I troubleshoot cascade system convergence issues?",
@@ -114,6 +116,21 @@ const faqs = [
     ]
   }
 ];
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
 
 export function HelpCenter() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -147,236 +164,250 @@ export function HelpCenter() {
     .filter((category) => category.questions.length > 0);
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-background text-foreground selection:bg-blue-500/30">
       <Header variant="landing" />
 
-      {/* Warm/Thermo Background */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-100/50 blur-[100px] animate-pulse" />
-        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-red-100/40 blur-[100px] animate-pulse delay-1000" />
-        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-indigo-100/30 blur-[100px] animate-pulse delay-2000" />
+      {/* Background Elements */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-500/10 blur-[100px] animate-pulse" />
+        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-purple-500/10 blur-[100px] animate-pulse delay-1000" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-indigo-500/10 blur-[100px] animate-pulse delay-2000" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 py-16">
-        {/* Hero Section */}
-        <div className="flex flex-col md:flex-row items-center justify-between mb-12">
-          <div className="max-w-3xl mb-8 md:mb-0">
-            <Badge
-              variant="secondary"
-              className="mb-4 text-blue-700 bg-blue-100 border-blue-200"
-            >
+      <main className="relative z-10 pt-24 pb-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          {/* Hero Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16 max-w-3xl mx-auto"
+          >
+            <Badge variant="outline" className="mb-6 border-blue-200 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800 backdrop-blur-sm">
               Help Center
             </Badge>
-            <h1 className="text-4xl md:text-5xl font-bold text-foreground">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
               How can we
-              <span className="bg-gradient-to-r from-blue-600 to-red-600 bg-clip-text text-transparent">
-                {" "}
+              <span className="bg-gradient-to-r from-blue-600 to-red-600 bg-clip-text text-transparent ml-3">
                 help you?
               </span>
             </h1>
-            <p className="text-xl text-muted-foreground mt-3">
+            <p className="text-xl text-muted-foreground mt-3 leading-relaxed">
               Find answers to common questions, get technical support, and learn
               how to make the most of our HVAC&R calculation tools.
             </p>
-          </div>
-        </div>
 
-        {/* Search */}
-        <div className="mb-12">
-          <div className="relative max-w-2xl mx-auto">
-            <Search className="absolute left-4 top-4 h-5 w-5 text-muted-foreground" />
-            <Input
-              placeholder="Search for answers..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 pr-4 py-6 text-lg border-input focus:border-blue-500 focus:ring-blue-500 rounded-xl shadow-sm bg-card/80 backdrop-blur-sm"
-            />
-          </div>
-        </div>
+            {/* Search Input */}
+            <div className="mt-8 relative max-w-2xl mx-auto">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                placeholder="Search for answers, topics, or keywords..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-12 pr-4 py-7 text-lg border-primary/20 focus:border-blue-500 focus:ring-blue-500 rounded-2xl shadow-lg shadow-blue-500/5 bg-card/80 backdrop-blur-md"
+              />
+            </div>
+          </motion.div>
 
-        <div className="grid lg:grid-cols-4 gap-8">
-          {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-6">
-            <Card className="bg-card/80 backdrop-blur-sm shadow-lg border-border">
-              <CardHeader>
-                <CardTitle className="text-lg text-foreground">Categories</CardTitle>
-              </CardHeader>
-              <CardContent className="p-4">
-                <div className="space-y-2">
-                  <Button
-                    variant={selectedCategory === null ? "default" : "ghost"}
-                    className={`w-full justify-start ${selectedCategory === null ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'}`}
-                    onClick={() => setSelectedCategory(null)}
-                  >
-                    All Topics
-                  </Button>
-                  {faqs.map((category) => (
-                    <Button
-                      key={category.category}
-                      variant={
-                        selectedCategory === category.category
-                          ? "default"
-                          : "ghost"
-                      }
-                      className={`w-full justify-start ${selectedCategory === category.category ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'}`}
-                      onClick={() => setSelectedCategory(category.category)}
-                    >
-                      {category.category}
-                    </Button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Quick Links */}
-            <Card className="bg-card/80 backdrop-blur-sm shadow-lg border-border">
-              <CardHeader>
-                <CardTitle className="text-lg text-foreground">Need More Help?</CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 space-y-3">
-                <Button variant="outline" className="w-full justify-start hover:bg-accent hover:text-accent-foreground border-border" onClick={() => window.location.href = 'mailto:support@thermoneural.com'}>
-                  <Mail className="h-4 w-4 mr-2" />
-                  Email Support
-                </Button>
-                <Button variant="outline" className="w-full justify-start hover:bg-accent hover:text-accent-foreground border-border" onClick={() => window.location.href = 'mailto:hello@thermoneural.com'}>
-                  <Mail className="h-4 w-4 mr-2" />
-                  Partnerships
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* FAQ Content */}
-          <div className="lg:col-span-3">
-            <div className="space-y-6">
-              {filteredFaqs.map((category) => (
-                <Card
-                  key={category.category}
-                  className="bg-card/80 backdrop-blur-sm shadow-md border-border"
-                >
-                  <CardHeader className="bg-muted/50 border-b border-border">
-                    <CardTitle className="text-xl text-foreground">
-                      {category.category}
-                    </CardTitle>
+          <div className="grid lg:grid-cols-4 gap-8">
+            {/* Sidebar with Sticky Navigation */}
+            <div className="lg:col-span-1 space-y-6">
+              <div className="sticky top-24 space-y-6">
+                <Card className="bg-card/50 backdrop-blur-md shadow-lg border-border overflow-hidden">
+                  <CardHeader className="bg-muted/50 border-b border-border pb-4">
+                    <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Categories</CardTitle>
                   </CardHeader>
-                  <CardContent className="p-0">
-                    {category.questions.map((faq, index) => {
-                      const questionId = `${category.category}-${index}`;
-                      const isExpanded = expandedQuestions.has(questionId);
-
-                      return (
-                        <div key={index} className="border-b last:border-b-0 border-border">
-                          <button
-                            className="w-full p-6 text-left hover:bg-accent/50 transition-colors focus:outline-none"
-                            onClick={() => toggleQuestion(questionId)}
-                          >
-                            <div className="flex items-center justify-between">
-                              <h3 className="text-lg font-medium text-foreground pr-8">
-                                {faq.question}
-                              </h3>
-                              {isExpanded ? (
-                                <ChevronUp className="h-5 w-5 text-blue-500" />
-                              ) : (
-                                <ChevronDown className="h-5 w-5 text-muted-foreground" />
-                              )}
-                            </div>
-                          </button>
-                          {isExpanded && (
-                            <div className="px-6 pb-6 bg-accent/30">
-                              <p className="text-muted-foreground leading-relaxed">
-                                {faq.answer}
-                              </p>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
+                  <CardContent className="p-2 space-y-1">
+                    <Button
+                      variant={selectedCategory === null ? "secondary" : "ghost"}
+                      className={`w-full justify-start ${selectedCategory === null ? 'bg-primary/10 text-primary hover:bg-primary/20' : 'text-muted-foreground hover:bg-muted'}`}
+                      onClick={() => setSelectedCategory(null)}
+                    >
+                      All Topics
+                    </Button>
+                    {faqs.map((category) => (
+                      <Button
+                        key={category.category}
+                        variant={
+                          selectedCategory === category.category
+                            ? "secondary"
+                            : "ghost"
+                        }
+                        className={`w-full justify-start text-left truncate ${selectedCategory === category.category ? 'bg-primary/10 text-primary hover:bg-primary/20' : 'text-muted-foreground hover:bg-muted'}`}
+                        onClick={() => setSelectedCategory(category.category)}
+                      >
+                        {category.category}
+                      </Button>
+                    ))}
                   </CardContent>
                 </Card>
-              ))}
+
+                <Card className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg border-none">
+                  <CardContent className="p-6">
+                    <h3 className="font-bold text-lg mb-2">Need More Help?</h3>
+                    <p className="text-blue-100 text-sm mb-4">Our engineering support team is standing by.</p>
+                    <Button
+                      variant="secondary"
+                      className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm"
+                      onClick={() => window.location.href = 'mailto:support@thermoneural.com'}
+                    >
+                      <Mail className="h-4 w-4 mr-2" />
+                      Contact Support
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
 
-            {/* Contact Section */}
-            <Card className="bg-gradient-to-r from-blue-600 to-red-600 text-white mt-12 border-none shadow-xl">
-              <CardContent className="p-8 text-center">
-                <h3 className="text-2xl font-bold mb-4">Still Need Help?</h3>
-                <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
-                  Can't find what you're looking for? Our engineering support
-                  team is here to help with technical questions, account issues,
-                  and everything in between.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button
-                    className="bg-white text-blue-600 hover:bg-blue-50"
-                    onClick={() => window.location.href = 'mailto:support@thermoneural.com'}
-                  >
-                    <Mail className="h-4 w-4 mr-2" />
-                    Contact Support
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            {/* FAQ Content */}
+            <div className="lg:col-span-3">
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="space-y-6"
+              >
+                {filteredFaqs.length > 0 ? (
+                  filteredFaqs.map((category) => (
+                    <motion.div key={category.category} variants={itemVariants}>
+                      <Card className="bg-card/50 backdrop-blur-sm shadow-sm border-border overflow-hidden">
+                        <CardHeader className="bg-gradient-to-r from-muted/50 to-transparent border-b border-border py-4">
+                          <CardTitle className="text-lg font-semibold text-foreground flex items-center">
+                            <HashIcon category={category.category} />
+                            {category.category}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-0 divide-y divide-border">
+                          {category.questions.map((faq, index) => {
+                            const questionId = `${category.category}-${index}`;
+                            const isExpanded = expandedQuestions.has(questionId);
+
+                            return (
+                              <div key={index} className="group transition-colors bg-card/0 hover:bg-muted/30">
+                                <button
+                                  className="w-full p-6 text-left focus:outline-none"
+                                  onClick={() => toggleQuestion(questionId)}
+                                >
+                                  <div className="flex items-start justify-between gap-4">
+                                    <h3 className={`text-base font-medium transition-colors ${isExpanded ? 'text-primary' : 'text-foreground group-hover:text-primary'}`}>
+                                      {faq.question}
+                                    </h3>
+                                    <div className={`mt-1 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
+                                      {isExpanded ? (
+                                        <ChevronUp className="h-5 w-5 text-primary" />
+                                      ) : (
+                                        <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                                      )}
+                                    </div>
+                                  </div>
+                                </button>
+                                <AnimatePresence>
+                                  {isExpanded && (
+                                    <motion.div
+                                      initial={{ height: 0, opacity: 0 }}
+                                      animate={{ height: "auto", opacity: 1 }}
+                                      exit={{ height: 0, opacity: 0 }}
+                                      transition={{ duration: 0.2 }}
+                                      className="overflow-hidden"
+                                    >
+                                      <div className="px-6 pb-6 pt-0">
+                                        <p className="text-muted-foreground leading-relaxed pl-1 border-l-2 border-primary/20">
+                                          {faq.answer}
+                                        </p>
+                                      </div>
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </div>
+                            );
+                          })}
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))
+                ) : (
+                  <div className="text-center py-12">
+                    <div className="bg-muted/30 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                      <Search className="h-6 w-6 text-muted-foreground" />
+                    </div>
+                    <h3 className="text-lg font-medium text-foreground">No results found</h3>
+                    <p className="text-muted-foreground mt-2">Try adjusting your search terms.</p>
+                  </div>
+                )}
+              </motion.div>
+            </div>
+          </div>
+
+          {/* Resource Cards */}
+          <div className="mt-24">
+            <h2 className="text-2xl font-bold text-center mb-12">Other Resources</h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              <ResourceCard
+                icon={<Book className="h-8 w-8 text-green-500" />}
+                title="Documentation"
+                description="Comprehensive guides and technical references for all our tools."
+                action="Browse Docs"
+                colorClass="green"
+              />
+              <ResourceCard
+                icon={<Users className="h-8 w-8 text-blue-500" />}
+                title="Community"
+                description="Connect with other engineers, share knowledge, and get advice."
+                action="Join Community"
+                colorClass="blue"
+              />
+              <ResourceCard
+                icon={<Zap className="h-8 w-8 text-amber-500" />}
+                title="Quick Start"
+                description="Get up and running with step-by-step interactive tutorials."
+                action="Get Started"
+                colorClass="amber"
+              />
+            </div>
           </div>
         </div>
-
-        {/* Resource Cards */}
-        <div className="mt-16 grid md:grid-cols-3 gap-8">
-          <Card className="bg-card/80 backdrop-blur-sm shadow-lg border-green-200 dark:border-green-800 hover:-translate-y-1 transition-all">
-            <CardContent className="p-6 text-center">
-              <Book className="h-12 w-12 text-green-600 dark:text-green-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">
-                Documentation
-              </h3>
-              <p className="text-muted-foreground mb-4">
-                Comprehensive guides and technical references
-              </p>
-              <Button
-                variant="outline"
-                className="border-green-200 dark:border-green-800 hover:bg-green-50 dark:hover:bg-green-900/30 text-green-700 dark:text-green-400"
-              >
-                Browse Docs
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card/80 backdrop-blur-sm shadow-lg border-blue-200 dark:border-blue-800 hover:-translate-y-1 transition-all">
-            <CardContent className="p-6 text-center">
-              <Users className="h-12 w-12 text-blue-600 dark:text-blue-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">
-                Community
-              </h3>
-              <p className="text-muted-foreground mb-4">
-                Connect with other engineers and share knowledge
-              </p>
-              <Button
-                variant="outline"
-                className="border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-400"
-              >
-                Join Community
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card/80 backdrop-blur-sm shadow-lg border-red-200 dark:border-red-800 hover:-translate-y-1 transition-all">
-            <CardContent className="p-6 text-center">
-              <Zap className="h-12 w-12 text-red-600 dark:text-red-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">
-                Quick Start
-              </h3>
-              <p className="text-muted-foreground mb-4">
-                Get up and running with step-by-step tutorials
-              </p>
-              <Button
-                variant="outline"
-                className="border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-700 dark:text-red-400"
-              >
-                Get Started
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      </main>
       <Footer />
     </div>
+  );
+}
+
+// Helper Components
+function HashIcon({ category }: { category: string }) {
+  let icon = <HelpCircle className="h-5 w-5 mr-2 text-primary" />;
+  if (category.includes("Account")) icon = <Users className="h-5 w-5 mr-2 text-primary" />;
+  if (category.includes("Calculation")) icon = <Zap className="h-5 w-5 mr-2 text-primary" />;
+  if (category.includes("Support") || category.includes("Troubleshooting")) icon = <Phone className="h-5 w-5 mr-2 text-primary" />;
+
+  return icon;
+}
+
+function ResourceCard({ icon, title, description, action, colorClass }: { icon: any, title: string, description: string, action: string, colorClass: string }) {
+  const colorMap: Record<string, string> = {
+    green: "hover:border-green-500/50 hover:shadow-green-500/20",
+    blue: "hover:border-blue-500/50 hover:shadow-blue-500/20",
+    amber: "hover:border-amber-500/50 hover:shadow-amber-500/20"
+  };
+
+  return (
+    <Card className={`bg-card/50 backdrop-blur-sm border-border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${colorMap[colorClass]} group`}>
+      <CardContent className="p-8 text-center flex flex-col items-center h-full">
+        <div className={`p-4 rounded-2xl bg-${colorClass}-50 dark:bg-${colorClass}-900/10 mb-6 group-hover:scale-110 transition-transform duration-300`}>
+          {icon}
+        </div>
+        <h3 className="text-xl font-bold text-foreground mb-3">
+          {title}
+        </h3>
+        <p className="text-muted-foreground mb-8 leading-relaxed max-w-xs mx-auto">
+          {description}
+        </p>
+        <Button
+          variant="outline"
+          className="mt-auto group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-colors"
+        >
+          {action} <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
+      </CardContent>
+    </Card>
   );
 }

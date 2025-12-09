@@ -1,163 +1,48 @@
+import { useRef, useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BackButton } from "@/components/BackButton";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import DocsViewer from "@/components/DocsViewer";
 import {
-  Book,
   Search,
   PlayCircle,
-  FileText,
-  Calculator,
-  TrendingUp,
-  BarChart3,
   Users,
   ChevronRight,
   Download,
+  FileText
 } from "lucide-react";
+import { motion } from "framer-motion";
 
-import { useEffect, useRef, useState } from "react";
+const documentation: {
+  category: string;
+  icon: any;
+  colorClass: string;
+  gradientClass: string;
+  articles: {
+    title: string;
+    description: string;
+    readTime: string;
+  }[];
+}[] = [];
 
-const documentation = [
-  {
-    category: "Getting Started",
-    icon: PlayCircle,
-    color: "from-green-600 to-emerald-600",
-    articles: [
-      {
-        title: "Quick Start Guide",
-        description: "Get up and running in 5 minutes",
-        readTime: "5 min",
-      },
-      {
-        title: "Account Setup",
-        description: "Creating and configuring your account",
-        readTime: "3 min",
-      },
-      {
-        title: "First Calculation",
-        description: "Running your first refrigeration cycle analysis",
-        readTime: "8 min",
-      },
-      {
-        title: "Understanding Results",
-        description: "Interpreting calculation outputs",
-        readTime: "10 min",
-      },
-    ],
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
   },
-  {
-    category: "Standard Cycle Analysis",
-    icon: Calculator,
-    color: "from-blue-600 to-indigo-600",
-    articles: [
-      {
-        title: "Basic Cycle Theory",
-        description: "Fundamental thermodynamic principles",
-        readTime: "15 min",
-      },
-      {
-        title: "Input Parameters",
-        description: "Understanding temperature, pressure, and property inputs",
-        readTime: "12 min",
-      },
-      {
-        title: "Refrigerant Properties",
-        description: "Working with different refrigerant types",
-        readTime: "10 min",
-      },
-      {
-        title: "Performance Metrics",
-        description: "COP, capacity, and efficiency calculations",
-        readTime: "8 min",
-      },
-    ],
-  },
-  {
-    category: "Refrigerant Comparison",
-    icon: TrendingUp,
-    color: "from-purple-600 to-indigo-600",
-    articles: [
-      {
-        title: "Comparison Methodology",
-        description: "How we compare different refrigerants",
-        readTime: "12 min",
-      },
-      {
-        title: "Environmental Impact",
-        description: "GWP, ODP, and environmental considerations",
-        readTime: "15 min",
-      },
-      {
-        title: "Performance Analysis",
-        description: "Comparing efficiency and capacity",
-        readTime: "10 min",
-      },
-      {
-        title: "Best Practices",
-        description: "Selecting the right refrigerant for your application",
-        readTime: "18 min",
-      },
-    ],
-  },
-  {
-    category: "Cascade Systems",
-    icon: BarChart3,
-    color: "from-orange-600 to-red-600",
-    articles: [
-      {
-        title: "Cascade Theory",
-        description: "Understanding two-stage refrigeration",
-        readTime: "20 min",
-      },
-      {
-        title: "System Design",
-        description: "Designing efficient cascade systems",
-        readTime: "25 min",
-      },
-      {
-        title: "Optimization",
-        description: "Maximizing performance and efficiency",
-        readTime: "15 min",
-      },
-      {
-        title: "Cascade Troubleshooting",
-        description: "Common issues and solutions",
-        readTime: "12 min",
-      },
-    ],
-  },
+};
 
-  {
-    category: "Advanced Topics",
-    icon: Users,
-    color: "from-teal-600 to-cyan-600",
-    articles: [
-      {
-        title: "Custom Properties",
-        description: "Working with custom refrigerant properties",
-        readTime: "25 min",
-      },
-      {
-        title: "Batch Processing",
-        description: "Running multiple calculations efficiently",
-        readTime: "15 min",
-      },
-      {
-        title: "Data Export",
-        description: "Exporting and analyzing results",
-        readTime: "10 min",
-      },
-      {
-        title: "Data Integration",
-        description: "Integrating with other engineering tools",
-        readTime: "30 min",
-      },
-    ],
-  },
-];
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
 
-import DocsViewer from "@/components/DocsViewer";
 
 export function Documentation() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -219,204 +104,207 @@ export function Documentation() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-16">
-          <div>
-            <Badge
-              variant="secondary"
-              className="mb-4 text-blue-600 bg-blue-100"
-            >
-              Documentation
-            </Badge>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Engineering
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                {" "}
-                Documentation
-              </span>
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl leading-relaxed">
-              Comprehensive guides, tutorials, and reference materials to help
-              you master HVAC&R calculations and get the most out of our tools.
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <BackButton fallback="/" />
-          </div>
-        </div>
+    <div className="min-h-screen bg-background text-foreground selection:bg-blue-500/30">
+      <Header variant="landing" />
 
-        {/* Search and Navigation */}
-        <div className="mb-12">
-          <div className="flex flex-col md:flex-row gap-4 mb-8">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              <Input
-                ref={searchRef}
-                placeholder="Search documentation (press / to focus)..."
-                aria-label="Search documentation"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 border-blue-200 focus:border-blue-500"
+      {/* Background Elements */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-blue-500/5 blur-[100px]" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-purple-500/5 blur-[100px]" />
+      </div>
+
+      <main className="relative z-10 pt-24 pb-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col md:flex-row items-start justify-between mb-16 gap-8"
+          >
+            <div className="max-w-3xl">
+              <Badge
+                variant="outline"
+                className="mb-6 border-blue-200 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800 backdrop-blur-sm"
+              >
+                Documentation
+              </Badge>
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+                Engineering
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent ml-3">
+                  Knowledge Base
+                </span>
+              </h1>
+              <p className="text-xl text-muted-foreground leading-relaxed">
+                Comprehensive guides, tutorials, and reference materials to help
+                you master HVAC&R calculations and get the most out of our tools.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Search and Navigation */}
+          <div className="mb-12 sticky top-20 z-20 bg-background/80 backdrop-blur-md p-4 rounded-2xl border border-border/50 shadow-sm">
+            <div className="flex flex-col md:flex-row gap-4 mb-6">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                <Input
+                  ref={searchRef}
+                  placeholder="Search documentation (press / to focus)..."
+                  aria-label="Search documentation"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 h-11 text-lg border-input bg-card/50"
+                />
+              </div>
+              {selectedCategory && (
+                <Button
+                  variant="ghost"
+                  onClick={() => setSelectedCategory(null)}
+                  className="shrink-0"
+                >
+                  Clear Filter
+                </Button>
+              )}
+            </div>
+
+            {/* Category Filter */}
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant={selectedCategory === null ? "secondary" : "ghost"}
+                size="sm"
+                className={selectedCategory === null ? "bg-primary/10 text-primary" : "text-muted-foreground"}
+                onClick={() => setSelectedCategory(null)}
+              >
+                All Categories
+              </Button>
+              {documentation.map((category) => {
+                const IconComponent = category.icon;
+                return (
+                  <Button
+                    key={category.category}
+                    variant={
+                      selectedCategory === category.category
+                        ? "secondary"
+                        : "ghost"
+                    }
+                    size="sm"
+                    className={`${selectedCategory === category.category
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground"
+                      }`}
+                    onClick={() =>
+                      setSelectedCategory(
+                        selectedCategory === category.category
+                          ? null
+                          : category.category,
+                      )
+                    }
+                  >
+                    <IconComponent className="h-3 w-3 mr-2" />
+                    {category.category}
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Documentation Content */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid gap-8"
+          >
+            {filteredDocs.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 text-center">
+                <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+                  <Search className="w-8 h-8 text-muted-foreground" />
+                </div>
+                <h3 className="text-lg font-semibold text-foreground">No documentation found</h3>
+                <p className="text-muted-foreground mt-2 max-w-sm">
+                  We're currently updating our knowledge base. Please check back soon for detailed guides and tutorials.
+                </p>
+              </div>
+            ) : (
+              filteredDocs.map((category) => {
+                const IconComponent = category.icon;
+                return (
+                  <motion.div key={category.category} variants={itemVariants}>
+                    <Card
+                      className="bg-card/50 backdrop-blur-sm shadow-sm border-border overflow-hidden"
+                    >
+                      <CardHeader className={`bg-gradient-to-r ${category.gradientClass} border-b border-border py-4`}>
+                        <CardTitle className={`flex items-center text-xl font-semibold ${category.colorClass}`}>
+                          <IconComponent className="h-6 w-6 mr-3" />
+                          {category.category}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-6">
+                        <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-4">
+                          {category.articles.map((article, index) => (
+                            <button
+                              key={index}
+                              onClick={() => setSelectedArticle(article.title)}
+                              className="group text-left p-4 rounded-xl border border-border/50 bg-card hover:border-primary/50 hover:shadow-md hover:bg-muted/50 transition-all duration-300 relative overflow-hidden"
+                            >
+                              <div className="relative z-10">
+                                <div className="flex items-start justify-between mb-2">
+                                  <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors pr-6">
+                                    {article.title}
+                                  </h3>
+                                  <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                                </div>
+                                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                                  {article.description}
+                                </p>
+                                <div className="flex items-center justify-between mt-auto">
+                                  <Badge variant="outline" className="text-xs bg-muted/50 border-border font-normal">
+                                    {article.readTime}
+                                  </Badge>
+                                  <div className="flex items-center text-xs text-muted-foreground group-hover:text-primary transition-colors">
+                                    <FileText className="h-3 w-3 mr-1" />
+                                    Read Article
+                                  </div>
+                                </div>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                );
+              })
+            )}
+          </motion.div>
+
+          {/* Quick Links */}
+          <div className="mt-20">
+            <h2 className="text-2xl font-bold text-center mb-8">More Ways to Learn</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              <QuickLinkCard
+                icon={<Download className="h-8 w-8 text-blue-500" />}
+                title="PDF Guides"
+                description="Download comprehensive guides for offline reading and sharing with your team."
+                action="Download All"
+              />
+              <QuickLinkCard
+                icon={<PlayCircle className="h-8 w-8 text-green-500" />}
+                title="Video Tutorials"
+                description="Watch step-by-step video walkthroughs of complex calculations and workflows."
+                action="Watch Videos"
+              />
+              <QuickLinkCard
+                icon={<Users className="h-8 w-8 text-purple-500" />}
+                title="Community Forum"
+                description="Connect with thousands of other engineers to share tips and solve problems."
+                action="Join Forum"
               />
             </div>
-            <Button
-              variant="outline"
-              className="border-blue-200 hover:bg-blue-50"
-              onClick={() => setSelectedCategory(null)}
-            >
-              All Categories
-            </Button>
-          </div>
-
-          {/* Category Filter */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 mb-8">
-            {documentation.map((category) => {
-              const IconComponent = category.icon;
-              return (
-                <Button
-                  key={category.category}
-                  variant={
-                    selectedCategory === category.category
-                      ? "default"
-                      : "outline"
-                  }
-                  className={`justify-start text-sm h-auto p-3 ${selectedCategory === category.category
-                    ? "bg-blue-600 hover:bg-blue-700"
-                    : "border-gray-200 hover:bg-gray-50"
-                    }`}
-                  onClick={() =>
-                    setSelectedCategory(
-                      selectedCategory === category.category
-                        ? null
-                        : category.category,
-                    )
-                  }
-                >
-                  <IconComponent className="h-4 w-4 mr-2" />
-                  <span className="truncate">{category.category}</span>
-                </Button>
-              );
-            })}
           </div>
         </div>
-
-        {/* Documentation Content */}
-        <div className="grid gap-8">
-          {filteredDocs.map((category) => {
-            const IconComponent = category.icon;
-            return (
-              <Card
-                key={category.category}
-                className="bg-white shadow-lg border-gray-200"
-              >
-                <CardHeader
-                  className={`bg-gradient-to-r ${category.color} text-white`}
-                >
-                  <CardTitle className="flex items-center text-xl">
-                    <IconComponent className="h-6 w-6 mr-3" />
-                    {category.category}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    {category.articles.map((article, index) => (
-                      <div
-                        key={index}
-                        onClick={() => setSelectedArticle(article.title)}
-                        role="button"
-                        tabIndex={0}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter")
-                            setSelectedArticle(article.title);
-                        }}
-                        className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-md transition-all cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
-                      >
-                        <div className="flex items-start justify-between mb-2">
-                          <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-                            {article.title}
-                          </h3>
-                          <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
-                        </div>
-                        <p className="text-sm text-gray-600 mb-2">
-                          {article.description}
-                        </p>
-                        <div className="flex items-center justify-between">
-                          <Badge variant="secondary" className="text-xs">
-                            {article.readTime}
-                          </Badge>
-                          <div className="flex items-center text-xs text-gray-500">
-                            <Book className="h-3 w-3 mr-1" />
-                            Read
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-
-        {/* Quick Links */}
-        <div className="mt-16 grid md:grid-cols-3 gap-8">
-          <Card className="bg-white shadow-lg border-blue-200">
-            <CardContent className="p-6 text-center">
-              <Download className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                PDF Guides
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Download comprehensive guides for offline reading
-              </p>
-              <Button
-                variant="outline"
-                className="border-blue-200 hover:bg-blue-50"
-              >
-                Download All
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white shadow-lg border-green-200">
-            <CardContent className="p-6 text-center">
-              <PlayCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Video Tutorials
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Step-by-step video guides and walkthroughs
-              </p>
-              <Button
-                variant="outline"
-                className="border-green-200 hover:bg-green-50"
-              >
-                Watch Videos
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white shadow-lg border-purple-200">
-            <CardContent className="p-6 text-center">
-              <Users className="h-12 w-12 text-purple-600 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Community Forum
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Get help from other engineers and share knowledge
-              </p>
-              <Button
-                variant="outline"
-                className="border-purple-200 hover:bg-purple-50"
-              >
-                Join Forum
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      </main>
+      <Footer />
 
       {selectedArticle && (
         <DocsViewer
@@ -426,4 +314,23 @@ export function Documentation() {
       )}
     </div>
   );
+}
+
+function QuickLinkCard({ icon, title, description, action }: { icon: any, title: string, description: string, action: string }) {
+  return (
+    <Card className="bg-card/50 backdrop-blur-sm border-border hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group text-center">
+      <CardContent className="p-8 flex flex-col items-center h-full">
+        <div className="p-4 bg-muted/50 rounded-full mb-6 group-hover:scale-110 transition-transform duration-300">
+          {icon}
+        </div>
+        <h3 className="text-lg font-bold text-foreground mb-3">{title}</h3>
+        <p className="text-muted-foreground mb-8 leading-relaxed text-sm">
+          {description}
+        </p>
+        <Button variant="outline" className="mt-auto w-full group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary">
+          {action}
+        </Button>
+      </CardContent>
+    </Card>
+  )
 }

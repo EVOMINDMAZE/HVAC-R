@@ -8,10 +8,11 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Search, MapPin, Calendar, Briefcase, User, FileText, Loader2, ArrowLeft } from "lucide-react";
+import { Plus, Search, MapPin, Calendar, Briefcase, User, FileText, Loader2, ArrowLeft, Filter } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/use-toast";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Job {
     id: string;
@@ -139,204 +140,259 @@ export default function Jobs() {
 
     const getStatusColor = (status: string) => {
         switch (status) {
-            case 'active': return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-800';
-            case 'completed': return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800';
-            case 'pending': return 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 border-amber-200 dark:border-amber-800';
+            case 'active': return 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200 border-blue-200 dark:border-blue-800';
+            case 'completed': return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200 border-emerald-200 dark:border-emerald-800';
+            case 'pending': return 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-200 border-amber-200 dark:border-amber-800';
             default: return 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300';
         }
     };
 
     return (
-        <div className="space-y-8 animate-fade-in">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <Button
-                        variant="ghost"
-                        className="mb-4 pl-0 hover:bg-transparent hover:text-blue-600"
-                        onClick={() => navigate('/dashboard')}
-                    >
-                        <ArrowLeft className="w-4 h-4 mr-2" /> Back
-                    </Button>
-                    <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Job Management</h1>
-                    <p className="text-slate-500 dark:text-slate-400 mt-1">Track and manage your HVAC service jobs</p>
-                </div>
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 hover:-translate-y-0.5">
-                            <Plus className="w-4 h-4 mr-2" /> New Job
+        <div className="min-h-screen bg-background text-foreground animate-in fade-in duration-500">
+            {/* Background Elements */}
+            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-blue-500/5 blur-[100px]" />
+                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-purple-500/5 blur-[100px]" />
+            </div>
+
+            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+                    <div>
+                        <Button
+                            variant="ghost"
+                            className="mb-4 pl-0 hover:bg-transparent hover:text-primary transition-colors -ml-2"
+                            onClick={() => navigate('/dashboard')}
+                        >
+                            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Dashboard
                         </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[500px] glass-card border-0">
-                        <DialogHeader>
-                            <DialogTitle>Create New Job</DialogTitle>
-                            <DialogDescription>
-                                Enter the details for the new service job.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-4 py-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="client-name">Client Name</Label>
-                                    <Input
-                                        id="client-name"
-                                        placeholder="e.g. John Doe"
-                                        value={newJob.client_name}
-                                        onChange={(e) => setNewJob({ ...newJob, client_name: e.target.value })}
-                                        className="glass-input"
-                                    />
+                        <h1 className="text-4xl font-bold tracking-tight text-foreground">Job Management</h1>
+                        <p className="text-muted-foreground mt-2 text-lg">Track, organize, and manage your HVAC service jobs efficiently.</p>
+                    </div>
+
+                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5">
+                                <Plus className="w-5 h-5 mr-2" /> New Job
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[600px] bg-card/95 backdrop-blur-md border-border">
+                            <DialogHeader>
+                                <DialogTitle className="text-2xl">Create New Job</DialogTitle>
+                                <DialogDescription>
+                                    Enter the details for the new service job assignment.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="grid gap-6 py-6">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="client-name">Client Name</Label>
+                                        <Input
+                                            id="client-name"
+                                            placeholder="e.g. John Doe"
+                                            value={newJob.client_name}
+                                            onChange={(e) => setNewJob({ ...newJob, client_name: e.target.value })}
+                                            className="bg-background/50"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="job-name">Job Title</Label>
+                                        <Input
+                                            id="job-name"
+                                            placeholder="e.g. AC Repair - Unit 2"
+                                            value={newJob.job_name}
+                                            onChange={(e) => setNewJob({ ...newJob, job_name: e.target.value })}
+                                            className="bg-background/50"
+                                        />
+                                    </div>
                                 </div>
+
                                 <div className="space-y-2">
-                                    <Label htmlFor="job-name">Job Title</Label>
-                                    <Input
-                                        id="job-name"
-                                        placeholder="e.g. AC Repair"
-                                        value={newJob.job_name}
-                                        onChange={(e) => setNewJob({ ...newJob, job_name: e.target.value })}
-                                        className="glass-input"
+                                    <Label htmlFor="status">Status</Label>
+                                    <Select
+                                        value={newJob.status}
+                                        onValueChange={(val: any) => setNewJob({ ...newJob, status: val })}
+                                    >
+                                        <SelectTrigger className="bg-background/50">
+                                            <SelectValue placeholder="Select status" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="active">Active</SelectItem>
+                                            <SelectItem value="pending">Pending</SelectItem>
+                                            <SelectItem value="completed">Completed</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="address">Service Address</Label>
+                                    <div className="relative">
+                                        <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                        <Input
+                                            id="address"
+                                            placeholder="123 Main St, City, ST"
+                                            value={newJob.address}
+                                            onChange={(e) => setNewJob({ ...newJob, address: e.target.value })}
+                                            className="pl-10 bg-background/50"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="notes">Job Notes</Label>
+                                    <Textarea
+                                        id="notes"
+                                        placeholder="Detailed description of the issue or required service..."
+                                        value={newJob.notes}
+                                        onChange={(e) => setNewJob({ ...newJob, notes: e.target.value })}
+                                        className="min-h-[100px] bg-background/50"
                                     />
                                 </div>
                             </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="status">Status</Label>
-                                <Select
-                                    value={newJob.status}
-                                    onValueChange={(val: any) => setNewJob({ ...newJob, status: val })}
-                                >
-                                    <SelectTrigger className="glass-input">
-                                        <SelectValue placeholder="Select status" />
+                            <DialogFooter>
+                                <Button variant="outline" onClick={() => setIsDialogOpen(false)} disabled={creating}>Cancel</Button>
+                                <Button onClick={handleCreateJob} disabled={creating} className="bg-primary hover:bg-primary/90">
+                                    {creating ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                                    Create Job
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                </div>
+
+                <Card className="bg-card/50 backdrop-blur-sm border-border shadow-sm mb-8">
+                    <CardContent className="p-4">
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <div className="relative flex-1">
+                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                                <Input
+                                    placeholder="Search by job title, client name, or address..."
+                                    className="pl-10 bg-background/50 border-input"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
+                            </div>
+                            <div className="w-full sm:w-[200px]">
+                                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                                    <SelectTrigger className="bg-background/50 border-input">
+                                        <div className="flex items-center">
+                                            <Filter className="w-4 h-4 mr-2 text-muted-foreground" />
+                                            <SelectValue placeholder="Filter by status" />
+                                        </div>
                                     </SelectTrigger>
                                     <SelectContent>
+                                        <SelectItem value="all">All Statuses</SelectItem>
                                         <SelectItem value="active">Active</SelectItem>
                                         <SelectItem value="pending">Pending</SelectItem>
                                         <SelectItem value="completed">Completed</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="address">Address</Label>
-                                <Input
-                                    id="address"
-                                    placeholder="Service location address"
-                                    value={newJob.address}
-                                    onChange={(e) => setNewJob({ ...newJob, address: e.target.value })}
-                                    className="glass-input"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="notes">Notes</Label>
-                                <Textarea
-                                    id="notes"
-                                    placeholder="Additional job details..."
-                                    value={newJob.notes}
-                                    onChange={(e) => setNewJob({ ...newJob, notes: e.target.value })}
-                                    className="glass-input min-h-[100px]"
-                                />
-                            </div>
                         </div>
-                        <DialogFooter>
-                            <Button variant="outline" onClick={() => setIsDialogOpen(false)} disabled={creating}>Cancel</Button>
-                            <Button onClick={handleCreateJob} disabled={creating} className="bg-primary text-white">
-                                {creating ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                                Create Job
-                            </Button>
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-                <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-                    <Input
-                        placeholder="Search jobs, clients, or addresses..."
-                        className="pl-10 glass-input w-full"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                </div>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-full sm:w-[180px] glass-input">
-                        <SelectValue placeholder="Filter by status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="all">All Statuses</SelectItem>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="completed">Completed</SelectItem>
-                    </SelectContent>
-                </Select>
-            </div>
-
-            {loading ? (
-                <div className="flex justify-center py-12">
-                    <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                </div>
-            ) : filteredJobs.length === 0 ? (
-                <Card className="glass-card border-dashed border-2 border-slate-200 dark:border-slate-700 bg-transparent">
-                    <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-                        <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4">
-                            <Briefcase className="w-8 h-8 text-slate-400" />
-                        </div>
-                        <h3 className="text-lg font-medium text-slate-900 dark:text-white">No jobs found</h3>
-                        <p className="text-slate-500 dark:text-slate-400 mt-1 max-w-sm">
-                            {searchTerm || statusFilter !== 'all'
-                                ? "Try adjusting your search or filters to find what you're looking for."
-                                : "Get started by creating your first service job to track your work."}
-                        </p>
-                        {!searchTerm && statusFilter === 'all' && (
-                            <Button
-                                variant="outline"
-                                className="mt-6 border-primary/20 text-primary hover:bg-primary/5"
-                                onClick={() => setIsDialogOpen(true)}
-                            >
-                                <Plus className="w-4 h-4 mr-2" /> Create First Job
-                            </Button>
-                        )}
                     </CardContent>
                 </Card>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredJobs.map((job) => (
-                        <Card key={job.id} className="glass-card border-0 hover:shadow-xl transition-all duration-300 group">
-                            <CardHeader className="pb-3">
-                                <div className="flex justify-between items-start">
-                                    <Badge className={`${getStatusColor(job.status)} border px-2.5 py-0.5 capitalize shadow-sm`}>
-                                        {job.status}
-                                    </Badge>
-                                    <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <FileText className="w-4 h-4 text-slate-400" />
-                                    </Button>
-                                </div>
-                                <CardTitle className="text-lg font-bold text-slate-900 dark:text-white mt-2 line-clamp-1">
-                                    {job.job_name}
-                                </CardTitle>
-                                <CardDescription className="flex items-center mt-1">
-                                    <User className="w-3.5 h-3.5 mr-1.5" />
-                                    {job.client_name}
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                {job.address && (
-                                    <div className="flex items-start text-sm text-slate-500 dark:text-slate-400">
-                                        <MapPin className="w-3.5 h-3.5 mr-1.5 mt-0.5 shrink-0" />
-                                        <span className="line-clamp-2">{job.address}</span>
-                                    </div>
-                                )}
 
-                                <div className="pt-4 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between text-xs text-slate-400">
-                                    <div className="flex items-center">
-                                        <Calendar className="w-3.5 h-3.5 mr-1.5" />
-                                        {new Date(job.created_at).toLocaleDateString()}
-                                    </div>
-                                    {job.photos && job.photos.length > 0 && (
-                                        <span>{job.photos.length} photos</span>
-                                    )}
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
-            )}
+                {loading ? (
+                    <div className="flex flex-col items-center justify-center py-24">
+                        <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
+                        <p className="text-muted-foreground">Loading your jobs...</p>
+                    </div>
+                ) : (
+                    <div className="min-h-[300px]">
+                        <AnimatePresence mode="popLayout">
+                            {filteredJobs.length === 0 ? (
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                >
+                                    <Card className="bg-card/30 border-dashed border-2 border-muted flex flex-col items-center justify-center text-center py-16">
+                                        <div className="w-20 h-20 rounded-full bg-muted/50 flex items-center justify-center mb-6">
+                                            <Briefcase className="w-10 h-10 text-muted-foreground" />
+                                        </div>
+                                        <h3 className="text-xl font-semibold text-foreground mb-2">No jobs found</h3>
+                                        <p className="text-muted-foreground max-w-sm mx-auto mb-8">
+                                            {searchTerm || statusFilter !== 'all'
+                                                ? "We couldn't find any jobs matching your current filters."
+                                                : "Get started by creating a new job assignment for your team."}
+                                        </p>
+                                        {!searchTerm && statusFilter === 'all' && (
+                                            <Button onClick={() => setIsDialogOpen(true)}>
+                                                Create your first job
+                                            </Button>
+                                        )}
+                                    </Card>
+                                </motion.div>
+                            ) : (
+                                <motion.div
+                                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                                    layout
+                                >
+                                    {filteredJobs.map((job) => (
+                                        <motion.div
+                                            key={job.id}
+                                            layout
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, scale: 0.95 }}
+                                            transition={{ duration: 0.2 }}
+                                        >
+                                            <Card className="h-full bg-card/60 backdrop-blur-sm border-border hover:shadow-xl hover:bg-card/80 transition-all duration-300 group cursor-pointer hover:-translate-y-1">
+                                                <CardHeader className="pb-3">
+                                                    <div className="flex justify-between items-start mb-2">
+                                                        <Badge variant="outline" className={`${getStatusColor(job.status)} border px-2.5 py-0.5 capitalize shadow-sm font-medium`}>
+                                                            {job.status}
+                                                        </Badge>
+                                                        <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-muted">
+                                                            <FileText className="w-4 h-4 text-muted-foreground" />
+                                                        </Button>
+                                                    </div>
+                                                    <CardTitle className="text-xl font-bold text-foreground line-clamp-1 group-hover:text-primary transition-colors">
+                                                        {job.job_name}
+                                                    </CardTitle>
+                                                    <div className="flex items-center mt-1 text-sm text-muted-foreground">
+                                                        <User className="w-3.5 h-3.5 mr-1.5" />
+                                                        <span className="font-medium">{job.client_name}</span>
+                                                    </div>
+                                                </CardHeader>
+                                                <CardContent>
+                                                    <div className="space-y-4">
+                                                        {job.address ? (
+                                                            <div className="flex items-start text-sm text-muted-foreground bg-muted/30 p-2.5 rounded-lg">
+                                                                <MapPin className="w-3.5 h-3.5 mr-2 mt-0.5 shrink-0 text-primary" />
+                                                                <span className="line-clamp-2">{job.address}</span>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="h-[42px] flex items-center text-sm text-muted-foreground/50 italic px-2">
+                                                                No address provided
+                                                            </div>
+                                                        )}
+
+                                                        <div className="pt-4 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
+                                                            <div className="flex items-center">
+                                                                <Calendar className="w-3.5 h-3.5 mr-1.5" />
+                                                                {new Date(job.created_at).toLocaleDateString(undefined, {
+                                                                    year: 'numeric',
+                                                                    month: 'short',
+                                                                    day: 'numeric'
+                                                                })}
+                                                            </div>
+                                                            {job.photos && job.photos.length > 0 && (
+                                                                <Badge variant="secondary" className="text-xs">
+                                                                    {job.photos.length} photos
+                                                                </Badge>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </CardContent>
+                                            </Card>
+                                        </motion.div>
+                                    ))}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

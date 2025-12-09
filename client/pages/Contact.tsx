@@ -14,7 +14,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Mail, Phone, MapPin, Clock, Send } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, Send, MessageSquare, Building2, User } from "lucide-react";
+import { motion } from "framer-motion";
+
+const fadeInUp = {
+  initial: { opacity: 0, y: 30 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5, ease: "easeOut" },
+};
 
 export function Contact() {
   const [formData, setFormData] = useState({
@@ -37,230 +44,220 @@ export function Contact() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-background text-foreground selection:bg-blue-500/30">
       <Header variant="landing" />
 
-      {/* Warm/Thermo Background */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-100/50 blur-[100px] animate-pulse" />
-        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-red-100/40 blur-[100px] animate-pulse delay-1000" />
-        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-indigo-100/30 blur-[100px] animate-pulse delay-2000" />
-      </div>
+      <main className="flex-grow pt-24 pb-20 px-4 relative overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute top-0 inset-x-0 h-[600px] bg-gradient-to-b from-blue-50/50 to-transparent dark:from-blue-900/10 dark:to-transparent pointer-events-none -z-10" />
+        <div className="absolute top-[10%] right-[-10%] w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-[20%] left-[-10%] w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 py-16">
-        {/* Hero Section */}
-        <div className="text-center mb-16">
-          <Badge variant="secondary" className="mb-4 text-blue-700 bg-blue-100 border-blue-200">
-            Get in Touch
-          </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-            Contact
-            <span className="bg-gradient-to-r from-blue-600 to-red-600 bg-clip-text text-transparent">
-              {" "}
-              ThermoNeural
-            </span>
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Have questions about our tools, need technical support, or want to
-            discuss enterprise solutions? We're here to help.
-          </p>
-        </div>
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <motion.div
+            initial="initial"
+            animate="animate"
+            variants={fadeInUp}
+            className="text-center mb-16 max-w-3xl mx-auto"
+          >
+            <Badge variant="outline" className="mb-6 border-blue-200 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800 backdrop-blur-sm">
+              Get in Touch
+            </Badge>
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+              Let's Start a <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                Conversation
+              </span>
+            </h1>
+            <p className="text-xl text-muted-foreground leading-relaxed">
+              Have questions about our thermodynamic tools, need technical support, or want to discuss enterprise solutions? We're here to help.
+            </p>
+          </motion.div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Contact Form */}
-          <div className="lg:col-span-2">
-            <Card className="bg-card/80 backdrop-blur-sm shadow-lg border-border">
-              <CardHeader className="bg-slate-900 text-white dark:bg-slate-950">
-                <CardTitle className="flex items-center">
-                  <Send className="h-5 w-5 mr-2" />
-                  Send us a Message
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Contact Form */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="lg:col-span-2"
+            >
+              <Card className="bg-card/50 backdrop-blur-md shadow-xl border-border overflow-hidden">
+                <CardHeader className="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-8">
+                  <CardTitle className="flex items-center text-xl">
+                    <Send className="h-5 w-5 mr-3 text-blue-400" />
+                    Send us a Message
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-8">
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
+                        <div className="relative">
+                          <User className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            id="name"
+                            placeholder="John Doe"
+                            className="pl-10 bg-background/50 border-input focus:border-blue-500 focus:ring-blue-500 transition-all"
+                            value={formData.name}
+                            onChange={(e) => handleInputChange("name", e.target.value)}
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email" className="text-sm font-medium">Email Address</Label>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            id="email"
+                            type="email"
+                            placeholder="john@example.com"
+                            className="pl-10 bg-background/50 border-input focus:border-blue-500 focus:ring-blue-500 transition-all"
+                            value={formData.email}
+                            onChange={(e) => handleInputChange("email", e.target.value)}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="company" className="text-sm font-medium">Company</Label>
+                        <div className="relative">
+                          <Building2 className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            id="company"
+                            placeholder="Acme Inc."
+                            className="pl-10 bg-background/50 border-input focus:border-blue-500 focus:ring-blue-500 transition-all"
+                            value={formData.company}
+                            onChange={(e) => handleInputChange("company", e.target.value)}
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="category" className="text-sm font-medium">Inquiry Type</Label>
+                        <Select
+                          value={formData.category}
+                          onValueChange={(value) => handleInputChange("category", value)}
+                        >
+                          <SelectTrigger className="bg-background/50 border-input focus:border-blue-500 focus:ring-blue-500 transition-all">
+                            <SelectValue placeholder="Select a topic" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="technical">Technical Support</SelectItem>
+                            <SelectItem value="sales">Sales Inquiry</SelectItem>
+                            <SelectItem value="enterprise">Enterprise Solutions</SelectItem>
+                            <SelectItem value="partnership">Partnership</SelectItem>
+                            <SelectItem value="feedback">Product Feedback</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
                     <div className="space-y-2">
-                      <Label htmlFor="name">Full Name *</Label>
+                      <Label htmlFor="subject" className="text-sm font-medium">Subject</Label>
                       <Input
-                        id="name"
-                        value={formData.name}
-                        onChange={(e) =>
-                          handleInputChange("name", e.target.value)
-                        }
-                        className="border-input focus:border-blue-500 focus:ring-blue-500"
+                        id="subject"
+                        placeholder="How can we help?"
+                        className="bg-background/50 border-input focus:border-blue-500 focus:ring-blue-500 transition-all"
+                        value={formData.subject}
+                        onChange={(e) => handleInputChange("subject", e.target.value)}
                         required
                       />
                     </div>
+
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email Address *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) =>
-                          handleInputChange("email", e.target.value)
-                        }
-                        className="border-input focus:border-blue-500 focus:ring-blue-500"
+                      <Label htmlFor="message" className="text-sm font-medium">Message</Label>
+                      <Textarea
+                        id="message"
+                        value={formData.message}
+                        onChange={(e) => handleInputChange("message", e.target.value)}
+                        className="min-h-[150px] bg-background/50 border-input focus:border-blue-500 focus:ring-blue-500 transition-all resize-none"
+                        placeholder="Please provide details about your inquiry..."
                         required
                       />
                     </div>
-                  </div>
 
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="company">Company</Label>
-                      <Input
-                        id="company"
-                        value={formData.company}
-                        onChange={(e) =>
-                          handleInputChange("company", e.target.value)
-                        }
-                        className="border-input focus:border-blue-500 focus:ring-blue-500"
-                      />
+                    <Button
+                      type="submit"
+                      className="w-full h-12 text-lg bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/20 rounded-xl"
+                    >
+                      Send Message
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Contact Information */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+              className="space-y-6"
+            >
+              <Card className="bg-card/50 backdrop-blur-md shadow-lg border-border h-fit">
+                <CardHeader>
+                  <CardTitle>Contact Information</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-8">
+                  <div className="flex items-start group">
+                    <div className="mt-1 bg-blue-100 dark:bg-blue-900/30 p-3 rounded-xl mr-4 group-hover:scale-110 transition-transform">
+                      <Mail className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="category">Inquiry Type *</Label>
-                      <Select
-                        value={formData.category}
-                        onValueChange={(value) =>
-                          handleInputChange("category", value)
-                        }
-                      >
-                        <SelectTrigger className="border-input focus:border-blue-500 focus:ring-blue-500">
-                          <SelectValue placeholder="Select category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="technical">
-                            Technical Support
-                          </SelectItem>
-                          <SelectItem value="sales">Sales Inquiry</SelectItem>
-                          <SelectItem value="enterprise">
-                            Enterprise Solutions
-                          </SelectItem>
-                          <SelectItem value="partnership">
-                            Partnership
-                          </SelectItem>
-                          <SelectItem value="feedback">
-                            Product Feedback
-                          </SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-1">Technical Support</h3>
+                      <p className="text-sm text-muted-foreground mb-2">For account assistance & bugs.</p>
+                      <a href="mailto:support@thermoneural.com" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium hover:underline">
+                        support@thermoneural.com
+                      </a>
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="subject">Subject *</Label>
-                    <Input
-                      id="subject"
-                      value={formData.subject}
-                      onChange={(e) =>
-                        handleInputChange("subject", e.target.value)
-                      }
-                      className="border-input focus:border-orange-500 focus:ring-orange-500"
-                      required
-                    />
+                  <div className="w-full h-px bg-border" />
+
+                  <div className="flex items-start group">
+                    <div className="mt-1 bg-purple-100 dark:bg-purple-900/30 p-3 rounded-xl mr-4 group-hover:scale-110 transition-transform">
+                      <MessageSquare className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground mb-1">General Inquiries</h3>
+                      <p className="text-sm text-muted-foreground mb-2">For demos & enterprise sales.</p>
+                      <a href="mailto:hello@thermoneural.com" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium hover:underline">
+                        hello@thermoneural.com
+                      </a>
+                    </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="message">Message *</Label>
-                    <Textarea
-                      id="message"
-                      value={formData.message}
-                      onChange={(e) =>
-                        handleInputChange("message", e.target.value)
-                      }
-                      className="border-input focus:border-orange-500 focus:ring-orange-500 min-h-[120px]"
-                      placeholder="Please provide details about your inquiry..."
-                      required
-                    />
-                  </div>
+                  <div className="w-full h-px bg-border" />
 
-                  <Button
-                    type="submit"
-                    className="w-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200"
-                  >
-                    <Send className="h-4 w-4 mr-2" />
-                    Send Message
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Contact Information */}
-          <div className="space-y-6">
-            <Card className="bg-card/80 backdrop-blur-sm shadow-lg border-border">
-              <CardHeader className="bg-gradient-to-r from-blue-600 to-red-600 text-white">
-                <CardTitle>Contact Information</CardTitle>
-              </CardHeader>
-              <CardContent className="p-6 space-y-6">
-                <div className="flex items-start space-x-4">
-                  <div className="mt-1 bg-blue-100/10 p-2 rounded-lg">
-                    <Mail className="h-6 w-6 text-blue-500" />
+                  <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-5 border border-slate-100 dark:border-slate-800">
+                    <h4 className="font-semibold mb-3 flex items-center">
+                      <Clock className="w-4 h-4 mr-2 text-muted-foreground" />
+                      Response Times
+                    </h4>
+                    <ul className="space-y-3">
+                      <li className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Technical Support</span>
+                        <span className="font-medium text-green-600 dark:text-green-400">&lt; 24 hrs</span>
+                      </li>
+                      <li className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Sales Inquiries</span>
+                        <span className="font-medium text-blue-600 dark:text-blue-400">&lt; 48 hrs</span>
+                      </li>
+                    </ul>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground mb-1">Technical Support</h3>
-                    <p className="text-sm text-muted-foreground mb-2">For account assistance, bug reports, and technical inquiries.</p>
-                    <a href="mailto:support@thermoneural.com" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium">
-                      support@thermoneural.com
-                    </a>
-                  </div>
-                </div>
-
-                <div className="w-full h-px bg-slate-100" />
-
-                <div className="flex items-start space-x-4">
-                  <div className="mt-1 bg-red-100/10 p-2 rounded-lg">
-                    <Send className="h-6 w-6 text-red-500" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground mb-1">Inquiries & Partnerships</h3>
-                    <p className="text-sm text-muted-foreground mb-2">For demos, enterprise solutions, and general questions.</p>
-                    <a href="mailto:hello@thermoneural.com" className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium">
-                      hello@thermoneural.com
-                    </a>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-card/80 backdrop-blur-sm shadow-lg border-border">
-              <CardHeader className="bg-slate-800 text-white">
-                <CardTitle>Quick Response</CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  <div>
-                    <p className="font-medium text-foreground mb-2">
-                      Technical Support
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Priority assistance for all technical issues.
-                    </p>
-                  </div>
-                  <div>
-                    <p className="font-medium text-foreground mb-2">
-                      Sales Inquiries
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Get a custom quote or schedule a demo.
-                    </p>
-                  </div>
-                  <div>
-                    <p className="font-medium text-foreground mb-2">
-                      Enterprise Solutions
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Scalable solutions for large engineering teams.
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
         </div>
-      </div>
+      </main>
       <Footer />
     </div>
   );

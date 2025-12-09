@@ -20,9 +20,8 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -125,26 +124,6 @@ function HeroSection() {
 
 function ProductPreview() {
   const [activeTab, setActiveTab] = useState("overview");
-  const [data, setData] = useState([
-    { name: '0s', value: 400 }, { name: '10s', value: 300 }, { name: '20s', value: 200 },
-    { name: '30s', value: 278 }, { name: '40s', value: 189 }, { name: '50s', value: 239 },
-    { name: '60s', value: 349 },
-  ]);
-
-  // Simulate live data
-  useEffect(() => {
-    if (activeTab !== "overview") return;
-    const interval = setInterval(() => {
-      setData(prev => {
-        const lastValue = prev[prev.length - 1].value;
-        const newValue = Math.max(100, Math.min(500, lastValue + (Math.random() - 0.5) * 100));
-        const newTime = parseInt(prev[prev.length - 1].name) + 10 + 's';
-        const newArray = [...prev.slice(1), { name: newTime, value: newValue }];
-        return newArray;
-      });
-    }, 2000);
-    return () => clearInterval(interval);
-  }, [activeTab]);
 
   return (
     <section className="py-24 px-4 relative z-10 overflow-hidden">
@@ -161,7 +140,7 @@ function ProductPreview() {
           </Badge>
           <h2 className="text-3xl md:text-5xl font-bold mb-4">Experience the Power</h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Try the interactive dashboard below. See how ThermoNeural visualizes complex thermodynamic data in real-time.
+            Try the interactive dashboard below. See how ThermoNeural visualizes complex thermodynamic data.
           </p>
         </motion.div>
 
@@ -232,12 +211,12 @@ function ProductPreview() {
                     animate={{ opacity: 1, scale: 1 }}
                     className="h-full flex flex-col gap-6"
                   >
-                    {/* Stats Row */}
+                    {/* Stats Row - REPLACED MOCK DATA WITH FEATURE DESCRIPTIONS */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       {[
-                        { label: "System Efficiency", value: "94.2%", trend: "+2.4%", color: "text-emerald-400" },
-                        { label: "Power Consumption", value: "482 kW", trend: "-1.2%", color: "text-blue-400" },
-                        { label: "Active Cycles", value: "12", trend: "Running", color: "text-amber-400" },
+                        { label: "Efficiency Tracking", value: "Real-Time", trend: "COP Analysis", color: "text-emerald-400" },
+                        { label: "Power Monitoring", value: "kW / Ton", trend: "Energy Usage", color: "text-blue-400" },
+                        { label: "Cycle Management", value: "Multi-Stage", trend: "Status Monitor", color: "text-amber-400" },
                       ].map((stat, i) => (
                         <div key={i} className="p-4 rounded-xl bg-slate-900 border border-slate-800">
                           <div className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">{stat.label}</div>
@@ -249,53 +228,25 @@ function ProductPreview() {
                       ))}
                     </div>
 
-                    {/* Chart Area */}
-                    <div className="flex-1 rounded-xl bg-slate-900 border border-slate-800 p-4 min-h-0 flex flex-col">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="font-semibold text-slate-200">Real-time Performance</h3>
-                        <div className="flex gap-2">
-                          <div className="px-2 py-1 rounded bg-slate-800 text-xs text-slate-300 border border-slate-700">Live</div>
-                        </div>
+                    {/* Chart Area - REPLACED MOCK DATA VISUALIZATION WITH STATIC FEATURE PREVIEW */}
+                    <div className="flex-1 rounded-xl bg-slate-900 border border-slate-800 p-4 min-h-0 flex flex-col items-center justify-center text-center space-y-4 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent pointer-events-none" />
+                      <div className="relative z-10 p-6 rounded-full bg-slate-800/50 border border-slate-700">
+                        <BarChart className="w-12 h-12 text-blue-500" />
                       </div>
-                      <div className="flex-1 w-full min-h-0">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <AreaChart data={data}>
-                            <defs>
-                              <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
-                              </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
-                            <XAxis
-                              dataKey="name"
-                              stroke="#64748b"
-                              tick={{ fontSize: 12 }}
-                              tickLine={false}
-                              axisLine={false}
-                            />
-                            <YAxis
-                              stroke="#64748b"
-                              tick={{ fontSize: 12 }}
-                              tickLine={false}
-                              axisLine={false}
-                              domain={[0, 600]}
-                            />
-                            <Tooltip
-                              contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', color: '#f1f5f9' }}
-                              itemStyle={{ color: '#60a5fa' }}
-                            />
-                            <Area
-                              type="monotone"
-                              dataKey="value"
-                              stroke="#3b82f6"
-                              strokeWidth={3}
-                              fillOpacity={1}
-                              fill="url(#colorValue)"
-                              animationDuration={1000}
-                            />
-                          </AreaChart>
-                        </ResponsiveContainer>
+                      <div className="relative z-10 max-w-md">
+                        <h3 className="text-xl font-semibold text-slate-100 mb-2">Real-Time Analytics Engine</h3>
+                        <p className="text-slate-400">
+                          Connect your equipment sensors to visualize pressure-enthalpy diagrams, temperature curves, and efficiency metrics instantly.
+                        </p>
+                      </div>
+                      <div className="flex gap-3 relative z-10">
+                        <Button size="sm" variant="outline" className="border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white" disabled>
+                          Connect Sensor
+                        </Button>
+                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white" disabled>
+                          View Sample
+                        </Button>
                       </div>
                     </div>
                   </motion.div>

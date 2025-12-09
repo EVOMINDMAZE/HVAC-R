@@ -23,12 +23,29 @@ import {
   FileText,
   Mail,
   Globe,
+  Layers,
+  Cpu,
 } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+
+const fadeInUp = {
+  initial: { opacity: 0, y: 30 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5, ease: "easeOut" },
+};
+
+const staggerContainer = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
 
 export function Features() {
   const coreFeatures = [
     {
-      icon: <Calculator className="h-12 w-12 text-orange-600" />,
+      icon: <Calculator className="h-8 w-8 text-blue-500" />,
       title: "Standard Cycle Analysis",
       description:
         "Complete thermodynamic analysis of vapor compression refrigeration cycles with detailed state point calculations.",
@@ -41,7 +58,7 @@ export function Features() {
       ],
     },
     {
-      icon: <TrendingUp className="h-12 w-12 text-red-600" />,
+      icon: <TrendingUp className="h-8 w-8 text-emerald-500" />,
       title: "Refrigerant Comparison",
       description:
         "Side-by-side performance comparison of different refrigerants under identical operating conditions.",
@@ -54,7 +71,7 @@ export function Features() {
       ],
     },
     {
-      icon: <BarChart3 className="h-12 w-12 text-amber-600" />,
+      icon: <Layers className="h-8 w-8 text-purple-500" />,
       title: "Cascade Systems",
       description:
         "Advanced analysis of two-stage cascade refrigeration systems for ultra-low temperature applications.",
@@ -70,305 +87,264 @@ export function Features() {
 
   const professionalFeatures = [
     {
-      icon: <Database className="h-8 w-8 text-orange-600" />,
+      icon: <Database className="h-6 w-6 text-blue-500" />,
       title: "Calculation History",
       description:
         "Comprehensive database of all your calculations with powerful search and organization tools.",
     },
     {
-      icon: <Download className="h-8 w-8 text-orange-600" />,
+      icon: <Download className="h-6 w-6 text-green-500" />,
       title: "Export Capabilities",
       description:
         "Export results to PDF, Excel, or JSON formats for reporting and further analysis.",
     },
     {
-      icon: <Shield className="h-8 w-8 text-orange-600" />,
+      icon: <Shield className="h-6 w-6 text-red-500" />,
       title: "Data Security",
       description:
-        "Enterprise-grade security with encrypted data storage.",
+        "Enterprise-grade security with encrypted data storage and backup.",
     },
     {
-      icon: <Zap className="h-8 w-8 text-orange-600" />,
+      icon: <Zap className="h-6 w-6 text-amber-500" />,
       title: "High-Speed Calculations",
       description:
         "Optimized algorithms providing instant results even for complex multi-variable analyses.",
     },
     {
-      icon: <Users className="h-8 w-8 text-orange-600" />,
+      icon: <Users className="h-6 w-6 text-indigo-500" />,
       title: "Team Collaboration",
       description:
-        "Share calculations and collaborate with team members on projects.",
+        "Share calculations and collaborate with team members on projects seamlessly.",
     },
     {
-      icon: <Clock className="h-8 w-8 text-orange-600" />,
+      icon: <Clock className="h-6 w-6 text-slate-500" />,
       title: "Project Management",
       description:
-        "Organize calculations into projects and track progress over time.",
+        "Organize calculations into projects and track progress over time with ease.",
     },
   ];
 
   const technicalSpecs = [
     {
       title: "Thermodynamics",
+      color: "text-blue-400",
       items: [
-        { icon: <Thermometer className="h-5 w-5 text-orange-500" />, text: "NIST Refprop Interface" },
-        { icon: <Gauge className="h-5 w-5 text-orange-500" />, text: "Real Gas Equations of State" },
-        { icon: <Settings className="h-5 w-5 text-orange-500" />, text: "Transport Properties" },
-        { icon: <CheckCircle className="h-5 w-5 text-orange-500" />, text: "Mixture Properties" },
+        { icon: <Thermometer className="h-4 w-4" />, text: "NIST Refprop Interface" },
+        { icon: <Gauge className="h-4 w-4" />, text: "Real Gas Equations of State" },
+        { icon: <Settings className="h-4 w-4" />, text: "Transport Properties" },
+        { icon: <CheckCircle className="h-4 w-4" />, text: "Mixture Properties" },
       ],
     },
     {
       title: "Reporting",
+      color: "text-emerald-400",
       items: [
-        { icon: <FileText className="h-5 w-5 text-orange-500" />, text: "Professional PDF Reports" },
-        { icon: <LineChart className="h-5 w-5 text-orange-500" />, text: "Interactive Phase Diagrams" },
-        { icon: <Database className="h-5 w-5 text-orange-500" />, text: "CSV/Excel Data Export" },
-        { icon: <Globe className="h-5 w-5 text-orange-500" />, text: "Cloud Synchronization" },
+        { icon: <FileText className="h-4 w-4" />, text: "Professional PDF Reports" },
+        { icon: <LineChart className="h-4 w-4" />, text: "Interactive Phase Diagrams" },
+        { icon: <Database className="h-4 w-4" />, text: "CSV/Excel Data Export" },
+        { icon: <Globe className="h-4 w-4" />, text: "Cloud Synchronization" },
       ],
     },
     {
       title: "Support",
+      color: "text-amber-400",
       items: [
-        { icon: <Mail className="h-5 w-5 text-orange-500" />, text: "Priority Email Support" },
-        { icon: <Users className="h-5 w-5 text-orange-500" />, text: "Community Access" },
-        { icon: <FileText className="h-5 w-5 text-orange-500" />, text: "Comprehensive Documentation" },
-        { icon: <Zap className="h-5 w-5 text-orange-500" />, text: "Video Tutorials" },
-      ],
-    },
-  ];
-
-  const industryApplications = [
-    {
-      icon: <Thermometer className="h-8 w-8 text-orange-600" />,
-      title: "HVAC Systems",
-      description:
-        "Design and optimize commercial and residential air conditioning systems.",
-      items: [
-        "Chiller optimization",
-        "Heat load calculations",
-        "System sizing",
-      ],
-    },
-    {
-      icon: <Gauge className="h-8 w-8 text-red-600" />,
-      title: "Industrial Refrigeration",
-      description:
-        "Large-scale refrigeration for food processing, chemical storage, and manufacturing.",
-      items: [
-        "Cold storage design",
-        "Process cooling",
-        "Energy efficiency audits",
-      ],
-    },
-    {
-      icon: <Settings className="h-8 w-8 text-amber-600" />,
-      title: "Heat Pumps",
-      description:
-        "Analysis and optimization of heat pump systems for heating and cooling applications.",
-      items: [
-        "COP improvement",
-        "Alternative refrigerants",
-        "System retrofitting",
+        { icon: <Mail className="h-4 w-4" />, text: "Priority Email Support" },
+        { icon: <Users className="h-4 w-4" />, text: "Community Access" },
+        { icon: <FileText className="h-4 w-4" />, text: "Comprehensive Documentation" },
+        { icon: <Zap className="h-4 w-4" />, text: "Video Tutorials" },
       ],
     },
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-orange-100 selection:text-orange-900">
+    <div className="min-h-screen bg-background text-foreground selection:bg-blue-500/30">
       <Header variant="landing" />
 
-      {/* Warm/Thermo Background */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-orange-100/50 blur-[100px] animate-pulse" />
-        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-amber-100/40 blur-[100px] animate-pulse delay-1000" />
-        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-red-100/30 blur-[100px] animate-pulse delay-2000" />
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-4 py-16">
+      <main className="flex-grow pt-24">
         {/* Hero Section */}
-        <div className="text-center mb-20">
-          <Badge variant="secondary" className="mb-6 text-orange-700 bg-orange-100 border-orange-200">
-            Professional HVAC&R Engineering Software
-          </Badge>
-          <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6">
-            Powerful Features for
-            <span className="bg-gradient-to-r from-orange-600 via-red-600 to-amber-600 bg-clip-text text-transparent">
-              {" "}
-              Modern Engineers
-            </span>
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Everything you need to analyze, optimize, and validate refrigeration
-            systems in one professional platform.
-          </p>
+        <section className="relative px-4 pb-20 pt-10 overflow-hidden">
+          {/* Background Elements */}
+          <div className="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-b from-slate-50/50 to-transparent dark:from-slate-900/20 dark:to-transparent pointer-events-none -z-10" />
+          <div className="absolute top-[20%] right-[-10%] w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none" />
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-            <Link to="/signup">
-              <Button size="lg" className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-6 text-lg h-auto shadow-lg shadow-orange-900/10 mb-4 sm:mb-0">
-                Start Free Trial
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          </div>
-        </div>
+          <div className="max-w-7xl mx-auto text-center">
+            <motion.div
+              initial="initial"
+              animate="animate"
+              variants={staggerContainer}
+              className="max-w-3xl mx-auto"
+            >
+              <motion.div variants={fadeInUp}>
+                <Badge variant="outline" className="mb-6 border-blue-200 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800 backdrop-blur-sm">
+                  <Cpu className="w-3 h-3 mr-2" />
+                  Powerful Calculation Engines
+                </Badge>
+              </motion.div>
 
-        {/* Core Features */}
-        <section className="mb-32">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-foreground mb-4">
-              Core Calculation Engines
-            </h2>
-            <p className="text-xl text-muted-foreground">
-              Industry-standard thermodynamic calculations with unmatched
-              accuracy
-            </p>
-          </div>
-
-          <div className="grid lg:grid-cols-3 gap-8">
-            {coreFeatures.map((feature, index) => (
-              <Card
-                key={index}
-                className="border-border shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-card/80 backdrop-blur-sm"
+              <motion.h1
+                variants={fadeInUp}
+                className="text-5xl md:text-7xl font-bold tracking-tight mb-8"
               >
-                <CardHeader className="text-center pb-4">
-                  <div className="flex justify-center mb-4 p-3 bg-orange-50 dark:bg-orange-950/30 rounded-2xl w-fit mx-auto">
-                    {feature.icon}
-                  </div>
-                  <CardTitle className="text-2xl text-foreground">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground mb-6 leading-relaxed">{feature.description}</p>
-                  <ul className="space-y-3">
-                    {feature.features.map((item, idx) => (
-                      <li key={idx} className="flex items-start text-muted-foreground">
-                        <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0" />
-                        <span className="text-sm">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            ))}
+                Features designed for <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-500 to-emerald-500">
+                  Modern Engineering
+                </span>
+              </motion.h1>
+
+              <motion.p
+                variants={fadeInUp}
+                className="text-xl text-muted-foreground leading-relaxed mb-10"
+              >
+                From simple cycle validation to complex system optimization, ThermoNeural gives you the toolkit to solve thermodynamic problems with confidence.
+              </motion.p>
+
+              <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link to="/signup">
+                  <Button size="lg" className="h-14 px-8 text-lg rounded-full bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-500/20">
+                    Start Calculating
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+              </motion.div>
+            </motion.div>
           </div>
         </section>
 
-        {/* Professional Tools Section */}
-        <section className="mb-32">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              Professional Engineering Tools
-            </h2>
-            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Built for accuracy, speed, and collaboration.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {professionalFeatures.map((feature, index) => (
-              <div
-                key={index}
-                className="flex flex-col p-6 rounded-2xl bg-card border border-border shadow-sm hover:shadow-md transition-shadow"
-              >
-                <div className="mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-muted-foreground">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Technical Specs */}
-        <div className="rounded-3xl bg-slate-900 text-white p-8 md:p-12 mb-32 overflow-hidden relative">
-          <div className="absolute top-0 right-0 p-12 opacity-10">
-            <Calculator className="w-64 h-64" />
-          </div>
-
-          <div className="relative z-10">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Technical Specifications</h2>
-              <p className="text-slate-300">
-                Powered by industry-standard libraries and validated models
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {technicalSpecs.map((spec, index) => (
-                <div key={index} className="bg-slate-800/50 rounded-xl p-6 backdrop-blur">
-                  <h3 className="text-xl font-semibold mb-6 flex items-center">
-                    {spec.title}
-                  </h3>
-                  <ul className="space-y-4">
-                    {spec.items.map((item, i) => (
-                      <li key={i} className="flex items-center text-slate-300">
-                        <span className="mr-3">{item.icon}</span>
-                        {item.text}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+        {/* Core Calculation Engines */}
+        <section className="py-24 px-4 bg-slate-50/50 dark:bg-slate-950/50 border-y border-slate-200 dark:border-slate-800">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid lg:grid-cols-3 gap-8">
+              {coreFeatures.map((feature, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                >
+                  <Card className="h-full border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group">
+                    <CardHeader>
+                      <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform">
+                        {feature.icon}
+                      </div>
+                      <CardTitle className="text-2xl mb-2">{feature.title}</CardTitle>
+                      <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-4 mt-4">
+                        {feature.features.map((item, idx) => (
+                          <li key={idx} className="flex items-start">
+                            <CheckCircle className="h-5 w-5 text-emerald-500 mr-3 shrink-0 mt-0.5" />
+                            <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               ))}
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Industry Applications */}
-        <section className="mb-32">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              Industry Applications
-            </h2>
-            <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Solutions for every sector of the HVAC&R industry
-            </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {industryApplications.map((app, index) => (
-              <Card key={index} className="bg-card border-border shadow-md hover:shadow-lg transition-all">
-                <CardContent className="p-8 text-center">
-                  <div className="flex justify-center mb-6 p-4 bg-orange-50 dark:bg-orange-950/30 rounded-full w-fit mx-auto">
-                    {app.icon}
+        {/* Professional Tools Grid */}
+        <section className="py-24 px-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-5xl font-bold mb-6">Built for Professionals</h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                Streamline your workflow with tools designed for accuracy, speed, and collaboration.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {professionalFeatures.map((feature, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05 }}
+                  className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-blue-500/50 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-all duration-300 group"
+                >
+                  <div className="mb-4 p-3 bg-slate-100 dark:bg-slate-800 w-fit rounded-xl group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors">
+                    {feature.icon}
                   </div>
-                  <h3 className="text-xl font-bold text-foreground mb-3">{app.title}</h3>
-                  <p className="text-muted-foreground mb-6">{app.description}</p>
-                  <ul className="text-left space-y-2">
-                    {app.items.map((item, i) => (
-                      <li key={i} className="flex items-center text-muted-foreground text-sm">
-                        <CheckCircle className="h-4 w-4 text-orange-500 mr-2" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            ))}
+                  <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
+                  <p className="text-muted-foreground">{feature.description}</p>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </section>
 
-        {/* CTA Section */}
-        <div className="text-center mb-20 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 rounded-3xl p-12 border border-orange-100 dark:border-orange-900/50">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-            Ready to optimize your systems?
-          </h2>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Join thousands of HVAC&R professionals using ThermoNeural for accurate
-            thermodynamic calculations.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/signup">
-              <Button size="lg" className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-6 h-auto text-lg shadow-lg shadow-orange-600/20">
-                Start Free Trial
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-            <Link to="/pricing">
-              <Button variant="outline" size="lg" className="px-8 py-6 h-auto text-lg border-border text-foreground hover:bg-background hover:text-orange-700">
-                View Pricing
-              </Button>
-            </Link>
+        {/* Technical Specs & Dark Section */}
+        <section className="py-24 px-4 bg-slate-900 text-white relative overflow-hidden">
+          {/* Decorative Background */}
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/20 blur-[150px] rounded-full pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-purple-500/20 blur-[150px] rounded-full pointer-events-none" />
+
+          <div className="max-w-7xl mx-auto relative z-10">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div>
+                <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">Technical Specifications</h2>
+                <p className="text-xl text-slate-300 mb-8 leading-relaxed">
+                  Powered by industry-standard libraries including NIST Refprop and validated equations of state. We ensure every calculation meets rigorous engineering standards.
+                </p>
+                <Link to="/contact">
+                  <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 hover:text-white">
+                    Request Technical Documentation
+                  </Button>
+                </Link>
+              </div>
+
+              <div className="grid gap-6">
+                {technicalSpecs.map((spec, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ x: 50, opacity: 0 }}
+                    whileInView={{ x: 0, opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-colors"
+                  >
+                    <h3 className={`text-lg font-bold mb-4 ${spec.color}`}>{spec.title}</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      {spec.items.map((item, idx) => (
+                        <div key={idx} className="flex items-center text-sm text-slate-200">
+                          <span className={`mr-3 ${spec.color}`}>{item.icon}</span>
+                          {item.text}
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </section>
+
+        {/* Call to Action */}
+        <section className="py-32 px-4 text-center">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-4xl font-bold mb-6">Ready to optimize your workflow?</h2>
+            <p className="text-xl text-muted-foreground mb-10">
+              Join engineers worldwide who trust ThermoNeural for their critical calculations.
+            </p>
+            <div className="flex justify-center gap-4">
+              <Link to="/signup">
+                <Button size="lg" className="h-14 px-8 rounded-full bg-blue-600 hover:bg-blue-700 text-lg">
+                  Get Started Now
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
+
       <Footer />
     </div>
   );
