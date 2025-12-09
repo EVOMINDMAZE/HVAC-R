@@ -109,7 +109,7 @@ export function SignUp() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4 selection:bg-blue-100 selection:text-blue-900 dark:selection:bg-blue-900 dark:selection:text-blue-100 overflow-hidden relative">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 selection:bg-blue-100 selection:text-blue-900 dark:selection:bg-blue-900 dark:selection:text-blue-100 relative">
       {/* Warm/Thermo Background */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-100/50 dark:bg-blue-900/20 blur-[100px] animate-pulse" />
