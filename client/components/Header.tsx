@@ -70,7 +70,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
     }, []);
 
     return (
-      <div className="bg-white/90 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800 shadow-sm">
+      <div className="bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-4 min-w-0">
@@ -99,7 +99,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 <div className="relative">
                   <input
                     placeholder="Search calculations, projects or tools..."
-                    className="w-48 md:w-96 rounded-md border border-input bg-background px-4 py-2 text-sm focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900"
+                    className="w-48 md:w-96 rounded-md border border-input bg-background px-4 py-2 text-sm focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900 transition-colors"
                   />
                   <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
                     ⌘K
@@ -137,7 +137,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                       aria-haspopup="menu"
                       aria-expanded={isAvatarOpen}
                       onClick={() => setIsAvatarOpen((s) => !s)}
-                      className="h-9 w-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-300 font-semibold overflow-hidden focus:outline-none focus:ring-2 focus:ring-slate-200"
+                      className="h-9 w-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-300 font-semibold overflow-hidden focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
                       aria-label="Account menu"
                     >
                       {avatarUrl ? (
@@ -156,7 +156,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                     {isAvatarOpen && (
                       <div
                         role="menu"
-                        className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-[9999]"
+                        className="absolute right-0 mt-2 w-40 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-md shadow-lg z-[9999] transition-colors"
                       >
                         <nav className="flex flex-col p-2">
                           <Link
@@ -164,7 +164,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                             onClick={() => setIsAvatarOpen(false)}
                             role="menuitem"
                             tabIndex={0}
-                            className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded"
+                            className="px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 rounded transition-colors"
                           >
                             Profile
                           </Link>
@@ -173,7 +173,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                             onClick={() => setIsAvatarOpen(false)}
                             role="menuitem"
                             tabIndex={0}
-                            className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded"
+                            className="px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 rounded transition-colors"
                           >
                             Settings
                           </Link>
@@ -183,7 +183,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                               handleSignOut();
                             }}
                             role="menuitem"
-                            className="text-left px-3 py-2 text-sm text-red-600 hover:bg-gray-50 rounded"
+                            className="text-left px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-50 dark:hover:bg-slate-800 rounded transition-colors"
                           >
                             Sign Out
                           </button>
@@ -441,7 +441,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
 
         {/* Mobile menu for authenticated users - existing functionality */}
         {isMobileMenuOpen && isAuthenticated && (
-          <div className="md:hidden mt-4 pt-4 border-t border-gray-200">
+          <div className="md:hidden mt-4 pt-4 border-t border-gray-200 dark:border-slate-800">
             <nav className="flex flex-col space-y-4">
               {NAV_ITEMS.map((item) => (
                 <Link
@@ -453,8 +453,8 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                   {item.label}
                 </Link>
               ))}
-              <div className="flex items-center space-x-2 pt-4 border-t border-gray-200">
-                <span className="text-sm text-gray-600">{user?.email}</span>
+              <div className="flex items-center space-x-2 pt-4 border-t border-gray-200 dark:border-slate-800">
+                <span className="text-sm text-gray-600 dark:text-gray-400">{user?.email}</span>
               </div>
               <div className="flex space-x-2">
                 <Button

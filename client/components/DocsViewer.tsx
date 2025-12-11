@@ -21,125 +21,114 @@ function mdToHtml(md: string) {
     .replace(/>/g, "&gt;");
 
   // Fenced code blocks with optional language ```lang
+  // Code blocks - usually acceptable to keep dark in both modes or ensure dark mode stays readable
   out = out.replace(
     /```\s*([a-zA-Z0-9_-]+)?\n([\s\S]*?)```/g,
     (_, lang, code) => {
       const escaped = code.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
       const langClass = lang ? ` language-${lang}` : "";
-      return `<pre class=\"rounded-md bg-slate-900 text-slate-100 p-4 overflow-auto text-sm mb-6\"><code class=\"block code-block${langClass}\">${escaped}</code></pre>`;
+      return `<pre class=\"rounded-md bg-slate-900 text-slate-100 p-4 overflow-auto text-sm mb-6 border border-slate-800\"><code class=\"block code-block${langClass}\">${escaped}</code></pre>`;
     },
   );
 
   // Horizontal rules
   out = out.replace(
     /^(-{3,}|\*{3,})$/gim,
-    '<hr class="my-6 border-slate-200" />',
+    '<hr class="my-6 border-slate-200 dark:border-slate-700" />',
   );
 
-  // Images ![alt](url)
+  // Images
   out = out.replace(/!\[([^\]]*)\]\(([^)]+)\)/gim, (_, alt, src) => {
-    return `<figure class=\"my-6\"><img src=\"${src}\" alt=\"${alt}\" class=\"rounded w-full\" /><figcaption class=\"text-sm text-gray-500 mt-2\">${alt}</figcaption></figure>`;
+    return `<figure class=\"my-6\"><img src=\"${src}\" alt=\"${alt}\" class=\"rounded w-full\" /><figcaption class=\"text-sm text-gray-500 dark:text-gray-400 mt-2\">${alt}</figcaption></figure>`;
   });
 
   // Blockquotes
   out = out.replace(
     /^>\s?(.*$)/gim,
     (_, t) =>
-      `<blockquote class=\"bg-slate-50 border-l-4 border-slate-200 pl-4 py-2 rounded mt-4 text-slate-700\">${t}</blockquote>`,
+      `<blockquote class=\"bg-slate-50 dark:bg-slate-800/50 border-l-4 border-slate-200 dark:border-slate-700 pl-4 py-2 rounded mt-4 text-slate-700 dark:text-slate-300\">${t}</blockquote>`,
   );
 
-  // Headings - add id attributes and spacing classes for better typography
+  // Headings
+  const headingClasses = (level: number, sizeClass: string) => {
+    return `${sizeClass} font-bold mt-4 mb-2 group text-foreground`;
+  };
+
   out = out.replace(
     /^######\s?(.*$)/gim,
     (_, t) =>
-      `<h6 id=\"${slugify(t)}\" class=\"text-sm font-semibold mt-4 mb-2 group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h6>`,
+      `<h6 id=\"${slugify(t)}\" class=\"text-sm font-semibold mt-4 mb-2 group text-foreground\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm opacity-0 group-hover:opacity-100\">#</a></h6>`,
   );
   out = out.replace(
     /^#####\s?(.*$)/gim,
     (_, t) =>
-      `<h5 id=\"${slugify(t)}\" class=\"text-sm font-semibold mt-4 mb-2 group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h5>`,
+      `<h5 id=\"${slugify(t)}\" class=\"text-sm font-semibold mt-4 mb-2 group text-foreground\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm opacity-0 group-hover:opacity-100\">#</a></h5>`,
   );
   out = out.replace(
     /^####\s?(.*$)/gim,
     (_, t) =>
-      `<h4 id=\"${slugify(t)}\" class=\"text-lg font-semibold mt-6 mb-3 group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h4>`,
+      `<h4 id=\"${slugify(t)}\" class=\"text-lg font-semibold mt-6 mb-3 group text-foreground\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm opacity-0 group-hover:opacity-100\">#</a></h4>`,
   );
   out = out.replace(
     /^###\s?(.*$)/gim,
     (_, t) =>
-      `<h3 id=\"${slugify(t)}\" class=\"text-xl font-semibold mt-6 mb-3 group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h3>`,
+      `<h3 id=\"${slugify(t)}\" class=\"text-xl font-semibold mt-6 mb-3 group text-foreground\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm opacity-0 group-hover:opacity-100\">#</a></h3>`,
   );
   out = out.replace(
     /^##\s?(.*$)/gim,
     (_, t) =>
-      `<h2 id=\"${slugify(t)}\" class=\"text-2xl font-bold mt-8 mb-4 group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h2>`,
+      `<h2 id=\"${slugify(t)}\" class=\"text-2xl font-bold mt-8 mb-4 group text-foreground\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm opacity-0 group-hover:opacity-100\">#</a></h2>`,
   );
   out = out.replace(
     /^#\s?(.*$)/gim,
     (_, t) =>
-      `<h1 id=\"${slugify(t)}\" class=\"text-3xl font-extrabold mt-8 mb-6 group\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 hover:text-gray-600 text-sm opacity-0 group-hover:opacity-100\">#</a></h1>`,
+      `<h1 id=\"${slugify(t)}\" class=\"text-3xl font-extrabold mt-8 mb-6 group text-foreground\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm opacity-0 group-hover:opacity-100\">#</a></h1>`,
   );
 
-  // Tables (simple pipe tables)
+  // Tables
   out = out.replace(
     /(^\|.+\|\n\|[-: \|]+\|\n([\s\S]*?\n)*?)(?=\n|$)/gm,
     (m) => {
-      // naive convert: split lines
       const lines = m.trim().split("\n").filter(Boolean);
       if (lines.length < 2) return m;
-      const header = lines[0]
-        .replace(/^\||\|$/g, "")
-        .split("|")
-        .map((s) => s.trim());
-      const rows = lines.slice(2).map((l) =>
-        l
-          .replace(/^\||\|$/g, "")
-          .split("|")
-          .map((s) => s.trim()),
-      );
-      const thead = `<thead class=\"bg-slate-50 text-left\"><tr>${header.map((h) => `<th class=\"px-3 py-2\">${h}</th>`).join("")}</tr></thead>`;
-      const tbody = `<tbody>${rows.map((r) => `<tr>${r.map((c) => `<td class=\"px-3 py-2 border-t\">${c}</td>`).join("")}</tr>`).join("")}</tbody>`;
-      return `<div class=\"overflow-auto my-4\"><table class=\"min-w-full border-collapse\">${thead}${tbody}</table></div>`;
+      const header = lines[0].replace(/^\||\|$/g, "").split("|").map((s) => s.trim());
+      const rows = lines.slice(2).map((l) => l.replace(/^\||\|$/g, "").split("|").map((s) => s.trim()));
+      const thead = `<thead class=\"bg-slate-50 dark:bg-slate-800 text-left text-foreground\"><tr>${header.map((h) => `<th class=\"px-3 py-2 font-semibold\">${h}</th>`).join("")}</tr></thead>`;
+      const tbody = `<tbody>${rows.map((r) => `<tr>${r.map((c) => `<td class=\"px-3 py-2 border-t border-slate-200 dark:border-slate-700 text-foreground\">${c}</td>`).join("")}</tr>`).join("")}</tbody>`;
+      return `<div class=\"overflow-auto my-4\"><table class=\"min-w-full border-collapse text-sm\">${thead}${tbody}</table></div>`;
     },
   );
 
   // Inline code
   out = out.replace(
     /`([^`]+)`/gim,
-    '<code class=\"rounded bg-slate-100 px-1 py-0.5 text-sm text-rose-600\">$1</code>',
+    '<code class=\"rounded bg-slate-100 dark:bg-slate-800 px-1 py-0.5 text-sm text-rose-600 dark:text-rose-400\">$1</code>',
   );
 
   // Bold and italic
-  out = out.replace(/\*\*(.*?)\*\*/gim, "<strong>$1</strong>");
-  out = out.replace(/\*(.*?)\*/gim, "<em>$1</em>");
+  out = out.replace(/\*\*(.*?)\*\*/gim, "<strong class=\"font-bold text-foreground\">$1</strong>");
+  out = out.replace(/\*(.*?)\*/gim, "<em class=\"italic\">$1</em>");
 
-  // Links [text](url)
+  // Links
   out = out.replace(
     /\[([^\]]+)\]\(([^)]+)\)/gim,
-    '<a class=\"text-blue-600 underline\" href="$2" target=\"_blank\" rel=\"noreferrer\">$1</a>',
+    '<a class=\"text-blue-600 dark:text-blue-400 underline\" href="$2" target=\"_blank\" rel=\"noreferrer\">$1</a>',
   );
 
-  // Ordered lists
-  out = out.replace(/(^|\n)\d+\.\s+(.*)/gim, "$1<li>$2</li>");
+  // List replacements remain mostly the same structure but semantic classes
+  out = out.replace(/(^|\n)\d+\.\s+(.*)/gim, "$1<li class=\"text-foreground\">$2</li>");
   out = out.replace(/(<li>[\s\S]*?<\/li>)/gim, (m) => {
-    // wrap contiguous li blocks in ol if numeric lines were used, otherwise ul will handle - items
-    return `<ol class=\"list-decimal ml-6 mt-2\">${m}</ol>`;
+    return `<ol class=\"list-decimal ml-6 mt-2 marker:text-muted-foreground\">${m}</ol>`;
   });
 
-  // Unordered lists
-  // Convert lines starting with - to <li>
-  out = out.replace(/(^|\n)-\s+(.*)/gim, "$1<li>$2</li>");
+  out = out.replace(/(^|\n)-\s+(.*)/gim, "$1<li class=\"text-foreground\">$2</li>");
   out = out.replace(/(<li>[\s\S]*?<\/li>)/gim, (m) => {
-    // wrap contiguous li blocks in ul
-    return `<ul class=\"list-disc list-inside ml-6 mt-2\">${m}</ul>`;
+    return `<ul class=\"list-disc list-inside ml-6 mt-2 marker:text-muted-foreground\">${m}</ul>`;
   });
 
-  // Paragraphs - lines separated by blank line
+  // Paragraphs
   out = out.replace(/\n{2,}/g, "\n\n");
-  const paragraphs = out
-    .split(/\n\n/)
-    .map((p) => p.trim())
-    .filter(Boolean);
+  const paragraphs = out.split(/\n\n/).map((p) => p.trim()).filter(Boolean);
   out = paragraphs
     .map((p) => {
       if (
@@ -150,7 +139,7 @@ function mdToHtml(md: string) {
         p.startsWith("<blockquote")
       )
         return p;
-      return `<p class=\"text-gray-700 mt-4 leading-relaxed text-base\">${p.replace(/\n/g, "<br />")}</p>`;
+      return `<p class=\"text-gray-700 dark:text-slate-300 mt-4 leading-relaxed text-base\">${p.replace(/\n/g, "<br />")}</p>`;
     })
     .join("\n");
 
@@ -304,28 +293,28 @@ export function DocsViewer({
   if (!title) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 flex items-start justify-center p-6">
-      <div className="w-full max-w-6xl bg-white rounded-lg shadow-xl overflow-hidden max-h-[90vh] grid grid-cols-1 lg:grid-cols-4">
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-start justify-center p-6">
+      <div className="w-full max-w-6xl bg-white dark:bg-slate-900 rounded-lg shadow-xl overflow-hidden max-h-[90vh] grid grid-cols-1 lg:grid-cols-4 border border-slate-200 dark:border-slate-800">
         <div
           className="col-span-1 lg:col-span-3 overflow-auto"
           style={{ maxHeight: "90vh" }}
         >
-          <div className="flex items-center justify-between p-6 border-b sticky top-0 bg-white z-10">
-            <h2 className="text-xl font-bold">{title}</h2>
+          <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-800 sticky top-0 bg-white dark:bg-slate-900 z-10">
+            <h2 className="text-xl font-bold text-foreground">{title}</h2>
             <div className="flex items-center gap-2">
-              <Button variant="ghost" onClick={onClose}>
+              <Button variant="ghost" onClick={onClose} className="hover:bg-slate-100 dark:hover:bg-slate-800">
                 <X className="h-4 w-4" />
               </Button>
             </div>
           </div>
           <div
             ref={contentRef}
-            className="p-6 prose prose-slate prose-lg max-w-none overflow-auto prose-a:text-blue-600 prose-a:underline prose-blockquote:bg-slate-50 prose-pre:bg-slate-900"
+            className="p-6 prose prose-slate dark:prose-invert prose-lg max-w-none overflow-auto prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-blockquote:bg-slate-50 dark:prose-blockquote:bg-slate-800/50 prose-pre:bg-slate-900"
           >
             {loading ? (
               <div className="flex items-center justify-center py-20">
                 <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mr-4"></div>
-                <div className="text-gray-700">Loading article…</div>
+                <div className="text-gray-700 dark:text-gray-300">Loading article…</div>
               </div>
             ) : (
               <div dangerouslySetInnerHTML={{ __html: content || "" }} />
@@ -334,15 +323,15 @@ export function DocsViewer({
         </div>
 
         <aside
-          className="hidden lg:block col-span-1 border-l p-4 overflow-auto"
+          className="hidden lg:block col-span-1 border-l border-slate-200 dark:border-slate-800 p-4 overflow-auto bg-slate-50/50 dark:bg-slate-900/50"
           style={{ maxHeight: "90vh" }}
         >
-          <h4 className="text-sm font-semibold mb-2">On this page</h4>
+          <h4 className="text-sm font-semibold mb-2 text-foreground">On this page</h4>
           <nav className="space-y-1 text-sm">
             {headings.map((h) => (
               <button
                 key={h.id}
-                className={`w-full text-left truncate hover:text-blue-600 py-1 text-sm ${h.level > 2 ? "pl-4 text-gray-600" : "font-medium text-gray-800"}`}
+                className={`w-full text-left truncate hover:text-blue-600 dark:hover:text-blue-400 py-1 text-sm transition-colors ${h.level > 2 ? "pl-4 text-muted-foreground" : "font-medium text-foreground"}`}
                 onClick={() => {
                   const el = contentRef.current?.querySelector(`#${h.id}`);
                   if (el)

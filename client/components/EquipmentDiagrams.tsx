@@ -3,12 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface EquipmentDiagramProps {
   type:
-    | "compressor"
-    | "evaporator"
-    | "condenser"
-    | "expansion-valve"
-    | "heat-exchanger"
-    | "complete-cycle";
+  | "compressor"
+  | "evaporator"
+  | "condenser"
+  | "expansion-valve"
+  | "heat-exchanger"
+  | "complete-cycle";
   width?: number;
   height?: number;
   showLabels?: boolean;
@@ -395,7 +395,7 @@ export function EquipmentDiagram({
                   x="100"
                   y="130"
                   textAnchor="middle"
-                  className="text-sm font-medium fill-gray-700"
+                  className="text-sm font-medium fill-gray-700 dark:fill-gray-300"
                 >
                   Expansion Valve
                 </text>
@@ -502,7 +502,7 @@ export function EquipmentDiagram({
                 x="10"
                 y="50"
                 textAnchor="middle"
-                className="text-xs font-medium fill-gray-600"
+                className="text-xs font-medium fill-gray-600 dark:fill-gray-300"
               >
                 Expansion
               </text>
@@ -545,7 +545,7 @@ export function EquipmentDiagram({
                 x="200"
                 y="20"
                 textAnchor="middle"
-                className="text-lg font-bold fill-gray-800"
+                className="text-lg font-bold fill-gray-800 dark:fill-gray-200"
               >
                 {refrigerant} Refrigeration Cycle
               </text>
@@ -683,7 +683,7 @@ export function EquipmentDiagrams({
             showLabels={true}
           />
           {cycleData && (
-            <div className="mt-2 text-sm text-gray-600">
+            <div className="mt-2 text-sm text-gray-600 dark:text-slate-400">
               <div>State 4 → 1</div>
               <div>
                 {cycleData.points[0]?.temperature?.toFixed(1) || "0.0"}°C
@@ -701,7 +701,7 @@ export function EquipmentDiagrams({
             showLabels={true}
           />
           {cycleData && (
-            <div className="mt-2 text-sm text-gray-600">
+            <div className="mt-2 text-sm text-gray-600 dark:text-slate-400">
               <div>State 1 → 2</div>
               <div>
                 {cycleData.points[1]?.temperature?.toFixed(1) || "0.0"}°C
@@ -719,7 +719,7 @@ export function EquipmentDiagrams({
             showLabels={true}
           />
           {cycleData && (
-            <div className="mt-2 text-sm text-gray-600">
+            <div className="mt-2 text-sm text-gray-600 dark:text-slate-400">
               <div>State 2 → 3</div>
               <div>
                 {cycleData.points[2]?.temperature?.toFixed(1) || "0.0"}°C
@@ -737,7 +737,7 @@ export function EquipmentDiagrams({
             showLabels={true}
           />
           {cycleData && (
-            <div className="mt-2 text-sm text-gray-600">
+            <div className="mt-2 text-sm text-gray-600 dark:text-slate-400">
               <div>State 3 → 4</div>
               <div>
                 {cycleData.points[3]?.temperature?.toFixed(1) || "0.0"}°C
@@ -749,8 +749,8 @@ export function EquipmentDiagrams({
 
       {/* Cycle Information */}
       {cycleData && (
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <h3 className="text-lg font-semibold mb-3">
+        <div className="mt-6 p-4 bg-gray-50 dark:bg-slate-900 rounded-lg border border-transparent dark:border-slate-800">
+          <h3 className="text-lg font-semibold mb-3 text-slate-900 dark:text-slate-100">
             {cycleData.refrigerant}{" "}
             {cycleData.cycleType === "standard"
               ? "Standard"
@@ -761,12 +761,12 @@ export function EquipmentDiagrams({
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             {cycleData.points.map((point, index) => (
-              <div key={index} className="p-2 bg-white rounded border">
-                <div className="font-medium text-blue-600">
+              <div key={index} className="p-2 bg-white dark:bg-slate-800 rounded border dark:border-slate-700">
+                <div className="font-medium text-blue-600 dark:text-blue-400">
                   State {index + 1}
                 </div>
-                <div className="text-gray-600">{point.name}</div>
-                <div className="mt-1">
+                <div className="text-gray-600 dark:text-slate-300">{point.name}</div>
+                <div className="mt-1 text-slate-700 dark:text-slate-400">
                   <div>T: {point.temperature?.toFixed(1) || "0.0"}°C</div>
                   <div>P: {((point.pressure || 0) / 1000).toFixed(1)} MPa</div>
                   <div>h: {point.enthalpy?.toFixed(1) || "0.0"} kJ/kg</div>

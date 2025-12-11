@@ -1,5 +1,6 @@
 import Stripe from 'stripe';
 import dotenv from 'dotenv';
+import { supabaseAdmin } from './supabase.js';
 
 dotenv.config();
 
@@ -19,7 +20,12 @@ export async function createCustomerPortalSession(customerId: string, returnUrl:
 }
 
 // Create a checkout session for subscription
-export async function createCheckoutSession(priceId: string, customerId?: string, customerEmail?: string) {
+export async function createCheckoutSession(
+  priceId: string,
+  stripeCustomerId?: string,
+  customerEmail?: string,
+  userId?: string
+) {
   const sessionConfig: Stripe.Checkout.SessionCreateParams = {
     mode: 'subscription',
     payment_method_types: ['card'],
@@ -32,12 +38,17 @@ export async function createCheckoutSession(priceId: string, customerId?: string
     success_url: `${process.env.CLIENT_URL || 'http://localhost:3000'}/profile?success=true`,
     cancel_url: `${process.env.CLIENT_URL || 'http://localhost:3000'}/pricing`,
     metadata: {
-      userId: customerId || '',
+      userId: userId || '',
     },
+    subscription_data: {
+      metadata: {
+        userId: userId || '',
+      }
+    }
   };
 
-  if (customerId) {
-    sessionConfig.customer = customerId;
+  if (stripeCustomerId) {
+    sessionConfig.customer = stripeCustomerId;
   } else if (customerEmail) {
     sessionConfig.customer_email = customerEmail;
   }

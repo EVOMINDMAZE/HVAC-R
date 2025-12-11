@@ -9,8 +9,7 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     fs: {
-      allow: ["./client", "./shared"],
-      deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "server/**"],
+      strict: false,
     },
   },
   build: {
@@ -23,8 +22,8 @@ export default defineConfig(({ mode }) => ({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'ChargePro HVAC Field Calculator',
-        short_name: 'ChargePro',
+        name: 'ThermoNeural HVAC Field Calculator',
+        short_name: 'ThermoNeural',
         description: 'Professional HVAC Field Calculator for Technicians',
         theme_color: '#ffffff',
         icons: [

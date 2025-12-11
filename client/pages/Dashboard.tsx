@@ -47,7 +47,7 @@ function UsageProgressCard({ stats, onUpgrade }: UsageProgressCardProps) {
   const roundedUsage = Math.round(stats.usagePercentage);
 
   return (
-    <Card className="glass-card border-primary/20 bg-primary/5 hover-lift animate-fade-in">
+    <Card className="glass-card border-primary/20 hover-lift animate-fade-in">
       <CardContent className="space-y-4 p-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
@@ -121,7 +121,7 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
 
         <div className="flex flex-wrap items-center gap-3">
           <Button
-            className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-0.5 rounded-full px-6"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-0.5 rounded-full px-6"
             onClick={() => navigate("/standard-cycle")}
           >
             <Calculator className="h-4 w-4 mr-2" />

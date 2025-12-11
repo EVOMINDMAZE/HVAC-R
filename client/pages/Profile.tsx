@@ -326,7 +326,7 @@ export function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-slate-950 dark:to-slate-900">
+    <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="bg-background shadow-sm border-b border-border">
         <div className="max-w-7xl mx-auto px-4 py-6">
@@ -373,7 +373,7 @@ export function Profile() {
           {/* Profile Tab */}
           <TabsContent value="profile" className="space-y-6">
             <Card className="bg-card shadow-lg border-border">
-              <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+              <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-900 dark:to-indigo-900 text-white">
                 <CardTitle>Profile Information</CardTitle>
               </CardHeader>
               <CardContent className="p-6">
@@ -385,7 +385,7 @@ export function Profile() {
                         src={user.avatar}
                         alt={`${user.firstName} ${user.lastName}`}
                       />
-                      <AvatarFallback className="text-xl bg-blue-100 text-blue-600">
+                      <AvatarFallback className="text-xl bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300">
                         {user.firstName.charAt(0)}
                         {user.lastName.charAt(0)}
                       </AvatarFallback>
@@ -545,7 +545,7 @@ export function Profile() {
           {/* Security Tab */}
           <TabsContent value="security" className="space-y-6">
             <Card className="bg-card shadow-lg border-border">
-              <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
+              <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-900 dark:to-emerald-900 text-white">
                 <CardTitle className="flex items-center">
                   <Shield className="h-5 w-5 mr-2" />
                   Security Settings
@@ -637,7 +637,7 @@ export function Profile() {
           {/* Billing Tab */}
           <TabsContent value="billing" className="space-y-6">
             <Card className="bg-card shadow-lg border-border">
-              <CardHeader className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
+              <CardHeader className="bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-900 dark:to-indigo-900 text-white">
                 <CardTitle className="flex items-center">
                   <CreditCard className="h-5 w-5 mr-2" />
                   Billing & Usage

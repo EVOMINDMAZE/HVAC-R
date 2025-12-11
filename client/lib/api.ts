@@ -3,7 +3,9 @@ import { supabase } from "./supabase";
 
 export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
-  "http://localhost:8000";
+  "http://localhost:8080";
+
+export const CALCULATION_SERVICE_URL = "https://simulateon-backend.onrender.com";
 
 interface ApiResponse<T> {
   success: boolean;
@@ -94,9 +96,10 @@ class ApiClient {
   private async request<T>(
     endpoint: string,
     options: RequestInit = {},
+    baseUrl: string = API_BASE_URL,
   ): Promise<ApiResponse<T>> {
     // Return mock failure when no backend server is configured
-    if (!API_BASE_URL) {
+    if (!baseUrl) {
       console.warn("No backend service configured - returning mock failure");
       return {
         success: false,
@@ -107,16 +110,30 @@ class ApiClient {
     }
 
     try {
+      let token: string | null = null;
+      try {
+        const { data } = await supabase.auth.getSession();
+        token = data?.session?.access_token ?? null;
+      } catch (e) {
+        console.warn("Failed to get Supabase session", e);
+      }
+
+      // Fallback to manually stored token if Supabase session is missing
+      if (!token) {
+        token = localStorage.getItem("simulateon_token");
+      }
+
       const requestOptions = {
         ...options,
         headers: {
-          ...this.getAuthHeaders(),
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
           ...(options.headers || {}),
         },
       };
 
       const response = await fetch(
-        `${API_BASE_URL}${endpoint}`,
+        `${baseUrl}${endpoint}`,
         requestOptions,
       );
 
@@ -554,339 +571,76 @@ class ApiClient {
     });
   }
 
-  // External API proxy for calculations (if needed)
+  // External API proxy for calculations
   async calculateStandardCycle(parameters: any): Promise<any> {
-    // Direct call to external calculation API
-    try {
-      const response = await fetch(`${API_BASE_URL}/calculate-standard`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          refrigerant: parameters.refrigerant,
+    return this.request("/calculate-standard", {
+      method: "POST",
+      body: JSON.stringify({
+        refrigerant: parameters.refrigerant,
+        evap_temp_c: Number(parameters.evaporatorTemp) || 0,
+        cond_temp_c: Number(parameters.condenserTemp) || 0,
+        superheat_c: Number(parameters.superheat) || 0,
+        subcooling_c: Number(parameters.subcooling) || 0,
+      }),
+    }, CALCULATION_SERVICE_URL);
+  }
+
+  async compareRefrigerants(parameters: any): Promise<any> {
+    return this.request("/compare-refrigerants", {
+      method: "POST",
+      body: JSON.stringify({
+        refrigerants: parameters.refrigerants,
+        cycle_params: {
+          refrigerant: "placeholder",
           evap_temp_c: Number(parameters.evaporatorTemp) || 0,
           cond_temp_c: Number(parameters.condenserTemp) || 0,
           superheat_c: Number(parameters.superheat) || 0,
           subcooling_c: Number(parameters.subcooling) || 0,
-        }),
-      });
-
-      // Check if response is ok
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Service Error (${response.status}): ${response.statusText}. ${errorText.includes("<!doctype") || errorText.includes("<html") ? "Service may be down or misconfigured." : errorText}`,
-        );
-      }
-
-      // Get response text once and check both content type and content
-      const responseText = await response.text();
-      const contentType = response.headers.get("content-type");
-
-      console.log("API Response received:", {
-        url: response.url,
-        status: response.status,
-        contentType,
-        responseLength: responseText.length,
-        responsePreview: responseText.substring(0, 200),
-      });
-
-      // Check if response looks like HTML
-      if (
-        responseText.trim().startsWith("<") ||
-        responseText.includes("<!doctype") ||
-        responseText.includes("<html")
-      ) {
-        console.error("HTML response received instead of JSON:", {
-          url: response.url,
-          status: response.status,
-          contentType,
-          responseText: responseText.substring(0, 500),
-        });
-        throw new Error(
-          "Service returned HTML instead of JSON. The calculation service may be temporarily unavailable.",
-        );
-      }
-
-      // Check content type
-      if (
-        contentType &&
-        !contentType.includes("application/json") &&
-        !contentType.includes("text/plain")
-      ) {
-        console.error("Unexpected content type:", {
-          url: response.url,
-          status: response.status,
-          contentType,
-          responseText: responseText.substring(0, 500),
-        });
-        throw new Error(
-          `API returned unexpected content type: ${contentType}. Expected JSON but got: ${responseText.substring(0, 100)}...`,
-        );
-      }
-
-      // Try to parse as JSON
-      try {
-        if (!responseText) {
-          throw new Error("Empty response received from API");
-        }
-
-        return JSON.parse(responseText);
-      } catch (parseError) {
-        console.error("JSON Parse Error:", parseError);
-        throw new Error(
-          `Failed to parse API response as JSON. Error: ${parseError instanceof Error ? parseError.message : "Unknown parse error"}. Response: ${responseText.substring(0, 200)}...`,
-        );
-      }
-    } catch (error) {
-      try {
-        window.dispatchEvent(
-          new CustomEvent("app:error", {
-            detail: {
-              title: "Calculation Service Error",
-              message: error instanceof Error ? error.message : String(error),
-            },
-          }),
-        );
-      } catch (e) {
-        // ignore in non-browser
-      }
-
-      if (error instanceof TypeError && error.message.includes("fetch")) {
-        throw new Error(
-          "Unable to connect to calculation service. Please check your internet connection.",
-        );
-      }
-      throw error;
-    }
-  }
-
-  async compareRefrigerants(parameters: any): Promise<any> {
-    try {
-      const response = await fetch(`${API_BASE_URL}/compare-refrigerants`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          refrigerants: parameters.refrigerants,
-          cycle_params: {
-            refrigerant: "placeholder",
-            evap_temp_c: Number(parameters.evaporatorTemp) || 0,
-            cond_temp_c: Number(parameters.condenserTemp) || 0,
-            superheat_c: Number(parameters.superheat) || 0,
-            subcooling_c: Number(parameters.subcooling) || 0,
-          },
-        }),
-      });
-
-      // Check if response is ok
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Service Error (${response.status}): ${response.statusText}. ${errorText.includes("<!doctype") || errorText.includes("<html") ? "Service may be down or misconfigured." : errorText}`,
-        );
-      }
-
-      // Get response text once and check both content type and content
-      const responseText = await response.text();
-      const contentType = response.headers.get("content-type");
-
-      console.log("API Response received:", {
-        url: response.url,
-        status: response.status,
-        contentType,
-        responseLength: responseText.length,
-        responsePreview: responseText.substring(0, 200),
-      });
-
-      // Check if response looks like HTML
-      if (
-        responseText.trim().startsWith("<") ||
-        responseText.includes("<!doctype") ||
-        responseText.includes("<html")
-      ) {
-        console.error("HTML response received instead of JSON:", {
-          url: response.url,
-          status: response.status,
-          contentType,
-          responseText: responseText.substring(0, 500),
-        });
-        throw new Error(
-          "Service returned HTML instead of JSON. The comparison service may be temporarily unavailable.",
-        );
-      }
-
-      // Check content type
-      if (
-        contentType &&
-        !contentType.includes("application/json") &&
-        !contentType.includes("text/plain")
-      ) {
-        console.error("Unexpected content type:", {
-          url: response.url,
-          status: response.status,
-          contentType,
-          responseText: responseText.substring(0, 500),
-        });
-        throw new Error(
-          `API returned unexpected content type: ${contentType}. Expected JSON but got: ${responseText.substring(0, 100)}...`,
-        );
-      }
-
-      // Try to parse as JSON
-      try {
-        if (!responseText) {
-          throw new Error("Empty response received from API");
-        }
-
-        return JSON.parse(responseText);
-      } catch (parseError) {
-        console.error("JSON Parse Error:", parseError);
-        throw new Error(
-          `Failed to parse API response as JSON. Error: ${parseError instanceof Error ? parseError.message : "Unknown parse error"}. Response: ${responseText.substring(0, 200)}...`,
-        );
-      }
-    } catch (error) {
-      try {
-        window.dispatchEvent(
-          new CustomEvent("app:error", {
-            detail: {
-              title: "Service Error",
-              message: error instanceof Error ? error.message : String(error),
-            },
-          }),
-        );
-      } catch (e) {
-        // ignore in non-browser
-      }
-
-      if (error instanceof TypeError && error.message.includes("fetch")) {
-        throw new Error(
-          "Unable to connect to comparison service. Please check your internet connection.",
-        );
-      }
-      throw error;
-    }
+      }),
+    }, CALCULATION_SERVICE_URL);
   }
 
   async calculateCascadeCycle(parameters: any): Promise<any> {
-    try {
-      const response = await fetch(`${API_BASE_URL}/calculate-cascade`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    return this.request("/calculate-cascade", {
+      method: "POST",
+      body: JSON.stringify({
+        lt_cycle: {
+          refrigerant: parameters.ltCycle.refrigerant,
+          evap_temp_c: Number(parameters.ltCycle.evaporatorTemp) || 0,
+          cond_temp_c: Number(parameters.ltCycle.condenserTemp) || 0,
+          superheat_c: Number(parameters.ltCycle.superheat) || 0,
+          subcooling_c: Number(parameters.ltCycle.subcooling) || 0,
         },
-        body: JSON.stringify({
-          lt_cycle: {
-            refrigerant: parameters.ltCycle.refrigerant,
-            evap_temp_c: Number(parameters.ltCycle.evaporatorTemp) || 0,
-            cond_temp_c: Number(parameters.ltCycle.condenserTemp) || 0,
-            superheat_c: Number(parameters.ltCycle.superheat) || 0,
-            subcooling_c: Number(parameters.ltCycle.subcooling) || 0,
-          },
-          ht_cycle: {
-            refrigerant: parameters.htCycle.refrigerant,
-            evap_temp_c: Number(parameters.htCycle.evaporatorTemp) || 0,
-            cond_temp_c: Number(parameters.htCycle.condenserTemp) || 0,
-            superheat_c: Number(parameters.htCycle.superheat) || 0,
-            subcooling_c: Number(parameters.htCycle.subcooling) || 0,
-          },
-          cascade_hx_delta_t_c: Number(parameters.cascadeHeatExchangerDT) || 0,
-        }),
-      });
-
-      // Check if response is ok
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `API Error (${response.status}): ${response.statusText}. ${errorText.includes("<!doctype") || errorText.includes("<html") ? "API server may be down or misconfigured." : errorText}`,
-        );
-      }
-
-      // Get response text once and check both content type and content
-      const responseText = await response.text();
-      const contentType = response.headers.get("content-type");
-
-      console.log("API Response received:", {
-        url: response.url,
-        status: response.status,
-        contentType,
-        responseLength: responseText.length,
-        responsePreview: responseText.substring(0, 200),
-      });
-
-      // Check if response looks like HTML
-      if (
-        responseText.trim().startsWith("<") ||
-        responseText.includes("<!doctype") ||
-        responseText.includes("<html")
-      ) {
-        console.error("HTML response received instead of JSON:", {
-          url: response.url,
-          status: response.status,
-          contentType,
-          responseText: responseText.substring(0, 500),
-        });
-        throw new Error(
-          "API server returned HTML instead of JSON. The cascade calculation service may be temporarily unavailable.",
-        );
-      }
-
-      // Check content type
-      if (
-        contentType &&
-        !contentType.includes("application/json") &&
-        !contentType.includes("text/plain")
-      ) {
-        console.error("Unexpected content type:", {
-          url: response.url,
-          status: response.status,
-          contentType,
-          responseText: responseText.substring(0, 500),
-        });
-        throw new Error(
-          `API returned unexpected content type: ${contentType}. Expected JSON but got: ${responseText.substring(0, 100)}...`,
-        );
-      }
-
-      // Try to parse as JSON
-      try {
-        if (!responseText) {
-          throw new Error("Empty response received from API");
-        }
-
-        return JSON.parse(responseText);
-      } catch (parseError) {
-        console.error("JSON Parse Error:", parseError);
-        throw new Error(
-          `Failed to parse API response as JSON. Error: ${parseError instanceof Error ? parseError.message : "Unknown parse error"}. Response: ${responseText.substring(0, 200)}...`,
-        );
-      }
-    } catch (error) {
-      try {
-        window.dispatchEvent(
-          new CustomEvent("app:error", {
-            detail: {
-              title: "API Error",
-              message: error instanceof Error ? error.message : String(error),
-            },
-          }),
-        );
-      } catch (e) {
-        // ignore in non-browser
-      }
-
-      if (error instanceof TypeError && error.message.includes("fetch")) {
-        throw new Error(
-          "Unable to connect to cascade calculation service. Please check your internet connection.",
-        );
-      }
-      throw error;
-    }
+        ht_cycle: {
+          refrigerant: parameters.htCycle.refrigerant,
+          evap_temp_c: Number(parameters.htCycle.evaporatorTemp) || 0,
+          cond_temp_c: Number(parameters.htCycle.condenserTemp) || 0,
+          superheat_c: Number(parameters.htCycle.superheat) || 0,
+          subcooling_c: Number(parameters.htCycle.subcooling) || 0,
+        },
+        cascade_hx_delta_t_c: Number(parameters.cascadeHeatExchangerDT) || 0,
+      }),
+    }, CALCULATION_SERVICE_URL);
   }
+
+  async calculateAirflow(sensible_heat_btuh: number, delta_t_f: number): Promise<any> {
+    return this.request("/api/calculate-airflow", {
+      method: "POST",
+      body: JSON.stringify({ sensible_heat_btuh, delta_t_f }),
+    });
+  }
+
+  async calculateDeltaT(return_temp_f: number, supply_temp_f: number): Promise<any> {
+    return this.request("/api/calculate-deltat", {
+      method: "POST",
+      body: JSON.stringify({ return_temp_f, supply_temp_f }),
+    });
+  }
+
+
 }
+
 
 export const apiClient = new ApiClient();
 export type { User, CalculationData, UserStats, SubscriptionPlan, ApiResponse };

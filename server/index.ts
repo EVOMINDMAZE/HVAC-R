@@ -27,6 +27,15 @@ import {
   createPaymentIntent,
 } from "./routes/subscriptions.ts";
 import billingRoutes from "./routes/billing.ts";
+import {
+  calculateAirflow,
+  calculateDeltaT,
+  calculateStandardCycleEndpoint,
+  calculateCascadeCycleEndpoint,
+  compareRefrigerantsEndpoint
+} from "./routes/engineering.ts";
+
+
 import { supabaseDiag } from "./routes/diagnostics.ts";
 import { uploadAvatar } from "./routes/storage.ts";
 
@@ -37,15 +46,13 @@ export function createServer() {
   console.log("Using Supabase for data storage, SQLite database disabled");
 
   // Middleware
-  // Configure CORS origins. Use ALLOWED_CORS_ORIGINS env var (comma-separated) when present.
-  // In development, allow localhost origins. In preview or unspecified environments, allow all origins
-  // to avoid blocking the preview iframe. For production, set ALLOWED_CORS_ORIGINS explicitly.
+  // Configure CORS origins.
   const defaultAllowed =
     process.env.NODE_ENV === "production"
       ? [
         "https://173ba54839db44079504686aa5642124-7d4f8c681adb406aa7578b14f.fly.dev",
       ]
-      : ["http://localhost:8080", "http://localhost:3000"];
+      : ["http://localhost:8080", "http://localhost:3000", "http://localhost:8081"];
 
   const envList = process.env.ALLOWED_CORS_ORIGINS
     ? process.env.ALLOWED_CORS_ORIGINS.split(",")
@@ -58,12 +65,9 @@ export function createServer() {
   app.use(
     cors({
       origin: (origin, callback) => {
-        // Allow non-browser requests (like curl or server-to-server) with no origin
         if (!origin) return callback(null, true);
-        // If ALLOWED_CORS_ORIGINS contains '*' allow all
         if (allowedOrigins.includes("*")) return callback(null, true);
         if (allowedOrigins.includes(origin)) return callback(null, true);
-        // For preview environments where origin may vary, allow if ALLOW_ALL_CORS is set
         if (process.env.ALLOW_ALL_CORS === "true") return callback(null, true);
         console.warn(`Blocked CORS request from origin: ${origin}`);
         return callback(new Error("Not allowed by CORS"));
@@ -72,11 +76,9 @@ export function createServer() {
     }),
   );
 
-  // Increase body size to allow high-resolution diagram images
   app.use(express.json({ limit: "30mb" }));
   app.use(express.urlencoded({ extended: true, limit: "30mb" }));
 
-  // Simple request logging to aid debugging
   app.use((req, _res, next) => {
     console.log(`[server] ${req.method} ${req.path}`);
     next();
@@ -90,35 +92,6 @@ export function createServer() {
       database: "connected",
     });
   });
-
-  // Authentication routes
-  app.post("/api/auth/signup", signUp);
-  app.post("/api/auth/signin", signIn);
-  app.post("/api/auth/signout", signOut);
-  app.get("/api/auth/me", getCurrentUser);
-
-  // Protected calculation routes
-  app.post("/api/calculations", authenticateToken, saveCalculation);
-  app.get("/api/calculations", authenticateToken, getCalculations);
-  app.get("/api/calculations/:id", authenticateToken, getCalculation);
-  app.put("/api/calculations/:id", authenticateToken, updateCalculation);
-  app.delete("/api/calculations/:id", authenticateToken, deleteCalculation);
-  app.get("/api/user/stats", authenticateToken, getUserStats);
-
-  // Subscription routes
-  app.get("/api/subscriptions/plans", getSubscriptionPlans);
-  app.get(
-    "/api/subscriptions/current",
-    authenticateToken,
-    getCurrentSubscription,
-  );
-  app.post("/api/subscriptions/update", authenticateToken, updateSubscription);
-  app.post("/api/subscriptions/cancel", authenticateToken, cancelSubscription);
-  app.post(
-    "/api/subscriptions/payment-intent",
-    authenticateToken,
-    createPaymentIntent,
-  );
 
   // Middleware to accept either Supabase JWT (contains dots) or legacy session token
   const authenticateEither: import("express").RequestHandler = (
@@ -136,11 +109,48 @@ export function createServer() {
     return authenticateToken(req, res, next);
   };
 
+  // Authentication routes
+  app.post("/api/auth/signup", signUp);
+  app.post("/api/auth/signin", signIn);
+  app.post("/api/auth/signout", signOut);
+  app.get("/api/auth/me", getCurrentUser);
+
+  // Protected calculation routes
+  app.post("/api/calculations", authenticateEither, saveCalculation);
+  app.get("/api/calculations", authenticateEither, getCalculations);
+  app.get("/api/calculations/:id", authenticateEither, getCalculation);
+  app.put("/api/calculations/:id", authenticateEither, updateCalculation);
+  app.delete("/api/calculations/:id", authenticateEither, deleteCalculation);
+  app.get("/api/user/stats", authenticateEither, getUserStats);
+
+  // Subscription routes
+  app.get("/api/subscriptions/plans", getSubscriptionPlans);
+  app.get(
+    "/api/subscriptions/current",
+    authenticateEither,
+    getCurrentSubscription,
+  );
+  app.post("/api/subscriptions/update", authenticateEither, updateSubscription);
+  app.post("/api/subscriptions/cancel", authenticateEither, cancelSubscription);
+  app.post(
+    "/api/subscriptions/payment-intent",
+    authenticateEither,
+    createPaymentIntent,
+  );
+
   // Billing routes (Stripe)
   app.use("/api/billing", billingRoutes);
 
+  // Engineering Calculations (Thermodynamic Core)
+  app.post("/api/calculate-airflow", authenticateEither, calculateAirflow);
+  app.post("/api/calculate-deltat", authenticateEither, calculateDeltaT);
+  app.post("/api/calculate-standard", authenticateEither, calculateStandardCycleEndpoint);
+  app.post("/api/calculate-cascade", authenticateEither, calculateCascadeCycleEndpoint);
+  app.post("/api/compare-refrigerants", authenticateEither, compareRefrigerantsEndpoint);
+
+
+
   // Server-side storage upload (uses SUPABASE_SERVICE_ROLE_KEY)
-  // Accept either the legacy session token (authenticateToken) or a Supabase JWT
   app.post("/api/storage/upload", authenticateEither, uploadAvatar);
 
   // Diagnostics route to test server->Supabase connectivity
@@ -169,9 +179,6 @@ export function createServer() {
   );
 
   // 404 handler
-  // 404 handler
-  // 404 handler
-  // 404 handler for API routes
   app.use((req, res, next) => {
     if (req.path.startsWith("/api")) {
       res.status(404).json({

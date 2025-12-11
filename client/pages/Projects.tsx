@@ -57,17 +57,17 @@ export default function Projects() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-slate-950 dark:to-slate-900">
       <main className="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
         <Button
           variant="ghost"
-          className="mb-2 pl-0 hover:bg-transparent hover:text-blue-600"
+          className="mb-2 pl-0 hover:bg-transparent hover:text-blue-600 dark:hover:text-blue-400"
           onClick={() => navigate('/dashboard')}
         >
           <ArrowLeft className="w-4 h-4 mr-2" /> Back
         </Button>
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-bold text-blue-900">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
             Personal Project Dashboard
           </h1>
           <Badge variant="outline">Projects: {projects.length}</Badge>
@@ -97,11 +97,11 @@ export default function Projects() {
               </div>
               <div>
                 <Label>Attach items</Label>
-                <div className="mt-2 max-h-64 overflow-auto border rounded bg-white">
+                <div className="mt-2 max-h-64 overflow-auto border rounded bg-background dark:bg-slate-800 dark:border-slate-700">
                   {attachable.map((c) => (
                     <label
                       key={c.id}
-                      className="flex items-center gap-2 p-2 border-b last:border-b-0"
+                      className="flex items-center gap-2 p-2 border-b dark:border-slate-700 last:border-b-0 hover:bg-slate-50 dark:hover:bg-slate-700/50"
                     >
                       <input
                         type="checkbox"
@@ -144,7 +144,7 @@ export default function Projects() {
               ) : (
                 <div className="space-y-3">
                   {projects.map((p) => (
-                    <div key={p.id} className="p-3 rounded border bg-white">
+                    <div key={p.id} className="p-3 rounded border bg-card dark:border-slate-700">
                       <div className="flex items-center justify-between">
                         <div className="font-semibold truncate">
                           {p.name || p.inputs?.name || "Project"}

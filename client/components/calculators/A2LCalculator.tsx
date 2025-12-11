@@ -158,7 +158,7 @@ export default function A2LCalculator({ saveCalculation }: A2LCalculatorProps) {
                     <div className="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-6 border border-slate-100 dark:border-slate-700 flex flex-col justify-center relative">
                         {result ? (
                             <div className="text-center space-y-4">
-                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-100 text-orange-600 mb-2">
+                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-100 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400 mb-2">
                                     <Flame className="w-8 h-8" />
                                 </div>
                                 <div>

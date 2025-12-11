@@ -29,7 +29,7 @@ import {
   ArrowRight,
   Download,
 } from "lucide-react";
-import { API_BASE_URL } from "@/lib/api";
+import { apiClient } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EnhancedRefrigerantSelector } from "../components/EnhancedRefrigerantSelector";
 import { CycleVisualization } from "../components/CycleVisualization";
@@ -378,20 +378,16 @@ export function EnhancedStandardCycleContent() {
       : formData;
 
     try {
-      const response = await fetch(`${API_BASE_URL}/calculate-standard`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
+      const responseData = await apiClient.calculateStandardCycle({
+        refrigerant: requestBody.refrigerant,
+        evaporatorTemp: requestBody.evap_temp_c,
+        condenserTemp: requestBody.cond_temp_c,
+        superheat: requestBody.superheat_c,
+        subcooling: requestBody.subcooling_c,
       });
 
-      const responseData = await response.json();
-
-      if (!response.ok || responseData.error) {
-        throw new Error(
-          responseData.error || `HTTP error! status: ${response.status}`,
-        );
+      if (!responseData.success && !responseData.data && responseData.error) {
+        throw new Error(responseData.error);
       }
 
       const calculationData =
@@ -925,11 +921,12 @@ export function EnhancedStandardCycleContent() {
     // get mass flow (kg/s)
     const mass = searchExact(massKeys);
 
-    // If caller asked for cooling/capacity, try refrigeration_effect * mass_flow
+    // If caller asked for cooling/capacity
     if (
       variants.some((v) => v.toLowerCase().includes("cool")) ||
       variants.some((v) => v.toLowerCase().includes("capacity"))
     ) {
+      // Direct derived: mass * ref_effect
       const refrigerEffect =
         searchExact(refrigerationEffectKeys) ||
         searchExact([
@@ -938,22 +935,36 @@ export function EnhancedStandardCycleContent() {
           "capacity_per_kg",
         ]);
       if (refrigerEffect !== undefined && mass !== undefined) {
-        // refrigerEffect is expected kJ/kg, mass kg/s => kJ/s == kW
         return Number(refrigerEffect) * Number(mass);
+      }
+
+      // Fallback: Calculate from Heat Rejection & COP if available
+      // Q_cool = Q_heat * COP / (COP + 1)
+      const qHeat = searchExact([
+        "heat_rejection_kw",
+        "heat_rejection",
+        "Q_cond",
+      ]);
+      const cop = searchExact(["cop", "coefficient_of_performance"]);
+
+      if (qHeat !== undefined && cop !== undefined && cop !== 0) {
+        // Prevent division by zero mathematically, though COP usually > 0
+        return (qHeat * cop) / (cop + 1);
       }
     }
 
-    // If caller asked for compressor work, try work_per_mass * mass_flow
+    // If caller asked for compressor work
     if (
       variants.some((v) => v.toLowerCase().includes("work")) ||
       variants.some((v) => v.toLowerCase().includes("power"))
     ) {
+      // Direct derived: mass * work_per_mass
       const workPerMass = searchExact(workPerMassKeys);
       if (workPerMass !== undefined && mass !== undefined) {
         return Number(workPerMass) * Number(mass);
       }
 
-      // also try direct power-like keys
+      // check direct power keys
       const powerKeys = [
         "input_power",
         "compressor_power_kw",
@@ -966,6 +977,19 @@ export function EnhancedStandardCycleContent() {
       ];
       const p = searchExact(powerKeys);
       if (p !== undefined) return p;
+
+      // Fallback: Calculate from Heat Rejection & COP if available
+      // W_comp = Q_heat / (COP + 1)
+      const qHeat = searchExact([
+        "heat_rejection_kw",
+        "heat_rejection",
+        "Q_cond",
+      ]);
+      const cop = searchExact(["cop", "coefficient_of_performance"]);
+
+      if (qHeat !== undefined && cop !== undefined && cop !== -1) {
+        return qHeat / (cop + 1);
+      }
     }
 
     // Heat rejection fallback: Q_cond = Q_evap + W_comp
@@ -1231,897 +1255,28 @@ export function EnhancedStandardCycleContent() {
   }, [handleCalculate, pendingPresetInputs]);
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">
-          Enhanced Standard Refrigeration Cycle
-        </h1>
-        <p className="text-muted-foreground">
-          Advanced cycle analysis with real-time visualization and equipment
-          simulation
-        </p>
-      </div>
-
-      <Tabs
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="space-y-6"
-      >
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="calculation" className="flex items-center gap-2">
-            <Calculator className="h-4 w-4" />
-            Calculation
-          </TabsTrigger>
-          <TabsTrigger
-            value="visualization"
-            className="flex items-center gap-2"
-            disabled={!results}
-          >
-            <Eye className="h-4 w-4" />
-            Visualization
-            {calculationComplete && (
-              <Badge variant="outline" className="ml-1">
-                New
-              </Badge>
-            )}
-          </TabsTrigger>
-          <TabsTrigger
-            value="results"
-            className="flex items-center gap-2"
-            disabled={!results}
-          >
-            <FileText className="h-4 w-4" />
-            Results
-            {calculationComplete && (
-              <Badge variant="default" className="ml-1">
-                View
-              </Badge>
-            )}
-          </TabsTrigger>
-          <TabsTrigger
-            value="equipment"
-            className="flex items-center gap-2"
-            disabled={!results}
-          >
-            <Wrench className="h-4 w-4" />
-            Equipment
-            {calculationComplete && (
-              <Badge variant="outline" className="ml-1">
-                New
-              </Badge>
-            )}
-          </TabsTrigger>
-          <TabsTrigger value="professional" className="flex items-center gap-2">
-            <ArrowRight className="h-4 w-4" />
-            Professional
-            <Badge variant="secondary" className="ml-1">
-              Pro
-            </Badge>
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="calculation">
-          <div className="grid grid-cols-1 lg:grid-cols-1 sm:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Cycle Parameters</CardTitle>
-                <CardDescription>
-                  Configure refrigerant and operating conditions
-                </CardDescription>
-              </CardHeader>
-              <CardContent
-                className="space-y-6"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    void handleCalculate();
-                  }
-                }}
-                aria-label="Cycle parameters form"
-              >
-                <div>
-                  <Label htmlFor="refrigerant">
-                    <TechTerm term="refrigerant">Refrigerant</TechTerm>
-                  </Label>
-                </div>
-
-                <Separator />
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="evap_temp">
-                      <TechTerm term="evaporator">
-                        Evaporator Temperature (°C)
-                      </TechTerm>
-                    </Label>
-                    <Input
-                      id="evap_temp"
-                      type="number"
-                      value={formData.evap_temp_c}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "evap_temp_c",
-                          parseFloat(e.target.value),
-                        )
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          void handleCalculate();
-                        }
-                      }}
-                      className="mt-1 w-full focus:ring-2 focus:ring-sky-500 focus:outline-none"
-                      placeholder="e.g., -10"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="cond_temp">
-                      <TechTerm term="condenser">
-                        Condenser Temperature (°C)
-                      </TechTerm>
-                    </Label>
-                    <Input
-                      id="cond_temp"
-                      type="number"
-                      value={formData.cond_temp_c}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "cond_temp_c",
-                          parseFloat(e.target.value),
-                        )
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          void handleCalculate();
-                        }
-                      }}
-                      className="mt-1 w-full focus:ring-2 focus:ring-sky-500 focus:outline-none"
-                      placeholder="e.g., 45"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="superheat">
-                      <TechTerm term="superheat">Superheat (°C)</TechTerm>
-                    </Label>
-                    <Input
-                      id="superheat"
-                      type="number"
-                      value={formData.superheat_c}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "superheat_c",
-                          parseFloat(e.target.value),
-                        )
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          void handleCalculate();
-                        }
-                      }}
-                      className="mt-1 w-full focus:ring-2 focus:ring-sky-500 focus:outline-none"
-                      placeholder="e.g., 5"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="subcooling">
-                      <TechTerm term="subcooling">Subcooling (°C)</TechTerm>
-                    </Label>
-                    <Input
-                      id="subcooling"
-                      type="number"
-                      value={formData.subcooling_c}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "subcooling_c",
-                          parseFloat(e.target.value),
-                        )
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          void handleCalculate();
-                        }
-                      }}
-                      className="mt-1 w-full focus:ring-2 focus:ring-sky-500 focus:outline-none"
-                      placeholder="e.g., 2"
-                    />
-                  </div>
-                </div>
-
-                {validationWarnings.length > 0 && (
-                  <Alert>
-                    <AlertDescription>
-                      <strong>Operating Condition Warnings:</strong>
-                      <ul className="mt-1 ml-4 list-disc">
-                        {validationWarnings.map((warning, index) => (
-                          <li key={index}>{warning}</li>
-                        ))}
-                      </ul>
-                    </AlertDescription>
-                  </Alert>
-                )}
-
-                {error && (
-                  <Alert variant="destructive">
-                    <AlertDescription>
-                      {error}
-                      {error.includes("blend refrigerant") && (
-                        <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded">
-                          <strong className="text-blue-800">
-                            Suggestions:
-                          </strong>
-                          <ul className="mt-1 ml-4 list-disc text-sm text-blue-700">
-                            <li>Try increasing superheat to 10°C or higher</li>
-                            <li>Try increasing subcooling to 5°C or higher</li>
-                            <li>
-                              Consider using pure refrigerants like R134a, R32,
-                              R290, or R744
-                            </li>
-                            <li>
-                              Adjust evaporator/condenser temperatures to avoid
-                              two-phase conditions
-                            </li>
-                          </ul>
-                        </div>
-                      )}
-                    </AlertDescription>
-                  </Alert>
-                )}
-
-                <Button
-                  onClick={() => void handleCalculate()}
-                  disabled={loading || !formData.refrigerant}
-                  className="w-full focus:ring-2 focus:ring-sky-500 focus:outline-none"
-                  size="lg"
-                  aria-label="Calculate cycle"
-                  aria-busy={loading}
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Calculating...
-                    </>
-                  ) : (
-                    <>
-                      <Calculator className="h-4 w-4 mr-2" />
-                      Calculate Cycle
-                    </>
-                  )}
-                </Button>
-
-                <div className="mt-6">
-                  {calculationComplete && (
-                    <div
-                      role="alert"
-                      className="bg-green-50 border border-green-200 rounded-lg mt-4 p-4 w-full relative"
-                    >
-                      <div className="absolute left-5 top-5 text-foreground">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="text-green-800"
-                        >
-                          <path d="M21.8 10A10 10 0 1 1 17 3.335" />
-                          <path d="m9 11 3 3L22 4" />
-                        </svg>
-                      </div>
-                      <div className="pl-10 text-green-800">
-                        <div className="flex items-center justify-between">
-                          <span>
-                            <strong>Calculation Complete!</strong> View your
-                            results in the tabs above.
-                          </span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setActiveTab("results")}
-                            className="border-green-300 text-green-700 hover:bg-green-100"
-                          >
-                            View Results <ArrowRight className="h-3 w-3 ml-1" />
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Recommended Operating Range (AI) */}
-                  {formData.refrigerant ? (
-                    <div
-                      className="mt-4 rounded-lg border bg-sky-50 p-4 mb-4 relative"
-                      aria-live="polite"
-                    >
-                      {aiLoading && (
-                        <div className="absolute inset-0 flex items-center justify-center rounded-lg z-20 bg-white/60 backdrop-blur-sm">
-                          <div className="flex flex-col items-center gap-2">
-                            <Loader2 className="h-10 w-10 animate-spin text-sky-600" />
-                            <div className="text-sm font-medium text-sky-700">
-                              Generating recommended range…
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2 text-sky-700 font-medium">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="18"
-                            height="18"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="h-4 w-4 text-green-600"
-                          >
-                            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
-                            <polyline points="16 7 22 7 22 13" />
-                          </svg>
-                          {aiLoading ? (
-                            <span className="flex items-center gap-2">
-                              <Loader2 className="h-4 w-4 animate-spin text-sky-600" />
-                              Loading recommendations...
-                            </span>
-                          ) : (
-                            "Recommended Operating Range"
-                          )}
-                        </div>
-                        <Button
-                          variant="default"
-                          size="sm"
-                          disabled={aiLoading || !aiRange}
-                          onClick={() =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              evap_temp_c: (aiRange?.evap_temp_c ??
-                                prev.evap_temp_c) as number,
-                              cond_temp_c: (aiRange?.cond_temp_c ??
-                                prev.cond_temp_c) as number,
-                              superheat_c: (aiRange?.superheat_c ??
-                                prev.superheat_c) as number,
-                              subcooling_c: (aiRange?.subcooling_c ??
-                                prev.subcooling_c) as number,
-                            }))
-                          }
-                          aria-busy={aiLoading}
-                        >
-                          {aiLoading ? (
-                            <span className="flex items-center gap-2">
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                              Applying...
-                            </span>
-                          ) : (
-                            "Apply Range"
-                          )}
-                        </Button>
-                      </div>
-                      {aiError && (
-                        <div className="text-red-700 text-sm mb-2">
-                          {aiError}
-                        </div>
-                      )}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <div className="font-medium">
-                            Evaporator Temperature
-                          </div>
-                          <div>
-                            {aiLoading ? (
-                              <Skeleton className="h-4 w-24" />
-                            ) : (
-                              <>
-                                Recommended: {aiRange?.evap_temp_c ?? "N/A"} °C
-                              </>
-                            )}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="font-medium">
-                            Condenser Temperature
-                          </div>
-                          <div>
-                            {aiLoading ? (
-                              <Skeleton className="h-4 w-24" />
-                            ) : (
-                              <>
-                                Recommended: {aiRange?.cond_temp_c ?? "N/A"} °C
-                              </>
-                            )}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="font-medium">Superheat</div>
-                          <div>
-                            {aiLoading ? (
-                              <Skeleton className="h-4 w-20" />
-                            ) : (
-                              <>
-                                Recommended: {aiRange?.superheat_c ?? "N/A"} °C
-                              </>
-                            )}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="font-medium">Subcooling</div>
-                          <div>
-                            {aiLoading ? (
-                              <Skeleton className="h-4 w-20" />
-                            ) : (
-                              <>
-                                Recommended: {aiRange?.subcooling_c ?? "N/A"} °C
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      {formattedAiNotes && (
-                        <div className="mt-2">
-                          <div className="text-xs text-gray-500">
-                            {aiLoading ? (
-                              <Skeleton className="h-3 w-full max-w-xs" />
-                            ) : (
-                              formattedAiNotes
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="mt-4 rounded-lg border border-dashed border-sky-200 bg-sky-50 p-8 mb-4 text-center">
-                      <div className="flex flex-col items-center gap-4">
-                        <svg
-                          className="h-12 w-12 text-sky-500"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                        >
-                          <path
-                            d="M12 2v6"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M12 22v-6"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <circle cx="12" cy="12" r="8" />
-                        </svg>
-                        <div className="text-lg font-medium text-sky-700">
-                          Choose a refrigerant to see recommendations
-                        </div>
-                        <div className="text-sm text-sky-600">
-                          Recommended operating range will appear here after
-                          selecting a refrigerant.
-                        </div>
-                        <div>
-                          <Button
-                            variant="outline"
-                            onClick={() => {
-                              const el = document.getElementById(
-                                "refrigerant-selector",
-                              );
-                              if (el)
-                                el.scrollIntoView({
-                                  behavior: "smooth",
-                                  block: "center",
-                                });
-                            }}
-                          >
-                            Choose Refrigerant
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="space-y-4 mt-2">
-                    {/* Refrigerant Selection Card */}
-
-                    {/* Refrigerant Details and Validation Card */}
-                    <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
-                      {selectedRefrigerant ? (
-                        <>
-                          <div className="flex flex-col space-y-1.5 p-6">
-                            <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
-                              <div
-                                className="w-4 h-4 rounded-full"
-                                style={{
-                                  backgroundColor: selectedRefrigerant?.color,
-                                }}
-                              />
-                              {`${selectedRefrigerant.name} - ${selectedRefrigerant.fullName}`}
-                            </h3>
-                          </div>
-
-                          <div className="p-6 pt-0 space-y-4">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                              <div className="flex items-center gap-2">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="20"
-                                  height="20"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  className="h-4 w-4 text-green-500"
-                                >
-                                  <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
-                                  <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-                                </svg>
-                                <div>
-                                  <div className="text-sm font-medium">
-                                    <TechTerm term="gwp">GWP</TechTerm>
-                                  </div>
-                                  <div className="text-sm text-gray-600">
-                                    {selectedRefrigerant?.globalWarmingPotential ??
-                                      selectedRefrigerant?.gwp ??
-                                      "N/A"}
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="flex items-center gap-2">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="20"
-                                  height="20"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  className="h-4 w-4 text-blue-500"
-                                >
-                                  <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
-                                </svg>
-                                <div>
-                                  <div className="text-sm font-medium">
-                                    <TechTerm term="safety_class">
-                                      Safety
-                                    </TechTerm>
-                                  </div>
-                                  <div className="text-sm text-gray-600">
-                                    {selectedRefrigerant?.safety ?? "N/A"}
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="flex items-center gap-2">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="20"
-                                  height="20"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  className="h-4 w-4 text-red-500"
-                                >
-                                  <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" />
-                                </svg>
-                                <div>
-                                  <div className="text-sm font-medium">
-                                    <TechTerm term="critical_temperature">
-                                      Critical Temperature
-                                    </TechTerm>
-                                  </div>
-                                  <div className="text-sm text-gray-600">
-                                    {selectedRefrigerant?.limits
-                                      ?.critical_temp_c
-                                      ? selectedRefrigerant.limits.critical_temp_c.toFixed(
-                                        1,
-                                      ) + " °C"
-                                      : selectedRefrigerant?.limits
-                                        ?.criticalTemp
-                                        ? (
-                                          selectedRefrigerant.limits
-                                            .criticalTemp - 273.15
-                                        ).toFixed(1) + " °C"
-                                        : "N/A"}
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="flex items-center gap-2">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="20"
-                                  height="20"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  className="h-4 w-4 text-purple-500"
-                                >
-                                  <path d="m12 14 4-4" />
-                                  <path d="M3.34 19a10 10 0 1 1 17.32 0" />
-                                </svg>
-                                <div>
-                                  <div className="text-sm font-medium">
-                                    <TechTerm term="critical_pressure">
-                                      Critical Pressure
-                                    </TechTerm>
-                                  </div>
-                                  <div className="text-sm text-gray-600">
-                                    {selectedRefrigerant?.limits
-                                      ?.critical_pressure_kpa
-                                      ? selectedRefrigerant.limits.critical_pressure_kpa.toFixed(
-                                        0,
-                                      ) + " kPa"
-                                      : selectedRefrigerant?.limits
-                                        ?.criticalPressure
-                                        ? Math.round(
-                                          selectedRefrigerant.limits
-                                            .criticalPressure / 1000,
-                                        ) + " kPa"
-                                        : "N/A"}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div>
-                              <p className="text-sm text-gray-700">
-                                {selectedRefrigerant?.description}
-                              </p>
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <div className="p-8 text-center">
-                          <svg
-                            className="mx-auto h-12 w-12 text-gray-400"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                          >
-                            <path
-                              d="M12 2v6"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M12 22v-6"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <circle cx="12" cy="12" r="8" />
-                          </svg>
-                          <div className="mt-4 text-lg font-medium">
-                            Select a refrigerant to view properties
-                          </div>
-                          <div className="mt-2 text-sm text-muted-foreground">
-                            Choose a refrigerant from the selector to populate
-                            properties like GWP, safety, and critical values.
-                          </div>
-                          <div className="mt-4">
-                            <Button
-                              variant="outline"
-                              onClick={() => {
-                                const el = document.getElementById(
-                                  "refrigerant-selector",
-                                );
-                                if (el)
-                                  el.scrollIntoView({
-                                    behavior: "smooth",
-                                    block: "center",
-                                  });
-                              }}
-                            >
-                              Choose Refrigerant
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  <TechTerm term="coolprop_support">
-                    Real-time Validation
-                  </TechTerm>
-                </CardTitle>
-                <CardDescription>
-                  Thermodynamic property verification and operating condition
-                  checks
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {/* Refrigerant Selection (moved here for improved layout) */}
-                <div id="refrigerant-selector">
-                  <EnhancedRefrigerantSelector
-                    value={formData.refrigerant}
-                    onChange={handleRefrigerantChange}
-                    evaporatorTemp={formData.evap_temp_c}
-                    condenserTemp={formData.cond_temp_c}
-                    onSuggestedRangeApply={(evap, cond) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        evap_temp_c: evap,
-                        cond_temp_c: cond,
-                      }))
-                    }
-                    aiRange={aiRange}
-                    aiLoading={aiLoading}
-                    aiError={aiError}
-                    showDetails={false}
-                    className="mt-2"
-                  />
-                </div>
-
-                {selectedRefrigerant ? (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="font-medium">
-                          <TechTerm term="critical_temperature">
-                            Critical Temperature
-                          </TechTerm>
-                          :
-                        </span>
-                        <div>
-                          {selectedRefrigerant.limits.critical_temp_c.toFixed(
-                            1,
-                          )}
-                          °C
-                        </div>
-                      </div>
-                      <div>
-                        <span className="font-medium">
-                          <TechTerm term="critical_pressure">
-                            Critical Pressure
-                          </TechTerm>
-                          :
-                        </span>
-                        <div>
-                          {(
-                            selectedRefrigerant.limits.critical_pressure_kpa /
-                            1000
-                          ).toFixed(1)}{" "}
-                          MPa
-                        </div>
-                      </div>
-                      <div>
-                        <span className="font-medium">
-                          <TechTerm term="minimum_temperature">
-                            Minimum Temperature
-                          </TechTerm>
-                          :
-                        </span>
-                        <div>
-                          {selectedRefrigerant.limits.min_temp_c.toFixed(1)}°C
-                        </div>
-                      </div>
-                      <div>
-                        <span className="font-medium">
-                          <TechTerm term="maximum_temperature">
-                            Maximum Temperature
-                          </TechTerm>
-                          :
-                        </span>
-                        <div>
-                          {selectedRefrigerant.limits.max_temp_c.toFixed(1)}°C
-                        </div>
-                      </div>
-                    </div>
-
-                    <Separator />
-
-                    <div>
-                      <span className="font-medium">CoolProp Support:</span>
-                      <Badge
-                        variant={
-                          selectedRefrigerant.coolpropSupport === "full"
-                            ? "default"
-                            : "secondary"
-                        }
-                        className="ml-2"
-                      >
-                        {selectedRefrigerant.coolpropSupport}
-                      </Badge>
-                    </div>
-
-                    {selectedRefrigerant.applications && (
-                      <div>
-                        <span className="font-medium">Applications:</span>
-                        <div className="mt-1 flex flex-wrap gap-1">
-                          {selectedRefrigerant.applications.map(
-                            (app, index) => (
-                              <Badge
-                                key={index}
-                                variant="outline"
-                                className="text-xs"
-                              >
-                                {app}
-                              </Badge>
-                            ),
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="text-muted-foreground text-center py-8">
-                    Select a refrigerant to view properties
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+    <div className="min-h-screen bg-background text-foreground animate-in fade-in duration-500 pb-20">
+      <div className="container mx-auto px-4 py-8 max-w-[1800px]">
+        {/* Header & Actions */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
+              Enhanced Standard Cycle
+            </h1>
+            <p className="text-muted-foreground mt-1 text-lg">
+              Advanced thermodynamic simulation & analysis
+            </p>
           </div>
-        </TabsContent>
-
-        <TabsContent value="visualization">
-          <Card>
-            <CardHeader>
-              <CardTitle>Thermodynamic Cycle Visualization</CardTitle>
-              <CardDescription>
-                Interactive diagrams with multiple view types and animation
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {results && cycleData ? (
-                <div className="space-y-4">
-                  <CycleVisualization cycleData={cycleData} />
-                </div>
-              ) : (
-                <div className="text-center py-12 text-muted-foreground">
-                  Calculate a cycle to view the P-h diagram visualization
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="results">
-          {showSuccessBanner && results && (
-            <Alert
-              variant="success"
-              className="mb-4 border-emerald-400/70 bg-emerald-50 shadow-sm"
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={handleExportPDF}
+              disabled={!results}
+              className="gap-2"
             >
-              <CheckCircle className="h-5 w-5" aria-hidden />
-              <AlertTitle>Calculation complete</AlertTitle>
-              <AlertDescription>
-                {formData.refrigerant ? (
-                  <>
-                    Outcomes generated with {formData.refrigerant}. Review,
-                    rename, or save this scenario to your history.
-                  </>
-                ) : (
-                  <>
-                    Outcomes generated. Review, rename, or save this scenario to
-                    your history.
-                  </>
-                )}
-              </AlertDescription>
-            </Alert>
-          )}
-
-          <div className="mb-4 flex flex-wrap items-center justify-end gap-2">
+              <Download className="w-4 h-4" />
+              Export Report
+            </Button>
             {results && (
               <>
                 {matchingCalculation && (
@@ -2141,566 +1296,445 @@ export function EnhancedStandardCycleContent() {
               </>
             )}
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-1 sm:grid-cols-2 gap-6">
-            <Card>
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+          {/* LEFT SIDEBAR: CONFIGURATION */}
+          <div className="xl:col-span-4 space-y-6 xl:sticky xl:top-24">
+            <Card className="border-t-4 border-t-blue-500 shadow-lg dark:bg-slate-900/50 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle>Cycle Performance</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <Calculator className="w-5 h-5 text-blue-500" />
+                  Configuration
+                </CardTitle>
                 <CardDescription>
-                  Overall system performance metrics
+                  Define system parameters and refrigerant
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                {results && results.performance ? (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
-                        <div className="text-2xl font-bold text-primary">
-                          {formatValue(
-                            getPerformanceValue(results.performance, [
-                              "cop",
-                              "COP",
-                              "Cop",
-                              "coefficient_of_performance",
-                              "performance_coefficient",
-                              "coeff_of_performance",
-                              "coefficient_performance",
-                              "cop_cooling",
-                              "COP_cooling",
-                              "cooling_cop",
-                              "refrigeration_cop",
-                              "efficiency_cooling",
-                            ]),
-                            "",
-                          )}
-                        </div>
-                        <div className="text-sm text-primary/80">
-                          <TechTerm term="cop">
-                            Coefficient of Performance
-                          </TechTerm>
-                        </div>
-                      </div>
-                      <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
-                        <div className="text-2xl font-bold text-emerald-600">
-                          {formatValue(
-                            getPerformanceValue(results.performance, [
-                              "cooling_capacity_kw",
-                              "cooling_capacity",
-                              "capacity",
-                              "capacity_kw",
-                              "Q_evap",
-                              "Q_evaporator",
-                              "evaporator_load",
-                              "refrigeration_effect_kw",
-                              "refrigeration_capacity",
-                              "cooling_load",
-                              "evap_capacity",
-                              "q_evap_kw",
-                              "cooling_power",
-                              "refrigeration_effect",
-                              "evaporator_capacity",
-                            ]),
-                            "kW",
-                          )}
-                        </div>
-                        <div className="text-sm text-emerald-700">
-                          <TechTerm term="cooling_capacity">
-                            Cooling Capacity
-                          </TechTerm>
-                        </div>
-                      </div>
-                      <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                        <div className="text-2xl font-bold text-amber-600">
-                          {formatValue(
-                            getPerformanceValue(results.performance, [
-                              "compressor_work_kw",
-                              "compressor_work",
-                              "work",
-                              "work_kw",
-                              "power",
-                              "W_comp",
-                              "W_compressor",
-                              "work_input",
-                              "power_input",
-                              "compressor_power",
-                              "work_of_compression_kj_kg",
-                              "compression_work",
-                              "work_compression",
-                              "compressor_power_kw",
-                              "input_power",
-                              "mechanical_power",
-                            ]),
-                            "kW",
-                          )}
-                        </div>
-                        <div className="text-sm text-amber-700">
-                          <TechTerm term="compressor_work">
-                            Compressor Work
-                          </TechTerm>
-                        </div>
-                      </div>
-                      <div className="p-4 bg-rose-50 border border-rose-200 rounded-lg">
-                        <div className="text-2xl font-bold text-rose-600">
-                          {formatValue(
-                            getPerformanceValue(results.performance, [
-                              "heat_rejection_kw",
-                              "heat_rejection",
-                              "Q_cond",
-                              "Q_condenser",
-                              "condenser_load",
-                              "heat_rejected",
-                              "condensing_capacity",
-                              "rejection_heat",
-                              "condenser_capacity",
-                              "q_cond_kw",
-                              "heat_rejected_kw",
-                              "condensation_heat",
-                            ]),
-                            "kW",
-                          )}
-                        </div>
-                        <div className="text-sm text-rose-700">
-                          <TechTerm term="heat_rejection">
-                            Heat Rejection
-                          </TechTerm>
-                        </div>
-                      </div>
-                    </div>
-                    <Separator />
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span>
-                          <TechTerm term="mass_flow_rate">
-                            Mass Flow Rate
-                          </TechTerm>
-                          :
-                        </span>
-                        <span className="font-mono">
-                          {formatValue(
-                            getPerformanceValue(results.performance, [
-                              "mass_flow_rate_kg_s",
-                              "mass_flow_rate",
-                              "mdot",
-                              "m_dot",
-                              "mass_flow",
-                              "flow_rate",
-                              "mass_flow_kg_s",
-                              "refrigerant_flow_rate",
-                              "flow_rate_mass",
-                              "mass_rate",
-                              "kg_per_s",
-                              "mass_flux",
-                              "circulation_rate",
-                            ]),
-                            "kg/s",
-                            4,
-                          )}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>
-                          <TechTerm term="volumetric_flow_rate">
-                            Volumetric Flow Rate
-                          </TechTerm>
-                          :
-                        </span>
-                        <span className="font-mono">
-                          {formatValue(volumetricFlowRate, "m³/s", 6)}
-                        </span>
-                      </div>
-                    </div>
+              <CardContent className="space-y-6">
+                {/* 1. Refrigerant */}
+                <div className="space-y-3">
+                  <Label>Refrigerant</Label>
+                  <div id="refrigerant-selector">
+                    <EnhancedRefrigerantSelector
+                      value={formData.refrigerant}
+                      onChange={handleRefrigerantChange}
+                      evaporatorTemp={formData.evap_temp_c}
+                      condenserTemp={formData.cond_temp_c}
+                      onSuggestedRangeApply={(evap, cond) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          evap_temp_c: evap,
+                          cond_temp_c: cond,
+                        }))
+                      }
+                      aiRange={aiRange}
+                      aiLoading={aiLoading}
+                      aiError={aiError}
+                      showDetails={false}
+                    />
                   </div>
-                ) : (
-                  <div className="text-center py-8 text-muted-foreground">
-                    No results available. Calculate a cycle first.
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>State Points</CardTitle>
-                <CardDescription>
-                  Thermodynamic properties at each cycle point
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {results ? (
-                  <div className="space-y-4">
-                    {[
-                      {
-                        point: results.state_points?.["1"],
-                        label: "Point 1 - Evaporator Outlet",
-                        colorClass: "text-primary border-l-primary",
-                      },
-                      {
-                        point: results.state_points?.["2"],
-                        label: "Point 2 - Compressor Outlet",
-                        colorClass: "text-rose-600 border-l-rose-600",
-                      },
-                      {
-                        point: results.state_points?.["3"],
-                        label: "Point 3 - Condenser Outlet",
-                        colorClass: "text-emerald-600 border-l-emerald-600",
-                      },
-                      {
-                        point: results.state_points?.["4"],
-                        label: "Point 4 - Expansion Outlet",
-                        colorClass: "text-amber-600 border-l-amber-600",
-                      },
-                    ].map(({ point, label, colorClass }, index) => (
-                      <div
-                        key={index}
-                        className={`border rounded-lg p-3 border-l-4 ${colorClass.includes("border-l-") ? "" : "border-l-gray-200"}`}
-                      >
-                        <div
-                          className={`font-medium mb-2 ${colorClass.split(" ")[0]}`}
-                        >
-                          {label}
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-                          <div>
-                            <TechTerm term="temperature">T</TechTerm>:{" "}
-                            {formatValue(
-                              getPropertyValue(point, [
-                                "temperature_c",
-                                "temp_c",
-                                "temperature",
-                              ]),
-                              "°C",
-                            )}
-                          </div>
-                          <div>
-                            <TechTerm term="pressure">P</TechTerm>:{" "}
-                            {formatValue(
-                              getPropertyValue(point, [
-                                "pressure_kpa",
-                                "pressure",
-                              ]),
-                              "kPa",
-                              0,
-                            )}
-                          </div>
-                          <div>
-                            <TechTerm term="enthalpy">h</TechTerm>:{" "}
-                            {formatValue(
-                              getPropertyValue(point, [
-                                "enthalpy_kj_kg",
-                                "enthalpy",
-                              ]),
-                              "kJ/kg",
-                            )}
-                          </div>
-                          <div>
-                            <TechTerm term="entropy">s</TechTerm>:{" "}
-                            {formatValue(
-                              getPropertyValue(point, [
-                                "entropy_kj_kgk",
-                                "entropy_kj_kg_k",
-                                "entropy",
-                              ]),
-                              "kJ/kg·K",
-                              3,
-                            )}
-                          </div>
-                          <div>
-                            <TechTerm term="density">ρ</TechTerm>:{" "}
-                            {formatValue(getDensity(point), "kg/m³")}
-                          </div>
-                          {getPropertyValue(point, [
-                            "vapor_quality",
-                            "quality",
-                          ]) !== undefined && (
-                              <div>
-                                <TechTerm term="quality">x</TechTerm>:{" "}
-                                {formatValue(
-                                  (getPropertyValue(point, [
-                                    "vapor_quality",
-                                    "quality",
-                                  ]) || 0) * 100,
-                                  "%",
-                                )}
-                              </div>
-                            )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-muted-foreground">
-                    No results available. Calculate a cycle first.
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="equipment">
-          <Card>
-            <CardHeader>
-              <CardTitle>Equipment Diagrams</CardTitle>
-              <CardDescription>
-                Interactive system components with refrigerant flow
-                visualization
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {results ? (
-                <EquipmentDiagrams cycleData={cycleData} />
-              ) : (
-                <div className="text-center py-12 text-muted-foreground">
-                  Calculate a cycle to view equipment diagrams
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="professional">
-          <ProfessionalFeatures
-            cycleData={cycleData}
-            results={results}
-            refrigerant={formData.refrigerant}
-          />
-        </TabsContent>
-      </Tabs>
-
-      {/* Interactive Onboarding */}
-      {showOnboarding && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <Card className="max-w-2xl w-full">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Info className="h-5 w-5 text-blue-600" />
-                Welcome to the World-Class HVAC Platform
-                <Badge variant="outline" className="ml-auto">
-                  Step {onboardingStep + 1} of 4
-                </Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {onboardingStep === 0 && (
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">
-                    🎯 Built for Every Professional
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="p-4 bg-blue-50 rounded-lg border">
-                      <div className="font-semibold text-blue-800">
-                        Technicians & Field Engineers
-                      </div>
-                      <div className="text-sm text-blue-600 mt-1">
-                        Quick calculations, troubleshooting tools, real-time
-                        analysis
-                      </div>
+                  {/* Selected Refrigerant Specs Mini-View */}
+                  {selectedRefrigerant && (
+                    <div className="text-xs text-muted-foreground flex gap-3 mt-1 px-1">
+                      <span title="Global Warming Potential">
+                        GWP: {selectedRefrigerant.gwp}
+                      </span>
+                      <span title="Safety Class">
+                        Safety: {selectedRefrigerant.safety_class}
+                      </span>
+                      <span title="Critical Temperature">
+                        T_crit:{" "}
+                        {selectedRefrigerant.limits.critical_temp_c.toFixed(1)}
+                        °C
+                      </span>
                     </div>
-                    <div className="p-4 bg-green-50 rounded-lg border">
-                      <div className="font-semibold text-green-800">
-                        Design Engineers
-                      </div>
-                      <div className="text-sm text-green-600 mt-1">
-                        Advanced simulations, professional reports, detailed
-                        analysis
-                      </div>
-                    </div>
-                    <div className="p-4 bg-purple-50 rounded-lg border">
-                      <div className="font-semibold text-purple-800">
-                        Department Heads
-                      </div>
-                      <div className="text-sm text-purple-600 mt-1">
-                        Strategic insights, cost analysis, sustainability
-                        planning
-                      </div>
-                    </div>
-                    <div className="p-4 bg-orange-50 rounded-lg border">
-                      <div className="font-semibold text-orange-800">
-                        Entrepreneurs
-                      </div>
-                      <div className="text-sm text-orange-600 mt-1">
-                        Business intelligence, ROI analysis, market insights
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {onboardingStep === 1 && (
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">
-                    🚀 Core Calculation Features
-                  </h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <Calculator className="h-5 w-5 text-blue-600" />
-                      <div>
-                        <div className="font-semibold">Calculation Tab</div>
-                        <div className="text-sm text-muted-foreground">
-                          Configure refrigerant and operating conditions with
-                          real-time validation
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Eye className="h-5 w-5 text-green-600" />
-                      <div>
-                        <div className="font-semibold">Visualization Tab</div>
-                        <div className="text-sm text-muted-foreground">
-                          Interactive P-h diagrams with multiple view types and
-                          animation
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <FileText className="h-5 w-5 text-purple-600" />
-                      <div>
-                        <div className="font-semibold">Results Tab</div>
-                        <div className="text-sm text-muted-foreground">
-                          Comprehensive performance metrics and state point
-                          analysis
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {onboardingStep === 2 && (
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">
-                    ⚡ Professional Features
-                  </h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <ArrowRight className="h-5 w-5 text-blue-600" />
-                      <div>
-                        <div className="font-semibold">Professional Tab</div>
-                        <div className="text-sm text-muted-foreground">
-                          Advanced tools for unit conversion, sustainability
-                          analysis, and cost optimization
-                        </div>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
-                      <div className="p-3 bg-gray-50 rounded border">
-                        <div className="text-sm font-semibold">
-                          🌍 Dynamic Units
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          SI ↔ Imperial conversion
-                        </div>
-                      </div>
-                      <div className="p-3 bg-gray-50 rounded border">
-                        <div className="text-sm font-semibold">
-                          🍃 Sustainability
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          GWP, ODP, regulations
-                        </div>
-                      </div>
-                      <div className="p-3 bg-gray-50 rounded border">
-                        <div className="text-sm font-semibold">
-                          💰 Cost Analysis
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          ROI, lifecycle costs
-                        </div>
-                      </div>
-                      <div className="p-3 bg-gray-50 rounded border">
-                        <div className="text-sm font-semibold">📊 Reports</div>
-                        <div className="text-xs text-muted-foreground">
-                          Professional PDFs
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {onboardingStep === 3 && (
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">🎯 Getting Started</h3>
-                  <div className="space-y-3">
-                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                      <div className="font-semibold text-green-800 mb-2">
-                        Quick Start Guide:
-                      </div>
-                      <ol className="text-sm text-green-700 space-y-1">
-                        <li>1. Select your refrigerant from the dropdown</li>
-                        <li>
-                          2. Enter operating conditions (temperatures,
-                          superheat, subcooling)
-                        </li>
-                        <li>
-                          3. Click "Calculate Cycle" to run thermodynamic
-                          analysis
-                        </li>
-                        <li>
-                          4. Explore results in Visualization, Results, and
-                          Professional tabs
-                        </li>
-                        <li>
-                          5. Generate professional reports for your projects
-                        </li>
-                      </ol>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-sm text-muted-foreground">
-                        Ready to revolutionize your HVAC analysis workflow?
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div className="flex justify-between pt-4">
-                <Button
-                  variant="outline"
-                  onClick={() =>
-                    setOnboardingStep(Math.max(0, onboardingStep - 1))
-                  }
-                  disabled={onboardingStep === 0}
-                >
-                  Previous
-                </Button>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    onClick={() => {
-                      localStorage.setItem(
-                        "hvac_platform_onboarding_completed",
-                        "true",
-                      );
-                      setShowOnboarding(false);
-                    }}
-                  >
-                    Skip Tour
-                  </Button>
-                  {onboardingStep < 3 ? (
-                    <Button
-                      onClick={() => setOnboardingStep(onboardingStep + 1)}
-                    >
-                      Next
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={() => {
-                        localStorage.setItem(
-                          "hvac_platform_onboarding_completed",
-                          "true",
-                        );
-                        setShowOnboarding(false);
-                      }}
-                      className="bg-green-600 hover:bg-green-700"
-                    >
-                      <CheckCircle className="h-4 w-4 mr-2" />
-                      Start Using Platform
-                    </Button>
                   )}
                 </div>
+
+                <Separator />
+
+                {/* 2. Temperatures */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-sky-600 dark:text-sky-400">
+                      Evaporator (°C)
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        type="number"
+                        value={formData.evap_temp_c}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "evap_temp_c",
+                            parseFloat(e.target.value),
+                          )
+                        }
+                        className="bg-background/50 border-sky-200 dark:border-sky-800 focus:border-sky-500"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-rose-600 dark:text-rose-400">
+                      Condenser (°C)
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        type="number"
+                        value={formData.cond_temp_c}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "cond_temp_c",
+                            parseFloat(e.target.value),
+                          )
+                        }
+                        className="bg-background/50 border-rose-200 dark:border-rose-800 focus:border-rose-500"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. SH / SC */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Superheat (K)</Label>
+                    <Input
+                      type="number"
+                      value={formData.superheat_c}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "superheat_c",
+                          parseFloat(e.target.value),
+                        )
+                      }
+                      min={0}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Subcooling (K)</Label>
+                    <Input
+                      type="number"
+                      value={formData.subcooling_c}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "subcooling_c",
+                          parseFloat(e.target.value),
+                        )
+                      }
+                      min={0}
+                    />
+                  </div>
+                </div>
+
+                {/* AI / Validation Feedback */}
+                {formattedAiNotes && !error && (
+                  <Alert className="bg-blue-50/50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900">
+                    <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    <AlertDescription className="text-xs text-blue-800 dark:text-blue-300">
+                      {formattedAiNotes}
+                    </AlertDescription>
+                  </Alert>
+                )}
+
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertTitle>Input Error</AlertTitle>
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+
+                {validationWarnings.length > 0 && (
+                  <div className="space-y-2">
+                    {validationWarnings.map((warning, i) => (
+                      <Alert key={i} className="border-amber-200 bg-amber-50">
+                        <AlertTitle className="text-amber-800 text-xs font-semibold">
+                          Warning
+                        </AlertTitle>
+                        <AlertDescription className="text-amber-700 text-xs">
+                          {warning}
+                        </AlertDescription>
+                      </Alert>
+                    ))}
+                  </div>
+                )}
+
+                {/* Main Action */}
+                <Button
+                  className="w-full h-12 text-lg font-semibold shadow-xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+                  onClick={() => handleCalculate()}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Simulating...
+                    </>
+                  ) : (
+                    <>
+                      <Calculator className="mr-2 h-5 w-5" />
+                      Run Simulation
+                    </>
+                  )}
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Quick Tips / Guide */}
+            {!results && (
+              <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-slate-900 dark:to-slate-800 border-none">
+                <CardContent className="pt-6">
+                  <h3 className="font-semibold mb-2 flex items-center gap-2">
+                    <Info className="w-4 h-4 text-indigo-500" /> Pro Tips
+                  </h3>
+                  <ul className="text-sm space-y-2 text-muted-foreground list-disc pl-4">
+                    <li>Select a refrigerant first to get AI-suggested ranges.</li>
+                    <li>
+                      Ensure Superheat is sufficient (&gt;5K) to protect the
+                      compressor.
+                    </li>
+                    <li>
+                      Subcooling ensures liquid enters the expansion valve.
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* RIGHT MAIN: RESULTS & VISUALIZATION */}
+          <div className="xl:col-span-8 space-y-6">
+            {!results && !loading ? (
+              <div className="min-h-[500px] flex flex-col items-center justify-center border-4 border-dashed rounded-xl bg-muted/20 text-muted-foreground">
+                <div className="p-6 bg-background rounded-full shadow-lg mb-6">
+                  <Calculator className="h-12 w-12 text-blue-500" />
+                </div>
+                <h3 className="text-2xl font-bold mb-2">Ready to Simulate</h3>
+                <p className="max-w-md text-center">
+                  Configure your cycle parameters on the left and click "Run
+                  Simulation" to generate comprehensive thermodynamic analysis.
+                </p>
               </div>
+            ) : results ? (
+              <div className="animate-in slide-in-from-bottom-5 duration-700 space-y-6">
+                {/* 1. Key Performance Indicators (Cards) */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <KPI
+                    title="Cooling Capacity"
+                    value={formatValue(
+                      getPerformanceValue(results.performance, [
+                        "cooling_capacity_kw",
+                        "cooling_capacity",
+                      ]),
+                      "kW",
+                    )}
+                    icon={<div className="text-2xl">❄️</div>}
+                    color="text-blue-600 dark:text-blue-400"
+                    bg="bg-blue-50 dark:bg-blue-900/20"
+                  />
+                  <KPI
+                    title="COP"
+                    value={formatValue(
+                      getPerformanceValue(results.performance, ["cop"]),
+                      "",
+                    )}
+                    icon={<div className="text-2xl">📈</div>}
+                    color="text-emerald-600 dark:text-emerald-400"
+                    bg="bg-emerald-50 dark:bg-emerald-900/20"
+                  />
+                  <KPI
+                    title="Compressor Work"
+                    value={formatValue(
+                      getPerformanceValue(results.performance, [
+                        "compressor_work_kw",
+                      ]),
+                      "kW",
+                    )}
+                    icon={<div className="text-2xl">⚡</div>}
+                    color="text-amber-600 dark:text-amber-400"
+                    bg="bg-amber-50 dark:bg-amber-900/20"
+                  />
+                  <KPI
+                    title="Heat Rejection"
+                    value={formatValue(
+                      getPerformanceValue(results.performance, [
+                        "heat_rejection_kw",
+                      ]),
+                      "kW",
+                    )}
+                    icon={<div className="text-2xl">🔥</div>}
+                    color="text-rose-600 dark:text-rose-400"
+                    bg="bg-rose-50 dark:bg-rose-900/20"
+                  />
+                </div>
+
+                {/* 2. Main Content Tabs */}
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                  <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent gap-6">
+                    <TabTrigger value="visualization" label="Visualization" icon={<Eye className="w-4 h-4" />} />
+                    <TabTrigger value="results" label="Detailed Data" icon={<FileText className="w-4 h-4" />} />
+                    <TabTrigger value="equipment" label="Equipment" icon={<Wrench className="w-4 h-4" />} />
+                    <TabTrigger value="professional" label="Professional" icon={<ArrowRight className="w-4 h-4" />} />
+                  </TabsList>
+
+                  <div className="mt-6 min-h-[500px]">
+                    <TabsContent value="visualization" className="m-0">
+                      <Card className="border-none shadow-none bg-transparent">
+                        <CardContent className="p-0">
+                          {cycleData && <CycleVisualization cycleData={cycleData} />}
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+
+                    <TabsContent value="results" className="m-0">
+                      <Card className="dark:bg-slate-900">
+                        <CardHeader>
+                          <CardTitle>Thermodynamic State Points</CardTitle>
+                          <CardDescription>
+                            Properties at each key point in the cycle
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {[1, 2, 3, 4].map((pointId) => {
+                              const pt = results.state_points?.[pointId.toString()];
+                              if (!pt) return null;
+                              const colors = {
+                                1: "blue",
+                                2: "red",
+                                3: "green",
+                                4: "amber"
+                              }[pointId] || "gray";
+
+                              return (
+                                <div key={pointId} className={`border rounded-lg p-4 border-l-4 border-l-${colors}-500 bg-background/50`}>
+                                  <div className="font-semibold text-lg mb-2 flex justify-between">
+                                    <span>Point {pointId}</span>
+                                    <Badge variant="outline">{pointId === 1 ? 'Evap Out' : pointId === 2 ? 'Comp Out' : pointId === 3 ? 'Cond Out' : 'Exp Out'}</Badge>
+                                  </div>
+                                  <div className="space-y-2 text-sm">
+                                    <div className="flex justify-between border-b pb-1 border-dashed">
+                                      <span className="text-muted-foreground">Temperature</span>
+                                      <span>{formatValue(getPropertyValue(pt, ["temp_c", "temperature"]), "°C")}</span>
+                                    </div>
+                                    <div className="flex justify-between border-b pb-1 border-dashed">
+                                      <span className="text-muted-foreground">Pressure</span>
+                                      <span>{formatValue((getPropertyValue(pt, ["pressure", "pressure_kpa"]) || 0) / 1000, "MPa")}</span>
+                                    </div>
+                                    <div className="flex justify-between border-b pb-1 border-dashed">
+                                      <span className="text-muted-foreground">Enthalpy</span>
+                                      <span>{formatValue(getPropertyValue(pt, ["enthalpy", "enthalpy_kj_kg"]), "kJ/kg")}</span>
+                                    </div>
+                                    <div className="flex justify-between border-b pb-1 border-dashed">
+                                      <span className="text-muted-foreground">Entropy</span>
+                                      <span>{formatValue(getPropertyValue(pt, ["entropy", "entropy_kj_kgk"]), "kJ/kg·K", 3)}</span>
+                                    </div>
+                                    {pointId === 4 && (
+                                      <div className="flex justify-between border-b pb-1 border-dashed">
+                                        <span className="text-muted-foreground">Quality</span>
+                                        <span>{formatValue((getPropertyValue(pt, ["quality", "vapor_quality"]) || 0) * 100, "%")}</span>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              )
+                            })}
+                          </div>
+
+                          <Separator className="my-8" />
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                              <h3 className="font-semibold mb-4 text-lg">Mass Flow Analysis</h3>
+                              <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-lg space-y-3">
+                                <div className="flex justify-between items-center">
+                                  <span>Mass Flow Rate</span>
+                                  <span className="font-mono font-bold text-lg">{formatValue(massFlowRate, "kg/s", 4)}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                  <span>Volumetric Flow (Suction)</span>
+                                  <span className="font-mono font-bold text-lg">{formatValue(volumetricFlowRate, "m³/s", 5)}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+
+                    <TabsContent value="equipment" className="m-0">
+                      <EquipmentDiagrams cycleData={cycleData} />
+                    </TabsContent>
+
+                    <TabsContent value="professional" className="m-0">
+                      <ProfessionalFeatures
+                        cycleData={cycleData}
+                        results={results}
+                        refrigerant={formData.refrigerant}
+                      />
+                    </TabsContent>
+                  </div>
+                </Tabs>
+              </div>
+            ) : (
+              // Loading State
+              <div className="flex flex-col items-center justify-center p-20 space-y-4">
+                <Loader2 className="w-12 h-12 animate-spin text-blue-500" />
+                <p className="text-lg text-muted-foreground">Simulating thermodynamic cycle...</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {showOnboarding && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in">
+          <Card className="max-w-2xl w-full shadow-2xl">
+            <CardHeader className="border-b bg-muted/20">
+              <CardTitle className="flex items-center gap-2">
+                <Info className="h-5 w-5 text-blue-600" />
+                Welcome to HVAC-R Platform
+                <Badge variant="outline" className="ml-auto">Screen {onboardingStep + 1} / 4</Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 space-y-6">
+              {/* Reusing existing onboarding content logic here for simplicity, but wrapped nicely */}
+              {onboardingStep === 0 && (
+                <div className="text-center space-y-4">
+                  <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl">🚀</div>
+                  <h3 className="text-xl font-bold">Your New Superpower</h3>
+                  <p className="text-muted-foreground">Designed for Engineers, Technicians, and Managers. Simulate, Analyze, and Report in seconds.</p>
+                </div>
+              )}
+              {onboardingStep === 1 && (
+                <div className="text-center space-y-4">
+                  <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-3xl">⚙️</div>
+                  <h3 className="text-xl font-bold">How it Works</h3>
+                  <p className="text-muted-foreground">1. Select Refrigerant<br />2. Input Temps<br />3. Get Visualizations</p>
+                </div>
+              )}
+              {onboardingStep === 2 && (
+                <div className="text-center space-y-4">
+                  <div className="mx-auto w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center text-3xl">📊</div>
+                  <h3 className="text-xl font-bold">Professional Reports</h3>
+                  <p className="text-muted-foreground">Export PDF reports for your clients or save calculations to your project history.</p>
+                </div>
+              )}
+              {onboardingStep === 3 && (
+                <div className="text-center space-y-4">
+                  <div className="mx-auto w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center text-3xl">✨</div>
+                  <h3 className="text-xl font-bold">Let's Get Started!</h3>
+                  <Button onClick={() => {
+                    localStorage.setItem("hvac_platform_onboarding_completed", "true");
+                    setShowOnboarding(false);
+                  }} className="w-full">Start Calculating</Button>
+                </div>
+              )}
             </CardContent>
+            {onboardingStep < 3 && (
+              <div className="p-4 border-t bg-muted/20 flex justify-between">
+                <Button variant="ghost" onClick={() => setShowOnboarding(false)}>Skip</Button>
+                <Button onClick={() => setOnboardingStep(s => s + 1)}>Next</Button>
+              </div>
+            )}
           </Card>
         </div>
       )}
@@ -2708,6 +1742,32 @@ export function EnhancedStandardCycleContent() {
   );
 }
 
+// Sub-components helpers
+function KPI({ title, value, icon, color, bg }: { title: string; value: string; icon: React.ReactNode; color: string; bg: string }) {
+  return (
+    <div className={`p-4 rounded-xl border ${bg} transition-all hover:scale-105 duration-200`}>
+      <div className={`flex items-start justify-between mb-2 ${color}`}>
+        <span className="font-medium text-sm text-foreground/80">{title}</span>
+        {icon}
+      </div>
+      <div className={`text-2xl font-bold tracking-tight ${color}`}>{value}</div>
+    </div>
+  )
+}
+
+function TabTrigger({ value, label, icon }: { value: string; label: string; icon: React.ReactNode }) {
+  return (
+    <TabsTrigger
+      value={value}
+      className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4 py-2 bg-transparent text-muted-foreground hover:text-foreground transition-all"
+    >
+      <div className="flex items-center gap-2">
+        {icon}
+        {label}
+      </div>
+    </TabsTrigger>
+  )
+}
 // Standalone page version with header and footer
 export function EnhancedStandardCycle() {
   return <EnhancedStandardCycleContent />;

@@ -1,7 +1,14 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -11,17 +18,29 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Save,
-  Copy,
   AlertTriangle,
   Clock,
   CheckCircle,
   HelpCircle,
+  Thermometer,
+  Activity,
+  Zap,
+  FileText,
+  Bot,
+  ArrowLeft,
+  RotateCcw,
+  Stethoscope,
+  AlertCircle,
+  Terminal,
 } from "lucide-react";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { apiClient } from "@/lib/api";
 import { consumeCalculationPreset } from "@/lib/historyPresets";
+import { useToast } from "@/hooks/use-toast";
+import { ApiServiceStatus } from "@/components/ApiServiceStatus";
 
 const SYMPTOMS = [
   { id: "no_cooling", label: "No/insufficient cooling" },
@@ -39,8 +58,11 @@ const SYMPTOMS = [
   { id: "noisy", label: "Unusual noise/vibration" },
 ];
 
-export default function Troubleshooting() {
+export function TroubleshootingContent() {
   const { saveCalculation } = useSupabaseCalculations();
+  const { toast } = useToast();
+
+  // --- State ---
   const [symptom, setSymptom] = useState<string>("no_cooling");
   const [ambient, setAmbient] = useState<string>("25");
   const [unit, setUnit] = useState<"C" | "F">("C");
@@ -50,15 +72,13 @@ export default function Troubleshooting() {
   const [saving, setSaving] = useState(false);
   const [attachments, setAttachments] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [mode, setMode] = useState<"wizard" | "ai">("wizard");
 
   // AI state
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResponse, setAiResponse] = useState<any>(null);
   const [aiError, setAiError] = useState<string | null>(null);
-  const [aiConversationId, setAiConversationId] = useState<string | null>(null);
-  const [copiedQuestionIndex, setCopiedQuestionIndex] = useState<number | null>(
-    null,
-  );
+  const [setAiConversationId] = useState<string | null>(null);
 
   // Structured measurements
   const [suctionPressure, setSuctionPressure] = useState<string>("");
@@ -67,49 +87,39 @@ export default function Troubleshooting() {
   const [current, setCurrent] = useState<string>("");
   const [modelSerial, setModelSerial] = useState<string>("");
 
-  // Apply any preset saved via History 'Re-run'
+  // --- Effects ---
   useEffect(() => {
     try {
       const preset = consumeCalculationPreset();
-      if (!preset || preset.type !== "Troubleshooting" || !preset.inputs)
-        return;
+      if (!preset || preset.type !== "Troubleshooting" || !preset.inputs) return;
+
       const inputs: any = preset.inputs;
-      // symptom
       if (inputs.symptom) setSymptom(String(inputs.symptom));
-      // ambient may be { value, unit }
+
       if (inputs.ambient) {
-        if (inputs.ambient.value !== undefined)
-          setAmbient(String(inputs.ambient.value));
-        if (inputs.ambient.unit)
-          setUnit(String(inputs.ambient.unit) as "C" | "F");
+        if (inputs.ambient.value !== undefined) setAmbient(String(inputs.ambient.value));
+        if (inputs.ambient.unit) setUnit(String(inputs.ambient.unit) as "C" | "F");
       }
-      // measurements
+
       if (inputs.measurements) {
-        if (inputs.measurements.suction_pressure_kpa)
-          setSuctionPressure(String(inputs.measurements.suction_pressure_kpa));
-        if (inputs.measurements.head_pressure_kpa)
-          setHeadPressure(String(inputs.measurements.head_pressure_kpa));
-        if (inputs.measurements.voltage_v)
-          setVoltage(String(inputs.measurements.voltage_v));
-        if (inputs.measurements.current_a)
-          setCurrent(String(inputs.measurements.current_a));
-        if (inputs.measurements.model_serial)
-          setModelSerial(String(inputs.measurements.model_serial));
+        setSuctionPressure(String(inputs.measurements.suction_pressure_kpa || ""));
+        setHeadPressure(String(inputs.measurements.head_pressure_kpa || ""));
+        setVoltage(String(inputs.measurements.voltage_v || ""));
+        setCurrent(String(inputs.measurements.current_a || ""));
+        setModelSerial(String(inputs.measurements.model_serial || ""));
       }
-      // notes/observations
+
       if (inputs.notes) setObservations(String(inputs.notes));
-      // answers (wizard answers)
-      if (inputs.answers && typeof inputs.answers === "object")
-        setAnswers(inputs.answers);
-      // attachments
-      if (Array.isArray(inputs.attachments))
-        setAttachments(
-          inputs.attachments.map((a: any) =>
-            typeof a === "string" ? a : a.url || "",
-          ),
-        );
-      // results
-      if (preset.results) setAiResponse(preset.results);
+      if (inputs.answers && typeof inputs.answers === "object") setAnswers(inputs.answers);
+
+      if (Array.isArray(inputs.attachments)) {
+        setAttachments(inputs.attachments.map((a: any) => (typeof a === "string" ? a : a.url || "")));
+      }
+
+      if (preset.results) {
+        setAiResponse(preset.results);
+        setMode("ai");
+      }
     } catch (e) {
       console.warn("Failed to apply calculation preset", e);
     }
@@ -119,46 +129,50 @@ export default function Troubleshooting() {
     const base = [
       {
         id: "airflow",
-        title: "Airflow",
-        q: "Is airflow unobstructed and filter clean?",
+        title: "Airflow Check",
+        q: "Is airflow unobstructed and is the filter clean?",
+        icon: <RotateCcw className="h-5 w-5" />,
         options: [
-          { v: "yes", label: "Yes" },
-          { v: "no", label: "No" },
+          { v: "yes", label: "Yes, clear", description: "Filter clean, vents open" },
+          { v: "no", label: "No, obstructed", description: "Filter dirty or vents blocked" },
         ],
       },
       {
         id: "charge",
         title: "Refrigerant Charge",
-        q: "Are pressures/SH/SC within expected range?",
+        q: "Are system pressures, superheat, and subcooling within expected ranges?",
+        icon: <Thermometer className="h-5 w-5" />,
         options: [
-          { v: "ok", label: "Within range" },
-          { v: "low", label: "Likely undercharge" },
-          { v: "high", label: "Likely overcharge" },
+          { v: "ok", label: "Within range", description: "Pressures/temps look normal" },
+          { v: "low", label: "Likely undercharge", description: "Low pressure, high superheat" },
+          { v: "high", label: "Likely overcharge", description: "High pressure, high subcooling" },
         ],
       },
       {
         id: "leak",
-        title: "Leak/Restriction",
-        q: "Any signs of leak or line restriction?",
+        title: "Leak Inspection",
+        q: "Are there any visible signs of leaks (oil spots) or flow restrictions?",
+        icon: <AlertTriangle className="h-5 w-5" />,
         options: [
-          { v: "none", label: "No" },
-          { v: "leak", label: "Leak suspected" },
-          { v: "restriction", label: "Restriction suspected" },
+          { v: "none", label: "No issues found", description: "System is sealed" },
+          { v: "leak", label: "Leak suspected", description: "Oil traces or detector alert" },
+          { v: "restriction", label: "Restriction suspected", description: "Temperature drop across drier/TXV" },
         ],
       },
     ];
-    // Symptom-specific tailored checks
+
     if (symptom === "high_head") {
       return [
         base[0],
         {
           id: "condenser",
-          title: "Condenser",
-          q: "Is condenser coil clean and fan operating?",
+          title: "Condenser Inspection",
+          q: "Is the condenser coil clean and the fan operating correctly?",
+          icon: <Activity className="h-5 w-5" />,
           options: [
-            { v: "ok", label: "Yes" },
-            { v: "dirty", label: "Dirty/blocked" },
-            { v: "fan_issue", label: "Fan issue" },
+            { v: "ok", label: "Clean & Running", description: "Coil clear, fan normal" },
+            { v: "dirty", label: "Dirty Coil", description: "Debris blocking airflow" },
+            { v: "fan_issue", label: "Fan Issue", description: "Fan not spinning or slow" },
           ],
         },
         base[1],
@@ -170,22 +184,24 @@ export default function Troubleshooting() {
       return [
         {
           id: "airflow",
-          title: "Airflow",
-          q: "Is airflow unobstructed? Check filters, dampers, fans.",
+          title: "Airflow Obstruction",
+          q: "Is airflow unobstructed? check filters, dampers, and blower.",
+          icon: <RotateCcw className="h-5 w-5" />,
           options: [
-            { v: "yes", label: "Yes" },
-            { v: "no", label: "No (obstruction)" },
-            { v: "partial", label: "Partial / weak" },
+            { v: "yes", label: "Clear", description: "No blockages found" },
+            { v: "no", label: "Obstructed", description: "Filter clogged or return blocked" },
+            { v: "partial", label: "Weak Airflow", description: "Low velocity detected" },
           ],
         },
         {
           id: "ducts",
-          title: "Ducts & Registers",
-          q: "Any closed/blocked registers or damaged ducts?",
+          title: "Ductwork & Registers",
+          q: "Are there closed registers, crushed ducts, or disconnects?",
+          icon: <Activity className="h-5 w-5" />,
           options: [
-            { v: "no", label: "No" },
-            { v: "blocked", label: "Blocked" },
-            { v: "leak", label: "Leak/damage" },
+            { v: "no", label: "Good", description: "Ducts intact, registers open" },
+            { v: "blocked", label: "Blocked/Closed", description: "Registers closed off" },
+            { v: "leak", label: "Leak/Damaged", description: "Ducts disconnected or torn" },
           ],
         },
       ];
@@ -195,12 +211,13 @@ export default function Troubleshooting() {
       return [
         {
           id: "power",
-          title: "Power & Fuel",
-          q: "Is the unit receiving power and fuel (if applicable)?",
+          title: "Power & Fuel Supply",
+          q: "Is the unit receiving power and/or fuel (gas/oil)?",
+          icon: <Zap className="h-5 w-5" />,
           options: [
-            { v: "ok", label: "Yes" },
-            { v: "power_loss", label: "Power loss" },
-            { v: "fuel_loss", label: "Fuel issue" },
+            { v: "ok", label: "Yes, Powered", description: "Voltage/Fuel present" },
+            { v: "power_loss", label: "No Power", description: "Breaker tripped or fuse blown" },
+            { v: "fuel_loss", label: "No Fuel", description: "Gas valve closed or tank empty" },
           ],
         },
         base[1],
@@ -212,108 +229,55 @@ export default function Troubleshooting() {
 
   const recommendations = useMemo(() => {
     const rec: string[] = [];
+    if (answers["airflow"] === "no") rec.push("Restore airflow: clean/replace filter, inspect blower & ducts.");
+    if (answers["airflow"] === "partial") rec.push("Partial airflow: check blower speed, capacitor, and damper positions.");
+    if (answers["charge"] === "low") rec.push("Check for leaks, evacuate, and weigh-in correct charge.");
+    if (answers["charge"] === "high") rec.push("Recover excess refrigerant, weigh charge to spec, verify subcooling.");
+    if (answers["leak"] === "leak") rec.push("High risk of refrigerant leak — shut off and contact technician.");
+    if (answers["leak"] === "restriction") rec.push("Inspect filter drier, TEV, and capillary tubes for restriction.");
 
-    // Airflow
-    if (answers["airflow"] === "no")
-      rec.push(
-        "Restore airflow: clean/replace filter, inspect blower & ducts.",
-      );
-    if (answers["airflow"] === "partial")
-      rec.push("Partial airflow: check blower speed and damper positions.");
-
-    // Charge/work
-    if (answers["charge"] === "low")
-      rec.push("Check for leaks, evacuate, weigh-in correct charge.");
-    if (answers["charge"] === "high")
-      rec.push("Recover excess, weigh charge to spec, verify subcooling.");
-
-    // Leaks/restrictions
-    if (answers["leak"] === "leak")
-      rec.push(
-        "High risk of refrigerant leak — shut off and contact technician.",
-      );
-    if (answers["leak"] === "restriction")
-      rec.push(
-        "Inspect filter drier/TEV/capillary for restriction, replace as needed.",
-      );
-
-    // Condenser
-    if (symptom === "high_head" && answers["condenser"] === "dirty")
-      rec.push("Clean condenser coil; ensure adequate ambient airflow.");
-    if (symptom === "high_head" && answers["condenser"] === "fan_issue")
-      rec.push("Diagnose condenser fan motor/capacitor and replace if faulty.");
-
-    // No heat specific
-    if (symptom === "no_heat" && answers["power"] === "power_loss")
-      rec.push("Confirm power at panel and breakers; reset trip and retry.");
-    if (symptom === "no_heat" && answers["power"] === "fuel_loss")
-      rec.push("Check fuel supply/valves and pilot/ignition systems.");
-
-    // Default
-    if (rec.length === 0)
-      rec.push(
-        "No fault strongly indicated. Monitor operation and log detailed measurements.",
-      );
-    return rec;
-  }, [answers, symptom]);
-
-  const formatAiStep = (step: any, fallback: string) => {
-    if (!step) return fallback;
-    if (typeof step === "string") return step;
-    if (typeof step === "object") {
-      // Simple probable-cause objects sometimes use `cause` + `confidence`
-      if (step.cause) return String(step.cause);
-
-      const segments: string[] = [];
-
-      // Common keys used for step text
-      if (step.step) segments.push(String(step.step));
-      if (step.action) segments.push(String(step.action));
-      if (step.description) segments.push(String(step.description));
-      if (step.text) segments.push(String(step.text));
-
-      // Metadata
-      if (step.urgency) segments.push(`Urgency: ${step.urgency}`);
-      if (step.severity) segments.push(`Urgency: ${step.severity}`);
-
-      // Safety notes may be named differently depending on the model
-      const safety =
-        step.safety || step.safety_notes || step.safetyNote || step.safetyNotes;
-      if (safety) segments.push(`Safety: ${safety}`);
-
-      if (segments.length > 0) return segments.join(" — ");
-
-      try {
-        return JSON.stringify(step);
-      } catch (_err) {
-        return fallback;
-      }
+    if (symptom === "high_head") {
+      if (answers["condenser"] === "dirty") rec.push("Clean condenser coil thoroughly; ensure adequate ambient airflow.");
+      if (answers["condenser"] === "fan_issue") rec.push("Diagnose condenser fan motor and capacitor; replace if faulty.");
     }
-    return fallback;
-  };
 
-  const computeSeverity = () => {
-    // high: leak suspected, power loss, fan issue
+    if (symptom === "no_heat") {
+      if (answers["power"] === "power_loss") rec.push("Confirm power at panel and breakers; reset trip and retry.");
+      if (answers["power"] === "fuel_loss") rec.push("Check fuel supply line, valves, and pilot/ignition systems.");
+    }
+
+    if (rec.length === 0 && step >= steps.length) {
+      rec.push("No obvious fault identified by basic checks. Recommend deeper analysis or AI consultation.");
+    }
+    return rec;
+  }, [answers, symptom, step, steps.length]);
+
+  const severity = useMemo(() => {
     if (answers["leak"] === "leak") return "high";
     if (answers["condenser"] === "fan_issue") return "high";
     if (answers["power"] === "power_loss") return "high";
-
-    // medium: airflow partial/blocked, charge issues
-    if (answers["airflow"] === "partial" || answers["airflow"] === "no")
-      return "medium";
-    if (answers["charge"] === "low" || answers["charge"] === "high")
-      return "medium";
-
+    if (answers["airflow"] === "partial" || answers["airflow"] === "no") return "medium";
+    if (answers["charge"] === "low" || answers["charge"] === "high") return "medium";
     return "low";
+  }, [answers]);
+
+  const handleAnswer = (id: string, v: string) => {
+    setAnswers((prev) => ({ ...prev, [id]: v }));
+    if (step < steps.length) {
+      setTimeout(() => setStep((s) => s + 1), 200);
+    }
   };
 
-  const severity = computeSeverity();
+  const restartWizard = () => {
+    setStep(0);
+    setAnswers({});
+    setMode("wizard");
+  };
 
   const uploadFile = async (file: File) => {
     if (!file) return null;
     setUploading(true);
     try {
-      // read file as base64
       const dataUrl = await new Promise<string>((resolve, reject) => {
         const fr = new FileReader();
         fr.onload = () => resolve(String(fr.result || ""));
@@ -322,7 +286,8 @@ export default function Troubleshooting() {
       });
       const base64 = dataUrl.split(",")[1] || "";
       const filename = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9_.-]/g, "_")}`;
-      const token = localStorage.getItem("simulateon_token") || undefined;
+      const token = localStorage.getItem("simulateon_token");
+
       const resp = await fetch("/api/storage/upload", {
         method: "POST",
         headers: {
@@ -335,47 +300,31 @@ export default function Troubleshooting() {
           bucket: "troubleshooting-uploads",
         }),
       });
-      if (!resp.ok) {
-        const txt = await resp.text();
-        console.warn("Server upload failed", resp.status, txt);
-        return null;
-      }
+
+      if (!resp.ok) throw new Error("Upload failed");
       const j = await resp.json();
-      if (j && j.publicUrl) {
+      if (j?.publicUrl) {
         setAttachments((prev) => [...prev, j.publicUrl]);
-        return j.publicUrl;
+        toast({ title: "File uploaded", description: "Attachment added successfully." });
       }
-      return null;
     } catch (e) {
       console.warn("Upload failed", e);
-      return null;
+      toast({ variant: "destructive", title: "Upload failed", description: "Could not upload file." });
     } finally {
       setUploading(false);
     }
   };
 
-  const handleAnswer = (id: string, v: string) => {
-    setAnswers((prev) => ({ ...prev, [id]: v }));
-    setStep((s) => Math.min(s + 1, steps.length - 1));
-  };
-
   const handleSave = async () => {
     setSaving(true);
     try {
-      // convert ambient to C if necessary
       let ambientC = Number(ambient);
-      if (unit === "F") {
-        ambientC = ((ambientC - 32) * 5) / 9;
-      }
+      if (unit === "F") ambientC = ((ambientC - 32) * 5) / 9;
 
       const inputs = {
         wizard: "hvac-basic",
         symptom,
-        ambient: {
-          value: Number(ambient),
-          unit,
-          ambient_c: Number(Number(ambientC).toFixed(2)),
-        },
+        ambient: { value: Number(ambient), unit, ambient_c: Number(ambientC.toFixed(2)) },
         measurements: {
           suction_pressure_kpa: suctionPressure || null,
           head_pressure_kpa: headPressure || null,
@@ -387,46 +336,44 @@ export default function Troubleshooting() {
         answers,
         notes: observations,
       };
+
       const results = {
-        recommendations,
-        severity,
+        recommendations: aiResponse ? aiResponse.steps : recommendations,
+        severity: aiResponse?.urgency || severity,
         status: "completed",
-        summary: `${SYMPTOMS.find((s) => s.id === symptom)?.label || "Symptom"} – ${recommendations[0]}`,
+        summary: aiResponse?.summary || `${SYMPTOMS.find((s) => s.id === symptom)?.label} diagnosis`,
       };
+
       await saveCalculation("Troubleshooting", inputs, results);
-      // show confirmation toast if available
-      try {
-        window.dispatchEvent(
-          new CustomEvent("app:success", {
-            detail: {
-              title: "Session saved",
-              message: "Troubleshooting session saved to your history.",
-            },
-          }),
-        );
-      } catch (e) { }
+
+      toast({
+        title: "Session Saved",
+        description: "Your troubleshooting session has been saved to history.",
+      });
+    } catch (e) {
+      toast({ variant: "destructive", title: "Save failed", description: "Could not save session." });
     } finally {
       setSaving(false);
     }
   };
 
   const getAiAdvice = async () => {
+    setMode("ai");
     setAiError(null);
     setAiLoading(true);
     setAiResponse(null);
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
     try {
-      // prepare same inputs as save
       let ambientC = Number(ambient);
       if (unit === "F") ambientC = ((ambientC - 32) * 5) / 9;
+
       const payload = {
         payload: {
           wizard: "hvac-basic",
           symptom,
-          ambient: {
-            value: Number(ambient),
-            unit,
-            ambient_c: Number(Number(ambientC).toFixed(2)),
-          },
+          ambient: { value: Number(ambient), unit, ambient_c: Number(ambientC.toFixed(2)) },
           measurements: {
             suction_pressure_kpa: suctionPressure || null,
             head_pressure_kpa: headPressure || null,
@@ -438,625 +385,462 @@ export default function Troubleshooting() {
           answers,
           notes: observations,
         },
-        // userRole could be passed here if available from user profile
       };
-
-      try {
-        console.log("[Troubleshooting] payload object", payload);
-        console.log(
-          "[Troubleshooting] payload JSON",
-          JSON.stringify(payload, null, 2),
-        );
-      } catch (e) { }
 
       const resp = await apiClient.aiTroubleshoot(payload);
 
       if (!resp || !resp.success) {
-        const err = resp?.error || "AI service returned an error";
-        const details = (resp as any)?.details;
-        setAiError(details ? `${err} (${details})` : err);
-        return;
+        throw new Error(resp?.error || "AI service returned an error");
       }
 
       const sanitizeString = (s: any) => {
         if (typeof s !== "string") return s;
-        try {
-          // Remove fenced code blocks
-          let cleaned = s
-            .replace(/```(?:json)?\n?/gi, "")
-            .replace(/```/g, "")
-            .trim();
-
-          // If the string contains an embedded JSON object/array, attempt to parse it.
-          const firstBrace = cleaned.indexOf("{");
-          const firstBracket = cleaned.indexOf("[");
-          const firstJsonIdx = [firstBrace, firstBracket]
-            .filter((i) => i >= 0)
-            .sort((a, b) => a - b)[0];
-
-          if (typeof firstJsonIdx === "number") {
-            const candidate = cleaned.substring(firstJsonIdx);
-            try {
-              const parsed = JSON.parse(candidate);
-              return parsed;
-            } catch (e) {
-              // fallthrough to try parsing whole string
-            }
-          }
-
-          try {
-            return JSON.parse(cleaned);
-          } catch (e) {
-            // Not JSON, return cleaned string
-            return cleaned;
-          }
-        } catch (e) {
-          return s;
-        }
+        return s.replace(/```json/g, "").replace(/```/g, "").trim();
       };
 
-      const sanitizeObj = (obj: any): any => {
-        if (obj == null) return obj;
-        if (typeof obj === "string") return sanitizeString(obj);
-        if (Array.isArray(obj)) return obj.map(sanitizeObj);
-        if (typeof obj === "object") {
-          const res: any = {};
-          for (const k in obj) res[k] = sanitizeObj(obj[k]);
-          return res;
-        }
-        return obj;
-      };
-
-      const sanitized = sanitizeObj(resp.data);
-
-      // If the AI returned a nested structured "explanation" that itself contains the main fields,
-      // merge them into the top-level object for simpler rendering.
-      let merged = sanitized;
-      try {
-        if (
-          sanitized &&
-          typeof sanitized === "object" &&
-          sanitized.explanation &&
-          typeof sanitized.explanation === "object"
-        ) {
-          merged = { ...sanitized, ...sanitizeObj(sanitized.explanation) };
-        }
-      } catch (e) {
-        // ignore merge errors
+      let data = resp.data;
+      if (typeof data === "string") {
+        try { data = JSON.parse(sanitizeString(data)); } catch (e) { }
       }
 
-      setAiResponse(merged);
-      if (resp.data?.conversationId)
-        setAiConversationId(resp.data.conversationId);
+      setAiResponse(data);
+      if (data?.conversationId) setAiConversationId(data.conversationId);
+
     } catch (e: any) {
       console.error("AI request failed", e);
-      const message = e?.message || String(e);
-      if (message.includes("Unauthorized")) {
-        setAiError(
-          "You need to be signed in to request AI advice. Please log in and try again.",
-        );
-      } else if (message.includes("Missing authorization")) {
-        setAiError(
-          "Unable to authenticate with Supabase. Please refresh or sign in again.",
-        );
-      } else {
-        setAiError(message);
-      }
+      setAiError(e.message || "An unexpected error occurred.");
     } finally {
       setAiLoading(false);
     }
   };
 
-  const copyText = async (text: string, idx?: number) => {
-    // Try native clipboard API first
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(text);
-        if (typeof idx === "number") setCopiedQuestionIndex(idx);
-        window.setTimeout(() => setCopiedQuestionIndex(null), 2000);
-        return true;
-      }
-    } catch (e) {
-      console.warn("navigator.clipboard failed", e);
-      // fallthrough to execCommand fallback
-    }
-
-    // Fallback: create a hidden textarea, select and execCommand('copy')
-    try {
-      const ta = document.createElement("textarea");
-      ta.value = text;
-      // Avoid scrolling to bottom
-      ta.style.position = "fixed";
-      ta.style.top = "0";
-      ta.style.left = "0";
-      ta.style.width = "1px";
-      ta.style.height = "1px";
-      ta.style.padding = "0";
-      ta.style.border = "none";
-      ta.style.outline = "none";
-      ta.style.boxShadow = "none";
-      ta.style.background = "transparent";
-      document.body.appendChild(ta);
-      ta.select();
-      ta.setSelectionRange(0, ta.value.length);
-      const ok = document.execCommand("copy");
-      document.body.removeChild(ta);
-      if (ok) {
-        if (typeof idx === "number") setCopiedQuestionIndex(idx);
-        window.setTimeout(() => setCopiedQuestionIndex(null), 2000);
-        return true;
-      }
-    } catch (e) {
-      console.warn("execCommand copy fallback failed", e);
-    }
-
-    // As a last resort, show the text in a prompt so the user can copy manually
-    try {
-      // eslint-disable-next-line no-alert
-      window.prompt("Copy the text below:", text);
-    } catch (e) { }
-
-    return false;
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <main className="max-w-4xl mx-auto p-4 md:p-6 space-y-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-blue-900">
-          Troubleshooting Wizards
-        </h1>
+    <div className="min-h-screen bg-background text-foreground animate-in fade-in duration-500 pb-20">
+      <div className="container mx-auto px-4 py-8 max-w-[1800px]">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
+              Diagnostic Wizard
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Interactive troubleshooting guide for HVAC systems
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={handleSave} disabled={saving}>
+              <Save className="mr-2 h-4 w-4" /> Save Session
+            </Button>
+            <Button
+              onClick={getAiAdvice}
+              disabled={aiLoading}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/20"
+            >
+              <Bot className="mr-2 h-4 w-4" /> {aiLoading ? "Analyzing..." : "Ask AI Expert"}
+            </Button>
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Describe the issue</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-3 gap-4">
-              <div>
-                <Label>Primary symptom</Label>
-                <Select value={symptom} onValueChange={setSymptom}>
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {SYMPTOMS.map((s) => (
-                      <SelectItem key={s.id} value={s.id}>
-                        {s.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
 
-              <div>
-                <Label>Ambient</Label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    className="mt-1 w-full border rounded px-3 py-2"
-                    value={ambient}
-                    onChange={(e) => setAmbient(e.target.value)}
-                  />
-                  <div className="flex-shrink-0">
-                    <div className="inline-flex rounded-md border bg-white">
-                      <button
-                        className={`px-2 py-1 ${unit === "C" ? "bg-blue-500 text-white rounded" : "text-sm px-2"}`}
-                        onClick={() => setUnit("C")}
-                        type="button"
+          {/* LEFT SIDEBAR: CONTEXT & INPUTS */}
+          <div className="xl:col-span-4 space-y-6 xl:sticky xl:top-24">
+
+            <Card className="border-border/50 shadow-sm bg-card/50 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Stethoscope className="h-5 w-5 text-primary" />
+                  Session Context
+                </CardTitle>
+                <CardDescription>Basic system information</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+
+                <div className="space-y-2">
+                  <Label>Primary Symptom</Label>
+                  <Select value={symptom} onValueChange={(v) => { setSymptom(v); setStep(0); setAnswers({}); }}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SYMPTOMS.map((s) => (
+                        <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Ambient Temp</Label>
+                    <div className="flex">
+                      <Input
+                        type="number"
+                        value={ambient}
+                        onChange={(e) => setAmbient(e.target.value)}
+                        className="rounded-r-none focus-visible:ring-0"
+                      />
+                      <Button
+                        variant="outline"
+                        className="rounded-l-none border-l-0 px-3 min-w-[3rem]"
+                        onClick={() => setUnit(unit === "C" ? "F" : "C")}
                       >
-                        °C
-                      </button>
-                      <button
-                        className={`px-2 py-1 ${unit === "F" ? "bg-blue-500 text-white rounded" : "text-sm px-2"}`}
-                        onClick={() => setUnit("F")}
-                        type="button"
-                      >
-                        °F
-                      </button>
+                        °{unit}
+                      </Button>
                     </div>
                   </div>
+                  <div className="space-y-2">
+                    <Label>Model/Serial</Label>
+                    <Input
+                      placeholder="Optional"
+                      value={modelSerial}
+                      onChange={(e) => setModelSerial(e.target.value)}
+                    />
+                  </div>
                 </div>
-                <div className="text-xs text-muted-foreground mt-1">
-                  Acceptable range: -50 to 80 °C (or equivalent °F)
+
+              </CardContent>
+            </Card>
+
+            <Card className="border-border/50 shadow-sm bg-card/50 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Activity className="h-5 w-5 text-primary" />
+                  Measurements
+                </CardTitle>
+                <CardDescription>Enter known values to aid diagnosis</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-xs">Suction (kPa)</Label>
+                    <Input placeholder="0" value={suctionPressure} onChange={(e) => setSuctionPressure(e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs">Head (kPa)</Label>
+                    <Input placeholder="0" value={headPressure} onChange={(e) => setHeadPressure(e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs">Voltage (V)</Label>
+                    <Input placeholder="0" value={voltage} onChange={(e) => setVoltage(e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs">Current (A)</Label>
+                    <Input placeholder="0" value={current} onChange={(e) => setCurrent(e.target.value)} />
+                  </div>
                 </div>
-              </div>
 
-              <div>
-                <Label>Model / Serial</Label>
-                <input
-                  type="text"
-                  className="mt-1 w-full border rounded px-3 py-2"
-                  placeholder="Model or serial number"
-                  value={modelSerial}
-                  onChange={(e) => setModelSerial(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div>
-              <Label>Observations</Label>
-              <Textarea
-                className="mt-1"
-                placeholder="Add any measurements or notes"
-                value={observations}
-                onChange={(e) => setObservations(e.target.value)}
-              />
-
-              <div className="mt-3">
-                <div className="text-sm font-medium mb-2">
-                  Measurements (optional)
-                </div>
-                <div className="grid md:grid-cols-4 gap-2">
-                  <input
-                    className="border rounded px-2 py-1"
-                    placeholder="Suction press (kPa)"
-                    value={suctionPressure}
-                    onChange={(e) => setSuctionPressure(e.target.value)}
-                  />
-                  <input
-                    className="border rounded px-2 py-1"
-                    placeholder="Head press (kPa)"
-                    value={headPressure}
-                    onChange={(e) => setHeadPressure(e.target.value)}
-                  />
-                  <input
-                    className="border rounded px-2 py-1"
-                    placeholder="Voltage (V)"
-                    value={voltage}
-                    onChange={(e) => setVoltage(e.target.value)}
-                  />
-                  <input
-                    className="border rounded px-2 py-1"
-                    placeholder="Current (A)"
-                    value={current}
-                    onChange={(e) => setCurrent(e.target.value)}
+                <div className="space-y-2">
+                  <Label>Additional Notes</Label>
+                  <Textarea
+                    placeholder="Describe observations..."
+                    value={observations}
+                    onChange={(e) => setObservations(e.target.value)}
+                    className="min-h-[80px]"
                   />
                 </div>
 
-                <div className="mt-3">
-                  <Label>Photos / Files</Label>
-                  <input
-                    type="file"
-                    accept="image/*,application/pdf"
-                    onChange={async (e) => {
-                      const f = e.target.files?.[0];
-                      if (!f) return;
-                      await uploadFile(f);
-                      // reset input
-                      (e.target as HTMLInputElement).value = "";
-                    }}
-                  />
-                  {uploading && (
-                    <div className="text-sm text-muted-foreground mt-2">
-                      Uploading…
-                    </div>
-                  )}
+                <div className="space-y-2">
+                  <Label>Attachments</Label>
+                  <div className="flex gap-2 items-center">
+                    <Input
+                      type="file"
+                      className="text-xs file:mr-4 file:py-1 file:px-2 file:rounded-full file:border-0 file:text-xs file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
+                      onChange={(e) => e.target.files?.[0] && uploadFile(e.target.files[0])}
+                    />
+                    {uploading && <Clock className="h-4 w-4 animate-spin text-muted-foreground" />}
+                  </div>
                   {attachments.length > 0 && (
-                    <div className="mt-2 flex gap-2 flex-wrap">
-                      {attachments.map((a) => (
-                        <a
-                          key={a}
-                          href={a}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-block border rounded overflow-hidden"
-                        >
-                          <img
-                            src={a}
-                            alt="attachment"
-                            className="h-20 w-28 object-cover"
-                          />
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {attachments.map((url, i) => (
+                        <a key={i} href={url} target="_blank" rel="noreferrer" className="block w-12 h-12 rounded border overflow-hidden hover:opacity-80 transition-opacity">
+                          <img src={url} alt="attachment" className="w-full h-full object-cover" />
                         </a>
                       ))}
                     </div>
                   )}
                 </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+              </CardContent>
+            </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Guided Checks</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Progress */}
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <div className="text-sm font-medium">Progress</div>
-                <div className="text-xs text-muted-foreground">
-                  Step {Math.min(step + 1, steps.length)} of {steps.length}
-                </div>
-              </div>
-              <div className="w-full">
-                <div className="relative h-3 bg-gray-200 rounded-full overflow-hidden">
-                  <div
-                    className={`absolute left-0 top-0 h-3 rounded-full ${severity === "high" ? "bg-red-500" : severity === "medium" ? "bg-yellow-400" : "bg-green-500"}`}
-                    style={{
-                      width: `${Math.round(((step + 1) / Math.max(1, steps.length)) * 100)}%`,
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
+            {mode === "wizard" && (
+              <Card className="border-border/50 bg-muted/30">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm">Diagnostic Progress</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4 relative">
+                    <div className="absolute left-[11px] top-2 bottom-2 w-0.5 bg-border -z-10" />
 
-            {steps.map((st, idx) => (
-              <div
-                key={st.id}
-                className={`p-4 rounded border ${idx <= step ? "bg-white" : "bg-gray-50 opacity-70"}`}
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <Badge variant={idx <= step ? "default" : "outline"}>
-                    Step {idx + 1}
-                  </Badge>
-                  <div className="font-semibold">{st.title}</div>
-                </div>
-                <div className="mb-3 text-sm">{st.q}</div>
-                <div className="flex flex-wrap gap-2">
-                  {st.options.map((op) => (
-                    <Button
-                      key={op.v}
-                      variant={answers[st.id] === op.v ? "default" : "outline"}
-                      disabled={idx > step}
-                      onClick={() => handleAnswer(st.id, op.v)}
-                    >
-                      {op.label}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            ))}
-
-            {/* Quick advice */}
-            <div className="p-3 rounded border bg-white">
-              <div className="flex items-center justify-between">
-                <div className="font-semibold">Quick Advice</div>
-                <div
-                  className={`text-sm font-semibold ${severity === "high" ? "text-red-600" : severity === "medium" ? "text-yellow-600" : "text-green-600"}`}
-                >
-                  {severity === "high"
-                    ? "Urgent"
-                    : severity === "medium"
-                      ? "Action recommended"
-                      : "Low priority"}
-                </div>
-              </div>
-              <div className="mt-2 text-sm text-muted-foreground">
-                {recommendations.slice(0, 2).map((r, i) => (
-                  <div key={i} className="mb-1">
-                    • {r}
+                    {steps.map((s, i) => (
+                      <div key={s.id} className="flex gap-3 items-center">
+                        <div className={`
+                                        w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border
+                                        ${i === step ? "bg-primary text-primary-foreground border-primary" :
+                            i < step ? "bg-green-500 text-white border-green-500" : "bg-background border-muted-foreground text-muted-foreground"}
+                                        transition-colors duration-300
+                                    `}>
+                          {i < step ? <Check className="h-3 w-3" /> : (i + 1)}
+                        </div>
+                        <div className={i === step ? "font-medium text-foreground" : "text-muted-foreground"}>
+                          {s.title}
+                        </div>
+                      </div>
+                    ))}
+                    <div className="flex gap-3 items-center">
+                      <div className={`
+                                    w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border
+                                    ${step >= steps.length ? "bg-primary text-primary-foreground border-primary" : "bg-background border-muted-foreground text-muted-foreground"}
+                                `}>
+                        <FileText className="h-3 w-3" />
+                      </div>
+                      <div className={step >= steps.length ? "font-medium text-foreground" : "text-muted-foreground"}>
+                        Results
+                      </div>
+                    </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Recommendations</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="list-disc pl-6 space-y-2">
-              {recommendations.map((r, i) => (
-                <li key={i} className="text-sm">
-                  {r}
-                </li>
-              ))}
-            </ul>
-            <div className="mt-4 flex items-center gap-2">
-              <Button
-                onClick={handleSave}
-                disabled={saving}
-                className="inline-flex items-center gap-2"
-              >
-                <Save className="h-4 w-4" /> Save Session
-              </Button>
-              <Button
-                onClick={getAiAdvice}
-                disabled={aiLoading}
-                variant="outline"
-              >
-                {aiLoading ? "Getting AI advice…" : "Get AI Expert Advice"}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>AI Expert Recommendation</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {aiLoading && (
-              <div className="text-sm text-muted-foreground">
-                Analyzing with AI…
-              </div>
+                </CardContent>
+              </Card>
             )}
-            {aiError && <div className="text-sm text-red-600">{aiError}</div>}
-            {aiResponse && (
-              <div className="space-y-4">
-                {/* Summary */}
-                {aiResponse.summary && (
-                  <Card className="bg-white border">
-                    <CardHeader>
-                      <div className="flex items-center justify-between w-full">
-                        <CardTitle>AI Summary</CardTitle>
-                        <Badge className="ml-2">
-                          {aiResponse.urgency
-                            ? String(aiResponse.urgency).toUpperCase()
-                            : "INFO"}
-                        </Badge>
+
+          </div>
+
+          <div className="xl:col-span-8 space-y-6">
+
+            <Tabs value={mode} onValueChange={(v) => setMode(v as any)} className="w-full">
+              <TabsList className="grid w-full max-w-md grid-cols-2 mb-6">
+                <TabsTrigger value="wizard">Step-by-Step Guide</TabsTrigger>
+                <TabsTrigger value="ai">AI Expert Analysis</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="wizard" className="mt-0 space-y-6">
+                {step < steps.length ? (
+                  <Card className="border-t-4 border-t-primary shadow-lg overflow-hidden relative">
+                    <div className="absolute top-0 right-0 p-8 opacity-5">
+                      <HelpCircle className="w-64 h-64" />
+                    </div>
+
+                    <CardHeader className="pb-2">
+                      <div className="flex justify-between items-center">
+                        <Badge variant="outline" className="mb-2">Step {step + 1} of {steps.length}</Badge>
+                        <Button variant="ghost" size="sm" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0}>
+                          <ArrowLeft className="h-4 w-4 mr-2" /> Back
+                        </Button>
                       </div>
+                      <CardTitle className="text-2xl md:text-3xl font-bold leading-tight">
+                        {steps[step].q}
+                      </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                      <div className="text-sm text-muted-foreground">
-                        {aiResponse.summary}
+                    <CardContent className="pt-8 pb-12">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {steps[step].options.map((opt) => (
+                          <button
+                            key={opt.v}
+                            onClick={() => handleAnswer(steps[step].id, opt.v)}
+                            className={`
+                                                relative flex flex-col items-start p-6 rounded-xl border-2 transition-all duration-200 text-left hover:scale-[1.02]
+                                                ${answers[steps[step].id] === opt.v
+                                ? "border-primary bg-primary/5 shadow-md ring-1 ring-primary"
+                                : "border-border bg-card hover:border-primary/50 hover:bg-accent/50"}
+                                            `}
+                          >
+                            <div className="font-semibold text-lg mb-1">{opt.label}</div>
+                            <div className="text-sm text-muted-foreground">{opt.description}</div>
+                            {answers[steps[step].id] === opt.v && (
+                              <div className="absolute top-4 right-4 text-primary">
+                                <CheckCircle className="h-6 w-6" />
+                              </div>
+                            )}
+                          </button>
+                        ))}
                       </div>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <div className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
+                    <Card className="bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-950/30 dark:to-emerald-900/10 border-green-200 dark:border-green-900">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-green-800 dark:text-green-300">
+                          <CheckCircle className="h-6 w-6" />
+                          Calculations Complete
+                        </CardTitle>
+                        <CardDescription>Based on your inputs, here are the recommendations.</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="bg-background/80 backdrop-blur rounded-lg p-6 border shadow-sm">
+                          <h3 className="font-semibold mb-4 flex items-center gap-2">
+                            <Terminal className="h-4 w-4 text-muted-foreground" />
+                            System Diagnosis
+                          </h3>
+                          <ul className="space-y-3">
+                            {recommendations.map((rec, i) => (
+                              <li key={i} className="flex gap-3 text-sm md:text-base items-start">
+                                <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+                                {rec}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <div className="mt-6 flex flex-col sm:flex-row gap-4">
+                          <Button className="flex-1" onClick={getAiAdvice} disabled={aiLoading}>
+                            <Bot className="mr-2 h-4 w-4" /> Get AI Expert Analysis
+                          </Button>
+                          <Button variant="outline" onClick={handleSave} disabled={saving}>
+                            <Save className="mr-2 h-4 w-4" /> Save Result
+                          </Button>
+                          <Button variant="ghost" onClick={restartWizard}>
+                            <RotateCcw className="mr-2 h-4 w-4" /> Start Over
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="ai" className="mt-0 space-y-6">
+                {aiError && (
+                  <div className="p-4 rounded-lg border border-red-200 bg-red-50 text-red-800 dark:bg-red-900/20 dark:text-red-300 dark:border-red-900 flex items-center gap-3">
+                    <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                    <div>{aiError}</div>
+                  </div>
+                )}
+
+                {!aiResponse && !aiLoading && !aiError && (
+                  <div className="text-center py-12 border-2 border-dashed rounded-xl">
+                    <Bot className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-medium">Ready to Analyze</h3>
+                    <p className="text-muted-foreground max-w-sm mx-auto mb-6">
+                      The AI will analyze your inputs, measurements, and uploaded photos to provide a detailed diagnosis.
+                    </p>
+                    <Button onClick={getAiAdvice} size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                      <Zap className="mr-2 h-4 w-4" /> Start AI Analysis
+                    </Button>
+                  </div>
+                )}
+
+                {aiLoading && (
+                  <Card>
+                    <CardContent className="py-12 flex flex-col items-center text-center">
+                      <div className="h-10 w-10 relative mb-4">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                        <Bot className="relative inline-flex rounded-full h-10 w-10 text-indigo-600" />
+                      </div>
+                      <h3 className="text-lg font-medium">Analyzing System Data...</h3>
+                      <p className="text-muted-foreground animate-pulse">Consulting technical knowledge base</p>
                     </CardContent>
                   </Card>
                 )}
 
-                {/* Probable Causes */}
-                {aiResponse.probable_causes &&
-                  aiResponse.probable_causes.length > 0 && (
-                    <Card className="bg-white border">
+                {aiResponse && (
+                  <div className="space-y-6 animate-in slide-in-from-bottom-5 duration-700">
+
+                    <Card className="border-indigo-200 dark:border-indigo-900 bg-indigo-50/50 dark:bg-indigo-950/10">
                       <CardHeader>
-                        <CardTitle>Probable Causes</CardTitle>
+                        <div className="flex justify-between items-start">
+                          <CardTitle className="text-indigo-900 dark:text-indigo-300 flex items-center gap-2">
+                            <Bot className="h-5 w-5" /> Expert Summary
+                          </CardTitle>
+                          <Badge variant={aiResponse.urgency === "urgent" ? "destructive" : "secondary"}>
+                            {aiResponse.urgency ? aiResponse.urgency.toUpperCase() : "ANALYSIS"}
+                          </Badge>
+                        </div>
                       </CardHeader>
                       <CardContent>
-                        <div className="space-y-3">
-                          {aiResponse.probable_causes.map(
-                            (c: any, idx: number) => {
-                              const title = formatAiStep(
-                                c,
-                                typeof c === "string"
-                                  ? c
-                                  : c?.cause
-                                    ? c.cause
-                                    : `Cause ${idx + 1}`,
-                              );
-                              const confidence =
-                                c && typeof c === "object" && c.confidence
-                                  ? Number(c.confidence)
-                                  : null;
+                        <div className="text-lg leading-relaxed text-indigo-950 dark:text-indigo-100">
+                          {aiResponse.summary}
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {aiResponse.probable_causes && (
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-base">Probable Causes</CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            {aiResponse.probable_causes.map((c: any, idx: number) => {
+                              const confidence = c.confidence ? Number(c.confidence) : 0;
                               return (
-                                <div
-                                  key={idx}
-                                  className="flex items-center justify-between"
-                                >
-                                  <div className="flex-1 pr-4">
-                                    <div className="text-sm font-medium">
-                                      {title}
-                                    </div>
-                                    {confidence !== null && (
-                                      <div className="text-xs text-muted-foreground">
-                                        Confidence:{" "}
-                                        {(confidence * 100).toFixed(0)}%
-                                      </div>
-                                    )}
+                                <div key={idx} className="space-y-1">
+                                  <div className="flex justify-between text-sm">
+                                    <span className="font-medium">{c.cause}</span>
+                                    <span className="text-muted-foreground">{Math.round(confidence * 100)}%</span>
                                   </div>
-                                  {confidence !== null && (
-                                    <div className="w-32">
-                                      <div className="h-2 bg-gray-200 rounded overflow-hidden">
-                                        <div
-                                          className={`h-2 rounded ${confidence > 0.66 ? "bg-green-500" : confidence > 0.33 ? "bg-yellow-400" : "bg-red-500"}`}
-                                          style={{
-                                            width: `${Math.round(confidence * 100)}%`,
-                                          }}
-                                        />
-                                      </div>
-                                    </div>
-                                  )}
+                                  <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
+                                    <div
+                                      className={`h-full rounded-full ${confidence > 0.6 ? "bg-indigo-500" : "bg-indigo-300"}`}
+                                      style={{ width: `${confidence * 100}%` }}
+                                    />
+                                  </div>
                                 </div>
                               );
-                            },
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
+                            })}
+                          </CardContent>
+                        </Card>
+                      )}
 
-                {/* Steps */}
-                {aiResponse.steps && aiResponse.steps.length > 0 && (
-                  <Card className="bg-white border">
-                    <CardHeader>
-                      <CardTitle>Recommended Steps</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ol className="list-decimal pl-6 space-y-2">
-                        {aiResponse.steps.map((s: any, idx: number) => {
-                          const text = formatAiStep(s, `Step ${idx + 1}`);
-                          const urgency =
-                            s && typeof s === "object" && s.urgency
-                              ? String(s.urgency)
-                              : undefined;
-                          const color =
-                            urgency === "urgent"
-                              ? "bg-red-100 text-red-700"
-                              : urgency === "monitor"
-                                ? "bg-yellow-100 text-yellow-700"
-                                : "bg-blue-50 text-blue-700";
-                          return (
-                            <li key={idx} className="flex items-start gap-3">
-                              <div className="flex-1 text-sm">
-                                <div className="mb-1">{text}</div>
-                                {s.note && (
-                                  <div className="text-xs text-muted-foreground">
-                                    {s.note}
-                                  </div>
-                                )}
-                              </div>
-                              <div
-                                className={`px-2 py-1 rounded-full text-xs font-medium ${color}`}
-                              >
-                                {urgency || "routine"}
-                              </div>
-                            </li>
-                          );
-                        })}
-                      </ol>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* Explanation */}
-                {aiResponse.explanation && (
-                  <Card className="bg-white border">
-                    <CardHeader>
-                      <CardTitle>Reasoning</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-sm text-muted-foreground whitespace-pre-wrap">
-                        {aiResponse.explanation}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* Follow-up Questions */}
-                {aiResponse.follow_up_questions &&
-                  aiResponse.follow_up_questions.length > 0 && (
-                    <Card className="bg-white border">
-                      <CardHeader>
-                        <CardTitle>Follow-up Questions</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-2">
-                          {aiResponse.follow_up_questions.map(
-                            (q: string, i: number) => (
-                              <div
-                                key={i}
-                                className="flex items-center justify-between"
-                              >
-                                <div className="text-sm">{q}</div>
-                                <div className="flex items-center gap-2">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => copyText(q, i)}
-                                  >
-                                    <Copy className="h-4 w-4" />
-                                  </Button>
-                                  {copiedQuestionIndex === i && (
-                                    <div className="text-xs text-green-600">
-                                      Copied
+                      {aiResponse.steps && (
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-base">Recommended Actions</CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <ol className="space-y-3">
+                              {aiResponse.steps.map((s: any, idx: number) => {
+                                const stepText = typeof s === "string" ? s : s.text || s.step;
+                                return (
+                                  <li key={idx} className="flex gap-3 text-sm">
+                                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-secondary flex items-center justify-center text-xs font-bold text-muted-foreground">
+                                      {idx + 1}
                                     </div>
-                                  )}
-                                </div>
-                              </div>
-                            ),
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </main>
+                                    <div>
+                                      <div className="font-medium">{stepText}</div>
+                                      {s.note && <div className="text-xs text-muted-foreground mt-0.5">{s.note}</div>}
+                                    </div>
+                                  </li>
+                                );
+                              })}
+                            </ol>
+                          </CardContent>
+                        </Card>
+                      )}
+                    </div>
+
+                    {aiResponse.explanation && (
+                      <Card>
+                        <CardHeader>
+                          <CardTitle>Technical Explanation</CardTitle>
+                        </CardHeader>
+                        <CardContent className="prose dark:prose-invert max-w-none text-sm text-muted-foreground whitespace-pre-wrap">
+                          {aiResponse.explanation}
+                        </CardContent>
+                      </Card>
+                    )}
+
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
+
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
+
+export function Troubleshooting() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-slate-950 dark:to-slate-900">
+      <div className="max-w-[1920px] mx-auto">
+        <ApiServiceStatus />
+        <TroubleshootingContent />
+      </div>
+    </div>
+  );
+}
+
+export default Troubleshooting;

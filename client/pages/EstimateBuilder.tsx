@@ -91,10 +91,10 @@ export default function EstimateBuilder() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-slate-950 dark:to-slate-900">
       <main className="max-w-4xl mx-auto p-4 md:p-6 space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-bold text-blue-900">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
             Instant Estimate Builder
           </h1>
           <Badge variant="outline">Preview</Badge>
@@ -186,32 +186,32 @@ export default function EstimateBuilder() {
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-2 gap-4 text-sm">
-              <div className="p-3 rounded border bg-white">
+              <div className="p-3 rounded border bg-card dark:border-slate-700">
                 <div className="font-semibold">Equipment</div>
                 <div>${estimate.baseEquipment.toFixed(2)}</div>
               </div>
-              <div className="p-3 rounded border bg-white">
+              <div className="p-3 rounded border bg-card dark:border-slate-700">
                 <div className="font-semibold">Labor</div>
                 <div>${estimate.labor.toFixed(2)}</div>
               </div>
-              <div className="p-3 rounded border bg-white">
+              <div className="p-3 rounded border bg-card dark:border-slate-700">
                 <div className="font-semibold">Materials</div>
                 <div>${estimate.materials.toFixed(2)}</div>
               </div>
-              <div className="p-3 rounded border bg-white">
+              <div className="p-3 rounded border bg-card dark:border-slate-700">
                 <div className="font-semibold">Contingency</div>
                 <div>${estimate.contingency.toFixed(2)}</div>
               </div>
-              <div className="p-3 rounded border bg-white">
+              <div className="p-3 rounded border bg-card dark:border-slate-700">
                 <div className="font-semibold">Margin</div>
                 <div>${estimate.margin.toFixed(2)}</div>
               </div>
-              <div className="p-3 rounded border bg-white">
+              <div className="p-3 rounded border bg-card dark:border-slate-700">
                 <div className="font-semibold">Subtotal</div>
                 <div>${estimate.subtotal.toFixed(2)}</div>
               </div>
             </div>
-            <div className="mt-4 p-4 rounded-lg border-2 border-blue-300 bg-blue-50 text-blue-900 font-bold text-lg">
+            <div className="mt-4 p-4 rounded-lg border-2 border-blue-300 bg-blue-50 text-blue-900 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-300 font-bold text-lg">
               Total: ${estimate.total.toFixed(2)}
             </div>
             <div className="mt-4">

@@ -92,6 +92,19 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
   const [diagramType, setDiagramType] = useState<DiagramType>("P-h");
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Detect dark mode changes
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDarkMode(document.documentElement.classList.contains("dark"));
+    };
+    checkDarkMode();
+
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, []);
 
   // Draggable overlay state: position in pixels relative to canvas
   const [overlayPos, setOverlayPos] = useState<{ x: number; y: number } | null>(() => {
@@ -275,12 +288,26 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Enable high-quality rendering
+    // Enable high-quality rendering with High DPI scaling
+    const logicalWidth = 1600;
+    const logicalHeight = 1000;
+
+    // Force at least 3x scaling for 4k-like quality or use device pixel ratio if higher
+    const dpr = window.devicePixelRatio || 1;
+    const scale = Math.max(dpr, 3);
+
+    // Set actual backing store size
+    canvas.width = logicalWidth * scale;
+    canvas.height = logicalHeight * scale;
+
+    // Normalize coordinate system to use logical pixels
+    ctx.scale(scale, scale);
+
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
-    drawCycle(ctx, canvas.width, canvas.height);
-  }, [cycleData, selectedPoint, diagramType, overlayPos]);
+    drawCycle(ctx, logicalWidth, logicalHeight);
+  }, [cycleData, selectedPoint, diagramType, overlayPos, isDarkMode]);
 
   // Mouse/touch handlers to make overlay draggable
   useEffect(() => {
@@ -303,16 +330,20 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       }
 
       // Map to canvas coordinate space (account for CSS size vs actual pixel buffer)
-      const scaleX = canvas.width / rect.width;
-      const scaleY = canvas.height / rect.height;
+      const logicalWidth = 1600;
+      const logicalHeight = 1000;
+
+      // Calculate visual scale (logical pixels per screen pixel)
+      const scaleX = logicalWidth / rect.width;
+      const scaleY = logicalHeight / rect.height;
 
       return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
     };
 
     const onDown = (ev: MouseEvent | TouchEvent) => {
       const pos = getEventPos(ev);
-      const canvasWidth = canvas.width;
-      const canvasHeight = canvas.height;
+      const canvasWidth = 1600; // Use logical width
+      const canvasHeight = 1000; // Use logical height
 
       // Determine default overlay position used by drawEngineeringOverlay when overlayPos is null
       const margin = 120;
@@ -339,8 +370,8 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     const onMove = (ev: MouseEvent | TouchEvent) => {
       if (!draggingRef.current) return;
       const pos = getEventPos(ev);
-      const canvasWidth = canvas.width;
-      const canvasHeight = canvas.height;
+      const canvasWidth = 1600;
+      const canvasHeight = 1000;
       const overlayW = 230;
       const overlayH = 160;
 
@@ -360,7 +391,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       // persist position
       try {
         if (overlayPos) localStorage.setItem('cycle_performance_overlay_pos', JSON.stringify(overlayPos));
-      } catch (e) {}
+      } catch (e) { }
       canvas.style.cursor = 'default';
     };
 
@@ -389,8 +420,13 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
   ) => {
     // Clear canvas with gradient background
     const gradient = ctx.createLinearGradient(0, 0, 0, height);
-    gradient.addColorStop(0, "#fafafa");
-    gradient.addColorStop(1, "#f8fafc");
+    if (isDarkMode) {
+      gradient.addColorStop(0, "#0f172a"); // slate-900
+      gradient.addColorStop(1, "#1e293b"); // slate-800
+    } else {
+      gradient.addColorStop(0, "#fafafa");
+      gradient.addColorStop(1, "#f8fafc");
+    }
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
 
@@ -446,10 +482,10 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     width: number,
     height: number,
   ) => {
-    ctx.fillStyle = "#f3f4f6";
+    ctx.fillStyle = isDarkMode ? "#1e293b" : "#f3f4f6";
     ctx.fillRect(0, 0, width, height);
 
-    ctx.fillStyle = "#6b7280";
+    ctx.fillStyle = isDarkMode ? "#9ca3af" : "#6b7280";
     ctx.font = "16px Inter, sans-serif";
     ctx.textAlign = "center";
     ctx.fillText(
@@ -466,7 +502,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     plotHeight: number,
   ) => {
     // Major grid lines
-    ctx.strokeStyle = "#e5e7eb";
+    ctx.strokeStyle = isDarkMode ? "rgba(148, 163, 184, 0.1)" : "#e5e7eb";
     ctx.lineWidth = 1;
     ctx.setLineDash([]);
 
@@ -491,7 +527,8 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     }
 
     // Minor grid lines
-    ctx.strokeStyle = "#f3f4f6";
+    // Minor grid lines
+    ctx.strokeStyle = isDarkMode ? "rgba(148, 163, 184, 0.05)" : "#f3f4f6";
     ctx.lineWidth = 0.5;
 
     const minorGridLines = 50;
@@ -527,7 +564,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     drawGrid(ctx, margin, plotWidth, plotHeight);
 
     // Main axes with enhanced styling
-    ctx.strokeStyle = "#1f2937";
+    ctx.strokeStyle = isDarkMode ? "#94a3b8" : "#1f2937";
     ctx.lineWidth = 3;
     ctx.setLineDash([]);
 
@@ -544,7 +581,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     ctx.stroke();
 
     // Enhanced axis labels
-    ctx.fillStyle = "#1f2937";
+    ctx.fillStyle = isDarkMode ? "#94a3b8" : "#1f2937";
     ctx.font =
       "bold 16px 'Inter', -apple-system, BlinkMacSystemFont, sans-serif";
     ctx.textAlign = "center";
@@ -575,9 +612,9 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     config: DiagramConfig,
     points: CyclePoint[],
   ) => {
-    ctx.strokeStyle = "#374151";
+    ctx.strokeStyle = isDarkMode ? "#64748b" : "#374151";
     ctx.lineWidth = 2;
-    ctx.fillStyle = "#374151";
+    ctx.fillStyle = isDarkMode ? "#94a3b8" : "#374151";
     ctx.font = "bold 14px 'Inter', sans-serif";
     ctx.textAlign = "center";
 
@@ -698,7 +735,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       const yMax = domain.yMax;
 
       // Draw saturation dome curve
-      ctx.strokeStyle = 'rgba(59, 130, 246, 0.6)';
+      ctx.strokeStyle = isDarkMode ? 'rgba(96, 165, 250, 0.6)' : 'rgba(59, 130, 246, 0.6)';
       ctx.lineWidth = 2;
       ctx.setLineDash([4, 2]);
       ctx.beginPath();
@@ -714,7 +751,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       ctx.stroke();
       ctx.setLineDash([]);
 
-      ctx.fillStyle = 'rgba(59, 130, 246, 0.8)';
+      ctx.fillStyle = isDarkMode ? 'rgba(96, 165, 250, 0.8)' : 'rgba(59, 130, 246, 0.8)';
       ctx.font = "12px 'Inter', sans-serif";
       ctx.textAlign = 'center';
       ctx.fillText('Saturation Dome', margin + plotWidth * 0.8, margin + 30);
@@ -731,7 +768,9 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
   ) => {
     if (points.length < 4) return;
 
-    const colors = ["#dc2626", "#2563eb", "#059669", "#d97706"];
+    const colors = isDarkMode
+      ? ["#f87171", "#60a5fa", "#34d399", "#fbbf24"] // 400 variants for dark mode
+      : ["#dc2626", "#2563eb", "#059669", "#d97706"]; // 600 variants for light mode
     const processNames = [
       "Compression",
       "Condensation",
@@ -891,7 +930,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     const midY = margin + (startPoint.y + endPoint.y) / 2;
 
     // Label background
-    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+    ctx.fillStyle = isDarkMode ? "rgba(15, 23, 42, 0.9)" : "rgba(255, 255, 255, 0.9)";
     ctx.strokeStyle = color;
     ctx.lineWidth = 2;
 
@@ -938,7 +977,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       ctx.shadowOffsetY = 2;
 
       // Outer ring
-      ctx.fillStyle = "white";
+      ctx.fillStyle = isDarkMode ? "#0f172a" : "white";
       ctx.beginPath();
       ctx.arc(x, y, radius + 2, 0, 2 * Math.PI);
       ctx.fill();
@@ -973,7 +1012,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       const textWidth = ctx.measureText(labelText).width;
 
       // Label background
-      ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
+      ctx.fillStyle = isDarkMode ? "rgba(15, 23, 42, 0.95)" : "rgba(255, 255, 255, 0.95)";
       ctx.strokeStyle = color;
       ctx.lineWidth = 1;
 
@@ -1009,25 +1048,25 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
         name: "Compressor",
         icon: "⚙️",
         position: { x: 0.15, y: 0.7 },
-        color: "#dc2626",
+        color: isDarkMode ? "#f87171" : "#dc2626",
       },
       {
         name: "Condenser",
-        icon: "🌡��",
+        icon: "🌡️",
         position: { x: 0.5, y: 0.1 },
-        color: "#2563eb",
+        color: isDarkMode ? "#60a5fa" : "#2563eb",
       },
       {
         name: "Expansion Valve",
         icon: "🔻",
         position: { x: 0.85, y: 0.3 },
-        color: "#059669",
+        color: isDarkMode ? "#34d399" : "#059669",
       },
       {
         name: "Evaporator",
         icon: "❄️",
         position: { x: 0.5, y: 0.85 },
-        color: "#d97706",
+        color: isDarkMode ? "#fbbf24" : "#d97706",
       },
     ];
 
@@ -1038,7 +1077,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
         margin + comp.position.y * (canvasRef.current!.height - 2 * margin);
 
       // Component background
-      ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
+      ctx.fillStyle = isDarkMode ? "rgba(15, 23, 42, 0.95)" : "rgba(255, 255, 255, 0.95)";
       ctx.strokeStyle = comp.color;
       ctx.lineWidth = 2;
 
@@ -1113,8 +1152,13 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       overlayX,
       overlayY + 160,
     );
-    gradient.addColorStop(0, "rgba(255, 255, 255, 0.98)");
-    gradient.addColorStop(1, "rgba(248, 250, 252, 0.95)");
+    if (isDarkMode) {
+      gradient.addColorStop(0, "rgba(15, 23, 42, 0.98)");
+      gradient.addColorStop(1, "rgba(30, 41, 59, 0.95)");
+    } else {
+      gradient.addColorStop(0, "rgba(255, 255, 255, 0.98)");
+      gradient.addColorStop(1, "rgba(248, 250, 252, 0.95)");
+    }
 
     ctx.fillStyle = gradient;
     ctx.strokeStyle = "rgba(59, 130, 246, 0.6)";
@@ -1134,15 +1178,16 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     const handleH = 18;
     const handleX = overlayX + 230 - handleW - 8;
     const handleY = overlayY + 8;
-    ctx.fillStyle = 'rgba(31,41,55,0.06)';
+    ctx.fillStyle = isDarkMode ? "rgba(255,255,255,0.1)" : "rgba(31,41,55,0.06)";
     ctx.roundRect(handleX, handleY, handleW, handleH, 6);
     ctx.fill();
-    ctx.strokeStyle = 'rgba(31,41,55,0.08)';
+    ctx.strokeStyle = isDarkMode ? "rgba(255,255,255,0.1)" : "rgba(31,41,55,0.08)";
     ctx.lineWidth = 1;
     ctx.stroke();
 
     // Draw little grip lines
-    ctx.strokeStyle = 'rgba(31,41,55,0.25)';
+    // Draw little grip lines
+    ctx.strokeStyle = isDarkMode ? "rgba(255,255,255,0.3)" : "rgba(31,41,55,0.25)";
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(handleX + 6, handleY + 6);
@@ -1158,7 +1203,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     ctx.shadowOffsetY = 0;
 
     // Title with icon
-    ctx.fillStyle = "#1f2937";
+    ctx.fillStyle = isDarkMode ? "#f1f5f9" : "#1f2937";
     ctx.font = "bold 16px 'Inter', sans-serif";
     ctx.textAlign = "left";
     ctx.fillText("📊 Cycle Performance", overlayX + 12, overlayY + 25);
@@ -1178,31 +1223,31 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
         label: "Compression Ratio",
         value: compressionRatio.toFixed(2),
         unit: "",
-        color: "#dc2626",
+        color: isDarkMode ? "#f87171" : "#dc2626",
       },
       {
         label: "Temperature Lift",
         value: temperatureLift.toFixed(1),
         unit: "°C",
-        color: "#ea580c",
+        color: isDarkMode ? "#fb923c" : "#ea580c",
       },
       {
         label: "Refrigeration Effect",
         value: refrigerationEffect.toFixed(1),
         unit: "kJ/kg",
-        color: "#059669",
+        color: isDarkMode ? "#34d399" : "#059669",
       },
       {
         label: "Compression Work",
         value: compressionWork.toFixed(1),
         unit: "kJ/kg",
-        color: "#7c3aed",
+        color: isDarkMode ? "#a78bfa" : "#7c3aed",
       },
       {
         label: "Theoretical COP",
         value: theoreticalCOP.toFixed(2),
         unit: "",
-        color: "#2563eb",
+        color: isDarkMode ? "#60a5fa" : "#2563eb",
       },
     ];
 
@@ -1210,7 +1255,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       const y = overlayY + 55 + index * 20;
 
       // Label
-      ctx.fillStyle = "#374151";
+      ctx.fillStyle = isDarkMode ? "#cbd5e1" : "#374151";
       ctx.textAlign = "left";
       ctx.fillText(metric.label + ":", overlayX + 12, y);
 
@@ -1251,7 +1296,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
           const t2 = safeNum(points[1].temperature);
           return t1 !== null && t2 !== null ? `ΔT: ${(t2 - t1).toFixed(1)}°C` : "ΔT: N/A";
         })(),
-        color: "#dc2626",
+        color: isDarkMode ? "#f87171" : "#dc2626",
       },
       {
         from: points[1],
@@ -1261,7 +1306,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
           const p2 = safeNum(points[2].pressure);
           return p1 !== null && p2 !== null ? `ΔP: ${((p1 - p2) / 1000).toFixed(1)}MPa` : "ΔP: N/A";
         })(),
-        color: "#2563eb",
+        color: isDarkMode ? "#60a5fa" : "#2563eb",
       },
       {
         from: points[2],
@@ -1271,7 +1316,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
           const h3 = safeNum(points[3].enthalpy);
           return h2 !== null && h3 !== null ? `ΔH: ${(h2 - h3).toFixed(1)}kJ/kg` : "ΔH: N/A";
         })(),
-        color: "#059669",
+        color: isDarkMode ? "#34d399" : "#059669",
       },
       {
         from: points[3],
@@ -1281,7 +1326,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
           const h3 = safeNum(points[3].enthalpy);
           return h0 !== null && h3 !== null ? `ΔH: ${(h0 - h3).toFixed(1)}kJ/kg` : "ΔH: N/A";
         })(),
-        color: "#d97706",
+        color: isDarkMode ? "#fbbf24" : "#d97706",
       },
     ];
 
@@ -1290,7 +1335,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       const midY = margin + (process.from.y + process.to.y) / 2;
 
       // Draw label background
-      ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+      ctx.fillStyle = isDarkMode ? "rgba(15, 23, 42, 0.9)" : "rgba(255, 255, 255, 0.9)";
       ctx.strokeStyle = process.color;
       ctx.lineWidth = 1;
 
@@ -1319,25 +1364,29 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       const y = margin + point.y;
 
       // Enhanced point labels with key properties (guarded)
-    const safeNum = (v: any) => {
-      if (v === null || v === undefined) return null;
-      const n = Number(v);
-      return Number.isFinite(n) ? n : null;
-    };
+      const safeNum = (v: any) => {
+        if (v === null || v === undefined) return null;
+        const n = Number(v);
+        return Number.isFinite(n) ? n : null;
+      };
 
-    const temp = safeNum(point.temperature);
-    const pres = safeNum(point.pressure);
-    const enth = safeNum(point.enthalpy);
+      const temp = safeNum(point.temperature);
+      const pres = safeNum(point.pressure);
+      const enth = safeNum(point.enthalpy);
 
-    const labels = [
-      temp !== null ? `${temp.toFixed(1)}°C` : "N/A",
-      pres !== null ? `${(pres / 1000).toFixed(1)}MPa` : "N/A",
-      enth !== null ? `${enth.toFixed(0)}kJ/kg` : "N/A",
-    ];
+      const labels = [
+        temp !== null ? `${temp.toFixed(1)}°C` : "N/A",
+        pres !== null ? `${(pres / 1000).toFixed(1)}MPa` : "N/A",
+        enth !== null ? `${enth.toFixed(0)}kJ/kg` : "N/A",
+      ];
 
       // Background for labels
-      ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
-      ctx.strokeStyle = ["#dc2626", "#2563eb", "#059669", "#d97706"][index];
+      ctx.fillStyle = isDarkMode ? "rgba(15, 23, 42, 0.95)" : "rgba(255, 255, 255, 0.95)";
+
+      const colors = isDarkMode
+        ? ["#f87171", "#60a5fa", "#34d399", "#fbbf24"]
+        : ["#dc2626", "#2563eb", "#059669", "#d97706"];
+      ctx.strokeStyle = colors[index];
       ctx.lineWidth = 1;
 
       const maxWidth = Math.max(
@@ -1355,7 +1404,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       ctx.stroke();
 
       // Draw labels
-      ctx.fillStyle = ["#dc2626", "#2563eb", "#059669", "#d97706"][index];
+      ctx.fillStyle = colors[index];
       ctx.font = "10px 'Inter', sans-serif";
       ctx.textAlign = index % 2 === 0 ? "left" : "right";
 
@@ -1372,15 +1421,18 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     const canvas = canvasRef.current!;
     const rect = canvas.getBoundingClientRect();
 
-    // Scale click coordinates to canvas coordinates
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
+    const logicalWidth = 1600;
+    const logicalHeight = 1000;
+
+    // Scale click coordinates to logical coordinates
+    const scaleX = logicalWidth / rect.width;
+    const scaleY = logicalHeight / rect.height;
     const clickX = (event.clientX - rect.left) * scaleX;
     const clickY = (event.clientY - rect.top) * scaleY;
 
     const margin = 120; // Updated margin for new canvas size
-    const plotWidth = canvas.width - 2 * margin;
-    const plotHeight = canvas.height - 2 * margin;
+    const plotWidth = logicalWidth - 2 * margin;
+    const plotHeight = logicalHeight - 2 * margin;
     const config = DIAGRAM_CONFIGS[diagramType];
 
     // Calculate proper coordinates for click detection
@@ -1471,7 +1523,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
               ref={canvasRef}
               width={1600}
               height={1000}
-              className="border rounded-lg cursor-pointer w-full shadow-xl bg-gradient-to-br from-gray-50 to-white"
+              className="border rounded-lg cursor-pointer w-full shadow-xl bg-gradient-to-br from-gray-50 to-white dark:from-slate-900 dark:to-slate-950 dark:border-slate-800"
               onClick={handleCanvasClick}
               style={{ maxWidth: "100%", height: "auto" }}
             />
@@ -1550,14 +1602,14 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
                             </div>
 
                             {selectedPointData.quality !== undefined && Number.isFinite(Number(selectedPointData.quality)) && (
-                              <div className="p-2 bg-blue-50 rounded">
+                              <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
                                 <Badge variant="secondary" className="w-full justify-center">Vapor Quality: {(Number(selectedPointData.quality) * 100).toFixed(1)}%</Badge>
                               </div>
                             )}
 
-                            <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                            <div className="mt-4 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg">
                               <h4 className="font-semibold text-sm mb-2">Engineering Notes:</h4>
-                              <ul className="text-xs space-y-1 text-gray-600">
+                              <ul className="text-xs space-y-1 text-gray-600 dark:text-gray-300">
                                 {selectedPointData.id === "1" && (
                                   <>
                                     <li>• Refrigerant exits evaporator as superheated vapor</li>
@@ -1616,10 +1668,10 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
                         <div>
                           <h4 className="text-sm font-medium text-muted-foreground mb-2">Process Legend</h4>
                           <div className="grid grid-cols-1 gap-2">
-                            <div className="flex items-center gap-3 p-2 bg-red-50 rounded"><div className="w-6 h-2 bg-red-500 rounded" /> <span className="text-sm font-medium">1→2: Compression</span></div>
-                            <div className="flex items-center gap-3 p-2 bg-blue-50 rounded"><div className="w-6 h-2 bg-blue-500 rounded" /> <span className="text-sm font-medium">2→3: Condensation</span></div>
-                            <div className="flex items-center gap-3 p-2 bg-green-50 rounded"><div className="w-6 h-2 bg-green-500 rounded" /> <span className="text-sm font-medium">3→4: Expansion</span></div>
-                            <div className="flex items-center gap-3 p-2 bg-yellow-50 rounded"><div className="w-6 h-2 bg-yellow-500 rounded" /> <span className="text-sm font-medium">4→1: Evaporation</span></div>
+                            <div className="flex items-center gap-3 p-2 bg-red-50 dark:bg-red-900/10 rounded"><div className="w-6 h-2 bg-red-500 rounded" /> <span className="text-sm font-medium text-slate-900 dark:text-slate-100">1→2: Compression</span></div>
+                            <div className="flex items-center gap-3 p-2 bg-blue-50 dark:bg-blue-900/10 rounded"><div className="w-6 h-2 bg-blue-500 rounded" /> <span className="text-sm font-medium text-slate-900 dark:text-slate-100">2→3: Condensation</span></div>
+                            <div className="flex items-center gap-3 p-2 bg-green-50 dark:bg-green-900/10 rounded"><div className="w-6 h-2 bg-green-500 rounded" /> <span className="text-sm font-medium text-slate-900 dark:text-slate-100">3→4: Expansion</span></div>
+                            <div className="flex items-center gap-3 p-2 bg-yellow-50 dark:bg-yellow-900/10 rounded"><div className="w-6 h-2 bg-yellow-500 rounded" /> <span className="text-sm font-medium text-slate-900 dark:text-slate-100">4→1: Evaporation</span></div>
                           </div>
                         </div>
 

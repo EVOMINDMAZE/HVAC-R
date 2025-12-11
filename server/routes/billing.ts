@@ -1,66 +1,25 @@
 import express from "express";
 import { authenticateSupabaseToken } from "../utils/supabaseAuth.js";
+import { supabaseAdmin } from "../utils/supabase.js";
 import {
   stripe,
   createCustomerPortalSession,
   getCustomerSubscription,
+  createCheckoutSession
 } from "../utils/stripe.js";
 
 const router = express.Router();
 
-// Ensure database is initialized
-// ensureDbInitialized();
+const priceIdToPlan: { [key: string]: string } = {
+  [process.env.VITE_STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID || ""]: "solo",
+  [process.env.VITE_STRIPE_PROFESSIONAL_YEARLY_PRICE_ID || ""]: "solo",
+  [process.env.VITE_STRIPE_ENTERPRISE_MONTHLY_PRICE_ID || ""]: "professional",
+  [process.env.VITE_STRIPE_ENTERPRISE_YEARLY_PRICE_ID || ""]: "professional",
+};
 
-// Test route to verify billing routes are working
+// Test route
 router.get("/test", (req, res) => {
   res.json({ message: "Billing routes are working!" });
-});
-
-// Test route without auth to debug routing
-router.post("/test-checkout", (req, res) => {
-  console.log("Test checkout route called with body:", req.body);
-  res.json({ message: "Test checkout route works!", body: req.body });
-});
-
-// Test Stripe configuration without auth
-router.get("/test-stripe-config", async (req, res) => {
-  try {
-    const hasStripeKey = !!process.env.STRIPE_SECRET_KEY;
-    const hasPublishableKey = !!process.env.VITE_STRIPE_PUBLISHABLE_KEY;
-    const priceIds = {
-      professional_monthly:
-        process.env.VITE_STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID || "not-set",
-      professional_yearly:
-        process.env.VITE_STRIPE_PROFESSIONAL_YEARLY_PRICE_ID || "not-set",
-      enterprise_monthly:
-        process.env.VITE_STRIPE_ENTERPRISE_MONTHLY_PRICE_ID || "not-set",
-      enterprise_yearly:
-        process.env.VITE_STRIPE_ENTERPRISE_YEARLY_PRICE_ID || "not-set",
-    };
-
-    // Test Stripe import
-    let stripeImportError = null;
-    try {
-      const { createCheckoutSession } = await import("../utils/stripe.js");
-      console.log("Stripe utilities imported successfully");
-    } catch (error: any) {
-      stripeImportError = error.message;
-      console.error("Stripe import error:", error);
-    }
-
-    res.json({
-      message: "Stripe configuration test",
-      config: {
-        hasStripeSecretKey: hasStripeKey,
-        hasPublishableKey: hasPublishableKey,
-        priceIds,
-        stripeImportError,
-      },
-    });
-  } catch (error: any) {
-    console.error("Stripe config test error:", error);
-    res.status(500).json({ error: error.message });
-  }
 });
 
 // Create checkout session
@@ -69,53 +28,27 @@ router.post(
   authenticateSupabaseToken,
   async (req, res) => {
     try {
-      console.log("Checkout session request received:", req.body);
       const { priceId } = req.body;
-      const userId = (req as any).user?.id;
-      const userEmail = (req as any).user?.email;
-
-      console.log("User info:", { userId, userEmail, priceId });
+      const user = (req as any).user;
 
       if (!priceId) {
-        console.log("Missing price ID");
         return res.status(400).json({ error: "Price ID is required" });
       }
 
-      // Check if Stripe is configured
-      const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-      if (!stripeSecretKey) {
-        console.log("Stripe not configured");
-        return res
-          .status(500)
-          .json({
-            error: "Payment processing not configured. Please contact support.",
-          });
-      }
+      const session = await createCheckoutSession(
+        priceId,
+        user.stripe_customer_id, // Might be null
+        user.email,
+        user.id // Pass user ID for metadata
+      );
 
-      // Dynamically import and use Stripe
-      try {
-        const { createCheckoutSession } = await import("../utils/stripe.js");
-        const session = await createCheckoutSession(
-          priceId,
-          undefined,
-          userEmail,
-        );
-
-        res.json({
-          sessionId: session.id,
-          url: session.url,
-        });
-      } catch (stripeError: any) {
-        console.error("Stripe error:", stripeError);
-        return res
-          .status(500)
-          .json({
-            error: "Failed to create checkout session. Please try again.",
-          });
-      }
+      res.json({
+        sessionId: session.id,
+        url: session.url,
+      });
     } catch (error: any) {
       console.error("Error creating checkout session:", error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message || "Checkout failed" });
     }
   },
 );
@@ -126,33 +59,22 @@ router.post(
   authenticateSupabaseToken,
   async (req, res) => {
     try {
-      const userEmail = (req as any).user?.email;
+      const user = (req as any).user;
 
-      // Check if Stripe is configured
-      const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-      if (!stripeSecretKey) {
-        return res
-          .status(500)
-          .json({
-            error: "Payment processing not configured. Please contact support.",
-          });
+      let customerId = user.stripe_customer_id;
+
+      if (!customerId) {
+        // Try fallback lookup
+        const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+        if (customers.data.length > 0) {
+          customerId = customers.data[0].id;
+        }
       }
 
-      // Find customer by email
-      const customers = await stripe.customers.list({
-        email: userEmail,
-        limit: 1,
-      });
-
-      if (customers.data.length === 0) {
-        return res
-          .status(400)
-          .json({
-            error: "No Stripe customer found. Please make a purchase first.",
-          });
+      if (!customerId) {
+        return res.status(400).json({ error: "No Stripe customer found. Please make a purchase first." });
       }
 
-      const customerId = customers.data[0].id;
       const returnUrl = `${process.env.CLIENT_URL || "http://localhost:3000"}/profile`;
       const session = await createCustomerPortalSession(customerId, returnUrl);
 
@@ -167,71 +89,39 @@ router.post(
 // Get subscription details
 router.get("/subscription", authenticateSupabaseToken, async (req, res) => {
   try {
-    const userEmail = (req as any).user?.email;
+    const user = (req as any).user;
 
     // Check if Stripe is configured
-    const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-    if (!stripeSecretKey) {
-      return res.json({
-        subscription: null,
-        plan: "free",
-        status: "active",
-      });
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return res.json({ subscription: null, plan: user.subscription_plan || "free", status: "active" });
     }
 
-    // Find customer by email
-    const customers = await stripe.customers.list({
-      email: userEmail,
-      limit: 1,
-    });
-
-    if (customers.data.length === 0) {
-      return res.json({
-        subscription: null,
-        plan: "free",
-        status: "active",
-      });
+    let customerId = user.stripe_customer_id;
+    if (!customerId) {
+      const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+      if (customers.data.length > 0) customerId = customers.data[0].id;
     }
 
-    const customerId = customers.data[0].id;
+    if (!customerId) {
+      return res.json({ subscription: null, plan: "free", status: "active" });
+    }
+
     const subscription = await getCustomerSubscription(customerId);
 
     if (!subscription) {
-      return res.json({
-        subscription: null,
-        plan: "free",
-        status: "active",
-      });
+      return res.json({ subscription: null, plan: "free", status: "active" });
     }
 
-    // Extract plan info from subscription
     const priceId = subscription.items.data[0]?.price.id;
-    let planName = "free";
-
-    // Map price IDs to plan names (these should match your Stripe price IDs)
-    const priceIdToPlan: { [key: string]: string } = {
-      [process.env.VITE_STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID || ""]:
-        "professional",
-      [process.env.VITE_STRIPE_PROFESSIONAL_YEARLY_PRICE_ID || ""]:
-        "professional_yearly",
-      [process.env.VITE_STRIPE_ENTERPRISE_MONTHLY_PRICE_ID || ""]: "enterprise",
-      [process.env.VITE_STRIPE_ENTERPRISE_YEARLY_PRICE_ID || ""]:
-        "enterprise_yearly",
-    };
-
-    if (priceId && priceIdToPlan[priceId]) {
-      planName = priceIdToPlan[priceId];
-    }
+    const planName = (priceId && priceIdToPlan[priceId]) || "free";
 
     res.json({
       subscription: {
         id: subscription.id,
         status: subscription.status,
-        current_period_start: (subscription as any).current_period_start,
-        current_period_end: (subscription as any).current_period_end,
-        cancel_at_period_end: subscription.cancel_at_period_end,
+        current_period_end: subscription.current_period_end,
         plan: planName,
-        amount: subscription.items.data[0]?.price.unit_amount / 100,
+        amount: (subscription.items.data[0]?.price.unit_amount || 0) / 100,
         currency: subscription.items.data[0]?.price.currency,
         interval: subscription.items.data[0]?.price.recurring?.interval,
       },
@@ -252,13 +142,9 @@ router.post(
     const sig = req.headers["stripe-signature"] as string;
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-    if (!webhookSecret) {
-      console.error("Stripe webhook secret not configured");
-      return res.status(400).send("Webhook secret not configured");
-    }
+    if (!webhookSecret) return res.status(400).send("Webhook secret not configured");
 
     let event;
-
     try {
       event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
     } catch (err: any) {
@@ -266,35 +152,80 @@ router.post(
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
-    // Handle the event
+    if (!supabaseAdmin) {
+      console.error("Supabase Admin not initialized, cannot update user");
+      return res.status(500).send("Database error");
+    }
+
     try {
       switch (event.type) {
-        case "checkout.session.completed":
-          console.log("Checkout session completed:", event.data.object.id);
-          break;
+        case "checkout.session.completed": {
+          const session = event.data.object as any;
+          const userId = session.metadata?.userId;
+          const customerId = session.customer;
 
-        case "customer.subscription.updated":
-          console.log("Subscription updated:", event.data.object.id);
+          if (userId) {
+            await supabaseAdmin.auth.admin.updateUserById(userId, {
+              user_metadata: {
+                stripe_customer_id: customerId,
+                subscription_status: 'active'
+                // We don't verify plan here easily without fetching sub, 
+                // but usually sub update comes next.
+              }
+            });
+          }
           break;
+        }
 
-        case "customer.subscription.deleted":
-          console.log("Subscription deleted:", event.data.object.id);
+        case "customer.subscription.updated": {
+          const sub = event.data.object as any;
+          const priceId = sub.items.data[0].price.id;
+          const planName = priceIdToPlan[priceId] || 'free';
+          const status = sub.status; // active, past_due, etc.
+          const userId = sub.metadata?.userId; // From subscription metadata
+          const customerId = sub.customer;
+
+          console.log(`Processing subscription update for customer ${customerId}: ${planName} (${status})`);
+
+          // If we have userId in metadata, great. If not, we might be stuck unless 
+          // we search users by stripe_customer_id in metadata?
+          // But Supabase doesn't allow searching by user_metadata easily without exact match. 
+          // We'll rely on userId being present from checkout.
+
+          if (userId) {
+            await supabaseAdmin.auth.admin.updateUserById(userId, {
+              user_metadata: {
+                subscription_plan: planName,
+                subscription_status: status,
+                stripe_subscription_id: sub.id,
+                stripe_customer_id: customerId
+              }
+            });
+          } else {
+            console.warn("No userId in subscription metadata - cannot update Supabase user automatically", sub.id);
+          }
           break;
+        }
 
-        case "invoice.payment_succeeded":
-          console.log("Payment succeeded for invoice:", event.data.object.id);
+        case "customer.subscription.deleted": {
+          const sub = event.data.object as any;
+          const userId = sub.metadata?.userId;
+
+          if (userId) {
+            await supabaseAdmin.auth.admin.updateUserById(userId, {
+              user_metadata: {
+                subscription_plan: 'free',
+                subscription_status: 'canceled',
+                stripe_subscription_id: null
+              }
+            });
+          }
           break;
-
-        case "invoice.payment_failed":
-          console.log("Payment failed for invoice:", event.data.object.id);
-          break;
-
-        default:
-          console.log(`Unhandled event type ${event.type}`);
+        }
       }
     } catch (error) {
-      console.error("Error processing webhook:", error);
-      return res.status(500).json({ error: "Webhook processing failed" });
+      console.error("Webhook processing error:", error);
+      return res.status(500).json({ error: "Webhook handling failed" });
     }
 
     res.json({ received: true });

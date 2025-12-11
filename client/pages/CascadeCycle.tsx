@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useToast } from "@/hooks/useToast";
 import { apiClient } from "@/lib/api";
-import { Footer } from "@/components/Footer";
 import { ApiServiceStatus } from "@/components/ApiServiceStatus";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +15,6 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Separator } from "@/components/ui/separator";
 import {
   Loader2,
   Calculator,
@@ -26,6 +24,8 @@ import {
   AlertTriangle,
   Thermometer,
   Zap,
+  ArrowDownCircle,
+  Activity,
 } from "lucide-react";
 import { SaveCalculation } from "@/components/SaveCalculation";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
@@ -368,28 +368,28 @@ export function CascadeCycleContent() {
 
       const ltWork = asNum(
         resultData.lt_cycle_performance?.work_of_compression_kj_kg ??
-          resultData.lt_cycle?.performance?.work_of_compression_kj_kg ??
-          resultData.lt_cycle?.work_of_compression_kj_kg ??
-          (resultData.performance as any)?.lt_cycle_work_of_compression_kj_kg,
+        resultData.lt_cycle?.performance?.work_of_compression_kj_kg ??
+        resultData.lt_cycle?.work_of_compression_kj_kg ??
+        (resultData.performance as any)?.lt_cycle_work_of_compression_kj_kg,
       );
       const htWork = asNum(
         resultData.ht_cycle_performance?.work_of_compression_kj_kg ??
-          resultData.ht_cycle?.performance?.work_of_compression_kj_kg ??
-          resultData.ht_cycle?.work_of_compression_kj_kg ??
-          (resultData.performance as any)?.ht_cycle_work_of_compression_kj_kg,
+        resultData.ht_cycle?.performance?.work_of_compression_kj_kg ??
+        resultData.ht_cycle?.work_of_compression_kj_kg ??
+        (resultData.performance as any)?.ht_cycle_work_of_compression_kj_kg,
       );
 
       const ltRefrigerationEffect = asNum(
         resultData.lt_cycle_performance?.refrigeration_effect_kj_kg ??
-          resultData.lt_cycle?.performance?.refrigeration_effect_kj_kg ??
-          resultData.lt_cycle?.refrigeration_effect_kj_kg ??
-          (resultData.performance as any)?.lt_cycle_refrigeration_effect_kj_kg,
+        resultData.lt_cycle?.performance?.refrigeration_effect_kj_kg ??
+        resultData.lt_cycle?.refrigeration_effect_kj_kg ??
+        (resultData.performance as any)?.lt_cycle_refrigeration_effect_kj_kg,
       );
       const htRefrigerationEffect = asNum(
         resultData.ht_cycle_performance?.refrigeration_effect_kj_kg ??
-          resultData.ht_cycle?.performance?.refrigeration_effect_kj_kg ??
-          resultData.ht_cycle?.refrigeration_effect_kj_kg ??
-          (resultData.performance as any)?.ht_cycle_refrigeration_effect_kj_kg,
+        resultData.ht_cycle?.performance?.refrigeration_effect_kj_kg ??
+        resultData.ht_cycle?.refrigeration_effect_kj_kg ??
+        (resultData.performance as any)?.ht_cycle_refrigeration_effect_kj_kg,
       );
 
       const totalWork = ltWork + htWork;
@@ -398,15 +398,15 @@ export function CascadeCycleContent() {
 
       const ltCop = asNum(
         resultData.lt_cycle_performance?.cop ??
-          resultData.lt_cycle?.performance?.cop ??
-          resultData.lt_cycle?.cop ??
-          (resultData.performance as any)?.lt_cycle_cop,
+        resultData.lt_cycle?.performance?.cop ??
+        resultData.lt_cycle?.cop ??
+        (resultData.performance as any)?.lt_cycle_cop,
       );
       const htCop = asNum(
         resultData.ht_cycle_performance?.cop ??
-          resultData.ht_cycle?.performance?.cop ??
-          resultData.ht_cycle?.cop ??
-          (resultData.performance as any)?.ht_cycle_cop,
+        resultData.ht_cycle?.performance?.cop ??
+        resultData.ht_cycle?.cop ??
+        (resultData.performance as any)?.ht_cycle_cop,
       );
       const avgCop = (ltCop + htCop) / 2;
 
@@ -598,159 +598,9 @@ export function CascadeCycleContent() {
         ph_diagram: saturationDome.ph_diagram,
         ts_diagram: saturationDome.ts_diagram,
         tv_diagram: saturationDome.tv_diagram,
+        tv_diagram: saturationDome.tv_diagram,
       },
     };
-  };
-
-  const CycleForm = ({
-    title,
-    data,
-    onChange,
-    onRefrigerantChange,
-    titleColor,
-    cycle,
-    warnings,
-  }: {
-    title: string;
-    data: CycleData;
-    onChange: (field: keyof CycleData, value: string | number) => void;
-    onRefrigerantChange: (refrigerant: string) => void;
-    titleColor: string;
-    cycle: "ltCycle" | "htCycle";
-    warnings: string[];
-  }) => {
-    const superheatOutOfRange =
-      data.superheat < RECOMMENDED_GUIDANCE.superheat.min ||
-      data.superheat > RECOMMENDED_GUIDANCE.superheat.max;
-    const subcoolingOutOfRange =
-      data.subcooling < RECOMMENDED_GUIDANCE.subcooling.min ||
-      data.subcooling > RECOMMENDED_GUIDANCE.subcooling.max;
-
-    return (
-      <Card className="bg-white shadow-md border-gray-200">
-        <CardHeader className={`${titleColor} text-white`}>
-          <CardTitle className="text-lg flex items-center justify-between">
-            {title}
-            {warnings.length > 0 && (
-              <AlertTriangle className="h-4 w-4 text-yellow-200" />
-            )}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-4 space-y-4">
-          <div className="space-y-2">
-            <Label>Refrigerant</Label>
-            <EnhancedRefrigerantSelector
-              value={data.refrigerant}
-              onChange={onRefrigerantChange}
-            />
-            {data.refrigerant && (
-              <div className="text-sm text-gray-600">
-                {(() => {
-                  const refProps = getRefrigerantById(data.refrigerant);
-                  return refProps ? (
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline">{refProps.safety_class}</Badge>
-                      <Badge
-                        variant={
-                          refProps.coolpropSupport === "full"
-                            ? "default"
-                            : "secondary"
-                        }
-                      >
-                        {refProps.coolpropSupport}
-                      </Badge>
-                    </div>
-                  ) : null;
-                })()}
-              </div>
-            )}
-          </div>
-
-          {warnings.length > 0 && (
-            <Alert variant="destructive">
-              <AlertTriangle className="h-4 w-4" />
-              <AlertTitle>Review operating limits</AlertTitle>
-              <AlertDescription>
-                <ul className="list-disc ml-4 space-y-1">
-                  {warnings.map((warning, index) => (
-                    <li key={index}>{warning}</li>
-                  ))}
-                </ul>
-              </AlertDescription>
-            </Alert>
-          )}
-
-          <div className="space-y-2">
-            <Label>Evaporator Temperature (°C)</Label>
-            <Input
-              type="number"
-              value={data.evaporatorTemp}
-              onChange={(e) =>
-                onChange("evaporatorTemp", parseFloat(e.target.value))
-              }
-              className="border-blue-200 focus:border-blue-500"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label>Condenser Temperature (°C)</Label>
-            <Input
-              type="number"
-              value={data.condenserTemp}
-              onChange={(e) =>
-                onChange("condenserTemp", parseFloat(e.target.value))
-              }
-              className="border-blue-200 focus:border-blue-500"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Superheat (°C)</Label>
-              <Input
-                type="number"
-                value={data.superheat}
-                onChange={(e) =>
-                  onChange("superheat", parseFloat(e.target.value))
-                }
-                className="border-blue-200 focus:border-blue-500"
-              />
-              <p className="text-xs text-gray-500">
-                Recommended {RECOMMENDED_GUIDANCE.superheat.min}–
-                {RECOMMENDED_GUIDANCE.superheat.max}°C
-              </p>
-              {superheatOutOfRange && (
-                <p className="text-xs text-amber-600">
-                  Adjust superheat to protect compressors and improve stability.
-                </p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label>Subcooling (°C)</Label>
-              <Input
-                type="number"
-                value={data.subcooling}
-                onChange={(e) =>
-                  onChange("subcooling", parseFloat(e.target.value))
-                }
-                className="border-blue-200 focus:border-blue-500"
-              />
-              <p className="text-xs text-gray-500">
-                Recommended {RECOMMENDED_GUIDANCE.subcooling.min}–
-                {RECOMMENDED_GUIDANCE.subcooling.max}°C
-              </p>
-              {subcoolingOutOfRange && (
-                <p className="text-xs text-amber-600">
-                  Set subcooling within range to maximise heat exchanger
-                  capacity.
-                </p>
-              )}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
   };
 
   const cascadeDeltaTOutOfRange =
@@ -758,506 +608,440 @@ export function CascadeCycleContent() {
     formData.cascadeHeatExchangerDT > RECOMMENDED_GUIDANCE.cascadeDeltaT.max;
 
   return (
-    <div className="space-y-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Enhanced Cascade Refrigeration System
-        </h1>
-        <p className="text-gray-600">
-          Advanced dual-cycle analysis with real-time visualization and
-          equipment simulation
-        </p>
-      </div>
-
-      <Tabs defaultValue="calculation" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="calculation" className="flex items-center gap-2">
-            <Calculator className="h-4 w-4" />
-            Calculation
-          </TabsTrigger>
-          <TabsTrigger
-            value="visualization"
-            className="flex items-center gap-2"
-            disabled={!result}
-          >
-            <Eye className="h-4 w-4" />
-            Visualization
-          </TabsTrigger>
-          <TabsTrigger
-            value="results"
-            className="flex items-center gap-2"
-            disabled={!result}
-          >
-            <FileText className="h-4 w-4" />
-            Results
-          </TabsTrigger>
-          <TabsTrigger
-            value="equipment"
-            className="flex items-center gap-2"
-            disabled={!result}
-          >
-            <Wrench className="h-4 w-4" />
-            Equipment
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="calculation">
-          <Alert className="mb-6 border-blue-200 bg-blue-50 text-slate-800">
-            <AlertTitle>Recommended starting point</AlertTitle>
-            <AlertDescription>
-              Begin with CO₂ (R744) on the low stage and R134a on the high
-              stage. Aim for superheat between{" "}
-              {RECOMMENDED_GUIDANCE.superheat.min}–
-              {RECOMMENDED_GUIDANCE.superheat.max}°C, subcooling between{" "}
-              {RECOMMENDED_GUIDANCE.subcooling.min}–
-              {RECOMMENDED_GUIDANCE.subcooling.max}°C, and a cascade ΔT of{" "}
-              {RECOMMENDED_GUIDANCE.cascadeDeltaT.min}–
-              {RECOMMENDED_GUIDANCE.cascadeDeltaT.max}°C.
-            </AlertDescription>
-            <div className="mt-4">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleApplyDefaults}
-                className="border-blue-300 text-blue-700 hover:bg-blue-100"
-              >
-                Reapply recommended defaults
-              </Button>
-            </div>
-          </Alert>
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <CycleForm
-                title="Low-Temperature Cycle"
-                data={formData.ltCycle}
-                onChange={(field, value) =>
-                  handleCycleInputChange("ltCycle", field, value)
-                }
-                onRefrigerantChange={(refrigerant) =>
-                  handleRefrigerantChange("ltCycle", refrigerant)
-                }
-                titleColor="bg-gradient-to-r from-cyan-600 to-blue-600"
-                cycle="ltCycle"
-                warnings={validationWarnings.lt}
+    <div className="min-h-screen bg-background text-foreground animate-in fade-in duration-500 pb-20">
+      <div className="container mx-auto px-4 py-8 max-w-[1800px]">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+              Enhanced Cascade System
+            </h1>
+            <p className="text-muted-foreground mt-1 text-lg">
+              Advanced dual-cycle analysis for ultra-low temperature applications
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            {calculationData && (
+              <SaveCalculation
+                calculationType="Cascade Cycle"
+                inputs={calculationData.inputs}
+                results={calculationData.results}
+                disabled={loading}
               />
+            )}
+            <ApiServiceStatus />
+          </div>
+        </div>
 
-              <CycleForm
-                title="High-Temperature Cycle"
-                data={formData.htCycle}
-                onChange={(field, value) =>
-                  handleCycleInputChange("htCycle", field, value)
-                }
-                onRefrigerantChange={(refrigerant) =>
-                  handleRefrigerantChange("htCycle", refrigerant)
-                }
-                titleColor="bg-gradient-to-r from-orange-600 to-red-600"
-                cycle="htCycle"
-                warnings={validationWarnings.ht}
-              />
-            </div>
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
 
-            <Card className="bg-white shadow-lg border-purple-200">
-              <CardHeader className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
-                <CardTitle className="text-xl">
-                  Cascade System Parameters
+          {/* LEFT SIDEBAR: CONFIGURATION */}
+          <div className="xl:col-span-4 space-y-6 xl:sticky xl:top-24">
+            <Card className="border-t-4 border-t-purple-500 shadow-lg dark:bg-slate-900/50 backdrop-blur-sm max-h-[calc(100vh-8rem)] overflow-y-auto">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calculator className="w-5 h-5 text-purple-500" />
+                  System Configuration
                 </CardTitle>
-                <CardDescription className="text-purple-100">
-                  Configure the cascade heat exchanger and system integration
+                <CardDescription>
+                  Define parameters for Low & High stages
                 </CardDescription>
               </CardHeader>
-              <CardContent className="p-6">
-                <div className="max-w-md">
-                  <div className="space-y-2">
-                    <Label htmlFor="cascadeDT">
-                      Cascade Heat Exchanger ΔT (°C)
-                    </Label>
-                    <Input
-                      id="cascadeDT"
-                      type="number"
-                      value={formData.cascadeHeatExchangerDT}
-                      onChange={(e) =>
-                        handleCascadeDTChange(parseFloat(e.target.value))
-                      }
-                      className="border-purple-200 focus:border-purple-500"
-                    />
-                    <p className="text-sm text-gray-600">
-                      Temperature difference between the two cycles in the
-                      cascade heat exchanger.
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      Recommended range:{" "}
-                      {RECOMMENDED_GUIDANCE.cascadeDeltaT.min}–
-                      {RECOMMENDED_GUIDANCE.cascadeDeltaT.max}°C
-                    </p>
-                    {cascadeDeltaTOutOfRange && (
-                      <p className="text-xs text-amber-600">
-                        Adjust ΔT to keep the interstage heat exchanger within
-                        efficient operating limits.
-                      </p>
-                    )}
+              <CardContent className="space-y-6">
+
+                {/* LOW STAGE */}
+                <div className="space-y-4 border rounded-lg p-4 bg-cyan-50/20 dark:bg-cyan-900/10 border-cyan-100 dark:border-cyan-800/30">
+                  <div className="flex items-center gap-2 text-cyan-700 dark:text-cyan-400 font-semibold mb-2">
+                    <Thermometer className="w-4 h-4" /> Low Temperature Cycle
                   </div>
-                </div>
 
-                <div className="mt-6 flex gap-4">
-                  <Button
-                    onClick={handleCalculate}
-                    disabled={
-                      loading ||
-                      !formData.ltCycle.refrigerant ||
-                      !formData.htCycle.refrigerant
-                    }
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 text-lg"
-                  >
-                    {loading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Calculating Cascade...
-                      </>
-                    ) : (
-                      <>
-                        <Calculator className="mr-2 h-4 w-4" />
-                        Calculate Cascade
-                      </>
-                    )}
-                  </Button>
-
-                  {calculationData && (
-                    <SaveCalculation
-                      calculationType="Cascade Cycle"
-                      inputs={calculationData.inputs}
-                      results={calculationData.results}
-                      disabled={loading}
+                  <div className="space-y-2">
+                    <Label className="text-xs uppercase text-muted-foreground font-bold">Refrigerant</Label>
+                    <EnhancedRefrigerantSelector
+                      value={formData.ltCycle.refrigerant}
+                      onChange={(val) => handleRefrigerantChange("ltCycle", val)}
                     />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <Label className="text-xs">Evap Temp (°C)</Label>
+                      <Input
+                        type="number"
+                        value={formData.ltCycle.evaporatorTemp}
+                        onChange={(e) => handleCycleInputChange("ltCycle", "evaporatorTemp", parseFloat(e.target.value))}
+                        className="h-8"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Cond Temp (°C)</Label>
+                      <Input
+                        type="number"
+                        value={formData.ltCycle.condenserTemp}
+                        onChange={(e) => handleCycleInputChange("ltCycle", "condenserTemp", parseFloat(e.target.value))}
+                        className="h-8"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Superheat (K)</Label>
+                      <Input
+                        type="number"
+                        value={formData.ltCycle.superheat}
+                        onChange={(e) => handleCycleInputChange("ltCycle", "superheat", parseFloat(e.target.value))}
+                        className="h-8"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Subcooling (K)</Label>
+                      <Input
+                        type="number"
+                        value={formData.ltCycle.subcooling}
+                        onChange={(e) => handleCycleInputChange("ltCycle", "subcooling", parseFloat(e.target.value))}
+                        className="h-8"
+                      />
+                    </div>
+                  </div>
+                  {validationWarnings.lt.length > 0 && (
+                    <Alert variant="destructive" className="py-2 text-xs">
+                      <AlertTriangle className="h-3 w-3" />
+                      <AlertDescription className="ml-2">
+                        {validationWarnings.lt[0]}
+                      </AlertDescription>
+                    </Alert>
                   )}
                 </div>
 
+                {/* CASCADE INTERFACE */}
+                <div className="relative py-2">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-dashed border-gray-300 dark:border-gray-700" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-card px-2 text-muted-foreground flex items-center gap-2">
+                      <ArrowDownCircle className="w-4 h-4" /> Cascade Heat Exchanger
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-purple-600 dark:text-purple-400">Interstage ΔT (°C)</Label>
+                  <div className="flex gap-2 items-center">
+                    <Input
+                      type="number"
+                      value={formData.cascadeHeatExchangerDT}
+                      onChange={(e) => handleCascadeDTChange(parseFloat(e.target.value))}
+                      className="border-purple-200 dark:border-purple-900 focus:border-purple-500"
+                    />
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">
+                      (Rec: {RECOMMENDED_GUIDANCE.cascadeDeltaT.min}-{RECOMMENDED_GUIDANCE.cascadeDeltaT.max}°C)
+                    </span>
+                  </div>
+                </div>
+
+                {/* HIGH STAGE */}
+                <div className="space-y-4 border rounded-lg p-4 bg-orange-50/20 dark:bg-orange-900/10 border-orange-100 dark:border-orange-800/30">
+                  <div className="flex items-center gap-2 text-orange-700 dark:text-orange-400 font-semibold mb-2">
+                    <Zap className="w-4 h-4" /> High Temperature Cycle
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-xs uppercase text-muted-foreground font-bold">Refrigerant</Label>
+                    <EnhancedRefrigerantSelector
+                      value={formData.htCycle.refrigerant}
+                      onChange={(val) => handleRefrigerantChange("htCycle", val)}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <Label className="text-xs">Evap Temp (°C)</Label>
+                      <Input
+                        type="number"
+                        value={formData.htCycle.evaporatorTemp}
+                        onChange={(e) => handleCycleInputChange("htCycle", "evaporatorTemp", parseFloat(e.target.value))}
+                        className="h-8"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Cond Temp (°C)</Label>
+                      <Input
+                        type="number"
+                        value={formData.htCycle.condenserTemp}
+                        onChange={(e) => handleCycleInputChange("htCycle", "condenserTemp", parseFloat(e.target.value))}
+                        className="h-8"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Superheat (K)</Label>
+                      <Input
+                        type="number"
+                        value={formData.htCycle.superheat}
+                        onChange={(e) => handleCycleInputChange("htCycle", "superheat", parseFloat(e.target.value))}
+                        className="h-8"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Subcooling (K)</Label>
+                      <Input
+                        type="number"
+                        value={formData.htCycle.subcooling}
+                        onChange={(e) => handleCycleInputChange("htCycle", "subcooling", parseFloat(e.target.value))}
+                        className="h-8"
+                      />
+                    </div>
+                  </div>
+                  {validationWarnings.ht.length > 0 && (
+                    <Alert variant="destructive" className="py-2 text-xs">
+                      <AlertTriangle className="h-3 w-3" />
+                      <AlertDescription className="ml-2">
+                        {validationWarnings.ht[0]}
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                </div>
+
+                <div className="pt-2 gap-2 flex flex-col">
+                  <Button
+                    className="w-full h-12 text-lg font-semibold shadow-lg shadow-purple-500/10 hover:shadow-purple-500/20 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+                    onClick={handleCalculate}
+                    disabled={loading || !formData.ltCycle.refrigerant || !formData.htCycle.refrigerant}
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Solving System...
+                      </>
+                    ) : (
+                      <>
+                        <Calculator className="mr-2 h-5 w-5" />
+                        Run Analysis
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleApplyDefaults}
+                    className="text-xs text-muted-foreground hover:text-primary"
+                  >
+                    Reset to Defaults
+                  </Button>
+                </div>
+
                 {error && (
-                  <Alert variant="destructive" className="mt-4">
+                  <Alert variant="destructive">
                     <AlertDescription>{error}</AlertDescription>
                   </Alert>
                 )}
+
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
 
-        <TabsContent value="visualization">
-          <Card className="bg-white shadow-lg border-purple-200">
-            <CardHeader className="bg-gradient-to-r from-purple-600 to-violet-600 text-white">
-              <CardTitle className="text-xl">
-                Cascade Cycle Visualization
-              </CardTitle>
-              <CardDescription className="text-purple-100">
-                P-h diagrams for both low and high temperature cycles
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-6">
-              {result ? (
-                <div className="space-y-6">
-                  <div className="flex items-center gap-4">
-                    <Label>Select Cycle for Visualization:</Label>
-                    <div className="flex gap-2">
-                      <Button
-                        variant={
-                          selectedVisualizationCycle === "lt"
-                            ? "default"
-                            : "outline"
-                        }
-                        size="sm"
-                        onClick={() => setSelectedVisualizationCycle("lt")}
-                        className="flex items-center gap-2"
-                      >
-                        <Thermometer className="h-4 w-4" />
-                        Low Temperature ({formData.ltCycle.refrigerant})
-                      </Button>
-                      <Button
-                        variant={
-                          selectedVisualizationCycle === "ht"
-                            ? "default"
-                            : "outline"
-                        }
-                        size="sm"
-                        onClick={() => setSelectedVisualizationCycle("ht")}
-                        className="flex items-center gap-2"
-                      >
-                        <Zap className="h-4 w-4" />
-                        High Temperature ({formData.htCycle.refrigerant})
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div>
-                    {(() => {
-                      const visualizationData = getVisualizationData(
-                        selectedVisualizationCycle,
-                      );
-                      return visualizationData ? (
-                        <CycleVisualization cycleData={visualizationData} />
-                      ) : (
-                        <div className="text-center py-8 text-gray-500">
-                          Cycle visualization data not available for{" "}
-                          {selectedVisualizationCycle === "lt"
-                            ? "Low Temperature"
-                            : "High Temperature"}{" "}
-                          cycle
-                        </div>
-                      );
-                    })()}
-                  </div>
+          {/* RIGHT MAIN: RESULTS */}
+          <div className="xl:col-span-8 space-y-6">
+            {!result ? (
+              <div className="min-h-[600px] flex flex-col items-center justify-center border-4 border-dashed rounded-xl bg-muted/20 text-muted-foreground p-8 text-center animate-in fade-in zoom-in-95 duration-500">
+                <div className="p-6 bg-background rounded-full shadow-lg mb-6">
+                  <Activity className="h-12 w-12 text-purple-500" />
                 </div>
-              ) : (
-                <div className="text-center py-12 text-gray-500">
-                  Calculate a cascade cycle to view the P-h diagram
-                  visualizations
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="results">
-          {result && (
-            <div className="space-y-6">
-              <Card className="bg-white shadow-lg border-green-200">
-                <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
-                  <CardTitle className="text-xl">
-                    Cascade System Performance
-                  </CardTitle>
-                  <CardDescription className="text-green-100">
-                    Overall system performance and efficiency metrics
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <div className="text-center mb-6">
-                    <div className="text-4xl font-bold text-green-600 mb-2">
-                      {result.overall_performance?.cop?.toFixed(3) || "N/A"}
-                    </div>
-                    <Badge variant="secondary" className="text-lg px-4 py-2">
-                      Overall System COP
-                    </Badge>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="text-center p-4 bg-purple-50 rounded-lg">
-                      <div className="text-2xl font-semibold text-purple-600">
-                        {(
-                          (result.lt_cycle_performance
-                            ?.work_of_compression_kj_kg || 0) +
-                          (result.ht_cycle_performance
-                            ?.work_of_compression_kj_kg || 0)
-                        ).toFixed(1) || "N/A"}{" "}
-                        kJ/kg
-                      </div>
-                      <div className="text-sm text-purple-500 mt-1">
-                        Total Work Input
-                      </div>
-                    </div>
-                    <div className="text-center p-4 bg-blue-50 rounded-lg">
-                      <div className="text-2xl font-semibold text-blue-600">
-                        {result.overall_performance?.system_efficiency?.toFixed(
-                          1,
-                        ) || "N/A"}
-                        %
-                      </div>
-                      <div className="text-sm text-blue-500 mt-1">
-                        System Efficiency
-                      </div>
-                    </div>
-                    <div className="text-center p-4 bg-indigo-50 rounded-lg">
-                      <div className="text-2xl font-semibold text-indigo-600">
-                        {formData.ltCycle.condenserTemp.toFixed(1)}°C
-                      </div>
-                      <div className="text-sm text-indigo-500 mt-1">
-                        Cascade Temperature
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card className="bg-white shadow-md border-cyan-200">
-                  <CardHeader className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white">
-                    <CardTitle className="text-lg">
-                      Low-Temperature Cycle Performance
-                    </CardTitle>
-                    <CardDescription className="text-cyan-100">
-                      {formData.ltCycle.refrigerant} cycle analysis
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="p-4 space-y-3">
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="text-gray-600">COP:</span>
-                        <span className="font-semibold ml-2">
-                          {result.lt_cycle_performance?.cop?.toFixed(3) ||
-                            "N/A"}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Work Input:</span>
-                        <span className="font-semibold ml-2">
-                          {result.lt_cycle_performance?.work_of_compression_kj_kg?.toFixed(
-                            1,
-                          ) || "N/A"}{" "}
-                          kJ/kg
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">
-                          Refrigeration Effect:
-                        </span>
-                        <span className="font-semibold ml-2">
-                          {result.lt_cycle_performance?.refrigeration_effect_kj_kg?.toFixed(
-                            1,
-                          ) || "N/A"}{" "}
-                          kJ/kg
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Heat Rejection:</span>
-                        <span className="font-semibold ml-2">
-                          {(
-                            (result.lt_cycle_performance
-                              ?.refrigeration_effect_kj_kg || 0) +
-                            (result.lt_cycle_performance
-                              ?.work_of_compression_kj_kg || 0)
-                          ).toFixed(1) || "N/A"}{" "}
-                          kJ/kg
-                        </span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-white shadow-md border-orange-200">
-                  <CardHeader className="bg-gradient-to-r from-orange-600 to-red-600 text-white">
-                    <CardTitle className="text-lg">
-                      High-Temperature Cycle Performance
-                    </CardTitle>
-                    <CardDescription className="text-orange-100">
-                      {formData.htCycle.refrigerant} cycle analysis
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="p-4 space-y-3">
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="text-gray-600">COP:</span>
-                        <span className="font-semibold ml-2">
-                          {result.ht_cycle_performance?.cop?.toFixed(3) ||
-                            "N/A"}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Work Input:</span>
-                        <span className="font-semibold ml-2">
-                          {result.ht_cycle_performance?.work_of_compression_kj_kg?.toFixed(
-                            1,
-                          ) || "N/A"}{" "}
-                          kJ/kg
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">
-                          Refrigeration Effect:
-                        </span>
-                        <span className="font-semibold ml-2">
-                          {result.ht_cycle_performance?.refrigeration_effect_kj_kg?.toFixed(
-                            1,
-                          ) || "N/A"}{" "}
-                          kJ/kg
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Heat Rejection:</span>
-                        <span className="font-semibold ml-2">
-                          {(
-                            (result.ht_cycle_performance
-                              ?.refrigeration_effect_kj_kg || 0) +
-                            (result.ht_cycle_performance
-                              ?.work_of_compression_kj_kg || 0)
-                          ).toFixed(1) || "N/A"}{" "}
-                          kJ/kg
-                        </span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <h3 className="text-2xl font-bold mb-2">Ready to Simulate</h3>
+                <p className="max-w-md">
+                  Configure the Low and High temperature cycles to analyze the performance of the complete cascade refrigeration system.
+                </p>
               </div>
-            </div>
-          )}
-        </TabsContent>
+            ) : (
+              <div className="animate-in slide-in-from-bottom-5 duration-700 space-y-6">
 
-        <TabsContent value="equipment">
-          <Card className="bg-white shadow-lg border-purple-200">
-            <CardHeader className="bg-gradient-to-r from-purple-600 to-violet-600 text-white">
-              <CardTitle className="text-xl">
-                Cascade Equipment Diagrams
-              </CardTitle>
-              <CardDescription className="text-purple-100">
-                Interactive system components with refrigerant flow
-                visualization
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-6">
-              {result ? (
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div>
-                      <h3 className="text-lg font-semibold text-cyan-600 mb-4">
-                        Low Temperature Cycle
-                      </h3>
-                      {(() => {
-                        const ltVisualizationData = getVisualizationData("lt");
-                        return ltVisualizationData ? (
-                          <EquipmentDiagrams cycleData={ltVisualizationData} />
-                        ) : (
-                          <div className="text-center py-8 text-gray-500">
-                            Equipment data not available for LT cycle
-                          </div>
-                        );
-                      })()}
-                    </div>
+                {/* KPI Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card className="bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-950/30 dark:to-emerald-900/10 border-green-200 dark:border-green-800">
+                    <CardContent className="p-6 flex flex-col items-center justify-center text-center">
+                      <span className="text-sm font-medium text-green-700 dark:text-green-400 uppercase tracking-wider">System COP</span>
+                      <span className="text-4xl font-bold text-green-800 dark:text-green-300 mt-2">{result.overall_performance?.cop?.toFixed(2) ?? "N/A"}</span>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/30 dark:to-indigo-900/10 border-blue-200 dark:border-blue-800">
+                    <CardContent className="p-6 flex flex-col items-center justify-center text-center">
+                      <span className="text-sm font-medium text-blue-700 dark:text-blue-400 uppercase tracking-wider">Efficiency</span>
+                      <span className="text-4xl font-bold text-blue-800 dark:text-blue-300 mt-2">{result.overall_performance?.system_efficiency?.toFixed(1) ?? "N/A"}%</span>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-gradient-to-br from-purple-50 to-violet-100 dark:from-purple-950/30 dark:to-violet-900/10 border-purple-200 dark:border-purple-800">
+                    <CardContent className="p-6 flex flex-col items-center justify-center text-center">
+                      <span className="text-sm font-medium text-purple-700 dark:text-purple-400 uppercase tracking-wider">Total Work</span>
+                      <div className="flex items-baseline gap-1 mt-2">
+                        <span className="text-4xl font-bold text-purple-800 dark:text-purple-300">
+                          {(
+                            (result.lt_cycle_performance?.work_of_compression_kj_kg || 0) +
+                            (result.ht_cycle_performance?.work_of_compression_kj_kg || 0)
+                          ).toFixed(1)}
+                        </span>
+                        <span className="text-sm text-purple-600 dark:text-purple-400">kJ/kg</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
 
-                    <div>
-                      <h3 className="text-lg font-semibold text-orange-600 mb-4">
-                        High Temperature Cycle
-                      </h3>
-                      {(() => {
-                        const htVisualizationData = getVisualizationData("ht");
-                        return htVisualizationData ? (
-                          <EquipmentDiagrams cycleData={htVisualizationData} />
-                        ) : (
-                          <div className="text-center py-8 text-gray-500">
-                            Equipment data not available for HT cycle
+                {/* Tabs */}
+                <Tabs defaultValue="overview" className="w-full">
+                  <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent gap-6 mb-6">
+                    <TabsTrigger
+                      value="overview"
+                      className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4 py-2 bg-transparent text-muted-foreground hover:text-foreground transition-all flex items-center gap-2"
+                    >
+                      <FileText className="w-4 h-4" /> System Overview
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="visualization"
+                      className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4 py-2 bg-transparent text-muted-foreground hover:text-foreground transition-all flex items-center gap-2"
+                    >
+                      <Eye className="w-4 h-4" /> Cycle Diagrams
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="equipment"
+                      className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4 py-2 bg-transparent text-muted-foreground hover:text-foreground transition-all flex items-center gap-2"
+                    >
+                      <Wrench className="w-4 h-4" /> Equipment
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="overview" className="mt-0 space-y-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {/* LT Result Card */}
+                      <Card className="border-l-4 border-l-cyan-500 overflow-hidden dark:bg-slate-900/40">
+                        <div className="bg-cyan-500/10 p-4 border-b border-cyan-100 dark:border-cyan-800/20 flex justify-between items-center">
+                          <h3 className="font-bold text-cyan-700 dark:text-cyan-400 flex items-center gap-2">
+                            <Thermometer className="w-4 h-4" /> Low Temp Cycle ({result.lt_cycle_performance?.refrigerant})
+                          </h3>
+                          <Badge variant="outline" className="border-cyan-200 text-cyan-700">Evap: {formData.ltCycle.evaporatorTemp}°C</Badge>
+                        </div>
+                        <CardContent className="p-0">
+                          <div className="grid grid-cols-2 divide-x divide-y dark:divide-slate-800">
+                            <div className="p-4 text-center">
+                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">{result.lt_cycle_performance?.cop?.toFixed(2)}</div>
+                              <div className="text-xs text-muted-foreground uppercase">COP</div>
+                            </div>
+                            <div className="p-4 text-center">
+                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">{result.lt_cycle_performance?.refrigeration_effect_kj_kg?.toFixed(1)}</div>
+                              <div className="text-xs text-muted-foreground uppercase">Ref. Effect (kJ/kg)</div>
+                            </div>
+                            <div className="p-4 text-center">
+                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">{result.lt_cycle_performance?.work_of_compression_kj_kg?.toFixed(1)}</div>
+                              <div className="text-xs text-muted-foreground uppercase">Work Input (kJ/kg)</div>
+                            </div>
+                            <div className="p-4 text-center">
+                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">{result.lt_cycle_performance?.pressure_ratio?.toFixed(2) ?? "-"}</div>
+                              <div className="text-xs text-muted-foreground uppercase">Compression Ratio</div>
+                            </div>
                           </div>
-                        );
-                      })()}
+                        </CardContent>
+                      </Card>
+
+                      {/* HT Result Card */}
+                      <Card className="border-l-4 border-l-orange-500 overflow-hidden dark:bg-slate-900/40">
+                        <div className="bg-orange-500/10 p-4 border-b border-orange-100 dark:border-orange-800/20 flex justify-between items-center">
+                          <h3 className="font-bold text-orange-700 dark:text-orange-400 flex items-center gap-2">
+                            <Zap className="w-4 h-4" /> High Temp Cycle ({result.ht_cycle_performance?.refrigerant})
+                          </h3>
+                          <Badge variant="outline" className="border-orange-200 text-orange-700">Evap: {formData.htCycle.evaporatorTemp}°C</Badge>
+                        </div>
+                        <CardContent className="p-0">
+                          <div className="grid grid-cols-2 divide-x divide-y dark:divide-slate-800">
+                            <div className="p-4 text-center">
+                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">{result.ht_cycle_performance?.cop?.toFixed(2)}</div>
+                              <div className="text-xs text-muted-foreground uppercase">COP</div>
+                            </div>
+                            <div className="p-4 text-center">
+                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">{result.ht_cycle_performance?.refrigeration_effect_kj_kg?.toFixed(1)}</div>
+                              <div className="text-xs text-muted-foreground uppercase">Ref. Effect (kJ/kg)</div>
+                            </div>
+                            <div className="p-4 text-center">
+                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">{result.ht_cycle_performance?.work_of_compression_kj_kg?.toFixed(1)}</div>
+                              <div className="text-xs text-muted-foreground uppercase">Work Input (kJ/kg)</div>
+                            </div>
+                            <div className="p-4 text-center">
+                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">{result.ht_cycle_performance?.pressure_ratio?.toFixed(2) ?? "-"}</div>
+                              <div className="text-xs text-muted-foreground uppercase">Compression Ratio</div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
                     </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-12 text-gray-500">
-                  Calculate a cascade cycle to view equipment diagrams
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+                  </TabsContent>
+
+                  <TabsContent value="visualization" className="mt-0">
+                    <Card className="dark:bg-slate-900">
+                      <CardHeader className="flex flex-row items-center justify-between">
+                        <div>
+                          <CardTitle>Pressure-Enthalpy Diagrams</CardTitle>
+                          <CardDescription>Visualize the thermodynamic cycle for each stage</CardDescription>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant={selectedVisualizationCycle === "lt" ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setSelectedVisualizationCycle("lt")}
+                            className={selectedVisualizationCycle === "lt" ? "bg-cyan-600 hover:bg-cyan-700" : ""}
+                          >
+                            Low Temp ({formData.ltCycle.refrigerant})
+                          </Button>
+                          <Button
+                            variant={selectedVisualizationCycle === "ht" ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setSelectedVisualizationCycle("ht")}
+                            className={selectedVisualizationCycle === "ht" ? "bg-orange-600 hover:bg-orange-700" : ""}
+                          >
+                            High Temp ({formData.htCycle.refrigerant})
+                          </Button>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        {(() => {
+                          const vizData = getVisualizationData(selectedVisualizationCycle);
+                          return vizData ? <CycleVisualization cycleData={vizData} /> : <div className="p-12 text-center text-muted-foreground">Visualization Data Unavailable</div>;
+                        })()}
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+
+                  <TabsContent value="equipment" className="mt-0">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <Card className="dark:bg-slate-900">
+                        <CardHeader>
+                          <CardTitle className="text-cyan-600">Low Temperature Equipment</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          {(() => {
+                            const ltData = getVisualizationData("lt");
+                            return ltData ? <EquipmentDiagrams cycleData={ltData} /> : <div className="text-center p-4">No data</div>
+                          })()}
+                        </CardContent>
+                      </Card>
+                      <Card className="dark:bg-slate-900">
+                        <CardHeader>
+                          <CardTitle className="text-orange-600">High Temperature Equipment</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          {(() => {
+                            const htData = getVisualizationData("ht");
+                            return htData ? <EquipmentDiagrams cycleData={htData} /> : <div className="text-center p-4">No data</div>
+                          })()}
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-// Standalone page component with header for direct access
+// Standalone wrapper
 export function CascadeCycle() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <ApiServiceStatus />
-        <CascadeCycleContent />
-      </div>
-    </div>
-  );
+  return <CascadeCycleContent />;
 }

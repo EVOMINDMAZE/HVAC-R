@@ -200,7 +200,7 @@
 
   /* Glassmorphism */
   .glass {
-    @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-lg;
+    @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-lg border border-white/20 dark:border-white/10 shadow-lg;
   }
 
   .glass-dark {
@@ -208,7 +208,7 @@
   }
 
   .glass-card {
-    @apply bg-white/80 backdrop-blur-md border border-white/40 shadow-xl rounded-xl;
+    @apply bg-white/80 dark:bg-slate-800/60 backdrop-blur-md border border-white/40 dark:border-slate-700/50 shadow-xl rounded-xl;
   }
 }
 

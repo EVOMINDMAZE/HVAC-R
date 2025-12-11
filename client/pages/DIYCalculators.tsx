@@ -8,7 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Loader2, History, Settings, Thermometer, Wind, Activity, Layers, Save, ShieldAlert } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { API_BASE_URL } from "@/lib/api";
+import { apiClient } from "@/lib/api";
+
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import A2LCalculator from "@/components/calculators/A2LCalculator";
 import {
@@ -130,20 +131,20 @@ export default function DIYCalculators() {
         subcooling_c: Number(inputs.subcooling_c),
       };
 
-      const response = await fetch(`${API_BASE_URL}/calculate-standard`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+      const response = await apiClient.calculateStandardCycle({
+        refrigerant: inputs.refrigerant,
+        evaporatorTemp: Number(inputs.evap_temp_c),
+        condenserTemp: Number(inputs.cond_temp_c),
+        superheat: Number(inputs.superheat_c),
+        subcooling: Number(inputs.subcooling_c),
       });
 
-      const data = await response.json();
-
-      if (!response.ok || !data?.data) {
-        setError(data?.error || `Request failed (${response.status})`);
+      if (!response.success || !response.data) {
+        setError(response.error || "Request failed");
         return;
       }
 
-      setResults(data.data);
+      setResults(response.data);
       // await saveCalculation("Standard Cycle", body, data.data); // Removed auto-save
     } catch (e: any) {
       setError(e?.message || "Network error");
@@ -176,20 +177,30 @@ export default function DIYCalculators() {
         cascade_hx_delta_t_c: 5,
       };
 
-      const response = await fetch(`${API_BASE_URL}/calculate-cascade`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(demoBody),
+      const response = await apiClient.calculateCascadeCycle({
+        ltCycle: {
+          refrigerant: "R744",
+          evaporatorTemp: -50,
+          condenserTemp: -5,
+          superheat: 5,
+          subcooling: 2
+        },
+        htCycle: {
+          refrigerant: "R134a",
+          evaporatorTemp: -10,
+          condenserTemp: 40,
+          superheat: 5,
+          subcooling: 2
+        },
+        cascadeHeatExchangerDT: 5
       });
 
-      const data = await response.json();
-
-      if (!response.ok || !data?.data) {
-        setCascadeError(data?.error || `Request failed (${response.status})`);
+      if (!response.success || !response.data) {
+        setCascadeError(response.error || "Request failed");
         return;
       }
 
-      setCascadeResults(data.data);
+      setCascadeResults(response.data);
       // await saveCalculation("Cascade Cycle", demoBody, data.data); // Removed auto-save
     } catch (e: any) {
       setCascadeError(e?.message || "Network error");
@@ -307,22 +318,13 @@ function AirflowCalculator({ saveCalculation }: { saveCalculation: any }) {
       if (units.delta_t === "C") delta_t_f *= 1.8;
       else if (units.delta_t === "K") delta_t_f *= 1.8; // Delta K is same magnitude as Delta C
 
-      const response = await fetch(`${API_BASE_URL}/calculate-airflow`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sensible_heat_btuh,
-          delta_t_f
-        }),
-      });
+      const response = await apiClient.calculateAirflow(sensible_heat_btuh, delta_t_f);
 
-      const data = await response.json();
-
-      if (!response.ok || !data?.data) {
-        setError(data?.error || `Request failed (${response.status})`);
+      if (!response.success || !response.data) {
+        setError(response.error || "Request failed");
         return;
       }
-      setResult(data.data);
+      setResult(response.data);
     } catch (e: any) {
       setError(e?.message || "Network error");
     } finally {
@@ -410,7 +412,7 @@ function AirflowCalculator({ saveCalculation }: { saveCalculation: any }) {
 
             <Button
               onClick={handleCalculate}
-              className="w-full bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-0.5"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-0.5"
               disabled={loading}
             >
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Calculate"}
@@ -503,20 +505,12 @@ function DeltaTCalculator({ saveCalculation }: { saveCalculation: any }) {
       const return_temp_f = toF(inputs.return_temp, units.return_temp);
       const supply_temp_f = toF(inputs.supply_temp, units.supply_temp);
 
-      const response = await fetch(`${API_BASE_URL}/calculate-deltat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          return_temp_f,
-          supply_temp_f
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok || !data?.data) {
-        setError(data?.error || `Request failed (${response.status})`);
+      const response = await apiClient.calculateDeltaT(return_temp_f, supply_temp_f);
+      if (!response.success || !response.data) {
+        setError(response.error || "Request failed");
         return;
       }
-      setResult(data.data);
+      setResult(response.data);
     } catch (e: any) {
       setError(e?.message || "Network error");
     } finally {
@@ -603,7 +597,7 @@ function DeltaTCalculator({ saveCalculation }: { saveCalculation: any }) {
 
             <Button
               onClick={handleCalculate}
-              className="w-full bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-0.5"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-0.5"
               disabled={loading}
             >
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Calculate Delta T"}

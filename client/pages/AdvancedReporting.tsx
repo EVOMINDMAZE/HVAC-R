@@ -258,7 +258,7 @@ export function AdvancedReporting() {
                 <Button
                   onClick={generatePDF}
                   disabled={generatingPdf}
-                  className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all hover:-translate-y-0.5"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all hover:-translate-y-0.5"
                 >
                   {generatingPdf ? (
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />

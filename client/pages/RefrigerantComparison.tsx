@@ -17,6 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Separator } from "@/components/ui/separator";
 import {
   Loader2,
   BarChart3,
@@ -25,6 +26,8 @@ import {
   AlertTriangle,
   Trash2,
   Trophy,
+  Calculator,
+  Info,
 } from "lucide-react";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { SaveCalculation } from "@/components/SaveCalculation";
@@ -615,9 +618,30 @@ export function RefrigerantComparisonContent() {
     return v;
   };
 
+  const getRefrigerantError = (result: any) => {
+    const err = result.error;
+    if (!err) return null;
+    if (typeof err === 'string' && err.includes("critical temperature")) {
+      return {
+        title: "Critical Temp Exceeded",
+        description: "Condenser temperature is above the critical point (31°C).",
+        tip: "Try Condenser Temp < 30°C",
+      };
+    }
+    return {
+      title: "Calculation Failed",
+      description: "The solver could not converge for these inputs.",
+      tip: "Check input values",
+    };
+  };
+
   const getValueForMetric = (result: RefrigerantResult, metricKey: string) => {
-    // If this refrigerant had a calculation error on the backend, show an error marker instead of N/A
-    if ((result as any).error) return "Error";
+    // If this refrigerant had a calculation error on the backend, show detailed error info
+    if ((result as any).error) {
+      const errorInfo = getRefrigerantError(result);
+      if (metricKey === "cop") return errorInfo?.title || "Error";
+      return "Error";
+    }
 
     const num = getNumericValue(result as any, metricKey);
     if (num === null) return "N/A";
@@ -799,545 +823,480 @@ export function RefrigerantComparisonContent() {
   const hasSelections = selectedCount > 0;
 
   return (
-    <div className="space-y-6">
-      <Card className="bg-white shadow-lg border-blue-200">
-        <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-          <CardTitle className="text-xl">
-            Enhanced Refrigerant Comparison
-          </CardTitle>
-          <CardDescription className="text-blue-100">
-            Compare multiple refrigerants with advanced visualization and
-            CoolProp validation
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="p-6">
-          <div className="space-y-6">
-            <div>
-              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-base font-semibold">
-                    Select Refrigerants to Compare
-                  </span>
-                  {hasSelections && (
-                    <Badge
-                      variant="outline"
-                      className="border-blue-200 bg-blue-50 text-blue-700"
-                    >
-                      {selectedCount} selected
-                    </Badge>
-                  )}
-                </div>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleClearSelections}
-                  disabled={!hasSelections}
-                  className="flex items-center gap-2 text-blue-700 hover:text-blue-900"
-                >
-                  <Trash2 className="h-4 w-4" aria-hidden />
-                  Clear all
-                </Button>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {REFRIGERANT_DATABASE.map((refrigerant) => {
-                  const hasWarnings =
-                    validationWarnings[refrigerant.id]?.length > 0;
-                  return (
-                    <div
-                      key={refrigerant.id}
-                      className="flex items-center space-x-2"
-                    >
-                      <Checkbox
-                        id={refrigerant.id}
-                        checked={formData.refrigerants.includes(refrigerant.id)}
-                        onCheckedChange={(checked) =>
-                          handleRefrigerantToggle(
-                            refrigerant.id,
-                            checked as boolean,
-                          )
-                        }
-                      />
-                      <Label
-                        htmlFor={refrigerant.id}
-                        className="text-sm cursor-pointer flex items-center gap-2"
-                      >
-                        {refrigerant.name}
-                        {hasWarnings && (
-                          <AlertTriangle className="h-3 w-3 text-amber-500" />
-                        )}
-                        <Badge
-                          variant="outline"
-                          className={`text-xs ${
-                            refrigerant.coolpropSupport === "full"
-                              ? "bg-green-50 text-green-700"
-                              : refrigerant.coolpropSupport === "limited"
-                                ? "bg-yellow-50 text-yellow-700"
-                                : "bg-red-50 text-red-700"
-                          }`}
-                        >
-                          {refrigerant.coolpropSupport}
-                        </Badge>
-                      </Label>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+    <div className="min-h-screen bg-background text-foreground animate-in fade-in duration-500 pb-20">
+      <div className="container mx-auto px-4 py-8 max-w-[1800px]">
 
-            {getTotalWarnings() > 0 && (
-              <Alert>
-                <AlertTriangle className="h-4 w-4" />
-                <AlertDescription>
-                  <strong>
-                    Operating Condition Warnings for selected refrigerants:
-                  </strong>
-                  {Object.entries(validationWarnings).map(
-                    ([refId, warnings]) => (
-                      <div key={refId} className="mt-2">
-                        <strong>{getRefrigerantById(refId)?.name}:</strong>
-                        <ul className="ml-4 list-disc">
-                          {warnings.map((warning, index) => (
-                            <li key={index}>{warning}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    ),
-                  )}
-                </AlertDescription>
-              </Alert>
-            )}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="evaporatorTemp">
-                  Evaporator Temperature (°C)
-                </Label>
-                <Input
-                  id="evaporatorTemp"
-                  type="number"
-                  value={formData.evaporatorTemp}
-                  onChange={(e) =>
-                    handleInputChange(
-                      "evaporatorTemp",
-                      parseFloat(e.target.value),
-                    )
-                  }
-                  className="border-blue-200 focus:border-blue-500"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="condenserTemp">
-                  Condenser Temperature (°C)
-                </Label>
-                <Input
-                  id="condenserTemp"
-                  type="number"
-                  value={formData.condenserTemp}
-                  onChange={(e) =>
-                    handleInputChange(
-                      "condenserTemp",
-                      parseFloat(e.target.value),
-                    )
-                  }
-                  className="border-blue-200 focus:border-blue-500"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="superheat">Superheat (°C)</Label>
-                <Input
-                  id="superheat"
-                  type="number"
-                  value={formData.superheat}
-                  onChange={(e) =>
-                    handleInputChange("superheat", parseFloat(e.target.value))
-                  }
-                  className="border-blue-200 focus:border-blue-500"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="subcooling">Subcooling (°C)</Label>
-                <Input
-                  id="subcooling"
-                  type="number"
-                  value={formData.subcooling}
-                  onChange={(e) =>
-                    handleInputChange("subcooling", parseFloat(e.target.value))
-                  }
-                  className="border-blue-200 focus:border-blue-500"
-                />
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <Button
-                onClick={handleCompare}
-                disabled={loading || formData.refrigerants.length === 0}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Comparing...
-                  </>
-                ) : (
-                  <>
-                    <BarChart3 className="mr-2 h-4 w-4" />
-                    Compare
-                  </>
-                )}
-              </Button>
-
-              {calculationData && (
-                <SaveCalculation
-                  calculationType="Refrigerant Comparison"
-                  inputs={calculationData.inputs}
-                  results={calculationData.results}
-                  disabled={loading}
-                />
-              )}
-            </div>
-
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent">
+              Refrigerant Comparison
+            </h1>
+            <p className="text-muted-foreground mt-1 text-lg">
+              Analyze and benchmark different working fluids
+            </p>
           </div>
-        </CardContent>
-      </Card>
+          <div className="flex items-center gap-2">
+            {calculationData && (
+              <SaveCalculation
+                calculationType="Refrigerant Comparison"
+                inputs={calculationData.inputs}
+                results={calculationData.results}
+                disabled={loading}
+              />
+            )}
+            <ApiServiceStatus />
+          </div>
+        </div>
 
-      {result &&
-        result.results &&
-        Array.isArray(result.results) &&
-        result.results.length > 0 && (
-          <Tabs defaultValue="comparison" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger
-                value="comparison"
-                className="flex items-center gap-2"
-              >
-                <BarChart3 className="h-4 w-4" />
-                Comparison Table
-              </TabsTrigger>
-              <TabsTrigger
-                value="visualization"
-                className="flex items-center gap-2"
-              >
-                <Eye className="h-4 w-4" />
-                Cycle Visualization
-              </TabsTrigger>
-              <TabsTrigger value="details" className="flex items-center gap-2">
-                <FileText className="h-4 w-4" />
-                Detailed Results
-              </TabsTrigger>
-            </TabsList>
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
 
-            <TabsContent value="comparison">
-              <Card className="bg-white shadow-lg border-green-200">
-                <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
-                  <CardTitle className="text-xl">
-                    Performance Comparison
-                  </CardTitle>
-                  <CardDescription className="text-green-100">
-                    Side-by-side comparison of key performance metrics
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="p-6">
-                  {result.results.some((r) => (r as any).error) && (
-                    <Alert variant="destructive" className="mb-4">
-                      <AlertTitle>API calculation issues detected</AlertTitle>
-                      <AlertDescription>
-                        {result.results
-                          .filter((r) => (r as any).error)
-                          .map((r, i) => (
-                            <div key={i} className="text-sm">
-                              <strong>{r.refrigerant}:</strong>{" "}
-                              {(r as any).error}
-                            </div>
-                          ))}
-                      </AlertDescription>
-                    </Alert>
-                  )}
-                  <div className="overflow-x-auto">
-                    <table className="w-full border-collapse">
-                      <thead>
-                        <tr className="border-b-2 border-gray-200">
-                          <th className="text-left p-3 font-semibold text-gray-700 bg-gray-50">
-                            Performance Metric
-                          </th>
-                          {result.results.map((refrigerantResult, index) => (
-                            <th
-                              key={refrigerantResult.refrigerant || index}
-                              className="text-center p-3 font-semibold text-blue-600 bg-blue-50"
-                            >
-                              {refrigerantResult.refrigerant ||
-                                `Refrigerant ${index + 1}`}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {performanceMetrics.map((metric) => {
-                          const bestIndex = getBestValueIndex(metric.key);
-                          return (
-                            <tr
-                              key={metric.key}
-                              className="border-b border-gray-100 hover:bg-gray-50"
-                            >
-                              <td className="p-3 font-medium text-gray-700 bg-gray-50">
-                                {metric.label}
-                                {metric.unit && (
-                                  <span className="text-sm text-gray-500 ml-1">
-                                    ({metric.unit})
-                                  </span>
-                                )}
-                              </td>
-                              {result.results.map(
-                                (refrigerantResult, index) => {
-                                  const cellValue = getValueForMetric(
-                                    refrigerantResult,
-                                    metric.key,
-                                  );
-                                  const isError = cellValue === "Error";
-                                  const isNA = cellValue === "N/A";
-                                  const isBest =
-                                    index === bestIndex && !isError && !isNA;
-                                  const displayValue = isError
-                                    ? "—"
-                                    : cellValue;
+          {/* LEFT SIDEBAR: CONFIGURATION */}
+          <div className="xl:col-span-4 space-y-6 xl:sticky xl:top-24">
+            <Card className="border-t-4 border-t-green-500 shadow-lg dark:bg-slate-900/50 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calculator className="w-5 h-5 text-green-500" />
+                  Configuration
+                </CardTitle>
+                <CardDescription>
+                  Select refrigerants and operating conditions
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
 
-                                  return (
-                                    <td
-                                      key={
-                                        refrigerantResult.refrigerant || index
-                                      }
-                                      className={`p-3 text-center align-top ${
-                                        isBest
-                                          ? "bg-green-50 text-green-800 font-semibold"
-                                          : "text-gray-700"
-                                      }`}
-                                    >
-                                      <div className="flex flex-col items-center gap-1">
-                                        <span
-                                          className={`font-mono ${
-                                            isNA
-                                              ? "text-gray-400"
-                                              : isBest
-                                                ? "text-green-800"
-                                                : "text-slate-700"
-                                          }`}
-                                        >
-                                          {displayValue}
-                                        </span>
-                                        {isBest && (
-                                          <Badge
-                                            variant="outline"
-                                            className="flex items-center gap-1 border-green-200 bg-green-100/70 text-[10px] uppercase tracking-wide text-green-800"
-                                          >
-                                            <Trophy
-                                              className="h-3 w-3"
-                                              aria-hidden
-                                            />
-                                            Best
-                                          </Badge>
-                                        )}
-                                        {isError && (
-                                          <Badge
-                                            variant="destructive"
-                                            className="flex items-center gap-1 text-[10px] uppercase tracking-wide"
-                                          >
-                                            <AlertTriangle
-                                              className="h-3 w-3"
-                                              aria-hidden
-                                            />
-                                            Error
-                                          </Badge>
-                                        )}
-                                      </div>
-                                    </td>
-                                  );
-                                },
-                              )}
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div className="mt-4 text-sm text-gray-600">
-                    <span className="inline-block w-4 h-4 bg-green-100 mr-2 rounded"></span>
-                    Best performance for each metric
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="visualization">
-              <Card className="bg-white shadow-lg border-purple-200">
-                <CardHeader className="bg-gradient-to-r from-purple-600 to-violet-600 text-white">
-                  <CardTitle className="text-xl">Cycle Visualization</CardTitle>
-                  <CardDescription className="text-purple-100">
-                    P-h diagrams for each refrigerant comparison
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <div className="space-y-6">
-                    <div className="flex items-center gap-4">
-                      <Label>Select Refrigerant for Visualization:</Label>
-                      <div className="flex gap-2">
-                        {result.results.map((refrigerantResult) => (
-                          <Button
-                            key={refrigerantResult.refrigerant}
-                            variant={
-                              selectedRefrigerantForVisualization ===
-                              refrigerantResult.refrigerant
-                                ? "default"
-                                : "outline"
-                            }
-                            size="sm"
-                            onClick={() =>
-                              setSelectedRefrigerantForVisualization(
-                                refrigerantResult.refrigerant,
-                              )
-                            }
-                          >
-                            {refrigerantResult.refrigerant}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {selectedRefrigerantForVisualization && (
-                      <div>
-                        {(() => {
-                          const selectedResult = result.results.find(
-                            (r) =>
-                              r.refrigerant ===
-                              selectedRefrigerantForVisualization,
-                          );
-                          const visualizationData = selectedResult
-                            ? getVisualizationData(selectedResult)
-                            : null;
-
-                          return visualizationData ? (
-                            <CycleVisualization cycleData={visualizationData} />
-                          ) : (
-                            <div className="text-center py-8 text-gray-500">
-                              Cycle visualization data not available for{" "}
-                              {selectedRefrigerantForVisualization}
-                            </div>
-                          );
-                        })()}
-                      </div>
+                {/* 1. Refrigerant Selection */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label>Refrigerants (Select up to 4)</Label>
+                    {hasSelections && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleClearSelections}
+                        className="h-6 text-xs text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      >
+                        Clear
+                      </Button>
                     )}
                   </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
 
-            <TabsContent value="details">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {result.results.map((refrigerantResult, index) => {
-                  const refProps = getRefrigerantById(
-                    refrigerantResult.refrigerant,
-                  );
-                  return (
-                    <Card
-                      key={refrigerantResult.refrigerant || index}
-                      className="bg-white shadow-lg"
-                    >
-                      <CardHeader>
-                        <CardTitle className="flex items-center justify-between">
-                          {refrigerantResult.refrigerant ||
-                            `Refrigerant ${index + 1}`}
-                          {refProps && (
-                            <div className="flex items-center gap-2">
-                              <Badge variant="outline">
-                                {refProps.safety_class}
-                              </Badge>
-                              <Badge
-                                variant={
-                                  refProps.coolpropSupport === "full"
-                                    ? "default"
-                                    : "secondary"
-                                }
-                              >
-                                {refProps.coolpropSupport}
-                              </Badge>
-                            </div>
-                          )}
-                        </CardTitle>
-                        {refProps && (
-                          <CardDescription>
-                            GWP: {refProps.gwp} | ODP: {refProps.odp}
-                          </CardDescription>
-                        )}
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-4">
-                          <div className="grid grid-cols-2 gap-4">
-                            <div className="p-3 bg-blue-50 rounded-lg text-center">
-                              <div className="text-lg font-bold text-blue-600">
-                                {getValueForMetric(refrigerantResult, "cop")}
+                  <div className="grid grid-cols-2 gap-2 max-h-[300px] overflow-y-auto p-2 border rounded-md bg-muted/20">
+                    {REFRIGERANT_DATABASE.map((refrigerant) => {
+                      const warnings = validationWarnings[refrigerant.id] || [];
+                      const hasWarnings = warnings.length > 0;
+                      const isCriticalError = warnings.some(w => w.includes("critical temperature"));
+
+                      return (
+                        <div
+                          key={refrigerant.id}
+                          className={`flex flex-col p-2 rounded-lg transition-all ${hasWarnings
+                            ? 'bg-amber-50 dark:bg-amber-900/10 border border-amber-200/50 col-span-2'
+                            : 'hover:bg-muted/50'
+                            }`}
+                        >
+                          <div className="flex items-start space-x-2">
+                            <Checkbox
+                              id={refrigerant.id}
+                              checked={formData.refrigerants.includes(refrigerant.id)}
+                              onCheckedChange={(checked) => handleRefrigerantToggle(refrigerant.id, checked as boolean)}
+                            />
+                            <div className="grid gap-0.5 w-full">
+                              <div className="flex justify-between items-center w-full">
+                                <label
+                                  htmlFor={refrigerant.id}
+                                  className="text-sm font-medium leading-none cursor-pointer"
+                                >
+                                  {refrigerant.name}
+                                </label>
+                                <Badge variant="outline" className="text-[10px] h-4 px-1 text-muted-foreground border-transparent bg-muted/50">
+                                  {refrigerant.safety_class}
+                                </Badge>
                               </div>
-                              <div className="text-sm text-blue-800">COP</div>
-                            </div>
-                            <div className="p-3 bg-green-50 rounded-lg text-center">
-                              <div className="text-lg font-bold text-green-600">
-                                {getValueForMetric(
-                                  refrigerantResult,
-                                  "refrigerationEffect",
-                                )}
-                              </div>
-                              <div className="text-sm text-green-800">
-                                Ref. Effect (kJ/kg)
-                              </div>
+                              <span className="text-[10px] text-muted-foreground">
+                                GWP: {refrigerant.gwp}
+                              </span>
+
+                              {/* Proactive Selection Advice */}
+                              {hasWarnings && (
+                                <div className="mt-2 animate-in slide-in-from-top-1 fade-in duration-200">
+                                  {warnings.map((w, idx) => (
+                                    <div key={idx} className="flex gap-2 items-start text-[11px] text-amber-700 dark:text-amber-400 leading-tight bg-amber-100/50 dark:bg-amber-900/20 p-2 rounded mb-1">
+                                      <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                                      <div className="flex-1">
+                                        <p>{w}</p>
+                                        {isCriticalError && (
+                                          <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="h-6 mt-1.5 w-full text-[10px] border-amber-300 dark:border-amber-700 hover:bg-amber-100 dark:hover:bg-amber-900/40 text-amber-800 dark:text-amber-300"
+                                            onClick={(e) => {
+                                              e.preventDefault();
+                                              handleInputChange("condenserTemp", 30);
+                                            }}
+                                          >
+                                            Optimize Inputs (Set 30°C)
+                                          </Button>
+                                        )}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {formData.refrigerants.length} selected.
+                  </div>
+                </div>
 
-                          {refProps && refProps.applications && (
-                            <div>
-                              <span className="font-medium text-sm">
-                                Applications:
-                              </span>
-                              <div className="mt-1 flex flex-wrap gap-1">
-                                {refProps.applications.map((app, appIndex) => (
-                                  <Badge
-                                    key={appIndex}
-                                    variant="outline"
-                                    className="text-xs"
-                                  >
-                                    {app}
-                                  </Badge>
+                <Separator />
+
+                {/* 2. Temperatures */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-sky-600 dark:text-sky-400">Evaporator (°C)</Label>
+                    <Input
+                      type="number"
+                      value={formData.evaporatorTemp}
+                      onChange={(e) =>
+                        handleInputChange("evaporatorTemp", parseFloat(e.target.value))
+                      }
+                      className="bg-background/50"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-rose-600 dark:text-rose-400">Condenser (°C)</Label>
+                    <Input
+                      type="number"
+                      value={formData.condenserTemp}
+                      onChange={(e) =>
+                        handleInputChange("condenserTemp", parseFloat(e.target.value))
+                      }
+                      className="bg-background/50"
+                    />
+                  </div>
+                </div>
+
+                {/* 3. SH / SC */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Superheat (K)</Label>
+                    <Input
+                      type="number"
+                      value={formData.superheat}
+                      onChange={(e) =>
+                        handleInputChange("superheat", parseFloat(e.target.value))
+                      }
+                      min={0}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Subcooling (K)</Label>
+                    <Input
+                      type="number"
+                      value={formData.subcooling}
+                      onChange={(e) =>
+                        handleInputChange("subcooling", parseFloat(e.target.value))
+                      }
+                      min={0}
+                    />
+                  </div>
+                </div>
+
+                {getTotalWarnings() > 0 && (
+                  <Alert className="border-amber-200 bg-amber-50 dark:bg-amber-900/10">
+                    <AlertTriangle className="h-4 w-4 text-amber-600" />
+                    <AlertDescription className="text-xs text-amber-800 dark:text-amber-400">
+                      Some selected refrigerants have validation warnings for these conditions.
+                    </AlertDescription>
+                  </Alert>
+                )}
+
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
+
+                <Button
+                  className="w-full h-12 text-lg font-semibold shadow-lg shadow-green-500/10 hover:shadow-green-500/20 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800"
+                  onClick={handleCompare}
+                  disabled={loading || !hasSelections}
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Comparing...
+                    </>
+                  ) : (
+                    <>
+                      <BarChart3 className="mr-2 h-5 w-5" />
+                      Run Comparison
+                    </>
+                  )}
+                </Button>
+
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* RIGHT MAIN: RESULTS */}
+          <div className="xl:col-span-8 space-y-6">
+            {!result || !result.results || result.results.length === 0 ? (
+              <div className="min-h-[500px] flex flex-col items-center justify-center border-4 border-dashed rounded-xl bg-muted/20 text-muted-foreground p-8 text-center">
+                <div className="p-6 bg-background rounded-full shadow-lg mb-6">
+                  <BarChart3 className="h-12 w-12 text-green-500" />
+                </div>
+                <h3 className="text-2xl font-bold mb-2">Ready to Compare</h3>
+                <p className="max-w-md">
+                  Select multiple refrigerants from the list and define your operating conditions to see a side-by-side performance analysis.
+                </p>
+              </div>
+            ) : (
+              <div className="animate-in slide-in-from-bottom-5 duration-700 space-y-6">
+
+                {/* Tabs for different views */}
+                <Tabs defaultValue="comparison" className="w-full">
+                  <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent gap-6 mb-6">
+                    <TabsTrigger
+                      value="comparison"
+                      className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4 py-2 bg-transparent text-muted-foreground hover:text-foreground transition-all flex items-center gap-2"
+                    >
+                      <BarChart3 className="w-4 h-4" /> Comparison Table
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="visualization"
+                      className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4 py-2 bg-transparent text-muted-foreground hover:text-foreground transition-all flex items-center gap-2"
+                    >
+                      <Eye className="w-4 h-4" /> Cycle Visualization
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="details"
+                      className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4 py-2 bg-transparent text-muted-foreground hover:text-foreground transition-all flex items-center gap-2"
+                    >
+                      <FileText className="w-4 h-4" /> Cards View
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="comparison" className="mt-0">
+                    <Card className="border-none shadow-md bg-card/50 dark:bg-slate-900/50 backdrop-blur">
+                      <CardHeader>
+                        <CardTitle>Performance Metrics</CardTitle>
+                        <CardDescription>Highlighted cells indicate best performance in category</CardDescription>
+                      </CardHeader>
+                      <CardContent className="p-0">
+                        <div className="overflow-x-auto">
+                          <table className="w-full">
+                            <thead>
+                              <tr className="border-b bg-muted/30">
+                                <th className="text-left p-4 font-semibold text-muted-foreground">Metric</th>
+                                {result.results.map((r, i) => (
+                                  <th key={i} className="text-center p-4 font-semibold text-foreground">
+                                    {r.refrigerant}
+                                  </th>
                                 ))}
-                              </div>
-                            </div>
-                          )}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {performanceMetrics.map((metric) => {
+                                const bestIndex = getBestValueIndex(metric.key);
+                                return (
+                                  <tr key={metric.key} className="border-b last:border-0 hover:bg-muted/10 transition-colors">
+                                    <td className="p-4 font-medium text-muted-foreground">
+                                      {metric.label} {metric.unit && <span className="text-xs opacity-70">({metric.unit})</span>}
+                                    </td>
+                                    {result.results.map((r, i) => {
+                                      const val = getValueForMetric(r, metric.key);
+                                      const isBest = i === bestIndex && !(r as any).error && val !== "N/A";
+
+                                      // Get error info with potential fix types
+                                      const errorInfo = (r as any).error ? (() => {
+                                        const err = (r as any).error;
+                                        if (typeof err === 'string' && err.includes("critical temperature")) {
+                                          return {
+                                            title: "Transcritical Limit",
+                                            description: "R-744 (CO₂) cannot operate in a standard cycle above 31°C.",
+                                            fixType: "CRITICAL_TEMP",
+                                            fixLabel: "Auto-set to 30°C",
+                                          };
+                                        }
+                                        return {
+                                          title: "Calculation Error",
+                                          description: "The solver could not converge for these inputs.",
+                                          fixType: null,
+                                        };
+                                      })() : null;
+
+                                      return (
+                                        <td key={i} className={`p-4 text-center ${isBest ? "bg-green-500/10 dark:bg-green-500/20" : ""}`}>
+                                          <div className="flex flex-col items-center justify-center h-full relative group/error-cell">
+                                            {errorInfo ? (
+                                              metric.key === "cop" ? (
+                                                <>
+                                                  {/* Seamless Status Badge */}
+                                                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 cursor-help transition-all hover:bg-orange-500/20 hover:scale-105">
+                                                    <AlertTriangle className="h-3.5 w-3.5" />
+                                                    <span className="text-xs font-medium">Limit Reached</span>
+                                                  </div>
+
+                                                  {/* Interactive Smart Tooltip - Bridged for hover seamlessness */}
+                                                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 hidden group-hover/error-cell:block w-72 z-50 animate-in fade-in slide-in-from-top-1 duration-200">
+                                                    <div className="h-2 w-full absolute -top-2 left-0"></div> {/* Invisible bridge */}
+
+                                                    <div className="bg-popover text-popover-foreground rounded-xl shadow-2xl border p-4 text-left backdrop-blur-xl bg-opacity-95">
+                                                      <div className="flex gap-3">
+                                                        <div className="shrink-0 p-2 rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
+                                                          <AlertTriangle className="h-5 w-5" />
+                                                        </div>
+                                                        <div className="space-y-1">
+                                                          <h4 className="font-semibold text-sm">{errorInfo.title}</h4>
+                                                          <p className="text-xs text-muted-foreground leading-relaxed">
+                                                            {errorInfo.description}
+                                                          </p>
+                                                        </div>
+                                                      </div>
+
+                                                      {/* Quick Fix Action */}
+                                                      {errorInfo.fixType === "CRITICAL_TEMP" && (
+                                                        <div className="mt-4 pt-3 border-t flex items-center justify-between gap-2">
+                                                          <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Suggestion</p>
+                                                          <Button
+                                                            variant="default"
+                                                            size="sm"
+                                                            className="h-7 text-xs bg-emerald-600 hover:bg-emerald-700 text-white border-0 shadow-sm"
+                                                            onClick={() => handleInputChange("condenserTemp", 30)}
+                                                          >
+                                                            <div className="mr-1.5 flex items-center justify-center rounded-full bg-white/20 w-4 h-4">
+                                                              <Calculator className="h-2.5 w-2.5" />
+                                                            </div>
+                                                            {errorInfo.fixLabel}
+                                                          </Button>
+                                                        </div>
+                                                      )}
+                                                    </div>
+                                                  </div>
+                                                </>
+                                              ) : (
+                                                <span className="text-muted-foreground/20 text-xl font-light">-</span>
+                                              )
+                                            ) : (
+                                              <>
+                                                <span className={`font-mono font-semibold text-lg ${isBest ? "text-green-700 dark:text-green-400 scale-110" : "text-foreground"}`}>
+                                                  {val}
+                                                </span>
+                                                {isBest && <Badge variant="outline" className="mt-1 text-[10px] text-green-600 border-green-200 dark:border-green-800 h-5 px-1.5">Best</Badge>}
+                                              </>
+                                            )}
+                                          </div>
+                                        </td>
+                                      )
+                                    })}
+                                  </tr>
+                                )
+                              })}
+                            </tbody>
+                          </table>
                         </div>
                       </CardContent>
                     </Card>
-                  );
-                })}
+                  </TabsContent>
+
+                  <TabsContent value="visualization" className="mt-0">
+                    <Card className="border-none dark:bg-slate-900">
+                      <CardHeader className="flex flex-row items-center justify-between">
+                        <div>
+                          <CardTitle>Pressure-Enthalpy Diagram</CardTitle>
+                          <CardDescription>Visualize and overlay cycles</CardDescription>
+                        </div>
+                        <div className="flex gap-2">
+                          {result.results.map((r) => (
+                            <Button
+                              key={r.refrigerant}
+                              variant={selectedRefrigerantForVisualization === r.refrigerant ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => setSelectedRefrigerantForVisualization(r.refrigerant)}
+                            >
+                              {r.refrigerant}
+                            </Button>
+                          ))}
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        {selectedRefrigerantForVisualization && (() => {
+                          const selectedResult = result.results.find(
+                            (r) => r.refrigerant === selectedRefrigerantForVisualization,
+                          );
+                          const vizData = selectedResult ? getVisualizationData(selectedResult) : null;
+                          return vizData ? <CycleVisualization cycleData={vizData} /> : <div className="p-8 text-center text-muted-foreground">No diagram available</div>
+                        })()}
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+
+                  <TabsContent value="details" className="mt-0">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {result.results.map((r, i) => {
+                        const refProps = getRefrigerantById(r.refrigerant);
+                        return (
+                          <Card key={i} className="hover:shadow-lg transition-all dark:bg-slate-900/50">
+                            <CardHeader className="pb-3 border-b">
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <CardTitle className="text-xl text-primary">{r.refrigerant}</CardTitle>
+                                  <CardDescription>
+                                    {refProps?.fullName || "Unknown Composition"}
+                                  </CardDescription>
+                                </div>
+                                <Badge variant={refProps?.safety_class === "A1" ? "default" : "destructive"}>
+                                  {refProps?.safety_class || "N/A"}
+                                </Badge>
+                              </div>
+                            </CardHeader>
+                            <CardContent className="pt-6 space-y-4">
+                              <div className="grid grid-cols-2 gap-4">
+                                <div className="p-3 bg-muted/30 rounded-lg text-center">
+                                  <div className="text-2xl font-bold">{getValueForMetric(r, "cop")}</div>
+                                  <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">COP</div>
+                                </div>
+                                <div className="p-3 bg-muted/30 rounded-lg text-center">
+                                  <div className="text-2xl font-bold">{getValueForMetric(r, "refrigerationEffect")}</div>
+                                  <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">Ref. Effect</div>
+                                </div>
+                              </div>
+                              {refProps && (
+                                <div className="pt-2">
+                                  <p className="text-sm font-medium mb-2">Details:</p>
+                                  <div className="grid grid-cols-2 gap-y-1 text-sm text-muted-foreground">
+                                    <span>GWP: <span className="text-foreground">{refProps.gwp}</span></span>
+                                    <span>Critical T: <span className="text-foreground">{refProps.limits.critical_temp_c}°C</span></span>
+                                    <span>ODP: <span className="text-foreground">{refProps.odp}</span></span>
+                                  </div>
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
+                        )
+                      })}
+                    </div>
+                  </TabsContent>
+
+                </Tabs>
               </div>
-            </TabsContent>
-          </Tabs>
-        )}
+            )}
+          </div>
+
+        </div>
+      </div>
     </div>
   );
 }
 
-// Standalone page component with header for direct access
+// Keep the standalone wrapper for consistent export
 export function RefrigerantComparison() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <ApiServiceStatus />
-        <RefrigerantComparisonContent />
-      </div>
-    </div>
-  );
+  return <RefrigerantComparisonContent />;
 }
