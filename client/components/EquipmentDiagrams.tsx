@@ -652,128 +652,121 @@ interface EquipmentDiagramsProps {
   animationSpeed?: number;
 }
 
-// Main component that displays equipment diagrams with cycle data
 export function EquipmentDiagrams({
   cycleData,
   isAnimating = false,
   animationSpeed = 1000,
 }: EquipmentDiagramsProps) {
+  // Determine color theme based on cycle type
+  const theme = React.useMemo(() => {
+    switch (cycleData?.cycleType) {
+      case "cascade-low":
+        return {
+          bg: "bg-cyan-50/50 dark:bg-cyan-900/10",
+          border: "border-cyan-100 dark:border-cyan-800/20",
+          accent: "text-cyan-600 dark:text-cyan-400",
+          pointBg: "bg-cyan-100 dark:bg-cyan-900/40",
+          pointText: "text-cyan-700 dark:text-cyan-300",
+        };
+      case "cascade-high":
+        return {
+          bg: "bg-orange-50/50 dark:bg-orange-900/10",
+          border: "border-orange-100 dark:border-orange-800/20",
+          accent: "text-orange-600 dark:text-orange-400",
+          pointBg: "bg-orange-100 dark:bg-orange-900/40",
+          pointText: "text-orange-700 dark:text-orange-300",
+        };
+      default:
+        return {
+          bg: "bg-slate-50/50 dark:bg-slate-900/10",
+          border: "border-slate-100 dark:border-slate-800/20",
+          accent: "text-slate-600 dark:text-slate-400",
+          pointBg: "bg-slate-100 dark:bg-slate-800",
+          pointText: "text-slate-700 dark:text-slate-300",
+        };
+    }
+  }, [cycleData?.cycleType]);
+
   return (
-    <div className="space-y-6">
-      {/* Complete Cycle Overview */}
-      <div className="flex justify-center">
-        <EquipmentDiagram
-          type="complete-cycle"
-          width={400}
-          height={300}
-          animated={isAnimating}
-          refrigerant={cycleData?.refrigerant}
-          showLabels={true}
-        />
-      </div>
-
-      {/* Individual Equipment Components */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="text-center">
-          <EquipmentDiagram
-            type="evaporator"
-            width={180}
-            height={120}
-            animated={isAnimating}
-            showLabels={true}
-          />
-          {cycleData && (
-            <div className="mt-2 text-sm text-gray-600 dark:text-slate-400">
-              <div>State 4 → 1</div>
-              <div>
-                {cycleData.points[0]?.temperature?.toFixed(1) || "0.0"}°C
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="text-center">
-          <EquipmentDiagram
-            type="compressor"
-            width={180}
-            height={120}
-            animated={isAnimating}
-            showLabels={true}
-          />
-          {cycleData && (
-            <div className="mt-2 text-sm text-gray-600 dark:text-slate-400">
-              <div>State 1 → 2</div>
-              <div>
-                {cycleData.points[1]?.temperature?.toFixed(1) || "0.0"}°C
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="text-center">
-          <EquipmentDiagram
-            type="condenser"
-            width={180}
-            height={120}
-            animated={isAnimating}
-            showLabels={true}
-          />
-          {cycleData && (
-            <div className="mt-2 text-sm text-gray-600 dark:text-slate-400">
-              <div>State 2 → 3</div>
-              <div>
-                {cycleData.points[2]?.temperature?.toFixed(1) || "0.0"}°C
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="text-center">
-          <EquipmentDiagram
-            type="expansion-valve"
-            width={180}
-            height={120}
-            animated={isAnimating}
-            showLabels={true}
-          />
-          {cycleData && (
-            <div className="mt-2 text-sm text-gray-600 dark:text-slate-400">
-              <div>State 3 → 4</div>
-              <div>
-                {cycleData.points[3]?.temperature?.toFixed(1) || "0.0"}°C
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Cycle Information */}
+    <div className={`rounded-xl border ${theme.border} ${theme.bg} p-6 transition-all`}>
+      {/* Header Info */}
       {cycleData && (
-        <div className="mt-6 p-4 bg-gray-50 dark:bg-slate-900 rounded-lg border border-transparent dark:border-slate-800">
-          <h3 className="text-lg font-semibold mb-3 text-slate-900 dark:text-slate-100">
-            {cycleData.refrigerant}{" "}
-            {cycleData.cycleType === "standard"
-              ? "Standard"
-              : cycleData.cycleType === "cascade-low"
-                ? "Cascade Low-Temperature"
-                : "Cascade High-Temperature"}{" "}
-            Cycle
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-            {cycleData.points.map((point, index) => (
-              <div key={index} className="p-2 bg-white dark:bg-slate-800 rounded border dark:border-slate-700">
-                <div className="font-medium text-blue-600 dark:text-blue-400">
-                  State {index + 1}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h3 className={`text-lg font-bold ${theme.accent} flex items-center gap-2`}>
+              {cycleData.refrigerant}
+              <span className="text-sm font-medium opacity-70 text-foreground">
+                {cycleData.cycleType === "cascade-low" ? "Low Stage" : "High Stage"}
+              </span>
+            </h3>
+          </div>
+          <div className="flex gap-2 text-xs font-mono text-muted-foreground">
+            <span className="px-2 py-1 rounded-md bg-background/50 border">
+              P-h Diagram
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Main Cycle Diagram */}
+      <div className="flex justify-center mb-8 relative">
+        <div className="relative z-10 scale-110 transform transition-transform duration-500 hover:scale-125">
+          <EquipmentDiagram
+            type="complete-cycle"
+            width={380}
+            height={280}
+            animated={isAnimating}
+            refrigerant={cycleData?.refrigerant}
+            showLabels={true}
+            className="drop-shadow-xl"
+          />
+        </div>
+
+        {/* Decorative Background Glow */}
+        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-tr from-transparent via-white/50 to-transparent dark:via-white/5 opacity-50 blur-3xl rounded-full pointer-events-none`} />
+      </div>
+
+      {/* Clean Data Grid - Replaces the bulky cards */}
+      {cycleData && (
+        <div className="grid grid-cols-2 gap-3">
+          {cycleData.points.map((point, index) => (
+            <div
+              key={index}
+              className="group relative overflow-hidden bg-background/80 dark:bg-slate-950/50 backdrop-blur-sm rounded-lg border border-border/50 hover:border-primary/20 transition-all duration-300 hover:shadow-md"
+            >
+              <div className="absolute top-0 left-0 w-1 h-full bg-muted group-hover:bg-primary transition-colors" />
+              <div className="p-3 pl-5">
+                <div className="flex justify-between items-start mb-1.5">
+                  <div className={`text-[10px] font-bold uppercase tracking-wider ${theme.pointText} ${theme.pointBg} px-1.5 py-0.5 rounded`}>
+                    State {index + 1}
+                  </div>
+                  <span className="text-[10px] text-muted-foreground font-mono">
+                    {index === 0 ? "Evap Out" :
+                      index === 1 ? "Comp Out" :
+                        index === 2 ? "Cond Out" :
+                          "Exp Out"}
+                  </span>
                 </div>
-                <div className="text-gray-600 dark:text-slate-300">{point.name}</div>
-                <div className="mt-1 text-slate-700 dark:text-slate-400">
-                  <div>T: {point.temperature?.toFixed(1) || "0.0"}°C</div>
-                  <div>P: {((point.pressure || 0) / 1000).toFixed(1)} MPa</div>
-                  <div>h: {point.enthalpy?.toFixed(1) || "0.0"} kJ/kg</div>
+
+                <h4 className="text-xs font-medium text-foreground mb-2 truncate" title={point.name}>{point.name}</h4>
+
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px] font-mono text-muted-foreground">
+                  <div className="flex justify-between items-baseline group-hover:text-foreground transition-colors">
+                    <span>T:</span>
+                    <span className="font-semibold">{point.temperature?.toFixed(1) ?? "-"}°C</span>
+                  </div>
+                  <div className="flex justify-between items-baseline group-hover:text-foreground transition-colors">
+                    <span>P:</span>
+                    <span className="font-semibold">{((point.pressure || 0) / 1000).toFixed(1)} MPa</span>
+                  </div>
+                  <div className="flex justify-between items-baseline group-hover:text-foreground transition-colors col-span-2">
+                    <span>h:</span>
+                    <span className="font-semibold">{point.enthalpy?.toFixed(1) ?? "-"} kJ/kg</span>
+                  </div>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       )}
     </div>

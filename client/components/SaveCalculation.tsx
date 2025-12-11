@@ -19,13 +19,15 @@ interface SaveCalculationProps {
   inputs: any;
   results: any;
   disabled?: boolean;
+  trigger?: React.ReactNode;
 }
 
-export function SaveCalculation({ 
-  calculationType, 
-  inputs, 
-  results, 
-  disabled = false 
+export function SaveCalculation({
+  calculationType,
+  inputs,
+  results,
+  disabled = false,
+  trigger
 }: SaveCalculationProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState('');
@@ -76,14 +78,18 @@ export function SaveCalculation({
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button 
-          variant="outline" 
-          disabled={disabled}
-          className="flex items-center gap-2"
-        >
-          <Save className="h-4 w-4" />
-          Save Calculation
-        </Button>
+        {trigger ? (
+          trigger
+        ) : (
+          <Button
+            variant="outline"
+            disabled={disabled}
+            className="flex items-center gap-2"
+          >
+            <Save className="h-4 w-4" />
+            Save Calculation
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

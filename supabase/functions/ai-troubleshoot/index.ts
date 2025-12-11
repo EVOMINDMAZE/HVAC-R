@@ -1,4 +1,3 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { serve } from "https://deno.land/std/http/server.ts";
@@ -367,7 +366,7 @@ async function callOllama(
   const base = (
     Deno.env.get("OLLAMA_BASE_URL") ?? "http://localhost:11434"
   ).replace(/\/+$/, "");
-  const model = modelHint || Deno.env.get("OLLAMA_MODEL") || "gpt-oss:120b";
+  const model = modelHint || Deno.env.get("OLLAMA_MODEL") || "DeepSeek-V3.2-Speciale";
   const url = `${base}/api/chat`;
 
   const headers: Record<string, string> = {
@@ -406,8 +405,7 @@ async function callOllama(
       return JSON.parse(bodyText);
     } catch (parseError) {
       throw new Error(
-        `Failed to parse Ollama response: ${
-          parseError instanceof Error ? parseError.message : String(parseError)
+        `Failed to parse Ollama response: ${parseError instanceof Error ? parseError.message : String(parseError)
         } | body: ${bodyText.slice(0, 500)}`,
       );
     }
@@ -430,14 +428,23 @@ function normalizeOllamaResponse(resp: any) {
   };
 
   const message = resp?.message;
-  const content = message?.content ?? "";
+  let content = message?.content ?? "";
+  const originalContent = content; // Keep original for final fallback
 
-  let parsed: any = null;
-  try {
-    parsed = JSON.parse(content);
-  } catch (_error) {
-    parsed = null;
+  // 1. Try extracting a JSON block wrapped in triple backticks first.
+  const codeBlockMatch = content.match(/```json\s*(\{[\s\S]*\}|\[[\s\S]*\])\s*```/i) || content.match(/```\s*(\{[\s\S]*\}|\[[\s\S]*\])\s*```/i);
+  if (codeBlockMatch) {
+    content = codeBlockMatch[1];
+  } else {
+    // 2. Fallback: Try to find the first `{` and last `}` to handle unwrapped but embedded JSON.
+    const start = content.indexOf('{');
+    const end = content.lastIndexOf('}');
+    if (start !== -1 && end !== -1 && end > start) {
+      content = content.substring(start, end + 1);
+    }
   }
+
+  let parsed = tryParseJson(content);
 
   if (parsed && typeof parsed === "object") {
     out.summary = parsed.summary ?? null;
@@ -448,12 +455,46 @@ function normalizeOllamaResponse(resp: any) {
     out.follow_up_questions =
       parsed.follow_up_questions ?? parsed.questions ?? [];
   } else {
-    out.explanation = String(content);
-    const lines = out.explanation.trim().split(/\n+/);
-    out.summary = lines[0] ?? null;
-    const followUps = out.explanation.match(/[^\n\r?.!]+\?/g);
+    // If parsing failed, revert to original content for plain text processing
+    const expText = String(originalContent).trim();
+    out.explanation = expText;
+
+    // Attempt basic regex extraction for summary if JSON parse failed
+    const summaryMatch = expText.match(/"summary"\s*:\s*"([^"]+)"/);
+    if (summaryMatch) {
+      out.summary = summaryMatch[1];
+    } else {
+      // Fallback: take first non-empty line that isn't a code block marker
+      const lines = expText.split(/\n+/);
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed && !trimmed.startsWith("```") && !trimmed.startsWith("{")) {
+          out.summary = trimmed;
+          break;
+        }
+      }
+    }
+
+    const followUps = expText.match(/[^\n\r?.!]+\?/g);
     out.follow_up_questions = followUps ?? [];
   }
 
   return out;
+}
+
+function tryParseJson(str: string) {
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    try {
+      // Basic cleaning: remove comments and trailing commas
+      const cleaned = str
+        .replace(/\/\/.*$/gm, '')
+        .replace(/\/\*[\s\S]*?\*\//g, '')
+        .replace(/,(\s*[}\]])/g, '$1');
+      return JSON.parse(cleaned);
+    } catch (e2) {
+      return null;
+    }
+  }
 }

@@ -74,11 +74,15 @@ interface CascadeResult {
     cop: number;
     work_of_compression_kj_kg: number;
     refrigeration_effect_kj_kg: number;
+    pressure_ratio?: number;
+    refrigerant?: string;
   };
   ht_cycle_performance?: {
     cop: number;
     work_of_compression_kj_kg: number;
     refrigeration_effect_kj_kg: number;
+    pressure_ratio?: number;
+    refrigerant?: string;
   };
   lt_cycle?: {
     point_1?: any;
@@ -598,7 +602,6 @@ export function CascadeCycleContent() {
         ph_diagram: saturationDome.ph_diagram,
         ts_diagram: saturationDome.ts_diagram,
         tv_diagram: saturationDome.tv_diagram,
-        tv_diagram: saturationDome.tv_diagram,
       },
     };
   };
@@ -1007,28 +1010,33 @@ export function CascadeCycleContent() {
 
                   <TabsContent value="equipment" className="mt-0">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                      <Card className="dark:bg-slate-900">
-                        <CardHeader>
-                          <CardTitle className="text-cyan-600">Low Temperature Equipment</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          {(() => {
-                            const ltData = getVisualizationData("lt");
-                            return ltData ? <EquipmentDiagrams cycleData={ltData} /> : <div className="text-center p-4">No data</div>
-                          })()}
-                        </CardContent>
-                      </Card>
-                      <Card className="dark:bg-slate-900">
-                        <CardHeader>
-                          <CardTitle className="text-orange-600">High Temperature Equipment</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          {(() => {
-                            const htData = getVisualizationData("ht");
-                            return htData ? <EquipmentDiagrams cycleData={htData} /> : <div className="text-center p-4">No data</div>
-                          })()}
-                        </CardContent>
-                      </Card>
+                      {/* Low Temp Column */}
+                      <div>
+                        {(() => {
+                          const ltData = getVisualizationData("lt");
+                          return ltData ? (
+                            <EquipmentDiagrams cycleData={ltData} isAnimating={!loading} />
+                          ) : (
+                            <div className="h-64 flex items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-muted-foreground bg-slate-50 dark:bg-slate-900/50">
+                              Low Temp Data Unavailable
+                            </div>
+                          )
+                        })()}
+                      </div>
+
+                      {/* High Temp Column */}
+                      <div>
+                        {(() => {
+                          const htData = getVisualizationData("ht");
+                          return htData ? (
+                            <EquipmentDiagrams cycleData={htData} isAnimating={!loading} />
+                          ) : (
+                            <div className="h-64 flex items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-muted-foreground bg-slate-50 dark:bg-slate-900/50">
+                              High Temp Data Unavailable
+                            </div>
+                          )
+                        })()}
+                      </div>
                     </div>
                   </TabsContent>
                 </Tabs>

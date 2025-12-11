@@ -107,17 +107,6 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
   }, []);
 
   // Draggable overlay state: position in pixels relative to canvas
-  const [overlayPos, setOverlayPos] = useState<{ x: number; y: number } | null>(() => {
-    try {
-      const raw = localStorage.getItem('cycle_performance_overlay_pos');
-      return raw ? JSON.parse(raw) : null;
-    } catch (e) {
-      return null;
-    }
-  });
-  const draggingRef = useRef(false);
-  const dragOffsetRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-
   // Flexible resolver to read multiple possible property names from API or local cycle data
   const resolvePointValue = (point: any, prop: string): number | null => {
     if (!point) return null;
@@ -307,111 +296,9 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     ctx.imageSmoothingQuality = "high";
 
     drawCycle(ctx, logicalWidth, logicalHeight);
-  }, [cycleData, selectedPoint, diagramType, overlayPos, isDarkMode]);
+  }, [cycleData, selectedPoint, diagramType, isDarkMode]);
 
-  // Mouse/touch handlers to make overlay draggable
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
 
-    const getEventPos = (e: MouseEvent | TouchEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      let clientX = 0;
-      let clientY = 0;
-      if ((e as TouchEvent).touches && (e as TouchEvent).touches.length > 0) {
-        clientX = (e as TouchEvent).touches[0].clientX;
-        clientY = (e as TouchEvent).touches[0].clientY;
-      } else if ((e as TouchEvent).changedTouches && (e as TouchEvent).changedTouches.length > 0) {
-        clientX = (e as TouchEvent).changedTouches[0].clientX;
-        clientY = (e as TouchEvent).changedTouches[0].clientY;
-      } else {
-        clientX = (e as MouseEvent).clientX;
-        clientY = (e as MouseEvent).clientY;
-      }
-
-      // Map to canvas coordinate space (account for CSS size vs actual pixel buffer)
-      const logicalWidth = 1600;
-      const logicalHeight = 1000;
-
-      // Calculate visual scale (logical pixels per screen pixel)
-      const scaleX = logicalWidth / rect.width;
-      const scaleY = logicalHeight / rect.height;
-
-      return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
-    };
-
-    const onDown = (ev: MouseEvent | TouchEvent) => {
-      const pos = getEventPos(ev);
-      const canvasWidth = 1600; // Use logical width
-      const canvasHeight = 1000; // Use logical height
-
-      // Determine default overlay position used by drawEngineeringOverlay when overlayPos is null
-      const margin = 120;
-      const plotWidth = canvasWidth - 2 * margin;
-      const plotHeight = canvasHeight - 2 * margin;
-      const defaultX = margin + plotWidth - 250;
-      const defaultY = margin + 20;
-
-      const overlayX = overlayPos ? overlayPos.x : defaultX;
-      const overlayY = overlayPos ? overlayPos.y : defaultY;
-      const overlayW = 230;
-      const overlayH = 160;
-
-      // Check if pointer is inside overlay rect
-      if (pos.x >= overlayX && pos.x <= overlayX + overlayW && pos.y >= overlayY && pos.y <= overlayY + overlayH) {
-        draggingRef.current = true;
-        dragOffsetRef.current = { x: pos.x - overlayX, y: pos.y - overlayY };
-        // change cursor
-        canvas.style.cursor = 'grabbing';
-        ev.preventDefault();
-      }
-    };
-
-    const onMove = (ev: MouseEvent | TouchEvent) => {
-      if (!draggingRef.current) return;
-      const pos = getEventPos(ev);
-      const canvasWidth = 1600;
-      const canvasHeight = 1000;
-      const overlayW = 230;
-      const overlayH = 160;
-
-      let newX = pos.x - dragOffsetRef.current.x;
-      let newY = pos.y - dragOffsetRef.current.y;
-
-      // constrain to canvas
-      newX = Math.max(0, Math.min(newX, canvasWidth - overlayW));
-      newY = Math.max(0, Math.min(newY, canvasHeight - overlayH));
-
-      setOverlayPos({ x: newX, y: newY });
-    };
-
-    const onUp = () => {
-      if (!draggingRef.current) return;
-      draggingRef.current = false;
-      // persist position
-      try {
-        if (overlayPos) localStorage.setItem('cycle_performance_overlay_pos', JSON.stringify(overlayPos));
-      } catch (e) { }
-      canvas.style.cursor = 'default';
-    };
-
-    // Attach listeners
-    canvas.addEventListener('mousedown', onDown as any);
-    canvas.addEventListener('touchstart', onDown as any, { passive: false });
-    window.addEventListener('mousemove', onMove as any);
-    window.addEventListener('touchmove', onMove as any, { passive: false });
-    window.addEventListener('mouseup', onUp as any);
-    window.addEventListener('touchend', onUp as any);
-
-    return () => {
-      canvas.removeEventListener('mousedown', onDown as any);
-      canvas.removeEventListener('touchstart', onDown as any);
-      window.removeEventListener('mousemove', onMove as any);
-      window.removeEventListener('touchmove', onMove as any);
-      window.removeEventListener('mouseup', onUp as any);
-      window.removeEventListener('touchend', onUp as any);
-    };
-  }, [overlayPos, cycleData]);
 
   const drawCycle = (
     ctx: CanvasRenderingContext2D,
@@ -467,13 +354,11 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     // Draw component labels
     drawComponentLabels(ctx, pointsWithCoords, margin);
 
-    // Draw enhanced engineering data overlay
-    drawEngineeringOverlay(
+    // Draw enhanced annotations (arrows and labels)
+    drawDiagramAnnotations(
       ctx,
       pointsWithCoords,
       margin,
-      plotWidth,
-      plotHeight,
     );
   };
 
@@ -1097,180 +982,17 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     });
   };
 
-  const drawEngineeringOverlay = (
+  const drawDiagramAnnotations = (
     ctx: CanvasRenderingContext2D,
     points: CyclePoint[],
     margin: number,
-    plotWidth: number,
-    plotHeight: number,
   ) => {
     if (!cycleData || points.length < 4) return;
 
-    // Calculate cycle performance metrics
-    const point1 = points[0]; // Evaporator outlet
-    const point2 = points[1]; // Compressor outlet
-    const point3 = points[2]; // Condenser outlet
-    const point4 = points[3]; // Expansion outlet
-
-    // Engineering calculations (guarded)
-    const safeNum = (v: any) => {
-      if (v === null || v === undefined) return null;
-      const n = Number(v);
-      return Number.isFinite(n) ? n : null;
-    };
-
-    const p1 = safeNum(point1.pressure);
-    const p2 = safeNum(point2.pressure);
-    const t1 = safeNum(point1.temperature);
-    const t2 = safeNum(point2.temperature);
-    const h1 = safeNum(point1.enthalpy);
-    const h2 = safeNum(point2.enthalpy);
-    const h3 = safeNum(point3.enthalpy);
-    const h4 = safeNum(point4.enthalpy);
-
-    if (p1 === null || p2 === null || t1 === null || t2 === null || h1 === null || h2 === null || h3 === null || h4 === null) {
-      // Missing data, skip overlay to avoid exceptions
-      return;
-    }
-
-    const compressionRatio = p2 / p1;
-    const temperatureLift = t2 - t1;
-    const refrigerationEffect = h1 - h4;
-    const compressionWork = h2 - h1;
-    const theoreticalCOP = refrigerationEffect / compressionWork;
-
-    // Draw performance metrics overlay with enhanced styling
-    const defaultOverlayX = margin + plotWidth - 250;
-    const defaultOverlayY = margin + 20;
-    const overlayX = overlayPos ? overlayPos.x : defaultOverlayX;
-    const overlayY = overlayPos ? overlayPos.y : defaultOverlayY;
-
-    // Background with gradient
-    const gradient = ctx.createLinearGradient(
-      overlayX,
-      overlayY,
-      overlayX,
-      overlayY + 160,
-    );
-    if (isDarkMode) {
-      gradient.addColorStop(0, "rgba(15, 23, 42, 0.98)");
-      gradient.addColorStop(1, "rgba(30, 41, 59, 0.95)");
-    } else {
-      gradient.addColorStop(0, "rgba(255, 255, 255, 0.98)");
-      gradient.addColorStop(1, "rgba(248, 250, 252, 0.95)");
-    }
-
-    ctx.fillStyle = gradient;
-    ctx.strokeStyle = "rgba(59, 130, 246, 0.6)";
-    ctx.lineWidth = 2;
-    ctx.shadowColor = "rgba(0, 0, 0, 0.1)";
-    ctx.shadowBlur = 10;
-    ctx.shadowOffsetX = 2;
-    ctx.shadowOffsetY = 2;
-
-    ctx.beginPath();
-    ctx.roundRect(overlayX, overlayY, 230, 160, 12);
-    ctx.fill();
-    ctx.stroke();
-
-    // Draw draggable handle (small grip) at top-right
-    const handleW = 28;
-    const handleH = 18;
-    const handleX = overlayX + 230 - handleW - 8;
-    const handleY = overlayY + 8;
-    ctx.fillStyle = isDarkMode ? "rgba(255,255,255,0.1)" : "rgba(31,41,55,0.06)";
-    ctx.roundRect(handleX, handleY, handleW, handleH, 6);
-    ctx.fill();
-    ctx.strokeStyle = isDarkMode ? "rgba(255,255,255,0.1)" : "rgba(31,41,55,0.08)";
-    ctx.lineWidth = 1;
-    ctx.stroke();
-
-    // Draw little grip lines
-    // Draw little grip lines
-    ctx.strokeStyle = isDarkMode ? "rgba(255,255,255,0.3)" : "rgba(31,41,55,0.25)";
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(handleX + 6, handleY + 6);
-    ctx.lineTo(handleX + 22, handleY + 6);
-    ctx.moveTo(handleX + 6, handleY + 10);
-    ctx.lineTo(handleX + 22, handleY + 10);
-    ctx.stroke();
-
-    // Reset shadow
-    ctx.shadowColor = "transparent";
-    ctx.shadowBlur = 0;
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 0;
-
-    // Title with icon
-    ctx.fillStyle = isDarkMode ? "#f1f5f9" : "#1f2937";
-    ctx.font = "bold 16px 'Inter', sans-serif";
-    ctx.textAlign = "left";
-    ctx.fillText("📊 Cycle Performance", overlayX + 12, overlayY + 25);
-
-    // Separator line
-    ctx.strokeStyle = "rgba(59, 130, 246, 0.3)";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(overlayX + 12, overlayY + 35);
-    ctx.lineTo(overlayX + 218, overlayY + 35);
-    ctx.stroke();
-
-    // Enhanced metrics with better formatting
-    ctx.font = "13px 'Inter', sans-serif";
-    const metrics = [
-      {
-        label: "Compression Ratio",
-        value: compressionRatio.toFixed(2),
-        unit: "",
-        color: isDarkMode ? "#f87171" : "#dc2626",
-      },
-      {
-        label: "Temperature Lift",
-        value: temperatureLift.toFixed(1),
-        unit: "°C",
-        color: isDarkMode ? "#fb923c" : "#ea580c",
-      },
-      {
-        label: "Refrigeration Effect",
-        value: refrigerationEffect.toFixed(1),
-        unit: "kJ/kg",
-        color: isDarkMode ? "#34d399" : "#059669",
-      },
-      {
-        label: "Compression Work",
-        value: compressionWork.toFixed(1),
-        unit: "kJ/kg",
-        color: isDarkMode ? "#a78bfa" : "#7c3aed",
-      },
-      {
-        label: "Theoretical COP",
-        value: theoreticalCOP.toFixed(2),
-        unit: "",
-        color: isDarkMode ? "#60a5fa" : "#2563eb",
-      },
-    ];
-
-    metrics.forEach((metric, index) => {
-      const y = overlayY + 55 + index * 20;
-
-      // Label
-      ctx.fillStyle = isDarkMode ? "#cbd5e1" : "#374151";
-      ctx.textAlign = "left";
-      ctx.fillText(metric.label + ":", overlayX + 12, y);
-
-      // Value with color
-      ctx.fillStyle = metric.color;
-      ctx.font = "bold 13px 'Inter', sans-serif";
-      ctx.textAlign = "right";
-      ctx.fillText(`${metric.value} ${metric.unit}`, overlayX + 218, y);
-      ctx.font = "13px 'Inter', sans-serif";
-    });
-
-    // Draw process arrows with values
+    // Draw process arrows with values (Delta T, Delta P, etc.)
     drawProcessArrows(ctx, points, margin);
 
-    // Add thermodynamic property annotations
+    // Add thermodynamic property annotations to each point
     drawPropertyAnnotations(ctx, points, margin);
   };
 
@@ -1486,225 +1208,285 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     return Number.isFinite(n) ? (n / 1000).toFixed(digits) + " MPa" : "N/A";
   };
 
+  // Determine theme colors based on cycle type
+  const themeParams = (() => {
+    switch (cycleData?.cycleType) {
+      case "cascade-low":
+        return {
+          bg: "bg-cyan-100 dark:bg-cyan-900/30",
+          text: "text-cyan-600 dark:text-cyan-400",
+          border: "border-cyan-500",
+          ring: "ring-cyan-500/20",
+          icon: <Zap className="h-5 w-5" />,
+          label: "Low Temp Stage"
+        };
+      case "cascade-high":
+        return {
+          bg: "bg-orange-100 dark:bg-orange-900/30",
+          text: "text-orange-600 dark:text-orange-400",
+          border: "border-orange-500",
+          ring: "ring-orange-500/20",
+          icon: <Thermometer className="h-5 w-5" />, // Differentiate icon
+          label: "High Temp Stage"
+        };
+      default:
+        return {
+          bg: "bg-blue-100 dark:bg-blue-900/30",
+          text: "text-blue-600 dark:text-blue-400",
+          border: "border-blue-500",
+          ring: "ring-blue-500/20",
+          icon: <Zap className="h-5 w-5" />,
+          label: "Standard Cycle"
+        };
+    }
+  })();
+
   return (
-    <Card className="w-full">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="flex items-center gap-2">
-          <Zap className="h-5 w-5" />
-          {DIAGRAM_CONFIGS[diagramType].name} -{" "}
-          {cycleData?.refrigerant || "No Data"}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="mb-4 flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <BarChart3 className="h-4 w-4" />
-            <Label htmlFor="diagram-type">Diagram Type:</Label>
+    <div className="w-full space-y-4">
+      {/* Header Controls */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+        <div className="flex items-center gap-3">
+          <div className={`p-2 rounded-md ${themeParams.bg} ${themeParams.text}`}>
+            {themeParams.icon}
           </div>
-          <Select
-            value={diagramType}
-            onValueChange={(value: DiagramType) => setDiagramType(value)}
-          >
-            <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Select diagram type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="P-h">P-h (Pressure-Enthalpy)</SelectItem>
-              <SelectItem value="T-s">T-s (Temperature-Entropy)</SelectItem>
-              <SelectItem value="P-v">P-v (Pressure-Volume)</SelectItem>
-              <SelectItem value="T-v">T-v (Temperature-Volume)</SelectItem>
-            </SelectContent>
-          </Select>
+          <div>
+            <h3 className="font-semibold text-lg flex items-center gap-2">
+              {DIAGRAM_CONFIGS[diagramType].name}
+              {/* Optional: Add badge for cycle stage */}
+              {cycleData?.cycleType !== 'standard' && (
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full border ${themeParams.text} ${themeParams.bg} border-opacity-30`}>
+                  {themeParams.label}
+                </span>
+              )}
+            </h3>
+            <p className="text-sm text-muted-foreground">{cycleData?.refrigerant || "No Data"}</p>
+          </div>
         </div>
-        <div className="grid lg:grid-cols-4 gap-6">
-          {/* Main Visualization */}
-          <div className="lg:col-span-3">
+
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground bg-white dark:bg-slate-950 px-3 py-1.5 rounded-md border shadow-sm">
+            <BarChart3 className="h-4 w-4" />
+            <span className="hidden sm:inline">Type:</span>
+            <Select
+              value={diagramType}
+              onValueChange={(value: DiagramType) => setDiagramType(value)}
+            >
+              <SelectTrigger className="w-[140px] h-8 border-0 bg-transparent focus:ring-0 p-0 text-foreground font-medium">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="P-h">Pressure-Enthalpy</SelectItem>
+                <SelectItem value="T-s">Temperature-Entropy</SelectItem>
+                <SelectItem value="P-v">Pressure-Volume</SelectItem>
+                <SelectItem value="T-v">Temperature-Volume</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid lg:grid-cols-4 gap-6">
+        {/* Main Visualization */}
+        <div className="lg:col-span-3 space-y-4">
+          <div className="relative group">
             <canvas
               ref={canvasRef}
               width={1600}
               height={1000}
-              className="border rounded-lg cursor-pointer w-full shadow-xl bg-gradient-to-br from-gray-50 to-white dark:from-slate-900 dark:to-slate-950 dark:border-slate-800"
+              className={`border rounded-xl cursor-crosshair w-full shadow-lg bg-white dark:bg-slate-950 dark:border-slate-800 transition-all duration-300 hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700`}
               onClick={handleCanvasClick}
               style={{ maxWidth: "100%", height: "auto" }}
             />
-            <div className="mt-2 text-sm text-gray-600">
-              Click on cycle points to see detailed properties
+            {!cycleData && (
+              <div className="absolute inset-0 flex items-center justify-center bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-sm rounded-xl">
+                <div className="text-muted-foreground font-medium">No Cycle Data Available</div>
+              </div>
+            )}
+            <div className="absolute bottom-4 right-4 text-xs text-muted-foreground bg-white/80 dark:bg-black/50 backdrop-blur px-2 py-1 rounded border shadow-sm opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              Click points for details
             </div>
-
-            {/* Details moved under diagram (Cycle Analysis & State Details) */}
-            <div className="mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Details</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Accordion type="single" collapsible defaultValue="analysis">
-                    <AccordionItem value="analysis">
-                      <AccordionTrigger>Cycle Analysis</AccordionTrigger>
-                      <AccordionContent>
-                        {cycleData ? (
-                          <div className="space-y-2 text-sm">
-                            <div className="flex justify-between items-center">
-                              <span className="text-sm text-gray-600">Pressure Ratio</span>
-                              <span className="font-mono text-lg font-semibold">{(() => {
-                                const p0 = Number(cycleData.points[0]?.pressure);
-                                const p1 = Number(cycleData.points[1]?.pressure);
-                                return Number.isFinite(p0) && Number.isFinite(p1) && p0 !== 0
-                                  ? (p1 / p0).toFixed(2)
-                                  : "N/A";
-                              })()}</span>
-                            </div>
-
-                            <div className="flex justify-between items-center">
-                              <span className="text-sm text-gray-600">Temperature Lift</span>
-                              <span className="font-mono text-lg font-semibold">{(() => {
-                                const t0 = Number(cycleData.points[0]?.temperature);
-                                const t1 = Number(cycleData.points[1]?.temperature);
-                                return Number.isFinite(t0) && Number.isFinite(t1)
-                                  ? `${(t1 - t0).toFixed(1)} °C`
-                                  : "N/A";
-                              })()}</span>
-                            </div>
-
-                            <div className="flex justify-between items-center">
-                              <span className="text-sm text-gray-600">Cycle Type</span>
-                              <span className="font-mono text-sm">{diagramType === "P-h" ? "Vapor Compression" : "Thermodynamic"}</span>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-sm text-gray-500">No cycle data available</div>
-                        )}
-                      </AccordionContent>
-                    </AccordionItem>
-
-                    <AccordionItem value="state">
-                      <AccordionTrigger>State Details</AccordionTrigger>
-                      <AccordionContent>
-                        {selectedPointData ? (
-                          <div className="space-y-4">
-                            <div className="grid grid-cols-2 gap-3 text-sm">
-                              <div>
-                                <div className="text-xs text-gray-500">Temperature</div>
-                                <div className="font-mono text-lg font-semibold">{fmt(selectedPointData.temperature, 2)} °C</div>
-                              </div>
-                              <div>
-                                <div className="text-xs text-gray-500">Pressure</div>
-                                <div className="font-mono text-lg font-semibold">{fmtPressureMPa(selectedPointData.pressure, 2)}</div>
-                              </div>
-                              <div>
-                                <div className="text-xs text-gray-500">Enthalpy</div>
-                                <div className="font-mono">{fmt(selectedPointData.enthalpy, 1)} kJ/kg</div>
-                              </div>
-                              <div>
-                                <div className="text-xs text-gray-500">Entropy</div>
-                                <div className="font-mono">{fmt(selectedPointData.entropy, 3)} kJ/kg��K</div>
-                              </div>
-                            </div>
-
-                            {selectedPointData.quality !== undefined && Number.isFinite(Number(selectedPointData.quality)) && (
-                              <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
-                                <Badge variant="secondary" className="w-full justify-center">Vapor Quality: {(Number(selectedPointData.quality) * 100).toFixed(1)}%</Badge>
-                              </div>
-                            )}
-
-                            <div className="mt-4 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg">
-                              <h4 className="font-semibold text-sm mb-2">Engineering Notes:</h4>
-                              <ul className="text-xs space-y-1 text-gray-600 dark:text-gray-300">
-                                {selectedPointData.id === "1" && (
-                                  <>
-                                    <li>• Refrigerant exits evaporator as superheated vapor</li>
-                                    <li>• Critical for preventing liquid slugging in compressor</li>
-                                    <li>• Superheat should be 5-15°C for optimal performance</li>
-                                  </>
-                                )}
-                                {selectedPointData.id === "2" && (
-                                  <>
-                                    <li>• Highest temperature and pressure in the cycle</li>
-                                    <li>• Compressor discharge temperature critical for oil life</li>
-                                    <li>• Should not exceed refrigerant's maximum temperature</li>
-                                  </>
-                                )}
-                                {selectedPointData.id === "3" && (
-                                  <>
-                                    <li>• Subcooled liquid from condenser</li>
-                                    <li>• Subcooling improves cycle efficiency</li>
-                                    <li>• Prevents flash gas formation at expansion valve</li>
-                                  </>
-                                )}
-                                {selectedPointData.id === "4" && (
-                                  <>
-                                    <li>• Two-phase mixture after expansion</li>
-                                    <li>• Quality determines evaporator performance</li>
-                                    <li>• Lower quality = more liquid = better heat transfer</li>
-                                  </>
-                                )}
-                              </ul>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-sm text-gray-500">Select a cycle point on the diagram to view state details</div>
-                        )}
-                      </AccordionContent>
-                    </AccordionItem>
-
-                  </Accordion>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-
-          {/* Engineering Properties Panel */}
-          <div className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Details</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Accordion type="single" collapsible defaultValue="tools">
-                  <AccordionItem value="tools">
-                    <AccordionTrigger>Legend & Tools</AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-3">
-                        <div>
-                          <h4 className="text-sm font-medium text-muted-foreground mb-2">Process Legend</h4>
-                          <div className="grid grid-cols-1 gap-2">
-                            <div className="flex items-center gap-3 p-2 bg-red-50 dark:bg-red-900/10 rounded"><div className="w-6 h-2 bg-red-500 rounded" /> <span className="text-sm font-medium text-slate-900 dark:text-slate-100">1→2: Compression</span></div>
-                            <div className="flex items-center gap-3 p-2 bg-blue-50 dark:bg-blue-900/10 rounded"><div className="w-6 h-2 bg-blue-500 rounded" /> <span className="text-sm font-medium text-slate-900 dark:text-slate-100">2→3: Condensation</span></div>
-                            <div className="flex items-center gap-3 p-2 bg-green-50 dark:bg-green-900/10 rounded"><div className="w-6 h-2 bg-green-500 rounded" /> <span className="text-sm font-medium text-slate-900 dark:text-slate-100">3→4: Expansion</span></div>
-                            <div className="flex items-center gap-3 p-2 bg-yellow-50 dark:bg-yellow-900/10 rounded"><div className="w-6 h-2 bg-yellow-500 rounded" /> <span className="text-sm font-medium text-slate-900 dark:text-slate-100">4→1: Evaporation</span></div>
-                          </div>
-                        </div>
-
-                        <div>
-                          <h4 className="text-sm font-medium text-muted-foreground mb-2">Professional Tools</h4>
-                          <div className="space-y-2">
-                            <Button variant="outline" size="sm" className="w-full justify-start text-xs" onClick={() => {
-                              if (cycleData) {
-                                const csvData = cycleData.points.map((point, i) => `Point ${i + 1},${point.temperature},${point.pressure},${point.enthalpy},${point.entropy}`).join("\n");
-                                const blob = new Blob(["Point,Temperature(°C),Pressure(kPa),Enthalpy(kJ/kg),Entropy(kJ/kg·K)\n" + csvData], { type: "text/csv" });
-                                const url = URL.createObjectURL(blob);
-                                const a = document.createElement("a"); a.href = url; a.download = `${cycleData.refrigerant}_cycle_data.csv`; a.click();
-                              }
-                            }}>📊 Export to CSV</Button>
-
-                            <Button variant="outline" size="sm" className="w-full justify-start text-xs" onClick={() => {
-                              const canvas = canvasRef.current; if (canvas) { const link = document.createElement("a"); link.download = `${cycleData?.refrigerant || "cycle"}_${diagramType}_diagram.png`; link.href = canvas.toDataURL(); link.click(); }
-                            }}>🖼️ Save Diagram</Button>
-
-                            <Button variant="outline" size="sm" className="w-full justify-start text-xs">📋 Copy Properties</Button>
-                            <Button variant="outline" size="sm" className="w-full justify-start text-xs">📐 Measure Tool</Button>
-                            <Button variant="outline" size="sm" className="w-full justify-start text-xs">🔍 Zoom to Fit</Button>
-                          </div>
-                        </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              </CardContent>
-            </Card>
           </div>
         </div>
-      </CardContent>
-    </Card>
+
+        {/* Sidebar Panel - Unified Details */}
+        <div className="space-y-6">
+
+          {/* 1. Cycle Analysis (Always Visible) */}
+          <Card className={`border-l-4 ${themeParams.border} shadow-sm`}>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Gauge className="h-4 w-4 shrink-0" />
+                <span>Cycle Analysis</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {cycleData && cycleData.points.length >= 4 ? (
+                (() => {
+                  const p1 = Number(cycleData.points[0]?.pressure); // Evap Out
+                  const p2 = Number(cycleData.points[1]?.pressure); // Comp Out
+                  const t1 = Number(cycleData.points[0]?.temperature);
+                  const t2 = Number(cycleData.points[1]?.temperature);
+                  const h1 = Number(cycleData.points[0]?.enthalpy);
+                  const h2 = Number(cycleData.points[1]?.enthalpy); // Comp Out
+                  const h4 = Number(cycleData.points[3]?.enthalpy); // Evap In
+
+                  const compressionRatio = p1 ? p2 / p1 : 0;
+                  const tempLift = t2 - t1;
+                  const refrigEffect = h1 - h4;
+                  const compWork = h2 - h1;
+                  const cop = compWork ? refrigEffect / compWork : 0;
+
+                  return (
+                    <div className="space-y-3 pt-1">
+                      <div className="flex justify-between items-center pb-2 border-b border-dashed">
+                        <span className="text-sm text-muted-foreground">Theoretical COP</span>
+                        <Badge variant="outline" className={`font-mono text-base ${themeParams.text} ${themeParams.bg} border-0`}>
+                          {Number.isFinite(cop) ? cop.toFixed(2) : "N/A"}
+                        </Badge>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">Compression Ratio</span>
+                          <span className="font-mono">{Number.isFinite(compressionRatio) ? compressionRatio.toFixed(2) : "N/A"}</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">Temperature Lift</span>
+                          <span className="font-mono">{Number.isFinite(tempLift) ? tempLift.toFixed(1) + " °C" : "N/A"}</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">Refrig. Effect</span>
+                          <span className="font-mono">{Number.isFinite(refrigEffect) ? refrigEffect.toFixed(1) + " kJ/kg" : "N/A"}</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">Comp. Work</span>
+                          <span className="font-mono">{Number.isFinite(compWork) ? compWork.toFixed(1) + " kJ/kg" : "N/A"}</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()
+              ) : (
+                <div className="text-center py-4 text-muted-foreground text-sm">No cycle data available</div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* 2. Point Inspector (Always Visible, Dynamic Content) */}
+          <Card className={`shadow-sm ${selectedPointData ? 'ring-1 ' + themeParams.ring : 'border-dashed'}`}>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center justify-between">
+                <span className="flex items-center gap-2">
+                  {selectedPointData ? (
+                    <div className={`flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${themeParams.bg} ${themeParams.ring} ring-2 ${themeParams.text}`}>
+                      {selectedPointData.id}
+                    </div>
+                  ) : (
+                    <div className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs text-muted-foreground">
+                      ?
+                    </div>
+                  )}
+                  <span>Point Inspector</span>
+                </span>
+                {selectedPointData && (
+                  <Button variant="ghost" size="icon" className="h-6 w-6 -mr-2 text-muted-foreground hover:text-foreground" onClick={() => setSelectedPoint(null)} title="Clear selection">
+                    <span className="text-xs">✕</span>
+                  </Button>
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {selectedPointData ? (
+                <div className="space-y-4 animate-in fade-in slide-in-from-right-2 duration-200">
+                  <div className="grid grid-cols-2 gap-x-2 gap-y-3 text-sm">
+                    <div className="bg-slate-50 dark:bg-slate-900/40 p-2 rounded">
+                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Temperature</div>
+                      <div className="font-mono text-base font-medium">{fmt(selectedPointData.temperature, 1)} <span className="text-xs text-muted-foreground">°C</span></div>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-slate-900/40 p-2 rounded">
+                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Pressure</div>
+                      <div className="font-mono text-base font-medium">{fmtPressureMPa(selectedPointData.pressure, 2)}</div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Enthalpy</div>
+                      <div className="font-mono">{fmt(selectedPointData.enthalpy, 1)} <span className="text-xs text-muted-foreground">kJ/kg</span></div>
+                    </div>
+                    <div>
+                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Entropy</div>
+                      <div className="font-mono">{fmt(selectedPointData.entropy, 3)} <span className="text-xs text-muted-foreground">kJ/kg·K</span></div>
+                    </div>
+                  </div>
+
+                  {selectedPointData.quality !== undefined && Number.isFinite(Number(selectedPointData.quality)) && (
+                    <div className="text-xs bg-blue-50 dark:bg-blue-900/20 p-2 rounded text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-800 flex items-center gap-2">
+                      <span className="text-base">💧</span>
+                      <span><strong>Vapor Quality:</strong> {(Number(selectedPointData.quality) * 100).toFixed(1)}%</span>
+                    </div>
+                  )}
+
+                  {/* Contextual Note */}
+                  <div className="text-xs text-muted-foreground border-t pt-2 mt-2">
+                    <span className="font-medium text-foreground">Note: </span>
+                    {selectedPointData.id === "1" && "Evaporator Outlet (Superheated Vapor)"}
+                    {selectedPointData.id === "2" && "Compressor Discharge (Superheated Gas)"}
+                    {selectedPointData.id === "3" && "Condenser Outlet (Subcooled Liquid)"}
+                    {selectedPointData.id === "4" && "Evaporator Inlet (Liquid+Vapor Mix)"}
+                    {!["1", "2", "3", "4"].includes(selectedPointData.id) && "State point properties"}
+                  </div>
+                </div>
+              ) : (
+                <div className="h-32 flex flex-col items-center justify-center text-center text-sm text-muted-foreground border-2 border-dashed rounded-lg bg-slate-50/50 dark:bg-slate-900/20">
+                  <span className="text-2xl mb-2 opacity-50">👆</span>
+                  <p>Select a point on the chart<br />to view detailed properties</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* 2. Legend */}
+          <div className="bg-slate-50 dark:bg-slate-900/50 rounded-lg p-4 border border-slate-200 dark:border-slate-800">
+            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Process Legend</h4>
+            <div className="space-y-2">
+              <div className="flex items-center gap-3 text-xs">
+                <span className="w-2 h-2 rounded-full bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.5)]"></span>
+                <span className="font-medium">1→2: Compression</span>
+              </div>
+              <div className="flex items-center gap-3 text-xs">
+                <span className="w-2 h-2 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.5)]"></span>
+                <span className="font-medium">2→3: Condensation</span>
+              </div>
+              <div className="flex items-center gap-3 text-xs">
+                <span className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]"></span>
+                <span className="font-medium">3→4: Expansion</span>
+              </div>
+              <div className="flex items-center gap-3 text-xs">
+                <span className="w-2 h-2 rounded-full bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.5)]"></span>
+                <span className="font-medium">4→1: Evaporation</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 3. Actions */}
+          <div className="grid grid-cols-2 gap-2">
+            <Button variant="outline" size="sm" className="w-full text-xs h-8" onClick={() => {
+              const canvas = canvasRef.current; if (canvas) { const link = document.createElement("a"); link.download = `${cycleData?.refrigerant || "cycle"}_diagram.png`; link.href = canvas.toDataURL(); link.click(); }
+            }}>
+              📸 Save Image
+            </Button>
+            <Button variant="outline" size="sm" className="w-full text-xs h-8" onClick={() => {
+              if (cycleData) {
+                const csvData = cycleData.points.map((p, i) => `P${i + 1},${p.temperature},${p.pressure},${p.enthalpy},${p.entropy}`).join("\n");
+                const blob = new Blob(["Point,T(C),P(kPa),h(kJ/kg),s(kJ/kgK)\n" + csvData], { type: "text/csv" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a"); a.href = url; a.download = `${cycleData.refrigerant}_data.csv`; a.click();
+              }
+            }}>
+              📊 Export CSV
+            </Button>
+          </div>
+
+        </div>
+      </div>
+    </div>
   );
 }

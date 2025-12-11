@@ -35,6 +35,7 @@ import {
   Stethoscope,
   AlertCircle,
   Terminal,
+  Check,
 } from "lucide-react";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { apiClient } from "@/lib/api";
@@ -58,6 +59,162 @@ const SYMPTOMS = [
   { id: "noisy", label: "Unusual noise/vibration" },
 ];
 
+function AiAnalysisDisplay({ data }: { data: any }) {
+  if (!data) return null;
+
+  return (
+    <div className="space-y-8 animate-in slide-in-from-bottom-5 duration-700">
+
+      {/* 1. Expert Summary Badge & Content */}
+      <Card className="overflow-hidden border-indigo-200 dark:border-indigo-800 bg-white dark:bg-slate-900 shadow-xl">
+        <div className="absolute top-0 left-0 w-1 bg-gradient-to-b from-indigo-500 to-purple-600 h-full" />
+        <CardHeader className="bg-gradient-to-r from-indigo-50 to-white dark:from-slate-900 dark:to-slate-900 border-b border-indigo-100 dark:border-indigo-900/50 pb-4">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center border border-indigo-200 dark:border-indigo-700">
+                <Bot className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-bold text-indigo-950 dark:text-indigo-100">Expert Analysis</CardTitle>
+                <CardDescription className="text-indigo-600/80 dark:text-indigo-300">
+                  AI-Generated Diagnostic Report
+                </CardDescription>
+              </div>
+            </div>
+
+            {data.urgency && (
+              <Badge
+                variant={data.urgency.toLowerCase() === "urgent" ? "destructive" : "outline"}
+                className={`
+                  px-4 py-1.5 text-sm font-medium uppercase tracking-wide
+                  ${data.urgency.toLowerCase() !== "urgent" ? "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950 dark:text-indigo-300 dark:border-indigo-800" : ""}
+                `}
+              >
+                {data.urgency} Priority
+              </Badge>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent className="pt-6 pb-8 px-6 md:px-8">
+          <div className="text-lg md:text-xl leading-relaxed text-slate-700 dark:text-slate-200 font-medium">
+            {data.summary}
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+        {/* 2. Probable Causes */}
+        {data.probable_causes && data.probable_causes.length > 0 && (
+          <Card className="h-full border-border shadow-sm hover:shadow-md transition-shadow duration-300">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Activity className="h-5 w-5 text-amber-500" />
+                Probable Causes
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              {data.probable_causes.map((c: any, idx: number) => {
+                const confidence = c.confidence !== undefined ? Number(c.confidence) : 0;
+                const showConfidence = confidence > 0;
+
+                return (
+                  <div key={idx} className="group">
+                    <div className="flex justify-between items-end mb-2">
+                      <span className="font-semibold text-foreground group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                        {c.cause}
+                      </span>
+                      {showConfidence && (
+                        <span className="text-sm font-mono text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                          {Math.round(confidence * 100)}%
+                        </span>
+                      )}
+                    </div>
+                    {showConfidence && (
+                      <div className="h-2.5 w-full bg-secondary/50 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-1000 ease-out ${confidence > 0.7 ? "bg-amber-500" :
+                            confidence > 0.4 ? "bg-amber-400" : "bg-amber-300"
+                            }`}
+                          style={{ width: `${confidence * 100}%` }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* 3. Recommended Actions */}
+        {data.steps && data.steps.length > 0 && (
+          <Card className="h-full border-border shadow-sm hover:shadow-md transition-shadow duration-300">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <CheckCircle className="h-5 w-5 text-emerald-500" />
+                Recommended Actions
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {data.steps.map((s: any, idx: number) => {
+                  const stepText = typeof s === "string" ? s : s.text || s.step;
+                  const stepNote = typeof s === "object" ? s.note : null;
+
+                  return (
+                    <div key={idx} className="flex gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors border border-transparent hover:border-border/50">
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 flex items-center justify-center text-sm font-bold border border-emerald-200 dark:border-emerald-800">
+                        {idx + 1}
+                      </div>
+                      <div className="pt-1">
+                        <div className="font-medium text-foreground">{stepText}</div>
+                        {stepNote && (
+                          <div className="text-sm text-muted-foreground mt-1 flex items-start gap-1.5">
+                            <span className="mt-1 block h-1 w-1 rounded-full bg-muted-foreground/50" />
+                            {stepNote}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      {/* 4. Technical Explanation */}
+      {data.explanation && (
+        <Card className="bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base text-slate-700 dark:text-slate-300">
+              <Terminal className="h-4 w-4" /> Technical Explanation
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="prose prose-slate dark:prose-invert max-w-none text-sm md:text-base leading-relaxed text-muted-foreground">
+              {data.explanation}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* 5. Follow-up Questions (Optional) */}
+      {data.follow_up_questions && data.follow_up_questions.length > 0 && (
+        <div className="flex flex-wrap gap-2 justify-center pt-4">
+          {data.follow_up_questions.map((q: string, i: number) => (
+            <Badge key={i} variant="secondary" className="px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground cursor-help transition-colors border-dashed">
+              ? {q}
+            </Badge>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function TroubleshootingContent() {
   const { saveCalculation } = useSupabaseCalculations();
   const { toast } = useToast();
@@ -78,7 +235,7 @@ export function TroubleshootingContent() {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResponse, setAiResponse] = useState<any>(null);
   const [aiError, setAiError] = useState<string | null>(null);
-  const [setAiConversationId] = useState<string | null>(null);
+  const [aiConversationId, setAiConversationId] = useState<string | null>(null);
 
   // Structured measurements
   const [suctionPressure, setSuctionPressure] = useState<string>("");
@@ -701,127 +858,50 @@ export function TroubleshootingContent() {
 
               <TabsContent value="ai" className="mt-0 space-y-6">
                 {aiError && (
-                  <div className="p-4 rounded-lg border border-red-200 bg-red-50 text-red-800 dark:bg-red-900/20 dark:text-red-300 dark:border-red-900 flex items-center gap-3">
+                  <div className="p-4 rounded-lg border border-red-200 bg-red-50 text-red-800 dark:bg-red-900/20 dark:text-red-300 dark:border-red-900 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-2">
                     <AlertCircle className="h-5 w-5 flex-shrink-0" />
                     <div>{aiError}</div>
                   </div>
                 )}
 
                 {!aiResponse && !aiLoading && !aiError && (
-                  <div className="text-center py-12 border-2 border-dashed rounded-xl">
-                    <Bot className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium">Ready to Analyze</h3>
-                    <p className="text-muted-foreground max-w-sm mx-auto mb-6">
-                      The AI will analyze your inputs, measurements, and uploaded photos to provide a detailed diagnosis.
+                  <div className="text-center py-16 border-2 border-dashed border-indigo-200 dark:border-indigo-900 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/10">
+                    <div className="w-20 h-20 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <Bot className="h-10 w-10 text-indigo-600 dark:text-indigo-400" />
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">AI Expert Ready</h3>
+                    <p className="text-muted-foreground max-w-sm mx-auto mb-8">
+                      Our advanced AI engine will analyze your inputs, measurements, and photos to provide a professional-grade diagnosis.
                     </p>
-                    <Button onClick={getAiAdvice} size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white">
-                      <Zap className="mr-2 h-4 w-4" /> Start AI Analysis
+                    <Button onClick={getAiAdvice} size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-xl shadow-indigo-500/20 h-12 px-8 text-base transition-all hover:scale-105">
+                      <Zap className="mr-2 h-5 w-5" /> Start Analysis
                     </Button>
                   </div>
                 )}
 
                 {aiLoading && (
-                  <Card>
-                    <CardContent className="py-12 flex flex-col items-center text-center">
-                      <div className="h-10 w-10 relative mb-4">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                        <Bot className="relative inline-flex rounded-full h-10 w-10 text-indigo-600" />
+                  <Card className="border-none shadow-lg bg-gradient-to-b from-white to-indigo-50/50 dark:from-slate-900 dark:to-slate-900/50">
+                    <CardContent className="py-20 flex flex-col items-center text-center">
+                      <div className="relative mb-8">
+                        <div className="absolute inset-0 bg-indigo-500 blur-xl opacity-20 animate-pulse rounded-full" />
+                        <div className="h-16 w-16 relative bg-white dark:bg-slate-800 rounded-full shadow-lg flex items-center justify-center border-2 border-indigo-100 dark:border-indigo-900 z-10">
+                          <Bot className="h-8 w-8 text-indigo-600 animate-pulse" />
+                        </div>
+                        <svg className="absolute top-0 left-0 w-full h-full -m-1 animate-[spin_3s_linear_infinite]" viewBox="0 0 100 100">
+                          <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="2" className="text-indigo-600 dashed opacity-30" strokeDasharray="10 10" />
+                        </svg>
                       </div>
-                      <h3 className="text-lg font-medium">Analyzing System Data...</h3>
-                      <p className="text-muted-foreground animate-pulse">Consulting technical knowledge base</p>
+                      <h3 className="text-xl font-semibold mb-2">Analyzing System Data...</h3>
+                      <div className="text-muted-foreground max-w-xs mx-auto space-y-1 text-sm">
+                        <p className="animate-[fade-in_2s_ease-in-out_infinite]">Reviewing provided symptoms...</p>
+                        <p className="animate-[fade-in_2s_ease-in-out_1s_infinite]">Consulting technical diagnostics knowledge base...</p>
+                        <p className="animate-[fade-in_2s_ease-in-out_2s_infinite]">Generating recommendations...</p>
+                      </div>
                     </CardContent>
                   </Card>
                 )}
 
-                {aiResponse && (
-                  <div className="space-y-6 animate-in slide-in-from-bottom-5 duration-700">
-
-                    <Card className="border-indigo-200 dark:border-indigo-900 bg-indigo-50/50 dark:bg-indigo-950/10">
-                      <CardHeader>
-                        <div className="flex justify-between items-start">
-                          <CardTitle className="text-indigo-900 dark:text-indigo-300 flex items-center gap-2">
-                            <Bot className="h-5 w-5" /> Expert Summary
-                          </CardTitle>
-                          <Badge variant={aiResponse.urgency === "urgent" ? "destructive" : "secondary"}>
-                            {aiResponse.urgency ? aiResponse.urgency.toUpperCase() : "ANALYSIS"}
-                          </Badge>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="text-lg leading-relaxed text-indigo-950 dark:text-indigo-100">
-                          {aiResponse.summary}
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                      {aiResponse.probable_causes && (
-                        <Card>
-                          <CardHeader>
-                            <CardTitle className="text-base">Probable Causes</CardTitle>
-                          </CardHeader>
-                          <CardContent className="space-y-4">
-                            {aiResponse.probable_causes.map((c: any, idx: number) => {
-                              const confidence = c.confidence ? Number(c.confidence) : 0;
-                              return (
-                                <div key={idx} className="space-y-1">
-                                  <div className="flex justify-between text-sm">
-                                    <span className="font-medium">{c.cause}</span>
-                                    <span className="text-muted-foreground">{Math.round(confidence * 100)}%</span>
-                                  </div>
-                                  <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
-                                    <div
-                                      className={`h-full rounded-full ${confidence > 0.6 ? "bg-indigo-500" : "bg-indigo-300"}`}
-                                      style={{ width: `${confidence * 100}%` }}
-                                    />
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </CardContent>
-                        </Card>
-                      )}
-
-                      {aiResponse.steps && (
-                        <Card>
-                          <CardHeader>
-                            <CardTitle className="text-base">Recommended Actions</CardTitle>
-                          </CardHeader>
-                          <CardContent>
-                            <ol className="space-y-3">
-                              {aiResponse.steps.map((s: any, idx: number) => {
-                                const stepText = typeof s === "string" ? s : s.text || s.step;
-                                return (
-                                  <li key={idx} className="flex gap-3 text-sm">
-                                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-secondary flex items-center justify-center text-xs font-bold text-muted-foreground">
-                                      {idx + 1}
-                                    </div>
-                                    <div>
-                                      <div className="font-medium">{stepText}</div>
-                                      {s.note && <div className="text-xs text-muted-foreground mt-0.5">{s.note}</div>}
-                                    </div>
-                                  </li>
-                                );
-                              })}
-                            </ol>
-                          </CardContent>
-                        </Card>
-                      )}
-                    </div>
-
-                    {aiResponse.explanation && (
-                      <Card>
-                        <CardHeader>
-                          <CardTitle>Technical Explanation</CardTitle>
-                        </CardHeader>
-                        <CardContent className="prose dark:prose-invert max-w-none text-sm text-muted-foreground whitespace-pre-wrap">
-                          {aiResponse.explanation}
-                        </CardContent>
-                      </Card>
-                    )}
-
-                  </div>
-                )}
+                {aiResponse && <AiAnalysisDisplay data={aiResponse} />}
               </TabsContent>
             </Tabs>
 

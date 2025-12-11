@@ -1,5 +1,4 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { serve } from "https://deno.land/std/http/server.ts";
 
 const createCorsHeaders = (origin: string | null) => {
@@ -197,7 +196,7 @@ async function callOllama(
   const base = (
     Deno.env.get("OLLAMA_BASE_URL") ?? "http://localhost:11434"
   ).replace(/\/+$/, "");
-  const model = modelHint || Deno.env.get("OLLAMA_MODEL") || "gpt-oss:120b";
+  const model = modelHint || Deno.env.get("OLLAMA_MODEL") || "DeepSeek-V3.2-Speciale";
   const url = `${base}/api/chat`;
 
   const headers: Record<string, string> = {
@@ -236,8 +235,7 @@ async function callOllama(
       return JSON.parse(bodyText);
     } catch (parseError) {
       throw new Error(
-        `Failed to parse Ollama response: ${
-          parseError instanceof Error ? parseError.message : String(parseError)
+        `Failed to parse Ollama response: ${parseError instanceof Error ? parseError.message : String(parseError)
         } | body: ${bodyText.slice(0, 500)}`,
       );
     }
@@ -251,34 +249,62 @@ function normalizeRecommendedRangeResponse(resp: any): RecommendedRangeResult {
   const out: RecommendedRangeResult = { raw: resp };
 
   const message = resp?.message;
-  const content = message?.content ?? "";
+  let content = message?.content ?? "";
+  const originalContent = content;
 
-  // Try to parse JSON directly
-  try {
-    const parsed = JSON.parse(content);
-    if (parsed && typeof parsed === "object") {
-      out.evap_temp_c = maybeNumber(parsed.evap_temp_c);
-      out.cond_temp_c = maybeNumber(parsed.cond_temp_c);
-      out.superheat_c = maybeNumber(parsed.superheat_c);
-      out.subcooling_c = maybeNumber(parsed.subcooling_c);
-      out.notes = typeof parsed.notes === "string" ? parsed.notes : null;
-      return out;
+  // 1. Try extracting a JSON block wrapped in triple backticks first.
+  const codeBlockMatch = content.match(/```json\s*(\{[\s\S]*\}|\[[\s\S]*\])\s*```/i) || content.match(/```\s*(\{[\s\S]*\}|\[[\s\S]*\])\s*```/i);
+  if (codeBlockMatch) {
+    content = codeBlockMatch[1];
+  } else {
+    // 2. Fallback: Try to find the first `{` and last `}` to handle unwrapped but embedded JSON.
+    const start = content.indexOf('{');
+    const end = content.lastIndexOf('}');
+    if (start !== -1 && end !== -1 && end > start) {
+      content = content.substring(start, end + 1);
     }
-  } catch (_e) {
-    // fallthrough
   }
 
+  // Try to parse JSON directly
+  const parsed = tryParseJson(content);
+
+  if (parsed && typeof parsed === "object") {
+    out.evap_temp_c = maybeNumber(parsed.evap_temp_c);
+    out.cond_temp_c = maybeNumber(parsed.cond_temp_c);
+    out.superheat_c = maybeNumber(parsed.superheat_c);
+    out.subcooling_c = maybeNumber(parsed.subcooling_c);
+    out.notes = typeof parsed.notes === "string" ? parsed.notes : null;
+    return out;
+  }
+
+  // If parsing failed, try extracting numbers from the ORIGINAL text
   // Fallback: attempt to extract numbers using regex patterns
-  const nums = extractNumbersFromText(content);
+  const nums = extractNumbersFromText(originalContent);
   if (nums.evap !== undefined) out.evap_temp_c = nums.evap;
   if (nums.cond !== undefined) out.cond_temp_c = nums.cond;
   if (nums.superheat !== undefined) out.superheat_c = nums.superheat;
   if (nums.subcooling !== undefined) out.subcooling_c = nums.subcooling;
 
   // Put the raw text as notes if no structured notes present
-  out.notes = String(content).trim().slice(0, 2000);
+  out.notes = String(originalContent).trim().slice(0, 2000);
 
   return out;
+}
+
+function tryParseJson(str: string) {
+  try {
+    return JSON.parse(str);
+  } catch (e) {
+    try {
+      const cleaned = str
+        .replace(/\/\/.*$/gm, '')
+        .replace(/\/\*[\s\S]*?\*\//g, '')
+        .replace(/,(\s*[}\]])/g, '$1');
+      return JSON.parse(cleaned);
+    } catch (e2) {
+      return null;
+    }
+  }
 }
 
 function maybeNumber(v: unknown): number | null {
