@@ -7,7 +7,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ShieldAlert, Info, Save, Flame } from "lucide-react";
 import { getRefrigerantsByPopularity, RefrigerantProperties } from "@/lib/refrigerants";
 import { SaveCalculation } from "@/components/SaveCalculation";
-import { calculateA2LChargeLimit } from "@/lib/calculators/a2l";
+import { calculateA2LChargeLimit, calculateMinAreaForA2L } from "@/lib/calculators/a2l";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -21,11 +21,19 @@ export default function A2LCalculator({ saveCalculation }: A2LCalculatorProps) {
         refrigerantId: "R32",
         area: "20",
         height: "1.8", // Wall mounted default
+        charge: "",
     });
     const [units, setUnits] = useState({
         area: "m2",
+        charge: "kg",
     });
-    const [result, setResult] = useState<{ maxCharge: number; lfl: number } | null>(null);
+    const [result, setResult] = useState<{
+        maxCharge: number;
+        lfl: number;
+        minArea?: number;
+        isSafe?: boolean;
+        chargeAmount?: number;
+    } | null>(null);
 
     useEffect(() => {
         // Filter for A2L and A3 refrigerants that have LFL defined
@@ -57,9 +65,31 @@ export default function A2LCalculator({ saveCalculation }: A2LCalculatorProps) {
             area: areaM2
         });
 
+        let minArea = undefined;
+        let isSafe = undefined;
+        let chargeKg = undefined;
+
+        // Calculate Safety Status if Charge is provided
+        if (inputs.charge) {
+            let c = parseFloat(inputs.charge);
+            if (!isNaN(c)) {
+                if (units.charge === "lbs") {
+                    c = c * 0.453592;
+                }
+                chargeKg = c;
+                isSafe = c <= m_max;
+
+                // Calculate Min Area for this charge
+                minArea = calculateMinAreaForA2L(c, LFL, h_inst);
+            }
+        }
+
         setResult({
             maxCharge: m_max,
             lfl: LFL,
+            minArea,
+            isSafe,
+            chargeAmount: chargeKg
         });
     };
 
@@ -165,6 +195,36 @@ export default function A2LCalculator({ saveCalculation }: A2LCalculatorProps) {
                                 </Select>
                             </div>
                         </div>
+
+                        <div className="space-y-3">
+                            <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-xs">System Charge (Optional)</Label>
+                            <div className="flex items-center gap-3">
+                                <div className="relative flex-1 group">
+                                    <span className="absolute left-3 top-2.5 text-slate-400">⚖️</span>
+                                    <Input
+                                        type="number"
+                                        value={inputs.charge}
+                                        onChange={(e) =>
+                                            setInputs({ ...inputs, charge: e.target.value })
+                                        }
+                                        placeholder="Enter system charge..."
+                                        className="pl-9 h-11 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 group-hover:border-orange-400 transition-colors"
+                                    />
+                                </div>
+                                <Select
+                                    value={units.charge}
+                                    onValueChange={(v) => setUnits({ ...units, charge: v })}
+                                >
+                                    <SelectTrigger className="w-[100px] h-11 bg-slate-50 dark:bg-slate-900">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="kg">kg</SelectItem>
+                                        <SelectItem value="lbs">lbs</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Result Section */}
@@ -198,6 +258,33 @@ export default function A2LCalculator({ saveCalculation }: A2LCalculatorProps) {
                                     </div>
                                 </div>
 
+                                {result.isSafe !== undefined && (
+                                    <div className={`p-4 rounded-lg mb-8 text-sm text-center border ${result.isSafe
+                                        ? "bg-emerald-50 border-emerald-100 text-emerald-800 dark:bg-emerald-900/20 dark:border-emerald-900"
+                                        : "bg-red-50 border-red-100 text-red-800 dark:bg-red-900/20 dark:border-red-900"
+                                        }`}>
+                                        <strong className="block mb-1 font-bold tracking-tight uppercase">
+                                            {result.isSafe ? "Safe Installation" : "Limit Exceeded"}
+                                        </strong>
+                                        {result.isSafe
+                                            ? `Charge provided (${result.chargeAmount?.toFixed(2)} kg) is within limit.`
+                                            : `Charge (${result.chargeAmount?.toFixed(2)} kg) exceeds max allowable amount.`
+                                        }
+
+                                        {!result.isSafe && result.minArea && (
+                                            <div className="mt-2 pt-2 border-t border-red-200/50 dark:border-red-800/50">
+                                                <span>Min. Required Area: </span>
+                                                <strong>
+                                                    {units.area === "ft2"
+                                                        ? `${(result.minArea * 10.764).toFixed(1)} ft²`
+                                                        : `${result.minArea.toFixed(1)} m²`
+                                                    }
+                                                </strong>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
                                 <SaveCalculation
                                     calculationType="A2L Safety"
                                     inputs={{ ...inputs, ...units }}
@@ -221,6 +308,6 @@ export default function A2LCalculator({ saveCalculation }: A2LCalculatorProps) {
                     </div>
                 </div>
             </CardContent>
-        </Card>
+        </Card >
     );
 }

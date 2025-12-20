@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calculator, FileText, Zap, Wrench, History, ExternalLink, BookOpen, Info } from 'lucide-react';
+import { Calculator, FileText, Zap, Wrench, History, ExternalLink, BookOpen, Info, PlayCircle } from 'lucide-react';
 
 export const NAV_ITEMS: { to: string; label: string; icon: React.ComponentType<any> }[] = [
   { to: '/dashboard', label: 'Dashboard', icon: Calculator },
@@ -12,6 +12,7 @@ export const NAV_ITEMS: { to: string; label: string; icon: React.ComponentType<a
 ];
 
 export const UTIL_ITEMS: { to: string; label: string; icon?: React.ComponentType<any> }[] = [
+  { to: '/stories', label: 'Stories', icon: PlayCircle },
   { to: '/about', label: 'About', icon: Info },
   { to: '/documentation', label: 'Docs', icon: BookOpen },
   { to: '/help-center', label: 'Help', icon: ExternalLink },

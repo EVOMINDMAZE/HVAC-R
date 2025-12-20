@@ -30,6 +30,7 @@ import { StripeDebug } from "@/pages/StripeDebug";
 import { Privacy } from "@/pages/Privacy";
 import { TermsOfService } from "@/pages/TermsOfService";
 import NotFound from "@/pages/NotFound";
+import { WebStories } from "@/pages/WebStories";
 import { ErrorModal } from "@/components/ErrorModal";
 import { SupportBar } from "@/components/SupportBar";
 import { Layout } from "@/components/Layout";
@@ -166,6 +167,7 @@ function AppRoutes() {
         <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
         <Route path="/terms" element={<PageTransition><TermsOfService /></PageTransition>} />
         <Route path="/stripe-debug" element={<PageTransition><StripeDebug /></PageTransition>} />
+        <Route path="/stories" element={<PageTransition><WebStories /></PageTransition>} />
 
         {/* Protected routes */}
         <Route element={<ProtectedRoute><Outlet /></ProtectedRoute>}>

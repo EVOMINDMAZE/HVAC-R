@@ -6,12 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, History, Wind, Thermometer, ShieldAlert, Save, ArrowLeft, Ruler } from "lucide-react";
+import { Loader2, History, Wind, Thermometer, ShieldAlert, Save, ArrowLeft, Ruler, Cloud } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { apiClient } from "@/lib/api";
 
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import A2LCalculator from "@/components/calculators/A2LCalculator";
+import PsychrometricCalculator from "@/components/calculators/PsychrometricCalculator";
 import { SaveCalculation } from "@/components/SaveCalculation";
 import { Badge } from "@/components/ui/badge";
 
@@ -68,6 +69,10 @@ export default function DIYCalculators() {
                 <ShieldAlert className="w-4 h-4 mr-2" />
                 A2L Safety
               </TabsTrigger>
+              <TabsTrigger value="psychrometric" className="rounded-full px-6 py-2 data-[state=active]:bg-purple-600 data-[state=active]:text-white transition-all">
+                <Cloud className="w-4 h-4 mr-2" />
+                Psychrometric
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -81,6 +86,10 @@ export default function DIYCalculators() {
 
           <TabsContent value="a2l" className="animate-in fade-in slide-in-from-bottom-4 duration-500 focus-visible:outline-none">
             <A2LCalculator saveCalculation={saveCalculation} />
+          </TabsContent>
+
+          <TabsContent value="psychrometric" className="animate-in fade-in slide-in-from-bottom-4 duration-500 focus-visible:outline-none">
+            <PsychrometricCalculator saveCalculation={saveCalculation} userTier="pro" />
           </TabsContent>
 
         </Tabs>
@@ -461,8 +470,8 @@ function DeltaTCalculator() {
             {result ? (
               <div className="text-center w-full max-w-sm animate-in zoom-in-95 duration-300">
                 <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full mb-6 shadow-inner ${result.status.includes("Normal")
-                    ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400"
-                    : "bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400"
+                  ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400"
+                  : "bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400"
                   }`}>
                   <Thermometer className="w-10 h-10" />
                 </div>
