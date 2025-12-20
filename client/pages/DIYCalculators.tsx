@@ -12,6 +12,7 @@ import { apiClient } from "@/lib/api";
 
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import A2LCalculator from "@/components/calculators/A2LCalculator";
+import SubcoolingCalculator from "@/components/calculators/SubcoolingCalculator";
 import PsychrometricCalculator from "@/components/calculators/PsychrometricCalculator";
 import { SaveCalculation } from "@/components/SaveCalculation";
 import { Badge } from "@/components/ui/badge";
@@ -69,6 +70,10 @@ export default function DIYCalculators() {
                 <ShieldAlert className="w-4 h-4 mr-2" />
                 A2L Safety
               </TabsTrigger>
+              <TabsTrigger value="subcooling" className="rounded-full px-6 py-2 data-[state=active]:bg-sky-500 data-[state=active]:text-white transition-all">
+                <Thermometer className="w-4 h-4 mr-2" />
+                Subcooling
+              </TabsTrigger>
               <TabsTrigger value="psychrometric" className="rounded-full px-6 py-2 data-[state=active]:bg-purple-600 data-[state=active]:text-white transition-all">
                 <Cloud className="w-4 h-4 mr-2" />
                 Psychrometric
@@ -86,6 +91,10 @@ export default function DIYCalculators() {
 
           <TabsContent value="a2l" className="animate-in fade-in slide-in-from-bottom-4 duration-500 focus-visible:outline-none">
             <A2LCalculator saveCalculation={saveCalculation} />
+          </TabsContent>
+
+          <TabsContent value="subcooling" className="animate-in fade-in slide-in-from-bottom-4 duration-500 focus-visible:outline-none">
+            <SubcoolingCalculator saveCalculation={saveCalculation} />
           </TabsContent>
 
           <TabsContent value="psychrometric" className="animate-in fade-in slide-in-from-bottom-4 duration-500 focus-visible:outline-none">

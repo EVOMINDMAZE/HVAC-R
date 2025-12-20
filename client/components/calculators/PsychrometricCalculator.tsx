@@ -1,7 +1,6 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TargetSuperheatCalculator from "./TargetSuperheatCalculator";
-import SubcoolingCalculator from "./SubcoolingCalculator";
 import AirDensityCalculator from "./AirDensityCalculator";
 import { Lock, Thermometer, Cloud } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -47,10 +46,6 @@ export default function PsychrometricCalculator({ saveCalculation, userTier = "p
                         <Thermometer className="w-4 h-4" />
                         Target Superheat
                     </TabsTrigger>
-                    <TabsTrigger value="subcooling" className="flex items-center gap-2">
-                        <Thermometer className="w-4 h-4 text-sky-500" />
-                        Target Subcooling
-                    </TabsTrigger>
                     <TabsTrigger value="density" className="flex items-center gap-2">
                         <Cloud className="w-4 h-4" />
                         Air Density
@@ -60,10 +55,6 @@ export default function PsychrometricCalculator({ saveCalculation, userTier = "p
                 <div className="mt-6">
                     <TabsContent value="superheat" className="m-0 focus-visible:outline-none animate-in fade-in zoom-in-95 duration-300">
                         <TargetSuperheatCalculator saveCalculation={saveCalculation} />
-                    </TabsContent>
-
-                    <TabsContent value="subcooling" className="m-0 focus-visible:outline-none animate-in fade-in zoom-in-95 duration-300">
-                        <SubcoolingCalculator saveCalculation={saveCalculation} />
                     </TabsContent>
 
                     <TabsContent value="density" className="m-0 focus-visible:outline-none animate-in fade-in zoom-in-95 duration-300">
