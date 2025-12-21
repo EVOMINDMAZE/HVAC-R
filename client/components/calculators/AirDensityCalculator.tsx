@@ -39,7 +39,7 @@ export default function AirDensityCalculator({ saveCalculation }: AirDensityCalc
         // Convert Inputs to Standard Units (Meters, Celsius) for Calculation
         let h = parseFloat(inputs.altitude); // ft or m
         let t = parseFloat(inputs.temperature); // F or C
-        let rh = parseFloat(inputs.humidity) / 100;
+        const rh = parseFloat(inputs.humidity) / 100;
 
         if (isNaN(h) || isNaN(t) || isNaN(rh)) return;
 

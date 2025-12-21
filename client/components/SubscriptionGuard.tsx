@@ -4,7 +4,12 @@ import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { supabase } from "@/lib/supabase";
 import { Loader2 } from "lucide-react";
 
-export function SubscriptionGuard() {
+interface SubscriptionGuardProps {
+    children?: React.ReactNode;
+    requiredTier?: string; // e.g. "pro", "business" - currently unused but enabling prop
+}
+
+export function SubscriptionGuard({ children, requiredTier }: SubscriptionGuardProps) {
     const { user } = useSupabaseAuth();
     const [loading, setLoading] = useState(true);
     const [hasSubscription, setHasSubscription] = useState(false);
@@ -27,8 +32,7 @@ export function SubscriptionGuard() {
                     console.error("Error checking subscription:", error);
                 }
 
-                // Check if status is active or trialing (if we add trials later)
-                // For now, just 'active'
+                // Check if status is active or trialing
                 setHasSubscription(data?.status === "active");
             } catch (err) {
                 console.error("Failed to check subscription:", err);
@@ -52,5 +56,6 @@ export function SubscriptionGuard() {
         return <Navigate to="/pricing" replace />;
     }
 
-    return <Outlet />;
+    // Support both Wrapper (children) and Outlet (Route) patterns
+    return children ? <>{children}</> : <Outlet />;
 }

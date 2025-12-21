@@ -444,7 +444,7 @@ function normalizeOllamaResponse(resp: any) {
     }
   }
 
-  let parsed = tryParseJson(content);
+  const parsed = tryParseJson(content);
 
   if (parsed && typeof parsed === "object") {
     out.summary = parsed.summary ?? null;

@@ -23,6 +23,7 @@ import { RefrigerantComparison } from "@/pages/RefrigerantComparison";
 import { CascadeCycle } from "@/pages/CascadeCycle";
 import { About } from "@/pages/About";
 import { Blog } from "@/pages/Blog";
+import { BlogPost } from "@/pages/BlogPost";
 import { Contact } from "@/pages/Contact";
 import { Documentation } from "@/pages/Documentation";
 import { HelpCenter } from "@/pages/HelpCenter";
@@ -31,6 +32,7 @@ import { Privacy } from "@/pages/Privacy";
 import { TermsOfService } from "@/pages/TermsOfService";
 import NotFound from "@/pages/NotFound";
 import { WebStories } from "@/pages/WebStories";
+import { Podcasts } from "@/pages/Podcasts";
 import { ErrorModal } from "@/components/ErrorModal";
 import { SupportBar } from "@/components/SupportBar";
 import { Layout } from "@/components/Layout";
@@ -97,53 +99,35 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 }
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useLocation } from "react-router-dom";
-
-const PageTransition = ({ children }: { children: React.ReactNode }) => (
-  <motion.div
-    initial={{ opacity: 0, filter: "blur(5px)" }}
-    animate={{ opacity: 1, filter: "blur(0px)" }}
-    exit={{ opacity: 0, filter: "blur(5px)" }}
-    transition={{ duration: 0.3, ease: "easeInOut" }}
-    className="w-full"
-  >
-    {children}
-  </motion.div>
-);
 
 function AppRoutes() {
-  const location = useLocation();
+  const location = window.location;
+
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        {/* Public routes */}
-        <Route
-          path="/"
-          element={
-            <PublicRoute>
-              <PageTransition>
-                <Landing />
-              </PageTransition>
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/calculators/a2l-refrigerant-charge"
-          element={
-            <PublicRoute>
-              <PageTransition>
-                <A2LLandingPage />
-              </PageTransition>
-            </PublicRoute>
-          }
-        />
+        {/* Public Routes */}
+        <Route path="/" element={<Landing />} />
+        <Route path="/a2l-resources" element={<A2LLandingPage />} />
+        <Route path="/features" element={<Features />} />
+        <Route path="/pricing" element={<Pricing />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/stories" element={<WebStories />} />
+        <Route path="/podcasts" element={<Podcasts />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/documentation" element={<Documentation />} />
+        <Route path="/help" element={<HelpCenter />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<TermsOfService />} />
+
+        {/* Auth Routes */}
         <Route
           path="/signin"
           element={
             <PublicRoute>
-              <PageTransition>
-                <SignIn />
-              </PageTransition>
+              <SignIn />
             </PublicRoute>
           }
         />
@@ -151,86 +135,133 @@ function AppRoutes() {
           path="/signup"
           element={
             <PublicRoute>
-              <PageTransition>
-                <SignUp />
-              </PageTransition>
+              <SignUp />
             </PublicRoute>
           }
         />
-        <Route path="/features" element={<PageTransition><Features /></PageTransition>} />
-        <Route path="/pricing" element={<PageTransition><Pricing /></PageTransition>} />
-        <Route path="/about" element={<PageTransition><About /></PageTransition>} />
-        <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
-        <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
-        <Route path="/documentation" element={<PageTransition><Documentation /></PageTransition>} />
-        <Route path="/help-center" element={<PageTransition><HelpCenter /></PageTransition>} />
-        <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
-        <Route path="/terms" element={<PageTransition><TermsOfService /></PageTransition>} />
-        <Route path="/stripe-debug" element={<PageTransition><StripeDebug /></PageTransition>} />
-        <Route path="/stories" element={<PageTransition><WebStories /></PageTransition>} />
 
-        {/* Protected routes */}
-        <Route element={<ProtectedRoute><Outlet /></ProtectedRoute>}>
-          <Route path="/dashboard" element={<PageTransition><Dashboard /></PageTransition>} />
-          <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
-          <Route path="/troubleshooting" element={<PageTransition><Troubleshooting /></PageTransition>} />
-          <Route path="/estimate-builder" element={<PageTransition><EstimateBuilder /></PageTransition>} />
+        {/* Debug Routes */}
+        <Route path="/stripe-debug" element={<StripeDebug />} />
 
-          {/* Pro Features (Gated) */}
-          <Route element={<SubscriptionGuard />}>
-            <Route path="/jobs" element={<PageTransition><Jobs /></PageTransition>} />
-            <Route path="/advanced-reporting" element={<PageTransition><AdvancedReporting /></PageTransition>} />
-          </Route>
+        {/* Protected Dashboard Routes */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/history"
+          element={
+            <ProtectedRoute>
+              <History />
+            </ProtectedRoute>
+          }
+        />
 
-          {/* Free Features */}
-          <Route path="/standard-cycle" element={<PageTransition><StandardCycle /></PageTransition>} />
-          <Route path="/refrigerant-comparison" element={<PageTransition><RefrigerantComparison /></PageTransition>} />
-          <Route path="/cascade-cycle" element={<PageTransition><CascadeCycle /></PageTransition>} />
-          <Route path="/diy-calculators" element={<PageTransition><DIYCalculators /></PageTransition>} />
-          <Route path="/history" element={<PageTransition><History /></PageTransition>} />
-          <Route path="/projects" element={<PageTransition><Projects /></PageTransition>} />
-        </Route>
+        {/* Protected Feature Routes */}
+        <Route
+          path="/advanced-reporting"
+          element={
+            <ProtectedRoute>
+              <SubscriptionGuard requiredTier="pro">
+                <AdvancedReporting />
+              </SubscriptionGuard>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/troubleshooting"
+          element={
+            <ProtectedRoute>
+              <Troubleshooting />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/diy-calculators"
+          element={
+            <ProtectedRoute>
+              <DIYCalculators />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/estimate-builder"
+          element={
+            <ProtectedRoute>
+              <EstimateBuilder />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/jobs"
+          element={
+            <ProtectedRoute>
+              <Jobs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects"
+          element={
+            <ProtectedRoute>
+              <Projects />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tools/standard-cycle"
+          element={
+            <ProtectedRoute>
+              <StandardCycle />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tools/refrigerant-comparison"
+          element={
+            <ProtectedRoute>
+              <RefrigerantComparison />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tools/cascade-cycle"
+          element={
+            <ProtectedRoute>
+              <CascadeCycle />
+            </ProtectedRoute>
+          }
+        />
 
-        {/* Catch all */}
-        <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+        {/* 404 Route */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>
   );
 }
 
-function App() {
-  const { addToast } = useToast();
-
-  useEffect(() => {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.ready.then((registration) => {
-        // Check if the service worker is active and controlling the page
-        if (registration.active) {
-          // Optional: Check for updates or just confirm it's running
-        }
-      });
-
-      // Listen for new service workers (updates or first install)
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        addToast({
-          title: "Ready for offline use",
-          description: "The app has been cached and is ready to work offline.",
-          type: "success"
-        });
-      });
-    }
-  }, [addToast]);
-
+export default function App() {
   return (
     <SupabaseAuthProvider>
-      <BrowserRouter>
-        <AppRoutes />
-        {/* Global UI components */}
-        <ErrorModal />
-        <SupportBar />
-      </BrowserRouter>
+      <ToastProvider>
+        <BrowserRouter>
+          <AppRoutes />
+          <SupportBar />
+          <ErrorModal />
+        </BrowserRouter>
+      </ToastProvider>
     </SupabaseAuthProvider>
   );
 }
-
-export default App;

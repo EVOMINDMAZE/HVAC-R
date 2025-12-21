@@ -12,6 +12,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "lint": "eslint .",
     "build": "npm run build:client && npm run build:server",
     "build:client": "vite build",
     "build:server": "vite build --config vite.config.server.ts",
@@ -22,6 +23,8 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@sanity/client": "^7.13.2",
+    "@sanity/image-url": "^2.0.2",
     "@stripe/stripe-js": "^7.6.1",
     "@supabase/supabase-js": "^2.52.1",
     "@types/bcryptjs": "^2.4.6",
@@ -34,9 +37,10 @@
     "jsonwebtoken": "^9.0.2",
     "mathjs": "^15.1.0",
     "pdf-lib": "^1.17.1",
+    "react-markdown": "^10.1.0",
     "stripe": "^18.3.0",
     "uuid": "^11.1.0",
-    "zod": "^3.23.8"
+    "zod": "^4.2.1"
   },
   "devDependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -71,7 +75,7 @@
     "@react-three/drei": "^10.1.2",
     "@react-three/fiber": "^8.18.0",
     "@swc/core": "^1.11.24",
-    "@tailwindcss/typography": "^0.5.15",
+    "@tailwindcss/typography": "^0.5.19",
     "@tanstack/react-query": "^5.56.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
@@ -87,6 +91,9 @@
     "cors": "^2.8.5",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.3.0",
+    "eslint": "^9.39.2",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.26",
     "framer-motion": "^12.6.2",
     "globals": "^15.9.0",
     "input-otp": "^1.2.4",
@@ -109,6 +116,7 @@
     "three": "^0.176.0",
     "tsx": "^4.7.0",
     "typescript": "^5.5.3",
+    "typescript-eslint": "^8.50.0",
     "vaul": "^0.9.3",
     "vite": "^6.2.2",
     "vite-plugin-pwa": "^1.2.0",

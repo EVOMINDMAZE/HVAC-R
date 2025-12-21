@@ -6,7 +6,7 @@ import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
-import { NAV_ITEMS } from "@/components/navigation";
+import { NAV_ITEMS, NAV_GROUPS } from "@/components/navigation";
 
 interface HeaderProps {
   variant?: "landing" | "dashboard";
@@ -209,20 +209,49 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
             </div>
           </div>
 
+
           {/* Mobile Navigation */}
           {isMobileMenuOpen && (
             <div className="md:hidden mt-4 pt-4 border-t border-gray-100">
               <nav className="flex flex-col space-y-3">
-                {NAV_ITEMS.map((item) => (
-                  <Link
-                    key={item.to}
-                    to={item.to}
-                    className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
+                {NAV_GROUPS.map((group, idx) => {
+                  if (group.type === 'link' && group.item) {
+                    const Icon = group.item.icon;
+                    return (
+                      <Link
+                        key={group.item.to}
+                        to={group.item.to}
+                        className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium flex items-center gap-2"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <Icon className="h-4 w-4" />
+                        {group.item.label}
+                      </Link>
+                    )
+                  }
+                  if (group.type === 'dropdown' && group.items) {
+                    return (
+                      <div key={idx} className="flex flex-col space-y-2">
+                        <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider pl-1 pt-2">{group.label}</div>
+                        {group.items.map(subItem => {
+                          const SubIcon = subItem.icon;
+                          return (
+                            <Link
+                              key={subItem.to}
+                              to={subItem.to}
+                              className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium pl-4 flex items-center gap-2"
+                              onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                              <SubIcon className="h-4 w-4" />
+                              {subItem.label}
+                            </Link>
+                          )
+                        })}
+                      </div>
+                    )
+                  }
+                  return null;
+                })}
                 <div className="pt-3 border-t border-gray-100">
                   <Button
                     variant="outline"

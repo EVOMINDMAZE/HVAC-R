@@ -1,4 +1,7 @@
 import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
+// @ts-expect-error - typography does not have types exposed in this way usually but works in build
+import typography from "@tailwindcss/typography";
 
 export default {
   darkMode: ["class"],
@@ -110,5 +113,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [animate, typography],
 } satisfies Config;

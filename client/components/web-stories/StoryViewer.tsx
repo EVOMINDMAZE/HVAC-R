@@ -96,9 +96,15 @@ export function StoryViewer({ story, onClose, onNextStory, onPrevStory }: StoryV
     }, [handleNext, handlePrev, onClose]);
 
     return (
-        <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
+        <div
+            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center"
+            onClick={onClose}
+        >
             {/* Mobile-first Container */}
-            <div className="relative w-full h-full md:w-[400px] md:h-[90vh] md:rounded-2xl overflow-hidden bg-gray-900 shadow-2xl">
+            <div
+                className="relative w-full h-full md:w-[400px] md:h-[90vh] md:rounded-2xl overflow-hidden bg-gray-900 shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+            >
 
                 {/* Progress Bars */}
                 <div className="absolute top-4 left-0 right-0 z-20 flex gap-1 px-2">

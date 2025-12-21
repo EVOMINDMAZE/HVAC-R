@@ -3,19 +3,11 @@ import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, User, ArrowRight, TrendingUp, Clock } from "lucide-react";
+import { Calendar, User, ArrowRight, TrendingUp, Clock, AlertTriangle } from "lucide-react";
 import { motion } from "framer-motion";
-
-const blogPosts: Array<{
-  id: number;
-  title: string;
-  excerpt: string;
-  author: string;
-  date: string;
-  category: string;
-  readTime: string;
-  featured: boolean;
-}> = [];
+import { useSanityPosts, getSanityImageUrl, getAuthorName, getCategory } from "@/lib/sanity";
+import { format } from "date-fns";
+import { Link } from "react-router-dom";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -33,8 +25,18 @@ const itemVariants = {
 };
 
 export function Blog() {
-  const featuredPost = blogPosts.find((post) => post.featured);
-  const regularPosts = blogPosts.filter((post) => !post.featured);
+  const { posts, loading, error } = useSanityPosts();
+
+  const featuredPost = posts.length > 0 ? posts[0] : null;
+  const regularPosts = posts.length > 1 ? posts.slice(1) : [];
+
+  const formatDate = (dateString: string) => {
+    try {
+      return format(new Date(dateString), "MMMM d, yyyy");
+    } catch (e) {
+      return dateString;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-blue-500/30">
@@ -68,141 +70,181 @@ export function Blog() {
             </p>
           </motion.div>
 
-          {/* Featured Post */}
-          {featuredPost && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="mb-16"
-            >
-              <Card className="bg-card/50 backdrop-blur-md shadow-xl border-border overflow-hidden group hover:border-blue-500/30 transition-colors duration-300">
-                <div className="grid md:grid-cols-2 gap-0">
-                  <div className="p-8 md:p-12 flex flex-col justify-center">
-                    <div className="flex items-center space-x-3 mb-6">
-                      <Badge className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-200 border-none">
-                        {featuredPost.category}
-                      </Badge>
-                      <div className="flex items-center text-sm text-muted-foreground font-medium">
-                        <TrendingUp className="h-4 w-4 mr-1 text-green-500" />
-                        Trending Now
-                      </div>
-                    </div>
-
-                    <h2 className="text-3xl md:text-4xl font-bold mb-6 text-foreground group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                      {featuredPost.title}
-                    </h2>
-
-                    <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
-                      {featuredPost.excerpt}
-                    </p>
-
-                    <div className="flex flex-wrap items-center text-sm text-muted-foreground mb-8 gap-4">
-                      <div className="flex items-center">
-                        <User className="h-4 w-4 mr-2 text-blue-500" />
-                        {featuredPost.author}
-                      </div>
-                      <div className="flex items-center">
-                        <Calendar className="h-4 w-4 mr-2 text-blue-500" />
-                        {new Date(featuredPost.date).toLocaleDateString()}
-                      </div>
-                      <div className="flex items-center">
-                        <Clock className="h-4 w-4 mr-2 text-blue-500" />
-                        {featuredPost.readTime}
-                      </div>
-                    </div>
-
-                    <Button size="lg" className="w-fit bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/20 group-hover:translate-x-1 transition-transform">
-                      Read Article <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </div>
-
-                  <div className="bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-950/40 dark:to-purple-950/40 flex items-center justify-center p-12 min-h-[300px]">
-                    <div className="relative w-full max-w-sm aspect-video bg-white dark:bg-slate-900 rounded-xl shadow-2xl flex items-center justify-center border border-border group-hover:scale-105 transition-transform duration-500">
-                      <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-full">
-                        <TrendingUp className="h-12 w-12 text-blue-600 dark:text-blue-400" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </motion.div>
+          {/* Loading State */}
+          {loading && (
+            <div className="flex justify-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
           )}
 
-          {/* Recent Posts Grid */}
-          <div className="mb-20">
-            <h3 className="text-2xl font-bold mb-8">Latest Articles</h3>
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-            >
-              {regularPosts.map((post) => (
-                <motion.div key={post.id} variants={itemVariants}>
-                  <Card className="h-full bg-card/50 backdrop-blur-sm shadow-lg border-border hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group">
-                    <CardHeader className="pb-4">
-                      <div className="flex justify-between items-start mb-4">
-                        <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                          {post.category}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground font-medium">{post.readTime}</span>
-                      </div>
-                      <CardTitle className="text-xl font-bold text-foreground group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
-                        {post.title}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex-grow flex flex-col">
-                      <p className="text-muted-foreground mb-6 line-clamp-3">
-                        {post.excerpt}
-                      </p>
-                      <div className="mt-auto pt-4 border-t border-border flex items-center justify-between text-sm text-muted-foreground">
-                        <div className="flex items-center">
-                          <User className="h-3 w-3 mr-2" />
-                          {post.author}
+          {/* Error State */}
+          {error && (
+            <div className="text-center py-10 text-red-500">
+              <AlertTriangle className="h-10 w-10 mx-auto mb-4" />
+              <p>Unable to load posts. Please try again later.</p>
+            </div>
+          )}
+
+          {!loading && !error && (
+            <>
+              {/* Featured Post */}
+              {featuredPost && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="mb-16"
+                >
+                  <Card className="bg-card/50 backdrop-blur-md shadow-xl border-border overflow-hidden group hover:border-blue-500/30 transition-colors duration-300">
+                    <div className="grid md:grid-cols-2 gap-0">
+                      <div className="p-8 md:p-12 flex flex-col justify-center">
+                        <div className="flex items-center space-x-3 mb-6">
+                          <Badge className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-200 border-none">
+                            {getCategory(featuredPost)}
+                          </Badge>
+                          <div className="flex items-center text-sm text-muted-foreground font-medium">
+                            <TrendingUp className="h-4 w-4 mr-1 text-green-500" />
+                            Trending Now
+                          </div>
                         </div>
-                        <div className="flex items-center">
-                          <Calendar className="h-3 w-3 mr-2" />
-                          {new Date(post.date).toLocaleDateString()}
+
+                        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-foreground group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                          {featuredPost.title}
+                        </h2>
+
+                        <p className="text-muted-foreground text-lg mb-8 leading-relaxed line-clamp-3">
+                          {featuredPost.excerpt}
+                        </p>
+
+                        <div className="flex flex-wrap items-center text-sm text-muted-foreground mb-8 gap-4">
+                          <div className="flex items-center">
+                            <User className="h-4 w-4 mr-2 text-blue-500" />
+                            {getAuthorName(featuredPost)}
+                          </div>
+                          <div className="flex items-center">
+                            <Calendar className="h-4 w-4 mr-2 text-blue-500" />
+                            {formatDate(featuredPost.publishedAt)}
+                          </div>
+                          <div className="flex items-center">
+                            <Clock className="h-4 w-4 mr-2 text-blue-500" />
+                            5 min read
+                          </div>
                         </div>
+
+
+
+                        <Link to={featuredPost.slug?.current ? `/blog/${featuredPost.slug.current}` : '#'}>
+                          <Button className="w-fit bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8 group-hover:shadow-lg group-hover:shadow-blue-500/25 transition-all">
+                            Read Case Study <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                          </Button>
+                        </Link>
+
+
                       </div>
-                    </CardContent>
+                      <div className="relative h-64 md:h-auto overflow-hidden">
+                        <div className="absolute inset-0 bg-blue-900/10 group-hover:bg-transparent transition-colors z-10" />
+                        <img
+                          src={getSanityImageUrl(featuredPost.mainImage)}
+                          alt="Featured Blog Post"
+                          className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+                        />
+                      </div>
+                    </div>
                   </Card>
                 </motion.div>
-              ))}
-            </motion.div>
-          </div>
+              )}
 
-          {/* Newsletter Signup */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="relative rounded-3xl overflow-hidden bg-slate-900 text-white p-8 md:p-16 text-center"
-          >
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-blue-500/20 to-purple-500/20 blur-[100px] pointer-events-none rounded-full" />
+              {/* Latest Articles Grid */}
+              <div className="mb-12">
+                <h3 className="text-2xl font-bold mb-8 flex items-center">
+                  <span className="w-1 h-8 bg-blue-600 mr-4 rounded-full"></span>
+                  Latest Articles
+                </h3>
 
-            <div className="relative z-10 max-w-2xl mx-auto">
-              <h2 className="text-3xl font-bold mb-4">Stay in the Loop</h2>
-              <p className="text-slate-300 text-lg mb-8">
+                <motion.div
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                  className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+                >
+                  {regularPosts.map((post) => (
+                    <motion.div key={post._id} variants={itemVariants}>
+                      <Card className="h-full bg-card/50 backdrop-blur-sm hover:shadow-lg hover:border-blue-500/30 transition-all duration-300 group flex flex-col overflow-hidden">
+                        <div className="relative h-48 overflow-hidden">
+                          <Badge className="absolute top-4 left-4 z-20 bg-background/80 backdrop-blur-md text-foreground hover:bg-background">
+                            {getCategory(post)}
+                          </Badge>
+                          <img
+                            src={getSanityImageUrl(post.mainImage)}
+                            alt={post.title}
+                            className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                          />
+                        </div>
+                        <CardHeader>
+                          <div className="flex items-center text-xs text-muted-foreground mb-3 space-x-3">
+                            <span className="flex items-center">
+                              <Calendar className="h-3 w-3 mr-1" />
+                              {formatDate(post.publishedAt)}
+                            </span>
+                            <span className="flex items-center">
+                              <Clock className="h-3 w-3 mr-1" />
+                              5 min
+                            </span>
+                          </div>
+                          <CardTitle className="text-xl group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+                            {post.title}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex-grow flex flex-col justify-between">
+                          <p className="text-muted-foreground mb-6 line-clamp-3 text-sm">
+                            {post.excerpt}
+                          </p>
+
+
+
+                          <Link to={post.slug?.current ? `/blog/${post.slug.current}` : '#'}>
+                            <Button variant="ghost" className="w-full justify-between hover:bg-blue-50 dark:hover:bg-blue-900/20 group/btn">
+                              Read Article
+                              <ArrowRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform text-blue-500" />
+                            </Button>
+                          </Link>
+
+
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </div>
+            </>
+          )}
+
+          {/* Newsletter Section - Keeping Static for Now */}
+          <div className="mt-24 bg-gradient-to-r from-blue-900/20 to-purple-900/20 rounded-3xl p-1 relative overflow-hidden">
+            <div className="absolute inset-0 bg-grid-white/5 mask-image-gradient" />
+            <div className="bg-card/40 backdrop-blur-xl rounded-[20px] p-8 md:p-12 text-center relative z-10">
+              <span className="inline-block p-3 rounded-2xl bg-blue-500/10 mb-6">
+                <AlertTriangle className="h-8 w-8 text-blue-500" />
+              </span>
+              <h3 className="text-3xl font-bold mb-4">Stay in the Loop</h3>
+              <p className="text-muted-foreground max-w-2xl mx-auto mb-8 text-lg">
                 Get the latest engineering insights, software updates, and industry news delivered directly to your inbox.
               </p>
-              <form className="flex flex-col sm:flex-row gap-4" onSubmit={(e) => e.preventDefault()}>
-                <div className="flex-grow">
-                  <input
-                    type="email"
-                    placeholder="Enter your work email"
-                    className="w-full h-12 px-4 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                  />
-                </div>
-                <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white h-12 px-8 rounded-xl font-semibold shadow-lg shadow-blue-600/20">
+              <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                <input
+                  type="email"
+                  placeholder="Enter your email address"
+                  className="flex-grow px-4 py-3 rounded-lg bg-background/50 border border-border focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                />
+                <Button className="bg-blue-600 hover:bg-blue-700">
                   Subscribe
                 </Button>
-              </form>
-              <p className="text-xs text-slate-500 mt-4">No spam, unsubscribe anytime.</p>
+              </div>
+              <p className="text-xs text-muted-foreground mt-4">
+                No spam, ever. Unsubscribe at any time.
+              </p>
             </div>
-          </motion.div>
+          </div>
 
         </div>
       </main>

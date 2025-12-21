@@ -52,7 +52,7 @@ export const saveCalculation: RequestHandler = async (req, res) => {
     // 2. Check limits
     if (plan.calculations_limit > -1) {
       const now = new Date();
-      let startDate = new Date();
+      const startDate = new Date();
 
       if (plan.limit_period === 'weekly') {
         startDate.setDate(now.getDate() - 7);
@@ -284,7 +284,7 @@ export const getUserStats: RequestHandler = async (req, res) => {
 
     // Calculate start date for usage
     const now = new Date();
-    let startDate = new Date();
+    const startDate = new Date();
     if (plan.limit_period === 'weekly') {
       startDate.setDate(now.getDate() - 7);
     } else {
