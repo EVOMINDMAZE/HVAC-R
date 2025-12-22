@@ -355,10 +355,9 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 </span>
                 <Link to="/dashboard">
                   <Button
-                    variant="ghost"
-                    className="text-blue-600 hover:text-blue-700 lg:hidden"
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md shadow-blue-500/20 transition-all hover:scale-105"
                   >
-                    Dashboard
+                    Go to Dashboard
                   </Button>
                 </Link>
                 <Button
