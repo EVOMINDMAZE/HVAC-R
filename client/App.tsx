@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom
 import { useEffect } from "react";
 import { SupabaseAuthProvider, useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { ToastProvider, useToast } from "@/hooks/useToast";
+import { ThemeProvider } from "@/components/theme-provider";
 import "@/utils/authErrorHandler"; // Import to setup global error handling
 import { Landing } from "@/pages/Landing";
 import { A2LLandingPage } from "@/pages/A2LLandingPage";
@@ -256,11 +257,13 @@ export default function App() {
   return (
     <SupabaseAuthProvider>
       <ToastProvider>
-        <BrowserRouter>
-          <AppRoutes />
-          <SupportBar />
-          <ErrorModal />
-        </BrowserRouter>
+        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+          <BrowserRouter>
+            <AppRoutes />
+            <SupportBar />
+            <ErrorModal />
+          </BrowserRouter>
+        </ThemeProvider>
       </ToastProvider>
     </SupabaseAuthProvider>
   );

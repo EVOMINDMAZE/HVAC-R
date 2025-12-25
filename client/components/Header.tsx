@@ -70,7 +70,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
     }, []);
 
     return (
-      <div className="bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
+      <div className="bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm shadow-sm transition-colors z-50 relative">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-4 min-w-0">
