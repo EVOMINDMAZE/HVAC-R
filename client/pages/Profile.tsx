@@ -33,6 +33,7 @@ import {
   Trash2,
   Camera,
 } from "lucide-react";
+import CompanySettings from "./CompanySettings";
 
 // User data comes from Supabase authentication and real backend data
 
@@ -367,6 +368,12 @@ export function Profile() {
               className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
             >
               Preferences
+            </TabsTrigger>
+            <TabsTrigger
+              value="company"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
+              Company
             </TabsTrigger>
           </TabsList>
 
@@ -921,6 +928,11 @@ export function Profile() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Company Tab */}
+          <TabsContent value="company" className="space-y-6">
+            <CompanySettings />
           </TabsContent>
         </Tabs>
       </div>

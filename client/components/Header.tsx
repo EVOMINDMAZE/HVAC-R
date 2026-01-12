@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import { NAV_ITEMS, NAV_GROUPS } from "@/components/navigation";
+import { JobSelector } from "@/components/JobSelector";
 
 interface HeaderProps {
   variant?: "landing" | "dashboard";
@@ -93,6 +94,10 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                   className="h-10 md:h-12 w-auto object-contain mix-blend-multiply dark:mix-blend-screen dark:invert scale-[1.25] origin-left"
                 />
               </Link>
+
+              <div className="ml-2 md:ml-4">
+                <JobSelector />
+              </div>
 
               {/* Desktop search */}
               <div className="hidden md:block ml-6">

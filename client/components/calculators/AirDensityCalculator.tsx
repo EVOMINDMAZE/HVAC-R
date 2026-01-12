@@ -4,9 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Cloud, Save, Gauge, ArrowDown } from "lucide-react";
+import { Cloud, Save, Gauge, ArrowDown, Loader2 } from "lucide-react";
 import { SaveCalculation } from "@/components/SaveCalculation";
 import { Badge } from "@/components/ui/badge";
+import { useGeolocation } from "@/hooks/useGeolocation";
+import { useWeatherAutoFill } from "@/hooks/useWeatherAutoFill";
 
 interface AirDensityCalculatorProps {
     saveCalculation?: any;
@@ -26,6 +28,42 @@ export default function AirDensityCalculator({ saveCalculation }: AirDensityCalc
         impact: number;
         derating: number;
     } | null>(null);
+
+    // Weather Intelligence
+    const { location, getLocation, loading: geoLoading } = useGeolocation();
+    const { weather, loading: weatherLoading, fetchWeather } = useWeatherAutoFill();
+
+    const handleAutoFillWeather = async () => {
+        if (!location) {
+            getLocation();
+            return;
+        }
+        await fetchWeather(location.lat, location.lng);
+    };
+
+    useEffect(() => {
+        if (location && !weather && geoLoading === false) {
+            fetchWeather(location.lat, location.lng);
+        }
+    }, [location]);
+
+    useEffect(() => {
+        if (weather) {
+            // Convert to currently selected unit
+            let temp = weather.tempF;
+            if (units === "metric") { // weather is usually F from hook default? check backend. 
+                // Wait, useWeatherAutoFill returns tempF and tempC usually or just one. 
+                // The hook implementation shows: tempF. 
+                temp = (weather.tempF - 32) * 5 / 9;
+            }
+
+            setInputs(prev => ({
+                ...prev,
+                temperature: temp.toFixed(1),
+                humidity: weather.humidity.toString()
+            }));
+        }
+    }, [weather, units]);
 
     const calculate = () => {
         // Constants
@@ -75,9 +113,9 @@ export default function AirDensityCalculator({ saveCalculation }: AirDensityCalc
 
         // 6. Impact / Derating
         // Standard air density at sea level is approx 0.075 lb/ft3 (1.225 kg/m3)
-        const stdDensity = 0.075; // lb/ft3 check (1.225 * .062428 = 0.076) close enough for std approx
+        // const stdDensity = 0.075; 
 
-        // Calculate density ratio relative to STANDARD (Sea Level, 15C/59F, 0% RH? No, standard atmosphere usually implies dry or specific humidity)
+        // Calculate density ratio relative to STANDARD 
         // Using 1.225 kg/m3 as simplified standard reference
         const ratio = density / 1.225;
         const impact = (1 - ratio) * 100; // % Performance Loss
@@ -143,8 +181,25 @@ export default function AirDensityCalculator({ saveCalculation }: AirDensityCalc
                             </div>
 
                             <div className="space-y-3">
-                                <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-xs">
-                                    Air Temperature ({units === "imperial" ? "°F" : "°C"})
+                                <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-xs flex justify-between">
+                                    <span>Air Temperature ({units === "imperial" ? "°F" : "°C"})</span>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={handleAutoFillWeather}
+                                        disabled={weatherLoading || geoLoading}
+                                        className="h-5 px-2 text-[10px] text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                                    >
+                                        {weatherLoading || geoLoading ? (
+                                            <Loader2 className="h-3 w-3 animate-spin" />
+                                        ) : (
+                                            <div className="flex items-center gap-1">
+                                                <Cloud className="h-3 w-3" />
+                                                <span>Auto</span>
+                                            </div>
+                                        )}
+                                    </Button>
                                 </Label>
                                 <div className="relative group">
                                     <span className="absolute left-3 top-2.5 text-slate-400">🌡️</span>
@@ -158,8 +213,25 @@ export default function AirDensityCalculator({ saveCalculation }: AirDensityCalc
                             </div>
 
                             <div className="space-y-3">
-                                <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-xs">
-                                    Relative Humidity (%)
+                                <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-xs flex justify-between">
+                                    <span>Relative Humidity (%)</span>
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={handleAutoFillWeather}
+                                        disabled={weatherLoading || geoLoading}
+                                        className="h-5 px-2 text-[10px] text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                                    >
+                                        {weatherLoading || geoLoading ? (
+                                            <Loader2 className="h-3 w-3 animate-spin" />
+                                        ) : (
+                                            <div className="flex items-center gap-1">
+                                                <Cloud className="h-3 w-3" />
+                                                <span>Auto</span>
+                                            </div>
+                                        )}
+                                    </Button>
                                 </Label>
                                 <div className="relative group">
                                     <span className="absolute left-3 top-2.5 text-slate-400">💧</span>

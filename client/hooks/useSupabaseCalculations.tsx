@@ -409,7 +409,14 @@ export function useSupabaseCalculations() {
     inputs: any,
     results: any,
     name?: string,
-    options?: { silent?: boolean },
+    options?: {
+      silent?: boolean;
+      project_id?: string;
+      location_lat?: number;
+      location_lng?: number;
+      weather_data?: any;
+      evidence_urls?: string[];
+    },
   ): Promise<Calculation | null> => {
     const silent = options?.silent === true;
 
@@ -437,6 +444,11 @@ export function useSupabaseCalculations() {
           inputs: inputs,
           results: results,
           name: name,
+          project_id: options?.project_id,
+          location_lat: options?.location_lat,
+          location_lng: options?.location_lng,
+          weather_data: options?.weather_data,
+          evidence_urls: options?.evidence_urls,
         })
         .select()
         .single();

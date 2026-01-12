@@ -26,6 +26,7 @@ import {
   Sparkles,
   Layers,
 } from "lucide-react";
+import { RiskShield } from "@/components/OwnerDashboard/RiskShield";
 
 interface QuickStatsProps {
   stats: DashboardStats;
@@ -453,6 +454,7 @@ export function Dashboard() {
 
           <aside className="space-y-8 lg:sticky lg:top-24">
             <QuickActions />
+            <RiskShield />
             <ValueProposition />
           </aside>
         </div>

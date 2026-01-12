@@ -148,6 +148,102 @@ export interface Database {
           updated_at?: string;
         };
       };
+      companies: {
+        Row: {
+          id: string;
+          user_id: string;
+          name: string;
+          logo_url: string | null;
+          primary_color: string | null;
+          website: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          name: string;
+          logo_url?: string | null;
+          primary_color?: string | null;
+          website?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          name?: string;
+          logo_url?: string | null;
+          primary_color?: string | null;
+          website?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      licenses: {
+        Row: {
+          key: string;
+          user_id: string;
+          status: 'active' | 'past_due' | 'canceled' | 'inactive';
+          plan_tier: string | null;
+          expires_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          key?: string;
+          user_id: string;
+          status?: 'active' | 'past_due' | 'canceled' | 'inactive';
+          plan_tier?: string | null;
+          expires_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          key?: string;
+          user_id?: string;
+          status?: 'active' | 'past_due' | 'canceled' | 'inactive';
+          plan_tier?: string | null;
+          expires_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      workflow_requests: {
+        Row: {
+          id: string;
+          user_id: string;
+          workflow_type: string;
+          status: 'pending' | 'processing' | 'completed' | 'failed';
+          input_payload: any;
+          result_payload: any;
+          error_message: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          workflow_type: string;
+          status?: 'pending' | 'processing' | 'completed' | 'failed';
+          input_payload?: any;
+          result_payload?: any;
+          error_message?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          workflow_type?: string;
+          status?: 'pending' | 'processing' | 'completed' | 'failed';
+          input_payload?: any;
+          result_payload?: any;
+          error_message?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
     };
   };
 }

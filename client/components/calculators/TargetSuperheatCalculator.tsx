@@ -11,6 +11,9 @@ import { Badge } from "@/components/ui/badge";
 import { getRefrigerantsByPopularity, RefrigerantProperties } from "@/lib/refrigerants";
 import { calculateSaturationTemperature, isRefrigerantSupported } from "@/lib/pt-chart";
 import { Switch } from "@/components/ui/switch";
+import { useWeatherAutoFill } from "@/hooks/useWeatherAutoFill";
+import { useGeolocation } from "@/hooks/useGeolocation";
+import { Cloud, Loader2, MapPin } from "lucide-react";
 
 interface TargetSuperheatCalculatorProps {
     saveCalculation?: any;
@@ -32,6 +35,42 @@ export default function TargetSuperheatCalculator({ saveCalculation }: TargetSup
     });
 
     const [useGaugeReadings, setUseGaugeReadings] = useState(false);
+
+    // Weather Intelligence
+    const { location, getLocation, loading: geoLoading } = useGeolocation();
+    const { weather, loading: weatherLoading, fetchWeather } = useWeatherAutoFill();
+
+    const handleAutoFillWeather = async () => {
+        if (!location) {
+            getLocation();
+            // We need to wait for location, which is async via effect in the hook usually, 
+            // but our hook exposes a function. We'll rely on a small effect to trigger weather when location arrives
+            return;
+        }
+        await fetchWeather(location.lat, location.lng);
+    };
+
+    // Effect to trigger weather fetch once location is found (if triggered by user interaction logic)
+    // Actually, simpler logic: verify if we have location, if not get it. 
+    // If we do, fetch weather. 
+    // We'll add an effect to watch for location changes *if* we are in "auto-fill mode" or just manually handle it.
+    // Let's manually handle it for simplicity in this component.
+
+    useEffect(() => {
+        if (location && !weather && geoLoading === false) {
+            // If we just got location and user requested it (implied by calling getLocation), fetch weather
+            fetchWeather(location.lat, location.lng);
+        }
+    }, [location]);
+
+    useEffect(() => {
+        if (weather) {
+            setInputs(prev => ({
+                ...prev,
+                outdoorDryBulb: weather.tempF.toFixed(1)
+            }));
+        }
+    }, [weather]);
 
     const [result, setResult] = useState<{
         targetSuperheat: number;
@@ -263,9 +302,26 @@ export default function TargetSuperheatCalculator({ saveCalculation }: TargetSup
                                             type="number"
                                             value={inputs.outdoorDryBulb}
                                             onChange={(e) => setInputs({ ...inputs, outdoorDryBulb: e.target.value })}
-                                            className="pl-9 h-11 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 group-hover:border-blue-400 transition-colors"
+                                            className="pl-9 h-11 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 group-hover:border-blue-400 transition-colors pr-20"
                                             placeholder={units === "imperial" ? "55+" : "13+"}
                                         />
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={handleAutoFillWeather}
+                                            disabled={weatherLoading || geoLoading}
+                                            className="absolute right-1 top-1 h-9 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                                        >
+                                            {weatherLoading || geoLoading ? (
+                                                <Loader2 className="h-3 w-3 animate-spin" />
+                                            ) : (
+                                                <div className="flex items-center gap-1">
+                                                    <Cloud className="h-3 w-3" />
+                                                    <span>Auto</span>
+                                                </div>
+                                            )}
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
@@ -375,10 +431,10 @@ export default function TargetSuperheatCalculator({ saveCalculation }: TargetSup
                                 )}
 
                                 <div className={`p-4 rounded-lg mb-6 text-sm text-center border ${result.status === "Normal"
-                                        ? "bg-emerald-50 border-emerald-100 text-emerald-800 dark:bg-emerald-900/20 dark:border-emerald-900"
-                                        : result.status === "Warning"
-                                            ? "bg-amber-50 border-amber-100 text-amber-800 dark:bg-amber-900/20 dark:border-amber-900"
-                                            : "bg-slate-100 border-slate-200 text-slate-800 dark:bg-slate-800 dark:border-slate-700"
+                                    ? "bg-emerald-50 border-emerald-100 text-emerald-800 dark:bg-emerald-900/20 dark:border-emerald-900"
+                                    : result.status === "Warning"
+                                        ? "bg-amber-50 border-amber-100 text-amber-800 dark:bg-amber-900/20 dark:border-amber-900"
+                                        : "bg-slate-100 border-slate-200 text-slate-800 dark:bg-slate-800 dark:border-slate-700"
                                     }`}>
                                     <strong className="block mb-1 font-bold tracking-tight">{result.status === "Normal" ? "SYSTEM CHARGED CORRECTLY" : "ATTENTION REQUIRED"}</strong>
                                     {result.recommendation}

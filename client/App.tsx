@@ -4,6 +4,7 @@ import { SupabaseAuthProvider, useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { ToastProvider, useToast } from "@/hooks/useToast";
 import { ThemeProvider } from "@/components/theme-provider";
 import "@/utils/authErrorHandler"; // Import to setup global error handling
+import { JobProvider } from "@/context/JobContext";
 import { Landing } from "@/pages/Landing";
 import { A2LLandingPage } from "@/pages/A2LLandingPage";
 import { Features } from "@/pages/Features";
@@ -17,8 +18,11 @@ import AdvancedReporting from "@/pages/AdvancedReporting";
 import Troubleshooting from "@/pages/Troubleshooting";
 import DIYCalculators from "@/pages/DIYCalculators";
 import EstimateBuilder from "@/pages/EstimateBuilder";
+import JobDetails from "@/pages/JobDetails";
 import Jobs from "@/pages/Jobs";
+import CompanySettings from "@/pages/CompanySettings";
 import Projects from "@/pages/Projects";
+import Career from "@/pages/Career";
 import { StandardCycle } from "@/pages/StandardCycle";
 import { RefrigerantComparison } from "@/pages/RefrigerantComparison";
 import { CascadeCycle } from "@/pages/CascadeCycle";
@@ -162,6 +166,14 @@ function AppRoutes() {
           }
         />
         <Route
+          path="/settings/company"
+          element={
+            <ProtectedRoute>
+              <CompanySettings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/history"
           element={
             <ProtectedRoute>
@@ -214,10 +226,26 @@ function AppRoutes() {
           }
         />
         <Route
+          path="/jobs/:id"
+          element={
+            <ProtectedRoute>
+              <JobDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/projects"
           element={
             <ProtectedRoute>
               <Projects />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/career"
+          element={
+            <ProtectedRoute>
+              <Career />
             </ProtectedRoute>
           }
         />
@@ -257,13 +285,15 @@ export default function App() {
   return (
     <SupabaseAuthProvider>
       <ToastProvider>
-        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-          <BrowserRouter>
-            <AppRoutes />
-            <SupportBar />
-            <ErrorModal />
-          </BrowserRouter>
-        </ThemeProvider>
+        <JobProvider>
+          <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+            <BrowserRouter>
+              <AppRoutes />
+              <SupportBar />
+              <ErrorModal />
+            </BrowserRouter>
+          </ThemeProvider>
+        </JobProvider>
       </ToastProvider>
     </SupabaseAuthProvider>
   );

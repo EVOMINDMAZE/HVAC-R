@@ -336,7 +336,10 @@ export default function Jobs() {
                                             exit={{ opacity: 0, scale: 0.95 }}
                                             transition={{ duration: 0.2 }}
                                         >
-                                            <Card className="h-full bg-card/60 backdrop-blur-sm border-border hover:shadow-xl hover:bg-card/80 transition-all duration-300 group cursor-pointer hover:-translate-y-1">
+                                            <Card
+                                                className="h-full bg-card/60 backdrop-blur-sm border-border hover:shadow-xl hover:bg-card/80 transition-all duration-300 group cursor-pointer hover:-translate-y-1"
+                                                onClick={() => navigate(`/jobs/${job.id}`)}
+                                            >
                                                 <CardHeader className="pb-3">
                                                     <div className="flex justify-between items-start mb-2">
                                                         <Badge variant="outline" className={`${getStatusColor(job.status)} border px-2.5 py-0.5 capitalize shadow-sm font-medium`}>

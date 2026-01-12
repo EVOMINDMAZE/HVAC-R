@@ -1,0 +1,262 @@
+{
+    "name": "Production Queue Worker (WhatsApp)",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "trigger",
+                "options": {}
+            },
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                200,
+                300
+            ],
+            "id": "webhook-trigger",
+            "name": "Supabase Webhook (INSERT)"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "string": [
+                        {
+                            "value1": "={{ $json.body.record.workflow_type }}",
+                            "value2": "whatsapp_alert"
+                        }
+                    ]
+                }
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                400,
+                300
+            ],
+            "id": "check-workflow-type",
+            "name": "Is WhatsApp Alert?"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "={{ $env.SUPABASE_URL }}/functions/v1/verify-license",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "Authorization",
+                            "value": "Bearer {{ $env.SUPABASE_ANON_KEY }}"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "user_id",
+                            "value": "={{ $json.body.record.user_id }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                600,
+                300
+            ],
+            "id": "verify-license",
+            "name": "Check License Status"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "boolean": [
+                        {
+                            "value1": "={{ $json.valid }}",
+                            "value2": true
+                        }
+                    ]
+                }
+            },
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                800,
+                300
+            ],
+            "id": "is-license-valid",
+            "name": "Is License Valid?"
+        },
+        {
+            "parameters": {},
+            "type": "n8n-nodes-base.noOp",
+            "typeVersion": 1,
+            "position": [
+                1000,
+                200
+            ],
+            "id": "send-simulated-msg",
+            "name": "Send WhatsApp (Simulated)"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "={{ $env.SUPABASE_URL }}/rest/v1/workflow_requests?id=eq.{{ $('Supabase Webhook (INSERT)').item.json.body.record.id }}",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "apikey",
+                            "value": "={{ $env.SUPABASE_SERVICE_ROLE_KEY }}"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        },
+                        {
+                            "name": "Prefer",
+                            "value": "return=representation"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "status",
+                            "value": "completed"
+                        },
+                        {
+                            "name": "result_payload",
+                            "value": "{\"sent\": true, \"timestamp\": \"{{ $now }}\"}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                1200,
+                200
+            ],
+            "id": "update-success",
+            "name": "Update DB: Success"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "={{ $env.SUPABASE_URL }}/rest/v1/workflow_requests?id=eq.{{ $('Supabase Webhook (INSERT)').item.json.body.record.id }}",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "apikey",
+                            "value": "={{ $env.SUPABASE_SERVICE_ROLE_KEY }}"
+                        },
+                        {
+                            "name": "Content-Type",
+                            "value": "application/json"
+                        },
+                        {
+                            "name": "Prefer",
+                            "value": "return=representation"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "status",
+                            "value": "failed"
+                        },
+                        {
+                            "name": "error_message",
+                            "value": "License Invalid or Expired"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                1000,
+                450
+            ],
+            "id": "update-failed",
+            "name": "Update DB: Failed"
+        }
+    ],
+    "connections": {
+        "Supabase Webhook (INSERT)": {
+            "main": [
+                [
+                    {
+                        "node": "check-workflow-type",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "check-workflow-type": {
+            "main": [
+                [
+                    {
+                        "node": "verify-license",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "verify-license": {
+            "main": [
+                [
+                    {
+                        "node": "is-license-valid",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "is-license-valid": {
+            "main": [
+                [
+                    {
+                        "node": "send-simulated-msg",
+                        "type": "main",
+                        "index": 0
+                    }
+                ],
+                [
+                    {
+                        "node": "update-failed",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "send-simulated-msg": {
+            "main": [
+                [
+                    {
+                        "node": "update-success",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}
