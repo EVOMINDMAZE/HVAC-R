@@ -39,13 +39,13 @@
         {
             "parameters": {
                 "method": "POST",
-                "url": "={{ $env.SUPABASE_URL }}/functions/v1/verify-license",
+                "url": "=https://rxqflxmzsqhqrzffcsej.supabase.co/functions/v1/verify-license",
                 "sendHeaders": true,
                 "headerParameters": {
                     "parameters": [
                         {
                             "name": "Authorization",
-                            "value": "Bearer {{ $env.SUPABASE_ANON_KEY }}"
+                            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4cWZseG16c3FocXJ6ZmZjc2VqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MzMwNjYxMCwiZXhwIjoyMDY4ODgyNjEwfQ.qBMpMscAPAXRXJYRyIkuqO4a9QDUb2lSYgpI2voNBJ0"
                         }
                     ]
                 },
@@ -90,28 +90,43 @@
             "name": "Is License Valid?"
         },
         {
-            "parameters": {},
-            "type": "n8n-nodes-base.noOp",
+            "parameters": {
+                "operation": "send",
+                "resource": "sms",
+                "from": "+12513129205",
+                "to": "={{ $node[\"Supabase Webhook (INSERT)\"].json.body.record.input_payload.phone }}",
+                "message": "={{ $node[\"Supabase Webhook (INSERT)\"].json.body.record.input_payload.message }}"
+            },
+            "id": "send-sms",
+            "name": "Send SMS (Twilio)",
+            "type": "n8n-nodes-base.twilio",
             "typeVersion": 1,
             "position": [
                 1000,
                 200
             ],
-            "id": "send-simulated-msg",
-            "name": "Send WhatsApp (Simulated)"
+            "credentials": {
+                "twilioApi": {
+                    "id": "YOUR_TWILIO_CREDENTIAL_ID",
+                    "name": "Twilio account"
+                }
+            }
         },
         {
             "parameters": {
-                "method": "POST",
-                "url": "={{ $env.SUPABASE_URL }}/rest/v1/workflow_requests?id=eq.{{ $('Supabase Webhook (INSERT)').item.json.body.record.id }}",
-                "authentication": "genericCredentialType",
-                "genericAuthType": "httpHeaderAuth",
+                "method": "PATCH",
+                "url": "=https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/workflow_requests?id=eq.{{ $('Supabase Webhook (INSERT)').item.json.body.record.id }}",
+                "authentication": "none",
                 "sendHeaders": true,
                 "headerParameters": {
                     "parameters": [
                         {
+                            "name": "Authorization",
+                            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4cWZseG16c3FocXJ6ZmZjc2VqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MzMwNjYxMCwiZXhwIjoyMDY4ODgyNjEwfQ.qBMpMscAPAXRXJYRyIkuqO4a9QDUb2lSYgpI2voNBJ0"
+                        },
+                        {
                             "name": "apikey",
-                            "value": "={{ $env.SUPABASE_SERVICE_ROLE_KEY }}"
+                            "value": "=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4cWZseG16c3FocXJ6ZmZjc2VqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MzMwNjYxMCwiZXhwIjoyMDY4ODgyNjEwfQ.qBMpMscAPAXRXJYRyIkuqO4a9QDUb2lSYgpI2voNBJ0"
                         },
                         {
                             "name": "Content-Type",
@@ -149,16 +164,19 @@
         },
         {
             "parameters": {
-                "method": "POST",
-                "url": "={{ $env.SUPABASE_URL }}/rest/v1/workflow_requests?id=eq.{{ $('Supabase Webhook (INSERT)').item.json.body.record.id }}",
-                "authentication": "genericCredentialType",
-                "genericAuthType": "httpHeaderAuth",
+                "method": "PATCH",
+                "url": "=https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/workflow_requests?id=eq.{{ $('Supabase Webhook (INSERT)').item.json.body.record.id }}",
+                "authentication": "none",
                 "sendHeaders": true,
                 "headerParameters": {
                     "parameters": [
                         {
+                            "name": "Authorization",
+                            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4cWZseG16c3FocXJ6ZmZjc2VqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MzMwNjYxMCwiZXhwIjoyMDY4ODgyNjEwfQ.qBMpMscAPAXRXJYRyIkuqO4a9QDUb2lSYgpI2voNBJ0"
+                        },
+                        {
                             "name": "apikey",
-                            "value": "={{ $env.SUPABASE_SERVICE_ROLE_KEY }}"
+                            "value": "=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4cWZseG16c3FocXJ6ZmZjc2VqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MzMwNjYxMCwiZXhwIjoyMDY4ODgyNjEwfQ.qBMpMscAPAXRXJYRyIkuqO4a9QDUb2lSYgpI2voNBJ0"
                         },
                         {
                             "name": "Content-Type",
@@ -233,7 +251,7 @@
             "main": [
                 [
                     {
-                        "node": "send-simulated-msg",
+                        "node": "send-sms",
                         "type": "main",
                         "index": 0
                     }
@@ -247,7 +265,7 @@
                 ]
             ]
         },
-        "send-simulated-msg": {
+        "send-sms": {
             "main": [
                 [
                     {

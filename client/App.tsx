@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { SupabaseAuthProvider, useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { ToastProvider, useToast } from "@/hooks/useToast";
@@ -22,6 +22,13 @@ import JobDetails from "@/pages/JobDetails";
 import Jobs from "@/pages/Jobs";
 import CompanySettings from "@/pages/CompanySettings";
 import Projects from "@/pages/Projects";
+import { ClientDetail } from "@/pages/ClientDetail";
+import { Clients } from "@/pages/Clients";
+import { ClientDashboard } from "@/pages/ClientDashboard"; // Managed Import
+import ClientTrackJob from "@/pages/ClientTrackJob";
+import Dispatch from "@/pages/dashboard/Dispatch";
+import JobBoard from "@/pages/tech/JobBoard";
+import ActiveJob from "@/pages/tech/ActiveJob";
 import Career from "@/pages/Career";
 import { StandardCycle } from "@/pages/StandardCycle";
 import { RefrigerantComparison } from "@/pages/RefrigerantComparison";
@@ -38,9 +45,12 @@ import { TermsOfService } from "@/pages/TermsOfService";
 import NotFound from "@/pages/NotFound";
 import { WebStories } from "@/pages/WebStories";
 import { Podcasts } from "@/pages/Podcasts";
+import { IntegrationLanding } from "@/pages/IntegrationLanding";
+import { Callback } from "@/pages/Callback";
 import { ErrorModal } from "@/components/ErrorModal";
 import { SupportBar } from "@/components/SupportBar";
 import { Layout } from "@/components/Layout";
+import { Toaster } from "@/components/ui/toaster";
 import { SubscriptionGuard } from "@/components/SubscriptionGuard";
 
 // Protected Route Component
@@ -58,8 +68,9 @@ function shouldBypassAuth() {
 }
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading } = useSupabaseAuth();
+  const { isAuthenticated, isLoading, role } = useSupabaseAuth();
   const bypass = shouldBypassAuth();
+  const location = useLocation();
 
   if (isLoading && !bypass) {
     return (
@@ -76,13 +87,29 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     return <Navigate to="/signin" replace />;
   }
 
-  // Wrap protected pages in the app Layout for consistent navigation
+  // RBAC Redirection Logic
+  if (role === 'client') {
+    // If client is trying to access anything OTHER than portal, redirect to portal
+    if (!location.pathname.startsWith('/portal')) {
+      return <Navigate to="/portal" replace />;
+    }
+    // If client is in portal, render children (WITHOUT Admin Layout)
+    return <>{children}</>;
+  }
+
+  // Logic for Admin/Standard Users
+  // If admin tries to access portal, redirect to dashboard (Optional, keeping strict for now)
+  if (location.pathname.startsWith('/portal')) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  // Wrap protected pages in the app Layout for consistent navigation (For Admins)
   return <Layout>{children}</Layout>;
 }
 
 // Public Route Component (redirect if authenticated)
 function PublicRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading } = useSupabaseAuth();
+  const { isAuthenticated, isLoading, role } = useSupabaseAuth();
   const bypass = shouldBypassAuth();
 
   if (isLoading && !bypass) {
@@ -97,6 +124,10 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (isAuthenticated || bypass) {
+    // Redirect based on Role
+    if (role === 'client') {
+      return <Navigate to="/portal" replace />;
+    }
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -126,6 +157,8 @@ function AppRoutes() {
         <Route path="/help" element={<HelpCenter />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/connect-provider" element={<IntegrationLanding />} />
+        <Route path="/callback/:provider" element={<Callback />} />
 
         {/* Auth Routes */}
         <Route
@@ -147,6 +180,44 @@ function AppRoutes() {
 
         {/* Debug Routes */}
         <Route path="/stripe-debug" element={<StripeDebug />} />
+
+        {/* Client Portal Route */}
+        <Route
+          path="/portal"
+          element={
+            <ProtectedRoute>
+              <ClientDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Tracking Route */}
+        <Route
+          path="/track-job/:id"
+          element={
+            <ProtectedRoute>
+              <ClientTrackJob />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Technician Routes */}
+        <Route
+          path="/tech"
+          element={
+            <ProtectedRoute>
+              <JobBoard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tech/jobs/:id"
+          element={
+            <ProtectedRoute>
+              <ActiveJob />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Protected Dashboard Routes */}
         <Route
@@ -234,10 +305,34 @@ function AppRoutes() {
           }
         />
         <Route
+          path="/dashboard/dispatch"
+          element={
+            <ProtectedRoute>
+              <Dispatch />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/projects"
           element={
             <ProtectedRoute>
               <Projects />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/clients"
+          element={
+            <ProtectedRoute>
+              <Clients />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/clients/:id"
+          element={
+            <ProtectedRoute>
+              <ClientDetail />
             </ProtectedRoute>
           }
         />
@@ -291,6 +386,7 @@ export default function App() {
               <AppRoutes />
               <SupportBar />
               <ErrorModal />
+              <Toaster />
             </BrowserRouter>
           </ThemeProvider>
         </JobProvider>

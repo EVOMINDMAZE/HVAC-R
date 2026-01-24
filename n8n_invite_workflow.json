@@ -1,0 +1,124 @@
+{
+    "name": "ThermoNeural Client Invite (Webhook)",
+    "nodes": [
+        {
+            "parameters": {
+                "httpMethod": "POST",
+                "path": "invite-webhook",
+                "options": {}
+            },
+            "id": "webhook-trigger",
+            "name": "Supabase Webhook",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                200,
+                200
+            ],
+            "webhookId": "invite-webhook"
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "string": [
+                        {
+                            "value1": "={{ $json.body.record.workflow_type }}",
+                            "operation": "equal",
+                            "value2": "client_invite"
+                        }
+                    ]
+                }
+            },
+            "id": "filter-type",
+            "name": "Is Client Invite?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                450,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "fromEmail": "notifications@thermoneural.com",
+                "toEmail": "={{ $json.body.record.payload.email }}",
+                "subject": "Action Required: Connect your {{ $json.body.record.payload.provider }} Account",
+                "text": "Hello,\n\nThermoNeural requests access to your {{ $json.body.record.payload.provider }} account.\n\nPlease authorize here:\nhttps://thermoneural.com/connect-provider?provider={{ $json.body.record.payload.provider }}&integration_id={{ $json.body.record.payload.integration_id }}"
+            },
+            "id": "send-email",
+            "name": "Send Email",
+            "type": "n8n-nodes-base.emailSend",
+            "typeVersion": 1,
+            "position": [
+                700,
+                180
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "update",
+                "schema": {
+                    "__rl": true,
+                    "value": "public",
+                    "mode": "list",
+                    "cachedResultName": "public"
+                },
+                "table": {
+                    "__rl": true,
+                    "value": "workflow_requests",
+                    "mode": "list",
+                    "cachedResultName": "workflow_requests"
+                },
+                "dataToUpdate": {
+                    "status": "completed",
+                    "result_payload": "={{ { sent_at: new Date().toISOString() } }}"
+                },
+                "matchColumn": "id",
+                "matchValue": "={{ $json.body.record.id }}"
+            },
+            "id": "update-success",
+            "name": "Update DB: Success",
+            "type": "n8n-nodes-base.supabase",
+            "typeVersion": 1,
+            "position": [
+                950,
+                200
+            ]
+        }
+    ],
+    "connections": {
+        "Supabase Webhook": {
+            "main": [
+                [
+                    {
+                        "node": "Is Client Invite?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Is Client Invite?": {
+            "main": [
+                [
+                    {
+                        "node": "Send Email",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Send Email": {
+            "main": [
+                [
+                    {
+                        "node": "Update DB: Success",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

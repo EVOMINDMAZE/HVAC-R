@@ -34,6 +34,13 @@ export const getSupabaseConfig = () => {
 const createSupabaseClient = () => {
   const { supabaseUrl, configured, isValidUrl: valid } = getSupabaseConfig();
 
+  console.log("Initializing Supabase Client...", {
+    url: supabaseUrl,
+    configured,
+    valid,
+    isLocalhost: supabaseUrl.includes('localhost')
+  });
+
   if (!configured || !valid) {
     console.warn(
       "Supabase environment variables not configured or invalid. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY",
@@ -42,7 +49,19 @@ const createSupabaseClient = () => {
   }
 
   try {
-    return createClient(supabaseUrl, supabaseAnonKey);
+    return createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        detectSessionInUrl: false,
+        persistSession: false,
+        autoRefreshToken: true,
+      },
+      global: {
+        fetch: (...args) => {
+          // console.log("Supabase Fetch:", args[0]); // Reduced spam
+          return fetch(...(args as [RequestInfo | URL, RequestInit | undefined]));
+        }
+      }
+    });
   } catch (error) {
     console.error("Failed to create Supabase client:", error);
     return null;

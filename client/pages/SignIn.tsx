@@ -63,7 +63,7 @@ export function SignIn() {
     setLoading(true);
 
     try {
-      const { user, error: signInError } = await signIn(
+      const { user, error: signInError, role: userRole } = await signIn(
         formData.email,
         formData.password,
       );
@@ -78,7 +78,13 @@ export function SignIn() {
           title: "Welcome back!",
           description: "You have been signed in successfully",
         });
-        navigate("/dashboard");
+        // Navigate based on role returned from signIn
+        console.log('[SignIn] Login successful, role:', userRole);
+        if (userRole === 'client') {
+          navigate("/portal");
+        } else {
+          navigate("/dashboard");
+        }
       }
     } catch (err: any) {
       const errorMsg =

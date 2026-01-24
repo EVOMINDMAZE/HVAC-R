@@ -1,0 +1,99 @@
+{
+    "name": "Telemetry Alert Processing",
+    "nodes": [
+        {
+            "parameters": {
+                "event": "INSERT",
+                "table": "telemetry_readings",
+                "schema": "public"
+            },
+            "name": "Telemetry Trigger",
+            "type": "n8n-nodes-base.supabaseTrigger",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "getAll",
+                "table": "automation_rules",
+                "filters": {
+                    "asset_id": "={{$json.record.asset_id}}",
+                    "is_active": true
+                }
+            },
+            "name": "Get Rules",
+            "type": "n8n-nodes-base.supabase",
+            "typeVersion": 1,
+            "position": [
+                450,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "const reading = items[0].json.record.value;\nconst rules = items.map(item => item.json);\n\nconst triggered = [];\n\nfor (const rule of rules) {\n  if (rule.trigger_type === 'temperature_high' && reading > rule.threshold_value) {\n    triggered.push({\n      alert: `High Temp Alert: ${reading} > ${rule.threshold_value}`,\n      contact: '555-0199', // Placeholder\n      asset_id: rule.asset_id\n    });\n  }\n}\n\nreturn triggered.map(t => ({ json: t }));"
+            },
+            "name": "Evaluate Rules",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                650,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "accountSid": "AC...",
+                "authToken": "...",
+                "from": "+1234567890",
+                "to": "+15555555555",
+                "message": "={{$json.alert}}"
+            },
+            "name": "Send SMS",
+            "type": "n8n-nodes-base.twilio",
+            "typeVersion": 1,
+            "position": [
+                850,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Telemetry Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Get Rules",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get Rules": {
+            "main": [
+                [
+                    {
+                        "node": "Evaluate Rules",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Evaluate Rules": {
+            "main": [
+                [
+                    {
+                        "node": "Send SMS",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

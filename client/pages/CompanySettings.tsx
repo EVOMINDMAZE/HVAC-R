@@ -9,23 +9,46 @@ import { useToast } from "../components/ui/use-toast";
 import { Loader2, Upload, Building2, Globe, Palette, Send } from "lucide-react";
 import { useWorkflowTrigger } from "@/hooks/useWorkflowTrigger";
 
-function TestAutomationButton() {
+import { Check } from "lucide-react";
+
+interface TestAutomationButtonProps {
+    phone: string;
+    messageTemplate: string;
+}
+
+function TestAutomationButton({ phone, messageTemplate }: TestAutomationButtonProps) {
     const { triggerWorkflow, isProcessing } = useWorkflowTrigger();
+    const [showSuccess, setShowSuccess] = useState(false);
+
+    const handleTest = () => {
+        setShowSuccess(false);
+        triggerWorkflow('whatsapp_alert', {
+            message: messageTemplate || "Test Alert: Job Completed",
+            phone: phone,
+            timestamp: new Date().toISOString()
+        }, () => {
+            setShowSuccess(true);
+            setTimeout(() => setShowSuccess(false), 3000);
+        });
+    };
 
     return (
         <Button
-            variant="outline"
+            variant={showSuccess ? "outline" : "outline"}
+            className={showSuccess ? "border-green-500 text-green-600 hover:text-green-700 bg-green-50 hover:bg-green-100 transition-all duration-500" : ""}
             size="sm"
-            onClick={() => triggerWorkflow('whatsapp_alert', {
-                message: "Test Alert from Company Settings",
-                timestamp: new Date().toISOString()
-            })}
+            onClick={handleTest}
             disabled={isProcessing}
         >
             {isProcessing ? (
                 <>
                     <Loader2 className="mr-2 h-3 w-3 animate-spin" />
                     Sending...
+                </>
+            ) : showSuccess ? (
+                <>
+                    <Check className="mr-2 h-3 w-3" />
+                    Sent!
                 </>
             ) : (
                 <>
@@ -50,6 +73,10 @@ export default function CompanySettings() {
     const [logoUrl, setLogoUrl] = useState<string | null>(null);
     const [uploadingLogo, setUploadingLogo] = useState(false);
 
+    // Alert Settings
+    const [alertPhone, setAlertPhone] = useState("");
+    const [alertMessage, setAlertMessage] = useState("Job {{id}} has been marked as complete.");
+
     // Fetch existing data
     useEffect(() => {
         async function fetchCompany() {
@@ -70,6 +97,10 @@ export default function CompanySettings() {
                     setWebsite(data.website || "");
                     setPrimaryColor(data.primary_color || "#000000");
                     setLogoUrl(data.logo_url);
+                    setAlertPhone(data.alert_phone || "");
+                    if (data.alert_config && data.alert_config.message) {
+                        setAlertMessage(data.alert_config.message);
+                    }
                 } else {
                     // Pre-fill with user info if no company exists yet
                     setCompanyName(user.user_metadata?.full_name || "");
@@ -140,6 +171,8 @@ export default function CompanySettings() {
                 website: website,
                 primary_color: primaryColor,
                 logo_url: logoUrl,
+                alert_phone: alertPhone,
+                alert_config: { message: alertMessage },
                 updated_at: new Date().toISOString(),
             };
 
@@ -280,14 +313,40 @@ export default function CompanySettings() {
                         </CardDescription>
 
                         <div className="flex flex-col gap-4">
-                            <div className="flex items-center justify-between border p-4 rounded-lg bg-gray-50">
-                                <div>
-                                    <p className="font-medium">Job Completion Alert (WhatsApp)</p>
-                                    <p className="text-sm text-gray-500">Receive a WhatsApp message when a technician marks a job as complete.</p>
+                            <div className="border p-4 rounded-lg bg-gray-50 space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="font-medium">Job Completion Alert</p>
+                                        <p className="text-sm text-gray-500">Configure the SMS/WhatsApp notification.</p>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <TestAutomationButton phone={alertPhone} messageTemplate={alertMessage} />
+                                    </div>
                                 </div>
-                                <div className="flex gap-2">
-                                    {/* This actually triggers the n8n logic via Supabase */}
-                                    <TestAutomationButton />
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="alert-phone">Destination Phone Number</Label>
+                                        <Input
+                                            id="alert-phone"
+                                            placeholder="+15551234567"
+                                            value={alertPhone}
+                                            onChange={(e) => setAlertPhone(e.target.value)}
+                                            className="bg-white text-slate-900 border-slate-200"
+                                        />
+                                        <p className="text-xs text-gray-500">Include country code (e.g. +1 for US).</p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="alert-msg">Message Template</Label>
+                                        <Input
+                                            id="alert-msg"
+                                            placeholder="Job completed!"
+                                            value={alertMessage}
+                                            onChange={(e) => setAlertMessage(e.target.value)}
+                                            className="bg-white text-slate-900 border-slate-200"
+                                        />
+                                        <p className="text-xs text-gray-500">Text sent to the recipient.</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

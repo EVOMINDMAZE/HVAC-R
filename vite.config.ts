@@ -49,6 +49,7 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./client"),
       "@shared": path.resolve(__dirname, "./shared"),
     },
+    dedupe: ["react", "react-dom"],
   },
 }));
 
@@ -61,7 +62,13 @@ function expressPlugin(): Plugin {
       import("./server/index.ts")
         .then(({ createServer }) => {
           const app = createServer();
-          server.middlewares.use(app);
+          server.middlewares.use((req, res, next) => {
+            if (req.url?.startsWith("/api")) {
+              app(req as any, res as any, next);
+            } else {
+              next();
+            }
+          });
         })
         .catch((error) => {
           console.error("Failed to start server:", error);

@@ -1,10 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
-import { ToastProvider } from "@/hooks/useToast";
 import './global.css'
 import { setupGlobalErrorHandler } from './utils/errorHandler'
-import { ThemeProvider } from "@/components/theme-provider"
 
 
 // Set up global error handling to catch JSON parsing errors
@@ -45,11 +43,7 @@ if (!rootElement) throw new Error("Root element not found");
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-        <ToastProvider>
-          <App />
-        </ToastProvider>
-      </ThemeProvider>
+      <App />
     </ErrorBoundary>
   </React.StrictMode>,
 )

@@ -2,7 +2,7 @@
 --    Example: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11'
 WITH new_license AS (
   INSERT INTO public.licenses (user_id, status, plan_tier)
-  VALUES ('YOUR_USER_ID_HERE', 'active', 'pro')
+  VALUES ('cb65bb02-3993-455e-b05b-fb1728c3d9ee', 'active', 'pro')
   RETURNING key
 )
 SELECT key FROM new_license;

@@ -4,7 +4,7 @@ import { useToast } from '../hooks/use-toast';
 import { useSupabaseAuth } from './useSupabaseAuth';
 
 /**
- * Hook to trigger n8n workflows via Supabase Database Queue (Option A Architecture)
+ * Hook to trigger n8n workflows via Supabase Database Queue.
  * Guarantees execution even if internet blips.
  */
 export function useWorkflowTrigger() {
@@ -15,79 +15,137 @@ export function useWorkflowTrigger() {
     const triggerWorkflow = useCallback(async (
         workflowType: string,
         payload: any,
-        onSuccess?: (result: any) => void
+        onComplete?: (result: any) => void,
+        onError?: (error: Error) => void
     ) => {
+        setIsProcessing(true);
+
         if (!user) {
             toast({
                 title: "Authentication Error",
-                description: "You must be logged in to run workflows",
-                variant: "destructive"
+                description: "You must be logged in to trigger workflows.",
+                variant: "destructive",
             });
+            setIsProcessing(false);
             return;
         }
 
-        setIsProcessing(true);
+        let cleanupFn: (() => void) | null = null;
+        let pollInterval: NodeJS.Timeout | null = null;
+        let pollAttempts = 0;
+        const MAX_POLL_ATTEMPTS = 30; // 30 seconds timeout
+
+        // Cleanup function to reset state
+        const cleanup = () => {
+            if (cleanupFn) cleanupFn();
+            if (pollInterval) clearInterval(pollInterval);
+            setIsProcessing(false);
+        };
 
         try {
-            // 1. Insert Request into Queue (Status: 'pending')
-            const { data, error } = await supabase
+            // 1. Insert Request
+            const { data: request, error: insertError } = await supabase
                 .from('workflow_requests')
                 .insert({
                     user_id: user.id,
                     workflow_type: workflowType,
-                    input_payload: payload,
-                    status: 'pending'
+                    status: 'pending',
+                    input_payload: payload
                 })
                 .select()
                 .single();
 
-            if (error) throw error;
-            const requestId = data.id;
+            if (insertError) throw insertError;
 
-            // 2. Watch for Updates (Realtime)
+            // 2. Setup Realtime Subscription
             const channel = supabase
-                .channel(`workflow-${requestId}`)
+                .channel(`workflow-${request.id}`)
                 .on(
                     'postgres_changes',
                     {
                         event: 'UPDATE',
                         schema: 'public',
                         table: 'workflow_requests',
-                        filter: `id=eq.${requestId}`
+                        filter: `id=eq.${request.id}`,
                     },
                     (payload) => {
                         const newStatus = payload.new.status;
+                        const result = payload.new.result_payload;
+                        const error = payload.new.error_message;
 
                         if (newStatus === 'completed') {
                             toast({
-                                title: "Success! ✅",
-                                description: "Automation completed successfully."
+                                title: "Success! \u2705",
+                                description: "Workflow completed successfully.",
+                                variant: "default",
                             });
-                            setIsProcessing(false);
-                            if (onSuccess) onSuccess(payload.new.result_payload);
-                            supabase.removeChannel(channel);
-                        }
-                        else if (newStatus === 'failed') {
+                            if (onComplete) onComplete(result);
+                            cleanup();
+                        } else if (newStatus === 'failed') {
                             toast({
-                                title: "Workflow Failed ❌",
-                                description: payload.new.error_message || "Something went wrong.",
-                                variant: "destructive"
+                                title: "Workflow Failed",
+                                description: error || "An unknown error occurred.",
+                                variant: "destructive",
                             });
-                            setIsProcessing(false);
-                            supabase.removeChannel(channel);
+                            if (onError) onError(new Error(error));
+                            cleanup();
                         }
                     }
                 )
                 .subscribe();
 
-        } catch (err: any) {
-            console.error("Workflow Error:", err);
+            cleanupFn = () => supabase.removeChannel(channel);
+
+            // 3. Start Polling Fallback (with Timeout)
+            pollInterval = setInterval(async () => {
+                pollAttempts++;
+
+                // Check for timeout
+                if (pollAttempts > MAX_POLL_ATTEMPTS) {
+                    cleanup();
+                    toast({
+                        title: "Timeout",
+                        description: "The request took too long to complete. Please check your dashboard.",
+                        variant: "destructive"
+                    });
+                    return;
+                }
+
+                const { data: current } = await supabase
+                    .from('workflow_requests')
+                    .select('status, result_payload, error_message')
+                    .eq('id', request.id)
+                    .single();
+
+                if (current) {
+                    if (current.status === 'completed') {
+                        toast({
+                            title: "Success! \u2705",
+                            description: "Workflow completed successfully.",
+                            variant: "default",
+                        });
+                        if (onComplete) onComplete(current.result_payload);
+                        cleanup();
+                    } else if (current.status === 'failed') {
+                        toast({
+                            title: "Workflow Failed",
+                            description: current.error_message || "Failed.",
+                            variant: "destructive",
+                        });
+                        if (onError) onError(new Error(current.error_message));
+                        cleanup();
+                    }
+                }
+            }, 1000);
+
+        } catch (error: any) {
+            console.error('[Workflow] Error:', error);
             toast({
-                title: "Request Failed",
-                description: err.message,
-                variant: "destructive"
+                title: "Error",
+                description: error.message || "Failed to trigger workflow.",
+                variant: "destructive",
             });
-            setIsProcessing(false);
+            cleanup();
         }
     }, [user, toast]);
 
