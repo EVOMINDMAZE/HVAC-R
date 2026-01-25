@@ -55,25 +55,34 @@ This document serves as the **single source of truth** for the ThermoNeural plat
 1.  **Context Strategy (The "Medical Record"):**
     *   **Job System:** Technicians "Check In" to a Job (e.g., "Smith Residence").
     *   **Data Linking:** Every subsequent calculation is Foreign-Keyed to that `project_id`.
-2.  **Professional Estimator:**
+2.  **Automated Warranty Claims (The "Cash Finder") 🛡️:**
+    *   **Scanner:** OCR scans of Nameplate -> Auto-lookup of Warranty Status.
+    *   **Claim Bot:** Auto-generates the claim PDF for Manufacturer submission.
+    *   **Value:** User recovers lost revenue; we take a % or charge a premium fee.
+3.  **EPA 608 Compliance-as-a-Service ⚖️:**
+    *   **Audit-Proof:** Automated "Leak Rate" calculation & "Recovery Log".
+    *   **The Ledger:** Immutable record of every ounce of refrigerant moved.
+    *   **Value:** Protects the HVAC business from $37k/day EPA fines.
+4.  **"Indoor Health" & Compliance Reports 🫁:**
+    *   **IAQ Score:** Generates a "Respiratory Health Score" for the home (0-100).
+    *   **Risk Shield:** "Winterization Verification" reports for liability protection.
+    *   **Value:** A tangible PDF the tech can sell to the homeowner ($50-$100).
+5.  **Professional Estimator:**
     *   **Builder:** Drag-and-drop line items for parts and labor.
     *   **Output:** Professional PDF Quotes with Company Branding.
-3.  **Risk Shield (Compliance Reports):**
-    *   **Feature:** One-click generation of "Winterization Verification" or "Commissioning Report".
-    *   **Value:** A tangible PDF the tech can sell to the homeowner for $50-$100.
-4.  **Customer Portal:**
-    *   **View:** Homeowners can view their own equipment history via a secure link.
 
-### C. The Content Engine (Learning) 📚
-*Powered by Sanity Headless CMS.*
+### C. The Customer Experience Layer (AI) 🤖
+*Bridging the gap between Homeowner and Technician.*
 
-1.  **Web Stories:**
-    *   **Format:** TikTok/Instagram-style vertical video & slide feed.
-    *   **Content:** Micro-learning (e.g., "3 Steps to Check a Capacitor").
-    *   **Tech:** Framer Motion animations for smooth swiping.
-2.  **AI Diagnostics Assistant:**
-    *   **Persona:** "The Master Tech in your pocket."
-    *   **Tech:** RAG system (Retrieval Augmented Generation) looking up manual specs.
+1.  **Pre-Dispatch Triage (DIY Mode):**
+    *   **SMS Link:** Tech sends a "Triage Link" to the client before driving out.
+    *   **AI Listen:** Client records "Weird Noise" -> AI predicts "Bad Capacitor".
+    *   **Value:** Reduces "Truck Rolls" for simple fixes; prepares tech with right parts.
+2.  **Web Stories (Content Feed):**
+    *   **Format:** TikTok-style technical guides.
+    *   **Content:** "A2L Safety", "EPA Updates", "Troubleshooting".
+3.  **AI Diagnostics Assistant:**
+    *   **Persona:** "The Master Tech in your pocket" (RAG manual lookup).
 
 ---
 
