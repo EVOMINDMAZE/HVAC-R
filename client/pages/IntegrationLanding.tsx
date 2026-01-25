@@ -37,7 +37,9 @@ export function IntegrationLanding() {
                 if (error) throw error;
                 if (data.error) throw new Error(data.error);
 
-                setProvider(data.provider || "Smart Device");
+                // Normalize 'nest' to 'google_nest' for consistency
+                const rawProvider = data.provider || "Smart Device";
+                setProvider(rawProvider === 'nest' ? 'google_nest' : rawProvider);
                 setReplyTo(data.reply_to || "Your Technician");
 
                 if (data.status === 'active') {

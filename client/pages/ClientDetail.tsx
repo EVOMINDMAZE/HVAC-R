@@ -33,6 +33,7 @@ interface Asset {
     type: string;
     serial_number: string;
     location_on_site?: string;
+    last_reading?: { value: number, unit: string, timestamp: string };
 }
 
 interface Rule {
@@ -110,6 +111,7 @@ export function ClientDetail() {
             if (clientError) throw clientError;
             setClient(clientData);
 
+            // Fetch Assets
             const { data: assetData, error: assetError } = await supabase
                 .from('assets')
                 .select('*')
@@ -117,10 +119,34 @@ export function ClientDetail() {
                 .order('created_at', { ascending: false });
 
             if (assetError) throw assetError;
-            setAssets(assetData || []);
 
-            if (assetData && assetData.length > 0) {
-                const assetIds = assetData.map(a => a.id);
+            // Fetch Latest Readings for these assets
+            let assetsWithReadings = assetData || [];
+            if (assetsWithReadings.length > 0) {
+                const assetIds = assetsWithReadings.map(a => a.id);
+
+                // We fetch the latest reading for each asset. 
+                // A simple way is to fetch all recent readings for these assets and pick the latest in JS.
+                const { data: readings } = await supabase
+                    .from('telemetry_readings')
+                    .select('asset_id, value, unit, created_at')
+                    .in('asset_id', assetIds)
+                    .order('created_at', { ascending: false }); // Global descending
+
+                // Map latest reading to asset
+                assetsWithReadings = assetsWithReadings.map(asset => {
+                    const reading = readings?.find(r => r.asset_id === asset.id);
+                    return {
+                        ...asset,
+                        last_reading: reading ? {
+                            value: reading.value,
+                            unit: reading.unit,
+                            timestamp: reading.created_at
+                        } : undefined
+                    };
+                });
+
+                // Fetch Rules & Alerts
                 const { data: rulesData } = await supabase
                     .from('automation_rules')
                     .select('*, assets(name)')
@@ -138,6 +164,8 @@ export function ClientDetail() {
                 setRules([]);
                 setAlerts([]);
             }
+
+            setAssets(assetsWithReadings);
 
         } catch (err) {
             console.error("Error fetching details:", err);
@@ -166,8 +194,6 @@ export function ClientDetail() {
             toast({ title: "Error creating asset", description: err.message, variant: "destructive" });
         }
     }
-
-
 
     async function handleSimulateTelemetry(assetId: string, value: string) {
         if (!value) return;
@@ -217,9 +243,6 @@ export function ClientDetail() {
         const email = emailArg || inviteEmail;
 
         try {
-            // In a real app, 'connect' would trigger OAuth flow here.
-            // For now, we simulate the result or setting up the invite.
-
             const status = method === 'connect' ? 'active' : 'pending_invite';
             const emailToSend = method === 'invite' ? (email || client?.contact_email) : null;
 
@@ -243,10 +266,8 @@ export function ClientDetail() {
                     ? `Successfully linked ${smartProvider} account.`
                     : `Invitation sent to ${emailToSend}.`,
                 className: "bg-green-600 text-white border-none",
-                // action: <CheckCircle className="text-white"/> 
             });
 
-            // Reset Wizard
             setIsSmartWizardOpen(false);
             setSmartStep(1);
             setSmartProvider(null);
@@ -309,7 +330,6 @@ export function ClientDetail() {
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6 space-y-8">
-            {/* Top Nav */}
             <motion.div
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -320,7 +340,6 @@ export function ClientDetail() {
                 </Link>
             </motion.div>
 
-            {/* Hero Header */}
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -416,11 +435,9 @@ export function ClientDetail() {
                     </div>
                 </div>
 
-                {/* Decorative Circles */}
                 <div className="absolute -top-20 -right-20 w-80 h-80 bg-blue-500/30 rounded-full blur-3xl" />
                 <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-indigo-500/30 rounded-full blur-3xl" />
 
-                {/* Invite Dialog */}
                 {client && (
                     <GrantAccessDialog
                         open={isInviteOpen}
@@ -429,7 +446,6 @@ export function ClientDetail() {
                     />
                 )}
 
-                {/* Edit Client Dialog */}
                 <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
                     <DialogContent className="sm:max-w-md">
                         <DialogHeader>
@@ -476,7 +492,6 @@ export function ClientDetail() {
                 </Dialog>
             </motion.div>
 
-            {/* Stats Summary */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card className="border-slate-200/60 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
                     <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
@@ -520,8 +535,8 @@ export function ClientDetail() {
 
             <Tabs defaultValue="assets" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 lg:w-[400px] mb-6 p-1 bg-slate-100 dark:bg-slate-900 rounded-xl">
-                    <TabsTrigger value="assets" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-300">Assets</TabsTrigger>
-                    <TabsTrigger value="automations" className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-300">Automations</TabsTrigger>
+                    <TabsTrigger value="assets" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm transition-all duration-300">Assets</TabsTrigger>
+                    <TabsTrigger value="automations" className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-slate-950 data-[state=active]:shadow-sm transition-all duration-300">Automations</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="assets" className="mt-0">
@@ -545,7 +560,7 @@ export function ClientDetail() {
                             <motion.div variants={container} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {assets.map(asset => (
                                     <motion.div key={asset.id} variants={item}>
-                                        <Card className="h-full border-slate-200/60 dark:border-slate-800 bg-white dark:bg-slate-900 hover:shadow-xl hover:shadow-blue-900/5 hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-300 group">
+                                        <Card className="h-full border-slate-200/60 dark:border-slate-800 bg-card hover:shadow-xl hover:shadow-blue-900/5 hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-300 group">
                                             <CardHeader className="flex flex-row items-center justify-between pb-2">
                                                 <div className="flex items-center gap-3">
                                                     <div className="h-10 w-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center border border-slate-100 dark:border-slate-700 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 transition-colors">
@@ -556,7 +571,20 @@ export function ClientDetail() {
                                                         <div className="text-xs text-slate-500 truncate">SN: {asset.serial_number || 'N/A'}</div>
                                                     </div>
                                                 </div>
-                                                <Badge variant="outline" className="bg-slate-50 dark:bg-slate-900">{asset.type}</Badge>
+                                                <div className="text-right">
+                                                    {asset.last_reading ? (
+                                                        <div className="flex flex-col items-end">
+                                                            <span className="text-xl font-bold text-slate-900 dark:text-white">
+                                                                {asset.last_reading.value.toFixed(1)}°{asset.last_reading.unit === 'Fahrenheit' ? 'F' : 'F'}
+                                                            </span>
+                                                            <span className="text-[10px] text-slate-400">
+                                                                Latest
+                                                            </span>
+                                                        </div>
+                                                    ) : (
+                                                        <Badge variant="outline" className="bg-slate-50 dark:bg-slate-900">{asset.type}</Badge>
+                                                    )}
+                                                </div>
                                             </CardHeader>
                                             <CardContent>
                                                 <div className="mt-4 flex items-center justify-between text-sm">
@@ -684,8 +712,6 @@ export function ClientDetail() {
                 </TabsContent>
             </Tabs>
 
-
-            {/* Smart Asset Wizard Dialog */}
             <Dialog open={isSmartWizardOpen} onOpenChange={setIsSmartWizardOpen}>
                 <DialogContent className="sm:max-w-xl">
                     <DialogHeader>

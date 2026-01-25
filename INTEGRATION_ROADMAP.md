@@ -151,7 +151,7 @@ Now that we (will) have tokens, we need to use them.
 - [x] **Data Polling:** Supabase Edge Function `poll-integrations` built (Skeleton).
     - **Logic:** Loops through integrations -> FETCHES real Honeywell data (if keys exist).
     - **Status:** ⚠️ Partial. Honeywell logic is real. Sensibo/KE2 are placeholders.
-    - **Critical TODO:** Implement `external_id` (Honeywell Device ID) to `asset_id` (ThermoNeural Asset ID) mapping before saving to DB. Currently it just logs the data.
+    - [x] **Critical TODO:** Implement `external_id` (Honeywell Device ID) to `asset_id` (ThermoNeural Asset ID) mapping before saving to DB. Logic implemented in `poll-integrations`.
 
 ---
 

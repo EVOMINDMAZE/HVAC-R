@@ -153,7 +153,7 @@ const getPropertyValue = (obj, propertyNames) => {
 
 - **Unified Design System**: Consistent typography (Inter), glassmorphism cards, and dynamic gradients
 - **Interactive Animations**: `framer-motion` entrance and hover effects for enhanced engagement
-- **Dark Mode Support**: Full semantic color implementation for seamless theme switching
+- **Dark Mode Support**: Full semantic color implementation with strict consistency enforcement across Clients, Dispatch, and Detail pages
 - **Responsive Layouts**: Optimized for mobile, tablet, and desktop experiences
 - **Professional Credibility**: Polished interfaces that build trust with enterprise users
 

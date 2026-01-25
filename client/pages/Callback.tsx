@@ -18,19 +18,33 @@ export function Callback() {
 
     const [status, setStatus] = useState<'processing' | 'success' | 'error'>('processing');
     const [message, setMessage] = useState("Finalizing secure connection...");
+    const [debugInfo, setDebugInfo] = useState<string | null>(null);
 
     useEffect(() => {
+        // ROBUST CODE EXTRACTION
+        // URLSearchParams sometimes decodes '+' or handles special chars unexpectedly.
+        // We fallback to manual regex if needed, but Google codes usually start with "4/".
+        let codeToUse = code;
+        if (!codeToUse) {
+            const match = window.location.search.match(/[?&]code=([^&]+)/);
+            if (match) {
+                codeToUse = decodeURIComponent(match[1]);
+            }
+        }
+
         if (errorParam) {
             setStatus('error');
             setMessage(`Provider declined the request: ${errorParam}`);
             return;
         }
 
-        if (!code) {
+        if (!codeToUse) {
             setStatus('error');
             setMessage("Invalid response: Missing authorization code.");
             return;
         }
+
+        const currentRedirectUri = window.location.origin + `/callback/${provider}`;
 
         const exchangeToken = async () => {
             try {
@@ -38,14 +52,25 @@ export function Callback() {
                 const { data, error } = await supabase.functions.invoke('oauth-token-exchange', {
                     body: {
                         provider,
-                        code,
+                        code: codeToUse,
                         state, // This is the integration_id 
-                        redirect_uri: window.location.origin + `/callback/${provider}`
+                        redirect_uri: currentRedirectUri
                     }
                 });
 
                 if (error) throw error;
-                if (data?.error) throw new Error(data.error);
+                if (data?.error) {
+                    // Capture debug info from the error response or context
+                    const info = `
+provider: ${provider}
+code_prefix: ${codeToUse?.substring(0, 5)}...
+code_length: ${codeToUse?.length}
+redirect_uri: ${currentRedirectUri}
+error: ${data.error}
+                    `.trim();
+                    setDebugInfo(info);
+                    throw new Error(data.error);
+                }
 
                 setStatus('success');
                 setMessage("Successfully connected! Device data will start syncing shortly.");
@@ -57,8 +82,9 @@ export function Callback() {
             }
         };
 
+        // Delay slightly to ensure hydration? No, generally safe to run.
         exchangeToken();
-    }, [code, provider, state, errorParam]); // dependencies
+    }, []); // Run once on mount (ignoring strict mode double-invoke for now is okay, or use ref)
 
     return (
         <div className="min-h-screen w-full bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4 relative overflow-hidden">
@@ -95,7 +121,15 @@ export function Callback() {
                         </CardDescription>
                     </CardHeader>
                     {status === 'error' && (
-                        <CardContent className="text-center">
+                        <CardContent className="text-center space-y-4">
+                            {debugInfo && (
+                                <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded text-left text-xs font-mono overflow-auto border border-slate-200 dark:border-slate-700">
+                                    <p className="font-semibold mb-1 text-slate-500">Debug Details:</p>
+                                    <pre className="whitespace-pre-wrap break-all text-slate-600 dark:text-slate-300">
+                                        {debugInfo}
+                                    </pre>
+                                </div>
+                            )}
                             <button
                                 onClick={() => navigate(-1)} // Go back to try again
                                 className="text-blue-600 hover:underline text-sm"

@@ -61,7 +61,7 @@ export default function Dispatch() {
                     <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
                         Dispatch Center 🚁
                     </h1>
-                    <p className="text-gray-500 mt-1">Manage active service calls and technician assignments.</p>
+                    <p className="text-slate-500 dark:text-slate-400 mt-1">Manage active service calls and technician assignments.</p>
                 </div>
                 <button
                     onClick={() => setShowCreateDialog(true)}
@@ -81,16 +81,16 @@ export default function Dispatch() {
                         placeholder="Search tickets, clients, or status..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 bg-white border border-gray-100 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                        className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all text-slate-900 dark:text-white"
                     />
                 </div>
-                <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-100 rounded-xl shadow-sm text-gray-600 hover:bg-gray-50 font-medium">
+                <button className="flex items-center gap-2 px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium">
                     <Filter className="w-5 h-5" />
                     Filter
                 </button>
                 <button
                     onClick={() => setShowMapView(true)}
-                    className={`flex items-center gap-2 px-4 py-3 border rounded-xl shadow-sm font-medium transition-colors ${showMapView ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-white border-gray-100 text-gray-600 hover:bg-gray-50'}`}
+                    className={`flex items-center gap-2 px-4 py-3 border rounded-xl shadow-sm font-medium transition-colors ${showMapView ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
                 >
                     <Map className="w-5 h-5" />
                     Map View
@@ -101,8 +101,8 @@ export default function Dispatch() {
             {showMapView ? (
                 <MapView jobs={filteredJobs} />
             ) : (
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="grid grid-cols-12 bg-gray-50/50 p-4 font-semibold text-gray-500 text-sm border-b border-gray-100">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+                    <div className="grid grid-cols-12 bg-slate-50/50 dark:bg-slate-800/50 p-4 font-semibold text-slate-500 dark:text-slate-400 text-sm border-b border-slate-200 dark:border-slate-800">
                         <div className="col-span-3">Client / Asset</div>
                         <div className="col-span-2">Scheduled</div>
                         <div className="col-span-3">Technician</div>
@@ -117,40 +117,40 @@ export default function Dispatch() {
                             <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto text-blue-500 mb-4">
                                 <Calendar className="w-8 h-8" />
                             </div>
-                            <h3 className="text-lg font-semibold text-gray-900">No active jobs</h3>
-                            <p className="text-gray-500">Create a new job to get started.</p>
+                            <h3 className="text-lg font-semibold text-slate-900 dark:text-white">No active jobs</h3>
+                            <p className="text-slate-500">Create a new job to get started.</p>
                         </div>
                     ) : (
-                        <div className="divide-y divide-gray-50">
+                        <div className="divide-y divide-slate-100 dark:divide-slate-800">
                             {filteredJobs.map((job) => (
-                                <div key={job.id} className="grid grid-cols-12 p-4 items-center hover:bg-gray-50/50 transition-colors group">
+                                <div key={job.id} className="grid grid-cols-12 p-4 items-center hover:bg-gray-50/50 dark:hover:bg-slate-800/50 transition-colors group">
                                     <div className="col-span-3 pr-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+                                            <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
                                                 <Building2 className="w-5 h-5" />
                                             </div>
                                             <div>
-                                                <div className="font-semibold text-gray-900 line-clamp-1">{job.client?.name}</div>
-                                                <div className="text-xs text-gray-500 line-clamp-1">{job.asset?.name || 'General Service'}</div>
+                                                <div className="font-semibold text-slate-900 dark:text-white line-clamp-1">{job.client?.name}</div>
+                                                <div className="text-xs text-slate-500 line-clamp-1">{job.asset?.name || 'General Service'}</div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="col-span-2 text-gray-600 font-medium text-sm flex items-center gap-2">
-                                        <Calendar className="w-4 h-4 text-gray-400" />
+                                    <div className="col-span-2 text-slate-600 dark:text-slate-400 font-medium text-sm flex items-center gap-2">
+                                        <Calendar className="w-4 h-4 text-slate-400" />
                                         {job.scheduled_at ? format(new Date(job.scheduled_at), 'MMM d, h:mm a') : 'Unscheduled'}
                                     </div>
 
                                     <div className="col-span-3">
                                         {job.technician ? (
                                             <div className="flex items-center gap-2">
-                                                <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-xs font-bold">
+                                                <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xs font-bold">
                                                     {job.technician.email[0].toUpperCase()}
                                                 </div>
-                                                <span className="text-sm font-medium text-gray-700 truncate">{job.technician.email.split('@')[0]}</span>
+                                                <span className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate">{job.technician.email.split('@')[0]}</span>
                                             </div>
                                         ) : (
-                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-800 text-gray-800 dark:text-gray-300">
                                                 Unassigned
                                             </span>
                                         )}
@@ -161,7 +161,7 @@ export default function Dispatch() {
                                             job.status === 'en_route' ? 'bg-blue-50 text-blue-700 border-blue-200' :
                                                 job.status === 'on_site' ? 'bg-purple-50 text-purple-700 border-purple-200' :
                                                     job.status === 'completed' ? 'bg-green-50 text-green-700 border-green-200' :
-                                                        'bg-gray-100 text-gray-800'
+                                                        'bg-gray-100 dark:bg-slate-800 text-gray-800 dark:text-gray-300'
                                             }`}>
                                             <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${job.status === 'pending' ? 'bg-yellow-500' :
                                                 job.status === 'en_route' ? 'bg-blue-500' :

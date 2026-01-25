@@ -39,7 +39,11 @@ Deno.serve(async (req) => {
         let tokenResponse = null
         let expiresAt = null
 
+
         console.log(`Processing ${provider} integration for ID: ${state}`)
+        console.log(`Received redirect_uri: ${redirect_uri}`)
+        console.log(`Received code (start): ${code?.substring(0, 10)}...`)
+        console.log(`Received code (length): ${code?.length}`)
 
         // 2. Exchange Code for Token (Provider Specific)
         if (provider === 'honeywell') {
@@ -86,10 +90,22 @@ Deno.serve(async (req) => {
             now.setSeconds(now.getSeconds() + expiresIn)
             expiresAt = now.toISOString()
 
-        } else if (provider === 'google_nest') {
+        } else if (provider === 'google_nest' || provider === 'nest') {
             const clientId = Deno.env.get('NEST_CLIENT_ID')
             const clientSecret = Deno.env.get('NEST_CLIENT_SECRET')
+
+            // Reverting rewrite: Trust the frontend's redirect_uri if it was sufficient to get the code.
+            // However, ensure we handle the 'nest' vs 'google_nest' alias in the URI if strictly needed, 
+            // but for now, rely on what passed the initial auth.
             const redirectUri = redirect_uri || 'https://thermoneural.com/callback/google_nest'
+
+            // FIX: Common issue where '+' in code is converted to ' ' (space) by simple URL decoding.
+            // Google codes often have '+'. If we see spaces, put the '+' back.
+            let safeCode = code;
+            if (safeCode && safeCode.includes(' ')) {
+                console.log('Detected spaces in auth code, replacing with "+"');
+                safeCode = safeCode.replace(/ /g, '+');
+            }
 
             if (!clientId || !clientSecret) {
                 throw new Error('Nest environment variables not configured.')
@@ -102,7 +118,7 @@ Deno.serve(async (req) => {
                 body: new URLSearchParams({
                     client_id: clientId,
                     client_secret: clientSecret,
-                    code: code,
+                    code: safeCode,
                     grant_type: 'authorization_code',
                     redirect_uri: redirectUri,
                 }).toString()
@@ -157,7 +173,7 @@ Deno.serve(async (req) => {
         console.error('OAuth Error:', error.message)
         return new Response(JSON.stringify({ error: error.message }), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-            status: 400,
+            status: 200, // Return 200 so client can parse the error message
         })
     }
 })

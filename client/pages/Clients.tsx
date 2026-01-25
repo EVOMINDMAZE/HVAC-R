@@ -216,7 +216,7 @@ export function Clients() {
     );
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC]">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
             {/* Background patterns */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
                 <div className="absolute top-[10%] right-[5%] w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px]" />
@@ -234,10 +234,10 @@ export function Clients() {
                             <Users className="w-5 h-5" />
                             <span className="text-sm uppercase">Business Operations</span>
                         </div>
-                        <h1 className="text-4xl font-bold tracking-tight text-gray-900 mb-2">
+                        <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">
                             Client Management
                         </h1>
-                        <p className="text-lg text-gray-600 max-w-2xl">
+                        <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl">
                             Organize your customers, track service history, and manage communication in one central hub.
                         </p>
                     </motion.div>
@@ -338,29 +338,29 @@ export function Clients() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.1 }}
-                            className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+                            className="bg-card p-6 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow"
                         >
                             <div className={`w-12 h-12 rounded-2xl bg-${stat.color}-50 flex items-center justify-center mb-4`}>
                                 <stat.icon className={`w-6 h-6 text-${stat.color}-500`} />
                             </div>
-                            <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
-                            <div className="text-sm text-gray-500">{stat.label}</div>
+                            <div className="text-2xl font-bold text-slate-900 dark:text-white">{stat.value}</div>
+                            <div className="text-sm text-slate-500">{stat.label}</div>
                         </motion.div>
                     ))}
                 </div>
 
                 {/* Search and Filters */}
-                <div className="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 mb-8 flex flex-col md:flex-row gap-4">
+                <div className="bg-card p-4 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800 mb-8 flex flex-col md:flex-row gap-4">
                     <div className="relative flex-grow group">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
                         <Input
                             placeholder="Search clients by name, email, or company..."
-                            className="pl-12 h-12 bg-gray-50/50 border-transparent focus:bg-white focus:ring-2 focus:ring-blue-500/20 rounded-2xl transition-all"
+                            className="pl-12 h-12 bg-white/80 dark:bg-slate-900/80 border-transparent focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-blue-500/20 rounded-2xl transition-all text-slate-900 dark:text-white"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
                     </div>
-                    <Button variant="outline" className="h-12 rounded-2xl border-gray-200 hover:bg-gray-50 px-6 gap-2">
+                    <Button variant="outline" className="h-12 rounded-2xl border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800 px-6 gap-2 dark:text-slate-200">
                         <Settings className="w-5 h-5 text-gray-500" />
                         <span>Filter</span>
                     </Button>
@@ -370,7 +370,7 @@ export function Clients() {
                 {isLoading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {[1, 2, 3, 4, 5, 6].map((n) => (
-                            <div key={n} className="bg-white p-8 rounded-3xl border border-gray-100 space-y-4">
+                            <div key={n} className="bg-card p-8 rounded-3xl border border-gray-100 dark:border-slate-800 space-y-4">
                                 <Skeleton className="h-12 w-12 rounded-2xl" />
                                 <Skeleton className="h-6 w-3/4" />
                                 <Skeleton className="h-4 w-1/2" />
@@ -393,7 +393,7 @@ export function Clients() {
                                     transition={{ delay: index * 0.05 }}
                                     className="group"
                                 >
-                                    <Card className="h-full rounded-[2rem] border-gray-100 shadow-sm hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 overflow-hidden relative group">
+                                    <Card className="h-full rounded-[2rem] border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 overflow-hidden relative group">
                                         <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <Button variant="ghost" size="icon" className="text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl">
                                                 <Trash2 className="w-5 h-5" />
@@ -406,7 +406,7 @@ export function Clients() {
                                                     {client.name.split(' ').map(n => n[0]).join('')}
                                                 </span>
                                             </div>
-                                            <CardTitle className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                                            <CardTitle className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">
                                                 {client.name}
                                             </CardTitle>
                                             <CardDescription className="flex items-center gap-2">
@@ -417,20 +417,20 @@ export function Clients() {
 
                                         <CardContent className="space-y-6">
                                             <div className="space-y-3">
-                                                <div className="flex items-center gap-3 text-sm text-gray-600 p-3 rounded-2xl bg-gray-50 group-hover:bg-blue-50 transition-colors">
+                                                <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 transition-colors">
                                                     <Mail className="w-4 h-4 text-blue-500" />
                                                     <span className="truncate">{client.contact_email || 'No email'}</span>
                                                 </div>
-                                                <div className="flex items-center gap-3 text-sm text-gray-600 p-3 rounded-2xl bg-gray-50 group-hover:bg-blue-50 transition-colors">
+                                                <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 transition-colors">
                                                     <Phone className="w-4 h-4 text-blue-500" />
                                                     <span>{client.contact_phone || 'No phone'}</span>
                                                 </div>
                                             </div>
 
-                                            <div className="pt-6 border-t border-gray-50">
+                                            <div className="pt-6 border-t border-slate-100 dark:border-slate-800">
                                                 <Link
                                                     to={`/clients/${client.id}`}
-                                                    className="w-full inline-flex items-center justify-center h-12 rounded-2xl bg-gray-900 text-white font-medium hover:bg-gray-800 transition-all gap-2 group/btn"
+                                                    className="w-full inline-flex items-center justify-center h-12 rounded-2xl bg-slate-900 dark:bg-blue-600 text-white font-medium hover:bg-slate-800 dark:hover:bg-blue-700 transition-all gap-2 group/btn"
                                                 >
                                                     View Profile
                                                     <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
@@ -446,13 +446,13 @@ export function Clients() {
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="text-center py-32 bg-white rounded-[3rem] border border-dashed border-gray-300"
+                        className="text-center py-32 bg-card rounded-[3rem] border border-dashed border-gray-300 dark:border-slate-700"
                     >
                         <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
                             <Users className="w-12 h-12 text-gray-300" />
                         </div>
-                        <h3 className="text-2xl font-bold text-gray-900 mb-2">No clients found</h3>
-                        <p className="text-gray-500 max-w-sm mx-auto mb-8">
+                        <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">No clients found</h3>
+                        <p className="text-slate-500 max-w-sm mx-auto mb-8">
                             {searchQuery ? `No results for "${searchQuery}". Try a different term or clear filters.` : "Start building your customer base by adding your first client."}
                         </p>
                         {!searchQuery && (

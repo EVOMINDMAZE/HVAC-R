@@ -71,7 +71,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
     }, []);
 
     return (
-      <div className="bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm shadow-sm transition-colors z-50 relative">
+      <div className="bg-background/90 backdrop-blur-sm shadow-sm transition-colors z-50 relative">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-4 min-w-0">
@@ -142,7 +142,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                       aria-haspopup="menu"
                       aria-expanded={isAvatarOpen}
                       onClick={() => setIsAvatarOpen((s) => !s)}
-                      className="h-9 w-9 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-300 font-semibold overflow-hidden focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
+                      className="h-9 w-9 rounded-full bg-secondary flex items-center justify-center text-foreground font-semibold overflow-hidden focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
                       aria-label="Account menu"
                     >
                       {avatarUrl ? (
@@ -161,7 +161,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                     {isAvatarOpen && (
                       <div
                         role="menu"
-                        className="absolute right-0 mt-2 w-40 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-md shadow-lg z-[9999] transition-colors"
+                        className="absolute right-0 mt-2 w-40 bg-card border border-border rounded-md shadow-lg z-[9999] transition-colors"
                       >
                         <nav className="flex flex-col p-2">
                           <Link
@@ -169,7 +169,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                             onClick={() => setIsAvatarOpen(false)}
                             role="menuitem"
                             tabIndex={0}
-                            className="px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 rounded transition-colors"
+                            className="px-3 py-2 text-sm text-foreground hover:bg-secondary rounded transition-colors"
                           >
                             Profile
                           </Link>
@@ -178,7 +178,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                             onClick={() => setIsAvatarOpen(false)}
                             role="menuitem"
                             tabIndex={0}
-                            className="px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 rounded transition-colors"
+                            className="px-3 py-2 text-sm text-foreground hover:bg-secondary rounded transition-colors"
                           >
                             Settings
                           </Link>
@@ -188,7 +188,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                               handleSignOut();
                             }}
                             role="menuitem"
-                            className="text-left px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-50 dark:hover:bg-slate-800 rounded transition-colors"
+                            className="text-left px-3 py-2 text-sm text-destructive hover:bg-secondary rounded transition-colors"
                           >
                             Sign Out
                           </button>
@@ -290,7 +290,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
   }
 
   return (
-    <header className="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 shadow-sm">
+    <header className="bg-background/80 backdrop-blur-md border-b border-border sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
@@ -319,32 +319,32 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
             <nav className="hidden md:flex items-center space-x-8">
               <Link
                 to="/features"
-                className="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-white font-medium transition-colors font-display"
+                className="text-muted-foreground hover:text-blue-600 font-medium transition-colors font-display"
               >
                 Features
               </Link>
               <Link
                 to="/pricing"
-                className="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-white font-medium transition-colors font-display"
+                className="text-muted-foreground hover:text-blue-600 font-medium transition-colors font-display"
               >
                 Pricing
               </Link>
               <Link
                 to="/about"
-                className="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-white font-medium transition-colors font-display"
+                className="text-muted-foreground hover:text-blue-600 font-medium transition-colors font-display"
               >
                 About
               </Link>
               <div className="w-px h-6 bg-slate-200 dark:bg-slate-800"></div>
               <Link
                 to="/help-center"
-                className="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-white font-medium text-sm transition-colors font-display"
+                className="text-muted-foreground hover:text-blue-600 font-medium text-sm transition-colors font-display"
               >
                 Help
               </Link>
               <Link
                 to="/contact"
-                className="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-white font-medium text-sm transition-colors font-display"
+                className="text-muted-foreground hover:text-blue-600 font-medium text-sm transition-colors font-display"
               >
                 Support
               </Link>
@@ -355,7 +355,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
             <ModeToggle />
             {isAuthenticated ? (
               <>
-                <span className="text-sm text-gray-600 hidden md:block">
+                <span className="text-sm text-muted-foreground hidden md:block">
                   {user?.email}
                 </span>
                 <Link to="/dashboard">
@@ -392,7 +392,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 <Link to="/signin">
                   <Button
                     variant="ghost"
-                    className="text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
+                    className="text-muted-foreground hover:text-foreground"
                   >
                     Sign In
                   </Button>
