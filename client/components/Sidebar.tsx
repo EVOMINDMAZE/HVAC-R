@@ -140,7 +140,7 @@ export function Sidebar() {
           {showClientMenu && (
             <>
               <NavItem item={{ to: '/triage', label: 'Request Service', icon: Wrench }} isActive={location.pathname === '/triage'} setHover={setHoveredPath} hovered={hoveredPath} roleTag={isAdmin ? "C" : undefined} />
-              <NavItem item={{ to: '/history', label: 'My Jobs', icon: History }} isActive={location.pathname === '/history'} setHover={setHoveredPath} hovered={hoveredPath} roleTag={isAdmin ? "C" : undefined} />
+              <NavItem item={{ to: '/jobs', label: 'My Jobs', icon: Briefcase }} isActive={location.pathname === '/jobs'} setHover={setHoveredPath} hovered={hoveredPath} roleTag={isAdmin ? "C" : undefined} />
             </>
           )}
 

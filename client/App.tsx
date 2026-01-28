@@ -93,7 +93,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   // RBAC Redirection Logic
   if (role === 'client') {
-    const allowedClientRoutes = ['/portal', '/history', '/track-job', '/settings'];
+    const allowedClientRoutes = ['/portal', '/history', '/track-job', '/settings', '/jobs'];
     const isAllowed = allowedClientRoutes.some(route => location.pathname.startsWith(route));
 
     // If client is trying to access restricted areas, redirect to portal
