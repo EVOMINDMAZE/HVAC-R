@@ -128,19 +128,19 @@ export function Sidebar() {
           )}
 
           {showDispatch && (
-            <NavItem item={{ to: '/dashboard/dispatch', label: 'Dispatch', icon: Radio }} isActive={location.pathname === '/dashboard/dispatch'} setHover={setHoveredPath} hovered={hoveredPath} roleTag={isAdmin ? "Owner" : undefined} />
+            <NavItem item={{ to: '/dashboard/dispatch', label: 'Dispatch', icon: Radio }} isActive={location.pathname === '/dashboard/dispatch'} setHover={setHoveredPath} hovered={hoveredPath} roleTag={isAdmin ? "O" : undefined} />
           )}
 
           {/* TECHNICIAN WORK (Focused View) */}
           {showTechWork && (
-            <NavItem item={{ to: '/jobs', label: 'My Jobs', icon: Briefcase, badge: newJobsCount }} isActive={location.pathname === '/jobs'} setHover={setHoveredPath} hovered={hoveredPath} roleTag={isAdmin ? "Tech" : undefined} />
+            <NavItem item={{ to: '/jobs', label: 'My Jobs', icon: Briefcase, badge: newJobsCount }} isActive={location.pathname === '/jobs'} setHover={setHoveredPath} hovered={hoveredPath} roleTag={isAdmin ? "T" : undefined} />
           )}
 
           {/* CLIENT MENU (Replaces Toolbox for Clients) */}
           {showClientMenu && (
             <>
-              <NavItem item={{ to: '/triage', label: 'Request Service', icon: Wrench }} isActive={location.pathname === '/triage'} setHover={setHoveredPath} hovered={hoveredPath} roleTag={isAdmin ? "Client" : undefined} />
-              <NavItem item={{ to: '/history', label: 'My Jobs', icon: History }} isActive={location.pathname === '/history'} setHover={setHoveredPath} hovered={hoveredPath} roleTag={isAdmin ? "Client" : undefined} />
+              <NavItem item={{ to: '/triage', label: 'Request Service', icon: Wrench }} isActive={location.pathname === '/triage'} setHover={setHoveredPath} hovered={hoveredPath} roleTag={isAdmin ? "C" : undefined} />
+              <NavItem item={{ to: '/history', label: 'My Jobs', icon: History }} isActive={location.pathname === '/history'} setHover={setHoveredPath} hovered={hoveredPath} roleTag={isAdmin ? "C" : undefined} />
             </>
           )}
 
@@ -156,7 +156,7 @@ export function Sidebar() {
                 )}>
                   <Wrench className="h-4 w-4 text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-400" />
                   <span>Toolbox</span>
-                  {isAdmin && <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded border leading-none bg-emerald-100 text-emerald-600 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800">Tech</span>}
+                  {isAdmin && <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded border leading-none bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">O/T</span>}
                   <ChevronDown className="h-3 w-3 opacity-50" />
                 </div>
               </DropdownMenuTrigger>
@@ -192,7 +192,7 @@ export function Sidebar() {
                 >
                   <Cpu className={cn("h-4 w-4", location.pathname.includes('cycle') ? "text-blue-600 dark:text-blue-400" : "text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-400")} />
                   <span>Calculators</span>
-                  {isAdmin && <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded border leading-none bg-emerald-100 text-emerald-600 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800">Tech</span>}
+                  {isAdmin && <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded border leading-none bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">O/T</span>}
                   <ChevronDown className="h-3 w-3 opacity-50" />
                 </div>
               </DropdownMenuTrigger>
@@ -241,7 +241,7 @@ export function Sidebar() {
                 )}>
                   <Briefcase className="h-4 w-4 text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-400" />
                   <span>Office</span>
-                  {isAdmin && <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded border leading-none bg-purple-100 text-purple-600 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800">Owner</span>}
+                  {isAdmin && <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded border leading-none bg-purple-100 text-purple-600 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800">O</span>}
                   <ChevronDown className="h-3 w-3 opacity-50" />
                 </div>
               </DropdownMenuTrigger>
@@ -311,9 +311,10 @@ export function Sidebar() {
 function NavItem({ item, isActive, setHover, hovered, roleTag }: { item: any; isActive: boolean; setHover: (path: string | null) => void; hovered: string | null; roleTag?: string }) {
 
   const tagColors: Record<string, string> = {
-    Owner: "bg-purple-100 text-purple-600 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800",
-    Tech: "bg-emerald-100 text-emerald-600 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800",
-    Client: "bg-indigo-100 text-indigo-600 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-300 dark:border-indigo-800",
+    O: "bg-purple-100 text-purple-600 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800",
+    T: "bg-emerald-100 text-emerald-600 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-800",
+    C: "bg-indigo-100 text-indigo-600 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-300 dark:border-indigo-800",
+    "O/T": "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
   };
 
   return (
