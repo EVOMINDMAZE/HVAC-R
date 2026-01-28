@@ -45,6 +45,16 @@ async function getOrCreateUser(u) {
         if (found) {
             userId = found.id;
             console.log(`Found ID: ${userId}`);
+
+            // Check if we need to update password (always do it to be safe)
+            if (u.password) {
+                const { error: updateError } = await supabase.auth.admin.updateUserById(userId, { password: u.password });
+                if (updateError) {
+                    console.error(`Failed to update password for ${u.email}:`, updateError);
+                } else {
+                    console.log(`Password updated/verified for ${u.email}`);
+                }
+            }
         } else {
             console.error("Could not find user in list.");
             return null;

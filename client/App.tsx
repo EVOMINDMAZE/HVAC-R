@@ -93,21 +93,24 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   // RBAC Redirection Logic
   if (role === 'client') {
-    // If client is trying to access anything OTHER than portal, redirect to portal
-    if (!location.pathname.startsWith('/portal')) {
+    const allowedClientRoutes = ['/portal', '/history', '/track-job', '/settings'];
+    const isAllowed = allowedClientRoutes.some(route => location.pathname.startsWith(route));
+
+    // If client is trying to access restricted areas, redirect to portal
+    if (!isAllowed) {
       return <Navigate to="/portal" replace />;
     }
-    // If client is in portal, render children (WITHOUT Admin Layout)
-    return <>{children}</>;
+    // Render with Layout so clients see their scoped Sidebar
+    return <Layout>{children}</Layout>;
   }
 
   // Logic for Admin/Standard Users
-  // If admin tries to access portal, redirect to dashboard (Optional, keeping strict for now)
-  if (location.pathname.startsWith('/portal')) {
+  // If non-admin tries to access portal, redirect to dashboard
+  if (location.pathname.startsWith('/portal') && role !== 'admin') {
     return <Navigate to="/dashboard" replace />;
   }
 
-  // Wrap protected pages in the app Layout for consistent navigation (For Admins)
+  // Wrap protected pages in the app Layout for consistent navigation
   return <Layout>{children}</Layout>;
 }
 

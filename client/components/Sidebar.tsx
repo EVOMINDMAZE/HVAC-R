@@ -38,17 +38,18 @@ export function Sidebar() {
   // 2. Technician: The "Soldier" - Focused on Jobs + Tools, no Admin/Office access
   // 3. Client: The "User" - Portal View only
 
-  const isOwner = !role || role === 'admin' || role === 'student'; // Default to Owner for Dev
+  const isAdmin = role === 'admin';
+  const isOwner = !role || isAdmin || role === 'student'; // Default to Owner for Dev
   const isTech = role === 'technician';
   const isClient = role === 'client';
 
   // Visibility Flags
   const showDispatch = isOwner;
   const showOffice = isOwner;
-  const showToolbox = isOwner || isTech;
-  const showCalculators = isOwner || isTech;
-  const showTechWork = isTech; // Techs get specific "My Jobs" access
-  const showClientMenu = isClient;
+  const showToolbox = isOwner || isTech || isAdmin;
+  const showCalculators = isOwner || isTech || isAdmin;
+  const showTechWork = isTech || isAdmin; // Admin sees Tech view too
+  const showClientMenu = isClient || isAdmin; // Admin sees Client view too
 
   // Mock Notification State for Jobs (would connect to real backend state)
   const newJobsCount = 3;
