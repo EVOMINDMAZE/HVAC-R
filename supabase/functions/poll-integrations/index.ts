@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
         for (const integration of integrations) {
             try {
                 const provider = integration.provider.toLowerCase()
-                let telemetryData = [] // Array of { value, type, unit }
+                const telemetryData = [] // Array of { value, type, unit }
 
                 // --- PROVIDER LOGIC START ---
                 // --- PROVIDER LOGIC START ---

@@ -13,22 +13,6 @@ export default function Dispatch() {
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [showMapView, setShowMapView] = useState(false);
 
-    useEffect(() => {
-        fetchJobs();
-
-        // Subscribe to realtime updates
-        const channel = supabase
-            .channel('dispatch-jobs')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'jobs' }, () => {
-                fetchJobs();
-            })
-            .subscribe();
-
-        return () => {
-            supabase.removeChannel(channel);
-        };
-    }, []);
-
     async function fetchJobs() {
         const { data, error } = await supabase
             .from('jobs')
@@ -45,6 +29,22 @@ export default function Dispatch() {
         }
         setLoading(false);
     }
+
+    useEffect(() => {
+        fetchJobs();
+
+        // Subscribe to realtime updates
+        const channel = supabase
+            .channel('dispatch-jobs')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'jobs' }, () => {
+                fetchJobs();
+            })
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, []);
 
     const filteredJobs = jobs.filter(job =>
         job.client?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

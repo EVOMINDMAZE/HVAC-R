@@ -38,7 +38,7 @@ export const uploadAvatar: RequestHandler = async (req, res) => {
     // Ensure bucket exists (best-effort). Create as public to allow easy access to thumbnails.
     try {
       // createBucket may fail if it already exists; ignore that error
-      // @ts-ignore - createBucket may exist on admin storage client
+      // createBucket may exist on admin storage client
       await admin.storage.createBucket(bucketName, { public: true });
     } catch (e: any) {
       // If bucket already exists, supabase may return an error we can ignore

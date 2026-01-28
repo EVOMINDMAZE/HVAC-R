@@ -105,7 +105,7 @@ This document is the **Active Roadmap**. It breaks down every single task requir
 - [ ] **6.3. User Acceptance Testing (UAT)**
     - [ ] User to verify all flows (EPA, Warranty, Triage).
 - [x] **6.4. Final Deployment**
-    - [ ] Deploy to Vercel/Netlify (Client).
+    - [x] Deploy to Netlify (Client - Triggered via Git Push).
     - [x] Deploy Edge Functions:
         - `analyze-triage-media` (Grok Vision)
         - `ai-troubleshoot` (DeepSeek V3)
@@ -113,6 +113,6 @@ This document is the **Active Roadmap**. It breaks down every single task requir
 ---
 
 ## 🏁 How we proceed
-**Current Focus:** [PHASE 6.1] Set API Keys & [PHASE 2] n8n Setup.
+**Current Focus:** [PHASE 2] n8n Setup (Final Step).
 
 *Use this file to track our exact position. Do not deviate.*

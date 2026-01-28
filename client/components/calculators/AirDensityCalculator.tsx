@@ -136,8 +136,8 @@ export default function AirDensityCalculator({ saveCalculation }: AirDensityCalc
         const t_f = parseFloat(inputs.temperature);
         const rh = parseFloat(inputs.humidity);
 
-        let t_c = units === "metric" ? t_f : (t_f - 32) * 5 / 9;
-        let t_f_final = units === "metric" ? (t_f * 9 / 5) + 32 : t_f;
+        const t_c = units === "metric" ? t_f : (t_f - 32) * 5 / 9;
+        const t_f_final = units === "metric" ? (t_f * 9 / 5) + 32 : t_f;
 
         // 1. Dew Point (Magnus)
         const Es = 6.112 * Math.exp((17.67 * t_c) / (t_c + 243.5));

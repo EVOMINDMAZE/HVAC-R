@@ -142,7 +142,7 @@ export const generateReportPdf: RequestHandler = async (req, res) => {
     const pdfBytes = await pdfDoc.save();
 
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${(reportConfig?.projectName || 'report').replace(/[^a-z0-9\-]/gi, '_')}.pdf"`);
+    res.setHeader('Content-Disposition', `attachment; filename="${(reportConfig?.projectName || 'report').replace(/[^a-z0-9-]/gi, '_')}.pdf"`);
     return res.status(200).send(Buffer.from(pdfBytes));
   } catch (err) {
     console.error('generateReportPdf error', err);

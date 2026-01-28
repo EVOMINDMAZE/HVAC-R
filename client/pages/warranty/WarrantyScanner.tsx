@@ -60,8 +60,8 @@ export default function WarrantyScanner() {
         // Serials often: S/N:, Serial:, Serial No.
         // Models often: M/N:, Model:, Model No.
 
-        const serialRegex = /(?:serial|s\/n|sn)[:\.\-\s]+([a-zA-Z0-9]+)/i;
-        const modelRegex = /(?:model|m\/n|mn)[:\.\-\s]+([a-zA-Z0-9\-]+)/i;
+        const serialRegex = /(?:serial|s\/n|sn)[:.\-\s]+([a-zA-Z0-9]+)/i;
+        const modelRegex = /(?:model|m\/n|mn)[:.\-\s]+([a-zA-Z0-9-]+)/i;
         // Manufacturers (Common ones)
         const brands = ["Carrier", "Trane", "Lennox", "Goodman", "Rheem", "York", "Daikin", "Mitsubishi", "Bryant", "American Standard"];
 

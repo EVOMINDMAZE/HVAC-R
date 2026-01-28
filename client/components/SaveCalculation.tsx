@@ -67,7 +67,7 @@ export function SaveCalculation({
         return;
       }
 
-      let evidenceUrls: string[] = [];
+      const evidenceUrls: string[] = [];
       if (file && user) {
         const fileExt = file.name.split('.').pop();
         const fileName = `${user.id}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;

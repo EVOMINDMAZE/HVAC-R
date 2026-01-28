@@ -47,7 +47,7 @@ export const supabaseDiag: RequestHandler = async (req, res) => {
       // Try a health query to the REST endpoint - list tables may not be allowed; attempt selecting from pg_catalog.tables via rpc will fail
       // We'll attempt a simple request to the auth endpoint to list users (requires service role)
       try {
-        // @ts-ignore - using admin API via REST route; supabase-js exposes admin but may not in this context. We'll attempt a simple select on information_schema
+        // Supabase admin API via REST route; supabase-js exposes admin but may not in this context. We'll attempt a simple select on information_schema
         const { data, error, status } = await sb
           .from("pg_stat_activity" as any)
           .select("*")

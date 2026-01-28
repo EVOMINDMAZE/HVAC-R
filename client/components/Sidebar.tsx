@@ -30,8 +30,25 @@ const CALCULATOR_DETAILS: Record<string, { desc: string }> = {
 
 export function Sidebar() {
   const location = useLocation();
-  const { isAuthenticated } = useSupabaseAuth();
+  const { isAuthenticated, role } = useSupabaseAuth();
   const [hoveredPath, setHoveredPath] = useState<string | null>(null);
+
+  // Role-Based Operational Modes
+  // 1. Owner (Student/Admin): The "Commander" - Full Business Control + Tools
+  // 2. Technician: The "Soldier" - Focused on Jobs + Tools, no Admin/Office access
+  // 3. Client: The "User" - Portal View only
+
+  const isOwner = !role || role === 'admin' || role === 'student'; // Default to Owner for Dev
+  const isTech = role === 'technician';
+  const isClient = role === 'client';
+
+  // Visibility Flags
+  const showDispatch = isOwner;
+  const showOffice = isOwner;
+  const showToolbox = isOwner || isTech;
+  const showCalculators = isOwner || isTech;
+  const showTechWork = isTech; // Techs get specific "My Jobs" access
+  const showClientMenu = isClient;
 
   // Mock Notification State for Jobs (would connect to real backend state)
   const newJobsCount = 3;
@@ -102,70 +119,147 @@ export function Sidebar() {
         {/* LEFT ZONE: WORK & CAREER */}
         <div className="hidden md:flex items-center gap-1 overflow-x-auto no-scrollbar py-2" onMouseLeave={() => setHoveredPath(null)}>
 
-          {/* GROUP 1: CORE WORKFLOW */}
-          {CORE_TOOLS.map((item) => (
-            <NavItem key={item.to} item={item} isActive={location.pathname === item.to} setHover={setHoveredPath} hovered={hoveredPath} />
-          ))}
+          {/* 1. DASHBOARD & DISPATCH */}
+          {!isClient && (
+            <NavItem item={{ to: '/dashboard', label: 'Dashboard', icon: LayoutGrid }} isActive={location.pathname === '/dashboard'} setHover={setHoveredPath} hovered={hoveredPath} />
+          )}
 
-          {/* CALCULATOR MEGA MENU TRIGGER */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <div
-                className={cn(
+          {showDispatch && (
+            <NavItem item={{ to: '/dashboard/dispatch', label: 'Dispatch', icon: Radio }} isActive={location.pathname === '/dashboard/dispatch'} setHover={setHoveredPath} hovered={hoveredPath} />
+          )}
+
+          {/* TECHNICIAN WORK (Focused View) */}
+          {showTechWork && (
+            <NavItem item={{ to: '/jobs', label: 'My Jobs', icon: Briefcase, badge: newJobsCount }} isActive={location.pathname === '/jobs'} setHover={setHoveredPath} hovered={hoveredPath} />
+          )}
+
+          {/* CLIENT MENU (Replaces Toolbox for Clients) */}
+          {showClientMenu && (
+            <>
+              <NavItem item={{ to: '/triage', label: 'Request Service', icon: Wrench }} isActive={location.pathname === '/triage'} setHover={setHoveredPath} hovered={hoveredPath} />
+              <NavItem item={{ to: '/history', label: 'My Jobs', icon: History }} isActive={location.pathname === '/history'} setHover={setHoveredPath} hovered={hoveredPath} />
+            </>
+          )}
+
+          {/* 2. TOOLBOX (Consolidated Tools) */}
+          {showToolbox && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div className={cn(
                   "group flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ease-in-out cursor-pointer select-none relative",
-                  location.pathname.includes('cycle') || location.pathname.includes('calculator') // Broad check for active state
+                  ['/troubleshooting', '/tools/refrigerant-inventory', '/tools/warranty-scanner', '/diy-calculators'].includes(location.pathname)
                     ? "text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20 shadow-sm ring-1 ring-blue-100 dark:ring-blue-800/50"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50"
-                )}
-              >
-                <Cpu className={cn("h-4 w-4", location.pathname.includes('cycle') ? "text-blue-600 dark:text-blue-400" : "text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-400")} />
-                <span>Calculators</span>
-                <ChevronDown className="h-3 w-3 opacity-50" />
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-80 p-2 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 animate-in fade-in-0 zoom-in-95">
-              <DropdownMenuLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 ml-2">Recent</DropdownMenuLabel>
-              <Link to="/tools/standard-cycle">
-                <div className="flex items-center gap-3 p-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer mb-2">
-                  <div className="p-1.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-600"><FileText className="h-4 w-4" /></div>
-                  <div>
-                    <div className="text-sm font-medium text-slate-900 dark:text-slate-200">Standard Cycle</div>
-                    <div className="text-xs text-slate-500">Last used 2 hours ago</div>
-                  </div>
+                )}>
+                  <Wrench className="h-4 w-4 text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-400" />
+                  <span>Toolbox</span>
+                  <ChevronDown className="h-3 w-3 opacity-50" />
                 </div>
-              </Link>
-              <DropdownMenuSeparator className="bg-slate-100 dark:bg-slate-800" />
-              <DropdownMenuLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider my-2 ml-2">All Tools</DropdownMenuLabel>
-              {/* Dynamically fetching calculator items from manual list for richer display */}
-              {Object.entries(CALCULATOR_DETAILS).map(([path, details]) => {
-                const navItem = NAV_GROUPS.find(g => g.label === 'Calculators')?.items?.find(i => i.to === path);
-                if (!navItem) return null;
-                const Icon = navItem.icon;
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                const isSubActive = location.pathname === path;
-
-                return (
-                  <DropdownMenuItem key={path} asChild className="cursor-pointer focus:bg-slate-50 dark:focus:bg-slate-800/50 my-1">
-                    <Link to={path} className="flex items-center gap-3 w-full p-2">
-                      <div className="p-1.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:text-blue-600"><Icon className="h-4 w-4" /></div>
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{navItem.label}</span>
-                        <span className="text-xs text-slate-500 dark:text-slate-400">{details.desc}</span>
-                      </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56 p-1 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800">
+                {[
+                  { to: '/troubleshooting', label: 'AI Troubleshooter', icon: Zap },
+                  { to: '/tools/refrigerant-inventory', label: 'EPA Bank', icon: Archive },
+                  { to: '/tools/warranty-scanner', label: 'Warranty Scanner', icon: Scan },
+                  { to: '/diy-calculators', label: 'Builder Tools', icon: Hammer },
+                ].map(tool => (
+                  <DropdownMenuItem key={tool.to} asChild>
+                    <Link to={tool.to} className="flex items-center gap-2 p-2 rounded-md cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800">
+                      <tool.icon className="h-4 w-4 text-slate-500" />
+                      <span className="text-sm font-medium">{tool.label}</span>
                     </Link>
                   </DropdownMenuItem>
-                )
-              })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
 
-          {/* DIVIDER */}
-          <div className="h-6 w-px bg-slate-200 dark:bg-slate-800 mx-2" />
+          {/* 3. CALCULATORS (Existing Rich Menu) */}
+          {showCalculators && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div
+                  className={cn(
+                    "group flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ease-in-out cursor-pointer select-none relative",
+                    location.pathname.includes('cycle') || location.pathname.includes('calculator')
+                      ? "text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20 shadow-sm ring-1 ring-blue-100 dark:ring-blue-800/50"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                  )}
+                >
+                  <Cpu className={cn("h-4 w-4", location.pathname.includes('cycle') ? "text-blue-600 dark:text-blue-400" : "text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-400")} />
+                  <span>Calculators</span>
+                  <ChevronDown className="h-3 w-3 opacity-50" />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-80 p-2 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 animate-in fade-in-0 zoom-in-95">
+                <DropdownMenuLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 ml-2">Recent</DropdownMenuLabel>
+                <Link to="/tools/standard-cycle">
+                  <div className="flex items-center gap-3 p-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer mb-2">
+                    <div className="p-1.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-600"><FileText className="h-4 w-4" /></div>
+                    <div>
+                      <div className="text-sm font-medium text-slate-900 dark:text-slate-200">Standard Cycle</div>
+                      <div className="text-xs text-slate-500">Last used 2 hours ago</div>
+                    </div>
+                  </div>
+                </Link>
+                <DropdownMenuSeparator className="bg-slate-100 dark:bg-slate-800" />
+                <DropdownMenuLabel className="text-xs font-semibold text-slate-500 uppercase tracking-wider my-2 ml-2">All Tools</DropdownMenuLabel>
+                {Object.entries(CALCULATOR_DETAILS).map(([path, details]) => {
+                  const navItem = NAV_GROUPS.find(g => g.label === 'Calculators')?.items?.find(i => i.to === path);
+                  if (!navItem) return null;
+                  const Icon = navItem.icon;
+                  return (
+                    <DropdownMenuItem key={path} asChild className="cursor-pointer focus:bg-slate-50 dark:focus:bg-slate-800/50 my-1">
+                      <Link to={path} className="flex items-center gap-3 w-full p-2">
+                        <div className="p-1.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 group-hover:text-blue-600"><Icon className="h-4 w-4" /></div>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{navItem.label}</span>
+                          <span className="text-xs text-slate-500 dark:text-slate-400">{details.desc}</span>
+                        </div>
+                      </Link>
+                    </DropdownMenuItem>
+                  )
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
 
-          {/* GROUP 2: CAREER */}
-          {CAREER_TOOLS.map((item) => (
-            <NavItem key={item.to} item={item} isActive={location.pathname === item.to} setHover={setHoveredPath} hovered={hoveredPath} />
-          ))}
+          {/* 4. OFFICE (Management) */}
+          {showOffice && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div className={cn(
+                  "group flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ease-in-out cursor-pointer select-none relative",
+                  ['/clients', '/jobs', '/history'].includes(location.pathname)
+                    ? "text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20 shadow-sm ring-1 ring-blue-100 dark:ring-blue-800/50"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                )}>
+                  <Briefcase className="h-4 w-4 text-slate-400 group-hover:text-slate-600 dark:text-slate-500 dark:group-hover:text-slate-400" />
+                  <span>Office</span>
+                  <ChevronDown className="h-3 w-3 opacity-50" />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-48 p-1 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800">
+                {[
+                  { to: '/clients', label: 'Clients', icon: Users },
+                  { to: '/jobs', label: 'Jobs', icon: Briefcase, badge: newJobsCount },
+                  { to: '/history', label: 'History', icon: History },
+                ].map(item => (
+                  <DropdownMenuItem key={item.to} asChild>
+                    <Link to={item.to} className="flex items-center gap-2 p-2 rounded-md cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 justify-between">
+                      <div className="flex items-center gap-2">
+                        <item.icon className="h-4 w-4 text-slate-500" />
+                        <span className="text-sm font-medium">{item.label}</span>
+                      </div>
+                      {item.badge && (
+                        <span className="bg-orange-100 text-orange-600 text-[10px] font-bold px-1.5 py-0.5 rounded-full">{item.badge}</span>
+                      )}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
 
         </div>
 
