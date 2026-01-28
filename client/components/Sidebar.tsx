@@ -1,7 +1,7 @@
 import { NavLink, Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { NAV_ITEMS, UTIL_ITEMS, NAV_GROUPS } from "@/components/navigation";
-import { ChevronDown, Briefcase, Zap, FileText, Cpu, LayoutGrid, Wrench, History, Newspaper, PlayCircle, Headphones, BookOpen, ExternalLink, Info, Hammer, Users, Radio } from 'lucide-react';
+import { ChevronDown, Briefcase, Zap, FileText, Cpu, LayoutGrid, Wrench, History, Newspaper, PlayCircle, Headphones, BookOpen, ExternalLink, Info, Hammer, Users, Radio, Archive, Scan } from 'lucide-react';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
 import {
   DropdownMenu,
@@ -40,6 +40,8 @@ export function Sidebar() {
     { to: '/dashboard', label: 'Dashboard', icon: LayoutGrid },
     { to: '/dashboard/dispatch', label: 'Dispatch', icon: Radio },
     { to: '/clients', label: 'Clients', icon: Users },
+    { to: '/tools/refrigerant-inventory', label: 'EPA Bank', icon: Archive },
+    { to: '/tools/warranty-scanner', label: 'Warranty', icon: Scan },
     { to: '/diy-calculators', label: 'Builder', icon: Hammer },
     { to: '/troubleshooting', label: 'Troubleshoot', icon: Wrench },
     { to: '/history', label: 'History', icon: History },

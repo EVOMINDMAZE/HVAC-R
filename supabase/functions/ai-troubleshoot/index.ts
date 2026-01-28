@@ -285,7 +285,12 @@ serve(async (req) => {
     let raw;
     try {
       const messages = buildMessages(payload, userRole);
-      raw = await callOllama(messages, payload?.model);
+      // Construct user content with role instructions
+      const systemMessage = messages.shift(); // Remove system prompt to handle it specifically if needed, or keep it. 
+      // DeepSeek supports system role.
+      if (systemMessage) messages.unshift(systemMessage);
+
+      raw = await callDeepSeek(messages, payload?.model);
     } catch (aiError) {
       console.error("AI provider request failed", aiError);
       const detail =
@@ -304,7 +309,7 @@ serve(async (req) => {
       );
     }
 
-    const normalized = normalizeOllamaResponse(raw);
+    const normalized = normalizeOllamaResponse(raw); // We can reuse the normalizer as DeepSeek response structure is similar (choices[0].message.content)
 
     return new Response(JSON.stringify({ success: true, data: normalized }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -359,33 +364,37 @@ function buildMessages(payload: TroubleshootPayload, userRole?: string) {
   return messages;
 }
 
-async function callOllama(
+async function callDeepSeek(
   messages: Array<{ role: string; content: string }>,
   modelHint?: string | null,
 ) {
-  const base = (
-    Deno.env.get("OLLAMA_BASE_URL") ?? "http://localhost:11434"
-  ).replace(/\/+$/, "");
-  const model = modelHint || Deno.env.get("OLLAMA_MODEL") || "DeepSeek-V3.2-Speciale";
-  const url = `${base}/api/chat`;
+  const url = "https://api.deepseek.com/chat/completions";
+  const model = "deepseek-chat";
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
-  const apiKey = Deno.env.get("OLLAMA_API_KEY");
+  const apiKey = Deno.env.get("DEEPSEEK_API_KEY") || Deno.env.get("OLLAMA_API_KEY"); // Fallback to OLLAMA_KEY if user set that
   if (apiKey) {
     headers.Authorization = `Bearer ${apiKey}`;
+  } else {
+    throw new Error("Missing DEEPSEEK_API_KEY");
   }
 
   const controller = new AbortController();
-  const timeoutMs = Number(Deno.env.get("OLLAMA_TIMEOUT_MS") ?? 30000);
+  const timeoutMs = 60000; // 60s
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const response = await fetch(url, {
       method: "POST",
       headers,
-      body: JSON.stringify({ model, messages, stream: false }),
+      body: JSON.stringify({
+        model,
+        messages,
+        stream: false,
+        response_format: { type: "json_object" }
+      }),
       signal: controller.signal,
     });
 
@@ -394,18 +403,19 @@ async function callOllama(
     const bodyText = await response.text();
 
     if (!response.ok) {
-      throw new Error(`Ollama API error ${response.status}: ${bodyText}`);
-    }
-
-    if (!bodyText || bodyText.trim().length === 0) {
-      return { message: { content: "{}" } };
+      throw new Error(`DeepSeek API error ${response.status}: ${bodyText}`);
     }
 
     try {
-      return JSON.parse(bodyText);
+      const json = JSON.parse(bodyText);
+      // Normalize DeepSeek/OpenAI format for the next function:
+      // Expected: { message: { content: "..." } } or similar
+      // OpenAI format: { choices: [ { message: { content: ... } } ] }
+      const content = json.choices?.[0]?.message?.content || "{}";
+      return { message: { content } };
     } catch (parseError) {
       throw new Error(
-        `Failed to parse Ollama response: ${parseError instanceof Error ? parseError.message : String(parseError)
+        `Failed to parse DeepSeek response: ${parseError instanceof Error ? parseError.message : String(parseError)
         } | body: ${bodyText.slice(0, 500)}`,
       );
     }

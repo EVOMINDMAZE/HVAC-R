@@ -9,6 +9,9 @@ import { SaveCalculation } from "@/components/SaveCalculation";
 import { Badge } from "@/components/ui/badge";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { useWeatherAutoFill } from "@/hooks/useWeatherAutoFill";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { ClientReportPDF } from "@/components/reports/ClientReportPDF";
+import { FileText } from "lucide-react";
 
 interface AirDensityCalculatorProps {
     saveCalculation?: any;
@@ -126,6 +129,41 @@ export default function AirDensityCalculator({ saveCalculation }: AirDensityCalc
             impact: Math.max(0, impact), // Show loss as positive number
             derating: ratio
         });
+    };
+
+    // Psychrometric Helpers for Report
+    const calculatePsychrometrics = () => {
+        const t_f = parseFloat(inputs.temperature);
+        const rh = parseFloat(inputs.humidity);
+
+        let t_c = units === "metric" ? t_f : (t_f - 32) * 5 / 9;
+        let t_f_final = units === "metric" ? (t_f * 9 / 5) + 32 : t_f;
+
+        // 1. Dew Point (Magnus)
+        const Es = 6.112 * Math.exp((17.67 * t_c) / (t_c + 243.5));
+        const E = (rh / 100) * Es;
+        const lnE = Math.log(E / 6.112);
+        const t_dp_c = (243.5 * lnE) / (17.67 - lnE);
+        const t_dp_f = (t_dp_c * 9 / 5) + 32;
+
+        // 2. Wet Bulb (Stull - requires T in C, RH in %)
+        // Tw = T atan(0.151977(RH% + 8.313659)^1/2) + atan(T + RH%) - atan(RH% - 1.676331) + 0.00391838(RH%)^3/2 atan(0.023101 RH%) - 4.686035
+        const T = t_c;
+        const R = rh;
+        const term1 = T * Math.atan(0.151977 * Math.sqrt(R + 8.313659));
+        const term2 = Math.atan(T + R);
+        const term3 = Math.atan(R - 1.676331);
+        const term4 = 0.00391838 * Math.pow(R, 1.5) * Math.atan(0.023101 * R);
+        const t_wb_c = term1 + term2 - term3 + term4 - 4.686035;
+        const t_wb_f = (t_wb_c * 9 / 5) + 32;
+
+        return {
+            dryBulb: t_f_final,
+            wetBulb: t_wb_f,
+            rh: rh,
+            dewPoint: t_dp_f,
+            enthalpy: 0 // Placeholder, not critical for MVP report
+        };
     };
 
     useEffect(() => {
@@ -287,10 +325,30 @@ export default function AirDensityCalculator({ saveCalculation }: AirDensityCalc
                                     trigger={
                                         <Button variant="outline" className="w-full border-dashed border-slate-300 hover:border-sky-500 hover:text-sky-600 transition-all">
                                             <Save className="w-4 h-4 mr-2" />
-                                            Save Result
                                         </Button>
                                     }
                                 />
+
+                                <PDFDownloadLink
+                                    document={
+                                        <ClientReportPDF
+                                            data={calculatePsychrometrics()}
+                                        />
+                                    }
+                                    fileName={`ThermoNeural_Report_${new Date().toISOString().split('T')[0]}.pdf`}
+                                    className="w-full"
+                                >
+                                    {({ loading }) => (
+                                        <Button
+                                            variant="default"
+                                            className="w-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 mt-2"
+                                            disabled={loading}
+                                        >
+                                            <FileText className="w-4 h-4 mr-2" />
+                                            {loading ? 'Preparing Report...' : 'Download Client Report'}
+                                        </Button>
+                                    )}
+                                </PDFDownloadLink>
                             </div>
                         ) : (
                             <div className="text-center text-slate-400 py-12">

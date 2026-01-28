@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, Suspense, lazy } from "react";
 import { SupabaseAuthProvider, useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { ToastProvider, useToast } from "@/hooks/useToast";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -33,6 +33,10 @@ import Career from "@/pages/Career";
 import { StandardCycle } from "@/pages/StandardCycle";
 import { RefrigerantComparison } from "@/pages/RefrigerantComparison";
 import { CascadeCycle } from "@/pages/CascadeCycle";
+import RefrigerantInventory from "@/pages/refrigerant/Inventory";
+const ComplianceReport = lazy(() => import("@/pages/refrigerant/ComplianceReport"));
+const WarrantyScanner = lazy(() => import("@/pages/warranty/WarrantyScanner"));
+const Triage = lazy(() => import("@/pages/public/Triage"));
 import { About } from "@/pages/About";
 import { Blog } from "@/pages/Blog";
 import { BlogPost } from "@/pages/BlogPost";
@@ -141,237 +145,268 @@ function AppRoutes() {
 
   return (
     <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        {/* Public Routes */}
-        <Route path="/" element={<Landing />} />
-        <Route path="/a2l-resources" element={<A2LLandingPage />} />
-        <Route path="/features" element={<Features />} />
-        <Route path="/pricing" element={<Pricing />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/blog/:slug" element={<BlogPost />} />
-        <Route path="/stories" element={<WebStories />} />
-        <Route path="/podcasts" element={<Podcasts />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/documentation" element={<Documentation />} />
-        <Route path="/help" element={<HelpCenter />} />
-        <Route path="/privacy" element={<Privacy />} />
-        <Route path="/terms" element={<TermsOfService />} />
-        <Route path="/connect-provider" element={<IntegrationLanding />} />
-        <Route path="/callback/:provider" element={<Callback />} />
+      <Suspense fallback={
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+        </div>
+      }>
+        <Routes location={location} key={location.pathname}>
+          {/* Public Routes */}
+          <Route path="/" element={<Landing />} />
+          <Route path="/triage" element={<Triage />} />
+          <Route path="/a2l-resources" element={<A2LLandingPage />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/stories" element={<WebStories />} />
+          <Route path="/podcasts" element={<Podcasts />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/documentation" element={<Documentation />} />
+          <Route path="/help" element={<HelpCenter />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/connect-provider" element={<IntegrationLanding />} />
+          <Route path="/callback/:provider" element={<Callback />} />
 
-        {/* Auth Routes */}
-        <Route
-          path="/signin"
-          element={
-            <PublicRoute>
-              <SignIn />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/signup"
-          element={
-            <PublicRoute>
-              <SignUp />
-            </PublicRoute>
-          }
-        />
+          {/* Auth Routes */}
+          <Route
+            path="/signin"
+            element={
+              <PublicRoute>
+                <SignIn />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <PublicRoute>
+                <SignUp />
+              </PublicRoute>
+            }
+          />
 
-        {/* Debug Routes */}
-        <Route path="/stripe-debug" element={<StripeDebug />} />
+          {/* Debug Routes */}
+          <Route path="/stripe-debug" element={<StripeDebug />} />
 
-        {/* Client Portal Route */}
-        <Route
-          path="/portal"
-          element={
-            <ProtectedRoute>
-              <ClientDashboard />
-            </ProtectedRoute>
-          }
-        />
+          {/* Client Portal Route */}
+          <Route
+            path="/portal"
+            element={
+              <ProtectedRoute>
+                <ClientDashboard />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Tracking Route */}
-        <Route
-          path="/track-job/:id"
-          element={
-            <ProtectedRoute>
-              <ClientTrackJob />
-            </ProtectedRoute>
-          }
-        />
+          {/* Tracking Route */}
+          <Route
+            path="/track-job/:id"
+            element={
+              <ProtectedRoute>
+                <ClientTrackJob />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Technician Routes */}
-        <Route
-          path="/tech"
-          element={
-            <ProtectedRoute>
-              <JobBoard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/tech/jobs/:id"
-          element={
-            <ProtectedRoute>
-              <ActiveJob />
-            </ProtectedRoute>
-          }
-        />
+          {/* Technician Routes */}
+          <Route
+            path="/tech"
+            element={
+              <ProtectedRoute>
+                <JobBoard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tech/jobs/:id"
+            element={
+              <ProtectedRoute>
+                <ActiveJob />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Protected Dashboard Routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/settings/company"
-          element={
-            <ProtectedRoute>
-              <CompanySettings />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/history"
-          element={
-            <ProtectedRoute>
-              <History />
-            </ProtectedRoute>
-          }
-        />
+          {/* Protected Dashboard Routes */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings/company"
+            element={
+              <ProtectedRoute>
+                <CompanySettings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/history"
+            element={
+              <ProtectedRoute>
+                <History />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Protected Feature Routes */}
-        <Route
-          path="/advanced-reporting"
-          element={
-            <ProtectedRoute>
-              <SubscriptionGuard requiredTier="pro">
-                <AdvancedReporting />
-              </SubscriptionGuard>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/troubleshooting"
-          element={
-            <ProtectedRoute>
-              <Troubleshooting />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/diy-calculators"
-          element={
-            <ProtectedRoute>
-              <DIYCalculators />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/estimate-builder"
-          element={
-            <ProtectedRoute>
-              <EstimateBuilder />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/jobs"
-          element={
-            <ProtectedRoute>
-              <Jobs />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/jobs/:id"
-          element={
-            <ProtectedRoute>
-              <JobDetails />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/dispatch"
-          element={
-            <ProtectedRoute>
-              <Dispatch />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/projects"
-          element={
-            <ProtectedRoute>
-              <Projects />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/clients"
-          element={
-            <ProtectedRoute>
-              <Clients />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/clients/:id"
-          element={
-            <ProtectedRoute>
-              <ClientDetail />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/career"
-          element={
-            <ProtectedRoute>
-              <Career />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/tools/standard-cycle"
-          element={
-            <ProtectedRoute>
-              <StandardCycle />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/tools/refrigerant-comparison"
-          element={
-            <ProtectedRoute>
-              <RefrigerantComparison />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/tools/cascade-cycle"
-          element={
-            <ProtectedRoute>
-              <CascadeCycle />
-            </ProtectedRoute>
-          }
-        />
+          {/* Protected Feature Routes */}
+          <Route
+            path="/advanced-reporting"
+            element={
+              <ProtectedRoute>
+                <SubscriptionGuard requiredTier="pro">
+                  <AdvancedReporting />
+                </SubscriptionGuard>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/troubleshooting"
+            element={
+              <ProtectedRoute>
+                <Troubleshooting />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/diy-calculators"
+            element={
+              <ProtectedRoute>
+                <DIYCalculators />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/estimate-builder"
+            element={
+              <ProtectedRoute>
+                <EstimateBuilder />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/jobs"
+            element={
+              <ProtectedRoute>
+                <Jobs />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/jobs/:id"
+            element={
+              <ProtectedRoute>
+                <JobDetails />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/dispatch"
+            element={
+              <ProtectedRoute>
+                <Dispatch />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects"
+            element={
+              <ProtectedRoute>
+                <Projects />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/clients"
+            element={
+              <ProtectedRoute>
+                <Clients />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/clients/:id"
+            element={
+              <ProtectedRoute>
+                <ClientDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/career"
+            element={
+              <ProtectedRoute>
+                <Career />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tools/standard-cycle"
+            element={
+              <ProtectedRoute>
+                <StandardCycle />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tools/refrigerant-comparison"
+            element={
+              <ProtectedRoute>
+                <RefrigerantComparison />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tools/cascade-cycle"
+            element={
+              <ProtectedRoute>
+                <CascadeCycle />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tools/refrigerant-report"
+            element={
+              <ProtectedRoute>
+                <ComplianceReport />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tools/refrigerant-inventory"
+            element={
+              <ProtectedRoute>
+                <RefrigerantInventory />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tools/warranty-scanner"
+            element={
+              <ProtectedRoute>
+                <WarrantyScanner />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* 404 Route */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          {/* 404 Route */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
     </AnimatePresence>
   );
 }

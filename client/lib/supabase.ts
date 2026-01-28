@@ -263,6 +263,76 @@ export interface Database {
           updated_at?: string;
         };
       };
+      refrigerant_cylinders: {
+        Row: {
+          id: string;
+          user_id: string;
+          cylinder_code: string;
+          refrigerant_type: string;
+          initial_weight_lbs: number;
+          current_weight_lbs: number;
+          status: 'active' | 'empty' | 'returned';
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          cylinder_code: string;
+          refrigerant_type: string;
+          initial_weight_lbs: number;
+          current_weight_lbs: number;
+          status?: 'active' | 'empty' | 'returned';
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          cylinder_code?: string;
+          refrigerant_type?: string;
+          initial_weight_lbs?: number;
+          current_weight_lbs?: number;
+          status?: 'active' | 'empty' | 'returned';
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      refrigerant_logs: {
+        Row: {
+          id: string;
+          user_id: string;
+          cylinder_id: string | null;
+          job_id: string | null;
+          transaction_type: 'charge' | 'recover' | 'disposal' | 'addition';
+          amount_lbs: number;
+          notes: string | null;
+          technician_name: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          cylinder_id?: string | null;
+          job_id?: string | null;
+          transaction_type: 'charge' | 'recover' | 'disposal' | 'addition';
+          amount_lbs: number;
+          notes?: string | null;
+          technician_name?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          cylinder_id?: string | null;
+          job_id?: string | null;
+          transaction_type?: 'charge' | 'recover' | 'disposal' | 'addition';
+          amount_lbs?: number;
+          notes?: string | null;
+          technician_name?: string | null;
+          created_at?: string;
+        };
+      };
     };
   };
 }

@@ -1,0 +1,191 @@
+{
+    "name": "Review Hunter 🤖",
+    "nodes": [
+        {
+            "parameters": {
+                "event": [
+                    "INSERT"
+                ],
+                "schema": {
+                    "__rl": true,
+                    "value": "public",
+                    "mode": "list",
+                    "cachedResultName": "public"
+                },
+                "table": {
+                    "__rl": true,
+                    "value": "workflow_requests",
+                    "mode": "list",
+                    "cachedResultName": "workflow_requests"
+                }
+            },
+            "id": "trigger-node",
+            "name": "Supabase Trigger",
+            "type": "n8n-nodes-base.supabaseTrigger",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ],
+            "credentials": {
+                "supabaseApi": {
+                    "id": "SUPABASE_CREDENTIAL_ID",
+                    "name": "Supabase account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "string": [
+                        {
+                            "value1": "={{ $json.record.workflow_type }}",
+                            "value2": "review_hunter"
+                        }
+                    ]
+                }
+            },
+            "id": "filter-node",
+            "name": "Is Review Hunter?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                450,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "amount": 45,
+                "unit": "minutes"
+            },
+            "id": "wait-node",
+            "name": "Wait 45 Mins",
+            "type": "n8n-nodes-base.wait",
+            "typeVersion": 1,
+            "position": [
+                650,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "body": "Hi {{ $json.record.input_payload.client_name }}! This is ThermoNeural. Did {{ $json.record.input_payload.tech_name }} wear shoe covers today? Reply YES or NO.",
+                "from": "+15550101234",
+                "to": "={{ $json.record.input_payload.client_phone }}"
+            },
+            "id": "sms-shoe-covers",
+            "name": "SMS: Shoe Covers?",
+            "type": "n8n-nodes-base.twilio",
+            "typeVersion": 1,
+            "position": [
+                850,
+                300
+            ],
+            "credentials": {
+                "twilioApi": {
+                    "id": "TWILIO_CREDENTIAL_ID",
+                    "name": "Twilio account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "triggerType": "webhook",
+                "path": "sms-reply"
+            },
+            "id": "webhook-reply",
+            "name": "Wait for Reply",
+            "type": "n8n-nodes-base.webhook",
+            "typeVersion": 1,
+            "position": [
+                1050,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "conditions": {
+                    "string": [
+                        {
+                            "value1": "={{ $json.body.Body }}",
+                            "value2": "YES",
+                            "operation": "contains"
+                        }
+                    ]
+                }
+            },
+            "id": "check-reply",
+            "name": "Is YES?",
+            "type": "n8n-nodes-base.if",
+            "typeVersion": 1,
+            "position": [
+                1250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "body": "Awesome! We'd love if you shared that experience on Google: https://g.page/review/thermoneural",
+                "from": "+15550101234",
+                "to": "={{ $json.record.input_payload.client_phone }}"
+            },
+            "id": "sms-review-link",
+            "name": "SMS: Review Link",
+            "type": "n8n-nodes-base.twilio",
+            "typeVersion": 1,
+            "position": [
+                1450,
+                200
+            ]
+        },
+        {
+            "parameters": {
+                "message": "⚠️ Negative Feedback Alert! Client {{ $json.record.input_payload.client_name }} said NO to shoe covers. Call immediately."
+            },
+            "id": "slack-alert",
+            "name": "Slack Alert",
+            "type": "n8n-nodes-base.slack",
+            "typeVersion": 1,
+            "position": [
+                1450,
+                400
+            ]
+        }
+    ],
+    "connections": {
+        "Supabase Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Is Review Hunter?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Is Review Hunter?": {
+            "main": [
+                [
+                    {
+                        "node": "Wait 45 Mins",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Wait 45 Mins": {
+            "main": [
+                [
+                    {
+                        "node": "SMS: Shoe Covers?",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

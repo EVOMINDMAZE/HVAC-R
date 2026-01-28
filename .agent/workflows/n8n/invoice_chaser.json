@@ -1,0 +1,121 @@
+{
+    "name": "Ghost Invoice Chaser 👻",
+    "nodes": [
+        {
+            "parameters": {
+                "triggerTimes": {
+                    "item": [
+                        {
+                            "mode": "everyDay",
+                            "hour": 9
+                        }
+                    ]
+                }
+            },
+            "id": "cron-trigger",
+            "name": "Every Day at 9AM",
+            "type": "n8n-nodes-base.cron",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "SELECT i.id, i.total_amount, i.due_date, c.first_name, c.email, c.contact_phone FROM invoices i JOIN clients c ON i.client_id = c.id WHERE i.status = 'unpaid' AND i.due_date < NOW()"
+            },
+            "id": "query-unpaid",
+            "name": "Get Unpaid Invoices",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 1,
+            "position": [
+                450,
+                300
+            ],
+            "credentials": {
+                "postgres": {
+                    "id": "POSTGRES_CREDENTIAL_ID",
+                    "name": "Supabase DB"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "batchSize": 1,
+                "options": {}
+            },
+            "id": "split-batches",
+            "name": "Process Each Invoice",
+            "type": "n8n-nodes-base.splitInBatches",
+            "typeVersion": 1,
+            "position": [
+                650,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "fromEmail": "billing@thermoneural.com",
+                "toEmail": "={{ $json.email }}",
+                "subject": "Invoice Reminder: ${{ $json.total_amount }} Due",
+                "text": "Hi {{ $json.first_name }},\n\nJust a friendly reminder that your invoice for ${{ $json.total_amount }} was due on {{ $json.due_date }}.\n\nPlease click to pay: [Link]\n\nThanks,\nThermoNeural Team"
+            },
+            "id": "send-email",
+            "name": "Send Reminder Email",
+            "type": "n8n-nodes-base.emailSend",
+            "typeVersion": 1,
+            "position": [
+                850,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Every Day at 9AM": {
+            "main": [
+                [
+                    {
+                        "node": "Get Unpaid Invoices",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get Unpaid Invoices": {
+            "main": [
+                [
+                    {
+                        "node": "Process Each Invoice",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Process Each Invoice": {
+            "main": [
+                [
+                    {
+                        "node": "Send Reminder Email",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Send Reminder Email": {
+            "main": [
+                [
+                    {
+                        "node": "Process Each Invoice",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

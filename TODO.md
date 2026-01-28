@@ -3,10 +3,11 @@
 (See `MASTER_EXECUTION_PLAN.md` for the detailed active task list)
 
 ## 🚀 High Priority (Strategic Gold Mines)
-- [ ] **Phase 1: "Indoor Health" Report 🫁**
-- [ ] **Phase 2: EPA 608 Compliance ⚖️**
-- [ ] **Phase 3: AI Pre-Dispatch Triage 🤖**
+- [ ] **Phase 1: EPA 608 Compliance ⚖️** (Current Focus)
+- [ ] **Phase 2: Use "N8N" to build Automations 🤖** (Review Hunter & Invoice Chaser)
+- [ ] **Phase 3: "Indoor Health" Report �**
 - [ ] **Phase 4: Warranty Auto-Pilot 🛡️**
+- [ ] **Phase 5: AI Pre-Dispatch Triage 🤖**
 
 ## 🛠 Maintenance & Improvements
 - [ ] Content: Populate 5 initial "Web Stories" (Data entry in Sanity).
@@ -15,6 +16,6 @@
 
 ## ✅ Completed
 - [x] Master Blueprint Created.
-- [x] Strategic Module Spec Created.
+- [x] Strategic Module Spec & Implementation Plans Created.
 - [x] Core Authentication (Supabase).
 - [x] Basic Calculators (Standard, Cascade).
