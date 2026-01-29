@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Search, MapPin, Calendar, Briefcase, User, FileText, Loader2, ArrowLeft, Filter } from "lucide-react";
+import { Plus, Search, MapPin, Calendar, Briefcase, User, FileText, Loader2, ArrowLeft, Filter, HardHat } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -23,6 +23,13 @@ interface Job {
     address: string | null;
     notes: string | null;
     photos: string[] | null;
+    technician_id?: string | null;
+}
+
+interface Technician {
+    id: string;
+    full_name: string | null;
+    email: string | null;
 }
 
 export default function Jobs() {
@@ -33,6 +40,7 @@ export default function Jobs() {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState<string>("all");
+    const [technicians, setTechnicians] = useState<Technician[]>([]); // Store technicians
 
     // New Job State
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -42,14 +50,39 @@ export default function Jobs() {
         job_name: "",
         status: "active" as const,
         address: "",
-        notes: ""
+        notes: "",
+        technician_id: "" as string // Add technician_id
     });
 
     useEffect(() => {
         if (user) {
             fetchJobs();
+            fetchTechnicians();
         }
     }, [user]);
+
+    const fetchTechnicians = async () => {
+        try {
+            // In a real app, you'd fetch this from a 'profiles' table or similar where role='technician'
+            // For now, let's fetch all users from profiles if it exists, or simulated
+            // Assuming we have a public profiles table or similar view
+
+            // NOTE: Since user access to auth.users is restricted, we rely on the `profiles` table
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('id, full_name, email')
+                .eq('role', 'technician');
+
+            if (error) {
+                console.error('Error fetching technicians:', error);
+                // Fallback or silent fail if table setup is incomplete
+            } else {
+                setTechnicians(data || []);
+            }
+        } catch (err) {
+            console.error('Failed to fetch techs', err);
+        }
+    }
 
     const fetchJobs = async () => {
         try {
@@ -92,9 +125,10 @@ export default function Jobs() {
                     user_id: user.id,
                     client_name: newJob.client_name,
                     job_name: newJob.job_name,
-                    status: newJob.status,
+                    status: newJob.technician_id ? 'assigned' : newJob.status, // Auto-assign status
                     address: newJob.address || null,
                     notes: newJob.notes || null,
+                    technician_id: newJob.technician_id || null, // Assign tech
                     photos: []
                 })
                 .select()
@@ -109,11 +143,12 @@ export default function Jobs() {
                 job_name: "",
                 status: "active",
                 address: "",
-                notes: ""
+                notes: "",
+                technician_id: ""
             });
             toast({
                 title: "Success",
-                description: "Job created successfully.",
+                description: newJob.technician_id ? "Job created and assigned to technician." : "Job created successfully.",
             });
         } catch (error: any) {
             console.error('Error creating job:', error);
@@ -143,17 +178,14 @@ export default function Jobs() {
             case 'active': return 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200 border-blue-200 dark:border-blue-800';
             case 'completed': return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200 border-emerald-200 dark:border-emerald-800';
             case 'pending': return 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-200 border-amber-200 dark:border-amber-800';
+            case 'assigned': return 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-200 border-purple-200 dark:border-purple-800';
             default: return 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300';
         }
     };
 
     return (
         <div className="min-h-screen bg-background text-foreground animate-in fade-in duration-500">
-            {/* Background Elements */}
-            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-blue-500/5 blur-[100px]" />
-                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-purple-500/5 blur-[100px]" />
-            </div>
+            {/* Background elements removed for cleaner look and performance */}
 
             <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
@@ -206,22 +238,53 @@ export default function Jobs() {
                                     </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="status">Status</Label>
-                                    <Select
-                                        value={newJob.status}
-                                        onValueChange={(val: any) => setNewJob({ ...newJob, status: val })}
-                                    >
-                                        <SelectTrigger className="bg-background/50">
-                                            <SelectValue placeholder="Select status" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="active">Active</SelectItem>
-                                            <SelectItem value="pending">Pending</SelectItem>
-                                            <SelectItem value="completed">Completed</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="status">Status</Label>
+                                        <Select
+                                            value={newJob.status}
+                                            onValueChange={(val: any) => setNewJob({ ...newJob, status: val })}
+                                        >
+                                            <SelectTrigger className="bg-background/50">
+                                                <SelectValue placeholder="Select status" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="active">Active</SelectItem>
+                                                <SelectItem value="pending">Pending</SelectItem>
+                                                <SelectItem value="completed">Completed</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    {/* Technician Assignment */}
+                                    <div className="space-y-2">
+                                        <Label htmlFor="technician">Assign Technician</Label>
+                                        <Select
+                                            value={newJob.technician_id || "unassigned"}
+                                            onValueChange={(val) => setNewJob({ ...newJob, technician_id: val === "unassigned" ? "" : val })}
+                                        >
+                                            <SelectTrigger className="bg-background/50">
+                                                <div className="flex items-center gap-2">
+                                                    <HardHat className="w-4 h-4 text-muted-foreground" />
+                                                    <SelectValue placeholder="Select Technician" />
+                                                </div>
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="unassigned">-- Unassigned --</SelectItem>
+                                                {technicians.length > 0 ? (
+                                                    technicians.map((tech) => (
+                                                        <SelectItem key={tech.id} value={tech.id}>
+                                                            {tech.full_name || tech.email || "Unknown Tech"}
+                                                        </SelectItem>
+                                                    ))
+                                                ) : (
+                                                    <div className="p-2 text-xs text-muted-foreground">No technicians found</div>
+                                                )}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
                                 </div>
+
 
                                 <div className="space-y-2">
                                     <Label htmlFor="address">Service Address</Label>
@@ -283,6 +346,7 @@ export default function Jobs() {
                                         <SelectItem value="all">All Statuses</SelectItem>
                                         <SelectItem value="active">Active</SelectItem>
                                         <SelectItem value="pending">Pending</SelectItem>
+                                        <SelectItem value="assigned">Assigned</SelectItem>
                                         <SelectItem value="completed">Completed</SelectItem>
                                     </SelectContent>
                                 </Select>

@@ -16,7 +16,7 @@ const users = [
     { email: 'tech@test.com', role: 'technician', password: 'Password123!' },
     { email: 'client@test.com', role: 'client', password: 'Password123!' },
     // Also updating the admin for good measure, if you want
-    { email: 'admin@admin.com', role: 'admin', password: 'password1' }
+    { email: 'admin@admin.com', role: 'admin', password: 'ThermoAdmin$2026!' }
 ];
 
 async function run() {

@@ -23,6 +23,10 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@capacitor/android": "^8.0.2",
+    "@capacitor/cli": "^8.0.2",
+    "@capacitor/core": "^8.0.2",
+    "@capacitor/ios": "^8.0.2",
     "@react-pdf/renderer": "^4.3.2",
     "@sanity/client": "^7.13.2",
     "@sanity/image-url": "^2.0.2",

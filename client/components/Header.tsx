@@ -1,13 +1,14 @@
 
 import React, { useState, useRef, useEffect } from "react";
-import { Calculator, User, Menu, X, Flame, ArrowLeft } from "lucide-react"; // Changed Calculator to Flame for Thermo vibe? Or keep Calculator. Let's keep Calculator but maybe add Flame if it's "Thermo".
+import { Calculator, User, Menu, X, Flame, ArrowLeft } from "lucide-react";
 import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
+import { Capacitor } from "@capacitor/core";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
-import { NAV_ITEMS, NAV_GROUPS } from "@/components/navigation";
 import { JobSelector } from "@/components/JobSelector";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 interface HeaderProps {
   variant?: "landing" | "dashboard";
@@ -20,9 +21,11 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
   const location = useLocation();
   const { addToast } = useToast();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { mainLinks, toolbox, office, resources } = useAppNavigation();
 
   // Show back button on any page that is not Landing or Dashboard
   const showBackButton = location.pathname !== "/" && location.pathname !== "/dashboard";
+  const isNative = Capacitor.isNativePlatform();
 
   const handleSignOut = async () => {
     try {
@@ -71,7 +74,12 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
     }, []);
 
     return (
-      <div className="bg-background/90 backdrop-blur-sm shadow-sm transition-colors z-50 relative">
+      <div
+        className={`bg-background/90 backdrop-blur-sm shadow-sm transition-colors z-50 relative ${isNative ? 'pt-safe-hard' : ''}`}
+        style={{
+          paddingTop: isNative ? "60px" : undefined
+        }}
+      >
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-4 min-w-0">
@@ -91,7 +99,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 <img
                   src="/logo-landscape.png"
                   alt="ThermoNeural"
-                  className="h-10 md:h-12 w-auto object-contain mix-blend-multiply dark:mix-blend-screen dark:invert scale-[1.25] origin-left"
+                  className="h-14 md:h-16 w-auto object-contain mix-blend-multiply dark:mix-blend-screen dark:invert scale-125 origin-left"
                 />
               </Link>
 
@@ -217,47 +225,66 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
 
           {/* Mobile Navigation */}
           {isMobileMenuOpen && (
-            <div className="md:hidden mt-4 pt-4 border-t border-gray-100">
-              <nav className="flex flex-col space-y-3">
-                {NAV_GROUPS.map((group, idx) => {
-                  if (group.type === 'link' && group.item) {
-                    const Icon = group.item.icon;
-                    return (
-                      <Link
-                        key={group.item.to}
-                        to={group.item.to}
-                        className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium flex items-center gap-2"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <Icon className="h-4 w-4" />
-                        {group.item.label}
-                      </Link>
-                    )
-                  }
-                  if (group.type === 'dropdown' && group.items) {
-                    return (
-                      <div key={idx} className="flex flex-col space-y-2">
-                        <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider pl-1 pt-2">{group.label}</div>
-                        {group.items.map(subItem => {
-                          const SubIcon = subItem.icon;
-                          return (
-                            <Link
-                              key={subItem.to}
-                              to={subItem.to}
-                              className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium pl-4 flex items-center gap-2"
-                              onClick={() => setIsMobileMenuOpen(false)}
-                            >
-                              <SubIcon className="h-4 w-4" />
-                              {subItem.label}
-                            </Link>
-                          )
-                        })}
-                      </div>
-                    )
-                  }
-                  return null;
-                })}
-                <div className="pt-3 border-t border-gray-100">
+            <div className="md:hidden mt-4 pt-4 border-t border-gray-100 dark:border-slate-800 animate-in slide-in-from-top-2">
+              <nav className="flex flex-col space-y-1">
+                {/* 1. Main Links */}
+                {mainLinks.map((item) => (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className="flex items-center gap-2 text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400 font-medium px-2 py-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <item.icon className="h-5 w-5" />
+                    {item.label}
+                  </Link>
+                ))}
+
+                <div className="my-2 border-t border-slate-100 dark:border-slate-800" />
+
+                {/* 2. Toolbox */}
+                {toolbox.visible && (
+                  <div className="px-2 py-2">
+                    <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Toolbox</h4>
+                    <div className="grid grid-cols-2 gap-2">
+                      {toolbox.items.map(item => (
+                        <Link
+                          key={item.to}
+                          to={item.to}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex flex-col items-center justify-center gap-1 p-2 rounded bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-800 transition-all text-center"
+                        >
+                          <div className="p-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
+                            <item.icon className="h-4 w-4" />
+                          </div>
+                          <span className="text-xs font-medium text-slate-700 dark:text-slate-300">{item.label}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Office */}
+                {office.visible && (
+                  <div className="px-2 py-2">
+                    <div className="space-y-1">
+                      {office.items.map(item => (
+                        <Link
+                          key={item.to}
+                          to={item.to}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex items-center gap-3 px-2 py-2 text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md"
+                        >
+                          <item.icon className="h-4 w-4" />
+                          <span>{item.label}</span>
+                          {item.badge && <span className="ml-auto bg-blue-100 text-blue-600 text-[10px] font-bold px-1.5 py-0.5 rounded-full">{item.badge}</span>}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="pt-3 border-t border-gray-100 dark:border-slate-800">
                   <Button
                     variant="outline"
                     size="sm"
@@ -290,8 +317,17 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
   }
 
   return (
-    <header className="bg-background/80 backdrop-blur-md border-b border-border sticky top-0 z-50 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 py-4">
+    <header
+      className={`bg-background/80 backdrop-blur-md border-b border-border sticky top-0 z-50 shadow-sm transition-all duration-200 ${isNative ? 'pt-safe-hard' : ''}`}
+      style={{
+        // FORCE padding to clear Dynamic Island (approx 54px + buffer)
+        // We use a hard 60px because env() can be unreliable in some webviews
+        paddingTop: isNative ? "60px" : undefined,
+        height: isNative ? "auto" : undefined
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-4 pb-4">
+        {/* Top Row: Logo, Dark Mode, Menu */}
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
             {showBackButton && (
@@ -310,211 +346,186 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               <img
                 src="/logo-landscape.png"
                 alt="ThermoNeural Logo"
-                className="h-12 md:h-14 w-auto object-contain mix-blend-multiply dark:mix-blend-screen dark:invert scale-[1.25] origin-left"
+                className={`${isNative ? 'h-9' : 'h-12 md:h-14'} w-auto object-contain mix-blend-multiply dark:mix-blend-screen dark:invert scale-[1.25] origin-left transition-all`}
               />
             </Link>
           </div>
 
-          {!isAuthenticated && (
+          {/* Web Desktop Nav - Hidden on Native Mobile */}
+          {!isNative && !isAuthenticated && (
             <nav className="hidden md:flex items-center space-x-8">
-              <Link
-                to="/features"
-                className="text-muted-foreground hover:text-blue-600 font-medium transition-colors font-display"
-              >
-                Features
-              </Link>
-              <Link
-                to="/pricing"
-                className="text-muted-foreground hover:text-blue-600 font-medium transition-colors font-display"
-              >
-                Pricing
-              </Link>
-              <Link
-                to="/about"
-                className="text-muted-foreground hover:text-blue-600 font-medium transition-colors font-display"
-              >
-                About
-              </Link>
+              <Link to="/features" className="text-muted-foreground hover:text-blue-600 font-medium transition-colors font-display">Features</Link>
+              <Link to="/pricing" className="text-muted-foreground hover:text-blue-600 font-medium transition-colors font-display">Pricing</Link>
+              <Link to="/about" className="text-muted-foreground hover:text-blue-600 font-medium transition-colors font-display">About</Link>
               <div className="w-px h-6 bg-slate-200 dark:bg-slate-800"></div>
-              <Link
-                to="/help-center"
-                className="text-muted-foreground hover:text-blue-600 font-medium text-sm transition-colors font-display"
-              >
-                Help
-              </Link>
-              <Link
-                to="/contact"
-                className="text-muted-foreground hover:text-blue-600 font-medium text-sm transition-colors font-display"
-              >
-                Support
-              </Link>
+              <Link to="/help-center" className="text-muted-foreground hover:text-blue-600 font-medium text-sm transition-colors font-display">Help</Link>
+              <Link to="/contact" className="text-muted-foreground hover:text-blue-600 font-medium text-sm transition-colors font-display">Support</Link>
             </nav>
           )}
 
           <div className="flex items-center space-x-4">
             <ModeToggle />
+
+            {/* Authenticated State */}
             {isAuthenticated ? (
               <>
                 <span className="text-sm text-muted-foreground hidden md:block">
                   {user?.email}
                 </span>
-                <Link to="/dashboard">
-                  <Button
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md shadow-blue-500/20 transition-all hover:scale-105"
-                  >
+                <Link to="/dashboard" className={isNative ? "hidden" : "hidden md:block"}>
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md shadow-blue-500/20 transition-all hover:scale-105">
                     Go to Dashboard
                   </Button>
                 </Link>
-                <Button
-                  variant="outline"
-                  onClick={handleSignOut}
-                  className="hidden md:flex"
-                >
+                <Button variant="outline" onClick={handleSignOut} className="hidden md:flex">
                   Sign Out
                 </Button>
-
-                {/* Mobile menu for authenticated users */}
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                   className="md:hidden"
                 >
-                  {isMobileMenuOpen ? (
-                    <X className="h-5 w-5" />
-                  ) : (
-                    <Menu className="h-5 w-5" />
-                  )}
+                  {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                 </Button>
               </>
             ) : (
+              // Unauthenticated State
               <>
-                <Link to="/signin">
-                  <Button
-                    variant="ghost"
-                    className="text-muted-foreground hover:text-foreground"
-                  >
-                    Sign In
-                  </Button>
-                </Link>
-                <Link to="/signup">
-                  <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 shadow-md shadow-blue-500/20 transition-all hover:scale-105">
-                    Start Free Trial
-                  </Button>
-                </Link>
+                <div className={isNative ? "hidden" : "flex items-center gap-2"}>
+                  <Link to="/signin">
+                    <Button variant="ghost" className="text-muted-foreground hover:text-foreground">Sign In</Button>
+                  </Link>
+                  <Link to="/signup">
+                    <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 shadow-md shadow-blue-500/20 transition-all hover:scale-105">
+                      Start Free Trial
+                    </Button>
+                  </Link>
+                </div>
 
-                {/* Mobile menu for non-authenticated users */}
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                   className="md:hidden"
                 >
-                  {isMobileMenuOpen ? (
-                    <X className="h-5 w-5" />
-                  ) : (
-                    <Menu className="h-5 w-5" />
-                  )}
+                  {isMobileMenuOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
                 </Button>
               </>
             )}
           </div>
         </div>
 
-        {/* Mobile menu for non-authenticated users */}
-        {isMobileMenuOpen && !isAuthenticated && (
-          <div className="md:hidden mt-4 pt-4 border-t border-gray-200">
-            <nav className="flex flex-col space-y-4">
-              <Link
-                to="/features"
-                className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Features
-              </Link>
-              <Link
-                to="/pricing"
-                className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Pricing
-              </Link>
-
-              <Link
-                to="/about"
-                className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                About
-              </Link>
-              <div className="h-px bg-gray-200"></div>
-              <Link
-                to="/help-center"
-                className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium text-sm"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Help Center
-              </Link>
-              <Link
-                to="/contact"
-                className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium text-sm"
-              >
-                Contact Support
-              </Link>
-              <div className="pt-4 border-t border-gray-200 dark:border-slate-800">
-                <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold">
-                    Start Free Trial
-                  </Button>
-                </Link>
-              </div>
-            </nav>
+        {/* Native Mobile ONLY: Second Row for Auth Actions */}
+        {isNative && !isAuthenticated && !isMobileMenuOpen && (
+          <div className="mt-4 flex gap-3 px-1 animate-in fade-in slide-in-from-top-2 duration-300">
+            <Link to="/signin" className="flex-1">
+              <Button variant="outline" className="w-full h-10 text-sm font-semibold border-slate-300 dark:border-slate-700">
+                Sign In
+              </Button>
+            </Link>
+            <Link to="/signup" className="flex-1">
+              <Button className="w-full h-10 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow-sm">
+                Start Free Trial
+              </Button>
+            </Link>
           </div>
         )}
 
-        {/* Mobile menu for authenticated users - existing functionality */}
-        {isMobileMenuOpen && isAuthenticated && (
-          <div className="md:hidden mt-4 pt-4 border-t border-gray-200 dark:border-slate-800">
-            <nav className="flex flex-col space-y-4">
-              {NAV_ITEMS.map((item) => (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-medium"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
-              <div className="flex items-center space-x-2 pt-4 border-t border-gray-200 dark:border-slate-800">
-                <span className="text-sm text-gray-600 dark:text-gray-400">{user?.email}</span>
-              </div>
-              <div className="flex space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    navigate("/profile");
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="flex-1"
-                >
-                  <User className="h-4 w-4 mr-2" />
-                  Profile
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    handleSignOut();
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="flex-1"
-                >
-                  Sign Out
-                </Button>
-              </div>
-            </nav>
+        {/* Native Mobile ONLY: Authenticated Dashboard Link */}
+        {isNative && isAuthenticated && !isMobileMenuOpen && (
+          <div className="mt-4 px-1 animate-in fade-in slide-in-from-top-2 duration-300">
+            <Link to="/dashboard">
+              <Button className="w-full h-10 bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-sm">
+                Go to Dashboard
+              </Button>
+            </Link>
+          </div>
+        )}
+
+        {/* Mobile Menu Dropdown (Shared Logic) */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden mt-4 pt-4 border-t border-gray-200 dark:border-slate-800 animate-in slide-in-from-top-2">
+            {isAuthenticated ? (
+              <nav className="flex flex-col space-y-1">
+                {/* 1. Main Links */}
+                {mainLinks.map((item) => (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className="flex items-center gap-2 text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400 font-medium px-2 py-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <item.icon className="h-5 w-5" />
+                    {item.label}
+                  </Link>
+                ))}
+
+                <div className="my-2 border-t border-slate-100 dark:border-slate-800" />
+
+                {/* 2. Toolbox */}
+                {toolbox.visible && (
+                  <div className="px-2 py-2">
+                    <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Toolbox</h4>
+                    <div className="grid grid-cols-2 gap-2">
+                      {toolbox.items.map(item => (
+                        <Link
+                          key={item.to}
+                          to={item.to}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex flex-col items-center justify-center gap-1 p-2 rounded bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-800 transition-all text-center"
+                        >
+                          <div className="p-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
+                            <item.icon className="h-4 w-4" />
+                          </div>
+                          <span className="text-xs font-medium text-slate-700 dark:text-slate-300">{item.label}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Office */}
+                {office.visible && (
+                  <div className="px-2 py-2">
+                    <div className="space-y-1">
+                      {office.items.map(item => (
+                        <Link
+                          key={item.to}
+                          to={item.to}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex items-center gap-3 px-2 py-2 text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md"
+                        >
+                          <item.icon className="h-4 w-4" />
+                          <span>{item.label}</span>
+                          {item.badge && <span className="ml-auto bg-blue-100 text-blue-600 text-[10px] font-bold px-1.5 py-0.5 rounded-full">{item.badge}</span>}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="pt-4 border-t border-gray-200 dark:border-slate-800">
+                  <Button
+                    variant="destructive"
+                    className="w-full"
+                    onClick={() => {
+                      handleSignOut();
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    Sign Out
+                  </Button>
+                </div>
+              </nav>
+            ) : (
+              <nav className="flex flex-col space-y-4">
+                <Link to="/features" onClick={() => setIsMobileMenuOpen(false)} className="px-2 py-1 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md">Features</Link>
+                <Link to="/pricing" onClick={() => setIsMobileMenuOpen(false)} className="px-2 py-1 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md">Pricing</Link>
+                <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="px-2 py-1 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md">About</Link>
+                <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="px-2 py-1 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md">Contact</Link>
+              </nav>
+            )}
           </div>
         )}
       </div>

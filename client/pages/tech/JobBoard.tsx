@@ -4,10 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { MapPin, Clock, ArrowRight, User, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 
+import { Capacitor } from '@capacitor/core';
+
 export default function JobBoard() {
     const [jobs, setJobs] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const isNative = Capacitor.isNativePlatform();
 
     useEffect(() => {
         fetchJobs();
@@ -38,7 +41,12 @@ export default function JobBoard() {
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
             {/* Header */}
-            <div className="bg-white p-4 shadow-sm sticky top-0 z-10">
+            <div
+                className="bg-white shadow-sm sticky top-0 z-10 px-4 pb-4"
+                style={{
+                    paddingTop: isNative ? '60px' : '1rem'
+                }}
+            >
                 <h1 className="text-xl font-bold text-gray-900">My Jobs</h1>
                 <p className="text-sm text-gray-500">
                     {format(new Date(), 'EEEE, MMMM d')}
@@ -74,8 +82,11 @@ export default function JobBoard() {
                             </div>
 
                             <h3 className="font-bold text-lg text-gray-900 mb-1">
-                                {job.client?.name || 'Unknown Client'}
+                                {job.client?.name || job.client_name || 'Unknown Client'}
                             </h3>
+                            {job.title && (
+                                <p className="text-sm font-medium text-blue-600 mb-2">{job.title}</p>
+                            )}
 
                             <div className="space-y-2 text-sm text-gray-600">
                                 <div className="flex items-center gap-2">

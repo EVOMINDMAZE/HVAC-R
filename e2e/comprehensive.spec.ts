@@ -8,9 +8,9 @@ test.describe('Comprehensive Application Test Suite', () => {
     test('Authentication: Login Flow', async ({ page }) => {
         await page.goto(`${BASE_URL}/signin`);
         await page.fill('input[type="email"]', 'admin@admin.com');
-        await page.fill('input[type="password"]', 'password11'); // Using incorrect password first to test validation? No, user said valid. Admin provided 'password1'.
+        await page.fill('input[type="password"]', 'badpassword'); // Test invalid password
         // Correcting to user provided
-        await page.fill('input[type="password"]', 'password1');
+        await page.fill('input[type="password"]', 'ThermoAdmin$2026!');
         await page.click('button[type="submit"]');
 
         // Expect to arrive at dashboard

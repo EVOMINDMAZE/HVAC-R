@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle, AlertCircle, UploadCloud, Camera, ArrowRight, Loader2, PlayCircle, ImageIcon } from "lucide-react";
+import { CheckCircle, AlertCircle, UploadCloud, Camera, ArrowRight, Loader2, PlayCircle, ImageIcon, Sparkles } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
 export default function Triage() {
@@ -73,7 +73,7 @@ export default function Triage() {
                     media_urls: mediaUrls,
                     status: 'new'
                 })
-                .select(); // Select the inserted data to get the ID
+                .select();
 
             if (dbError) throw dbError;
             if (!submissionData || submissionData.length === 0) throw new Error("Failed to retrieve submission ID.");
@@ -81,14 +81,12 @@ export default function Triage() {
             // 3. Trigger AI Analysis
             setProgress(70);
             try {
-                // Attempt to call the Edge Function
                 const { data: funcData, error: funcError } = await supabase.functions.invoke('analyze-triage-media', {
                     body: { submission_id: submissionData[0].id }
                 });
 
                 if (funcError) {
                     console.warn("Edge Function failed (likely not deployed or missing keys). Falling back to mock.", funcError);
-                    // Mock fallback for demo purposes
                     await new Promise(resolve => setTimeout(resolve, 2000));
                 } else {
                     console.log("AI Analysis Result:", funcData);
@@ -99,7 +97,7 @@ export default function Triage() {
             }
 
             setProgress(100);
-            setStep(4); // Success Step
+            setTimeout(() => setStep(4), 500); // Small delay for polish
             toast({ title: "Submission Received", description: "Our AI is analyzing your issue. An agent will contact you shortly." });
 
         } catch (error: any) {
@@ -112,42 +110,69 @@ export default function Triage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center justify-center p-4">
-            <div className="w-full max-w-lg">
+        <div className="min-h-screen relative overflow-hidden flex flex-col items-center justify-center p-4">
+            {/* Animated Background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-cyan-50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950 -z-20" />
+            <div className="absolute top-0 -left-10 w-96 h-96 bg-blue-400/20 rounded-full blur-[100px] -z-10 animate-pulse" />
+            <div className="absolute bottom-0 -right-10 w-96 h-96 bg-teal-400/20 rounded-full blur-[100px] -z-10 animate-pulse delay-700" />
 
+            <div className="w-full max-w-lg z-10">
                 <div className="text-center mb-8">
-                    <div className="w-16 h-16 bg-blue-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-blue-500/30 mb-4">
-                        <CheckCircle className="w-8 h-8 text-white" />
-                    </div>
-                    <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">ThermoNeural AI Triage</h1>
-                    <p className="text-slate-500 dark:text-slate-400">Diagnose your HVAC system in seconds.</p>
+                    <motion.div
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                        className="w-20 h-20 bg-gradient-to-tr from-blue-600 to-cyan-500 rounded-3xl mx-auto flex items-center justify-center shadow-xl shadow-blue-500/30 mb-6"
+                    >
+                        <Sparkles className="w-10 h-10 text-white" />
+                    </motion.div>
+                    <motion.h1
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                        className="text-4xl font-extrabold text-slate-900 dark:text-white mb-2 tracking-tight"
+                    >
+                        ThermoNeural AI
+                    </motion.h1>
+                    <motion.p
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.3 }}
+                        className="text-lg text-slate-500 dark:text-slate-400"
+                    >
+                        Instant HVAC Diagnostics
+                    </motion.p>
                 </div>
 
                 <AnimatePresence mode="wait">
                     {step === 1 && (
                         <motion.div
                             key="step1"
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: 20 }}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.3 }}
                         >
-                            <Card className="shadow-xl border-t-4 border-blue-500">
+                            <Card className="shadow-2xl border-none ring-1 ring-slate-200 dark:ring-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl">
                                 <CardHeader>
-                                    <CardTitle>Who are you?</CardTitle>
-                                    <CardDescription>We need your contact info to send the diagnosis.</CardDescription>
+                                    <CardTitle>Welcome</CardTitle>
+                                    <CardDescription>Let's get your system back up and running. Who are we speaking with?</CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
                                     <div className="space-y-2">
                                         <Label>Full Name</Label>
                                         <Input
+                                            className="bg-white/50 dark:bg-slate-800/50"
                                             placeholder="John Doe"
                                             value={formData.name}
                                             onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                            autoFocus
                                         />
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Phone Number</Label>
                                         <Input
+                                            className="bg-white/50 dark:bg-slate-800/50"
                                             placeholder="(555) 123-4567"
                                             type="tel"
                                             value={formData.phone}
@@ -157,11 +182,11 @@ export default function Triage() {
                                 </CardContent>
                                 <CardFooter>
                                     <Button
-                                        className="w-full"
+                                        className="w-full bg-blue-600 hover:bg-blue-700 h-12 text-lg shadow-lg shadow-blue-500/20"
                                         onClick={handleNext}
                                         disabled={!formData.name || !formData.phone}
                                     >
-                                        Next <ArrowRight className="w-4 h-4 ml-2" />
+                                        Start Diagnosis <ArrowRight className="w-5 h-5 ml-2" />
                                     </Button>
                                 </CardFooter>
                             </Card>
@@ -171,30 +196,35 @@ export default function Triage() {
                     {step === 2 && (
                         <motion.div
                             key="step2"
-                            initial={{ opacity: 0, x: -20 }}
+                            initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: 20 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            transition={{ duration: 0.3 }}
                         >
-                            <Card className="shadow-xl border-t-4 border-blue-500">
+                            <Card className="shadow-2xl border-none ring-1 ring-slate-200 dark:ring-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl">
                                 <CardHeader>
-                                    <CardTitle>What's wrong?</CardTitle>
-                                    <CardDescription>Tell us what is happening with your system.</CardDescription>
+                                    <CardTitle>What's Happening?</CardTitle>
+                                    <CardDescription>Describe the issue (e.g., strange noises, no cold air).</CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
                                     <div className="space-y-2">
-                                        <Label>Problem Description</Label>
                                         <Textarea
-                                            placeholder="e.g. It's making a loud banging noise and blowing warm air..."
-                                            className="h-32"
+                                            placeholder="I hear a loud buzzing sound coming from the outside unit..."
+                                            className="h-40 text-lg bg-white/50 dark:bg-slate-800/50 resize-none p-4"
                                             value={formData.description}
                                             onChange={e => setFormData({ ...formData, description: e.target.value })}
+                                            autoFocus
                                         />
                                     </div>
                                 </CardContent>
-                                <CardFooter className="flex justify-between">
+                                <CardFooter className="flex justify-between gap-4">
                                     <Button variant="ghost" onClick={handleBack}>Back</Button>
-                                    <Button onClick={handleNext} disabled={!formData.description}>
-                                        Next <ArrowRight className="w-4 h-4 ml-2" />
+                                    <Button
+                                        onClick={handleNext}
+                                        disabled={!formData.description}
+                                        className="flex-1 bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/20"
+                                    >
+                                        Continue <ArrowRight className="w-4 h-4 ml-2" />
                                     </Button>
                                 </CardFooter>
                             </Card>
@@ -204,62 +234,74 @@ export default function Triage() {
                     {step === 3 && (
                         <motion.div
                             key="step3"
-                            initial={{ opacity: 0, x: -20 }}
+                            initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: 20 }}
+                            exit={{ opacity: 0, x: -20 }}
                         >
-                            <Card className="shadow-xl border-t-4 border-blue-500">
+                            <Card className="shadow-2xl border-none ring-1 ring-slate-200 dark:ring-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl">
                                 <CardHeader>
-                                    <CardTitle>Show us.</CardTitle>
-                                    <CardDescription>Upload photos or video of the unit and the model plate.</CardDescription>
+                                    <CardTitle>Visual Analysis</CardTitle>
+                                    <CardDescription>Upload photos or video of your unit's model plate and the issue.</CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-6">
-                                    <div className="bg-slate-50 dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg p-8 flex flex-col items-center justify-center text-center hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer relative">
-                                        <input
-                                            type="file"
-                                            multiple
-                                            accept="image/*,video/*"
-                                            className="absolute inset-0 opacity-0 cursor-pointer"
-                                            onChange={handleFileChange}
-                                        />
-                                        <UploadCloud className="w-12 h-12 text-blue-500 mb-2" />
-                                        <p className="font-medium text-slate-700 dark:text-slate-200">Tap to Upload</p>
-                                        <p className="text-sm text-slate-500">Photos or Short Video</p>
+                                    <div className="relative group">
+                                        <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                                        <div className="relative bg-slate-50 dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-10 flex flex-col items-center justify-center text-center hover:bg-white dark:hover:bg-slate-800 transition-all cursor-pointer">
+                                            <input
+                                                type="file"
+                                                multiple
+                                                accept="image/*,video/*"
+                                                className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                                                onChange={handleFileChange}
+                                            />
+                                            <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                                                <UploadCloud className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                                            </div>
+                                            <p className="font-semibold text-lg text-slate-700 dark:text-slate-200">Tap to Upload Evidence</p>
+                                            <p className="text-sm text-slate-500 mt-1">Photos or Short Video (Max 50MB)</p>
+                                        </div>
                                     </div>
 
                                     {files.length > 0 && (
-                                        <div className="space-y-2">
-                                            <p className="text-sm font-medium text-slate-500">{files.length} files selected:</p>
-                                            <div className="grid grid-cols-2 gap-2">
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            className="space-y-3"
+                                        >
+                                            <p className="text-sm font-medium text-slate-500 uppercase tracking-wider text-xs">Selected Files</p>
+                                            <div className="grid grid-cols-2 gap-3">
                                                 {files.map((f, i) => (
-                                                    <div key={i} className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-2 rounded text-xs truncate">
-                                                        {f.type.startsWith('video') ? <PlayCircle className="w-3 h-3" /> : <ImageIcon className="w-3 h-3" />}
-                                                        <span className="truncate">{f.name}</span>
+                                                    <div key={i} className="flex items-center gap-2 bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-100 dark:border-slate-700 shadow-sm text-xs">
+                                                        {f.type.startsWith('video') ? <PlayCircle className="w-4 h-4 text-blue-500" /> : <ImageIcon className="w-4 h-4 text-green-500" />}
+                                                        <span className="truncate font-medium">{f.name}</span>
                                                     </div>
                                                 ))}
                                             </div>
-                                        </div>
+                                        </motion.div>
                                     )}
 
                                     {loading && (
-                                        <div className="space-y-2">
-                                            <div className="flex justify-between text-xs text-slate-500">
-                                                <span>{uploading ? "Uploading..." : "Analyzing..."}</span>
+                                        <div className="space-y-3 bg-slate-50 dark:bg-slate-800 p-4 rounded-xl">
+                                            <div className="flex justify-between text-sm font-medium text-slate-600 dark:text-slate-300">
+                                                <span className="flex items-center gap-2">
+                                                    {uploading ? <UploadCloud className="w-4 h-4 animate-bounce" /> : <Sparkles className="w-4 h-4 animate-spin" />}
+                                                    {uploading ? "Uploading Media..." : "AI Diagnosis in Progress..."}
+                                                </span>
                                                 <span>{Math.round(progress)}%</span>
                                             </div>
-                                            <Progress value={progress} className="h-2" />
+                                            <Progress value={progress} className="h-2 bg-slate-200 dark:bg-slate-700" />
                                         </div>
                                     )}
                                 </CardContent>
-                                <CardFooter className="flex justify-between">
+                                <CardFooter className="flex justify-between gap-4">
                                     <Button variant="ghost" onClick={handleBack} disabled={loading}>Back</Button>
                                     <Button
                                         onClick={handleSubmit}
                                         disabled={files.length === 0 || loading}
-                                        className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/20"
+                                        className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-500/25 h-12 text-lg font-medium"
                                     >
-                                        {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Camera className="w-4 h-4 mr-2" />}
-                                        Analyze My System
+                                        {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Camera className="w-5 h-5 mr-2" />}
+                                        Analyze System
                                     </Button>
                                 </CardFooter>
                             </Card>
@@ -271,22 +313,48 @@ export default function Triage() {
                             key="step4"
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
+                            transition={{ type: "spring", duration: 0.6 }}
                         >
-                            <Card className="shadow-2xl border-t-4 border-green-500 bg-white dark:bg-slate-900">
-                                <CardContent className="pt-8 pb-8 flex flex-col items-center text-center space-y-4">
-                                    <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-2">
-                                        <CheckCircle className="w-10 h-10 text-green-600 dark:text-green-400" />
+                            <Card className="shadow-2xl border-none ring-1 ring-green-200 dark:ring-green-900 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl">
+                                <CardContent className="pt-12 pb-12 flex flex-col items-center text-center space-y-6">
+                                    <motion.div
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{ type: "spring", delay: 0.2 }}
+                                        className="w-24 h-24 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-2"
+                                    >
+                                        <CheckCircle className="w-12 h-12 text-green-600 dark:text-green-400" />
+                                    </motion.div>
+
+                                    <div className="space-y-2">
+                                        <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Analysis Complete</h2>
+                                        <p className="text-lg text-slate-600 dark:text-slate-300 max-w-xs mx-auto">
+                                            We've received your data. A senior technician has been notified and is reviewing your case.
+                                        </p>
                                     </div>
-                                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Analysis Complete!</h2>
-                                    <p className="text-slate-600 dark:text-slate-300 max-w-xs">
-                                        We have received your data. Our AI is reviewing the footage and a technician has been notified.
-                                    </p>
-                                    <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg w-full text-left text-sm space-y-2 mt-4">
-                                        <p><strong>Ticket ID:</strong> #{Math.floor(Math.random() * 10000)}</p>
-                                        <p><strong>Est. Response:</strong> 15 Mins</p>
+
+                                    <div className="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl w-full text-left space-y-3 border border-slate-100 dark:border-slate-700 shadow-inner">
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-sm text-slate-500">Ticket ID</span>
+                                            <span className="font-mono font-bold text-slate-900 dark:text-white">#{Math.floor(1000 + Math.random() * 9000)}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-sm text-slate-500">Status</span>
+                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                                AI Processing
+                                            </span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-sm text-slate-500">Est. Response</span>
+                                            <span className="font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+                                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                                                &lt; 15 Mins
+                                            </span>
+                                        </div>
                                     </div>
+
                                     <Button
-                                        className="w-full mt-4"
+                                        className="w-full mt-4 h-12 text-lg"
                                         variant="outline"
                                         onClick={() => window.location.reload()}
                                     >
@@ -298,9 +366,9 @@ export default function Triage() {
                     )}
                 </AnimatePresence>
 
-                <div className="mt-8 text-center">
-                    <p className="text-xs text-slate-400">
-                        &copy; 2025 ThermoNeural. Inc.
+                <div className="mt-12 text-center">
+                    <p className="text-xs text-slate-400 font-medium">
+                        &copy; 2025 ThermoNeural Inc.
                         <br />
                         <span className="opacity-50">Powered by OpenAI GPT-4o Vision</span>
                     </p>

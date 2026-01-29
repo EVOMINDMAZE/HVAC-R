@@ -2,30 +2,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
+import LiveMap, { TechIcon } from '@/components/job/LiveMap';
 import { Phone, MapPin, User, Clock } from 'lucide-react';
 
-// Fix Leaflet Default Icon
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-
-const DefaultIcon = L.icon({
-    iconUrl: icon,
-    shadowUrl: iconShadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-});
-L.Marker.prototype.options.icon = DefaultIcon;
-
-function MapUpdater({ center }: { center: [number, number] }) {
-    const map = useMap();
-    useEffect(() => {
-        map.flyTo(center, 13);
-    }, [center, map]);
-    return null;
-}
 
 export default function ClientTrackJob() {
     const { id } = useParams();
@@ -40,6 +19,15 @@ export default function ClientTrackJob() {
             fetchJob();
             subscribeToJob();
         }
+
+        // Get User's Location as fallback/start
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => setPosition([pos.coords.latitude, pos.coords.longitude]),
+                (err) => console.log("User location denied/error", err)
+            );
+        }
+
         return () => {
             supabase.removeAllChannels();
         }
@@ -116,19 +104,21 @@ export default function ClientTrackJob() {
         <div className="flex flex-col h-screen bg-white">
             {/* Map Area */}
             <div className="flex-1 relative z-0">
-                <MapContainer center={position} zoom={13} style={{ height: '100%', width: '100%' }}>
-                    <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-                    <Marker position={position}>
-                        <Popup>
-                            Technician is here.<br />
-                            Status: {displayStatus.replace('_', ' ')}
-                        </Popup>
-                    </Marker>
-                    <MapUpdater center={position} />
-                </MapContainer>
+                <LiveMap
+                    markers={[{
+                        id: job.id,
+                        position: position,
+                        icon: TechIcon,
+                        title: "Technician Location",
+                        popupContent: (
+                            <div>
+                                <strong>Technician is here.</strong><br />
+                                Status: {displayStatus.replace('_', ' ')}
+                            </div>
+                        )
+                    }]}
+                    center={position}
+                />
 
                 {/* Connection Status Overlay */}
                 <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-green-600 shadow-md z-[1000] flex items-center gap-2">

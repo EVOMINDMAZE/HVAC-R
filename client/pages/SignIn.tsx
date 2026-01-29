@@ -82,6 +82,8 @@ export function SignIn() {
         console.log('[SignIn] Login successful, role:', userRole);
         if (userRole === 'client') {
           navigate("/portal");
+        } else if (userRole === 'technician') {
+          navigate("/tech");
         } else {
           navigate("/dashboard");
         }

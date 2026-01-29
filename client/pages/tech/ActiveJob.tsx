@@ -11,6 +11,30 @@ export default function ActiveJob() {
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
 
+    // Dev Simulation State
+    const [simulating, setSimulating] = useState(false);
+
+    // Simulation Effect
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (simulating && job) {
+            let lat = job.geo_lat || 40.7128;
+            let lng = job.geo_lng || -74.0060;
+
+            interval = setInterval(() => {
+                // Move slightly North-East
+                lat += 0.0005; // approx 50 meters
+                lng += 0.0005;
+                updateLocation(lat, lng);
+            }, 3000);
+        }
+        return () => clearInterval(interval);
+    }, [simulating, job]);
+
+    function toggleSimulation() {
+        setSimulating(!simulating);
+    }
+
     useEffect(() => {
         if (id) fetchJob();
     }, [id]);
@@ -20,6 +44,7 @@ export default function ActiveJob() {
         const currentStatus = getEffectiveStatus(job);
         if (currentStatus === 'completed' || currentStatus === 'pending') return;
 
+        // 1. GPS Tracking
         const watchId = navigator.geolocation.watchPosition(
             (pos) => {
                 updateLocation(pos.coords.latitude, pos.coords.longitude);
@@ -28,7 +53,23 @@ export default function ActiveJob() {
             { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
         );
 
-        return () => navigator.geolocation.clearWatch(watchId);
+        // 2. Screen Wake Lock (Keep device awake)
+        let wakeLock: any = null;
+        const requestWakeLock = async () => {
+            if ('wakeLock' in navigator) {
+                try {
+                    wakeLock = await (navigator as any).wakeLock.request('screen');
+                } catch (err) {
+                    console.log('Wake Lock request failed:', err);
+                }
+            }
+        };
+        requestWakeLock();
+
+        return () => {
+            navigator.geolocation.clearWatch(watchId);
+            if (wakeLock) wakeLock.release();
+        };
     }, [job]);
 
     function getEffectiveStatus(jobData: any) {
@@ -49,17 +90,22 @@ export default function ActiveJob() {
             .from('jobs')
             .select(`
         *,
-        client:clients(name, address, phone),
+        client:clients(name, address, contact_phone),
         asset:assets(name, type, serial_number),
         job_timeline(status, created_at)
       `)
             .eq('id', id)
-            .order('created_at', { foreignTable: 'job_timeline', ascending: false })
-            // Note: .limit(1) on foreign table requires specific Supabase syntax or just slice it in JS if needed,
-            // but standard Supabase JOIN usually returns array. Order matters.
             .single();
 
-        if (!error) {
+        if (error) {
+            console.error('Error fetching job:', error);
+        } else if (data) {
+            // Sort timeline in memory to be safe
+            if (data.job_timeline && Array.isArray(data.job_timeline)) {
+                data.job_timeline.sort((a: any, b: any) =>
+                    new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+                );
+            }
             const effectiveStatus = getEffectiveStatus(data);
             setJob({ ...data, effectiveStatus });
         }
@@ -109,6 +155,11 @@ export default function ActiveJob() {
 
     const displayStatus = job.effectiveStatus || 'pending';
 
+    // Fallback for missing client relation (RLS)
+    const clientName = job.client?.name || job.client_name || 'Unknown Client';
+    const clientAddress = job.client?.address || 'Address Hidden (Restricted)';
+
+
     return (
         <div className="min-h-screen bg-white">
             {/* Navbar */}
@@ -127,13 +178,13 @@ export default function ActiveJob() {
                 <section>
                     <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Client</h3>
                     <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                        <div className="text-xl font-bold text-gray-900 mb-1">{job.client?.name}</div>
+                        <div className="text-xl font-bold text-gray-900 mb-1">{clientName}</div>
                         <div className="flex items-start gap-2 text-gray-600 mb-3">
                             <MapPin className="w-5 h-5 text-gray-400 mt-0.5" />
-                            <span>{job.client?.address}</span>
+                            <span>{clientAddress}</span>
                         </div>
-                        {job.client?.phone && (
-                            <a href={`tel:${job.client.phone}`} className="flex items-center gap-2 text-blue-600 font-medium bg-blue-50 px-3 py-2 rounded-lg w-fit">
+                        {job.client?.contact_phone && (
+                            <a href={`tel:${job.client.contact_phone}`} className="flex items-center gap-2 text-blue-600 font-medium bg-blue-50 px-3 py-2 rounded-lg w-fit">
                                 <Phone className="w-4 h-4" />
                                 Call Client
                             </a>
@@ -205,6 +256,18 @@ export default function ActiveJob() {
                 {displayStatus === 'completed' && (
                     <div className="text-center text-green-600 font-bold text-xl flex items-center justify-center gap-2">
                         <CheckCircle className="w-6 h-6" /> Job Done
+                    </div>
+                )}
+
+                {/* Dev Only: Simulation Button */}
+                {process.env.NODE_ENV === 'development' && ['en_route', 'on_site'].includes(displayStatus) && (
+                    <div className="mt-4 pt-4 border-t text-center">
+                        <button
+                            onClick={toggleSimulation}
+                            className={`text-xs px-3 py-1 rounded-full border ${simulating ? 'bg-red-50 text-red-600 border-red-200' : 'bg-gray-50 text-gray-500 border-gray-200'}`}
+                        >
+                            {simulating ? '🛑 Stop Simulation' : '🧪 Simulate Movement (Dev Only)'}
+                        </button>
                     </div>
                 )}
             </div>

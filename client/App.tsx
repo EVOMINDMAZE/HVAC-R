@@ -27,6 +27,7 @@ import { Clients } from "@/pages/Clients";
 import { ClientDashboard } from "@/pages/ClientDashboard"; // Managed Import
 import ClientTrackJob from "@/pages/ClientTrackJob";
 import Dispatch from "@/pages/dashboard/Dispatch";
+import TriageDashboard from "@/pages/dashboard/TriageDashboard";
 import JobBoard from "@/pages/tech/JobBoard";
 import ActiveJob from "@/pages/tech/ActiveJob";
 import Career from "@/pages/Career";
@@ -322,6 +323,14 @@ function AppRoutes() {
             element={
               <ProtectedRoute>
                 <Dispatch />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/triage"
+            element={
+              <ProtectedRoute>
+                <TriageDashboard />
               </ProtectedRoute>
             }
           />

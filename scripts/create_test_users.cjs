@@ -15,7 +15,7 @@ const users = [
     { email: 'student@test.com', role: 'student', password: 'Password123!' },
     { email: 'tech@test.com', role: 'technician', password: 'Password123!' },
     { email: 'client@test.com', role: 'client', password: 'Password123!' },
-    { email: 'admin@admin.com', role: 'admin', password: 'password1' }
+    { email: 'admin@admin.com', role: 'admin', password: 'ThermoAdmin$2026!' }
 ];
 
 async function getOrCreateUser(u) {

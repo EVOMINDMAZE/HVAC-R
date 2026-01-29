@@ -137,6 +137,16 @@
     /* Use theme ring color variable for accessibility focus */
     box-shadow: 0 0 0 3px hsl(var(--ring) / 0.15);
   }
+
+  /* 
+   * Global Safe Area Fix for iOS Native App (Capacitor)
+   * This ensures ALL pages respect the dynamic island/notch.
+   */
+  body.capacitor-ios {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    min-height: 100vh;
+  }
 }
 
 @layer utilities {
@@ -213,9 +223,12 @@
 
   /* Scrollbar Hide */
   .scrollbar-hide {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }

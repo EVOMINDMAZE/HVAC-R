@@ -91,20 +91,45 @@ This document is the **Active Roadmap**. It breaks down every single task requir
 
 ---
 
-## **PHASE 6: Deployment & Polish 🚀**
+## **PHASE 6: Technician Mobile Experience 📱**
+**Status:** ✅ Complete
+**Goal:** Ensure the key user (The Tech) has a flawless mobile experience.
+
+- [x] **6.1. Mobile UX Audit**
+    - [x] Fix Login Redirect (Technicians now go to `/tech`).
+    - [x] Fix Job Board (Restored "Client Name" and added "Job Title").
+    - [x] Fix Active Job Page (Crash fixed: `contact_phone` schema alignment).
+    - [x] Re-enable "Call Client" button.
+- [x] **6.2. Real-Time Tracking**
+    - [x] Enable Supabase Realtime for `jobs` table (Migration `20260128160000_enable_realtime_jobs.sql`).
+    - [x] Implement Geolocation Hook (`ActiveJob.tsx`).
+    - [x] Verify Dispatch Map updates live.
+- [x] **6.3. Permissions & Security (RLS)**
+    - [x] Grant Techs READ access to `clients` (securely).
+    - [x] Grant Techs UPDATE access to their `jobs` (Status only).
+    - [x] Grant Techs INSERT access to `job_timeline`.
+- [x] **6.4. QA Verification**
+    - [x] Verified full flow: Login -> View Job -> Arrive -> Update Status.
+
+---
+
+## **PHASE 7: Deployment & Polish 🚀**
 **Status:** 🟡 In Progress
 **Goal:** Launch the PWA.
 
-- [x] **6.1. Environment Variables**
+- [x] **7.1. Environment Variables**
     - [x] Set `XAI_API_KEY` (for Triage Vision - Grok) in Supabase.
     - [x] Set `DEEPSEEK_API_KEY` (for Troubleshooting Chat) in Supabase.
     - [ ] Set n8n Webhook URLs in Supabase and Client (if applicable).
-- [x] **6.2. Final Build Check**
+- [x] **7.2. Final Build Check**
     - [x] Run `npm run build` and ensure no errors.
     - [x] Verify bundle size and PWA manifest.
-- [ ] **6.3. User Acceptance Testing (UAT)**
+- [ ] **7.3. User Acceptance Testing (UAT)**
     - [ ] User to verify all flows (EPA, Warranty, Triage).
-- [x] **6.4. Final Deployment**
+- [x] **7.4. Critical Capability Gaps (Identified)**
+    - [x] **Admin Dispatch**: Update `Jobs.tsx` to allow assigning a specific Technician (currently missing).
+    - [x] **Triage Dashboard**: Create an Admin view to see incoming "Pre-Dispatch" requests (currently hidden in DB).
+- [x] **7.5. Final Deployment**
     - [x] Deploy to Netlify (Client - Triggered via Git Push).
     - [x] Deploy Edge Functions:
         - `analyze-triage-media` (Grok Vision)
@@ -113,6 +138,6 @@ This document is the **Active Roadmap**. It breaks down every single task requir
 ---
 
 ## 🏁 How we proceed
-**Current Focus:** [PHASE 2] n8n Setup (Final Step).
+**Current Focus:** [PHASE 2 - 2.4] Connect n8n to Prod & [PHASE 7 - 7.3] UAT.
 
 *Use this file to track our exact position. Do not deviate.*
