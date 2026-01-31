@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
 // Database imports removed - using Supabase for all data storage
 import {
   signUp,
@@ -109,9 +110,18 @@ export function createServer() {
     return authenticateToken(req, res, next);
   };
 
+  // Rate limiter for authentication routes
+  const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // Limit each IP to 5 requests per windowMs
+    message: "Too many login attempts, please try again after 15 minutes",
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  });
+
   // Authentication routes
-  app.post("/api/auth/signup", signUp);
-  app.post("/api/auth/signin", signIn);
+  app.post("/api/auth/signup", authLimiter, signUp);
+  app.post("/api/auth/signin", authLimiter, signIn);
   app.post("/api/auth/signout", signOut);
   app.get("/api/auth/me", getCurrentUser);
 
