@@ -24,6 +24,13 @@ import { supabase } from "@/lib/supabase";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Database } from "@/lib/supabase";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
+} from "@/components/ui/select";
 
 type Cylinder = Database["public"]["Tables"]["refrigerant_cylinders"]["Row"];
 
@@ -41,8 +48,21 @@ export function LogRefrigerantDialog({ cylinder, onLogSuccess }: LogRefrigerantD
     const [formData, setFormData] = useState({
         amount_lbs: "",
         job_id: "",
+        asset_id: "",
         notes: "",
     });
+    const [assets, setAssets] = React.useState<{ id: string, name: string }[]>([]);
+
+    React.useEffect(() => {
+        if (open) {
+            fetchAssets();
+        }
+    }, [open]);
+
+    const fetchAssets = async () => {
+        const { data } = await supabase.from('assets').select('id, name');
+        if (data) setAssets(data);
+    };
 
     // Derived state to check if amount exceeds available
     const currentWeight = Number(cylinder.current_weight_lbs);
@@ -77,6 +97,7 @@ export function LogRefrigerantDialog({ cylinder, onLogSuccess }: LogRefrigerantD
             const { error } = await supabase.from("refrigerant_logs").insert({
                 user_id: user.id,
                 cylinder_id: cylinder.id,
+                asset_id: formData.asset_id || null,
                 transaction_type: activeTab,
                 amount_lbs: amount,
                 job_id: formData.job_id || null,
@@ -94,6 +115,7 @@ export function LogRefrigerantDialog({ cylinder, onLogSuccess }: LogRefrigerantD
             setFormData({
                 amount_lbs: "",
                 job_id: "",
+                asset_id: "",
                 notes: "",
             });
             setOpen(false);
@@ -171,6 +193,20 @@ export function LogRefrigerantDialog({ cylinder, onLogSuccess }: LogRefrigerantD
                                         Amount exceeds current tank weight ({currentWeight} lbs).
                                     </p>
                                 )}
+                            </div>
+
+                            <div className="grid gap-2">
+                                <Label htmlFor="asset">Asset / Equipment (Recommended)</Label>
+                                <Select value={formData.asset_id} onValueChange={(v) => setFormData({ ...formData, asset_id: v })}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select equipment..." />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {assets.map(a => (
+                                            <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
 
                             <div className="grid gap-2">

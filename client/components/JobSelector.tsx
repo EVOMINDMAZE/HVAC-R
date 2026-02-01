@@ -36,8 +36,9 @@ export function JobSelector() {
     const fetchProjects = async () => {
         if (!user) return;
         const { data, error } = await supabase
-            .from("projects")
+            .from("calculations")
             .select("*")
+            .eq("calculation_type", "project")
             .order("created_at", { ascending: false });
 
         if (error) {
@@ -60,11 +61,15 @@ export function JobSelector() {
         setLoading(true);
 
         const { data, error } = await supabase
-            .from("projects")
+            .from("calculations")
             .insert([
                 {
                     name: newProjectName,
-                    address: newProjectAddress,
+                    calculation_type: "project",
+                    inputs: {
+                        name: newProjectName,
+                        address: newProjectAddress,
+                    },
                     user_id: user.id
                 }
             ])
@@ -72,6 +77,7 @@ export function JobSelector() {
             .single();
 
         if (error) {
+            console.error('[JobSelector] Error creating project:', error);
             addToast({
                 type: "error",
                 title: "Error creating project",

@@ -58,7 +58,20 @@ export default function Jobs() {
         if (user) {
             fetchJobs();
             fetchTechnicians();
+        } else if (user === null) {
+            // If user is explicitly null (not loading), we should stop the spinner
+            setLoading(false);
         }
+
+        // Safety Timeout: Force loading to false after 5s if anything hangs
+        const timer = setTimeout(() => {
+            if (loading) {
+                console.warn('[Jobs] Safety timeout reached. Forcing loading false.');
+                setLoading(false);
+            }
+        }, 5000);
+
+        return () => clearTimeout(timer);
     }, [user]);
 
     const fetchTechnicians = async () => {
@@ -87,18 +100,30 @@ export default function Jobs() {
     const fetchJobs = async () => {
         try {
             setLoading(true);
-            const { data, error } = await supabase
+
+            // Create a promise for the Supabase query
+            const jobsPromise = supabase
                 .from('jobs')
                 .select('*')
                 .order('created_at', { ascending: false });
+
+            // Create a timeout promise to prevents indefinite spinners
+            const timeoutPromise = new Promise<{ data: null; error: any }>((_, reject) => {
+                setTimeout(() => reject(new Error('Request timed out')), 10000);
+            });
+
+            // Race them
+            const { data, error } = await Promise.race([jobsPromise, timeoutPromise]) as any;
 
             if (error) throw error;
             setJobs(data || []);
         } catch (error: any) {
             console.error('Error fetching jobs:', error);
             toast({
-                title: "Error",
-                description: "Failed to load jobs. Please try again.",
+                title: "Error loading jobs",
+                description: error.message === 'Request timed out'
+                    ? "Network request timed out. Please check your connection."
+                    : "Failed to load jobs. Please try again.",
                 variant: "destructive",
             });
         } finally {
@@ -192,7 +217,7 @@ export default function Jobs() {
                     <div>
                         <Button
                             variant="ghost"
-                            className="mb-4 pl-0 hover:bg-transparent hover:text-primary transition-colors -ml-2"
+                            className="mb-4 pl-0 hover:bg-transparent hover:text-primary transition-colors -ml-2 hidden md:inline-flex"
                             onClick={() => navigate('/dashboard')}
                         >
                             <ArrowLeft className="w-4 h-4 mr-2" /> Back to Dashboard

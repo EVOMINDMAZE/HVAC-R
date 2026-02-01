@@ -22,7 +22,7 @@ export function RiskShield() {
             if (user) {
                 const { data: companyData } = await supabase
                     .from('companies')
-                    .select('name, logo_url, primary_color')
+                    .select('name, logo_url, primary_color, financing_enabled, financing_link')
                     .eq('user_id', user.id)
                     .single();
 
@@ -31,6 +31,10 @@ export function RiskShield() {
                         companyName: companyData.name,
                         companyLogoUrl: companyData.logo_url,
                         primaryColor: companyData.primary_color || undefined,
+                        financing: {
+                            enabled: companyData.financing_enabled,
+                            link: companyData.financing_link
+                        }
                     };
                 }
             }

@@ -62,6 +62,7 @@ function TestAutomationButton({ phone, messageTemplate }: TestAutomationButtonPr
 
 export default function CompanySettings() {
     const { user } = useSupabaseAuth();
+    console.log('CompanySettings PAGE MOUNTED');
     const { toast } = useToast();
 
     // Form State
@@ -77,18 +78,56 @@ export default function CompanySettings() {
     const [alertPhone, setAlertPhone] = useState("");
     const [alertMessage, setAlertMessage] = useState("Job {{id}} has been marked as complete.");
 
+    // Automation Server Settings (n8n)
+    const [n8nUrl, setN8nUrl] = useState("");
+    const [n8nSecret, setN8nSecret] = useState("");
+
+    // Fintech Settings (Trident Phase 1)
+    const [financingEnabled, setFinancingEnabled] = useState(false);
+    const [financingLink, setFinancingLink] = useState("");
+
     // Fetch existing data
     useEffect(() => {
         async function fetchCompany() {
-            if (!user) return;
+            console.log("CompanySettings: fetchCompany start", { userId: user?.id });
+            if (!user) {
+                console.log("CompanySettings: No user, skipping.");
+                return;
+            }
             try {
-                const { data, error } = await supabase
+                // First attempt: Get via user_id (Legacy/Owner check)
+                console.log("CompanySettings: Attempting fetch by user_id...");
+                let { data, error } = await supabase
                     .from('companies')
                     .select('*')
                     .eq('user_id', user.id)
-                    .single();
+                    .maybeSingle();
 
-                if (error && error.code !== 'PGRST116') { // PGRST116 is "Row not found"
+                // Second attempt: Get via user_roles if first attempt failed
+                if (!data) {
+                    console.log("CompanySettings: Not found by user_id, checking user_roles...");
+                    const { data: roleData } = await supabase
+                        .from('user_roles')
+                        .select('company_id')
+                        .eq('user_id', user.id)
+                        .maybeSingle();
+
+                    if (roleData?.company_id) {
+                        console.log(`CompanySettings: Found company_id ${roleData.company_id} in user_roles, fetching company...`);
+                        const { data: companyData, error: companyError } = await supabase
+                            .from('companies')
+                            .select('*')
+                            .eq('id', roleData.company_id)
+                            .maybeSingle();
+
+                        data = companyData;
+                        error = companyError;
+                    }
+                }
+
+                console.log("CompanySettings: Final fetch result", { data, error });
+
+                if (error) {
                     console.error("Error fetching company:", error);
                 }
 
@@ -101,12 +140,20 @@ export default function CompanySettings() {
                     if (data.alert_config && data.alert_config.message) {
                         setAlertMessage(data.alert_config.message);
                     }
+                    if (data.n8n_config) {
+                        setN8nUrl(data.n8n_config.webhook_url || "");
+                        setN8nSecret(data.n8n_config.webhook_secret || "");
+                    }
+                    if (data.financing_enabled !== undefined) {
+                        setFinancingEnabled(data.financing_enabled);
+                        setFinancingLink(data.financing_link || "");
+                    }
                 } else {
                     // Pre-fill with user info if no company exists yet
                     setCompanyName(user.user_metadata?.full_name || "");
                 }
             } catch (error) {
-                console.error("Error:", error);
+                console.error("Error in fetchCompany:", error);
             } finally {
                 setLoading(false);
             }
@@ -173,6 +220,9 @@ export default function CompanySettings() {
                 logo_url: logoUrl,
                 alert_phone: alertPhone,
                 alert_config: { message: alertMessage },
+                n8n_config: { webhook_url: n8nUrl, webhook_secret: n8nSecret },
+                financing_enabled: financingEnabled,
+                financing_link: financingLink,
                 updated_at: new Date().toISOString(),
             };
 
@@ -350,6 +400,79 @@ export default function CompanySettings() {
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    {/* Automation Server Config */}
+                    <div className="space-y-4 pt-4 border-t">
+                        <Label className="text-lg font-semibold">Automation Server (n8n)</Label>
+                        <CardDescription>
+                            Connect your private n8n instance to handle advanced workflows.
+                        </CardDescription>
+
+                        <div className="grid grid-cols-1 gap-4 pt-2">
+                            <div className="space-y-2">
+                                <Label htmlFor="n8n-url">Webhook URL</Label>
+                                <Input
+                                    id="n8n-url"
+                                    placeholder="https://n8n.your-domain.com/webhook/..."
+                                    value={n8nUrl}
+                                    onChange={(e) => setN8nUrl(e.target.value)}
+                                    className="bg-white text-slate-900 border-slate-200 font-mono text-sm"
+                                />
+                                <p className="text-xs text-gray-500">The base URL for your n8n instance or specific webhook trigger.</p>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="n8n-secret">Webhook Secret</Label>
+                                <Input
+                                    id="n8n-secret"
+                                    type="password"
+                                    placeholder="••••••••••••••••"
+                                    value={n8nSecret}
+                                    onChange={(e) => setN8nSecret(e.target.value)}
+                                    className="bg-white text-slate-900 border-slate-200 font-mono text-sm"
+                                />
+                                <p className="text-xs text-gray-500">Security key to validate requests coming from this App.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Fintech Integration (ThermoPay) */}
+                    <div className="space-y-4 pt-4 border-t">
+                        <Label className="text-lg font-semibold flex items-center gap-2">
+                            Fintech Integration 💳
+                        </Label>
+                        <CardDescription>
+                            Offer financing to your customers directly on your PDF reports.
+                        </CardDescription>
+
+                        <div className="flex items-center space-x-2 my-2">
+                            <input
+                                type="checkbox"
+                                id="financing-toggle"
+                                checked={financingEnabled}
+                                onChange={(e) => setFinancingEnabled(e.target.checked)}
+                                className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                            />
+                            <Label htmlFor="financing-toggle" className="font-medium cursor-pointer">
+                                Enable Financing Links on PDFs
+                            </Label>
+                        </div>
+
+                        {financingEnabled && (
+                            <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                                <Label htmlFor="financing-link">Financing Application URL</Label>
+                                <Input
+                                    id="financing-link"
+                                    placeholder="https://wisetack.us/your-business/..."
+                                    value={financingLink}
+                                    onChange={(e) => setFinancingLink(e.target.value)}
+                                    className="bg-white text-slate-900 border-slate-200"
+                                />
+                                <p className="text-xs text-gray-500">
+                                    This link will be clickable on every Winterization & Maintenance Certificate.
+                                </p>
+                            </div>
+                        )}
                     </div>
 
                     {/* Live Preview (Simulated) */}

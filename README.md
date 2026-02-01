@@ -40,6 +40,7 @@ For detailed setup instructions, please refer to the [Developer Guide](./DEVELOP
 
 - [**Developer Guide**](./DEVELOPER_GUIDE.md): Architecture, Tech Stack, and detailed setup.
 - [**Deployment**](./DEVELOPER_GUIDE.md#5-deployment): How to build and deploy.
+- [**AI Context**](./AI_ONBOARDING.md): **Start Here** for AI Agents and New Contributors.
 
 ## 🤝 Contributing
 

@@ -119,7 +119,7 @@ router.get("/subscription", authenticateSupabaseToken, async (req, res) => {
       subscription: {
         id: subscription.id,
         status: subscription.status,
-        current_period_end: subscription.current_period_end,
+        current_period_end: (subscription as any).current_period_end,
         plan: planName,
         amount: (subscription.items.data[0]?.price.unit_amount || 0) / 100,
         currency: subscription.items.data[0]?.price.currency,

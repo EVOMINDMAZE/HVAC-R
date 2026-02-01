@@ -1,7 +1,8 @@
-import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useSupabaseAuth';
 import {
     LayoutGrid, Radio, Zap, Briefcase, Users, Wrench, Archive, Scan, Hammer, History,
-    Cpu, FileText, Newspaper, PlayCircle, Headphones, BookOpen, ExternalLink, Info
+    Cpu, FileText, Newspaper, PlayCircle, Headphones, BookOpen, ExternalLink, Info, Wind, Building2
 } from 'lucide-react';
 
 // Types
@@ -27,11 +28,12 @@ export const CALCULATOR_DETAILS: Record<string, { desc: string }> = {
 };
 
 export function useAppNavigation() {
-    const { role } = useSupabaseAuth();
+    const navigate = useNavigate();
+    const { role } = useAuth();
 
     // Role-Based Operational Modes
     const isAdmin = role === 'admin';
-    const isOwner = !role || isAdmin || role === 'student'; // Default to Owner for Dev
+    const isOwner = isAdmin || role === 'student'; // Default to Owner for Dev removed for security
     const isTech = role === 'technician';
     const isClient = role === 'client';
 
@@ -78,7 +80,7 @@ export function useAppNavigation() {
         });
     }
 
-    if (showClientMenu) {
+    if (showClientMenu && !isAdmin) {
         mainLinks.push({ to: '/triage', label: 'Request Service', icon: Wrench, roleTag: isAdmin ? "C" : undefined });
         mainLinks.push({ to: '/jobs', label: 'My Jobs', icon: Briefcase, roleTag: isAdmin ? "C" : undefined });
     }
@@ -86,6 +88,7 @@ export function useAppNavigation() {
     // 2. TOOLBOX
     const toolboxItems = [
         { to: '/troubleshooting', label: 'AI Troubleshooter', icon: Zap },
+        { to: '/tools/iaq-wizard', label: 'Indoor Health', icon: Wind },
         { to: '/tools/refrigerant-inventory', label: 'EPA Bank', icon: Archive },
         { to: '/tools/warranty-scanner', label: 'Warranty Scanner', icon: Scan },
         { to: '/diy-calculators', label: 'Builder Tools', icon: Hammer },
@@ -107,6 +110,10 @@ export function useAppNavigation() {
         { to: '/history', label: 'History', icon: History },
     ];
 
+    if (isAdmin) {
+        officeItems.push({ to: '/settings/company', label: 'Company Settings', icon: Building2 });
+    }
+
     // 5. RESOURCES
     const resourcesGroups = [
         {
@@ -120,6 +127,7 @@ export function useAppNavigation() {
         {
             label: 'Support',
             items: [
+                { to: 'https://www.skool.com/hvac-r-business-owner-1296', label: 'Community', icon: Users, desc: 'Join other business owners' },
                 { to: '/documentation', label: 'Documentation', icon: BookOpen, desc: 'Guides & references' },
                 { to: '/help', label: 'Help Center', icon: ExternalLink, desc: 'FAQs & support' },
                 { to: '/about', label: 'About', icon: Info, desc: 'About ThermoNeural' },

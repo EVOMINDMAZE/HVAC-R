@@ -5,7 +5,7 @@ export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
   "http://localhost:8080";
 
-export const CALCULATION_SERVICE_URL = "https://simulateon-backend.onrender.com";
+export const CALCULATION_SERVICE_URL = import.meta.env.VITE_CALCULATION_SERVICE_URL || "https://simulateon-backend.onrender.com";
 
 interface ApiResponse<T> {
   success: boolean;

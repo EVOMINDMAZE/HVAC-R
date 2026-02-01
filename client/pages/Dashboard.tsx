@@ -453,7 +453,9 @@ export function Dashboard() {
           </div>
 
           <aside className="space-y-8 lg:sticky lg:top-24">
-            <QuickActions />
+            <div className="hidden lg:block">
+              <QuickActions />
+            </div>
             <RiskShield />
             <ValueProposition />
           </aside>

@@ -10,6 +10,10 @@ export interface CertificateData {
         companyName: string;
         primaryColor: string;
         logoUrl?: string | null;
+        financing?: {
+            enabled: boolean;
+            link?: string | null;
+        };
     };
 }
 
@@ -69,6 +73,17 @@ function drawBrandedFooter(page: any, headerHeight: number, branding: Certificat
         font: boldFont,
         color: brandColor
     });
+
+    // Draw Financing Link if enabled (Trident Phase 1)
+    if (branding?.financing?.enabled && branding.financing.link) {
+        page.drawText(`Apply for Financing: ${branding.financing.link}`, {
+            x: 50,
+            y: 45, // Below the branding text
+            size: 9,
+            font: font,
+            color: rgb(0, 0.4, 0.8) // Link color
+        });
+    }
 }
 
 

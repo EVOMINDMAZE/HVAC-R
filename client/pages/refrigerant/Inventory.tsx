@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Plus, Archive, ChevronRight, Activity, FileText } from "lucide-react";
+import { Plus, Archive, ChevronRight, Activity, FileText, Calculator } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AddCylinderDialog } from "@/components/refrigerant/AddCylinderDialog";
 import { LogRefrigerantDialog } from "@/components/refrigerant/LogRefrigerantDialog";
@@ -82,6 +82,11 @@ export default function RefrigerantInventory() {
                     <Link to="/tools/refrigerant-report">
                         <Button variant="outline" className="w-full md:w-auto">
                             <FileText className="mr-2 h-4 w-4" /> Compliance Log
+                        </Button>
+                    </Link>
+                    <Link to="/tools/leak-rate-calculator">
+                        <Button variant="outline" className="w-full md:w-auto">
+                            <Calculator className="mr-2 h-4 w-4" /> Leak Rate
                         </Button>
                     </Link>
                     <AddCylinderDialog onCylinderAdded={() => {

@@ -1,13 +1,7 @@
 import { RequestHandler } from "express";
 import { supabaseAdmin, getSupabaseClient } from "../utils/supabase.js";
 
-interface SaveCalculationRequest {
-  type: 'Standard Cycle' | 'Refrigerant Comparison' | 'Cascade Cycle' | 'A2L Safety';
-  name?: string;
-  notes?: string;
-  parameters: any;
-  results: any;
-}
+import { SaveCalculationRequest } from "@shared/types/dtos";
 
 export const saveCalculation: RequestHandler = async (req, res) => {
   try {

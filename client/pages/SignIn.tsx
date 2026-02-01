@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { useAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Fingerprint } from "lucide-react";
 import { motion } from "framer-motion";
+import { checkBiometricAvailability, getBiometricCredentials, storeCredentials, BiometricStatus } from "@/lib/biometricAuth";
+import { Capacitor } from '@capacitor/core';
 
 export function SignIn() {
   const [formData, setFormData] = useState({
@@ -17,9 +19,19 @@ export function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { signIn, signInWithGoogle } = useSupabaseAuth();
+  const [biometricStatus, setBiometricStatus] = useState<BiometricStatus | null>(null);
+  const [biometricLoading, setBiometricLoading] = useState(false);
+  const { signIn, signInWithGoogle } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
+  const isNative = Capacitor.isNativePlatform();
+
+  // Check biometric availability on mount
+  useEffect(() => {
+    if (isNative) {
+      checkBiometricAvailability().then(setBiometricStatus);
+    }
+  }, [isNative]);
 
   const handleGoogleSignIn = async () => {
     try {
@@ -73,6 +85,11 @@ export function SignIn() {
       }
 
       if (user) {
+        // Store credentials for biometric login next time (only on native)
+        if (isNative && biometricStatus?.isAvailable) {
+          await storeCredentials(formData.email, formData.password);
+        }
+
         addToast({
           type: "success",
           title: "Welcome back!",
@@ -104,6 +121,44 @@ export function SignIn() {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleBiometricSignIn = async () => {
+    setBiometricLoading(true);
+    setError("");
+
+    try {
+      const creds = await getBiometricCredentials();
+      if (!creds) {
+        setError("Biometric verification failed or no saved credentials.");
+        return;
+      }
+
+      const { user, error: signInError, role: userRole } = await signIn(creds.email, creds.password);
+
+      if (signInError) {
+        throw new Error(signInError.message);
+      }
+
+      if (user) {
+        addToast({
+          type: "success",
+          title: "Welcome back!",
+          description: "Signed in with biometrics",
+        });
+        if (userRole === 'client') {
+          navigate("/portal");
+        } else if (userRole === 'technician') {
+          navigate("/tech");
+        } else {
+          navigate("/dashboard");
+        }
+      }
+    } catch (err: any) {
+      setError(err.message || "Biometric sign in failed.");
+    } finally {
+      setBiometricLoading(false);
+    }
   };
 
   return (
@@ -146,6 +201,28 @@ export function SignIn() {
           </CardHeader>
 
           <CardContent className="space-y-6 p-8">
+            {/* Face ID / Touch ID Button (Native Only, when available) */}
+            {isNative && biometricStatus?.isAvailable && biometricStatus?.hasCredentials && (
+              <>
+                <Button
+                  type="button"
+                  onClick={handleBiometricSignIn}
+                  className="w-full h-12 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2"
+                  disabled={biometricLoading || loading}
+                >
+                  <Fingerprint className="h-5 w-5" />
+                  {biometricLoading ? "Verifying..." : "Sign in with Face ID"}
+                </Button>
+                <div className="relative my-4">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-border" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-card px-2 text-muted-foreground font-medium tracking-wider">Or</span>
+                  </div>
+                </div>
+              </>
+            )}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>

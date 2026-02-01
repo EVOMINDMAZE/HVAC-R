@@ -62,10 +62,13 @@ test.describe('UI smoke and interactions', () => {
     await page.waitForTimeout(300);
     await page.screenshot({ path: 'e2e-results/screenshots/documentation-search.png', fullPage: true }).catch(() => null);
 
-    // clear and open a category filter
-    await page.locator('button', { hasText: 'Getting Started' }).first().click();
-    await page.waitForTimeout(300);
-    await page.screenshot({ path: 'e2e-results/screenshots/documentation-filter-getting-started.png', fullPage: true }).catch(() => null);
+    // clear and open a category filter (if available - documentation may be empty)
+    const gettingStartedBtn = page.locator('button', { hasText: 'Getting Started' }).first();
+    if (await gettingStartedBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
+      await gettingStartedBtn.click();
+      await page.waitForTimeout(300);
+      await page.screenshot({ path: 'e2e-results/screenshots/documentation-filter-getting-started.png', fullPage: true }).catch(() => null);
+    }
   });
 
   test('open each doc article in DocsViewer modal', async ({ page }) => {

@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Thermometer, Save, Info, ArrowUpRight, Calculator, Gauge } from "lucide-react";
+import { Thermometer, Save, Info, ArrowUpRight, Calculator, Gauge, Bluetooth, Link as LinkIcon, AlertCircle } from "lucide-react";
 import { SaveCalculation } from "@/components/SaveCalculation";
 import { Badge } from "@/components/ui/badge";
 import { getRefrigerantsByPopularity, RefrigerantProperties } from "@/lib/refrigerants";
@@ -14,13 +14,14 @@ import { Switch } from "@/components/ui/switch";
 import { useWeatherAutoFill } from "@/hooks/useWeatherAutoFill";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { Cloud, Loader2, MapPin } from "lucide-react";
+import { useBluetoothProbe } from "@/hooks/useBluetoothProbe";
 
 interface TargetSuperheatCalculatorProps {
     saveCalculation?: any;
 }
 
 export default function TargetSuperheatCalculator({ saveCalculation }: TargetSuperheatCalculatorProps) {
-    const [refrigerants, setRefrigerants] = useState<RefrigerantProperties[]>([]);
+    const [refrigerants, setRefrigerants] = useState<RefrigerantProperties[]>(getRefrigerantsByPopularity());
     const [selectedRefrigerant, setSelectedRefrigerant] = useState<string>("R410A");
 
     const [units, setUnits] = useState<"imperial" | "metric">("imperial");
@@ -40,57 +41,53 @@ export default function TargetSuperheatCalculator({ saveCalculation }: TargetSup
     const { location, getLocation, loading: geoLoading } = useGeolocation();
     const { weather, loading: weatherLoading, fetchWeather } = useWeatherAutoFill();
 
+    // Hardware Integration (ThermoKey)
+    // Using simulated mode for prototype
+    const { connect, disconnect, isConnected, device, data: probeData } = useBluetoothProbe({ simulate: true });
+
+    // Auto-update inputs from Probe Data
+    useEffect(() => {
+        if (isConnected && probeData) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setInputs(prev => ({
+                ...prev,
+                // Map Probe Temperature -> Outdoor Dry Bulb (Example use case)
+                outdoorDryBulb: probeData.temperature_f ? probeData.temperature_f.toFixed(1) : prev.outdoorDryBulb,
+                // Map Probe Pressure -> Suction Pressure (If in gauge mode)
+                suctionPressure: useGaugeReadings && probeData.pressure_psi ? probeData.pressure_psi.toFixed(1) : prev.suctionPressure
+            }));
+        }
+    }, [probeData, isConnected, useGaugeReadings]);
+
     const handleAutoFillWeather = async () => {
         if (!location) {
             getLocation();
-            // We need to wait for location, which is async via effect in the hook usually, 
-            // but our hook exposes a function. We'll rely on a small effect to trigger weather when location arrives
             return;
         }
         await fetchWeather(location.lat, location.lng);
     };
 
-    // Effect to trigger weather fetch once location is found (if triggered by user interaction logic)
-    // Actually, simpler logic: verify if we have location, if not get it. 
-    // If we do, fetch weather. 
-    // We'll add an effect to watch for location changes *if* we are in "auto-fill mode" or just manually handle it.
-    // Let's manually handle it for simplicity in this component.
-
     useEffect(() => {
         if (location && !weather && geoLoading === false) {
-            // If we just got location and user requested it (implied by calling getLocation), fetch weather
             fetchWeather(location.lat, location.lng);
         }
     }, [location]);
 
     useEffect(() => {
-        if (weather) {
+        if (weather && !isConnected) { // Only auto-fill weather if NOT using probe
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setInputs(prev => ({
                 ...prev,
                 outdoorDryBulb: weather.tempF.toFixed(1)
             }));
         }
-    }, [weather]);
+    }, [weather, isConnected]);
 
-    const [result, setResult] = useState<{
-        targetSuperheat: number;
-        minSuperheat: number;
-        maxSuperheat: number;
-        actualSuperheat?: number;
-        calculatedSaturationTemp?: number;
-        recommendation: string;
-        status: "Normal" | "Warning" | "Critical";
-    } | null>(null);
-
-    useEffect(() => {
-        setRefrigerants(getRefrigerantsByPopularity());
-    }, []);
-
-    const calculate = () => {
+    const result = React.useMemo(() => {
         let wb = parseFloat(inputs.indoorWetBulb);
         let db = parseFloat(inputs.outdoorDryBulb);
 
-        if (isNaN(wb) || isNaN(db)) return;
+        if (isNaN(wb) || isNaN(db)) return null;
 
         // Convert to Imperial for calculation logic if currently Metric
         if (units === "metric") {
@@ -99,8 +96,8 @@ export default function TargetSuperheatCalculator({ saveCalculation }: TargetSup
         }
 
         // Validation (Prevent nonsensical inputs in F)
-        if (wb < 32 || wb > 100) return;
-        if (db < 0 || db > 130) return;
+        if (wb < 32 || wb > 100) return null;
+        if (db < 0 || db > 130) return null;
 
         // Formula: ((3 * Indoor WB) - 80 - Outdoor DB) / 2
         const target = ((3 * wb) - 80 - db) / 2;
@@ -119,20 +116,11 @@ export default function TargetSuperheatCalculator({ saveCalculation }: TargetSup
             const T_line = parseFloat(inputs.suctionLineTemp);
 
             if (!isNaN(P) && !isNaN(T_line)) {
-                // Pressure input assumption: PSIG (Imperial) or kPa (Metric) implied?
-                // Usually gauges are PSIG. If metric, usually kPa or Bar. 
-                // For MVP simplicty in mixed mode:
-                // If Imperial -> PSIG, Line Temp F.
-                // If Metric -> kPa (gauge), Line Temp C.
-
                 let P_calc = P;
                 let T_line_calc = T_line;
 
-                // Normalize to Imperial for PT Chart usage (since PT tool accepts PSIG)
-                // If metric, convert kPa_g to PSIG first
+                // Normalize to Imperial for PT Chart usage
                 if (units === "metric") {
-                    // kPa_g = kPa_abs - 101.3
-                    // P_psig = P_kpag * 0.145
                     P_calc = P * 0.145038;
                     T_line_calc = (T_line * 9 / 5) + 32;
                 }
@@ -149,7 +137,6 @@ export default function TargetSuperheatCalculator({ saveCalculation }: TargetSup
             // Manual Input
             let val = parseFloat(inputs.actualSuperheat);
             if (!isNaN(val)) {
-                // If metric manual input (K/C diff), convert to F diff
                 if (units === "metric") val = val * 1.8;
                 actualSH = val;
             }
@@ -169,7 +156,7 @@ export default function TargetSuperheatCalculator({ saveCalculation }: TargetSup
             }
         }
 
-        setResult({
+        return {
             targetSuperheat: target,
             minSuperheat: min,
             maxSuperheat: max,
@@ -177,11 +164,7 @@ export default function TargetSuperheatCalculator({ saveCalculation }: TargetSup
             calculatedSaturationTemp: satTemp,
             recommendation,
             status
-        });
-    };
-
-    useEffect(() => {
-        calculate();
+        };
     }, [inputs, units, selectedRefrigerant, useGaugeReadings]);
 
     // Helper for displaying result
@@ -219,9 +202,34 @@ export default function TargetSuperheatCalculator({ saveCalculation }: TargetSup
                             Fixed orifice system charging calculator.
                         </CardDescription>
                     </div>
+                    {/* Hardware Connect Button */}
                     <div className="flex items-center gap-2">
+                        {!isConnected ? (
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => connect()}
+                                className="h-8 gap-2 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-600 hover:text-blue-600 hover:border-blue-200 transition-all font-medium"
+                            >
+                                <Bluetooth className="w-3.5 h-3.5" />
+                                <span className="hidden sm:inline">Connect Probe</span>
+                                <span className="sm:hidden">Connect</span>
+                            </Button>
+                        ) : (
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={disconnect}
+                                className="h-8 gap-2 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all"
+                            >
+                                <LinkIcon className="w-3.5 h-3.5" />
+                                <span className="hidden sm:inline">Linked: ThermoKey</span>
+                                <span className="sm:hidden">Linked</span>
+                            </Button>
+                        )}
+
                         <Select value={units} onValueChange={(v: "imperial" | "metric") => setUnits(v)}>
-                            <SelectTrigger className="w-[100px] h-8 text-xs bg-white dark:bg-slate-900">
+                            <SelectTrigger className="w-[80px] sm:w-[100px] h-8 text-xs bg-white dark:bg-slate-900">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -236,6 +244,19 @@ export default function TargetSuperheatCalculator({ saveCalculation }: TargetSup
                 <div className="grid grid-cols-1 lg:grid-cols-2">
                     {/* Input Section */}
                     <div className="p-6 md:p-8 space-y-8 border-r border-slate-100 dark:border-slate-800">
+                        {/* Connection Alert */}
+                        {isConnected && (
+                            <div className="bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800 rounded-lg p-3 flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+                                <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-full">
+                                    <Bluetooth className="w-4 h-4 text-emerald-600 dark:text-emerald-400 animate-pulse" />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-xs font-semibold text-emerald-800 dark:text-emerald-300">Live Data Streaming</p>
+                                    <p className="text-[10px] text-emerald-600 dark:text-emerald-400">Reading Outdoor Dry Bulb & Suction Pressure</p>
+                                </div>
+                            </div>
+                        )}
+
                         <Alert className="bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-300">
                             <Info className="h-4 w-4" />
                             <AlertTitle>Prerequisites</AlertTitle>
@@ -278,8 +299,9 @@ export default function TargetSuperheatCalculator({ saveCalculation }: TargetSup
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-3">
                                     <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-xs">
-                                        Indoor WB ({units === "imperial" ? "°F" : "°C"})
+                                        Indoor Wet Bulb
                                     </Label>
+                                    <span className="text-[10px] text-slate-400 block -mt-1">({units === "imperial" ? "°F" : "°C"})</span>
                                     <div className="relative group">
                                         <span className="absolute left-3 top-2.5 text-slate-400">💧</span>
                                         <Input
@@ -293,16 +315,18 @@ export default function TargetSuperheatCalculator({ saveCalculation }: TargetSup
                                 </div>
 
                                 <div className="space-y-3">
-                                    <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-xs">
-                                        Outdoor DB ({units === "imperial" ? "°F" : "°C"})
+                                    <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-xs flex justify-between">
+                                        Outdoor Dry Bulb
+                                        {isConnected && <span className="text-[10px] text-emerald-500 font-bold animate-pulse">LIVE</span>}
                                     </Label>
+                                    <span className="text-[10px] text-slate-400 block -mt-1">({units === "imperial" ? "°F" : "°C"})</span>
                                     <div className="relative group">
-                                        <span className="absolute left-3 top-2.5 text-slate-400">☀️</span>
+                                        <span className={`absolute left-3 top-2.5 ${isConnected ? "text-emerald-500" : "text-slate-400"}`}>☀️</span>
                                         <Input
                                             type="number"
                                             value={inputs.outdoorDryBulb}
                                             onChange={(e) => setInputs({ ...inputs, outdoorDryBulb: e.target.value })}
-                                            className="pl-9 h-11 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 group-hover:border-blue-400 transition-colors pr-20"
+                                            className={`pl-9 h-11 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 transition-colors pr-20 ${isConnected ? "border-emerald-400 ring-1 ring-emerald-400/20" : "group-hover:border-blue-400"}`}
                                             placeholder={units === "imperial" ? "55+" : "13+"}
                                         />
                                         <Button
@@ -310,8 +334,8 @@ export default function TargetSuperheatCalculator({ saveCalculation }: TargetSup
                                             variant="ghost"
                                             size="sm"
                                             onClick={handleAutoFillWeather}
-                                            disabled={weatherLoading || geoLoading}
-                                            className="absolute right-1 top-1 h-9 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                                            disabled={weatherLoading || geoLoading || isConnected} // Disable auto-weather if using probe
+                                            className="absolute right-1 top-1 h-9 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 disabled:opacity-50"
                                         >
                                             {weatherLoading || geoLoading ? (
                                                 <Loader2 className="h-3 w-3 animate-spin" />
@@ -339,7 +363,7 @@ export default function TargetSuperheatCalculator({ saveCalculation }: TargetSup
                                         <Switch
                                             checked={useGaugeReadings}
                                             onCheckedChange={setUseGaugeReadings}
-                                            disabled={!isPtSupported} // Disable if refrigerant not supported
+                                            disabled={!isPtSupported}
                                         />
                                         <span className={`text-[10px] uppercase font-bold ${useGaugeReadings ? "text-blue-600" : "text-slate-400"}`}>Gauges</span>
                                     </div>
@@ -359,14 +383,17 @@ export default function TargetSuperheatCalculator({ saveCalculation }: TargetSup
                                 ) : (
                                     <div className="grid grid-cols-2 gap-4 animate-in slide-in-from-top-2 duration-300">
                                         <div className="space-y-2">
-                                            <Label className="text-[10px] uppercase font-bold text-slate-500">Suction Press ({units === "imperial" ? "PSIG" : "kPa"})</Label>
+                                            <Label className="text-[10px] uppercase font-bold text-slate-500 flex justify-between">
+                                                <span>Suction Press ({units === "imperial" ? "PSIG" : "kPa"})</span>
+                                                {isConnected && <span className="text-[10px] text-emerald-500 font-bold animate-pulse">LIVE</span>}
+                                            </Label>
                                             <div className="relative group">
-                                                <span className="absolute left-2.5 top-2.5 text-slate-400"><Gauge className="w-4 h-4" /></span>
+                                                <span className={`absolute left-2.5 top-2.5 ${isConnected ? "text-emerald-500" : "text-slate-400"}`}><Gauge className="w-4 h-4" /></span>
                                                 <Input
                                                     type="number"
                                                     value={inputs.suctionPressure}
                                                     onChange={(e) => setInputs({ ...inputs, suctionPressure: e.target.value })}
-                                                    className="pl-8 h-10 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700"
+                                                    className={`pl-8 h-10 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 ${isConnected ? "border-emerald-400 ring-1 ring-emerald-400/20" : ""}`}
                                                 />
                                             </div>
                                         </div>

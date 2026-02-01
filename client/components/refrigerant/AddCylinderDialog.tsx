@@ -71,16 +71,32 @@ export function AddCylinderDialog({ onCylinderAdded }: AddCylinderDialogProps) {
         try {
             const weight = parseFloat(formData.initial_weight_lbs);
 
-            const { error } = await supabase.from("refrigerant_cylinders").insert({
-                user_id: user.id,
-                cylinder_code: formData.cylinder_code,
-                refrigerant_type: formData.refrigerant_type,
-                initial_weight_lbs: weight,
-                current_weight_lbs: weight, // Starts full (or at current weight if logging a partial)
-                status: "active",
-            });
+            const { data: cylinderData, error: cylinderError } = await supabase
+                .from("refrigerant_cylinders")
+                .insert({
+                    user_id: user.id,
+                    cylinder_code: formData.cylinder_code,
+                    refrigerant_type: formData.refrigerant_type,
+                    initial_weight_lbs: weight,
+                    current_weight_lbs: weight, // Starts full
+                    status: "active",
+                })
+                .select()
+                .single();
 
-            if (error) throw error;
+            if (cylinderError) throw cylinderError;
+
+            // Log the initial addition for compliance auditing
+            if (cylinderData) {
+                await supabase.from("refrigerant_logs").insert({
+                    user_id: user.id,
+                    cylinder_id: cylinderData.id,
+                    transaction_type: "addition",
+                    amount_lbs: weight,
+                    technician_name: user?.email?.split('@')[0] || "System",
+                    notes: "Initial inventory addition"
+                });
+            }
 
             toast({
                 title: "Success",

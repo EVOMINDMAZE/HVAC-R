@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
+import { Capacitor } from '@capacitor/core';
 
 interface Toast {
   id: string;
@@ -23,9 +24,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     // Generate a more unique ID by combining timestamp with random number
     const id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const newToast = { ...toast, id };
-    
+
     setToasts(prev => [...prev, newToast]);
-    
+
     // Auto-remove toast after duration (default 5 seconds)
     const duration = toast.duration || 5000;
     setTimeout(() => {
@@ -79,7 +80,7 @@ function ToastContainer() {
   };
 
   return (
-    <div className="fixed top-4 right-4 z-[11000] space-y-2">
+    <div className={`fixed right-4 z-[11000] space-y-2 ${Capacitor.isNativePlatform() ? 'top-14 pt-safe' : 'top-4'}`}>
       {toasts.map((toast) => (
         <div
           key={toast.id}

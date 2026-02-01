@@ -2,23 +2,11 @@
 import { RequestHandler } from "express";
 import { calculateSimpleCycle } from "../utils/thermo.js";
 
-interface AirflowRequest {
-    sensible_heat_btuh: number;
-    delta_t_f: number;
-}
-
-interface DeltaTRequest {
-    return_temp_f: number;
-    supply_temp_f: number;
-}
-
-interface StandardCycleRequest {
-    refrigerant: string;
-    evap_temp_c: number;
-    cond_temp_c: number;
-    superheat_c: number;
-    subcooling_c: number;
-}
+import {
+    AirflowRequest,
+    DeltaTRequest,
+    StandardCycleRequest
+} from "@shared/types/dtos";
 
 export const calculateAirflow: RequestHandler = (req, res) => {
     try {

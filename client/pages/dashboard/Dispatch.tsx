@@ -26,19 +26,26 @@ export default function Dispatch() {
     const [showMapView, setShowMapView] = useState(false);
 
     async function fetchJobs() {
-        const { data, error } = await supabase
-            .from('jobs')
-            .select(`
-        *,
-        client:clients(name, contact_phone),
-        asset:assets(name)
-      `)
-            .order('scheduled_at', { ascending: true }); // Show upcoming first
+        try {
+            const { data, error } = await supabase
+                .from('jobs')
+                .select(`
+          *,
+          client:clients(name, contact_phone),
+          asset:assets(name)
+        `)
+                .order('scheduled_at', { ascending: true }); // Show upcoming first
 
-        if (!error && data) {
-            setJobs(data);
+            if (error) throw error;
+            if (data) {
+                setJobs(data);
+            }
+        } catch (err) {
+            console.error('[Dispatch] Error fetching jobs:', err);
+            setJobs([]);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     }
 
     useEffect(() => {
@@ -173,6 +180,7 @@ export default function Dispatch() {
                                                 </div>
                                                 <div>
                                                     <div className="font-semibold text-slate-900 dark:text-white line-clamp-1">{job.client?.name}</div>
+                                                    <div className="text-sm font-medium text-slate-800 dark:text-slate-200 line-clamp-1">{job.title}</div>
                                                     <div className="text-xs text-slate-500 line-clamp-1">{job.asset?.name || 'General Service'}</div>
                                                 </div>
                                             </div>
@@ -235,6 +243,7 @@ export default function Dispatch() {
                                                 </div>
                                                 <div>
                                                     <div className="font-semibold text-slate-900 dark:text-white">{job.client?.name}</div>
+                                                    <div className="text-sm font-medium text-slate-800 dark:text-slate-200">{job.title}</div>
                                                     <div className="text-xs text-slate-500">{job.asset?.name || 'General Service'}</div>
                                                 </div>
                                             </div>

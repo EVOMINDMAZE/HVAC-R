@@ -155,6 +155,7 @@ export default function A2LCalculator({ saveCalculation }: A2LCalculatorProps) {
                                         <span className="absolute left-3 top-2.5 text-slate-400">📐</span>
                                         <Input
                                             type="number"
+                                            id="room-area"
                                             value={inputs.area}
                                             onChange={(e) =>
                                                 setInputs({ ...inputs, area: e.target.value })
@@ -178,21 +179,18 @@ export default function A2LCalculator({ saveCalculation }: A2LCalculatorProps) {
                             </div>
 
                             <div className="space-y-3">
-                                <Label className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-xs">Installation Height</Label>
-                                <Select
-                                    value={inputs.height}
-                                    onValueChange={(v) => setInputs({ ...inputs, height: v })}
-                                >
-                                    <SelectTrigger className="h-11 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:border-orange-400 transition-colors">
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="0.6">Floor (0.6m)</SelectItem>
-                                        <SelectItem value="1.0">Window (1.0m)</SelectItem>
-                                        <SelectItem value="1.8">Wall (1.8m)</SelectItem>
-                                        <SelectItem value="2.2">Ceiling (2.2m)</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                <Label htmlFor="install-height" className="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-xs">Install Height</Label>
+                                <div className="relative group">
+                                    <span className="absolute left-3 top-2.5 text-slate-400">📏</span>
+                                    <Input
+                                        id="install-height"
+                                        type="number"
+                                        step="0.1"
+                                        value={inputs.height}
+                                        onChange={(e) => setInputs({ ...inputs, height: e.target.value })}
+                                        className="pl-9 h-11 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 group-hover:border-orange-400 transition-colors"
+                                    />
+                                </div>
                             </div>
                         </div>
 

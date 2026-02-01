@@ -2,7 +2,7 @@ import { NavLink, Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 import { ChevronDown, Briefcase, Zap, FileText, Cpu, LayoutGrid, Wrench, History, Newspaper, PlayCircle, Headphones, BookOpen, ExternalLink, Info, Hammer, Users, Radio, Archive, Scan } from 'lucide-react';
-import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
+import { useAuth } from '@/hooks/useSupabaseAuth';
 import { useAppNavigation } from '@/hooks/useAppNavigation';
 import {
   DropdownMenu,
@@ -31,7 +31,7 @@ const CALCULATOR_DETAILS: Record<string, { desc: string }> = {
 
 export function Sidebar() {
   const location = useLocation();
-  const { isAuthenticated } = useSupabaseAuth();
+  const { isAuthenticated } = useAuth();
   const [hoveredPath, setHoveredPath] = useState<string | null>(null);
 
   // Use our new centralized navigation hook
@@ -47,6 +47,7 @@ export function Sidebar() {
   const LANDING_ITEMS = [
     { to: '/features', label: 'Features' },
     { to: '/pricing', label: 'Pricing' },
+    { to: 'https://www.skool.com/hvac-r-business-owner-1296', label: 'Community', external: true },
     { to: '/api-docs', label: 'API Docs' },
     { to: '/about', label: 'About' },
   ];
@@ -57,11 +58,19 @@ export function Sidebar() {
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2">
           <div className="flex items-center gap-1">
             {LANDING_ITEMS.map((item) => (
-              <Link key={item.to} to={item.to}>
-                <div className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white px-4 py-2 font-medium text-sm transition-colors cursor-pointer">
-                  {item.label}
-                </div>
-              </Link>
+              item.external ? (
+                <a key={item.to} href={item.to} target="_blank" rel="noopener noreferrer" className="block">
+                  <div className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white px-4 py-2 font-medium text-sm transition-colors cursor-pointer">
+                    {item.label}
+                  </div>
+                </a>
+              ) : (
+                <Link key={item.to} to={item.to}>
+                  <div className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white px-4 py-2 font-medium text-sm transition-colors cursor-pointer">
+                    {item.label}
+                  </div>
+                </Link>
+              )
             ))}
           </div>
         </div>
@@ -183,6 +192,7 @@ export function Sidebar() {
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-48 p-1 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800">
+                {(() => { console.log('Rendering Office Items:', office.items.map(i => i.label)); return null; })()}
                 {office.items.map(item => (
                   <DropdownMenuItem key={item.to} asChild>
                     <Link to={item.to} className="flex items-center gap-2 p-2 rounded-md cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 justify-between">
@@ -220,13 +230,23 @@ export function Sidebar() {
                     const Icon = res.icon;
                     return (
                       <DropdownMenuItem key={res.to} asChild className="cursor-pointer focus:bg-slate-50 dark:focus:bg-slate-800/50">
-                        <Link to={res.to} className="flex items-center gap-3 p-2">
-                          <Icon className="h-4 w-4 text-slate-400" />
-                          <div className="flex flex-col">
-                            <span className="text-sm font-medium">{res.label}</span>
-                            <span className="text-xs text-slate-500">{res.desc}</span>
-                          </div>
-                        </Link>
+                        {res.to.startsWith('http') ? (
+                          <a href={res.to} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-2">
+                            <Icon className="h-4 w-4 text-slate-400" />
+                            <div className="flex flex-col">
+                              <span className="text-sm font-medium">{res.label}</span>
+                              <span className="text-xs text-slate-500">{res.desc}</span>
+                            </div>
+                          </a>
+                        ) : (
+                          <Link to={res.to} className="flex items-center gap-3 p-2">
+                            <Icon className="h-4 w-4 text-slate-400" />
+                            <div className="flex flex-col">
+                              <span className="text-sm font-medium">{res.label}</span>
+                              <span className="text-xs text-slate-500">{res.desc}</span>
+                            </div>
+                          </Link>
+                        )}
                       </DropdownMenuItem>
                     )
                   })}

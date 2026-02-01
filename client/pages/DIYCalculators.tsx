@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,9 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { apiClient } from "@/lib/api";
 
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
-import A2LCalculator from "@/components/calculators/A2LCalculator";
-import SubcoolingCalculator from "@/components/calculators/SubcoolingCalculator";
-import PsychrometricCalculator from "@/components/calculators/PsychrometricCalculator";
+// Lazy-load heavy calculator components
+const A2LCalculator = lazy(() => import("@/components/calculators/A2LCalculator"));
+const SubcoolingCalculator = lazy(() => import("@/components/calculators/SubcoolingCalculator"));
+const PsychrometricCalculator = lazy(() => import("@/components/calculators/PsychrometricCalculator"));
 import { SaveCalculation } from "@/components/SaveCalculation";
 import { Badge } from "@/components/ui/badge";
 
@@ -90,15 +91,21 @@ export default function DIYCalculators() {
           </TabsContent>
 
           <TabsContent value="a2l" className="animate-in fade-in slide-in-from-bottom-4 duration-500 focus-visible:outline-none">
-            <A2LCalculator saveCalculation={saveCalculation} />
+            <Suspense fallback={<div className="flex items-center justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
+              <A2LCalculator saveCalculation={saveCalculation} />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="subcooling" className="animate-in fade-in slide-in-from-bottom-4 duration-500 focus-visible:outline-none">
-            <SubcoolingCalculator saveCalculation={saveCalculation} />
+            <Suspense fallback={<div className="flex items-center justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
+              <SubcoolingCalculator saveCalculation={saveCalculation} />
+            </Suspense>
           </TabsContent>
 
           <TabsContent value="psychrometric" className="animate-in fade-in slide-in-from-bottom-4 duration-500 focus-visible:outline-none">
-            <PsychrometricCalculator saveCalculation={saveCalculation} userTier="pro" />
+            <Suspense fallback={<div className="flex items-center justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
+              <PsychrometricCalculator saveCalculation={saveCalculation} userTier="pro" />
+            </Suspense>
           </TabsContent>
 
         </Tabs>

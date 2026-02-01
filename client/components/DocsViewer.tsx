@@ -189,7 +189,6 @@ export function DocsViewer({
           "Understanding Results": "understanding-results.md",
           "Basic Cycle Theory": "standard-cycle.md",
           "Input Parameters": "standard-cycle.md",
-          "Refrigerant Properties": "standard-cycle.md",
           "Performance Metrics": "standard-cycle.md",
           "Comparison Methodology": "refrigerant-comparison.md",
           "Environmental Impact": "refrigerant-comparison.md",
@@ -211,6 +210,21 @@ export function DocsViewer({
           Architecture: "architecture.md",
           "Release Notes": "release-notes.md",
           License: "license.md",
+
+          // New article mappings (Getting Started category)
+          "Welcome to ThermoNeural": "welcome.md",
+          "Creating Your First Calculation": "first-calculation.md",
+          "Understanding Your Dashboard": "dashboard-guide.md",
+
+          // New article mappings (Field Tools category)
+          "Superheat & Subcooling Calculator": "superheat-subcooling.md",
+          "A2L Leak Detection Guide": "a2l-guide.md",
+          "Psychrometric Calculations": "psychrometric.md",
+
+          // New article mappings (HVAC Reference category)
+          "Refrigerant Properties": "refrigerant-properties.md",
+          "PT Chart Reference": "pt-chart.md",
+          "System Troubleshooting": "troubleshooting.md",
         };
 
         const baseSlug = slugify(title || "");

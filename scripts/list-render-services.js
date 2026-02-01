@@ -1,6 +1,11 @@
 import https from 'https';
 
-const API_KEY = 'rnd_lsuXTYLEQm7HRMPweNkp1CWH3ADr';
+const API_KEY = process.env.RENDER_API_KEY;
+
+if (!API_KEY) {
+    console.error('Error: RENDER_API_KEY environment variable is not set.');
+    process.exit(1);
+}
 
 const options = {
     hostname: 'api.render.com',

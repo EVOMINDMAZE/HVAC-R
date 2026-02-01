@@ -354,22 +354,89 @@ async function handleWebhook(req: Request) {
     switch (event.type) {
       case "checkout.session.completed":
         console.log("Checkout session completed:", event.data.object.id);
+        const session = event.data.object;
+        const userId = session.metadata?.userId;
+
+        if (userId) {
+          const supabaseAdmin = createClient(
+            Deno.env.get("SUPABASE_URL") ?? "",
+            Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+          );
+
+          const { error } = await supabaseAdmin
+            .from("companies")
+            .update({ subscription_status: "active" })
+            .eq("user_id", userId);
+
+          if (error) {
+            console.error("Error updating subscription status:", error);
+          } else {
+            console.log(`Updated subscription status for user ${userId}`);
+          }
+        }
         break;
 
       case "customer.subscription.updated":
         console.log("Subscription updated:", event.data.object.id);
+        const subscription = event.data.object;
+        const status = subscription.status; // active, past_due, canceled, etc.
+
+        // We need to find the user associated with this subscription
+        // For now, looking up by customer email if we don't have userId in metadata
+        // A better approach would be storing stripe_customer_id in companies table, but for now we rely on email or metadata
+        // Assuming metadata might be lost or not present on renewal events depending on setup
+
+        // Attempt to find user by customer ID via Stripe API or rely on email from customer object?
+        // Let's try to get the customer email first provided we have the customer ID
+
+        // Simplification: If we can't easily link back to user without extra tables, we'll log for now.
+        // But wait, we MUST link it.
+        // Let's check session metadata again. Subscription events often inherit metadata from the subscription object.
+        // If checkout session created the subscription, the subscription might have the metadata.
+
+        const subUserId = subscription.metadata?.userId;
+        if (subUserId) {
+          const supabaseAdmin = createClient(
+            Deno.env.get("SUPABASE_URL") ?? "",
+            Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+          );
+
+          await supabaseAdmin
+            .from("companies")
+            .update({ subscription_status: status })
+            .eq("user_id", subUserId);
+        } else {
+          // Fallback: This would require querying Stripe for customer email -> identifying user
+          console.log("No userId in subscription metadata, skipping DB update");
+        }
         break;
 
       case "customer.subscription.deleted":
         console.log("Subscription deleted:", event.data.object.id);
+        const deletedSub = event.data.object;
+        const delUserId = deletedSub.metadata?.userId;
+
+        if (delUserId) {
+          const supabaseAdmin = createClient(
+            Deno.env.get("SUPABASE_URL") ?? "",
+            Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+          );
+
+          await supabaseAdmin
+            .from("companies")
+            .update({ subscription_status: "canceled" })
+            .eq("user_id", delUserId);
+        }
         break;
 
       case "invoice.payment_succeeded":
         console.log("Payment succeeded for invoice:", event.data.object.id);
+        // Usually handles renewal success
         break;
 
       case "invoice.payment_failed":
         console.log("Payment failed for invoice:", event.data.object.id);
+        // Could update status to past_due
         break;
 
       default:

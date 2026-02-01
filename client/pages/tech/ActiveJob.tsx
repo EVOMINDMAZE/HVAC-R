@@ -36,7 +36,19 @@ export default function ActiveJob() {
     }
 
     useEffect(() => {
-        if (id) fetchJob();
+        if (id) {
+            fetchJob();
+
+            // Safety Timeout
+            const timer = setTimeout(() => {
+                if (loading) {
+                    console.warn('[ActiveJob] Safety timeout reached.');
+                    setLoading(false);
+                }
+            }, 5000);
+
+            return () => clearTimeout(timer);
+        }
     }, [id]);
 
     useEffect(() => {
@@ -161,30 +173,30 @@ export default function ActiveJob() {
 
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-background">
             {/* Navbar */}
-            <div className="bg-white border-b px-4 py-3 flex items-center gap-3 sticky top-0 z-20">
-                <button onClick={() => navigate(-1)} className="p-2 bg-gray-100 rounded-full">
+            <div className="bg-card border-b border-border px-4 py-3 flex items-center gap-3 sticky top-0 z-20">
+                <button onClick={() => navigate(-1)} className="p-2 bg-muted rounded-full">
                     <ArrowLeft className="w-5 h-5" />
                 </button>
                 <div>
-                    <h2 className="font-bold text-lg">{job.ticket_number}</h2>
-                    <span className="text-xs text-gray-500 uppercase">{displayStatus.replace('_', ' ')}</span>
+                    <h2 className="font-bold text-lg text-foreground">{job.ticket_number}</h2>
+                    <span className="text-xs text-muted-foreground uppercase">{displayStatus.replace('_', ' ')}</span>
                 </div>
             </div>
 
             <div className="p-5 pb-32 space-y-6">
                 {/* Client Info */}
                 <section>
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Client</h3>
-                    <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                        <div className="text-xl font-bold text-gray-900 mb-1">{clientName}</div>
-                        <div className="flex items-start gap-2 text-gray-600 mb-3">
-                            <MapPin className="w-5 h-5 text-gray-400 mt-0.5" />
+                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Client</h3>
+                    <div className="bg-muted/50 p-4 rounded-xl border border-border">
+                        <div className="text-xl font-bold text-foreground mb-1">{clientName}</div>
+                        <div className="flex items-start gap-2 text-muted-foreground mb-3">
+                            <MapPin className="w-5 h-5 text-muted-foreground/70 mt-0.5" />
                             <span>{clientAddress}</span>
                         </div>
                         {job.client?.contact_phone && (
-                            <a href={`tel:${job.client.contact_phone}`} className="flex items-center gap-2 text-blue-600 font-medium bg-blue-50 px-3 py-2 rounded-lg w-fit">
+                            <a href={`tel:${job.client.contact_phone}`} className="flex items-center gap-2 text-primary font-medium bg-primary/10 px-3 py-2 rounded-lg w-fit">
                                 <Phone className="w-4 h-4" />
                                 Call Client
                             </a>
@@ -195,26 +207,26 @@ export default function ActiveJob() {
                 {/* Asset Info */}
                 {job.asset && (
                     <section>
-                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Equipment</h3>
-                        <div className="bg-orange-50 p-4 rounded-xl border border-orange-100 border-l-4 border-l-orange-400">
-                            <div className="font-bold text-orange-900">{job.asset.name}</div>
-                            <div className="text-sm text-orange-700">{job.asset.type} • {job.asset.serial_number}</div>
-                            <div className="text-sm mt-2 text-orange-800 italic">"{job.description || 'No description provided'}"</div>
+                        <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Equipment</h3>
+                        <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-xl border border-orange-100 dark:border-orange-800/50 border-l-4 border-l-orange-400">
+                            <div className="font-bold text-orange-900 dark:text-orange-300">{job.asset.name}</div>
+                            <div className="text-sm text-orange-700 dark:text-orange-400">{job.asset.type} • {job.asset.serial_number}</div>
+                            <div className="text-sm mt-2 text-orange-800 dark:text-orange-300/80 italic">"{job.description || 'No description provided'}"</div>
                         </div>
                     </section>
                 )}
 
                 {/* Timeline (Mini) */}
                 <section>
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Action Required</h3>
-                    {displayStatus === 'pending' && <p>Accept this job to start navigation.</p>}
-                    {displayStatus === 'assigned' && <p>Ready to head out?</p>}
-                    {displayStatus === 'en_route' && <p className="animate-pulse text-blue-600 font-bold">Sharing location with client...</p>}
+                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Action Required</h3>
+                    {displayStatus === 'pending' && <p className="text-muted-foreground">Accept this job to start navigation.</p>}
+                    {displayStatus === 'assigned' && <p className="text-muted-foreground">Ready to head out?</p>}
+                    {displayStatus === 'en_route' && <p className="animate-pulse text-blue-600 dark:text-blue-400 font-bold">Sharing location with client...</p>}
                 </section>
             </div>
 
             {/* Floating Action Bar */}
-            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t safe-area-bottom shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+            <div className="fixed bottom-0 left-0 right-0 p-4 bg-card border-t border-border safe-area-bottom shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
                 {displayStatus === 'pending' && (
                     <button
                         onClick={() => updateStatus('assigned')}

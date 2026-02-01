@@ -23,6 +23,29 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { mainLinks, toolbox, office, resources } = useAppNavigation();
 
+  const [isAvatarOpen, setIsAvatarOpen] = useState(false);
+  const avatarRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (variant !== "dashboard") return;
+
+    function handleDocClick(e: MouseEvent) {
+      if (!avatarRef.current) return;
+      if (e.target instanceof Node && !avatarRef.current.contains(e.target)) {
+        setIsAvatarOpen(false);
+      }
+    }
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setIsAvatarOpen(false);
+    }
+    document.addEventListener("click", handleDocClick);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("click", handleDocClick);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [variant]);
+
   // Show back button on any page that is not Landing or Dashboard
   const showBackButton = location.pathname !== "/" && location.pathname !== "/dashboard";
   const isNative = Capacitor.isNativePlatform();
@@ -52,26 +75,6 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
       (user as any)?.user_metadata?.avatar_url ||
       (user as any)?.user_metadata?.avatar ||
       null;
-    const [isAvatarOpen, setIsAvatarOpen] = useState(false);
-    const avatarRef = useRef<HTMLDivElement | null>(null);
-
-    useEffect(() => {
-      function handleDocClick(e: MouseEvent) {
-        if (!avatarRef.current) return;
-        if (e.target instanceof Node && !avatarRef.current.contains(e.target)) {
-          setIsAvatarOpen(false);
-        }
-      }
-      function handleKey(e: KeyboardEvent) {
-        if (e.key === "Escape") setIsAvatarOpen(false);
-      }
-      document.addEventListener("click", handleDocClick);
-      document.addEventListener("keydown", handleKey);
-      return () => {
-        document.removeEventListener("click", handleDocClick);
-        document.removeEventListener("keydown", handleKey);
-      };
-    }, []);
 
     return (
       <div
@@ -81,9 +84,9 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4 min-w-0">
-              {showBackButton && (
+          <div className={`${isNative ? 'flex flex-col gap-4' : 'flex items-center justify-between gap-4'}`}>
+            <div className={`${isNative ? 'w-full flex justify-center border-b border-border/10 pb-4' : 'flex items-center gap-4 min-w-0'}`}>
+              {!isNative && showBackButton && (
                 <Button
                   variant="ghost"
                   size="icon"
@@ -95,15 +98,15 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 </Button>
               )}
 
-              <Link to="/dashboard" className="flex items-center gap-3 hover:opacity-90 transition-opacity py-1">
+              <Link to="/dashboard" className="flex items-center gap-3 hover:opacity-90 transition-opacity py-1 shrink-0">
                 <img
                   src="/logo-landscape.png"
                   alt="ThermoNeural"
-                  className="h-14 md:h-16 w-auto object-contain mix-blend-multiply dark:mix-blend-screen dark:invert scale-125 origin-left"
+                  className={`${isNative ? 'h-12 w-auto' : 'h-10 md:h-12 w-auto'} object-contain mix-blend-multiply dark:mix-blend-screen dark:invert`}
                 />
               </Link>
 
-              <div className="ml-2 md:ml-4">
+              <div className="hidden md:block ml-4">
                 <JobSelector />
               </div>
 
@@ -121,13 +124,47 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className={`${isNative ? 'w-full flex items-center justify-between px-2' : 'flex items-center gap-3'}`}>
+
+              {/* Native Mobile: Back Button on the left of the bottom row */}
+              {isNative && (
+                <div className="flex-1">
+                  {showBackButton ? (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => navigate(-1)}
+                      className="flex items-center gap-1 -ml-2 text-muted-foreground hover:text-primary"
+                    >
+                      <ArrowLeft className="h-5 w-5" />
+                      Back
+                    </Button>
+                  ) : <div />}
+                </div>
+              )}
+
               <nav className="hidden">
                 {/* Header horizontal nav intentionally hidden for dashboard to avoid duplication with Sidebar */}
               </nav>
 
-              <div className="mr-2">
-                <ModeToggle />
+              <div className={`${isNative ? 'flex items-center gap-4' : 'flex items-center mr-2'}`}>
+                <div className={isNative ? '' : 'hidden md:block mr-2'}>
+                  <ModeToggle />
+                </div>
+
+                {/* Menu Button - Always visible on mobile */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="md:hidden"
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                >
+                  {isMobileMenuOpen ? (
+                    <X className="h-6 w-6" />
+                  ) : (
+                    <Menu className="h-6 w-6" />
+                  )}
+                </Button>
               </div>
 
               <div className="flex items-center gap-3">
@@ -144,7 +181,8 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                       {user?.user_metadata?.full_name ?? ""}
                     </span>
                   </div>
-                  <div className="relative" ref={avatarRef}>
+                  <div className="hidden md:block relative" ref={avatarRef}>
+                    {/* ... Avatar Code ... */}
                     <button
                       type="button"
                       aria-haspopup="menu"
@@ -165,12 +203,15 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                         </span>
                       )}
                     </button>
-
+                    {/* ... Dropdown (omitted in replacement for brevity, sticking to existing structure) ... */}
                     {isAvatarOpen && (
                       <div
                         role="menu"
                         className="absolute right-0 mt-2 w-40 bg-card border border-border rounded-md shadow-lg z-[9999] transition-colors"
                       >
+                        {/* We need to include the inner content to replace it correctly or just not match the inner content.
+                             The TargetContent includes `isAvatarOpen && (...)`. I should include it.
+                          */}
                         <nav className="flex flex-col p-2">
                           <Link
                             to="/profile"
@@ -206,18 +247,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                   </div>
                 </div>
 
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="md:hidden"
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                >
-                  {isMobileMenuOpen ? (
-                    <X className="h-5 w-5" />
-                  ) : (
-                    <Menu className="h-5 w-5" />
-                  )}
-                </Button>
+                {/* Remove old duplicate Button */}
               </div>
             </div>
           </div>
@@ -227,6 +257,13 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
           {isMobileMenuOpen && (
             <div className="md:hidden mt-4 pt-4 border-t border-gray-100 dark:border-slate-800 animate-in slide-in-from-top-2">
               <nav className="flex flex-col space-y-1">
+                {/* 0. Mobile Only Controls */}
+                <div className="flex items-center justify-between gap-4 mb-4 pb-4 border-b border-gray-100 dark:border-slate-800">
+                  <div className="w-full">
+                    <JobSelector />
+                  </div>
+                </div>
+
                 {/* 1. Main Links */}
                 {mainLinks.map((item) => (
                   <Link
@@ -322,11 +359,11 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
       style={{
         // FORCE padding to clear Dynamic Island (approx 54px + buffer)
         // We use a hard 60px because env() can be unreliable in some webviews
-        paddingTop: isNative ? "60px" : undefined,
+        paddingTop: isNative ? "50px" : undefined,
         height: isNative ? "auto" : undefined
       }}
     >
-      <div className="max-w-7xl mx-auto px-4 pb-4">
+      <div className="max-w-7xl mx-auto px-4 pb-2">
         {/* Top Row: Logo, Dark Mode, Menu */}
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">

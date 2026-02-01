@@ -12,7 +12,10 @@ import {
   Users,
   ChevronRight,
   Download,
-  FileText
+  FileText,
+  Rocket,
+  Calculator,
+  Thermometer
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -26,7 +29,77 @@ const documentation: {
     description: string;
     readTime: string;
   }[];
-}[] = [];
+}[] = [
+    {
+      category: "Getting Started",
+      icon: Rocket,
+      colorClass: "text-blue-600 dark:text-blue-400",
+      gradientClass: "from-blue-500/10 to-transparent",
+      articles: [
+        {
+          title: "Welcome to ThermoNeural",
+          description: "Get started with our HVAC-R calculation platform. Learn basic navigation and key features.",
+          readTime: "3 min read"
+        },
+        {
+          title: "Creating Your First Calculation",
+          description: "Step-by-step guide to performing your first HVAC calculation using our Field Tools.",
+          readTime: "5 min read"
+        },
+        {
+          title: "Understanding Your Dashboard",
+          description: "Navigate the dashboard, view history, and manage your saved calculations.",
+          readTime: "4 min read"
+        }
+      ]
+    },
+    {
+      category: "Field Tools",
+      icon: Calculator,
+      colorClass: "text-green-600 dark:text-green-400",
+      gradientClass: "from-green-500/10 to-transparent",
+      articles: [
+        {
+          title: "Superheat & Subcooling Calculator",
+          description: "Learn how to use the superheat and subcooling calculators for accurate refrigerant charging.",
+          readTime: "6 min read"
+        },
+        {
+          title: "A2L Leak Detection Guide",
+          description: "Best practices for using the A2L refrigerant leak detection and safety calculator.",
+          readTime: "5 min read"
+        },
+        {
+          title: "Psychrometric Calculations",
+          description: "Understanding wet bulb, dry bulb, and humidity calculations for HVAC systems.",
+          readTime: "7 min read"
+        }
+      ]
+    },
+    {
+      category: "HVAC Reference",
+      icon: Thermometer,
+      colorClass: "text-orange-600 dark:text-orange-400",
+      gradientClass: "from-orange-500/10 to-transparent",
+      articles: [
+        {
+          title: "Refrigerant Properties",
+          description: "Quick reference for common refrigerants including R-410A, R-32, R-454B, and more.",
+          readTime: "4 min read"
+        },
+        {
+          title: "PT Chart Reference",
+          description: "How to use pressure-temperature charts for system diagnostics.",
+          readTime: "5 min read"
+        },
+        {
+          title: "System Troubleshooting",
+          description: "Common HVAC issues and how our AI-powered diagnostics can help identify them.",
+          readTime: "8 min read"
+        }
+      ]
+    }
+  ];
 
 const containerVariants = {
   hidden: { opacity: 0 },

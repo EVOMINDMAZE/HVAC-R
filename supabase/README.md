@@ -66,14 +66,15 @@ https://YOUR_SUPABASE_PROJECT_REF.supabase.co/functions/v1/billing/webhook
 
 ## Testing
 
-You can test the function locally:
+To test the functions, you can invoke them against your deployed Supabase project:
 
 ```bash
-supabase functions serve
+# Example: Invoke via curl against the remote project
+curl -i --location --request POST 'https://rxqflxmzsqhqrzffcsej.supabase.co/functions/v1/billing/test' \
+  --header 'Authorization: Bearer YOUR_ANON_KEY' \
+  --header 'Content-Type: application/json' \
+  --data '{"name":"Functions"}'
 ```
 
-Then test with:
+Ensure your client application is running and pointed to the same Cloud project.
 
-```bash
-curl -X GET http://localhost:54321/functions/v1/billing/test
-```

@@ -246,7 +246,8 @@ export default function SubcoolingCalculator({ saveCalculation }: SubcoolingCalc
                                 {useGaugeReadings ? (
                                     <div className="grid grid-cols-2 gap-4 animate-in slide-in-from-top-2 duration-300">
                                         <div className="space-y-2">
-                                            <Label className="text-[10px] uppercase font-bold text-slate-500">Liquid Press ({units === "imperial" ? "PSIG" : "kPa"})</Label>
+                                            <Label className="text-[10px] uppercase font-bold text-slate-500">Liquid Line Pressure</Label>
+                                            <span className="text-[10px] text-slate-400 block -mt-1 mb-1">({units === "imperial" ? "PSIG" : "kPa"})</span>
                                             <div className="relative group">
                                                 <span className="absolute left-2.5 top-2.5 text-slate-400"><Gauge className="w-4 h-4" /></span>
                                                 <Input
@@ -258,7 +259,7 @@ export default function SubcoolingCalculator({ saveCalculation }: SubcoolingCalc
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <Label className="text-[10px] uppercase font-bold text-slate-500">Liquid Line Temp</Label>
+                                            <Label className="text-[10px] uppercase font-bold text-slate-500">Liquid Line Temperature</Label>
                                             <div className="relative group">
                                                 <span className="absolute left-2.5 top-2.5 text-slate-400"><Thermometer className="w-4 h-4" /></span>
                                                 <Input
