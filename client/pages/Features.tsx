@@ -27,6 +27,7 @@ import {
   Cpu,
 } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { SEO } from "@/components/SEO";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -162,6 +163,10 @@ export function Features() {
       <Header variant="landing" />
 
       <main className="flex-grow pt-24">
+        <SEO
+          title="Features"
+          description="Explore ThermoNeural's powerful thermodynamic tools: Standard Cycle Analysis, Refrigerant Comparison, Cascade Systems, and verified NIST reporting."
+        />
         {/* Hero Section */}
         <section className="relative px-4 pb-20 pt-10 overflow-hidden">
           {/* Background Elements */}
@@ -169,7 +174,7 @@ export function Features() {
           <div className="absolute top-[20%] right-[-10%] w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none" />
           <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none" />
 
-          <div className="max-w-7xl mx-auto text-center">
+          <div className="max-w-[1600px] mx-auto text-center">
             <motion.div
               initial="initial"
               animate="animate"
@@ -214,7 +219,7 @@ export function Features() {
 
         {/* Core Calculation Engines */}
         <section className="py-24 px-4 bg-slate-50/50 dark:bg-slate-950/50 border-y border-slate-200 dark:border-slate-800">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-[1600px] mx-auto">
             <div className="grid lg:grid-cols-3 gap-8">
               {coreFeatures.map((feature, index) => (
                 <motion.div
@@ -251,7 +256,7 @@ export function Features() {
 
         {/* Professional Tools Grid */}
         <section className="py-24 px-4">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-[1600px] mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-5xl font-bold mb-6">Built for Professionals</h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -287,7 +292,7 @@ export function Features() {
           <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-500/20 blur-[150px] rounded-full pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-purple-500/20 blur-[150px] rounded-full pointer-events-none" />
 
-          <div className="max-w-7xl mx-auto relative z-10">
+          <div className="max-w-[1600px] mx-auto relative z-10">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div>
                 <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">Technical Specifications</h2>

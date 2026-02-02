@@ -1,7 +1,7 @@
 # Render Calculation Service 🧮
 
 ## Overview
-While the **Core App** lives on Supabase/Netlify and **Automations** live on Vultr, the **Heavy Math** (Complex Psychometrics, Load Calculations, Energy Modeling) is offloaded to a specialized service hosted on **Render**.
+While the **Core App** lives on Supabase/Netlify and **Automations** live on Supabase Edge Functions, the **Heavy Math** (Complex Psychometrics, Load Calculations, Energy Modeling) is offloaded to a specialized service hosted on **Render**.
 
 ## Why Render?
 - **Python/Go Support**: Supabase Edge Functions (Deno) are great for logic, but Python (SciPy, NumPy) is king for Engineering Math.

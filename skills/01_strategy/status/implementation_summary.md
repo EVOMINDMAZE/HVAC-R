@@ -58,52 +58,50 @@
 - **Plan upgrade/downgrade** functionality
 - **Cancellation handling** with period-end billing
 
-### 6. Preferences Backend Sync
-- **Notification preferences** with real-time saving
-- **Default units** for temperature and pressure
-- **Persistent storage** in Supabase user metadata
-- **Reset to defaults** functionality
-- **Auto-load** preferences on login
+### 6. Per-Client Notification Preferences (Native)
+- **Granular control** for SMS/Email notifications on a per-client basis
+- **Admin manual triggers** with "Bypass Preferences" capability
+- **`force_send` logic** to ensure critical alerts are delivered
+- **Client portal integration** for self-service opt-outs
+
+### 7. Native Automation Infrastructure
+- **Serverless Edge Functions** (`webhook-dispatcher`, `review-hunter`)
+- **Direct database access** for white-labeling and preference checks
+- **Resend & Telnyx** integration for multi-channel delivery
+
+---
 
 ## 🔧 Technical Implementation Details
 
 ### Database Schema Updates
-- Added Stripe customer/subscription fields to users table
-- Added billing events table for webhook processing
-- Added preferences field for user settings storage
+- Added `notification_preferences` JSONB column to `clients` table
+- Added `companies` table for unified white-labeling data
+- Added RLS policies for admin-only client preference modifications
 
-### API Endpoints Created
-- `/api/billing/create-checkout-session` - Stripe checkout
-- `/api/billing/create-portal-session` - Customer portal
-- `/api/billing/subscription` - Get subscription details
-- `/api/billing/webhook` - Stripe webhook handler
+### API Endpoints (Supabase Edge Functions)
+- `/functions/v1/webhook-dispatcher` - Internal event routing
+- `/functions/v1/review-hunter` - Automated review collection
+- `/functions/v1/billing` - Stripe lifecycle management
+- `/functions/v1/ai-troubleshoot` - AI expert diagnostic engine
 
 ### Environment Variables Required
-Add these to your `.env` file:
 ```env
+# Notification Providers
+RESEND_API_KEY=re_...
+TELNYX_API_KEY=...
+TELNYX_FROM_NUMBER=+1...
+
 # Stripe
 VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
 STRIPE_SECRET_KEY=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
 
-# Stripe Price IDs (create in Stripe dashboard)
-VITE_STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID=price_...
-VITE_STRIPE_PROFESSIONAL_YEARLY_PRICE_ID=price_...
-VITE_STRIPE_ENTERPRISE_MONTHLY_PRICE_ID=price_...
-VITE_STRIPE_ENTERPRISE_YEARLY_PRICE_ID=price_...
-
-# Supabase (should already be configured)
-VITE_SUPABASE_URL=...
-VITE_SUPABASE_ANON_KEY=...
+# AI / Vision
+OPENAI_API_KEY=sk-...
 ```
 
 ## 🚀 Next Steps
-
-1. **Configure Stripe**: Create your Stripe account and add the API keys
-2. **Set up Google OAuth**: Enable Google provider in Supabase dashboard
-3. **Configure Supabase Storage**: Create an "avatars" bucket for file uploads
-4. **Test the application**: All features are now fully functional
-5. **Deploy**: The application is ready for production deployment
+1. **Connect Telnyx**: Purchase a production SMS number.
+2. **AI Triage**: Expand the vision analysis to support video diagnostic uploads.
 
 ## 📱 User Experience Improvements
 

@@ -14,7 +14,16 @@ auth: {
   autoRefreshToken: true
 }
 ```
+```
 **Avoid** using `sessionStorage` or custom caching wrappers, as these cause null sessions during browser reloads or PWA refreshes.
+
+## Step 0.5: Shared Logic Pattern
+
+We use a `_shared` folder for common logic (e.g., Email Templates) across multiple functions. To use this in a function:
+
+1.  Place code in `supabase/functions/_shared/filename.ts`.
+2.  Import via relative path: `import { ... } from '../_shared/filename.ts'`.
+3.  Deploy normally; Supabase CLI automatically bundles the shared dependency.
 
 ## Step 1: Configure Supabase Environment Variables
 
@@ -58,11 +67,11 @@ supabase db push
 ## Step 5: Deploy Edge Functions
 
 ```bash
-# Deploy the billing function
-supabase functions deploy billing
+# Deploy the core AI functions
+supabase functions deploy ai-gateway ai-troubleshoot analyze-triage-media
 
-# Deploy the AI troubleshooting function
-supabase functions deploy ai-troubleshoot
+# Deploy business automations
+supabase functions deploy review-hunter invoice-chaser billing
 ```
 
 ## Step 6: Set Environment Variables in Supabase
@@ -75,6 +84,7 @@ Go to your Supabase project dashboard → Settings → Environment Variables and
 
 - `STRIPE_SECRET_KEY` = `sk_test_...` (your Stripe secret key)
 - `STRIPE_WEBHOOK_SECRET` = `whsec_...` (your Stripe webhook secret)
+- `RESEND_API_KEY` = `re_...` (your Resend API key for emails)
 - `CLIENT_URL` = `https://your-app.netlify.app` (Your production Netlify URL)
 
 ### Stripe Price IDs (copy from your current config):
@@ -84,23 +94,41 @@ Go to your Supabase project dashboard → Settings → Environment Variables and
 - `VITE_STRIPE_ENTERPRISE_MONTHLY_PRICE_ID`
 - `VITE_STRIPE_ENTERPRISE_YEARLY_PRICE_ID`
 
-### AI / Ollama Configuration
+### AI Gateway Configuration
 
-Add these Edge Function secrets in Supabase (Settings → Environment Variables → Edge Function Secrets or via `supabase secrets set`):
+We have standardized on an **AI Gateway** pattern to centralize model management and provider abstraction.
 
-- `OLLAMA_BASE_URL` – Base URL of your Ollama deployment (e.g. `https://ollama.example.com`). Do not include a trailing slash.
-- `OLLAMA_API_KEY` – Optional Bearer token if your Ollama endpoint requires authentication.
-- `OLLAMA_MODEL` _(optional)_ – Default model name (defaults to `llama3`).
-- `OLLAMA_TIMEOUT_MS` _(optional)_ – Request timeout in milliseconds (defaults to `30000`).
+Add these Edge Function secrets in Supabase (Settings → Environment Variables → Edge Function Secrets):
 
-After updating secrets, redeploy the AI function: `supabase functions deploy ai-troubleshoot`.
+- `XAI_API_KEY` – For Grok-2 Vision (Triage & Warranty).
+- `DEEPSEEK_API_KEY` – For DeepSeek-V3 (General Reasoning).
+- `GROQ_API_KEY` – For Llama-3 (Fast Fallback).
 
-## Step 6: Update Stripe Webhook URL
+All functions (e.g., `ai-troubleshoot`) now call `ai-gateway` internally.
 
-In your Stripe dashboard, update your webhook endpoint to:
+After updating secrets, redeploy the function: `supabase functions deploy ai-troubleshoot`.
 
+### SMS Integration (Telnyx)
+
+Add these Edge Function secrets for SMS notifications:
+
+- `TELNYX_API_KEY` – Your Telnyx API key from the dashboard
+- `TELNYX_FROM_NUMBER` – Your Telnyx phone number in E.164 format (e.g., `+15551234567`)
+
+> [!NOTE]
+> **Development Mode**: If `TELNYX_API_KEY` is not set, SMS functions run in mock mode and only log messages to the console without actual delivery.
+
+After updating secrets, redeploy affected functions: `supabase functions deploy webhook-dispatcher review-hunter invoice-chaser`.
+
+### Stripe Payment & Provisioning
+
+We use two primary handlers for Stripe:
+1.  **`stripe-webhook`**: **CRITICAL/PROD**. Handles `checkout.session.completed` to provision new companies, licenses, and send welcome emails.
+2.  **`billing`**: Handles direct subscription management and plan upgrades.
+
+In your Stripe dashboard, set your webhook endpoint to:
 ```
-https://YOUR_PROJECT_REF.supabase.co/functions/v1/billing/webhook
+https://YOUR_PROJECT_REF.supabase.co/functions/v1/stripe-webhook
 ```
 
 ## Step 7: Test the Integration

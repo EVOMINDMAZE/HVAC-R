@@ -6,62 +6,38 @@ This document outlines the step-by-step roadmap to build the 4 high-value module
 
 ## 🏗️ high-Level Strategy
 
-We will build these in order of **"Lowest Friction / Highest Independence."**
-1.  **Phase 1: "Indoor Health" Report** (Internal Logic only. Easy win.)
-2.  **Phase 2: EPA 608 Compliance** (Database heavy. Minimal UI.)
-3.  **Phase 3: AI Pre-Dispatch Triage** (Requires OpenAI Vision API.)
-4.  **Phase 4: Warranty Auto-Pilot** (Hardest. Requires external Manufacturer data.)
+We build according to **"Product Market Fit"** and **"Automation Efficiency"**:
+1.  **Phase 1: Advanced Notifications & Manual Overrides** (✅ COMPLETED)
+2.  **Phase 2: AI Pre-Dispatch Triage** (🚀 ACTIVE - `analyze-media`)
+3.  **Phase 3: EPA 608 Compliance** (Database heavy.)
+4.  **Phase 4: Warranty Auto-Pilot** (Manufacturer data required.)
 
 ---
 
-## 🔹 Phase 1: The "Indoor Health" Report 🫁
-**Goal:** A simplified "Audit Tool" that generates a PDF sales sheet.
+## 🔹 Phase 1: Advanced Notifications (Foundation) ✅
+**Goal:** Per-client preferences and admin manual overrides.
 
-*   **Step 1.1:** Database Schema (Store audit findings).
-*   **Step 1.2:** UI: "Audit Wizard" (5-step simple form: Filter, Humidity, Dust).
-*   **Step 1.3:** Logic: Scoring Algorithm (0-100).
-*   **Step 1.4:** PDF Generation (React-PDF template).
-
-| Task | Who? | Notes |
-| :--- | :--- | :--- |
-| **Code the UI & Scoring Logic** | 🤖 AI | I can build the React components and math. |
-| **Design the PDF Layout** | 🤖 AI | I will create a clean, professional template. |
-| **Write the Sales Copy** | 👤 You | "Why you need a UV light" (I'll put placeholders). |
-| **Test on iPad/Mobile** | 👤 You | Verify it looks good in the field. |
+*   **Step 1.1:** Client-level preference schema (`clients.notification_preferences`).
+*   **Step 1.2:** White-label email/SMS engine (`webhook-dispatcher`).
+*   **Step 1.3:** Admin UI for manual notification triggers and preference bypass.
 
 ---
 
-## 🔹 Phase 2: EPA 608 Compliance ⚖️
-**Goal:** A "Refrigerant Bank" for the user.
+## 🔹 Phase 2: AI Pre-Dispatch Triage 🤖 (Active)
+**Goal:** A public link for homeowners to upload issues for AI diagnostic guessing.
 
-*   **Step 2.1:** Database Schema (`refrigerant_cylinders`, `usage_logs`).
-*   **Step 2.2:** Validation Logic (Prevent logging "More used than available").
-*   **Step 2.3:** "Leak Rate Calculator" (The official EPA formula).
-*   **Step 2.4:** Export to CSV (The "Audit File").
-
-| Task | Who? | Notes |
-| :--- | :--- | :--- |
-| **Create DB Tables & RLS** | 🤖 AI | I will write the SQL migrations. |
-| **Build the "Log Usage" UI** | 🤖 AI | A fast mobile form for technicians. |
-| **Implement EPA Formulas** | 🤖 AI | I have the 40 CFR Part 82 specs. |
-| **Verify Compliance** | 👤 You | Double-check that my output matches your local regulations. |
+*   **Step 2.1:** Public Route (No Login required - `TriageLanding.tsx`).
+*   **Step 2.2:** File Upload Widget (Photos/Video).
+*   **Step 2.3:** Backend Function (`analyze-media` + GPT-4o Vision).
+*   **Step 2.4:** Dispatcher View (AI-generated Probable Causes).
 
 ---
 
-## 🔹 Phase 3: AI Pre-Dispatch Triage 🤖
-**Goal:** A public link for homeowners to upload issues.
+## 🔹 Phase 3: EPA 608 Compliance ⚖️
+**Goal:** A "Refrigerant Bank" for tech tracking.
 
-*   **Step 3.1:** Public Route (No Login required).
-*   **Step 3.2:** File Upload Widget (Photos/Video).
-*   **Step 3.3:** Backend Function (`analyze-media`).
-*   **Step 3.4:** Dispatcher View (See the AI's guess).
-
-| Task | Who? | Notes |
-| :--- | :--- | :--- |
-| **Build Public Landing Page** | 🤖 AI | Secure, ephemeral links. |
-| **Configure Storage (Buckets)** | 🤖 AI | Set up Supabase storage policies. |
-| **Write AI Prompting Logic** | 🤖 AI | "Act as an HVAC expert analyzing this image..." |
-| **Provide OpenAI Key** | 👤 You | Ensure your account has GPT-4o access. |
+*   **Step 3.1:** Database Schema (`refrigerant_cylinders`, `usage_logs`).
+*   **Step 3.2:** "Leak Rate Calculator" (The official EPA formula).
 
 ---
 
@@ -82,10 +58,10 @@ We will build these in order of **"Lowest Friction / Highest Independence."**
 
 ---
 
-## 🏁 Immediate Action Plan (The "First Step")
+## 🏁 Immediate Action Plan (Current Status)
 
-**We will start with Phase 2 (EPA 608).**
-*   **Why?** It's purely internal (no external blockers), highly valuable to Pros, and we already have the database infrastructure.
-*   **First Move:** Create the `refrigerant_logs` table and a basic "Add Cylinder" screen.
+**The core Notification Engine is LIVE.**
+*   **Next Move:** Complete the AI Vision diagnostic flow.
+*   **Focus:** Perfecting the `analyze-media` Edge Function to handle technician photos.
 
-**Ready to begin Phase 2?**
+**Proceed with AI Triage enhancements?**

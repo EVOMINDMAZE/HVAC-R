@@ -22,6 +22,7 @@ import { Link } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import { SEO } from "@/components/SEO";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -52,7 +53,7 @@ function HeroSection() {
     <section ref={targetRef} className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden px-4">
       <motion.div
         style={{ opacity, scale, y }}
-        className="max-w-7xl mx-auto text-center relative z-10"
+        className="max-w-[1600px] mx-auto text-center relative z-10"
       >
         <motion.div
           initial="initial"
@@ -336,7 +337,7 @@ function FeaturesGrid() {
 
   return (
     <section className="py-32 px-4 bg-slate-50/50 dark:bg-slate-950/50 border-y border-slate-200 dark:border-slate-800">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-[1600px] mx-auto">
         <div className="text-center mb-20 max-w-3xl mx-auto">
           <Badge variant="outline" className="mb-4 border-blue-200 bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:border-blue-800 dark:text-blue-300">
             Feature Rich Platform
@@ -427,6 +428,10 @@ export function Landing() {
       <Header variant="landing" />
 
       <main className="flex-grow">
+        <SEO
+          title="Home"
+          description="Master your refrigeration cycles with ThermoNeural. The comprehensive platform for HVAC&R professionals to simulate, analyze, and optimize thermodynamic systems."
+        />
         <HeroSection />
         <ProductPreview />
         <FeaturesGrid />

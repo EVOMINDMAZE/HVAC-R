@@ -27,8 +27,8 @@ This document is the **Active Roadmap**. It breaks down every single task requir
 ## 🎉 PHASE 1 COMPLETE!
 ---
 
-## PHASE 2: The "Review Hunter" & "Invoice Chaser" (n8n) 🤖
-**Status:** 🔴 Pending
+## PHASE 2: The "Review Hunter" & "Invoice Chaser" (Native / n8n) 🤖
+**Status:** ✅ Complete
 **Goal:** Set up the backend robots to make money/reputation automatically.
 
 - [x] **2.1. Supabase Webhooks**
@@ -36,17 +36,17 @@ This document is the **Active Roadmap**. It breaks down every single task requir
     - [x] Configure Database Webhook: `ON INSERT invoices` (Created table, ready for Cron).
 - [x] **2.2. "Review Hunter" Workflow (n8n)**
     - [x] Create `review_hunter.json` workflow file (`.agent/workflows/n8n/review_hunter.json`).
-    - [x] **Logic:** Wait 45 mins -> Check "Happy" tag -> Send SMS (Twilio).
+    - [x] **Logic:** Wait 45 mins -> Check "Happy" tag -> Send SMS (Telnyx).
 - [x] **2.3. "Invoice Chaser" Workflow (n8n)**
     - [x] Create `invoice_chaser.json` workflow file (`.agent/workflows/n8n/invoice_chaser.json`).
     - [x] **Logic:** Cron Job (Daily) -> Query `unpaid` -> Send Email (SendGrid).
-- [ ] **2.4. Connect n8n to Prod**
-    - [ ] Set up n8n credentials (Supabase Service Key, Twilio Key, SendGrid Key).
+- [x] **2.4. Connect n8n to Prod**
+    - [x] Set up n8n credentials (Supabase Service Key, Telnyx Key, SendGrid Key). Verified and active emails/SMS flowing.
 
 ---
 
 ## PHASE 3: The "Indoor Health" Report 🫁
-**Status:** 🔴 Pending
+**Status:** ✅ Complete
 **Goal:** A sales tool that turns humidity readings into a PDF proposal.
 
 - [x] **3.1. Update Psychrometric Tool**
@@ -61,17 +61,17 @@ This document is the **Active Roadmap**. It breaks down every single task requir
 ---
 
 ## PHASE 4: The "Warranty Auto-Pilot" 🛡️ (Advanced)
-**Status:** 🔴 Pending
+**Status:** ✅ Complete
 **Goal:** OCR Scanner to find lost warranty money.
 
 - [x] **4.1. Camera Integration**
     - [x] Add `react-webcam` or native HTML5 camera capture (Added to `WarrantyScanner.tsx`).
-- [x] **4.2. OCR Engine**
-    - [x] Implement `tesseract.js` worker.
-    - [x] Train/configure it to recognize "Model No" and "Serial No" patterns (Regex Heuristics implemented).
-- [x] **4.3. Manufacturer Lookup (MVP)**
-    - [x] Create a simple "Lookup" button that deep-links to Carrier/Trane warranty sites (Phase 1).
-    - [x] (Future) Direct API integration.
+- [x] **4.2. OCR & AI Data Extraction**
+    - [x] Implement Vision AI via `ai-gateway` (mode: `vision`).
+    - [x] Extract Brand, Model, Serial, and Symptom data from images.
+- [x] **4.3. Manufacturer Lookup & Claim Drafting**
+    - [x] Create `CreateWarrantyClaimDialog.tsx` for AI-assisted claim drafting.
+    - [x] Integrated "Warranty" tab into Job Details.
 
 ---
 
@@ -87,7 +87,8 @@ This document is the **Active Roadmap**. It breaks down every single task requir
     - [x] Allow public uploads (with RLS for safety).
 - [x] **5.3. AI Vision Analysis**
     - [x] Create Edge Function `analyze-triage-media`.
-    - [x] Connect to OpenAI GPT-4o Vision API (Code ready, requires API Key).
+    - [x] Implement AI Gateway routing for `grok-2-vision-1212`.
+    - [x] Automated severity assessment and suspected issue identification.
 
 ---
 
@@ -129,16 +130,17 @@ This document is the **Active Roadmap**. It breaks down every single task requir
 - [x] **7.2. Final Build Check**
     - [x] Run `npm run build` and ensure no errors.
     - [x] Verify bundle size and PWA manifest.
-- [ ] **7.3. User Acceptance Testing (UAT)**
-    - [ ] User to verify all flows (EPA, Warranty, Triage).
-- [x] **7.4. Critical Capability Gaps (Identified)**
-    - [x] **Admin Dispatch**: Update `Jobs.tsx` to allow assigning a specific Technician (currently missing).
-    - [x] **Triage Dashboard**: Create an Admin view to see incoming "Pre-Dispatch" requests (currently hidden in DB).
+- [x] **7.3. User Acceptance Testing (UAT)**
+    - [x] User verified all core flows (EPA, Warranty, Triage). Final Invoice UI validated.
+- [x] **7.4. Critical Capability Gaps (Remediated)**
+    - [x] **Admin Dispatch**: Updated `Jobs.tsx` to allow assigning a specific Technician.
+    - [x] **Triage Dashboard**: Created Admin view to manage incoming "Pre-Dispatch" requests.
 - [x] **7.5. Final Deployment**
     - [x] Deploy to Netlify (Client - Triggered via Git Push).
     - [x] Deploy Edge Functions:
-        - `analyze-triage-media` (Grok Vision)
-        - `ai-troubleshoot` (DeepSeek V3)
+        - `ai-gateway` (Router for multiple AI models)
+        - `analyze-triage-media` (Grok Vision Analysis)
+        - `ai-troubleshoot` (DeepSeek V3 / Groq)
 - [x] **7.6. Documentation & Handover**
     - [x] Consolidate all project skills into `skills/`.
     - [x] Create `deployment_guide.md` for SaaS App.
@@ -146,7 +148,18 @@ This document is the **Active Roadmap**. It breaks down every single task requir
 
 ---
 
-## 🏁 How we proceed
-**Current Focus:** [PHASE 2 - 2.4] Connect n8n to Prod & [PHASE 7 - 7.3] User Acceptance Testing.
+## PHASE 8: Scaling & Commercial Analytics 📈
+**Status:** 🏗️ In Progress
+**Goal:** Multi-tenant growth and business intelligence dashboards.
 
-*Use this file to track our exact position. Do not deviate.*
+- [ ] **8.1. Dashboard Analytics**
+    - [ ] Implement "Revenue at Risk" chart (aggregation of unpaid/overdue invoices).
+    - [ ] Implement "Lead Pipeline" (Triage-to-Job conversion rate).
+- [ ] **8.2. Multi-Tenant Hardening**
+    - [ ] Conduct dedicated RLS security audit for data isolation.
+    - [ ] Optimize global `companies` metadata for white-labeling performance.
+
+---
+
+## 🏁 How we proceed
+**Current Focus:** [Phase 8] Scaling & Commercial growth via advanced analytics and multi-tenant isolation.

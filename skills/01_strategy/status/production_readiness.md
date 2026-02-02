@@ -1,10 +1,10 @@
 # Production Readiness Checklist 🚀
 
 ## 1. Implement Actual WhatsApp/SMS Logic (Completed) ✅
-- [x] **Integration Strategy**: Pivoted to Twilio for immediate SMS alerts (Meta verification blocked).
+- [x] **Integration Strategy**: Pivoted to Telnyx for immediate SMS alerts (Meta verification blocked).
 - [x] **n8n Configuration**:
     - [x] Remove `noOp` node.
-    - [x] Configure Twilio node.
+    - [x] Configure Telnyx node.
     - [x] Verify message delivery (User confirmed "it's working").
 
 ## 1.5 Dynamic Configuration (Ready for Use) ⚙️

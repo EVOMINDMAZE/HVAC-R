@@ -28,6 +28,7 @@ import {
   Pencil,
   FileText
 } from "lucide-react";
+import { PageContainer } from "@/components/PageContainer";
 import {
   Select,
   SelectContent,
@@ -218,7 +219,7 @@ export function History() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-slate-950 dark:to-slate-900 flex flex-col">
-      <div className="flex-1 container mx-auto px-4 py-8 max-w-7xl">
+      <PageContainer variant="standard">
 
         {/* Header Section */}
         <div className="mb-10 animate-in fade-in slide-in-from-top-4 duration-500">
@@ -412,7 +413,8 @@ export function History() {
             })}
           </div>
         )}
-      </div>
+      </PageContainer>
+
 
       {/* Dialogs */}
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
@@ -445,6 +447,6 @@ export function History() {
       </AlertDialog>
 
       <Footer />
-    </div>
+    </div >
   );
 }

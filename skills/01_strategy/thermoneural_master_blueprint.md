@@ -67,7 +67,11 @@ This document serves as the **single source of truth** for the ThermoNeural plat
     *   **IAQ Score:** Generates a "Respiratory Health Score" for the home (0-100).
     *   **Risk Shield:** "Winterization Verification" reports for liability protection.
     *   **Value:** A tangible PDF the tech can sell to the homeowner ($50-$100).
-5.  **Professional Estimator:**
+5.  **Invoice Management & Billing:**
+    *   **Features:** One-click invoice generation from Job context.
+    *   **Automation:** Integrated "Invoice Chaser" to automate follow-ups for unpaid builds.
+    *   **Value:** Direct path from "Fix" to "Cash".
+6.  **Professional Estimator:**
     *   **Builder:** Drag-and-drop line items for parts and labor.
     *   **Output:** Professional PDF Quotes with Company Branding.
 
@@ -116,6 +120,9 @@ This document serves as the **single source of truth** for the ThermoNeural plat
 *   `licenses`: Managing User Access tiers.
 *   `integrations`: Storing OAuth tokens for Smart Home providers.
 *   `telemetry_readings`: Time-series data from IoT devices.
+*   `invoices`: Commercial billing and status tracking.
+*   `warranty_claims`: AI-extracted equipment data and claim status.
+*   `triage_submissions`: Public homeowner leads with AI visual analysis.
 
 ---
 

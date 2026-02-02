@@ -5,7 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/components/ui/use-toast';
-import { Mail, Loader2, CheckCircle } from 'lucide-react';
+import { Mail, Loader2, UserPlus, Link } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface GrantAccessDialogProps {
     open: boolean;
@@ -15,6 +16,7 @@ interface GrantAccessDialogProps {
 
 export function GrantAccessDialog({ open, onOpenChange, clientId }: GrantAccessDialogProps) {
     const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
     const [loading, setLoading] = useState(false);
     const { toast } = useToast();
 
@@ -22,7 +24,7 @@ export function GrantAccessDialog({ open, onOpenChange, clientId }: GrantAccessD
         if (!email) return;
         setLoading(true);
         try {
-            const { data, error } = await supabase.rpc('grant_client_access', {
+            const { error } = await supabase.rpc('grant_client_access', {
                 target_email: email,
                 target_client_id: clientId
             });
@@ -32,15 +34,49 @@ export function GrantAccessDialog({ open, onOpenChange, clientId }: GrantAccessD
             toast({
                 title: "Access Granted",
                 description: `User ${email} has been granted access to this portal.`,
-                variant: "default"
             });
             onOpenChange(false);
             setEmail('');
         } catch (err: any) {
-            console.error(err);
             toast({
                 title: "Failed to Grant Access",
                 description: err.message || "An error occurred.",
+                variant: "destructive"
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleInviteUser = async () => {
+        if (!email || !name) {
+            toast({ title: "Validation Error", description: "Email and Name are required.", variant: "destructive" });
+            return;
+        }
+        setLoading(true);
+        try {
+            const { error } = await supabase.functions.invoke('invite-user', {
+                body: {
+                    email,
+                    role: 'client',
+                    full_name: name,
+                    client_id: clientId
+                }
+            });
+
+            if (error) throw error;
+
+            toast({
+                title: "Invitation Sent",
+                description: `Successfully invited ${name} to the client portal.`,
+            });
+            onOpenChange(false);
+            setEmail('');
+            setName('');
+        } catch (err: any) {
+            toast({
+                title: "Invitation Failed",
+                description: err.message || "Could not send invitation.",
                 variant: "destructive"
             });
         } finally {
@@ -53,35 +89,77 @@ export function GrantAccessDialog({ open, onOpenChange, clientId }: GrantAccessD
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <Mail className="h-5 w-5 text-blue-600" />
-                        Invite Client User
+                        <Mail className="h-5 w-5 text-primary" />
+                        Manage Client Access
                     </DialogTitle>
                     <DialogDescription>
-                        Grant access to an existing user by email. They must have already signed up.
+                        Give users access to this client's portal.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="email">User Email</Label>
-                        <Input
-                            id="email"
-                            placeholder="client@example.com"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                        <p className="text-xs text-slate-500">
-                            Note: The user must already have an account. If not, ask them to Sign Up first.
-                        </p>
-                    </div>
-                </div>
-                <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-                    <Button onClick={handleGrantAccess} disabled={loading}>
-                        {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-                        Grant Access
-                    </Button>
-                </DialogFooter>
+
+                <Tabs defaultValue="invite" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="invite" className="flex items-center gap-2">
+                            <UserPlus className="h-4 w-4" />
+                            Invite New
+                        </TabsTrigger>
+                        <TabsTrigger value="link" className="flex items-center gap-2">
+                            <Link className="h-4 w-4" />
+                            Link Existing
+                        </TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="invite" className="space-y-4 py-4">
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="invite-user-name">Full Name</Label>
+                                <Input
+                                    id="invite-user-name"
+                                    placeholder="John Doe"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="invite-user-email">Email Address</Label>
+                                <Input
+                                    id="invite-user-email"
+                                    placeholder="client@example.com"
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button className="w-full" onClick={handleInviteUser} disabled={loading}>
+                                {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                                Send Invitation
+                            </Button>
+                        </DialogFooter>
+                    </TabsContent>
+
+                    <TabsContent value="link" className="space-y-4 py-4">
+                        <div className="space-y-2">
+                            <Label>User Email</Label>
+                            <Input
+                                placeholder="existing-user@example.com"
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                            <p className="text-xs text-muted-foreground">
+                                They must already have a ThermoNeural account.
+                            </p>
+                        </div>
+                        <DialogFooter>
+                            <Button className="w-full" variant="secondary" onClick={handleGrantAccess} disabled={loading}>
+                                {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                                Grant Access
+                            </Button>
+                        </DialogFooter>
+                    </TabsContent>
+                </Tabs>
             </DialogContent>
         </Dialog>
     );

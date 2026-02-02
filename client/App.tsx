@@ -25,6 +25,7 @@ const EstimateBuilder = lazy(() => import("@/pages/EstimateBuilder"));
 const JobDetails = lazy(() => import("@/pages/JobDetails"));
 const Jobs = lazy(() => import("@/pages/Jobs"));
 const CompanySettings = lazy(() => import("@/pages/CompanySettings"));
+const Team = lazy(() => import("@/pages/settings/Team"));
 const Projects = lazy(() => import("@/pages/Projects"));
 const ClientDetail = lazy(() => import("@/pages/ClientDetail").then(m => ({ default: m.ClientDetail })));
 const Clients = lazy(() => import("@/pages/Clients").then(m => ({ default: m.Clients })));
@@ -107,7 +108,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   // RBAC Redirection Logic
   if (role === 'client') {
-    const allowedClientRoutes = ['/portal', '/history', '/track-job', '/settings', '/jobs'];
+    const allowedClientRoutes = ['/portal', '/history', '/track-job', '/settings', '/dashboard/jobs', '/triage'];
     const isAllowed = allowedClientRoutes.some(route => location.pathname.startsWith(route));
 
     // If client is trying to access restricted areas, redirect to portal
@@ -117,6 +118,24 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     }
     // Render with Layout so clients see their scoped Sidebar
     return <Layout>{children}</Layout>;
+  }
+
+  // Technician Logic
+  if (role === 'technician' || role === 'tech') {
+    // Techs only allowed: /tech, /tools, /settings/profile (maybe), /help, /about
+    // Explicitly BLOCK: /dashboard (executive), /settings/company, /dashboard/dispatch
+    const blockedRoutes = ['/dashboard', '/settings/company', '/history', '/portal'];
+    // Allow /dashboard/jobs if it's their view? No, use /tech/jobs.
+
+    // Simple block list approach
+    const isBlocked = blockedRoutes.some(route => location.pathname.startsWith(route));
+    // Exception: /dashboard/jobs is blocked in favor of /tech
+
+    // Actually, safest is to redirect /dashboard root to /tech
+    if (location.pathname === '/dashboard' || location.pathname.startsWith('/dashboard/dispatch')) {
+      console.log('[ProtectedRouteDebug] Tech restricted from Exec Dashboard. Redirecting to /tech');
+      return <Navigate to="/tech" replace />;
+    }
   }
 
   // Logic for Admin/Standard Users
@@ -241,7 +260,9 @@ function AppRoutes() {
           <Route
             path="/tech/jobs/:id"
             element={
-              <ActiveJob />
+              <ProtectedRoute>
+                <ActiveJob />
+              </ProtectedRoute>
             }
           />
 
@@ -267,6 +288,14 @@ function AppRoutes() {
             element={
               <ProtectedRoute>
                 <CompanySettings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings/team"
+            element={
+              <ProtectedRoute>
+                <Team />
               </ProtectedRoute>
             }
           />
@@ -315,7 +344,7 @@ function AppRoutes() {
             }
           />
           <Route
-            path="/jobs"
+            path="/dashboard/jobs"
             element={
               <ProtectedRoute>
                 <Jobs />
@@ -323,7 +352,7 @@ function AppRoutes() {
             }
           />
           <Route
-            path="/jobs/:id"
+            path="/dashboard/jobs/:id"
             element={
               <ProtectedRoute>
                 <JobDetails />
@@ -355,7 +384,7 @@ function AppRoutes() {
             }
           />
           <Route
-            path="/projects"
+            path="/dashboard/projects"
             element={
               <ProtectedRoute>
                 <Projects />
@@ -363,7 +392,7 @@ function AppRoutes() {
             }
           />
           <Route
-            path="/clients"
+            path="/dashboard/clients"
             element={
               <ProtectedRoute>
                 <Clients />
@@ -371,7 +400,7 @@ function AppRoutes() {
             }
           />
           <Route
-            path="/clients/:id"
+            path="/dashboard/clients/:id"
             element={
               <ProtectedRoute>
                 <ClientDetail />

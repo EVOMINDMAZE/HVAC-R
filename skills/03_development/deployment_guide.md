@@ -3,7 +3,7 @@
 This guide covers how to deploy the **Core SaaS Application** (React Frontend + Supabase Backend).
 
 > [!IMPORTANT]
-> This guide is for the **SaaS App** only. For Member Nodes (n8n), see `skills/04_infrastructure/n8n_member_server/`.
+> This guide covers the deployment of the **Core SaaS App** (Supabase + Netlify) and **Edge Functions**.
 
 ## 1. Architecture Overview
 - **Frontend**: React (Vite) -> Deployed to **Netlify**.
@@ -33,6 +33,8 @@ This guide covers how to deploy the **Core SaaS Application** (React Frontend + 
     supabase functions deploy billing
     supabase functions deploy ai-troubleshoot
     supabase functions deploy analyze-triage-media
+    supabase functions deploy webhook-dispatcher
+    supabase functions deploy review-hunter
     ```
 4.  **Set Secrets**:
     Ensure `STRIPE_SECRET_KEY`, `OPENAI_API_KEY`, etc., are set in Supabase Dashboard > Settings > Edge Functions.

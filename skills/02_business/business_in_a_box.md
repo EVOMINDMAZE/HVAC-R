@@ -10,7 +10,7 @@ This skill defines the core product offering. The "App" is just one tool in the 
 > **Architecture Split**: 
 > 1. **App**: Shared SaaS (Supabase Cloud + Netlify).
 > 2. **Heavy Calcs**: Python/Go Engine on **Render**.
-> 3. **Automation**: Private Docker Instance on **Vultr** (Member Node).
+> 3. **Automation**: Native Edge Functions on **Supabase** (Serverless).
 
 
 ## 1. The Offer Bundle
@@ -19,21 +19,24 @@ This skill defines the core product offering. The "App" is just one tool in the 
 *   **Included Assets**:
     1.  **Community Access**: Discussion, learning, networking.
     2.  **HVAC-R Pro App**: White-labeled usage for the Member to run their business.
-    3.  **Automation Server**: A personal n8n microserver ($5/m value) for custom workflows.
+        *   *Includes*: Professional Reporting (PDF Export), Saved History, and Advanced Calculations.
+    3.  **Automation Engine**: Zero-setup, serverless automations that handle "Busy Work" instantly.
+        *   **Review Hunter**: Automatically requests reviews after jobs.
+        *   **Invoice Chaser**: Automatically follows up on overdue payments.
 
 ## 2. The Member Persona (Owner)
 The user of this app is an **HVAC Business Owner** (or aspiring one).
 *   **Goal**: To serve *their* residential/commercial clients efficiently.
-*   **Need**: They need "Tools" (App) + "Systems" (n8n) + "Guidance" (Community).
+*   **Need**: They need "Tools" (App) + "Systems" (Automations) + "Guidance" (Community).
 
 ## 3. Integration Logic
 *   **Authentication**:
     *   Ideally, "Login with Skool" or an invite link sent after Skool checkout.
     *   App Role: `Owner`.
-*   **n8n Provisioning**:
-    *   The App should likely have a "My Automation Server" settings page.
-    *   It should store the URL/API Key of the member's private n8n instance.
-    *   The App sends webhooks to *that* specific n8n instance for events (e.g., "New Job Created" -> Member's n8n -> Member's SMS provider).
+*   **Automation Provisioning**:
+    *   **Zero Setup**: Automations are native. No external servers to provision.
+    *   **Configuration**: The "Settings" page allows enabling/disabling specific workflows (e.g., "Turn on Review Hunter").
+    *   **Billing**: Usage (Resend/Telnyx) is wrapped into the subscription or billed as usage overages.
 
 ## 4. Development Implications
 *   **No "Freemium" App**: The App is a paid benefit of the Community. Access is binary (Member vs Non-Member).

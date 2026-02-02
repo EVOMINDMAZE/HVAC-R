@@ -16,8 +16,8 @@ This plan addresses the critical capability gaps identified in Phase 7.4 of the 
 - [x] **1.3. Modify Insert Logic**
     - [x] Update the `supabase.from('jobs').insert(...)` payload to include `technician_id`.
     - [x] Set initial status to `assigned` if a tech is selected, matches `pending` if not.
-- [ ] **1.4. Update RLS (Double Check)**
-    - [ ] Ensure Admins can `INSERT` jobs with `technician_id` (Standard RLS usually allows this, verified in previous sessions).
+- [x] **1.4. Update RLS (Double Check)**
+    - [x] Ensure Admins can `INSERT` jobs with `technician_id` (Verified: standard RLS allows this).
 
 ## 2. Build Triage Command Center (`TriageDashboard.tsx`)
 **Goal:** Provide a dashboard to view, analyze, and convert incoming homeowner requests.
@@ -49,14 +49,14 @@ This plan addresses the critical capability gaps identified in Phase 7.4 of the 
 **Context:** Currently, the scanner only performs a Google lookup. We need to "Save to Asset".
 
 ### Steps:
-- [ ] **3.1. Client Selection**
-    - [ ] Add a dropdown to select which `Client` this asset belongs to (or "Quick Add Client").
-- [ ] **3.2. Database Schema Check**
-    - [ ] Ensure `assets` table has fields for `serial_number`, `model_number`, `manufacturer`, `warranty_status`, `photo_url`.
-- [ ] **3.3. "Save Asset" Logic**
-    - [ ] Upload the captured image to Supabase Storage (`asset-photos`).
-    - [ ] Insert a new record into `assets` linked to the selected client.
-    - [ ] Toast success.
+- [x] **3.1. Client Selection**
+    - [x] Add a dropdown to select which `Client` this asset belongs to (or "Quick Add Client").
+- [x] **3.2. Database Schema Check**
+    - [x] Ensure `assets` table has fields for `serial_number`, `model_number`, `manufacturer`, `warranty_status`, `photo_url`.
+- [x] **3.3. "Save Asset" Logic**
+    - [x] Upload the captured image to Supabase Storage (`asset-photos`).
+    - [x] Insert a new record into `assets` linked to the selected client.
+    - [x] Toast success.
 
 ---
 **Status Tracking:**

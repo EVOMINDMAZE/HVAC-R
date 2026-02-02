@@ -612,7 +612,7 @@ export function CascadeCycleContent() {
 
   return (
     <div className="min-h-screen bg-background text-foreground animate-in fade-in duration-500 pb-20">
-      <div className="container mx-auto px-4 py-8 max-w-[1800px]">
+      <div className="container mx-auto px-4 py-8 max-w-[1600px]">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>

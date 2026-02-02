@@ -5,6 +5,7 @@ import { Plus, Search, Filter, Map, Calendar, User, Building2, MapPin, LayoutGri
 import { format } from 'date-fns';
 import { CreateJobDialog } from '@/components/jobs/CreateJobDialog';
 import MapView from '@/components/dashboard/MapView';
+import { PageContainer } from '@/components/PageContainer';
 
 import {
     DropdownMenu,
@@ -75,7 +76,7 @@ export default function Dispatch() {
     });
 
     return (
-        <div className="p-6 max-w-7xl mx-auto space-y-6">
+        <PageContainer variant="standard" className="space-y-6">
 
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -228,7 +229,7 @@ export default function Dispatch() {
                                         </div>
 
                                         <div className="col-span-2 text-right">
-                                            <Link to={`/jobs/${job.id}`} className="text-blue-500 hover:text-blue-700 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <Link to={`/dashboard/jobs/${job.id}`} className="text-blue-500 hover:text-blue-700 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
                                                 View Details
                                             </Link>
                                         </div>
@@ -273,7 +274,7 @@ export default function Dispatch() {
                                         </div>
 
                                         <Link
-                                            to={`/jobs/${job.id}`}
+                                            to={`/dashboard/jobs/${job.id}`}
                                             className="flex items-center justify-center w-full py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                                         >
                                             View Job Details
@@ -288,6 +289,6 @@ export default function Dispatch() {
 
             <CreateJobDialog open={showCreateDialog} onOpenChange={setShowCreateDialog} onSuccess={fetchJobs} />
 
-        </div>
+        </PageContainer>
     );
 }

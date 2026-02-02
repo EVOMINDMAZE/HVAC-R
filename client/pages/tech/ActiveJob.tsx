@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { MapPin, Navigation, CheckCircle, ArrowLeft, Phone, AlertTriangle } from 'lucide-react';
+import { ModeToggle } from '@/components/mode-toggle';
 
 export default function ActiveJob() {
     const { id } = useParams();
@@ -175,14 +176,17 @@ export default function ActiveJob() {
     return (
         <div className="min-h-screen bg-background">
             {/* Navbar */}
-            <div className="bg-card border-b border-border px-4 py-3 flex items-center gap-3 sticky top-0 z-20">
-                <button onClick={() => navigate(-1)} className="p-2 bg-muted rounded-full">
-                    <ArrowLeft className="w-5 h-5" />
-                </button>
-                <div>
-                    <h2 className="font-bold text-lg text-foreground">{job.ticket_number}</h2>
-                    <span className="text-xs text-muted-foreground uppercase">{displayStatus.replace('_', ' ')}</span>
+            <div className="bg-card border-b border-border px-4 py-3 flex items-center justify-between sticky top-0 z-20">
+                <div className="flex items-center gap-3">
+                    <button onClick={() => navigate(-1)} className="p-2 bg-muted rounded-full">
+                        <ArrowLeft className="w-5 h-5" />
+                    </button>
+                    <div>
+                        <h2 className="font-bold text-lg text-foreground">{job.ticket_number}</h2>
+                        <span className="text-xs text-muted-foreground uppercase">{displayStatus.replace('_', ' ')}</span>
+                    </div>
                 </div>
+                <ModeToggle />
             </div>
 
             <div className="p-5 pb-32 space-y-6">

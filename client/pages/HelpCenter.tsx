@@ -175,7 +175,7 @@ export function HelpCenter() {
       </div>
 
       <main className="relative z-10 pt-24 pb-20 px-4">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-[1600px] mx-auto">
           {/* Hero Section */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}

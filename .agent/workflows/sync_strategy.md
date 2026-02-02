@@ -4,40 +4,42 @@ description: Scans chat history and codebase to identify and reconcile out-of-da
 
 Use this workflow to ensure your "Skills" (documentation) always match the reality of the Code and the Decisions made in Chat.
 
-### Phase 1: Drift Detection 🕵️
-The Agent will act as a detective to find discrepancies.
+### Phase 1: The Recursive Deep Audit 🕵️
+The Agent will act as a thorough auditor to find ALL discrepancies at once.
 
-1.  **Run the "Triple Scan"**:
-    The Agent MUST review three specific data sources to identify discrepancies:
-    *   **A. Chat History**: What did the user *say*? (e.g., "Let's switch to Vultr").
-    *   **B. Codebase**: What was *implemented*? (Check recent file changes, new env vars).
-    *   **C. Skills Files**: What is *documented*? (Check `skills/` for outdated info).
+1.  **Inventory & Code Scan**:
+    *   **List all Skills**: Run `find skills/ -name "*.md"` to see the full scope of documentation.
+    *   **Scan Recent Code**: Run `git diff --stat HEAD~10` (or check `task.md` history) to identify all recent features, components, and architectural changes.
+    *   **Review Chat History**: Scan the entire active context for key decisions (e.g., "Switch to Telnyx", "Enable RLS").
 
-2.  **Triangulate & Detect Drift**:
-    *   Compare **Chat vs. Skills**: Did we decide something new that isn't written down?
-    *   Compare **Code vs. Skills**: Does the code match the documentation?
+2.  **Systematic Cross-Check**:
+    *   **Iterate**: For *every* major feature identified in the Code Scan, find its corresponding Skill file.
+    *   **Verify**: Does the Skill file describe the *current* implementation?
+    *   **Identify Drift**: Note *every* instance where Code != Documentation.
 
-### Phase 2: The Drift Report 📋
-The Agent must present a summary of **Proposed Updates** before editing anything.
+### Phase 2: The Master Drift Report 📋
+Do not report incrementally. Compile a **Single Comprehensive Report** containing ALL findings.
 
 **Format**:
-> **Skills Sync Report**
+> **Master Skills Sync Report**
 >
-> 1.  **Detected Change**: Switched from DigitalOcean to Vultr.
->     *   *Source*: Chat History & `commercial_roadmap.md` edit.
->     *   *Impacted Skill*: `skills/01_strategy/cloud_strategy.md`.
->     *   *Proposed Action*: Replace "DigitalOcean" with "Vultr".
+> **A. Strategy & Roadmap**
+> 1.  **Drift**: Phase 2 is marked "In Progress" but code shows it's done.
+>     *   *Action*: Mark Phase 2 as Complete in `master_execution_plan.md`.
 >
-> 2.  **Detected Change**: Added `RENDER_API_KEY`.
->     *   *Source Code*: `scripts/list-render-services.js`.
->     *   *Impacted Skill*: `skills/03_development/render_service.md` (or `.env.example`).
->     *   *Proposed Action*: Document the new variable.
+> **B. Technical Architecture**
+> 2.  **Drift**: `invoice-chaser` function exists but is not in `native_automations.md`.
+>     *   *Action*: Add function documentation.
+>
+> **C. Business Logic**
+> 3.  **Drift**: New `invoices` table not mentioned in `blueprint.md`.
+>     *   *Action*: Update Business Engine section.
 
 ### Phase 3: User Confirmation 🛑
-**STOP** and wait for the user to say "Go ahead" or "Approving 1 and 2".
+**STOP** and present the Master Report. Wait for the user to say "Execute All" or "Proceed".
 
-### Phase 4: Synchronization 🔄
+### Phase 4: Batch Synchronization 🔄
 Upon approval, the Agent will:
-1.  **Edit the Skills**: Use `multi_replace_file_content` or `write_to_file` to update the documentation.
-2.  **Verify**: Ensure no broken links or inconsistent terms remain.
-3.  **Finalize**: Run `task_boundary` to close the sync task.
+1.  **Batch Edits**: Use `multi_replace_file_content` to apply changes to ALL affected files in a systematic sequence.
+2.  **Final Polish**: Run a final verify step to ensure no broken links remain.
+3.  **Close**: Run `task_boundary` to confirm the library is 100% sync'd.

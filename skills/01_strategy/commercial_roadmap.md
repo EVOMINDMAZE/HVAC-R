@@ -3,7 +3,7 @@
 This roadmap takes us from our current "Prototype" state to a "100% Commercial" SaaS product (`ThermoNeural Skool`).
 
 > [!NOTE]
-> **Strategy Alignment**: This roadmap describes the **SaaS Product**, which is strictly **Cloud-First** (Supabase Cloud + Netlify). The "Member Infrastructure" (n8n Docker Nodes) described in Phase 4 is a *separate* deliverables for paid members and does **not** affect the Core App's architecture.
+> **Strategy Alignment**: This roadmap describes the **SaaS Product**, which is strictly **Cloud-First** (Supabase Cloud + Netlify).
 
 
 ## Phase 1: The "Brain" (Supabase Backend) 🧠
@@ -36,10 +36,10 @@ This roadmap takes us from our current "Prototype" state to a "100% Commercial" 
     - [x] Create `workflow_requests` table (The "Inbox" for n8n).   
     - [x] Enable **Supabase Realtime** on this table (so React knows when n8n finishes).
     - [x] Implement React Hook `useWorkflowTrigger` for easy frontend integration.
-- [x] **The Worker (n8n)**
-    - [x] Create `supabase_queue_worker.json` blueprint.
+- [x] **The Worker (Edge Functions)**
+    - [x] Create `webhook-dispatcher` function.
         -   **Trigger:** Supabase Webhook (on INSERT).
-        -   **Gatekeeper:** Calls `verify-license` Edge Function.
+        -   **Gatekeeper:** Calls `verify-license` logic internally.
         -   **Action:** Executes logic (e.g., WhatsApp).
         -   **Response:** Updates Supabase row to `completed` or `failed`.
 - [ ] **Deployment**
@@ -48,30 +48,58 @@ This roadmap takes us from our current "Prototype" state to a "100% Commercial" 
 
 ## Phase 4: The "Digital Landlord" (Infrastructure) ☁️
 **Goal:** Deliver the managed server to the customer.
-- [x] **Manual Fulfillment Protocol (The "MVP")**
-    - [x] Write the `server_setup.sh` script (auto-installs Docker, n8n, Traefik).
-    - [ ] Document the "New Customer Checklist":
-        1.  Receive Stripe webhook email.
-        2.  Spin up VPS Server (Vultr High Frequency).
-        3.  Run `server_setup.sh`.
-        4.  Email IP + Login to customer.
+## Phase 4: The "Digital Landlord" (Infrastructure) ☁️
+**Goal:** Deliver the managed access to the customer.
+- [x] **Automated Provisioning**
+    - [x] Application logic handles tenant isolation via `company_id`.
+    - [x] No per-client infrastructure required (Multi-tenant architecture).
 
 ## Phase 5: The "Cash Register" (Payments & Sync) 💰
 **Goal:** Automate access granting.
-- [ ] **Stripe Integration**
-    - [ ] Configure `stripe-webhook` in Supabase.
-    - [ ] On `checkout.session.completed`:
+- [x] **Stripe Integration**
+    - [x] Configure `stripe-webhook` in Supabase.
+    - [x] On `checkout.session.completed`:
         -   Create `companies` record.
         -   Generate new `licenses` key.
         -   Send "Welcome" email with License Key.
+- [x] **Invoice Management**
+    - [x] **Invoices Table**: Database schema for tracking payments.
+    - [x] **Invoice UI**: Create & View invoices directly in Job Details.
 
 ## Phase 6: Launch & Polish 🚀
-- [ ] **Final QA:** End-to-end test (Buy -> Login -> Setup Brand -> Run n8n).
+- [ ] **Final QA:** End-to-end test (Buy -> Login -> Setup Brand -> Run Automation).
 - [ ] **Documentation:** Create the "Getting Started" guide for Skool.
 - [ ] **Go Live:** Connect Stripe Live keys.
 
-## Phase 7: Revenue Expansion (The Trident) 🔱
+## Phase 6.5: Client-Level Notification Foundation ✅ (Completed)
+**Goal:** Establish granular control over SMS/Email notifications on a per-client basis.
+- [x] **Telnyx Integration**
+    - [x] Create shared `sms-sender.ts` module with mock mode for development.
+    - [x] Implement SMS for `client_invite`, `system_alert`, `job_scheduled` workflows.
+- [x] **Per-Client Preferences**
+    - [x] Add `notification_preferences` JSONB column to `clients` table.
+    - [x] Build `ClientNotificationSettings` component for the Client Portal.
+    - [x] Implement Admin UI in `ClientDetail.tsx` for preference toggles and "Force Send" overrides.
+- [x] **Unified Notification System**
+    - [x] Migrate from SendGrid to Resend for emails.
+    - [x] Centralized template engine for white-label branding.
+    - [x] Backend enforcement logic in `webhook-dispatcher` and `review-hunter` respects client opt-outs.
+
+> [!NOTE]
+> **Related Documentation:**
+> - [`automation_settings.md`](../03_development/features/automation_settings.md) - Feature docs
+> - [`notification_system.md`](../06_automations/notification_system.md) - Architecture
+> - [`native_automations.md`](../03_development/architecture/native_automations.md) - Enforcement logic
+
+## Phase 7: Intelligence & Expansion (Q4 2026) 🔱
 **Goal:** Multiply LTV through Hardware, Fintech, and Enterprise tiers.
+- **AI Receptionist** *(builds on Phase 6.5 SMS foundation)*
+    - Conversational SMS bot for scheduling & basic Q&A.
+    - Context-aware responses (Client/Job history).
+    - "Switchboard" logic to route complex query to human.
+- **Advanced Analytics**
+    - Predictive equipment failure models.
+    - Technician performance scoring.
 *   **See Strategy:** [Revenue Expansion Plan](./revenue_expansion_plan.md)
 *   **Tracks:**
     *   [x] **Fintech:** "ThermoPay" (Invoice Financing) - ✅ MVP Ready.

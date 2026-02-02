@@ -33,16 +33,17 @@ export function useAppNavigation() {
 
     // Role-Based Operational Modes
     const isAdmin = role === 'admin';
-    const isOwner = isAdmin || role === 'student'; // Default to Owner for Dev removed for security
-    const isTech = role === 'technician';
+    const isOwner = isAdmin; // Clean up legacy student role
+    const isManager = role === 'manager';
+    const isTech = role === 'technician' || role === 'tech'; // Handle both variations just in case
     const isClient = role === 'client';
 
     // Visibility Flags
-    const showDispatch = isOwner;
-    const showOffice = isOwner;
-    const showToolbox = isOwner || isTech || isAdmin;
-    const showCalculators = isOwner || isTech || isAdmin;
-    const showTechWork = isTech || isAdmin; // Admin sees Tech view too
+    const showDispatch = isOwner || isManager; // Managers can dispatch
+    const showOffice = isOwner || isManager; // Managers need Office access (Clients/Jobs)
+    const showToolbox = isOwner || isManager || isTech || isAdmin;
+    const showCalculators = isOwner || isManager || isTech || isAdmin;
+    const showTechWork = isTech || isAdmin || isManager; // Managers might need to see tech view? Or just Admin. keeping generic.
     const showClientMenu = isClient || isAdmin; // Admin sees Client view too
 
     // Mock Notification State
@@ -51,7 +52,8 @@ export function useAppNavigation() {
     // 1. MAIN LINKS (Horizontal on Desktop, Top of List on Mobile)
     const mainLinks: NavItem[] = [];
 
-    if (!isClient) {
+    if (!isClient && !isTech) {
+        // Techs have their own "My Jobs" board, they don't need the executive dashboard
         mainLinks.push({ to: '/dashboard', label: 'Dashboard', icon: LayoutGrid });
     }
 
@@ -82,7 +84,7 @@ export function useAppNavigation() {
 
     if (showClientMenu && !isAdmin) {
         mainLinks.push({ to: '/triage', label: 'Request Service', icon: Wrench, roleTag: isAdmin ? "C" : undefined });
-        mainLinks.push({ to: '/jobs', label: 'My Jobs', icon: Briefcase, roleTag: isAdmin ? "C" : undefined });
+        mainLinks.push({ to: '/dashboard/jobs', label: 'My Jobs', icon: Briefcase, roleTag: isAdmin ? "C" : undefined });
     }
 
     // 2. TOOLBOX
@@ -105,13 +107,18 @@ export function useAppNavigation() {
 
     // 4. OFFICE
     const officeItems: NavItem[] = [
-        { to: '/clients', label: 'Clients', icon: Users },
-        { to: '/jobs', label: 'Jobs', icon: Briefcase, badge: newJobsCount },
+        { to: '/dashboard/clients', label: 'Clients', icon: Users },
+        { to: '/dashboard/jobs', label: 'Jobs', icon: Briefcase, badge: newJobsCount },
         { to: '/history', label: 'History', icon: History },
     ];
 
     if (isAdmin) {
         officeItems.push({ to: '/settings/company', label: 'Company Settings', icon: Building2 });
+    }
+
+    // Team Management (Admins & Managers)
+    if (isAdmin || isManager) {
+        officeItems.push({ to: '/settings/team', label: 'Team', icon: Users });
     }
 
     // 5. RESOURCES

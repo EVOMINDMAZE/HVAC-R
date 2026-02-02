@@ -32,20 +32,24 @@ Technical guides for contributors and maintainers.
 - [Supabase Setup](./03_development/supabase_setup.md): Database schema and local/cloud config.
 - [Mobile Guide](./03_development/mobile_guide.md): iOS/Android specific instructions.
 - [Integration](./03_development/integration/): Third-party tool integrations.
-    - [n8n Integration](./03_development/integration/n8n_integration.md): "Business in a Box" automation strategy.
+    - [AI Engine Config](./03_development/architecture/ai_engine_config.md)
+    - [Native Automations](./03_development/architecture/native_automations.md): Serverless automation strategy.
 - [Architecture](./03_development/architecture/): System configuration and agent designs.
     - [Agents](./03_development/architecture/agents.md)
-    - [AI Engine Config](./03_development/architecture/ai_engine_config.md)
-    - [Automation Workflows](./03_development/architecture/automation_workflows.md)
     - [Render Service](./03_development/render_service.md): Heavy calculation engine documentation.
 - [Features](./03_development/features/): Feature specifications and active feature guides.
+    - [Automation Settings](./03_development/features/automation_settings.md): Per-client notification preferences.
     - [Infographic](./03_development/features/infographic.md)
     - [Stripe Upgrade Fix](./03_development/features/stripe_upgrade_fix.md)
     - [Archive Room](./00_meta/archive/): Historical fix plans and legacy specs.
 
+### [06_Automations](./06_automations/)
+Architecture and logic for automated communications.
+- [Notification System](./06_automations/notification_system.md): SMS and Email engine with white-labeling and per-client preferences.
+
 ### [04_Infrastructure](./04_infrastructure/)
 Deployment scripts and configuration files.
-- [n8n Member Server](./04_infrastructure/n8n_member_server/): Docker scripts for deploying member instances. **NOT for App Infrastructure**.
+
 
 ### [05_Domain](./05_domain/)
 Core HVAC-R domain logic and formulas.

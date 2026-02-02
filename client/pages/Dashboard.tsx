@@ -27,6 +27,11 @@ import {
   Layers,
 } from "lucide-react";
 import { RiskShield } from "@/components/OwnerDashboard/RiskShield";
+import { SEO } from "@/components/SEO";
+import { PageContainer } from "@/components/PageContainer";
+import { useRevenueAnalytics } from "@/hooks/useRevenueAnalytics";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTooltip, Cell } from "recharts";
+
 
 interface QuickStatsProps {
   stats: DashboardStats;
@@ -123,7 +128,7 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
         <div className="flex flex-wrap items-center gap-3">
           <Button
             className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-0.5 rounded-full px-6"
-            onClick={() => navigate("/standard-cycle")}
+            onClick={() => navigate("/tools/standard-cycle")}
           >
             <Calculator className="h-4 w-4 mr-2" />
             New Calculation
@@ -305,7 +310,7 @@ function RecentCalculations({ isLoading }: any) {
             <p className="text-sm text-muted-foreground mb-6 max-w-xs">
               Start your first calculation to see it appear here.
             </p>
-            <Button onClick={() => navigate("/standard-cycle")} className="glass text-primary hover:bg-primary/10">
+            <Button onClick={() => navigate("/tools/standard-cycle")} className="glass text-primary hover:bg-primary/10">
               Start Calculation
             </Button>
           </div>
@@ -347,11 +352,11 @@ function QuickActions() {
   const navigate = useNavigate();
 
   const actions = [
-    { label: "Standard Cycle", icon: Calculator, path: "/standard-cycle", color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-900/20" },
-    { label: "Compare Refrigerants", icon: TrendingUp, path: "/refrigerant-comparison", color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-900/20" },
-    { label: "Cascade Analysis", icon: BarChart3, path: "/cascade-cycle", color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-50 dark:bg-purple-900/20" },
-    { label: "Reports & PDF", icon: FileText, path: "/advanced-reporting", color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-50 dark:bg-amber-900/20" },
-    { label: "My Projects", icon: Layers, path: "/projects", color: "text-indigo-600 dark:text-indigo-400", bg: "bg-indigo-50 dark:bg-indigo-900/20" },
+    { label: "Standard Cycle", icon: Calculator, path: "/tools/standard-cycle", color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-900/20" },
+    { label: "Compare Refrigerants", icon: TrendingUp, path: "/tools/refrigerant-comparison", color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-900/20" },
+    { label: "Cascade Analysis", icon: BarChart3, path: "/tools/cascade-cycle", color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-50 dark:bg-purple-900/20" },
+    { label: "Reports & PDF", icon: FileText, path: "/tools/advanced-reporting", color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-50 dark:bg-amber-900/20" },
+    { label: "My Projects", icon: Layers, path: "/dashboard/projects", color: "text-indigo-600 dark:text-indigo-400", bg: "bg-indigo-50 dark:bg-indigo-900/20" },
   ];
 
   return (
@@ -431,38 +436,149 @@ function ValueProposition() {
   );
 }
 
+function AnalyticsCharts() {
+  const { revenueStats, pipelineStats, isLoading } = useRevenueAnalytics();
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-pulse">
+        <div className="h-64 bg-muted/50 rounded-xl" />
+        <div className="h-64 bg-muted/50 rounded-xl" />
+      </div>
+    );
+  }
+
+  const revenueData = [
+    { name: 'Collected', value: 0, color: '#10b981' }, // Placeholder for now
+    { name: 'At Risk', value: revenueStats.revenueAtRisk, color: '#f59e0b' },
+  ];
+
+  const pipelineData = [
+    { name: 'Leads', value: pipelineStats.activeLeads, color: '#6366f1' },
+    { name: 'Jobs', value: pipelineStats.convertedLeads, color: '#8b5cf6' },
+  ];
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up" style={{ animationDelay: '200ms' }}>
+      {/* Revenue at Risk Chart */}
+      <Card className="glass-card">
+        <CardHeader>
+          <CardTitle className="flex items-center text-lg">
+            <Target className="h-5 w-5 mr-2 text-amber-500" />
+            Revenue Health
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[200px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={revenueData} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
+                <XAxis type="number" hide />
+                <YAxis dataKey="name" type="category" tick={{ fill: 'currentColor', fontSize: 12 }} width={60} axisLine={false} tickLine={false} />
+                <RechartsTooltip
+                  cursor={{ fill: 'transparent' }}
+                  contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '8px', color: '#fff' }}
+                />
+                <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={32}>
+                  {revenueData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="mt-4 flex justify-between items-center px-2">
+            <div>
+              <p className="text-sm text-muted-foreground">Unpaid Invoices</p>
+              <p className="text-2xl font-bold text-amber-500">${formatNumber(revenueStats.revenueAtRisk)}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm text-muted-foreground">Invoice Count</p>
+              <p className="text-xl font-semibold text-foreground">{revenueStats.unpaidCount}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Lead Pipeline Chart */}
+      <Card className="glass-card">
+        <CardHeader>
+          <CardTitle className="flex items-center text-lg">
+            <TrendingUp className="h-5 w-5 mr-2 text-indigo-500" />
+            Lead Pipeline
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[200px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={pipelineData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                <XAxis dataKey="name" tick={{ fill: 'currentColor' }} axisLine={false} tickLine={false} />
+                <YAxis hide />
+                <RechartsTooltip
+                  cursor={{ fill: 'rgba(255,255,255,0.1)' }}
+                  contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '8px', color: '#fff' }}
+                />
+                <Bar dataKey="value" radius={[4, 4, 0, 0]} barSize={48}>
+                  {pipelineData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="mt-4 flex justify-between items-center px-2">
+            <div>
+              <p className="text-sm text-muted-foreground">Conversion Probability</p>
+              <p className="text-2xl font-bold text-indigo-500">{pipelineStats.conversionRate}%</p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm text-muted-foreground">Active Leads</p>
+              <p className="text-xl font-semibold text-foreground">{pipelineStats.activeLeads}</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 export function Dashboard() {
   const { user } = useSupabaseAuth();
   const { stats, isLoading, refreshStats } = useDashboardStats();
 
   return (
-    <div className="min-h-screen bg-background transition-colors duration-500">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        <SystemStatus />
+    <PageContainer variant="standard" className="space-y-8">
+      <SEO
+        title="Dashboard"
+        description="Manage your thermodynamic projects, view real-time system status, and access quick calculation tools."
+      />
+      <SystemStatus />
 
-        <QuickStats
-          stats={stats}
-          user={user}
-          isLoading={isLoading}
-          onRefresh={refreshStats}
-        />
+      <QuickStats
+        stats={stats}
+        user={user}
+        isLoading={isLoading}
+        onRefresh={refreshStats}
+      />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
-            <RecentCalculations isLoading={isLoading} />
+      <AnalyticsCharts />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-8">
+          <div className="lg:hidden">
+            <QuickActions />
           </div>
-
-          <aside className="space-y-8 lg:sticky lg:top-24">
-            <div className="hidden lg:block">
-              <QuickActions />
-            </div>
-            <RiskShield />
-            <ValueProposition />
-          </aside>
+          <RecentCalculations isLoading={isLoading} />
         </div>
-      </main>
 
-      <Footer />
-    </div>
+        <aside className="space-y-8 lg:sticky lg:top-24">
+          <div className="hidden lg:block">
+            <QuickActions />
+          </div>
+          <RiskShield />
+          <ValueProposition />
+        </aside>
+      </div>
+    </PageContainer>
   );
 }
+

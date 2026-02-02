@@ -21,7 +21,7 @@ export function WebStories() {
                 <div className="absolute top-[20%] right-[-10%] w-[400px] h-[400px] bg-pink-500/10 rounded-full blur-[100px] pointer-events-none" />
                 <div className="absolute bottom-[20%] left-[-10%] w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none" />
 
-                <div className="max-w-7xl mx-auto">
+                <div className="max-w-[1600px] mx-auto">
                     {/* Header Section */}
                     <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-8">
                         <motion.div

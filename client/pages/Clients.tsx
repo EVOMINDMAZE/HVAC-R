@@ -36,6 +36,7 @@ import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
+import { PageContainer } from "@/components/PageContainer";
 
 interface Client {
     id: string;
@@ -223,7 +224,7 @@ export function Clients() {
                 <div className="absolute bottom-[10%] left-[5%] w-[400px] h-[400px] bg-indigo-500/5 rounded-full blur-[80px]" />
             </div>
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <PageContainer variant="standard">
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                     <motion.div
@@ -429,7 +430,7 @@ export function Clients() {
 
                                             <div className="pt-6 border-t border-slate-100 dark:border-slate-800">
                                                 <Link
-                                                    to={`/clients/${client.id}`}
+                                                    to={`/dashboard/clients/${client.id}`}
                                                     className="w-full inline-flex items-center justify-center h-12 rounded-2xl bg-slate-900 dark:bg-blue-600 text-white font-medium hover:bg-slate-800 dark:hover:bg-blue-700 transition-all gap-2 group/btn"
                                                 >
                                                     View Profile
@@ -465,7 +466,7 @@ export function Clients() {
                         )}
                     </motion.div>
                 )}
-            </main>
+            </PageContainer>
             <Footer />
         </div>
     );

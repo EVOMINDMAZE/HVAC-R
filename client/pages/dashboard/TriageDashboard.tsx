@@ -9,6 +9,7 @@ import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PageContainer } from "@/components/PageContainer";
 
 interface AIAnalysis {
     equipment_details?: string;
@@ -188,99 +189,97 @@ export default function TriageDashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 p-4 md:p-8 pb-20">
-            <div className="max-w-7xl mx-auto space-y-8">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div>
-                        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-                            <Zap className="h-8 w-8 text-blue-600" />
-                            Triage Command Center
-                        </h1>
-                        <p className="text-slate-500 dark:text-slate-400">AI-powered pre-dispatch diagnostics & lead conversion.</p>
-                    </div>
+        <PageContainer variant="standard" className="space-y-8 pb-20">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+                        <Zap className="h-8 w-8 text-blue-600" />
+                        Triage Command Center
+                    </h1>
+                    <p className="text-slate-500 dark:text-slate-400">AI-powered pre-dispatch diagnostics & lead conversion.</p>
                 </div>
-
-                <Tabs value={filter} onValueChange={setFilter} className="w-full">
-                    <TabsList className="bg-white dark:bg-slate-950 border">
-                        <TabsTrigger value="active">Active Leads ({submissions.filter(s => s.status !== 'archived' && s.status !== 'converted').length})</TabsTrigger>
-                        <TabsTrigger value="converted">Jobs Created</TabsTrigger>
-                        <TabsTrigger value="archived">Archived</TabsTrigger>
-                    </TabsList>
-
-                    <TabsContent value={filter} className="mt-6">
-                        {loading ? (
-                            <div className="flex justify-center py-20"><Loader2 className="animate-spin w-10 h-10 text-blue-600" /></div>
-                        ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {filteredSubmissions.map((sub) => (
-                                    <Card
-                                        key={sub.id}
-                                        className={`overflow-hidden cursor-pointer transition-all hover:ring-2 hover:ring-blue-500/50 ${sub.status === 'converted' ? 'bg-slate-100/50 dark:bg-slate-900/50' : 'bg-white dark:bg-slate-950'}`}
-                                        onClick={() => setSelectedSubmission(sub)}
-                                    >
-                                        <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
-                                            <div className="flex justify-between items-start mb-2">
-                                                {getSeverityBadge(sub.ai_analysis?.severity)}
-                                                <span className="text-[10px] font-mono text-slate-400 uppercase">
-                                                    {new Date(sub.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                </span>
-                                            </div>
-                                            <CardTitle className="text-lg font-bold truncate">{sub.homeowner_name}</CardTitle>
-                                            <CardDescription className="flex items-center gap-1 font-medium text-blue-600 dark:text-blue-400">
-                                                <Phone className="w-3 h-3" /> {sub.homeowner_phone}
-                                            </CardDescription>
-                                        </CardHeader>
-                                        <CardContent className="pt-4 space-y-4">
-                                            <div className="text-sm line-clamp-3">
-                                                <span className="font-bold text-xs uppercase text-slate-400 block mb-1">Issue Description</span>
-                                                {sub.problem_description}
-                                            </div>
-
-                                            {sub.ai_analysis?.suspected_issue && (
-                                                <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-100 dark:border-blue-800">
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
-                                                        <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-400">AI Diagnosis</span>
-                                                    </div>
-                                                    <p className="text-xs font-semibold text-blue-900 dark:text-blue-200 line-clamp-2">
-                                                        {sub.ai_analysis.suspected_issue}
-                                                    </p>
-                                                </div>
-                                            )}
-
-                                            <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
-                                                <div className="flex -space-x-2">
-                                                    {sub.media_urls?.slice(0, 3).map((url, i) => (
-                                                        <img key={i} src={url} className="w-8 h-8 rounded-full border-2 border-white dark:border-slate-950 object-cover" />
-                                                    ))}
-                                                    {(sub.media_urls?.length || 0) > 3 && (
-                                                        <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 border-2 border-white dark:border-slate-950 flex items-center justify-center text-[10px] font-bold">
-                                                            +{(sub.media_urls?.length || 0) - 3}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <Button size="sm" variant="ghost" className="text-blue-600 text-xs font-bold gap-1 px-0 h-auto hover:bg-transparent">
-                                                    Review Details <ArrowRight className="h-3 w-3" />
-                                                </Button>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                ))}
-
-                                {filteredSubmissions.length === 0 && (
-                                    <div className="col-span-full flex flex-col items-center justify-center py-20 bg-white/50 dark:bg-slate-950/50 rounded-3xl border-2 border-dashed">
-                                        <div className="w-16 h-16 bg-slate-100 dark:bg-slate-900 rounded-full flex items-center justify-center mb-4">
-                                            <FileText className="h-8 w-8 text-slate-400" />
-                                        </div>
-                                        <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200">No {filter} leads</h3>
-                                        <p className="text-slate-500 text-sm">When new triage requests arrive, they'll appear here instantly.</p>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </TabsContent>
-                </Tabs>
             </div>
+
+            <Tabs value={filter} onValueChange={setFilter} className="w-full">
+                <TabsList className="bg-white dark:bg-slate-950 border">
+                    <TabsTrigger value="active">Active Leads ({submissions.filter(s => s.status !== 'archived' && s.status !== 'converted').length})</TabsTrigger>
+                    <TabsTrigger value="converted">Jobs Created</TabsTrigger>
+                    <TabsTrigger value="archived">Archived</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value={filter} className="mt-6">
+                    {loading ? (
+                        <div className="flex justify-center py-20"><Loader2 className="animate-spin w-10 h-10 text-blue-600" /></div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {filteredSubmissions.map((sub) => (
+                                <Card
+                                    key={sub.id}
+                                    className={`overflow-hidden cursor-pointer transition-all hover:ring-2 hover:ring-blue-500/50 ${sub.status === 'converted' ? 'bg-slate-100/50 dark:bg-slate-900/50' : 'bg-white dark:bg-slate-950'}`}
+                                    onClick={() => setSelectedSubmission(sub)}
+                                >
+                                    <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
+                                        <div className="flex justify-between items-start mb-2">
+                                            {getSeverityBadge(sub.ai_analysis?.severity)}
+                                            <span className="text-[10px] font-mono text-slate-400 uppercase">
+                                                {new Date(sub.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            </span>
+                                        </div>
+                                        <CardTitle className="text-lg font-bold truncate">{sub.homeowner_name}</CardTitle>
+                                        <CardDescription className="flex items-center gap-1 font-medium text-blue-600 dark:text-blue-400">
+                                            <Phone className="w-3 h-3" /> {sub.homeowner_phone}
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent className="pt-4 space-y-4">
+                                        <div className="text-sm line-clamp-3">
+                                            <span className="font-bold text-xs uppercase text-slate-400 block mb-1">Issue Description</span>
+                                            {sub.problem_description}
+                                        </div>
+
+                                        {sub.ai_analysis?.suspected_issue && (
+                                            <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-100 dark:border-blue-800">
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
+                                                    <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-400">AI Diagnosis</span>
+                                                </div>
+                                                <p className="text-xs font-semibold text-blue-900 dark:text-blue-200 line-clamp-2">
+                                                    {sub.ai_analysis.suspected_issue}
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
+                                            <div className="flex -space-x-2">
+                                                {sub.media_urls?.slice(0, 3).map((url, i) => (
+                                                    <img key={i} src={url} className="w-8 h-8 rounded-full border-2 border-white dark:border-slate-950 object-cover" />
+                                                ))}
+                                                {(sub.media_urls?.length || 0) > 3 && (
+                                                    <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 border-2 border-white dark:border-slate-950 flex items-center justify-center text-[10px] font-bold">
+                                                        +{(sub.media_urls?.length || 0) - 3}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <Button size="sm" variant="ghost" className="text-blue-600 text-xs font-bold gap-1 px-0 h-auto hover:bg-transparent">
+                                                Review Details <ArrowRight className="h-3 w-3" />
+                                            </Button>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
+
+                            {filteredSubmissions.length === 0 && (
+                                <div className="col-span-full flex flex-col items-center justify-center py-20 bg-white/50 dark:bg-slate-950/50 rounded-3xl border-2 border-dashed">
+                                    <div className="w-16 h-16 bg-slate-100 dark:bg-slate-900 rounded-full flex items-center justify-center mb-4">
+                                        <FileText className="h-8 w-8 text-slate-400" />
+                                    </div>
+                                    <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200">No {filter} leads</h3>
+                                    <p className="text-slate-500 text-sm">When new triage requests arrive, they'll appear here instantly.</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </TabsContent>
+            </Tabs>
 
             {/* Detailed Review Modal */}
             <Dialog open={!!selectedSubmission} onOpenChange={(open) => !open && setSelectedSubmission(null)}>
@@ -442,6 +441,6 @@ export default function TriageDashboard() {
                     )}
                 </DialogContent>
             </Dialog>
-        </div>
+        </PageContainer>
     );
 }

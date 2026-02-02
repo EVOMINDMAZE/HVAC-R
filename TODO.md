@@ -4,15 +4,15 @@
 
 ## 🚀 High Priority (Strategic Gold Mines)
 - [x] **Phase 1: EPA 608 Compliance ⚖️** (Completed)
-- [ ] **Phase 2: Use "N8N" to build Automations 🤖** (Current Focus)
-- [ ] **Phase 3: "Indoor Health" Report �**
-- [ ] **Phase 4: Warranty Auto-Pilot 🛡️**
-- [ ] **Phase 5: AI Pre-Dispatch Triage 🤖**
+- [x] **Phase 2: Native Automations 🤖** (Feature Complete)
+- [x] **Phase 3: AI Pre-Dispatch Triage 🤖**## 🔐 Security & Access Control (RBAC)
+- [x] **Design Role Hierarchy**: Owner -> Manager -> Tech -> Client.
+- [x] **Schema Update**: Implement `user_roles` and `permissions` tables.
+- [x] **Frontend Logic**: Update `ProtectedRoute` and Navigation for multi-role support.
 
-## 🛠 Maintenance & Improvements
-- [ ] Content: Populate 5 initial "Web Stories" (Data entry in Sanity).
-- [ ] Testing: Verify "Offline Mode" for all calculators.
-- [ ] Stripe: Add new "Enterprise" Price Tier.
+## ⚡️ Automation Modernization
+- [x] **Decommission n8n**: Remove legacy docs and code references.
+- [ ] **Migrate to Edge Functions**: Ensure all workflows use Supabase Functions.
 
 ## ✅ Completed
 - [x] Master Blueprint Created.

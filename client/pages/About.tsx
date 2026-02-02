@@ -36,7 +36,7 @@ export function About() {
         <div className="absolute top-[10%] left-[-10%] w-[600px] h-[600px] bg-orange-500/10 rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute bottom-[20%] right-[-10%] w-[500px] h-[500px] bg-red-500/10 rounded-full blur-[100px] pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto pb-20">
+        <div className="max-w-[1600px] mx-auto pb-20">
           {/* Hero Section */}
           <motion.div
             className="text-center mb-20 max-w-4xl mx-auto"

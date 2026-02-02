@@ -82,7 +82,7 @@ export default function Career() {
     return (
         <div className="min-h-screen bg-background transition-colors duration-500">
             <Header />
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-500">
+            <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-500">
 
                 {/* Hero Profile Section */}
                 <div className="relative overflow-hidden rounded-3xl bg-slate-900 border border-slate-800 text-white shadow-2xl p-8 md:p-12">

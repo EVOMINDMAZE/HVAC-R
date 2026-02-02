@@ -18,6 +18,8 @@ import {
   Thermometer
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { PageContainer } from "@/components/PageContainer";
+
 
 const documentation: {
   category: string;
@@ -186,197 +188,197 @@ export function Documentation() {
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-purple-500/5 blur-[100px]" />
       </div>
 
-      <main className="relative z-10 pt-24 pb-20 px-4">
-        <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col md:flex-row items-start justify-between mb-16 gap-8"
-          >
-            <div className="max-w-3xl">
-              <Badge
-                variant="outline"
-                className="mb-6 border-blue-200 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800 backdrop-blur-sm"
-              >
-                Documentation
-              </Badge>
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
-                Engineering
-                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent ml-3">
-                  Knowledge Base
-                </span>
-              </h1>
-              <p className="text-xl text-muted-foreground leading-relaxed">
-                Comprehensive guides, tutorials, and reference materials to help
-                you master HVAC&R calculations and get the most out of our tools.
-              </p>
-            </div>
-          </motion.div>
+      <PageContainer variant="standard" className="relative z-10 pt-24 pb-20">
 
-          {/* Search and Navigation */}
-          <div className="mb-12 sticky top-20 z-20 bg-background/80 backdrop-blur-md p-4 rounded-2xl border border-border/50 shadow-sm">
-            <div className="flex flex-col md:flex-row gap-4 mb-6">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
-                <Input
-                  ref={searchRef}
-                  placeholder="Search documentation (press / to focus)..."
-                  aria-label="Search documentation"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 h-11 text-lg border-input bg-card/50"
-                />
-              </div>
-              {selectedCategory && (
-                <Button
-                  variant="ghost"
-                  onClick={() => setSelectedCategory(null)}
-                  className="shrink-0"
-                >
-                  Clear Filter
-                </Button>
-              )}
-            </div>
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col md:flex-row items-start justify-between mb-16 gap-8"
+        >
+          <div className="max-w-3xl">
+            <Badge
+              variant="outline"
+              className="mb-6 border-blue-200 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800 backdrop-blur-sm"
+            >
+              Documentation
+            </Badge>
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+              Engineering
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent ml-3">
+                Knowledge Base
+              </span>
+            </h1>
+            <p className="text-xl text-muted-foreground leading-relaxed">
+              Comprehensive guides, tutorials, and reference materials to help
+              you master HVAC&R calculations and get the most out of our tools.
+            </p>
+          </div>
+        </motion.div>
 
-            {/* Category Filter */}
-            <div className="flex flex-wrap gap-2">
+        {/* Search and Navigation */}
+        <div className="mb-12 sticky top-20 z-20 bg-background/80 backdrop-blur-md p-4 rounded-2xl border border-border/50 shadow-sm">
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+              <Input
+                ref={searchRef}
+                placeholder="Search documentation (press / to focus)..."
+                aria-label="Search documentation"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 h-11 text-lg border-input bg-card/50"
+              />
+            </div>
+            {selectedCategory && (
               <Button
-                variant={selectedCategory === null ? "secondary" : "ghost"}
-                size="sm"
-                className={selectedCategory === null ? "bg-primary/10 text-primary" : "text-muted-foreground"}
+                variant="ghost"
                 onClick={() => setSelectedCategory(null)}
+                className="shrink-0"
               >
-                All Categories
+                Clear Filter
               </Button>
-              {documentation.map((category) => {
-                const IconComponent = category.icon;
-                return (
-                  <Button
-                    key={category.category}
-                    variant={
-                      selectedCategory === category.category
-                        ? "secondary"
-                        : "ghost"
-                    }
-                    size="sm"
-                    className={`${selectedCategory === category.category
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground"
-                      }`}
-                    onClick={() =>
-                      setSelectedCategory(
-                        selectedCategory === category.category
-                          ? null
-                          : category.category,
-                      )
-                    }
-                  >
-                    <IconComponent className="h-3 w-3 mr-2" />
-                    {category.category}
-                  </Button>
-                );
-              })}
-            </div>
+            )}
           </div>
 
-          {/* Documentation Content */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="grid gap-8"
-          >
-            {filteredDocs.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-                  <Search className="w-8 h-8 text-muted-foreground" />
-                </div>
-                <h3 className="text-lg font-semibold text-foreground">No documentation found</h3>
-                <p className="text-muted-foreground mt-2 max-w-sm">
-                  We're currently updating our knowledge base. Please check back soon for detailed guides and tutorials.
-                </p>
-              </div>
-            ) : (
-              filteredDocs.map((category) => {
-                const IconComponent = category.icon;
-                return (
-                  <motion.div key={category.category} variants={itemVariants}>
-                    <Card
-                      className="bg-card/50 backdrop-blur-sm shadow-sm border-border overflow-hidden"
-                    >
-                      <CardHeader className={`bg-gradient-to-r ${category.gradientClass} border-b border-border py-4`}>
-                        <CardTitle className={`flex items-center text-xl font-semibold ${category.colorClass}`}>
-                          <IconComponent className="h-6 w-6 mr-3" />
-                          {category.category}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="p-6">
-                        <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-4">
-                          {category.articles.map((article, index) => (
-                            <button
-                              key={index}
-                              onClick={() => setSelectedArticle(article.title)}
-                              className="group text-left p-4 rounded-xl border border-border/50 bg-card hover:border-primary/50 hover:shadow-md hover:bg-muted/50 transition-all duration-300 relative overflow-hidden"
-                            >
-                              <div className="relative z-10">
-                                <div className="flex items-start justify-between mb-2">
-                                  <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors pr-6">
-                                    {article.title}
-                                  </h3>
-                                  <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-                                </div>
-                                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                                  {article.description}
-                                </p>
-                                <div className="flex items-center justify-between mt-auto">
-                                  <Badge variant="outline" className="text-xs bg-muted/50 border-border font-normal">
-                                    {article.readTime}
-                                  </Badge>
-                                  <div className="flex items-center text-xs text-muted-foreground group-hover:text-primary transition-colors">
-                                    <FileText className="h-3 w-3 mr-1" />
-                                    Read Article
-                                  </div>
-                                </div>
-                              </div>
-                            </button>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                );
-              })
-            )}
-          </motion.div>
-
-          {/* Quick Links */}
-          <div className="mt-20">
-            <h2 className="text-2xl font-bold text-center mb-8">More Ways to Learn</h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              <QuickLinkCard
-                icon={<Download className="h-8 w-8 text-blue-500" />}
-                title="PDF Guides"
-                description="Download comprehensive guides for offline reading and sharing with your team."
-                action="Download All"
-              />
-              <QuickLinkCard
-                icon={<PlayCircle className="h-8 w-8 text-green-500" />}
-                title="Video Tutorials"
-                description="Watch step-by-step video walkthroughs of complex calculations and workflows."
-                action="Watch Videos"
-              />
-              <QuickLinkCard
-                icon={<Users className="h-8 w-8 text-purple-500" />}
-                title="Community Forum"
-                description="Connect with thousands of other engineers to share tips and solve problems."
-                action="Join Forum"
-              />
-            </div>
+          {/* Category Filter */}
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant={selectedCategory === null ? "secondary" : "ghost"}
+              size="sm"
+              className={selectedCategory === null ? "bg-primary/10 text-primary" : "text-muted-foreground"}
+              onClick={() => setSelectedCategory(null)}
+            >
+              All Categories
+            </Button>
+            {documentation.map((category) => {
+              const IconComponent = category.icon;
+              return (
+                <Button
+                  key={category.category}
+                  variant={
+                    selectedCategory === category.category
+                      ? "secondary"
+                      : "ghost"
+                  }
+                  size="sm"
+                  className={`${selectedCategory === category.category
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground"
+                    }`}
+                  onClick={() =>
+                    setSelectedCategory(
+                      selectedCategory === category.category
+                        ? null
+                        : category.category,
+                    )
+                  }
+                >
+                  <IconComponent className="h-3 w-3 mr-2" />
+                  {category.category}
+                </Button>
+              );
+            })}
           </div>
         </div>
-      </main>
+
+        {/* Documentation Content */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid gap-8"
+        >
+          {filteredDocs.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+                <Search className="w-8 h-8 text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-semibold text-foreground">No documentation found</h3>
+              <p className="text-muted-foreground mt-2 max-w-sm">
+                We're currently updating our knowledge base. Please check back soon for detailed guides and tutorials.
+              </p>
+            </div>
+          ) : (
+            filteredDocs.map((category) => {
+              const IconComponent = category.icon;
+              return (
+                <motion.div key={category.category} variants={itemVariants}>
+                  <Card
+                    className="bg-card/50 backdrop-blur-sm shadow-sm border-border overflow-hidden"
+                  >
+                    <CardHeader className={`bg-gradient-to-r ${category.gradientClass} border-b border-border py-4`}>
+                      <CardTitle className={`flex items-center text-xl font-semibold ${category.colorClass}`}>
+                        <IconComponent className="h-6 w-6 mr-3" />
+                        {category.category}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-6">
+                      <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-4">
+                        {category.articles.map((article, index) => (
+                          <button
+                            key={index}
+                            onClick={() => setSelectedArticle(article.title)}
+                            className="group text-left p-4 rounded-xl border border-border/50 bg-card hover:border-primary/50 hover:shadow-md hover:bg-muted/50 transition-all duration-300 relative overflow-hidden"
+                          >
+                            <div className="relative z-10">
+                              <div className="flex items-start justify-between mb-2">
+                                <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors pr-6">
+                                  {article.title}
+                                </h3>
+                                <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                              </div>
+                              <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                                {article.description}
+                              </p>
+                              <div className="flex items-center justify-between mt-auto">
+                                <Badge variant="outline" className="text-xs bg-muted/50 border-border font-normal">
+                                  {article.readTime}
+                                </Badge>
+                                <div className="flex items-center text-xs text-muted-foreground group-hover:text-primary transition-colors">
+                                  <FileText className="h-3 w-3 mr-1" />
+                                  Read Article
+                                </div>
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })
+          )}
+        </motion.div>
+
+        {/* Quick Links */}
+        <div className="mt-20">
+          <h2 className="text-2xl font-bold text-center mb-8">More Ways to Learn</h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            <QuickLinkCard
+              icon={<Download className="h-8 w-8 text-blue-500" />}
+              title="PDF Guides"
+              description="Download comprehensive guides for offline reading and sharing with your team."
+              action="Download All"
+            />
+            <QuickLinkCard
+              icon={<PlayCircle className="h-8 w-8 text-green-500" />}
+              title="Video Tutorials"
+              description="Watch step-by-step video walkthroughs of complex calculations and workflows."
+              action="Watch Videos"
+            />
+            <QuickLinkCard
+              icon={<Users className="h-8 w-8 text-purple-500" />}
+              title="Community Forum"
+              description="Connect with thousands of other engineers to share tips and solve problems."
+              action="Join Forum"
+            />
+          </div>
+        </div>
+      </PageContainer>
+
       <Footer />
 
       {selectedArticle && (

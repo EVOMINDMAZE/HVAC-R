@@ -42,6 +42,8 @@ import { apiClient } from "@/lib/api";
 import { consumeCalculationPreset } from "@/lib/historyPresets";
 import { useToast } from "@/hooks/use-toast";
 import { ApiServiceStatus } from "@/components/ApiServiceStatus";
+import { PageContainer } from "@/components/PageContainer";
+
 
 const SYMPTOMS = [
   { id: "no_cooling", label: "No/insufficient cooling" },
@@ -230,6 +232,7 @@ export function TroubleshootingContent() {
   const [attachments, setAttachments] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [mode, setMode] = useState<"wizard" | "ai">("wizard");
+  const [userRole, setUserRole] = useState<"technician" | "homeowner">("technician");
 
   // AI state
   const [aiLoading, setAiLoading] = useState(false);
@@ -542,6 +545,7 @@ export function TroubleshootingContent() {
           answers,
           notes: observations,
         },
+        userRole: userRole,
       };
 
       const resp = await apiClient.aiTroubleshoot(payload);
@@ -572,8 +576,10 @@ export function TroubleshootingContent() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground animate-in fade-in duration-500 pb-20">
-      <div className="container mx-auto px-4 py-8 max-w-[1800px]">
+    <div className="animate-in fade-in duration-500">
+      <div className="space-y-8">
+
+
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
@@ -770,6 +776,22 @@ export function TroubleshootingContent() {
                 <TabsTrigger value="ai">AI Expert Analysis</TabsTrigger>
               </TabsList>
 
+              {/* Role Selector for AI Context */}
+              {mode === "ai" && (
+                <div className="mb-6 bg-muted/40 p-3 rounded-lg border border-border/50 flex items-center justify-between">
+                  <div className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    <Bot className="h-4 w-4" />
+                    AI Persona:
+                  </div>
+                  <Tabs value={userRole} onValueChange={(v) => setUserRole(v as any)} className="w-[240px]">
+                    <TabsList className="grid w-full grid-cols-2 h-8">
+                      <TabsTrigger value="technician" className="text-xs">Technician</TabsTrigger>
+                      <TabsTrigger value="homeowner" className="text-xs">Homeowner</TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+                </div>
+              )}
+
               <TabsContent value="wizard" className="mt-0 space-y-6">
                 {step < steps.length ? (
                   <Card className="border-t-4 border-t-primary shadow-lg overflow-hidden relative">
@@ -912,15 +934,19 @@ export function TroubleshootingContent() {
   );
 }
 
+
 export function Troubleshooting() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-slate-950 dark:to-slate-900">
-      <div className="max-w-[1920px] mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-slate-950 dark:to-slate-900 pb-20">
+      <PageContainer variant="standard">
         <ApiServiceStatus />
         <TroubleshootingContent />
-      </div>
+      </PageContainer>
     </div>
   );
 }
 
+
 export default Troubleshooting;
+
+

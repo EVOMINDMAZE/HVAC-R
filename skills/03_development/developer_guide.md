@@ -12,8 +12,10 @@ Welcome to the **ThermoNeural (HVAC-R)** developer documentation. This guide pro
 - **Architecture:** Route-based code splitting (80% bundle reduction)
 - **UI Components:** [Radix UI](https://www.radix-ui.com/) (Headless), [Shadcn UI](https://ui.shadcn.com/) implementation patterns
 - **State Management:** React Context + Hooks (`useSupabaseAuth`, `useToast`, etc.)
-- **Routing:** `react-router-dom`
-- **Charts:** `recharts`
+- **Routing:** `react-router-dom` (Standardized under `/dashboard/*`)
+- **SEO:** `react-helmet-async` with generic `<SEO />` component
+- **Charts:** `recharts` (Responsive with `ResponsiveContainer`)
+- **PDF Generation:** `pdf-lib` (Client-side report generation)
 - **Animations:** `framer-motion`
 - **3D Rendering:** `three.js` with `@react-three/fiber`
 
@@ -24,7 +26,7 @@ Welcome to the **ThermoNeural (HVAC-R)** developer documentation. This guide pro
 - **Database (Auth/Data):** [Supabase](https://supabase.com/) (PostgreSQL)
 - **Payments:** [Stripe](https://stripe.com/)
 - **Heavy Compute:** Render (Python/Go)
-- **Automation Node:** Vultr (Docker/n8n)
+- **Automations:** Supabase Edge Functions (Deno Runtime) - e.g., `invite-user`, `ai-troubleshoot`
 
 ## 2. Architecture Overview
 
@@ -32,7 +34,7 @@ The project is structured as a monorepo-style codebase containing both client an
 
 - **`/client`**: Contains the React frontend application.
   - `pages/`: Application views/routes.
-  - `components/`: Reusable UI components.
+  - `components/`: Reusable UI components (e.g., `invoices/`, `ui/`, `auth/`).
   - `hooks/`: Custom React hooks (e.g., `useSupabaseAuth`).
   - `lib/`: Utility libraries and API clients (`api.ts`, `supabase.ts`).
 - **`/server`**: Contains the Node.js/Express backend.
@@ -92,15 +94,33 @@ Authentication is handled via Supabase Auth. The frontend uses `useSupabaseAuth`
 - **Login:** Users can sign in with Email/Password or Google OAuth.
 - **Session Persistence:** Tokens are stored in `localStorage` by the Supabase client to survive PWA reloads.
 - **Protected Routes:** `ProtectedRoute` component ensures only authenticated users access secured pages.
+- **RBAC:**
+  - **Admin/Tech**: Full access to Dashboard, Jobs, and Tools.
+  - **Client**: Restricted to `/portal`, `/history`, and `/track-job`. Attempts to access unrestricted routes are automatically redirected.
 
 ### Calculations
-Calculations (e.g., Standard Cycle, Cascade Cycle) are performed either client-side or mocked via the backend API (`api.ts`).
+### Calculations
+Calculations (e.g., Standard Cycle, Cascade Cycle) employ a **Hybrid Architecture**:
+- **Client-Side:** Input validation, basic unit conversion, and UI state management.
+- **Server-Side:** Heavy thermodynamic properties (via CoolProp) are calculated in a **Python/FastAPI Service** hosted on **Render**.
+    - This service ensures accurate thermodynamic modeling (e.g., standard cycle, cascade).
+- **AI Logic**: All AI features follow the **AI Gateway Pattern**.
+    - **Gateway**: `supabase/functions/ai-gateway` acts as the central router for all LLM requests (xAI, DeepSeek, Groq).
+    - **Functions**: `ai-troubleshoot` and `analyze-triage-media` call the gateway instead of calling providers directly.
+    - **Dual Persona**: Supports "Homeowner" (safety first) and "Technician" (technical data) personas via context injection in the calling functions.
 - **API Client:** `client/lib/api.ts` handles all external requests. It automatically injects the Supabase Access Token into the `Authorization` header for secure endpoints.
 
 ### Subscription & Payments
 Stripe integration manages user subscriptions (Professional/Enterprise tiers).
-- **Webhooks:** The server listens for Stripe webhooks to update user subscription status in the database.
+- **Webhooks:** The server listens for Stripe webhooks to update user subscription status.
+- **Provisioning**: The `stripe-webhook` Edge Function automatically provisions new `companies` and `licenses` upon successful checkout.
 - **Pricing Page:** dynamic pricing tables based on configured Stripe Price IDs.
+
+### Realtime Features
+The application utilizes Supabase Realtime for live updates across the platform:
+- **Technician Tracking**: Job locations and status updates are broadcast via the `jobs` and `technician_locations` tables.
+- **Job Board**: New jobs and assignments appear instantly on the Admin Dispatch board without page refreshes.
+- **Status Sync**: In-app notifications and task progress bars utilize Realtime broadcast channels for sub-second latency.
 
 ### Deployment & Database Management
 **IMPORTANT: NO DOCKER USAGE**
@@ -139,6 +159,9 @@ To keep the repository clean and efficient:
 
 ## 9. Testing Standards
 
+- **Static Analysis First**: To optimize for efficiency and token usage, prioritize static code analysis and reading code files over running the full test suite repeatedly.
+- **Targeted Execution**: Run specific tests using the `-g` flag (e.g., `npx playwright test -g "test name"`) to debug isolated issues.
+- **Reporter Configuration**: Use `--reporter=list` (e.g., `npx playwright test --reporter=list`) when debugging to reduce verbose output and token consumption.
 - **Headless First**: E2E tests are configured to run headlessly by default for speed and CI compatibility.
 - **Self-Healing Data**: Tests should not rely on pre-existing data. Use setup hooks (`test.beforeAll`) to verify and create necessary records (Users, Clients) if they are missing.
 - **Visual Debugging**: If a test fails, check the `test-results/` directory for trace files and screenshots.

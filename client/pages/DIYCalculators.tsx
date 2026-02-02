@@ -9,14 +9,15 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Loader2, History, Wind, Thermometer, ShieldAlert, Save, ArrowLeft, Ruler, Cloud } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { apiClient } from "@/lib/api";
-
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
+import { PageContainer } from "@/components/PageContainer";
+import { Badge } from "@/components/ui/badge";
+import { SaveCalculation } from "@/components/SaveCalculation";
+
 // Lazy-load heavy calculator components
 const A2LCalculator = lazy(() => import("@/components/calculators/A2LCalculator"));
 const SubcoolingCalculator = lazy(() => import("@/components/calculators/SubcoolingCalculator"));
 const PsychrometricCalculator = lazy(() => import("@/components/calculators/PsychrometricCalculator"));
-import { SaveCalculation } from "@/components/SaveCalculation";
-import { Badge } from "@/components/ui/badge";
 
 export default function DIYCalculators() {
   const navigate = useNavigate();
@@ -24,93 +25,87 @@ export default function DIYCalculators() {
   const [activeTab, setActiveTab] = useState("airflow");
 
   return (
-    <main className="min-h-screen bg-slate-50/50 dark:bg-slate-900/50 pb-20">
+    <PageContainer variant="standard" className="space-y-8 pb-20">
       {/* Header Section */}
-      <div className="bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 text-slate-500 mb-2">
-                <Button variant="ghost" size="sm" className="-ml-3 h-8 text-xs" onClick={() => navigate('/dashboard')}>
-                  <ArrowLeft className="w-4 h-4 mr-1" /> Dashboard
-                </Button>
-              </div>
-              <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
-                <Ruler className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-                HVAC Field Tools
-              </h1>
-              <p className="mt-1 text-slate-500 dark:text-slate-400 max-w-2xl">
-                Quick, professional-grade calculators for technicians on the job site.
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => navigate('/history')} className="hidden md:flex">
-                <History className="w-4 h-4 mr-2" />
-                Calculation History
-              </Button>
-            </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <Button variant="ghost" size="sm" className="-ml-3 h-8 text-xs text-slate-500 hover:text-slate-900 dark:hover:text-slate-300" onClick={() => navigate('/dashboard')}>
+              <ArrowLeft className="w-4 h-4 mr-1" /> Back to Dashboard
+            </Button>
           </div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
+            <Ruler className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+            HVAC Field Tools
+          </h1>
+          <p className="mt-2 text-slate-500 dark:text-slate-400 max-w-2xl text-lg">
+            Quick, professional-grade calculators for technicians on the job site.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => navigate('/history')} className="hidden md:flex">
+            <History className="w-4 h-4 mr-2" />
+            Calculation History
+          </Button>
         </div>
       </div>
 
       {/* Main Content Area */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Tabs defaultValue="airflow" value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+      <Tabs defaultValue="airflow" value={activeTab} onValueChange={setActiveTab} className="space-y-8">
 
-          <div className="flex justify-center md:justify-start overflow-x-auto pb-2 scrollbar-hide">
-            <TabsList className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-1 rounded-full shadow-sm h-12">
-              <TabsTrigger value="airflow" className="rounded-full px-6 py-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white transition-all">
-                <Wind className="w-4 h-4 mr-2" />
-                Airflow
-              </TabsTrigger>
-              <TabsTrigger value="deltat" className="rounded-full px-6 py-2 data-[state=active]:bg-emerald-600 data-[state=active]:text-white transition-all">
-                <Thermometer className="w-4 h-4 mr-2" />
-                Delta T
-              </TabsTrigger>
-              <TabsTrigger value="a2l" className="rounded-full px-6 py-2 data-[state=active]:bg-orange-600 data-[state=active]:text-white transition-all">
-                <ShieldAlert className="w-4 h-4 mr-2" />
-                A2L Safety
-              </TabsTrigger>
-              <TabsTrigger value="subcooling" className="rounded-full px-6 py-2 data-[state=active]:bg-sky-500 data-[state=active]:text-white transition-all">
-                <Thermometer className="w-4 h-4 mr-2" />
-                Subcooling
-              </TabsTrigger>
-              <TabsTrigger value="psychrometric" className="rounded-full px-6 py-2 data-[state=active]:bg-purple-600 data-[state=active]:text-white transition-all">
-                <Cloud className="w-4 h-4 mr-2" />
-                Psychrometric
-              </TabsTrigger>
-            </TabsList>
-          </div>
+        <div className="flex justify-center md:justify-start overflow-x-auto pb-2 scrollbar-hide">
+          <TabsList className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-1 rounded-full shadow-sm h-12">
+            <TabsTrigger value="airflow" className="rounded-full px-6 py-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white transition-all">
+              <Wind className="w-4 h-4 mr-2" />
+              Airflow
+            </TabsTrigger>
+            <TabsTrigger value="deltat" className="rounded-full px-6 py-2 data-[state=active]:bg-emerald-600 data-[state=active]:text-white transition-all">
+              <Thermometer className="w-4 h-4 mr-2" />
+              Delta T
+            </TabsTrigger>
+            <TabsTrigger value="a2l" className="rounded-full px-6 py-2 data-[state=active]:bg-orange-600 data-[state=active]:text-white transition-all">
+              <ShieldAlert className="w-4 h-4 mr-2" />
+              A2L Safety
+            </TabsTrigger>
+            <TabsTrigger value="subcooling" className="rounded-full px-6 py-2 data-[state=active]:bg-sky-500 data-[state=active]:text-white transition-all">
+              <Thermometer className="w-4 h-4 mr-2" />
+              Subcooling
+            </TabsTrigger>
+            <TabsTrigger value="psychrometric" className="rounded-full px-6 py-2 data-[state=active]:bg-purple-600 data-[state=active]:text-white transition-all">
+              <Cloud className="w-4 h-4 mr-2" />
+              Psychrometric
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
-          <TabsContent value="airflow" className="animate-in fade-in slide-in-from-bottom-4 duration-500 focus-visible:outline-none">
-            <AirflowCalculator />
-          </TabsContent>
+        <TabsContent value="airflow" className="animate-in fade-in slide-in-from-bottom-4 duration-500 focus-visible:outline-none">
+          <AirflowCalculator />
+        </TabsContent>
 
-          <TabsContent value="deltat" className="animate-in fade-in slide-in-from-bottom-4 duration-500 focus-visible:outline-none">
-            <DeltaTCalculator />
-          </TabsContent>
+        <TabsContent value="deltat" className="animate-in fade-in slide-in-from-bottom-4 duration-500 focus-visible:outline-none">
+          <DeltaTCalculator />
+        </TabsContent>
 
-          <TabsContent value="a2l" className="animate-in fade-in slide-in-from-bottom-4 duration-500 focus-visible:outline-none">
-            <Suspense fallback={<div className="flex items-center justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
-              <A2LCalculator saveCalculation={saveCalculation} />
-            </Suspense>
-          </TabsContent>
+        <TabsContent value="a2l" className="animate-in fade-in slide-in-from-bottom-4 duration-500 focus-visible:outline-none">
+          <Suspense fallback={<div className="flex items-center justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
+            <A2LCalculator saveCalculation={saveCalculation} />
+          </Suspense>
+        </TabsContent>
 
-          <TabsContent value="subcooling" className="animate-in fade-in slide-in-from-bottom-4 duration-500 focus-visible:outline-none">
-            <Suspense fallback={<div className="flex items-center justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
-              <SubcoolingCalculator saveCalculation={saveCalculation} />
-            </Suspense>
-          </TabsContent>
+        <TabsContent value="subcooling" className="animate-in fade-in slide-in-from-bottom-4 duration-500 focus-visible:outline-none">
+          <Suspense fallback={<div className="flex items-center justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
+            <SubcoolingCalculator saveCalculation={saveCalculation} />
+          </Suspense>
+        </TabsContent>
 
-          <TabsContent value="psychrometric" className="animate-in fade-in slide-in-from-bottom-4 duration-500 focus-visible:outline-none">
-            <Suspense fallback={<div className="flex items-center justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
-              <PsychrometricCalculator saveCalculation={saveCalculation} userTier="pro" />
-            </Suspense>
-          </TabsContent>
+        <TabsContent value="psychrometric" className="animate-in fade-in slide-in-from-bottom-4 duration-500 focus-visible:outline-none">
+          <Suspense fallback={<div className="flex items-center justify-center p-8"><Loader2 className="h-8 w-8 animate-spin" /></div>}>
+            <PsychrometricCalculator saveCalculation={saveCalculation} userTier="pro" />
+          </Suspense>
+        </TabsContent>
 
-        </Tabs>
-      </div>
-    </main>
+      </Tabs>
+    </PageContainer>
   );
 }
 

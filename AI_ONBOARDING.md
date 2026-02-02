@@ -9,7 +9,7 @@
 **ThermoNeural** is a "Business in a Box" platform for HVAC professionals. It combines:
 1.  **SaaS App**: A React/Supabase web app for Estimations, CRM, and Project Management.
 2.  **Heavy Compute Engine**: A dedicated Python/Go microservice for complex thermodynamic calculations (Render).
-3.  **Member Automation Node**: A *private* n8n server provisioned on Vultr for every paying user (The "Digital Landlord" model).
+3.  **Automation Engine**: Native Edge Functions and Database Webhooks that power business logic (Review Hunter, Invoice Chaser) directly within the SaaS.
 
 ## 2. Architecture Pillars (The "Holy Trinity") 🏛️
 
@@ -19,7 +19,7 @@
 | **Server** | Node.js, Express | Netlify (Functions) | API Proxy, Webhooks | Stateless. |
 | **Database** | PostgreSQL | Supabase | Auth, Data | **Use Supabase CLI**. |
 | **Math Engine** | Python/Go | **Render** | Thermodynamics, Energy Models | **External Repo** (`thermoneural-calc`). Accessed via API only. |
-| **Member Node**| Docker, n8n | **Vultr** | User Automation, Workflows | **Isolated**. Not connected to Main DB. |
+| **Automation**| TypeScript (Deno) | **Supabase Edge** | User Automation, Workflows | **Native**. Triggered by DB events or Schedule. |
 
 ## 3. Directory Map 🗺️
 
@@ -28,7 +28,7 @@
 -   **`/skills`**: **The Knowledge Base**.
     -   `01_strategy`: Business goals.
     -   `03_development`: Technical validation.
-    -   `04_infrastructure`: Scripts for **Vultr** (Member Nodes).
+    -   `04_infrastructure`: Deployment configs (optional).
 -   **`/supabase`**: Migrations and Edge Functions.
 -   **`/scripts`**: Helper scripts (e.g., Render Service Discovery).
 
@@ -37,7 +37,7 @@
 1.  **Docker Ban**: Do **NOT** use Docker or `supabase start` for the Main Application.
 2.  **Cloud-Direct DB**: Always use `supabase db push` to apply migrations to the live project (`rxqflxmzsqhqrzffcsej`). Local DB simulation is deprecated.
 3.  **Render for Math**: If `numpy` or `scipy` is needed, it goes to the **Render Service**, not the Node.js backend.
-4.  **Vultr for n8n**: The `install.sh` in `skills/04_infrastructure` is for provisioning *remote* servers, not local dev.
+4.  **Native First**: Prefer Supabase Edge Functions for automations. Do not spin up external servers unless absolutely necessary.
 
 ## 5. Development Setup 🛠️
 
@@ -49,7 +49,6 @@
 -   `VITE_SUPABASE_URL`: Supabase Endpoint.
 -   `VITE_CALCULATION_SERVICE_URL`: URL for the Render Math Engine.
 -   `RENDER_API_KEY`: (Server-side) For managing Render services.
--   `VULTR_API_KEY`: (Server-side/n8n) For provisioning Member Nodes.
 
 ## 7. Agent & Subagent Protocols 🤖
 **Strict Rules for AI Agents (Antigravity) usage of tools:**
@@ -107,7 +106,7 @@ erDiagram
         uuid id PK
         uuid user_id FK "Auth User"
         string name
-        jsonb n8n_config "Private Node Config"
+        jsonb automation_config "Preferences & Settings"
     }
 
     CLIENTS {

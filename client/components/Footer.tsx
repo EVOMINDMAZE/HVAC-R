@@ -13,7 +13,7 @@ export function Footer() {
       {/* Value proposition banner for non-authenticated users */}
       {!isAuthenticated && !isLandingPage && (
         <div className="bg-gradient-to-r from-slate-900 to-slate-800 py-12 border-b border-slate-700">
-          <div className="max-w-7xl mx-auto px-4 text-center">
+          <div className="max-w-[1600px] mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Thermal Engineering?</h2>
             <p className="text-xl text-slate-300 mb-6">
               Join thousands of engineers who save 20+ hours monthly with professional-grade calculations
@@ -37,7 +37,7 @@ export function Footer() {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 pt-12 pb-0">
+      <div className="max-w-[1600px] mx-auto px-4 pt-12 pb-0">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand Column */}
           <div className="space-y-4">
@@ -65,17 +65,17 @@ export function Footer() {
             <h4 className="text-lg font-semibold mb-4">Calculation Tools</h4>
             <ul className="space-y-2 text-gray-300">
               <li>
-                <Link to={isAuthenticated ? "/standard-cycle" : "/features"} className="hover:text-blue-400 transition-colors">
+                <Link to={isAuthenticated ? "/tools/standard-cycle" : "/features"} className="hover:text-blue-400 transition-colors">
                   Standard Cycle Analysis
                 </Link>
               </li>
               <li>
-                <Link to={isAuthenticated ? "/refrigerant-comparison" : "/features"} className="hover:text-blue-400 transition-colors">
+                <Link to={isAuthenticated ? "/tools/refrigerant-comparison" : "/features"} className="hover:text-blue-400 transition-colors">
                   Refrigerant Comparison
                 </Link>
               </li>
               <li>
-                <Link to={isAuthenticated ? "/cascade-cycle" : "/features"} className="hover:text-blue-400 transition-colors">
+                <Link to={isAuthenticated ? "/tools/cascade-cycle" : "/features"} className="hover:text-blue-400 transition-colors">
                   Cascade Cycle Analysis
                 </Link>
               </li>

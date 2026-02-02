@@ -14,13 +14,8 @@ serve(async (req) => {
     }
 
     try {
-        const XAI_API_KEY = Deno.env.get("XAI_API_KEY") || Deno.env.get("OPENAI_API_KEY");
         const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
         const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-
-        if (!XAI_API_KEY) {
-            throw new Error("Missing XAI_API_KEY");
-        }
 
         const { submission_id } = await req.json();
 
@@ -55,17 +50,16 @@ serve(async (req) => {
             },
         ];
 
-        const response = await fetch("https://api.x.ai/v1/chat/completions", {
+        const response = await fetch(`${SUPABASE_URL}/functions/v1/ai-gateway`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${XAI_API_KEY}`,
+                "Authorization": `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`
             },
             body: JSON.stringify({
-                model: "grok-2-vision-1212", // Using standard vision model from xAI
+                mode: "vision",
                 messages,
-                stream: false,
-                response_format: { type: "json_object" }
+                temperature: 0.2
             }),
         });
 

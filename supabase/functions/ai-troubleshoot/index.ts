@@ -42,9 +42,9 @@ const SYSTEM_PROMPT =
 
 const ROLE_INSTRUCTIONS: Record<string, string> = {
   homeowner:
-    "User role: homeowner. Use plain language, avoid technical jargon, provide clear safety steps and when to call a professional.",
+    "User role: homeowner. Use plain, non-technical language. Do NOT use jargon like 'Delta T' or 'Subcooling' without explaining it simplest terms. Priority is safety: explicitly warn about electrical or pressure hazards. If a tool is needed, ask if they have it. If the issue seems complex, recommend calling a professional.",
   technician:
-    "User role: technician. Provide practical diagnostic steps, measurement checks, acceptable ranges, and likely component-level faults.",
+    "User role: technician. Assume professional knowledge. Use standard industry terms (SH, SC, Delta T, vsat, lsat). Focus on narrowing down the root cause. Recommend specific component checks (capacitor mfd, resistance ohms, refrigerant charge weight). Provide expected ranges for pressures if R410A or R22 is implied.",
   engineer:
     "User role: engineer. Provide root-cause hypotheses, system-level interactions, and recommend tests with expected numerical ranges when applicable.",
 };
@@ -290,7 +290,7 @@ serve(async (req) => {
       // DeepSeek supports system role.
       if (systemMessage) messages.unshift(systemMessage);
 
-      raw = await callDeepSeek(messages, payload?.model);
+      raw = await callAIGateway(messages);
     } catch (aiError) {
       console.error("AI provider request failed", aiError);
       const detail =
@@ -347,9 +347,19 @@ function buildMessages(payload: TroubleshootPayload, userRole?: string) {
     timestamp: new Date().toISOString(),
   };
 
+  let answerSummary = "";
+  if (payload.answers && Object.keys(payload.answers).length > 0) {
+    answerSummary = "Diagnostic Wizard Answers:\n";
+    for (const [key, val] of Object.entries(payload.answers)) {
+      answerSummary += `- ${key}: ${val}\n`;
+    }
+  }
+
   let userContent =
     "Here is the structured troubleshooting context (JSON):\n" +
     JSON.stringify(context, null, 2) +
+    "\n\n" +
+    answerSummary +
     "\n";
 
   if (userRole && ROLE_INSTRUCTIONS[userRole]) {
@@ -364,65 +374,31 @@ function buildMessages(payload: TroubleshootPayload, userRole?: string) {
   return messages;
 }
 
-async function callDeepSeek(
-  messages: Array<{ role: string; content: string }>,
-  modelHint?: string | null,
-) {
-  const url = "https://api.deepseek.com/chat/completions";
-  const model = "deepseek-chat";
+async function callAIGateway(messages: Array<{ role: string; content: string }>) {
+  const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+  const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
-  const apiKey = Deno.env.get("DEEPSEEK_API_KEY") || Deno.env.get("OLLAMA_API_KEY"); // Fallback to OLLAMA_KEY if user set that
-  if (apiKey) {
-    headers.Authorization = `Bearer ${apiKey}`;
-  } else {
-    throw new Error("Missing DEEPSEEK_API_KEY");
+  const response = await fetch(`${supabaseUrl}/functions/v1/ai-gateway`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${supabaseServiceRoleKey}`,
+    },
+    body: JSON.stringify({
+      mode: "general", // DeepSeek-V3 for diagnostic analysis
+      messages,
+      temperature: 0.3,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`AI Gateway error: ${errorText}`);
   }
 
-  const controller = new AbortController();
-  const timeoutMs = 60000; // 60s
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
-
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        model,
-        messages,
-        stream: false,
-        response_format: { type: "json_object" }
-      }),
-      signal: controller.signal,
-    });
-
-    clearTimeout(timeout);
-
-    const bodyText = await response.text();
-
-    if (!response.ok) {
-      throw new Error(`DeepSeek API error ${response.status}: ${bodyText}`);
-    }
-
-    try {
-      const json = JSON.parse(bodyText);
-      // Normalize DeepSeek/OpenAI format for the next function:
-      // Expected: { message: { content: "..." } } or similar
-      // OpenAI format: { choices: [ { message: { content: ... } } ] }
-      const content = json.choices?.[0]?.message?.content || "{}";
-      return { message: { content } };
-    } catch (parseError) {
-      throw new Error(
-        `Failed to parse DeepSeek response: ${parseError instanceof Error ? parseError.message : String(parseError)
-        } | body: ${bodyText.slice(0, 500)}`,
-      );
-    }
-  } catch (error) {
-    clearTimeout(timeout);
-    throw error;
-  }
+  const json = await response.json();
+  const content = json.choices?.[0]?.message?.content || "{}";
+  return { message: { content } };
 }
 
 function normalizeOllamaResponse(resp: any) {

@@ -83,7 +83,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
           paddingTop: isNative ? "60px" : undefined
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="max-w-[1600px] mx-auto px-4 py-4">
           <div className={`${isNative ? 'flex flex-col gap-4' : 'flex items-center justify-between gap-4'}`}>
             <div className={`${isNative ? 'w-full flex justify-center border-b border-border/10 pb-4' : 'flex items-center gap-4 min-w-0'}`}>
               {!isNative && showBackButton && (
@@ -363,7 +363,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
         height: isNative ? "auto" : undefined
       }}
     >
-      <div className="max-w-7xl mx-auto px-4 pb-2">
+      <div className="max-w-[1600px] mx-auto px-4 pb-2">
         {/* Top Row: Logo, Dark Mode, Menu */}
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">

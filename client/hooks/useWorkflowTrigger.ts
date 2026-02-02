@@ -4,8 +4,8 @@ import { useToast } from '../hooks/use-toast';
 import { useSupabaseAuth } from './useSupabaseAuth';
 
 /**
- * Hook to trigger n8n workflows via Supabase Database Queue.
- * Guarantees execution even if internet blips.
+ * Hook to trigger automation workflows via Supabase Database Queue.
+ * Guarantees execution via Edge Functions even if internet blips.
  */
 export function useWorkflowTrigger() {
     const { user } = useSupabaseAuth();

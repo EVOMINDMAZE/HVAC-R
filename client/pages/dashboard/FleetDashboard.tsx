@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Map, Users, Wrench, AlertTriangle, Truck, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+import { PageContainer } from "@/components/PageContainer";
+
 interface TechLocation {
     id: string;
     name: string;
@@ -63,7 +65,7 @@ export default function FleetDashboard() {
     if (loading) return <div className="p-8">Loading Fleet Command...</div>;
 
     return (
-        <div className="p-6 space-y-6 max-w-7xl mx-auto">
+        <PageContainer variant="standard" className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Fleet Command 🚛</h1>
@@ -157,6 +159,6 @@ export default function FleetDashboard() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </PageContainer>
     );
 }

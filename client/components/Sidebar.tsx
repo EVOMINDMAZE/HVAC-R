@@ -55,7 +55,7 @@ export function Sidebar() {
   if (!isAuthenticated) {
     return (
       <nav className="w-full border-b border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm relative z-40 -mt-px pt-0 pb-2 transition-all">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2">
+        <div className="max-w-[1600px] mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2">
           <div className="flex items-center gap-1">
             {LANDING_ITEMS.map((item) => (
               item.external ? (
@@ -80,7 +80,7 @@ export function Sidebar() {
 
   return (
     <nav className="w-full border-b border-slate-200/60 dark:border-slate-800/60 bg-white/90 dark:bg-slate-950/90 backdrop-blur-sm relative z-40 -mt-px pt-0 pb-2 transition-all">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1600px] mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8">
 
         {/* LEFT ZONE: WORK & CAREER */}
         <div className="hidden md:flex items-center gap-1 overflow-x-auto no-scrollbar py-2" onMouseLeave={() => setHoveredPath(null)}>

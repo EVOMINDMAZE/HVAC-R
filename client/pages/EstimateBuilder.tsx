@@ -11,8 +11,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Save } from "lucide-react";
+import { Save, ArrowLeft } from "lucide-react";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
+import { PageContainer } from "@/components/PageContainer";
+import { useNavigate } from "react-router-dom";
 
 const SYSTEM_TYPES = [
   { id: "split_ac", label: "Split AC" },
@@ -23,6 +25,7 @@ const SYSTEM_TYPES = [
 
 export default function EstimateBuilder() {
   const { saveCalculation } = useSupabaseCalculations();
+  const navigate = useNavigate();
   const [systemType, setSystemType] = useState("split_ac");
   const [capacityTons, setCapacityTons] = useState("3");
   const [laborRate, setLaborRate] = useState("95");
@@ -91,141 +94,153 @@ export default function EstimateBuilder() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-slate-950 dark:to-slate-900">
-      <main className="max-w-4xl mx-auto p-4 md:p-6 space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-            Instant Estimate Builder
-          </h1>
-          <Badge variant="outline">Preview</Badge>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-slate-950 dark:to-slate-900 pb-12">
+      <PageContainer variant="standard" className="space-y-6">
+        <div className="max-w-4xl mx-auto space-y-6">
+          <div className="flex flex-col gap-2">
+            <Button
+              variant="ghost"
+              className="w-fit pl-0 hover:bg-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-200"
+              onClick={() => navigate('/dashboard')}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Dashboard
+            </Button>
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+                Instant Estimate Builder
+              </h1>
+              <Badge variant="outline" className="bg-white/50 backdrop-blur-sm">Preview</Badge>
+            </div>
+          </div>
+
+          <Card className="bg-white/80 dark:bg-card/80 backdrop-blur-sm border-0 shadow-sm">
+            <CardHeader>
+              <CardTitle>Inputs</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid md:grid-cols-3 gap-4">
+                <div>
+                  <Label>System type</Label>
+                  <Select value={systemType} onValueChange={setSystemType}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SYSTEM_TYPES.map((s) => (
+                        <SelectItem key={s.id} value={s.id}>
+                          {s.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Capacity (tons)</Label>
+                  <Input
+                    type="number"
+                    value={capacityTons}
+                    onChange={(e) => setCapacityTons(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label>Labor rate ($/hr)</Label>
+                  <Input
+                    type="number"
+                    value={laborRate}
+                    onChange={(e) => setLaborRate(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="grid md:grid-cols-3 gap-4">
+                <div>
+                  <Label>Estimated labor (hrs)</Label>
+                  <Input
+                    type="number"
+                    value={laborHours}
+                    onChange={(e) => setLaborHours(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label>Materials (% of equip)</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={materialsPct}
+                    onChange={(e) => setMaterialsPct(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label>Margin (%)</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={marginPct}
+                    onChange={(e) => setMarginPct(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="grid md:grid-cols-3 gap-4">
+                <div>
+                  <Label>Contingency (%)</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={contingencyPct}
+                    onChange={(e) => setContingencyPct(e.target.value)}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white/80 dark:bg-card/80 backdrop-blur-sm border-0 shadow-lg">
+            <CardHeader>
+              <CardTitle>Estimate Summary</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-4 text-sm">
+                <div className="p-3 rounded border bg-card/50 dark:border-slate-700">
+                  <div className="font-semibold">Equipment</div>
+                  <div>${estimate.baseEquipment.toFixed(2)}</div>
+                </div>
+                <div className="p-3 rounded border bg-card/50 dark:border-slate-700">
+                  <div className="font-semibold">Labor</div>
+                  <div>${estimate.labor.toFixed(2)}</div>
+                </div>
+                <div className="p-3 rounded border bg-card/50 dark:border-slate-700">
+                  <div className="font-semibold">Materials</div>
+                  <div>${estimate.materials.toFixed(2)}</div>
+                </div>
+                <div className="p-3 rounded border bg-card/50 dark:border-slate-700">
+                  <div className="font-semibold">Contingency</div>
+                  <div>${estimate.contingency.toFixed(2)}</div>
+                </div>
+                <div className="p-3 rounded border bg-card/50 dark:border-slate-700">
+                  <div className="font-semibold">Margin</div>
+                  <div>${estimate.margin.toFixed(2)}</div>
+                </div>
+                <div className="p-3 rounded border bg-card/50 dark:border-slate-700">
+                  <div className="font-semibold">Subtotal</div>
+                  <div>${estimate.subtotal.toFixed(2)}</div>
+                </div>
+              </div>
+              <div className="mt-4 p-4 rounded-lg border-2 border-blue-300 bg-blue-50 text-blue-900 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-300 font-bold text-lg">
+                Total: ${estimate.total.toFixed(2)}
+              </div>
+              <div className="mt-4">
+                <Button
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="inline-flex items-center gap-2"
+                >
+                  <Save className="h-4 w-4" /> Save Estimate
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Inputs</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-3 gap-4">
-              <div>
-                <Label>System type</Label>
-                <Select value={systemType} onValueChange={setSystemType}>
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Select" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {SYSTEM_TYPES.map((s) => (
-                      <SelectItem key={s.id} value={s.id}>
-                        {s.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label>Capacity (tons)</Label>
-                <Input
-                  type="number"
-                  value={capacityTons}
-                  onChange={(e) => setCapacityTons(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label>Labor rate ($/hr)</Label>
-                <Input
-                  type="number"
-                  value={laborRate}
-                  onChange={(e) => setLaborRate(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="grid md:grid-cols-3 gap-4">
-              <div>
-                <Label>Estimated labor (hrs)</Label>
-                <Input
-                  type="number"
-                  value={laborHours}
-                  onChange={(e) => setLaborHours(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label>Materials (% of equip)</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={materialsPct}
-                  onChange={(e) => setMaterialsPct(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label>Margin (%)</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={marginPct}
-                  onChange={(e) => setMarginPct(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="grid md:grid-cols-3 gap-4">
-              <div>
-                <Label>Contingency (%)</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={contingencyPct}
-                  onChange={(e) => setContingencyPct(e.target.value)}
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Estimate Summary</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 gap-4 text-sm">
-              <div className="p-3 rounded border bg-card dark:border-slate-700">
-                <div className="font-semibold">Equipment</div>
-                <div>${estimate.baseEquipment.toFixed(2)}</div>
-              </div>
-              <div className="p-3 rounded border bg-card dark:border-slate-700">
-                <div className="font-semibold">Labor</div>
-                <div>${estimate.labor.toFixed(2)}</div>
-              </div>
-              <div className="p-3 rounded border bg-card dark:border-slate-700">
-                <div className="font-semibold">Materials</div>
-                <div>${estimate.materials.toFixed(2)}</div>
-              </div>
-              <div className="p-3 rounded border bg-card dark:border-slate-700">
-                <div className="font-semibold">Contingency</div>
-                <div>${estimate.contingency.toFixed(2)}</div>
-              </div>
-              <div className="p-3 rounded border bg-card dark:border-slate-700">
-                <div className="font-semibold">Margin</div>
-                <div>${estimate.margin.toFixed(2)}</div>
-              </div>
-              <div className="p-3 rounded border bg-card dark:border-slate-700">
-                <div className="font-semibold">Subtotal</div>
-                <div>${estimate.subtotal.toFixed(2)}</div>
-              </div>
-            </div>
-            <div className="mt-4 p-4 rounded-lg border-2 border-blue-300 bg-blue-50 text-blue-900 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-300 font-bold text-lg">
-              Total: ${estimate.total.toFixed(2)}
-            </div>
-            <div className="mt-4">
-              <Button
-                onClick={handleSave}
-                disabled={saving}
-                className="inline-flex items-center gap-2"
-              >
-                <Save className="h-4 w-4" /> Save Estimate
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </main>
+      </PageContainer>
     </div>
   );
 }

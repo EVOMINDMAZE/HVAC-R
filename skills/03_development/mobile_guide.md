@@ -22,8 +22,8 @@ Push the latest web build to the native projects:
 npx cap sync
 ```
 
-### 3. Open in Simulator
-**iOS:**
+### 3. Open & Run
+**iOS (Mac Only):**
 ```bash
 npx cap open ios
 ```
@@ -35,10 +35,26 @@ npx cap open android
 ```
 *Wait for Android Studio to open, then click the "Play" button.*
 
+**Direct Simulator Launch:**
+```bash
+npx cap run ios --target <SIMULATOR_ID>
+npx cap run android
+```
+
 ## Deployment
 - **iOS**: In Xcode, go to **Product -> Archive** to create a submission for the App Store.
 - **Android**: In Android Studio, go to **Build -> Generate Signed Bundle / APK**.
 
 ## Notes
-- The App ID is `com.thermoneural.app`.
-- All native configuration (icons, splash screens, permissions) is handled in `ios/` and `android/` folders respectively.
+## Native Project Structure
+- **`ios/`**: Full Xcode project for iPhone/iPad deployment.
+- **`android/`**: Full Android Studio project for Google Play deployment.
+- **`capacitor.config.ts`**: The bridge configuration between React and Native.
+
+All native configuration (icons, splash screens, permissions) is handled in these folders respectively.
+
+## Responsive Design Patterns
+The application is designed "Mobile-First" but scales to desktop. Key implementation details:
+- **Charts**: Use `recharts`'s `<ResponsiveContainer>` wrapper to ensure visualizations adapt to screen width (especially inside Cards).
+- **Conditional UI**: Use `window.innerWidth` checks or CSS media queries (Tailwind `md:`, `lg:`) to show/hide complex elements (e.g., "Quick Actions" on mobile vs Sidebar on desktop).
+- **Touch Targets**: Ensure buttons have a minimum height of 44px for touch accessibility.
