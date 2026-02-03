@@ -196,7 +196,9 @@ export function Podcasts() {
                                             {isPlaying ? "Now Playing" : "Paused"}
                                         </div>
                                         <h2 className="text-3xl md:text-4xl font-bold leading-tight">{activePodcast.title}</h2>
-                                        <div className="text-lg text-gray-300 line-clamp-2 md:line-clamp-1" dangerouslySetInnerHTML={{ __html: activePodcast.description }} />
+                                        <div className="text-lg text-gray-300 line-clamp-2 md:line-clamp-1">
+                                            {activePodcast.description}
+                                        </div>
                                     </div>
 
                                     {/* Interactive Progress Bar */}
