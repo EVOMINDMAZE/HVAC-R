@@ -32,12 +32,17 @@ import {
   calculateDeltaT,
   calculateStandardCycleEndpoint,
   calculateCascadeCycleEndpoint,
-  compareRefrigerantsEndpoint
+  compareRefrigerantsEndpoint,
 } from "./routes/engineering.ts";
-
 
 import { supabaseDiag } from "./routes/diagnostics.ts";
 import { uploadAvatar } from "./routes/storage.ts";
+import {
+  getTeam,
+  inviteTeamMember,
+  updateTeamMemberRole,
+  removeTeamMember,
+} from "./routes/team.ts";
 
 export function createServer() {
   const app = express();
@@ -50,14 +55,18 @@ export function createServer() {
   const defaultAllowed =
     process.env.NODE_ENV === "production"
       ? [
-        "https://173ba54839db44079504686aa5642124-7d4f8c681adb406aa7578b14f.fly.dev",
-      ]
-      : ["http://localhost:8080", "http://localhost:3000", "http://localhost:8081"];
+          "https://173ba54839db44079504686aa5642124-7d4f8c681adb406aa7578b14f.fly.dev",
+        ]
+      : [
+          "http://localhost:8080",
+          "http://localhost:3000",
+          "http://localhost:8081",
+        ];
 
   const envList = process.env.ALLOWED_CORS_ORIGINS
     ? process.env.ALLOWED_CORS_ORIGINS.split(",")
-      .map((s) => s.trim())
-      .filter(Boolean)
+        .map((s) => s.trim())
+        .filter(Boolean)
     : [];
 
   const allowedOrigins = Array.from(new Set([...envList, ...defaultAllowed]));
@@ -123,6 +132,12 @@ export function createServer() {
   app.delete("/api/calculations/:id", authenticateEither, deleteCalculation);
   app.get("/api/user/stats", authenticateEither, getUserStats);
 
+  // Team management routes
+  app.get("/api/team", authenticateEither, getTeam);
+  app.post("/api/team/invite", authenticateEither, inviteTeamMember);
+  app.put("/api/team/role", authenticateEither, updateTeamMemberRole);
+  app.delete("/api/team/member", authenticateEither, removeTeamMember);
+
   // Subscription routes
   app.get("/api/subscriptions/plans", getSubscriptionPlans);
   app.get(
@@ -144,11 +159,21 @@ export function createServer() {
   // Engineering Calculations (Thermodynamic Core)
   app.post("/api/calculate-airflow", authenticateEither, calculateAirflow);
   app.post("/api/calculate-deltat", authenticateEither, calculateDeltaT);
-  app.post("/api/calculate-standard", authenticateEither, calculateStandardCycleEndpoint);
-  app.post("/api/calculate-cascade", authenticateEither, calculateCascadeCycleEndpoint);
-  app.post("/api/compare-refrigerants", authenticateEither, compareRefrigerantsEndpoint);
-
-
+  app.post(
+    "/api/calculate-standard",
+    authenticateEither,
+    calculateStandardCycleEndpoint,
+  );
+  app.post(
+    "/api/calculate-cascade",
+    authenticateEither,
+    calculateCascadeCycleEndpoint,
+  );
+  app.post(
+    "/api/compare-refrigerants",
+    authenticateEither,
+    compareRefrigerantsEndpoint,
+  );
 
   // Server-side storage upload (uses SUPABASE_SERVICE_ROLE_KEY)
   app.post("/api/storage/upload", authenticateEither, uploadAvatar);
