@@ -6,7 +6,7 @@ import { EnhancedStandardCycleContent } from "@/pages/EnhancedStandardCycle";
 // Main StandardCycle page that uses the enhanced tabbed version
 export function StandardCycle() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-slate-950 dark:to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-orange-50/30 dark:from-slate-950 dark:to-slate-900">
       <div className="max-w-[1600px] mx-auto px-4 py-8">
         <ApiServiceStatus />
         <EnhancedStandardCycleContent />

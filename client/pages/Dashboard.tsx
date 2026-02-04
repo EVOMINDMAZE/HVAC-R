@@ -30,8 +30,15 @@ import { RiskShield } from "@/components/OwnerDashboard/RiskShield";
 import { SEO } from "@/components/SEO";
 import { PageContainer } from "@/components/PageContainer";
 import { useRevenueAnalytics } from "@/hooks/useRevenueAnalytics";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTooltip, Cell } from "recharts";
-
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  Tooltip as RechartsTooltip,
+  Cell,
+} from "recharts";
 
 interface QuickStatsProps {
   stats: DashboardStats;
@@ -84,7 +91,11 @@ function UsageProgressCard({ stats, onUpgrade }: UsageProgressCardProps) {
             {stats.remaining} calculation{stats.remaining === 1 ? "" : "s"}{" "}
             remaining this month
           </span>
-          <Button size="sm" onClick={onUpgrade} className="glass hover:bg-primary/20 text-primary border-primary/20">
+          <Button
+            size="sm"
+            onClick={onUpgrade}
+            className="glass hover:bg-primary/20 text-primary border-primary/20"
+          >
             Upgrade plan
           </Button>
         </div>
@@ -109,7 +120,8 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
       <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between animate-fade-in">
         <div>
           <h2 className="text-3xl font-bold tracking-tight text-foreground">
-            Welcome back{firstName ? `, ${firstName}` : ""} <span className="inline-block animate-bounce">👋</span>
+            Welcome back{firstName ? `, ${firstName}` : ""}{" "}
+            <span className="inline-block animate-bounce">👋</span>
           </h2>
           <p className="mt-2 text-lg text-muted-foreground">
             Your workspace is ready. Here's what's happening today.
@@ -152,10 +164,11 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
 
       {stats.isNearLimit && (
         <Card
-          className={`glass-card border-l-4 ${stats.isAtLimit
-            ? "border-l-destructive bg-destructive/5"
-            : "border-l-amber-500 bg-amber-50/50 dark:bg-amber-950/20"
-            } animate-slide-up`}
+          className={`glass-card border-l-4 ${
+            stats.isAtLimit
+              ? "border-l-destructive bg-destructive/5"
+              : "border-l-amber-500 bg-amber-50/50 dark:bg-amber-950/20"
+          } animate-slide-up`}
         >
           <CardContent className="p-4">
             <div className="flex items-center justify-between gap-4">
@@ -204,15 +217,19 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
           value={formatNumber(stats.totalCalculations)}
           subtitle="All time"
           icon={Calculator}
-          gradient="from-blue-500 to-indigo-600"
+          gradient="from-orange-500 to-slate-600"
           delay={0}
         />
         <StatsCard
           title="This Month"
-          value={`${formatNumber(stats.monthlyCalculations)}${!stats.isUnlimited ? `/${stats.monthlyLimit}` : ''}`}
-          subtitle={!stats.isUnlimited ? `${Math.round(stats.usagePercentage)}% used` : "Unlimited"}
+          value={`${formatNumber(stats.monthlyCalculations)}${!stats.isUnlimited ? `/${stats.monthlyLimit}` : ""}`}
+          subtitle={
+            !stats.isUnlimited
+              ? `${Math.round(stats.usagePercentage)}% used`
+              : "Unlimited"
+          }
           icon={FileText}
-          gradient="from-violet-500 to-purple-600"
+          gradient="from-slate-500 to-slate-600"
           delay={100}
         />
         <StatsCard
@@ -220,7 +237,11 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
           value={stats.remainingText}
           subtitle="This month"
           icon={TrendingUp}
-          gradient={stats.remainingValue <= 2 ? "from-red-500 to-rose-600" : "from-emerald-500 to-teal-600"}
+          gradient={
+            stats.remainingValue <= 2
+              ? "from-red-500 to-rose-600"
+              : "from-emerald-500 to-teal-600"
+          }
           delay={200}
         />
         <Card
@@ -231,17 +252,25 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
           <CardContent className="p-6 relative z-10">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Current Plan</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Current Plan
+                </p>
                 <p className="mt-2 text-2xl font-bold text-foreground">
                   {stats.planDisplayName}
                 </p>
                 <p className="mt-1 text-xs text-primary flex items-center">
-                  {stats.plan === "free" ? "Upgrade to Pro" : "Manage Subscription"}
+                  {stats.plan === "free"
+                    ? "Upgrade to Pro"
+                    : "Manage Subscription"}
                   <ArrowRight className="h-3 w-3 ml-1 group-hover:translate-x-1 transition-transform" />
                 </p>
               </div>
               <div className="p-3 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-lg">
-                {stats.plan === "free" ? <BarChart3 className="h-6 w-6" /> : <Crown className="h-6 w-6" />}
+                {stats.plan === "free" ? (
+                  <BarChart3 className="h-6 w-6" />
+                ) : (
+                  <Crown className="h-6 w-6" />
+                )}
               </div>
             </div>
           </CardContent>
@@ -251,10 +280,22 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
   );
 }
 
-function StatsCard({ title, value, subtitle, icon: Icon, gradient, delay }: any) {
+function StatsCard({
+  title,
+  value,
+  subtitle,
+  icon: Icon,
+  gradient,
+  delay,
+}: any) {
   return (
-    <Card className="glass-card hover-lift overflow-hidden relative group" style={{ animationDelay: `${delay}ms` }}>
-      <div className={`absolute top-0 right-0 p-20 bg-gradient-to-br ${gradient} opacity-10 blur-3xl rounded-full -mr-10 -mt-10 transition-opacity group-hover:opacity-20`} />
+    <Card
+      className="glass-card hover-lift overflow-hidden relative group"
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      <div
+        className={`absolute top-0 right-0 p-20 bg-gradient-to-br ${gradient} opacity-10 blur-3xl rounded-full -mr-10 -mt-10 transition-opacity group-hover:opacity-20`}
+      />
       <CardContent className="p-6 relative z-10">
         <div className="flex items-center justify-between">
           <div>
@@ -262,9 +303,13 @@ function StatsCard({ title, value, subtitle, icon: Icon, gradient, delay }: any)
             <p className="mt-2 text-3xl font-bold text-foreground tracking-tight">
               {value}
             </p>
-            <p className="mt-1 text-xs text-muted-foreground font-medium">{subtitle}</p>
+            <p className="mt-1 text-xs text-muted-foreground font-medium">
+              {subtitle}
+            </p>
           </div>
-          <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient} text-white shadow-lg transform group-hover:scale-110 transition-transform duration-300`}>
+          <div
+            className={`p-3 rounded-xl bg-gradient-to-br ${gradient} text-white shadow-lg transform group-hover:scale-110 transition-transform duration-300`}
+          >
             <Icon className="h-6 w-6" />
           </div>
         </div>
@@ -279,7 +324,10 @@ function RecentCalculations({ isLoading }: any) {
   const recentCalculations = calculations.slice(0, 5);
 
   return (
-    <Card className="glass-card h-full flex flex-col animate-slide-up" style={{ animationDelay: '300ms' }}>
+    <Card
+      className="glass-card h-full flex flex-col animate-slide-up"
+      style={{ animationDelay: "300ms" }}
+    >
       <CardHeader className="border-b border-border pb-4">
         <CardTitle className="flex items-center text-lg font-semibold text-foreground">
           <HistoryIcon className="h-5 w-5 mr-2 text-primary" />
@@ -310,7 +358,10 @@ function RecentCalculations({ isLoading }: any) {
             <p className="text-sm text-muted-foreground mb-6 max-w-xs">
               Start your first calculation to see it appear here.
             </p>
-            <Button onClick={() => navigate("/tools/standard-cycle")} className="glass text-primary hover:bg-primary/10">
+            <Button
+              onClick={() => navigate("/tools/standard-cycle")}
+              className="glass text-primary hover:bg-primary/10"
+            >
               Start Calculation
             </Button>
           </div>
@@ -323,7 +374,7 @@ function RecentCalculations({ isLoading }: any) {
                 onClick={() => navigate(`/calculations/${calc.id}`)}
               >
                 <div className="flex items-center gap-4 min-w-0">
-                  <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
+                  <div className="w-10 h-10 rounded-lg bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-orange-600 dark:text-orange-400 group-hover:scale-110 transition-transform">
                     <Calculator className="h-5 w-5" />
                   </div>
                   <div className="min-w-0">
@@ -332,9 +383,13 @@ function RecentCalculations({ isLoading }: any) {
                     </h4>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
                       <Clock className="h-3 w-3" />
-                      <span>{new Date(calc.created_at).toLocaleDateString()}</span>
+                      <span>
+                        {new Date(calc.created_at).toLocaleDateString()}
+                      </span>
                       <span className="w-1 h-1 bg-muted-foreground rounded-full" />
-                      <span className="uppercase tracking-wider font-medium text-[10px]">{calc.calculation_type}</span>
+                      <span className="uppercase tracking-wider font-medium text-[10px]">
+                        {calc.calculation_type}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -352,15 +407,48 @@ function QuickActions() {
   const navigate = useNavigate();
 
   const actions = [
-    { label: "Standard Cycle", icon: Calculator, path: "/tools/standard-cycle", color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-900/20" },
-    { label: "Compare Refrigerants", icon: TrendingUp, path: "/tools/refrigerant-comparison", color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-900/20" },
-    { label: "Cascade Analysis", icon: BarChart3, path: "/tools/cascade-cycle", color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-50 dark:bg-purple-900/20" },
-    { label: "Reports & PDF", icon: FileText, path: "/tools/advanced-reporting", color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-50 dark:bg-amber-900/20" },
-    { label: "My Projects", icon: Layers, path: "/dashboard/projects", color: "text-indigo-600 dark:text-indigo-400", bg: "bg-indigo-50 dark:bg-indigo-900/20" },
+    {
+      label: "Standard Cycle",
+      icon: Calculator,
+      path: "/tools/standard-cycle",
+      color: "text-orange-600 dark:text-orange-400",
+      bg: "bg-orange-50 dark:bg-orange-900/20",
+    },
+    {
+      label: "Compare Refrigerants",
+      icon: TrendingUp,
+      path: "/tools/refrigerant-comparison",
+      color: "text-emerald-600 dark:text-emerald-400",
+      bg: "bg-emerald-50 dark:bg-emerald-900/20",
+    },
+    {
+      label: "Cascade Analysis",
+      icon: BarChart3,
+      path: "/tools/cascade-cycle",
+      color: "text-slate-600 dark:text-slate-400",
+      bg: "bg-slate-50 dark:bg-slate-900/20",
+    },
+    {
+      label: "Reports & PDF",
+      icon: FileText,
+      path: "/tools/advanced-reporting",
+      color: "text-amber-600 dark:text-amber-400",
+      bg: "bg-amber-50 dark:bg-amber-900/20",
+    },
+    {
+      label: "My Projects",
+      icon: Layers,
+      path: "/dashboard/projects",
+      color: "text-slate-600 dark:text-slate-400",
+      bg: "bg-slate-50 dark:bg-slate-900/20",
+    },
   ];
 
   return (
-    <Card className="glass-card animate-slide-up" style={{ animationDelay: '400ms' }}>
+    <Card
+      className="glass-card animate-slide-up"
+      style={{ animationDelay: "400ms" }}
+    >
       <CardHeader className="border-b border-border pb-4">
         <CardTitle className="flex items-center text-lg font-semibold text-foreground">
           <Zap className="h-5 w-5 mr-2 text-amber-500" />
@@ -375,7 +463,9 @@ function QuickActions() {
             className="w-full justify-start h-auto py-3 px-4 hover:bg-muted/50 border border-transparent hover:border-border transition-all group"
             onClick={() => navigate(action.path)}
           >
-            <div className={`p-2 rounded-lg ${action.bg} ${action.color} mr-3 group-hover:scale-110 transition-transform`}>
+            <div
+              className={`p-2 rounded-lg ${action.bg} ${action.color} mr-3 group-hover:scale-110 transition-transform`}
+            >
               <action.icon className="h-4 w-4" />
             </div>
             <span className="font-medium text-muted-foreground group-hover:text-foreground">
@@ -393,9 +483,12 @@ function ValueProposition() {
   const navigate = useNavigate();
 
   return (
-    <Card className="relative overflow-hidden border-0 shadow-2xl bg-gradient-to-br from-slate-900 to-slate-800 text-white animate-slide-up" style={{ animationDelay: '500ms' }}>
+    <Card
+      className="relative overflow-hidden border-0 shadow-2xl bg-gradient-to-br from-slate-900 to-slate-800 text-white animate-slide-up"
+      style={{ animationDelay: "500ms" }}
+    >
       <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-[100px] rounded-full -mr-16 -mt-16 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/20 blur-[80px] rounded-full -ml-12 -mb-12 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-48 h-48 bg-slate-500/20 blur-[80px] rounded-full -ml-12 -mb-12 pointer-events-none" />
 
       <CardContent className="p-8 relative z-10 text-center">
         <div className="inline-flex p-3 rounded-2xl bg-white/10 backdrop-blur-md mb-6 shadow-xl border border-white/10">
@@ -420,7 +513,9 @@ function ValueProposition() {
               <div className="p-2 rounded-lg bg-white/5 border border-white/10">
                 <item.icon className="h-4 w-4 text-slate-300" />
               </div>
-              <span className="text-xs font-medium text-slate-400">{item.label}</span>
+              <span className="text-xs font-medium text-slate-400">
+                {item.label}
+              </span>
             </div>
           ))}
         </div>
@@ -449,17 +544,20 @@ function AnalyticsCharts() {
   }
 
   const revenueData = [
-    { name: 'Collected', value: 0, color: '#10b981' }, // Placeholder for now
-    { name: 'At Risk', value: revenueStats.revenueAtRisk, color: '#f59e0b' },
+    { name: "Collected", value: 0, color: "#10b981" }, // Placeholder for now
+    { name: "At Risk", value: revenueStats.revenueAtRisk, color: "#f59e0b" },
   ];
 
   const pipelineData = [
-    { name: 'Leads', value: pipelineStats.activeLeads, color: '#6366f1' },
-    { name: 'Jobs', value: pipelineStats.convertedLeads, color: '#8b5cf6' },
+    { name: "Leads", value: pipelineStats.activeLeads, color: "#f97316" }, // orange-500
+    { name: "Jobs", value: pipelineStats.convertedLeads, color: "#475569" }, // slate-600
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up" style={{ animationDelay: '200ms' }}>
+    <div
+      className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up"
+      style={{ animationDelay: "200ms" }}
+    >
       {/* Revenue at Risk Chart */}
       <Card className="glass-card">
         <CardHeader>
@@ -471,12 +569,28 @@ function AnalyticsCharts() {
         <CardContent>
           <div className="h-[200px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={revenueData} layout="vertical" margin={{ top: 5, right: 30, left: 40, bottom: 5 }}>
+              <BarChart
+                data={revenueData}
+                layout="vertical"
+                margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
+              >
                 <XAxis type="number" hide />
-                <YAxis dataKey="name" type="category" tick={{ fill: 'currentColor', fontSize: 12 }} width={60} axisLine={false} tickLine={false} />
+                <YAxis
+                  dataKey="name"
+                  type="category"
+                  tick={{ fill: "currentColor", fontSize: 12 }}
+                  width={60}
+                  axisLine={false}
+                  tickLine={false}
+                />
                 <RechartsTooltip
-                  cursor={{ fill: 'transparent' }}
-                  contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '8px', color: '#fff' }}
+                  cursor={{ fill: "transparent" }}
+                  contentStyle={{
+                    backgroundColor: "rgba(0,0,0,0.8)",
+                    border: "none",
+                    borderRadius: "8px",
+                    color: "#fff",
+                  }}
                 />
                 <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={32}>
                   {revenueData.map((entry, index) => (
@@ -489,11 +603,15 @@ function AnalyticsCharts() {
           <div className="mt-4 flex justify-between items-center px-2">
             <div>
               <p className="text-sm text-muted-foreground">Unpaid Invoices</p>
-              <p className="text-2xl font-bold text-amber-500">${formatNumber(revenueStats.revenueAtRisk)}</p>
+              <p className="text-2xl font-bold text-amber-500">
+                ${formatNumber(revenueStats.revenueAtRisk)}
+              </p>
             </div>
             <div className="text-right">
               <p className="text-sm text-muted-foreground">Invoice Count</p>
-              <p className="text-xl font-semibold text-foreground">{revenueStats.unpaidCount}</p>
+              <p className="text-xl font-semibold text-foreground">
+                {revenueStats.unpaidCount}
+              </p>
             </div>
           </div>
         </CardContent>
@@ -503,19 +621,32 @@ function AnalyticsCharts() {
       <Card className="glass-card">
         <CardHeader>
           <CardTitle className="flex items-center text-lg">
-            <TrendingUp className="h-5 w-5 mr-2 text-indigo-500" />
+            <TrendingUp className="h-5 w-5 mr-2 text-slate-500" />
             Lead Pipeline
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-[200px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={pipelineData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <XAxis dataKey="name" tick={{ fill: 'currentColor' }} axisLine={false} tickLine={false} />
+              <BarChart
+                data={pipelineData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+              >
+                <XAxis
+                  dataKey="name"
+                  tick={{ fill: "currentColor" }}
+                  axisLine={false}
+                  tickLine={false}
+                />
                 <YAxis hide />
                 <RechartsTooltip
-                  cursor={{ fill: 'rgba(255,255,255,0.1)' }}
-                  contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '8px', color: '#fff' }}
+                  cursor={{ fill: "rgba(255,255,255,0.1)" }}
+                  contentStyle={{
+                    backgroundColor: "rgba(0,0,0,0.8)",
+                    border: "none",
+                    borderRadius: "8px",
+                    color: "#fff",
+                  }}
                 />
                 <Bar dataKey="value" radius={[4, 4, 0, 0]} barSize={48}>
                   {pipelineData.map((entry, index) => (
@@ -527,12 +658,18 @@ function AnalyticsCharts() {
           </div>
           <div className="mt-4 flex justify-between items-center px-2">
             <div>
-              <p className="text-sm text-muted-foreground">Conversion Probability</p>
-              <p className="text-2xl font-bold text-indigo-500">{pipelineStats.conversionRate}%</p>
+              <p className="text-sm text-muted-foreground">
+                Conversion Probability
+              </p>
+              <p className="text-2xl font-bold text-slate-500">
+                {pipelineStats.conversionRate}%
+              </p>
             </div>
             <div className="text-right">
               <p className="text-sm text-muted-foreground">Active Leads</p>
-              <p className="text-xl font-semibold text-foreground">{pipelineStats.activeLeads}</p>
+              <p className="text-xl font-semibold text-foreground">
+                {pipelineStats.activeLeads}
+              </p>
             </div>
           </div>
         </CardContent>
@@ -581,4 +718,3 @@ export function Dashboard() {
     </PageContainer>
   );
 }
-

@@ -1,15 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Fingerprint } from "lucide-react";
 import { motion } from "framer-motion";
-import { checkBiometricAvailability, getBiometricCredentials, storeCredentials, BiometricStatus } from "@/lib/biometricAuth";
-import { Capacitor } from '@capacitor/core';
+import {
+  checkBiometricAvailability,
+  getBiometricCredentials,
+  storeCredentials,
+  BiometricStatus,
+} from "@/lib/biometricAuth";
+import { Capacitor } from "@capacitor/core";
 
 export function SignIn() {
   const [formData, setFormData] = useState({
@@ -19,7 +30,8 @@ export function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [biometricStatus, setBiometricStatus] = useState<BiometricStatus | null>(null);
+  const [biometricStatus, setBiometricStatus] =
+    useState<BiometricStatus | null>(null);
   const [biometricLoading, setBiometricLoading] = useState(false);
   const { signIn, signInWithGoogle } = useAuth();
   const { addToast } = useToast();
@@ -75,10 +87,11 @@ export function SignIn() {
     setLoading(true);
 
     try {
-      const { user, error: signInError, role: userRole } = await signIn(
-        formData.email,
-        formData.password,
-      );
+      const {
+        user,
+        error: signInError,
+        role: userRole,
+      } = await signIn(formData.email, formData.password);
 
       if (signInError) {
         throw new Error(signInError.message);
@@ -96,10 +109,10 @@ export function SignIn() {
           description: "You have been signed in successfully",
         });
         // Navigate based on role returned from signIn
-        console.log('[SignIn] Login successful, role:', userRole);
-        if (userRole === 'client') {
+        console.log("[SignIn] Login successful, role:", userRole);
+        if (userRole === "client") {
           navigate("/portal");
-        } else if (userRole === 'technician') {
+        } else if (userRole === "technician") {
           navigate("/tech");
         } else {
           navigate("/dashboard");
@@ -134,7 +147,11 @@ export function SignIn() {
         return;
       }
 
-      const { user, error: signInError, role: userRole } = await signIn(creds.email, creds.password);
+      const {
+        user,
+        error: signInError,
+        role: userRole,
+      } = await signIn(creds.email, creds.password);
 
       if (signInError) {
         throw new Error(signInError.message);
@@ -146,9 +163,9 @@ export function SignIn() {
           title: "Welcome back!",
           description: "Signed in with biometrics",
         });
-        if (userRole === 'client') {
+        if (userRole === "client") {
           navigate("/portal");
-        } else if (userRole === 'technician') {
+        } else if (userRole === "technician") {
           navigate("/tech");
         } else {
           navigate("/dashboard");
@@ -162,11 +179,11 @@ export function SignIn() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4 selection:bg-blue-500/30 overflow-hidden relative">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 selection:bg-orange-500/30 overflow-hidden relative">
       {/* Dynamic Background */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-500/10 rounded-full blur-[100px] animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 rounded-full blur-[100px] animate-pulse delay-1000" />
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-orange-500/10 rounded-full blur-[100px] animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-amber-500/10 rounded-full blur-[100px] animate-pulse delay-1000" />
       </div>
 
       <motion.div
@@ -189,7 +206,7 @@ export function SignIn() {
         </div>
 
         <Card className="bg-card/60 backdrop-blur-xl border-border shadow-2xl overflow-hidden">
-          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
+          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-slate-600 via-orange-500 to-amber-500" />
 
           <CardHeader className="text-center pb-2 pt-8">
             <CardTitle className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/80">
@@ -202,39 +219,43 @@ export function SignIn() {
 
           <CardContent className="space-y-6 p-8">
             {/* Face ID / Touch ID Button (Native Only, when available) */}
-            {isNative && biometricStatus?.isAvailable && biometricStatus?.hasCredentials && (
-              <>
-                <Button
-                  type="button"
-                  onClick={handleBiometricSignIn}
-                  className="w-full h-12 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2"
-                  disabled={biometricLoading || loading}
-                >
-                  <Fingerprint className="h-5 w-5" />
-                  {biometricLoading ? "Verifying..." : "Sign in with Face ID"}
-                </Button>
-                <div className="relative my-4">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t border-border" />
+            {isNative &&
+              biometricStatus?.isAvailable &&
+              biometricStatus?.hasCredentials && (
+                <>
+                  <Button
+                    type="button"
+                    onClick={handleBiometricSignIn}
+                    className="w-full h-12 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2"
+                    disabled={biometricLoading || loading}
+                  >
+                    <Fingerprint className="h-5 w-5" />
+                    {biometricLoading ? "Verifying..." : "Sign in with Face ID"}
+                  </Button>
+                  <div className="relative my-4">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t border-border" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-card px-2 text-muted-foreground font-medium tracking-wider">
+                        Or
+                      </span>
+                    </div>
                   </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-card px-2 text-muted-foreground font-medium tracking-wider">Or</span>
-                  </div>
-                </div>
-              </>
-            )}
+                </>
+              )}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
                 <div className="relative group">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground group-focus-within:text-orange-500 transition-colors" />
                   <Input
                     id="email"
                     type="email"
                     placeholder="name@example.com"
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
-                    className="pl-10 h-11 bg-background/50 border-input focus:border-blue-500 transition-all"
+                    className="pl-10 h-11 bg-background/50 border-input focus:border-orange-500 transition-all"
                     required
                   />
                 </div>
@@ -245,20 +266,22 @@ export function SignIn() {
                   <Label htmlFor="password">Password</Label>
                   <Link
                     to="/forgot-password"
-                    className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 hover:underline"
+                    className="text-xs text-orange-500 hover:text-orange-600 dark:text-orange-400 hover:underline"
                   >
                     Forgot password?
                   </Link>
                 </div>
                 <div className="relative group">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground group-focus-within:text-orange-500 transition-colors" />
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     value={formData.password}
-                    onChange={(e) => handleInputChange("password", e.target.value)}
-                    className="pl-10 pr-10 h-11 bg-background/50 border-input focus:border-blue-500 transition-all"
+                    onChange={(e) =>
+                      handleInputChange("password", e.target.value)
+                    }
+                    className="pl-10 pr-10 h-11 bg-background/50 border-input focus:border-orange-500 transition-all"
                     required
                   />
                   <button
@@ -287,10 +310,11 @@ export function SignIn() {
 
               <Button
                 type="submit"
-                className="w-full h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg shadow-blue-500/20 transition-all duration-300 hover:scale-[1.02]"
+                className="w-full h-11 bg-gradient-to-r from-slate-700 to-orange-600 hover:from-slate-800 hover:to-orange-700 text-white shadow-lg shadow-orange-500/20 transition-all duration-300 hover:scale-[1.02]"
                 disabled={loading}
               >
-                {loading ? "Signing in..." : "Sign In"} <ArrowRight className="ml-2 h-4 w-4" />
+                {loading ? "Signing in..." : "Sign In"}{" "}
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </form>
 
@@ -333,10 +357,12 @@ export function SignIn() {
             </Button>
 
             <div className="text-center text-sm">
-              <span className="text-muted-foreground">Don't have an account? </span>
+              <span className="text-muted-foreground">
+                Don't have an account?{" "}
+              </span>
               <Link
                 to="/signup"
-                className="text-blue-600 dark:text-blue-400 font-semibold hover:underline hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+                className="text-orange-600 dark:text-orange-400 font-semibold hover:underline hover:text-orange-700 dark:hover:text-orange-300 transition-colors"
               >
                 Create account
               </Link>

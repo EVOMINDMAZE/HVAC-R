@@ -11,7 +11,12 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Zap, Thermometer, Gauge, BarChart3 } from "lucide-react";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 import { computeDomain } from "@/lib/diagramDomain";
 
 interface CyclePoint {
@@ -102,7 +107,10 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     checkDarkMode();
 
     const observer = new MutationObserver(checkDarkMode);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
     return () => observer.disconnect();
   }, []);
 
@@ -127,7 +135,13 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       case "specificVolume":
       case "specific_volume":
       case "specificVolume_m3_kg":
-        candidates.push("specificVolume", "specific_volume", "specific_volume_m3_kg", "v", "specificVolume_m3_kg");
+        candidates.push(
+          "specificVolume",
+          "specific_volume",
+          "specific_volume_m3_kg",
+          "v",
+          "specificVolume_m3_kg",
+        );
         break;
       default:
         candidates.push(prop);
@@ -155,28 +169,42 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     );
 
     // If saturation dome data exists, prefer it for axis ranges to match the dome scaling
-    const dome = (cycleData as any)?.saturationDome || (cycleData as any)?.saturation_dome || null;
+    const dome =
+      (cycleData as any)?.saturationDome ||
+      (cycleData as any)?.saturation_dome ||
+      null;
     let xValues: number[] = [];
     let yValues: number[] = [];
 
     if (dome) {
       // Extract dome arrays for the current diagram when available
       if (diagramType === "P-h") {
-        const ph = dome.ph_diagram || dome.ph || dome['ph'] || null;
+        const ph = dome.ph_diagram || dome.ph || dome["ph"] || null;
         if (ph) {
           xValues = (ph.enthalpy_kj_kg || ph.enthalpy || ph.h || []).slice();
           yValues = (ph.pressure_kpa || ph.pressure || ph.p || []).slice();
         }
       } else if (diagramType === "T-s") {
-        const ts = dome.ts_diagram || dome.ts || dome['ts'] || null;
+        const ts = dome.ts_diagram || dome.ts || dome["ts"] || null;
         if (ts) {
-          xValues = (ts.entropy_kj_kgk || ts.entropy_kj_kg || ts.entropy || ts.s || []).slice();
+          xValues = (
+            ts.entropy_kj_kgk ||
+            ts.entropy_kj_kg ||
+            ts.entropy ||
+            ts.s ||
+            []
+          ).slice();
           yValues = (ts.temperature_c || ts.temperature || ts.t || []).slice();
         }
       } else if (diagramType === "T-v") {
-        const tv = dome.tv_diagram || dome.tv || dome['tv'] || null;
+        const tv = dome.tv_diagram || dome.tv || dome["tv"] || null;
         if (tv) {
-          xValues = (tv.specific_volume_m3_kg || tv.specific_volume || tv.v || []).slice();
+          xValues = (
+            tv.specific_volume_m3_kg ||
+            tv.specific_volume ||
+            tv.v ||
+            []
+          ).slice();
           yValues = (tv.temperature_c || tv.temperature || tv.t || []).slice();
         }
       }
@@ -215,9 +243,15 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
         if (xVal !== null && yVal !== null) {
           x = ((xVal - xMin + xPadding) / (xRange + 2 * xPadding)) * plotWidth;
-          y = plotHeight - ((yVal - yMin + yPadding) / (yRange + 2 * yPadding)) * plotHeight;
+          y =
+            plotHeight -
+            ((yVal - yMin + yPadding) / (yRange + 2 * yPadding)) * plotHeight;
         } else {
-          const fallbackPositions = getIdealizedPositions(diagramType, plotWidth, plotHeight);
+          const fallbackPositions = getIdealizedPositions(
+            diagramType,
+            plotWidth,
+            plotHeight,
+          );
           const index = parseInt(point.id) - 1;
           x = fallbackPositions[index]?.x || plotWidth / 2;
           y = fallbackPositions[index]?.y || plotHeight / 2;
@@ -228,8 +262,16 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     }
 
     // ultimate fallback
-    const fallbackPositions = getIdealizedPositions(diagramType, plotWidth, plotHeight);
-    return points.map((point, index) => ({ ...point, x: fallbackPositions[index]?.x || plotWidth / 2, y: fallbackPositions[index]?.y || plotHeight / 2 }));
+    const fallbackPositions = getIdealizedPositions(
+      diagramType,
+      plotWidth,
+      plotHeight,
+    );
+    return points.map((point, index) => ({
+      ...point,
+      x: fallbackPositions[index]?.x || plotWidth / 2,
+      y: fallbackPositions[index]?.y || plotHeight / 2,
+    }));
   };
 
   // Enhanced idealized positions that reflect real thermodynamic cycles
@@ -298,8 +340,6 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     drawCycle(ctx, logicalWidth, logicalHeight);
   }, [cycleData, selectedPoint, diagramType, isDarkMode]);
 
-
-
   const drawCycle = (
     ctx: CanvasRenderingContext2D,
     width: number,
@@ -324,7 +364,11 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
     // Use shared domain calculation so scales match Chart Package
     const config = DIAGRAM_CONFIGS[diagramType];
-    const domain = computeDomain(diagramType, cycleData || {}, cycleData?.points || []);
+    const domain = computeDomain(
+      diagramType,
+      cycleData || {},
+      cycleData?.points || [],
+    );
 
     // Set up coordinate system with larger margins for higher resolution
     const margin = 120;
@@ -355,11 +399,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     drawComponentLabels(ctx, pointsWithCoords, margin);
 
     // Draw enhanced annotations (arrows and labels)
-    drawDiagramAnnotations(
-      ctx,
-      pointsWithCoords,
-      margin,
-    );
+    drawDiagramAnnotations(ctx, pointsWithCoords, margin);
   };
 
   const drawPlaceholder = (
@@ -504,7 +544,13 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     ctx.textAlign = "center";
 
     // Use shared computeDomain for consistent axis ranges and ticks
-    const domain = computeDomain(diagramType, (cycleData as any) || {}, points || [], 0.12, 6);
+    const domain = computeDomain(
+      diagramType,
+      (cycleData as any) || {},
+      points || [],
+      0.12,
+      6,
+    );
 
     const xMinPadded = domain.xMin;
     const xMaxPadded = domain.xMax;
@@ -517,7 +563,9 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     // X-axis ticks with real values
     for (let i = 0; i < xTicks.length; i++) {
       const txVal = xTicks[i];
-      const x = margin + ((txVal - xMinPadded) / (xMaxPadded - xMinPadded || 1)) * plotWidth;
+      const x =
+        margin +
+        ((txVal - xMinPadded) / (xMaxPadded - xMinPadded || 1)) * plotWidth;
 
       ctx.beginPath();
       ctx.moveTo(x, margin + plotHeight);
@@ -526,9 +574,10 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
       // Format value based on magnitude and type
       let formattedValue: string;
-      if (config.xAxis.property === 'pressure') {
-        formattedValue = txVal > 1000 ? (txVal / 1000).toFixed(1) + 'k' : txVal.toFixed(0);
-      } else if (config.xAxis.property === 'specificVolume') {
+      if (config.xAxis.property === "pressure") {
+        formattedValue =
+          txVal > 1000 ? (txVal / 1000).toFixed(1) + "k" : txVal.toFixed(0);
+      } else if (config.xAxis.property === "specificVolume") {
         formattedValue = txVal.toFixed(4);
       } else {
         formattedValue = txVal.toFixed(1);
@@ -538,10 +587,13 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     }
 
     // Y-axis ticks with real values
-    ctx.textAlign = 'right';
+    ctx.textAlign = "right";
     for (let i = 0; i < yTicks.length; i++) {
       const tyVal = yTicks[i];
-      const y = margin + plotHeight - ((tyVal - yMinPadded) / (yMaxPadded - yMinPadded || 1)) * plotHeight;
+      const y =
+        margin +
+        plotHeight -
+        ((tyVal - yMinPadded) / (yMaxPadded - yMinPadded || 1)) * plotHeight;
 
       ctx.beginPath();
       ctx.moveTo(margin - 10, y);
@@ -549,9 +601,10 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       ctx.stroke();
 
       let formattedValue: string;
-      if (config.yAxis.property === 'pressure') {
-        formattedValue = tyVal > 1000 ? (tyVal / 1000).toFixed(1) + 'k' : tyVal.toFixed(0);
-      } else if (config.yAxis.property === 'temperature') {
+      if (config.yAxis.property === "pressure") {
+        formattedValue =
+          tyVal > 1000 ? (tyVal / 1000).toFixed(1) + "k" : tyVal.toFixed(0);
+      } else if (config.yAxis.property === "temperature") {
         formattedValue = tyVal.toFixed(0);
       } else {
         formattedValue = tyVal.toFixed(1);
@@ -569,7 +622,10 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     config: DiagramConfig,
   ) => {
     // Accept either camelCase or snake_case saturation dome property names
-    const dome = (cycleData as any).saturationDome || (cycleData as any).saturation_dome || null;
+    const dome =
+      (cycleData as any).saturationDome ||
+      (cycleData as any).saturation_dome ||
+      null;
     if (!dome) {
       // Fallback to simplified dome if no data available
       const centerX = margin + plotWidth * 0.35;
@@ -592,19 +648,20 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     let yData: number[] = [];
 
     if (diagramType === "P-h") {
-      const ph = dome.ph_diagram || dome.ph || dome['ph'] || null;
+      const ph = dome.ph_diagram || dome.ph || dome["ph"] || null;
       if (ph) {
         xData = ph.enthalpy_kj_kg || ph.enthalpy || ph.h || [];
         yData = ph.pressure_kpa || ph.pressure || ph.p || [];
       }
     } else if (diagramType === "T-s") {
-      const ts = dome.ts_diagram || dome.ts || dome['ts'] || null;
+      const ts = dome.ts_diagram || dome.ts || dome["ts"] || null;
       if (ts) {
-        xData = ts.entropy_kj_kgk || ts.entropy_kj_kg || ts.entropy || ts.s || [];
+        xData =
+          ts.entropy_kj_kgk || ts.entropy_kj_kg || ts.entropy || ts.s || [];
         yData = ts.temperature_c || ts.temperature || ts.t || [];
       }
     } else if (diagramType === "T-v") {
-      const tv = dome.tv_diagram || dome.tv || dome['tv'] || null;
+      const tv = dome.tv_diagram || dome.tv || dome["tv"] || null;
       if (tv) {
         xData = tv.specific_volume_m3_kg || tv.specific_volume || tv.v || [];
         yData = tv.temperature_c || tv.temperature || tv.t || [];
@@ -613,21 +670,32 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
     if (xData.length > 0 && yData.length > 0) {
       // Use shared domain so dome aligns with axes
-      const domain = computeDomain(diagramType, (cycleData as any) || {}, cycleData?.points || [], 0.12, 6);
+      const domain = computeDomain(
+        diagramType,
+        (cycleData as any) || {},
+        cycleData?.points || [],
+        0.12,
+        6,
+      );
       const xMin = domain.xMin;
       const xMax = domain.xMax;
       const yMin = domain.yMin;
       const yMax = domain.yMax;
 
       // Draw saturation dome curve
-      ctx.strokeStyle = isDarkMode ? 'rgba(96, 165, 250, 0.6)' : 'rgba(59, 130, 246, 0.6)';
+      ctx.strokeStyle = isDarkMode
+        ? "rgba(96, 165, 250, 0.6)"
+        : "rgba(59, 130, 246, 0.6)";
       ctx.lineWidth = 2;
       ctx.setLineDash([4, 2]);
       ctx.beginPath();
 
       for (let i = 0; i < Math.min(xData.length, yData.length); i++) {
         const x = margin + ((xData[i] - xMin) / (xMax - xMin || 1)) * plotWidth;
-        const y = margin + plotHeight - ((yData[i] - yMin) / (yMax - yMin || 1)) * plotHeight;
+        const y =
+          margin +
+          plotHeight -
+          ((yData[i] - yMin) / (yMax - yMin || 1)) * plotHeight;
 
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
@@ -636,10 +704,12 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       ctx.stroke();
       ctx.setLineDash([]);
 
-      ctx.fillStyle = isDarkMode ? 'rgba(96, 165, 250, 0.8)' : 'rgba(59, 130, 246, 0.8)';
+      ctx.fillStyle = isDarkMode
+        ? "rgba(96, 165, 250, 0.8)"
+        : "rgba(59, 130, 246, 0.8)";
       ctx.font = "12px 'Inter', sans-serif";
-      ctx.textAlign = 'center';
-      ctx.fillText('Saturation Dome', margin + plotWidth * 0.8, margin + 30);
+      ctx.textAlign = "center";
+      ctx.fillText("Saturation Dome", margin + plotWidth * 0.8, margin + 30);
     } else {
       console.log(`No saturation dome data for ${diagramType}`);
     }
@@ -815,7 +885,9 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     const midY = margin + (startPoint.y + endPoint.y) / 2;
 
     // Label background
-    ctx.fillStyle = isDarkMode ? "rgba(15, 23, 42, 0.9)" : "rgba(255, 255, 255, 0.9)";
+    ctx.fillStyle = isDarkMode
+      ? "rgba(15, 23, 42, 0.9)"
+      : "rgba(255, 255, 255, 0.9)";
     ctx.strokeStyle = color;
     ctx.lineWidth = 2;
 
@@ -897,7 +969,9 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       const textWidth = ctx.measureText(labelText).width;
 
       // Label background
-      ctx.fillStyle = isDarkMode ? "rgba(15, 23, 42, 0.95)" : "rgba(255, 255, 255, 0.95)";
+      ctx.fillStyle = isDarkMode
+        ? "rgba(15, 23, 42, 0.95)"
+        : "rgba(255, 255, 255, 0.95)";
       ctx.strokeStyle = color;
       ctx.lineWidth = 1;
 
@@ -962,7 +1036,9 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
         margin + comp.position.y * (canvasRef.current!.height - 2 * margin);
 
       // Component background
-      ctx.fillStyle = isDarkMode ? "rgba(15, 23, 42, 0.95)" : "rgba(255, 255, 255, 0.95)";
+      ctx.fillStyle = isDarkMode
+        ? "rgba(15, 23, 42, 0.95)"
+        : "rgba(255, 255, 255, 0.95)";
       ctx.strokeStyle = comp.color;
       ctx.lineWidth = 2;
 
@@ -1016,7 +1092,9 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
         label: (() => {
           const t1 = safeNum(points[0].temperature);
           const t2 = safeNum(points[1].temperature);
-          return t1 !== null && t2 !== null ? `ΔT: ${(t2 - t1).toFixed(1)}°C` : "ΔT: N/A";
+          return t1 !== null && t2 !== null
+            ? `ΔT: ${(t2 - t1).toFixed(1)}°C`
+            : "ΔT: N/A";
         })(),
         color: isDarkMode ? "#f87171" : "#dc2626",
       },
@@ -1026,7 +1104,9 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
         label: (() => {
           const p1 = safeNum(points[1].pressure);
           const p2 = safeNum(points[2].pressure);
-          return p1 !== null && p2 !== null ? `ΔP: ${((p1 - p2) / 1000).toFixed(1)}MPa` : "ΔP: N/A";
+          return p1 !== null && p2 !== null
+            ? `ΔP: ${((p1 - p2) / 1000).toFixed(1)}MPa`
+            : "ΔP: N/A";
         })(),
         color: isDarkMode ? "#60a5fa" : "#2563eb",
       },
@@ -1036,7 +1116,9 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
         label: (() => {
           const h2 = safeNum(points[2].enthalpy);
           const h3 = safeNum(points[3].enthalpy);
-          return h2 !== null && h3 !== null ? `ΔH: ${(h2 - h3).toFixed(1)}kJ/kg` : "ΔH: N/A";
+          return h2 !== null && h3 !== null
+            ? `ΔH: ${(h2 - h3).toFixed(1)}kJ/kg`
+            : "ΔH: N/A";
         })(),
         color: isDarkMode ? "#34d399" : "#059669",
       },
@@ -1046,7 +1128,9 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
         label: (() => {
           const h0 = safeNum(points[0].enthalpy);
           const h3 = safeNum(points[3].enthalpy);
-          return h0 !== null && h3 !== null ? `ΔH: ${(h0 - h3).toFixed(1)}kJ/kg` : "ΔH: N/A";
+          return h0 !== null && h3 !== null
+            ? `ΔH: ${(h0 - h3).toFixed(1)}kJ/kg`
+            : "ΔH: N/A";
         })(),
         color: isDarkMode ? "#fbbf24" : "#d97706",
       },
@@ -1057,7 +1141,9 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       const midY = margin + (process.from.y + process.to.y) / 2;
 
       // Draw label background
-      ctx.fillStyle = isDarkMode ? "rgba(15, 23, 42, 0.9)" : "rgba(255, 255, 255, 0.9)";
+      ctx.fillStyle = isDarkMode
+        ? "rgba(15, 23, 42, 0.9)"
+        : "rgba(255, 255, 255, 0.9)";
       ctx.strokeStyle = process.color;
       ctx.lineWidth = 1;
 
@@ -1103,7 +1189,9 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       ];
 
       // Background for labels
-      ctx.fillStyle = isDarkMode ? "rgba(15, 23, 42, 0.95)" : "rgba(255, 255, 255, 0.95)";
+      ctx.fillStyle = isDarkMode
+        ? "rgba(15, 23, 42, 0.95)"
+        : "rgba(255, 255, 255, 0.95)";
 
       const colors = isDarkMode
         ? ["#f87171", "#60a5fa", "#34d399", "#fbbf24"]
@@ -1193,7 +1281,9 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     });
   };
 
-  const selectedPointData = cycleData?.points.find((p) => p.id === selectedPoint);
+  const selectedPointData = cycleData?.points.find(
+    (p) => p.id === selectedPoint,
+  );
 
   // Safe number formatters for rendering
   const fmt = (v: any, digits = 2) => {
@@ -1218,7 +1308,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
           border: "border-cyan-500",
           ring: "ring-cyan-500/20",
           icon: <Zap className="h-5 w-5" />,
-          label: "Low Temp Stage"
+          label: "Low Temp Stage",
         };
       case "cascade-high":
         return {
@@ -1227,16 +1317,16 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
           border: "border-orange-500",
           ring: "ring-orange-500/20",
           icon: <Thermometer className="h-5 w-5" />, // Differentiate icon
-          label: "High Temp Stage"
+          label: "High Temp Stage",
         };
       default:
         return {
-          bg: "bg-blue-100 dark:bg-blue-900/30",
-          text: "text-blue-600 dark:text-blue-400",
-          border: "border-blue-500",
-          ring: "ring-blue-500/20",
+          bg: "bg-orange-100 dark:bg-orange-900/30",
+          text: "text-orange-600 dark:text-orange-400",
+          border: "border-orange-500",
+          ring: "ring-orange-500/20",
           icon: <Zap className="h-5 w-5" />,
-          label: "Standard Cycle"
+          label: "Standard Cycle",
         };
     }
   })();
@@ -1246,20 +1336,26 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       {/* Header Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
         <div className="flex items-center gap-3">
-          <div className={`p-2 rounded-md ${themeParams.bg} ${themeParams.text}`}>
+          <div
+            className={`p-2 rounded-md ${themeParams.bg} ${themeParams.text}`}
+          >
             {themeParams.icon}
           </div>
           <div>
             <h3 className="font-semibold text-lg flex items-center gap-2">
               {DIAGRAM_CONFIGS[diagramType].name}
               {/* Optional: Add badge for cycle stage */}
-              {cycleData?.cycleType !== 'standard' && (
-                <span className={`text-[10px] px-1.5 py-0.5 rounded-full border ${themeParams.text} ${themeParams.bg} border-opacity-30`}>
+              {cycleData?.cycleType !== "standard" && (
+                <span
+                  className={`text-[10px] px-1.5 py-0.5 rounded-full border ${themeParams.text} ${themeParams.bg} border-opacity-30`}
+                >
                   {themeParams.label}
                 </span>
               )}
             </h3>
-            <p className="text-sm text-muted-foreground">{cycleData?.refrigerant || "No Data"}</p>
+            <p className="text-sm text-muted-foreground">
+              {cycleData?.refrigerant || "No Data"}
+            </p>
           </div>
         </div>
 
@@ -1299,7 +1395,9 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
             />
             {!cycleData && (
               <div className="absolute inset-0 flex items-center justify-center bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-sm rounded-xl">
-                <div className="text-muted-foreground font-medium">No Cycle Data Available</div>
+                <div className="text-muted-foreground font-medium">
+                  No Cycle Data Available
+                </div>
               </div>
             )}
             <div className="absolute bottom-4 right-4 text-xs text-muted-foreground bg-white/80 dark:bg-black/50 backdrop-blur px-2 py-1 rounded border shadow-sm opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -1310,7 +1408,6 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
         {/* Sidebar Panel - Unified Details */}
         <div className="space-y-6">
-
           {/* 1. Cycle Analysis (Always Visible) */}
           <Card className={`border-l-4 ${themeParams.border} shadow-sm`}>
             <CardHeader className="pb-2">
@@ -1339,46 +1436,81 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
                   return (
                     <div className="space-y-3 pt-1">
                       <div className="flex justify-between items-center pb-2 border-b border-dashed">
-                        <span className="text-sm text-muted-foreground">Theoretical COP</span>
-                        <Badge variant="outline" className={`font-mono text-base ${themeParams.text} ${themeParams.bg} border-0`}>
+                        <span className="text-sm text-muted-foreground">
+                          Theoretical COP
+                        </span>
+                        <Badge
+                          variant="outline"
+                          className={`font-mono text-base ${themeParams.text} ${themeParams.bg} border-0`}
+                        >
                           {Number.isFinite(cop) ? cop.toFixed(2) : "N/A"}
                         </Badge>
                       </div>
 
                       <div className="space-y-1.5">
                         <div className="flex justify-between text-xs">
-                          <span className="text-muted-foreground">Compression Ratio</span>
-                          <span className="font-mono">{Number.isFinite(compressionRatio) ? compressionRatio.toFixed(2) : "N/A"}</span>
+                          <span className="text-muted-foreground">
+                            Compression Ratio
+                          </span>
+                          <span className="font-mono">
+                            {Number.isFinite(compressionRatio)
+                              ? compressionRatio.toFixed(2)
+                              : "N/A"}
+                          </span>
                         </div>
                         <div className="flex justify-between text-xs">
-                          <span className="text-muted-foreground">Temperature Lift</span>
-                          <span className="font-mono">{Number.isFinite(tempLift) ? tempLift.toFixed(1) + " °C" : "N/A"}</span>
+                          <span className="text-muted-foreground">
+                            Temperature Lift
+                          </span>
+                          <span className="font-mono">
+                            {Number.isFinite(tempLift)
+                              ? tempLift.toFixed(1) + " °C"
+                              : "N/A"}
+                          </span>
                         </div>
                         <div className="flex justify-between text-xs">
-                          <span className="text-muted-foreground">Refrig. Effect</span>
-                          <span className="font-mono">{Number.isFinite(refrigEffect) ? refrigEffect.toFixed(1) + " kJ/kg" : "N/A"}</span>
+                          <span className="text-muted-foreground">
+                            Refrig. Effect
+                          </span>
+                          <span className="font-mono">
+                            {Number.isFinite(refrigEffect)
+                              ? refrigEffect.toFixed(1) + " kJ/kg"
+                              : "N/A"}
+                          </span>
                         </div>
                         <div className="flex justify-between text-xs">
-                          <span className="text-muted-foreground">Comp. Work</span>
-                          <span className="font-mono">{Number.isFinite(compWork) ? compWork.toFixed(1) + " kJ/kg" : "N/A"}</span>
+                          <span className="text-muted-foreground">
+                            Comp. Work
+                          </span>
+                          <span className="font-mono">
+                            {Number.isFinite(compWork)
+                              ? compWork.toFixed(1) + " kJ/kg"
+                              : "N/A"}
+                          </span>
                         </div>
                       </div>
                     </div>
                   );
                 })()
               ) : (
-                <div className="text-center py-4 text-muted-foreground text-sm">No cycle data available</div>
+                <div className="text-center py-4 text-muted-foreground text-sm">
+                  No cycle data available
+                </div>
               )}
             </CardContent>
           </Card>
 
           {/* 2. Point Inspector (Always Visible, Dynamic Content) */}
-          <Card className={`shadow-sm ${selectedPointData ? 'ring-1 ' + themeParams.ring : 'border-dashed'}`}>
+          <Card
+            className={`shadow-sm ${selectedPointData ? "ring-1 " + themeParams.ring : "border-dashed"}`}
+          >
             <CardHeader className="pb-2">
               <CardTitle className="text-base flex items-center justify-between">
                 <span className="flex items-center gap-2">
                   {selectedPointData ? (
-                    <div className={`flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${themeParams.bg} ${themeParams.ring} ring-2 ${themeParams.text}`}>
+                    <div
+                      className={`flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${themeParams.bg} ${themeParams.ring} ring-2 ${themeParams.text}`}
+                    >
                       {selectedPointData.id}
                     </div>
                   ) : (
@@ -1389,7 +1521,13 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
                   <span>Point Inspector</span>
                 </span>
                 {selectedPointData && (
-                  <Button variant="ghost" size="icon" className="h-6 w-6 -mr-2 text-muted-foreground hover:text-foreground" onClick={() => setSelectedPoint(null)} title="Clear selection">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 -mr-2 text-muted-foreground hover:text-foreground"
+                    onClick={() => setSelectedPoint(null)}
+                    title="Clear selection"
+                  >
                     <span className="text-xs">✕</span>
                   </Button>
                 )}
@@ -1400,44 +1538,83 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
                 <div className="space-y-4 animate-in fade-in slide-in-from-right-2 duration-200">
                   <div className="grid grid-cols-2 gap-x-2 gap-y-3 text-sm">
                     <div className="bg-slate-50 dark:bg-slate-900/40 p-2 rounded">
-                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Temperature</div>
-                      <div className="font-mono text-base font-medium">{fmt(selectedPointData.temperature, 1)} <span className="text-xs text-muted-foreground">°C</span></div>
+                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+                        Temperature
+                      </div>
+                      <div className="font-mono text-base font-medium">
+                        {fmt(selectedPointData.temperature, 1)}{" "}
+                        <span className="text-xs text-muted-foreground">
+                          °C
+                        </span>
+                      </div>
                     </div>
                     <div className="bg-slate-50 dark:bg-slate-900/40 p-2 rounded">
-                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Pressure</div>
-                      <div className="font-mono text-base font-medium">{fmtPressureMPa(selectedPointData.pressure, 2)}</div>
+                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+                        Pressure
+                      </div>
+                      <div className="font-mono text-base font-medium">
+                        {fmtPressureMPa(selectedPointData.pressure, 2)}
+                      </div>
                     </div>
                     <div>
-                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Enthalpy</div>
-                      <div className="font-mono">{fmt(selectedPointData.enthalpy, 1)} <span className="text-xs text-muted-foreground">kJ/kg</span></div>
+                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+                        Enthalpy
+                      </div>
+                      <div className="font-mono">
+                        {fmt(selectedPointData.enthalpy, 1)}{" "}
+                        <span className="text-xs text-muted-foreground">
+                          kJ/kg
+                        </span>
+                      </div>
                     </div>
                     <div>
-                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Entropy</div>
-                      <div className="font-mono">{fmt(selectedPointData.entropy, 3)} <span className="text-xs text-muted-foreground">kJ/kg·K</span></div>
+                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+                        Entropy
+                      </div>
+                      <div className="font-mono">
+                        {fmt(selectedPointData.entropy, 3)}{" "}
+                        <span className="text-xs text-muted-foreground">
+                          kJ/kg·K
+                        </span>
+                      </div>
                     </div>
                   </div>
 
-                  {selectedPointData.quality !== undefined && Number.isFinite(Number(selectedPointData.quality)) && (
-                    <div className="text-xs bg-blue-50 dark:bg-blue-900/20 p-2 rounded text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-800 flex items-center gap-2">
-                      <span className="text-base">💧</span>
-                      <span><strong>Vapor Quality:</strong> {(Number(selectedPointData.quality) * 100).toFixed(1)}%</span>
-                    </div>
-                  )}
+                  {selectedPointData.quality !== undefined &&
+                    Number.isFinite(Number(selectedPointData.quality)) && (
+                      <div className="text-xs bg-orange-50 dark:bg-orange-900/20 p-2 rounded text-orange-700 dark:text-orange-300 border border-orange-100 dark:border-orange-800 flex items-center gap-2">
+                        <span className="text-base">💧</span>
+                        <span>
+                          <strong>Vapor Quality:</strong>{" "}
+                          {(Number(selectedPointData.quality) * 100).toFixed(1)}
+                          %
+                        </span>
+                      </div>
+                    )}
 
                   {/* Contextual Note */}
                   <div className="text-xs text-muted-foreground border-t pt-2 mt-2">
                     <span className="font-medium text-foreground">Note: </span>
-                    {selectedPointData.id === "1" && "Evaporator Outlet (Superheated Vapor)"}
-                    {selectedPointData.id === "2" && "Compressor Discharge (Superheated Gas)"}
-                    {selectedPointData.id === "3" && "Condenser Outlet (Subcooled Liquid)"}
-                    {selectedPointData.id === "4" && "Evaporator Inlet (Liquid+Vapor Mix)"}
-                    {!["1", "2", "3", "4"].includes(selectedPointData.id) && "State point properties"}
+                    {selectedPointData.id === "1" &&
+                      "Evaporator Outlet (Superheated Vapor)"}
+                    {selectedPointData.id === "2" &&
+                      "Compressor Discharge (Superheated Gas)"}
+                    {selectedPointData.id === "3" &&
+                      "Condenser Outlet (Subcooled Liquid)"}
+                    {selectedPointData.id === "4" &&
+                      "Evaporator Inlet (Liquid+Vapor Mix)"}
+                    {!["1", "2", "3", "4"].includes(selectedPointData.id) &&
+                      "State point properties"}
                   </div>
                 </div>
               ) : (
                 <div className="h-32 flex flex-col items-center justify-center text-center text-sm text-muted-foreground border-2 border-dashed rounded-lg bg-slate-50/50 dark:bg-slate-900/20">
                   <span className="text-2xl mb-2 opacity-50">👆</span>
-                  <p>Select a point on the chart<br />to view detailed properties</p>
+                  <p>
+                    Select a point on the chart
+                    <br />
+                    to view detailed properties
+                  </p>
                 </div>
               )}
             </CardContent>
@@ -1445,14 +1622,16 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
           {/* 2. Legend */}
           <div className="bg-slate-50 dark:bg-slate-900/50 rounded-lg p-4 border border-slate-200 dark:border-slate-800">
-            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Process Legend</h4>
+            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+              Process Legend
+            </h4>
             <div className="space-y-2">
               <div className="flex items-center gap-3 text-xs">
                 <span className="w-2 h-2 rounded-full bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.5)]"></span>
                 <span className="font-medium">1→2: Compression</span>
               </div>
               <div className="flex items-center gap-3 text-xs">
-                <span className="w-2 h-2 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.5)]"></span>
+                <span className="w-2 h-2 rounded-full bg-orange-400 shadow-[0_0_8px_rgba(96,165,250,0.5)]"></span>
                 <span className="font-medium">2→3: Condensation</span>
               </div>
               <div className="flex items-center gap-3 text-xs">
@@ -1468,23 +1647,49 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
           {/* 3. Actions */}
           <div className="grid grid-cols-2 gap-2">
-            <Button variant="outline" size="sm" className="w-full text-xs h-8" onClick={() => {
-              const canvas = canvasRef.current; if (canvas) { const link = document.createElement("a"); link.download = `${cycleData?.refrigerant || "cycle"}_diagram.png`; link.href = canvas.toDataURL(); link.click(); }
-            }}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full text-xs h-8"
+              onClick={() => {
+                const canvas = canvasRef.current;
+                if (canvas) {
+                  const link = document.createElement("a");
+                  link.download = `${cycleData?.refrigerant || "cycle"}_diagram.png`;
+                  link.href = canvas.toDataURL();
+                  link.click();
+                }
+              }}
+            >
               📸 Save Image
             </Button>
-            <Button variant="outline" size="sm" className="w-full text-xs h-8" onClick={() => {
-              if (cycleData) {
-                const csvData = cycleData.points.map((p, i) => `P${i + 1},${p.temperature},${p.pressure},${p.enthalpy},${p.entropy}`).join("\n");
-                const blob = new Blob(["Point,T(C),P(kPa),h(kJ/kg),s(kJ/kgK)\n" + csvData], { type: "text/csv" });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a"); a.href = url; a.download = `${cycleData.refrigerant}_data.csv`; a.click();
-              }
-            }}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full text-xs h-8"
+              onClick={() => {
+                if (cycleData) {
+                  const csvData = cycleData.points
+                    .map(
+                      (p, i) =>
+                        `P${i + 1},${p.temperature},${p.pressure},${p.enthalpy},${p.entropy}`,
+                    )
+                    .join("\n");
+                  const blob = new Blob(
+                    ["Point,T(C),P(kPa),h(kJ/kg),s(kJ/kgK)\n" + csvData],
+                    { type: "text/csv" },
+                  );
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `${cycleData.refrigerant}_data.csv`;
+                  a.click();
+                }
+              }}
+            >
               📊 Export CSV
             </Button>
           </div>
-
         </div>
       </div>
     </div>

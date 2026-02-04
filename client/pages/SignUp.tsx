@@ -3,7 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Mail, Lock, Eye, EyeOff, UserPlus, ArrowRight } from "lucide-react";
@@ -108,11 +114,11 @@ export function SignUp() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4 selection:bg-blue-500/30 overflow-hidden relative">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 selection:bg-orange-500/30 overflow-hidden relative">
       {/* Dynamic Background */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-500/10 rounded-full blur-[100px] animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 rounded-full blur-[100px] animate-pulse delay-1000" />
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-orange-500/10 rounded-full blur-[100px] animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-slate-500/10 rounded-full blur-[100px] animate-pulse delay-1000" />
       </div>
 
       <motion.div
@@ -135,7 +141,7 @@ export function SignUp() {
         </div>
 
         <Card className="bg-card/60 backdrop-blur-xl border-border shadow-2xl overflow-hidden">
-          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
+          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-orange-500 via-slate-500 to-pink-500" />
 
           <CardHeader className="text-center pb-2 pt-8">
             <CardTitle className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/80">
@@ -151,14 +157,14 @@ export function SignUp() {
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
                 <div className="relative group">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground group-focus-within:text-orange-500 transition-colors" />
                   <Input
                     id="email"
                     type="email"
                     placeholder="name@example.com"
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
-                    className="pl-10 h-11 bg-background/50 border-input focus:border-blue-500 transition-all"
+                    className="pl-10 h-11 bg-background/50 border-input focus:border-orange-500 transition-all"
                     required
                   />
                 </div>
@@ -167,14 +173,16 @@ export function SignUp() {
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <div className="relative group">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground group-focus-within:text-orange-500 transition-colors" />
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Create a strong password"
                     value={formData.password}
-                    onChange={(e) => handleInputChange("password", e.target.value)}
-                    className="pl-10 pr-10 h-11 bg-background/50 border-input focus:border-blue-500 transition-all"
+                    onChange={(e) =>
+                      handleInputChange("password", e.target.value)
+                    }
+                    className="pl-10 pr-10 h-11 bg-background/50 border-input focus:border-orange-500 transition-all"
                     required
                   />
                   <button
@@ -194,14 +202,16 @@ export function SignUp() {
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <div className="relative group">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground group-focus-within:text-orange-500 transition-colors" />
                   <Input
                     id="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Confirm your password"
                     value={formData.confirmPassword}
-                    onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
-                    className="pl-10 pr-10 h-11 bg-background/50 border-input focus:border-blue-500 transition-all"
+                    onChange={(e) =>
+                      handleInputChange("confirmPassword", e.target.value)
+                    }
+                    className="pl-10 pr-10 h-11 bg-background/50 border-input focus:border-orange-500 transition-all"
                     required
                   />
                   <button
@@ -230,10 +240,11 @@ export function SignUp() {
 
               <Button
                 type="submit"
-                className="w-full h-11 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg shadow-blue-500/20 transition-all duration-300 hover:scale-[1.02]"
+                className="w-full h-11 bg-gradient-to-r from-orange-600 to-slate-600 hover:from-orange-700 hover:to-slate-700 text-white shadow-lg shadow-orange-500/20 transition-all duration-300 hover:scale-[1.02]"
                 disabled={loading}
               >
-                {loading ? "Creating account..." : "Create Account"} <ArrowRight className="ml-2 h-4 w-4" />
+                {loading ? "Creating account..." : "Create Account"}{" "}
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </form>
 
@@ -276,10 +287,12 @@ export function SignUp() {
             </Button>
 
             <div className="text-center text-sm">
-              <span className="text-muted-foreground">Already have an account? </span>
+              <span className="text-muted-foreground">
+                Already have an account?{" "}
+              </span>
               <Link
                 to="/signin"
-                className="text-blue-600 dark:text-blue-400 font-semibold hover:underline hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+                className="text-orange-600 dark:text-orange-400 font-semibold hover:underline hover:text-orange-700 dark:hover:text-orange-300 transition-colors"
               >
                 Sign in
               </Link>

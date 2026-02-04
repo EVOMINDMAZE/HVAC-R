@@ -73,21 +73,50 @@ export const getTeam: RequestHandler = async (req, res) => {
         .json({ error: "User not associated with a company" });
     }
 
-    // Get team members for this company
-    const { data: teamMembers, error } = await supabaseAdmin!
+    // Get team members for this company from user_roles
+    const { data: roleMembers, error: roleError } = await supabaseAdmin!
       .from("user_roles")
       .select("user_id, role")
       .eq("company_id", companyId)
       .order("role", { ascending: true });
 
-    if (error) {
-      console.error("Error fetching team members:", error);
+    if (roleError) {
+      console.error("Error fetching team members from user_roles:", roleError);
       return res.status(500).json({ error: "Failed to fetch team" });
     }
 
+    // Get company owner(s) from companies table
+    const { data: companyOwners, error: companyError } = await supabaseAdmin!
+      .from("companies")
+      .select("user_id")
+      .eq("id", companyId);
+
+    if (companyError) {
+      console.error("Error fetching company owners:", companyError);
+      return res.status(500).json({ error: "Failed to fetch team" });
+    }
+
+    // Combine members, ensuring no duplicates
+    const allMembers = new Map<string, { user_id: string; role: string }>();
+
+    // Add company owners as 'admin' role
+    companyOwners?.forEach((owner) => {
+      if (owner.user_id) {
+        allMembers.set(owner.user_id, {
+          user_id: owner.user_id,
+          role: "admin",
+        });
+      }
+    });
+
+    // Add role members (will override if duplicate, but role from user_roles should be accurate)
+    roleMembers?.forEach((member) => {
+      allMembers.set(member.user_id, member);
+    });
+
     // Get emails for each user
     const membersWithEmails = await Promise.all(
-      (teamMembers || []).map(async (member) => {
+      Array.from(allMembers.values()).map(async (member) => {
         let email = "";
         try {
           // Get user email from auth.users via admin API

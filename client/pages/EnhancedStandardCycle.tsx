@@ -47,7 +47,7 @@ import {
   validateCycleConditions,
   getRefrigerantById,
 } from "../lib/refrigerants";
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 
 interface StatePoint {
   temp_c?: number;
@@ -107,16 +107,15 @@ interface CalculationResults {
 export function EnhancedStandardCycleContent() {
   const [formData, setFormData] = useState(() => {
     const saved = localStorage.getItem("standard_cycle_inputs");
-    return saved ? JSON.parse(saved) : {
-      refrigerant: "",
-      evap_temp_c: -10,
-      cond_temp_c: 45,
-      superheat_c: 5,
-      subcooling_c: 2,
-    };
-
-
-
+    return saved
+      ? JSON.parse(saved)
+      : {
+          refrigerant: "",
+          evap_temp_c: -10,
+          cond_temp_c: 45,
+          superheat_c: 5,
+          subcooling_c: 2,
+        };
   });
 
   useEffect(() => {
@@ -270,7 +269,7 @@ export function EnhancedStandardCycleContent() {
       setError(null);
       try {
         refreshAi();
-      } catch (_) { }
+      } catch (_) {}
     },
     [
       formData.evap_temp_c,
@@ -404,7 +403,7 @@ export function EnhancedStandardCycleContent() {
       ) {
         throw new Error(
           "Invalid response format - missing state_points or performance data. Available keys: " +
-          Object.keys(responseData).join(", "),
+            Object.keys(responseData).join(", "),
         );
       }
 
@@ -471,9 +470,16 @@ export function EnhancedStandardCycleContent() {
             `CoolProp limitation: ${refrigerantName} is a blend refrigerant and two-phase calculations are not supported. Automatic retry failed. Try using a pure refrigerant (e.g., R134a) or adjust operating conditions to avoid two-phase calculations.`,
           );
         }
-      } else if (errorMessage.includes("PropsSI") || errorMessage.includes("QT_flash") || errorMessage.includes("Temperature to QT_flash")) {
+      } else if (
+        errorMessage.includes("PropsSI") ||
+        errorMessage.includes("QT_flash") ||
+        errorMessage.includes("Temperature to QT_flash")
+      ) {
         // Detect CoolProp QT_flash temperature-range errors and provide actionable guidance
-        if (errorMessage.includes("Temperature to QT_flash") || errorMessage.includes("QT_flash")) {
+        if (
+          errorMessage.includes("Temperature to QT_flash") ||
+          errorMessage.includes("QT_flash")
+        ) {
           setError(
             "Thermodynamic property error: A two-phase property lookup was attempted outside the valid temperature range for the selected refrigerant (e.g., above critical temperature). Please review your evaporator/condenser temperatures, select a different refrigerant, or use a transcritical/cascade workflow if appropriate.",
           );
@@ -507,7 +513,7 @@ export function EnhancedStandardCycleContent() {
       const lineHeight = 15;
 
       // Title
-      page.drawText('Standard Cycle Calculation Report', {
+      page.drawText("Standard Cycle Calculation Report", {
         x: 50,
         y,
         size: 18,
@@ -526,47 +532,96 @@ export function EnhancedStandardCycleContent() {
       y -= 20;
 
       // Inputs
-      page.drawText('Inputs:', { x: 50, y, size: 14, font: boldFont });
+      page.drawText("Inputs:", { x: 50, y, size: 14, font: boldFont });
       y -= 20;
-      page.drawText(`Refrigerant: ${formData.refrigerant}`, { x: 50, y, size: fontSize, font });
+      page.drawText(`Refrigerant: ${formData.refrigerant}`, {
+        x: 50,
+        y,
+        size: fontSize,
+        font,
+      });
       y -= lineHeight;
-      page.drawText(`Evaporator Temp: ${formData.evap_temp_c}°C`, { x: 50, y, size: fontSize, font });
+      page.drawText(`Evaporator Temp: ${formData.evap_temp_c}°C`, {
+        x: 50,
+        y,
+        size: fontSize,
+        font,
+      });
       y -= lineHeight;
-      page.drawText(`Condenser Temp: ${formData.cond_temp_c}°C`, { x: 50, y, size: fontSize, font });
+      page.drawText(`Condenser Temp: ${formData.cond_temp_c}°C`, {
+        x: 50,
+        y,
+        size: fontSize,
+        font,
+      });
       y -= lineHeight;
-      page.drawText(`Superheat: ${formData.superheat_c}°C`, { x: 50, y, size: fontSize, font });
+      page.drawText(`Superheat: ${formData.superheat_c}°C`, {
+        x: 50,
+        y,
+        size: fontSize,
+        font,
+      });
       y -= lineHeight;
-      page.drawText(`Subcooling: ${formData.subcooling_c}°C`, { x: 50, y, size: fontSize, font });
+      page.drawText(`Subcooling: ${formData.subcooling_c}°C`, {
+        x: 50,
+        y,
+        size: fontSize,
+        font,
+      });
       y -= 30;
 
       // Results
-      page.drawText('Key Performance Indicators:', { x: 50, y, size: 14, font: boldFont });
+      page.drawText("Key Performance Indicators:", {
+        x: 50,
+        y,
+        size: 14,
+        font: boldFont,
+      });
       y -= 20;
 
-      const cop = getPerformanceValue(results.performance, ['cop']);
-      const capacity = getPerformanceValue(results.performance, ['cooling_capacity_kw', 'cooling_capacity']);
-      const work = getPerformanceValue(results.performance, ['compressor_work_kw', 'compressor_power']);
+      const cop = getPerformanceValue(results.performance, ["cop"]);
+      const capacity = getPerformanceValue(results.performance, [
+        "cooling_capacity_kw",
+        "cooling_capacity",
+      ]);
+      const work = getPerformanceValue(results.performance, [
+        "compressor_work_kw",
+        "compressor_power",
+      ]);
 
-      page.drawText(`COP: ${formatValue(cop, '')}`, { x: 50, y, size: fontSize, font });
+      page.drawText(`COP: ${formatValue(cop, "")}`, {
+        x: 50,
+        y,
+        size: fontSize,
+        font,
+      });
       y -= lineHeight;
-      page.drawText(`Cooling Capacity: ${formatValue(capacity, 'kW')}`, { x: 50, y, size: fontSize, font });
+      page.drawText(`Cooling Capacity: ${formatValue(capacity, "kW")}`, {
+        x: 50,
+        y,
+        size: fontSize,
+        font,
+      });
       y -= lineHeight;
-      page.drawText(`Compressor Work: ${formatValue(work, 'kW')}`, { x: 50, y, size: fontSize, font });
+      page.drawText(`Compressor Work: ${formatValue(work, "kW")}`, {
+        x: 50,
+        y,
+        size: fontSize,
+        font,
+      });
 
       // Save
       const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
-      const link = document.createElement('a');
+      const blob = new Blob([pdfBytes as any], { type: "application/pdf" });
+      const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
       link.download = `calculation-report-${Date.now()}.pdf`;
       link.click();
-
     } catch (err) {
       console.error("Failed to generate PDF", err);
       setError("Failed to generate PDF report");
     }
   };
-
 
   const formatValue = (
     value: number | undefined,
@@ -578,9 +633,6 @@ export function EnhancedStandardCycleContent() {
     }
     return `${value.toFixed(decimals)} ${unit}`;
   };
-
-
-
 
   // Comprehensive property extraction with enhanced CoolProp compatibility
   const getPropertyValue = (
@@ -598,9 +650,6 @@ export function EnhancedStandardCycleContent() {
       const numericValue = Number(value);
       return Number.isFinite(numericValue) ? numericValue : undefined;
     };
-
-
-
 
     const propertyMap: Record<string, string[]> = {
       temperature: [
@@ -706,9 +755,6 @@ export function EnhancedStandardCycleContent() {
       ],
     };
 
-
-
-
     for (const name of propertyNames) {
       const numericValue = toNumeric(obj[name]);
       if (numericValue !== undefined) {
@@ -753,9 +799,6 @@ export function EnhancedStandardCycleContent() {
     return undefined;
   };
 
-
-
-
   // Helpers specific to density/specific volume extraction
   const getSpecificVolume = (point?: StatePoint): number | undefined => {
     return (
@@ -775,9 +818,6 @@ export function EnhancedStandardCycleContent() {
       ]) ?? undefined
     );
   };
-
-
-
 
   // Estimate specific gas constant R (J/kg·K) from any points that include P, T, and ρ
   const estimateSpecificGasConstant = (): number | undefined => {
@@ -822,9 +862,6 @@ export function EnhancedStandardCycleContent() {
     return estimates.reduce((a, b) => a + b, 0) / estimates.length;
   };
 
-
-
-
   const getDensity = (point?: StatePoint): number | undefined => {
     const direct = getPropertyValue(point, [
       "density_kg_m3",
@@ -858,9 +895,6 @@ export function EnhancedStandardCycleContent() {
     return undefined;
   };
 
-
-
-
   const getPerformanceValue = (
     perf: any,
     variants: string[],
@@ -876,9 +910,6 @@ export function EnhancedStandardCycleContent() {
       }
       return undefined;
     };
-
-
-
 
     // 1) Try exact variants
     const exact = searchExact(variants);
@@ -1052,26 +1083,23 @@ export function EnhancedStandardCycleContent() {
     return undefined;
   };
 
-
-
-
   // Derived flow values for display
   const massFlowRate = results?.performance
     ? getPerformanceValue(results.performance, [
-      "mass_flow_rate_kg_s",
-      "mass_flow_rate",
-      "mdot",
-      "m_dot",
-      "mass_flow",
-      "flow_rate",
-      "mass_flow_kg_s",
-      "refrigerant_flow_rate",
-      "flow_rate_mass",
-      "mass_rate",
-      "kg_per_s",
-      "mass_flux",
-      "circulation_rate",
-    ])
+        "mass_flow_rate_kg_s",
+        "mass_flow_rate",
+        "mdot",
+        "m_dot",
+        "mass_flow",
+        "flow_rate",
+        "mass_flow_kg_s",
+        "refrigerant_flow_rate",
+        "flow_rate_mass",
+        "mass_rate",
+        "kg_per_s",
+        "mass_flux",
+        "circulation_rate",
+      ])
     : undefined;
 
   const densityAtSuction = results
@@ -1080,170 +1108,170 @@ export function EnhancedStandardCycleContent() {
 
   const volumetricFlowRate = results?.performance
     ? (getPerformanceValue(results.performance, [
-      "volumetric_flow_rate_m3_s",
-      "volumetric_flow_rate",
-      "volume_flow",
-      "V_dot",
-      "v_dot",
-      "volumetric_flow",
-      "volume_flow_rate",
-      "vol_flow_rate",
-      "suction_volume_flow",
-      "displacement",
-      "volume_rate",
-      "m3_per_s",
-    ]) ??
+        "volumetric_flow_rate_m3_s",
+        "volumetric_flow_rate",
+        "volume_flow",
+        "V_dot",
+        "v_dot",
+        "volumetric_flow",
+        "volume_flow_rate",
+        "vol_flow_rate",
+        "suction_volume_flow",
+        "displacement",
+        "volume_rate",
+        "m3_per_s",
+      ]) ??
       (massFlowRate !== undefined &&
-        densityAtSuction !== undefined &&
-        densityAtSuction !== 0
+      densityAtSuction !== undefined &&
+      densityAtSuction !== 0
         ? massFlowRate / densityAtSuction
         : undefined))
     : undefined;
 
   const cycleData = results
     ? {
-      points: [
-        {
-          id: "1",
-          name: "Evaporator Outlet",
-          temperature:
-            getPropertyValue(results.state_points?.["1"], [
-              "temperature_c",
-              "temp_c",
-              "temperature",
-            ]) || 0,
-          pressure:
-            getPropertyValue(results.state_points?.["1"], [
-              "pressure_kpa",
-              "pressure",
-            ]) || 0,
-          enthalpy:
-            getPropertyValue(results.state_points?.["1"], [
-              "enthalpy_kj_kg",
-              "enthalpy",
-            ]) || 0,
-          entropy:
-            getPropertyValue(results.state_points?.["1"], [
-              "entropy_kj_kgk",
-              "entropy_kj_kg_k",
-              "entropy",
-            ]) || 0,
-          specificVolume: getSpecificVolume(results.state_points?.["1"]) || 0,
-          density: getDensity(results.state_points?.["1"]),
-          quality: getPropertyValue(results.state_points?.["1"], [
-            "vapor_quality",
-            "quality",
-          ]),
-          x: 0, // Will be calculated by CycleVisualization
-          y: 0,
-        },
-        {
-          id: "2",
-          name: "Compressor Outlet",
-          temperature:
-            getPropertyValue(results.state_points?.["2"], [
-              "temperature_c",
-              "temp_c",
-              "temperature",
-            ]) || 0,
-          pressure:
-            getPropertyValue(results.state_points?.["2"], [
-              "pressure_kpa",
-              "pressure",
-            ]) || 0,
-          enthalpy:
-            getPropertyValue(results.state_points?.["2"], [
-              "enthalpy_kj_kg",
-              "enthalpy",
-            ]) || 0,
-          entropy:
-            getPropertyValue(results.state_points?.["2"], [
-              "entropy_kj_kgk",
-              "entropy_kj_kg_k",
-              "entropy",
-            ]) || 0,
-          specificVolume: getSpecificVolume(results.state_points?.["2"]) || 0,
-          density: getDensity(results.state_points?.["2"]),
-          quality: getPropertyValue(results.state_points?.["2"], [
-            "vapor_quality",
-            "quality",
-          ]),
-          x: 0,
-          y: 0,
-        },
-        {
-          id: "3",
-          name: "Condenser Outlet",
-          temperature:
-            getPropertyValue(results.state_points?.["3"], [
-              "temperature_c",
-              "temp_c",
-              "temperature",
-            ]) || 0,
-          pressure:
-            getPropertyValue(results.state_points?.["3"], [
-              "pressure_kpa",
-              "pressure",
-            ]) || 0,
-          enthalpy:
-            getPropertyValue(results.state_points?.["3"], [
-              "enthalpy_kj_kg",
-              "enthalpy",
-            ]) || 0,
-          entropy:
-            getPropertyValue(results.state_points?.["3"], [
-              "entropy_kj_kgk",
-              "entropy_kj_kg_k",
-              "entropy",
-            ]) || 0,
-          specificVolume: getSpecificVolume(results.state_points?.["3"]) || 0,
-          density: getDensity(results.state_points?.["3"]),
-          quality: getPropertyValue(results.state_points?.["3"], [
-            "vapor_quality",
-            "quality",
-          ]),
-          x: 0,
-          y: 0,
-        },
-        {
-          id: "4",
-          name: "Expansion Valve Outlet",
-          temperature:
-            getPropertyValue(results.state_points?.["4"], [
-              "temperature_c",
-              "temp_c",
-              "temperature",
-            ]) || 0,
-          pressure:
-            getPropertyValue(results.state_points?.["4"], [
-              "pressure_kpa",
-              "pressure",
-            ]) || 0,
-          enthalpy:
-            getPropertyValue(results.state_points?.["4"], [
-              "enthalpy_kj_kg",
-              "enthalpy",
-            ]) || 0,
-          entropy:
-            getPropertyValue(results.state_points?.["4"], [
-              "entropy_kj_kgk",
-              "entropy_kj_kg_k",
-              "entropy",
-            ]) || 0,
-          specificVolume: getSpecificVolume(results.state_points?.["4"]) || 0,
-          density: getDensity(results.state_points?.["4"]),
-          quality: getPropertyValue(results.state_points?.["4"], [
-            "vapor_quality",
-            "quality",
-          ]),
-          x: 0,
-          y: 0,
-        },
-      ],
-      refrigerant: results.refrigerant || formData.refrigerant,
-      cycleType: "standard" as const,
-      saturationDome: results.saturation_dome,
-    }
+        points: [
+          {
+            id: "1",
+            name: "Evaporator Outlet",
+            temperature:
+              getPropertyValue(results.state_points?.["1"], [
+                "temperature_c",
+                "temp_c",
+                "temperature",
+              ]) || 0,
+            pressure:
+              getPropertyValue(results.state_points?.["1"], [
+                "pressure_kpa",
+                "pressure",
+              ]) || 0,
+            enthalpy:
+              getPropertyValue(results.state_points?.["1"], [
+                "enthalpy_kj_kg",
+                "enthalpy",
+              ]) || 0,
+            entropy:
+              getPropertyValue(results.state_points?.["1"], [
+                "entropy_kj_kgk",
+                "entropy_kj_kg_k",
+                "entropy",
+              ]) || 0,
+            specificVolume: getSpecificVolume(results.state_points?.["1"]) || 0,
+            density: getDensity(results.state_points?.["1"]),
+            quality: getPropertyValue(results.state_points?.["1"], [
+              "vapor_quality",
+              "quality",
+            ]),
+            x: 0, // Will be calculated by CycleVisualization
+            y: 0,
+          },
+          {
+            id: "2",
+            name: "Compressor Outlet",
+            temperature:
+              getPropertyValue(results.state_points?.["2"], [
+                "temperature_c",
+                "temp_c",
+                "temperature",
+              ]) || 0,
+            pressure:
+              getPropertyValue(results.state_points?.["2"], [
+                "pressure_kpa",
+                "pressure",
+              ]) || 0,
+            enthalpy:
+              getPropertyValue(results.state_points?.["2"], [
+                "enthalpy_kj_kg",
+                "enthalpy",
+              ]) || 0,
+            entropy:
+              getPropertyValue(results.state_points?.["2"], [
+                "entropy_kj_kgk",
+                "entropy_kj_kg_k",
+                "entropy",
+              ]) || 0,
+            specificVolume: getSpecificVolume(results.state_points?.["2"]) || 0,
+            density: getDensity(results.state_points?.["2"]),
+            quality: getPropertyValue(results.state_points?.["2"], [
+              "vapor_quality",
+              "quality",
+            ]),
+            x: 0,
+            y: 0,
+          },
+          {
+            id: "3",
+            name: "Condenser Outlet",
+            temperature:
+              getPropertyValue(results.state_points?.["3"], [
+                "temperature_c",
+                "temp_c",
+                "temperature",
+              ]) || 0,
+            pressure:
+              getPropertyValue(results.state_points?.["3"], [
+                "pressure_kpa",
+                "pressure",
+              ]) || 0,
+            enthalpy:
+              getPropertyValue(results.state_points?.["3"], [
+                "enthalpy_kj_kg",
+                "enthalpy",
+              ]) || 0,
+            entropy:
+              getPropertyValue(results.state_points?.["3"], [
+                "entropy_kj_kgk",
+                "entropy_kj_kg_k",
+                "entropy",
+              ]) || 0,
+            specificVolume: getSpecificVolume(results.state_points?.["3"]) || 0,
+            density: getDensity(results.state_points?.["3"]),
+            quality: getPropertyValue(results.state_points?.["3"], [
+              "vapor_quality",
+              "quality",
+            ]),
+            x: 0,
+            y: 0,
+          },
+          {
+            id: "4",
+            name: "Expansion Valve Outlet",
+            temperature:
+              getPropertyValue(results.state_points?.["4"], [
+                "temperature_c",
+                "temp_c",
+                "temperature",
+              ]) || 0,
+            pressure:
+              getPropertyValue(results.state_points?.["4"], [
+                "pressure_kpa",
+                "pressure",
+              ]) || 0,
+            enthalpy:
+              getPropertyValue(results.state_points?.["4"], [
+                "enthalpy_kj_kg",
+                "enthalpy",
+              ]) || 0,
+            entropy:
+              getPropertyValue(results.state_points?.["4"], [
+                "entropy_kj_kgk",
+                "entropy_kj_kg_k",
+                "entropy",
+              ]) || 0,
+            specificVolume: getSpecificVolume(results.state_points?.["4"]) || 0,
+            density: getDensity(results.state_points?.["4"]),
+            quality: getPropertyValue(results.state_points?.["4"], [
+              "vapor_quality",
+              "quality",
+            ]),
+            x: 0,
+            y: 0,
+          },
+        ],
+        refrigerant: results.refrigerant || formData.refrigerant,
+        cycleType: "standard" as const,
+        saturationDome: results.saturation_dome,
+      }
     : undefined;
 
   useEffect(() => {
@@ -1256,12 +1284,14 @@ export function EnhancedStandardCycleContent() {
   }, [handleCalculate, pendingPresetInputs]);
 
   return (
-    <PageContainer variant="standard" className="animate-in fade-in duration-500 pb-20">
-
+    <PageContainer
+      variant="standard"
+      className="animate-in fade-in duration-500 pb-20"
+    >
       {/* Header & Actions */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
             Enhanced Standard Cycle
           </h1>
           <p className="text-muted-foreground mt-1 text-lg">
@@ -1302,10 +1332,10 @@ export function EnhancedStandardCycleContent() {
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
         {/* LEFT SIDEBAR: CONFIGURATION */}
         <div className="xl:col-span-4 space-y-6 xl:sticky xl:top-24">
-          <Card className="border-t-4 border-t-blue-500 shadow-lg dark:bg-slate-900/50 backdrop-blur-sm">
+          <Card className="border-t-4 border-t-orange-500 shadow-lg dark:bg-slate-900/50 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Calculator className="w-5 h-5 text-blue-500" />
+                <Calculator className="w-5 h-5 text-orange-500" />
                 Configuration
               </CardTitle>
               <CardDescription>
@@ -1429,9 +1459,9 @@ export function EnhancedStandardCycleContent() {
 
               {/* AI / Validation Feedback */}
               {formattedAiNotes && !error && (
-                <Alert className="bg-blue-50/50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900">
-                  <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                  <AlertDescription className="text-xs text-blue-800 dark:text-blue-300">
+                <Alert className="bg-orange-50/50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-900">
+                  <Info className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                  <AlertDescription className="text-xs text-orange-800 dark:text-orange-300">
                     {formattedAiNotes}
                   </AlertDescription>
                 </Alert>
@@ -1461,7 +1491,7 @@ export function EnhancedStandardCycleContent() {
 
               {/* Main Action */}
               <Button
-                className="w-full h-12 text-lg font-semibold shadow-xl shadow-blue-500/10 hover:shadow-blue-500/20 transition-all bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+                className="w-full h-12 text-lg font-semibold shadow-xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800"
                 onClick={() => handleCalculate()}
                 disabled={loading}
               >
@@ -1488,14 +1518,14 @@ export function EnhancedStandardCycleContent() {
                   <Info className="w-4 h-4 text-indigo-500" /> Pro Tips
                 </h3>
                 <ul className="text-sm space-y-2 text-muted-foreground list-disc pl-4">
-                  <li>Select a refrigerant first to get AI-suggested ranges.</li>
+                  <li>
+                    Select a refrigerant first to get AI-suggested ranges.
+                  </li>
                   <li>
                     Ensure Superheat is sufficient (&gt;5K) to protect the
                     compressor.
                   </li>
-                  <li>
-                    Subcooling ensures liquid enters the expansion valve.
-                  </li>
+                  <li>Subcooling ensures liquid enters the expansion valve.</li>
                 </ul>
               </CardContent>
             </Card>
@@ -1507,7 +1537,7 @@ export function EnhancedStandardCycleContent() {
           {!results && !loading ? (
             <div className="min-h-[500px] flex flex-col items-center justify-center border-4 border-dashed rounded-xl bg-muted/20 text-muted-foreground">
               <div className="p-6 bg-background rounded-full shadow-lg mb-6">
-                <Calculator className="h-12 w-12 text-blue-500" />
+                <Calculator className="h-12 w-12 text-orange-500" />
               </div>
               <h3 className="text-2xl font-bold mb-2">Ready to Simulate</h3>
               <p className="max-w-md text-center">
@@ -1529,8 +1559,8 @@ export function EnhancedStandardCycleContent() {
                     "kW",
                   )}
                   icon={<div className="text-2xl">❄️</div>}
-                  color="text-blue-600 dark:text-blue-400"
-                  bg="bg-blue-50 dark:bg-blue-900/20"
+                  color="text-orange-600 dark:text-orange-400"
+                  bg="bg-orange-50 dark:bg-orange-900/20"
                 />
                 <KPI
                   title="COP"
@@ -1569,19 +1599,41 @@ export function EnhancedStandardCycleContent() {
               </div>
 
               {/* 2. Main Content Tabs */}
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <Tabs
+                value={activeTab}
+                onValueChange={setActiveTab}
+                className="w-full"
+              >
                 <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent gap-6">
-                  <TabTrigger value="visualization" label="Visualization" icon={<Eye className="w-4 h-4" />} />
-                  <TabTrigger value="results" label="Detailed Data" icon={<FileText className="w-4 h-4" />} />
-                  <TabTrigger value="equipment" label="Equipment" icon={<Wrench className="w-4 h-4" />} />
-                  <TabTrigger value="professional" label="Professional" icon={<ArrowRight className="w-4 h-4" />} />
+                  <TabTrigger
+                    value="visualization"
+                    label="Visualization"
+                    icon={<Eye className="w-4 h-4" />}
+                  />
+                  <TabTrigger
+                    value="results"
+                    label="Detailed Data"
+                    icon={<FileText className="w-4 h-4" />}
+                  />
+                  <TabTrigger
+                    value="equipment"
+                    label="Equipment"
+                    icon={<Wrench className="w-4 h-4" />}
+                  />
+                  <TabTrigger
+                    value="professional"
+                    label="Professional"
+                    icon={<ArrowRight className="w-4 h-4" />}
+                  />
                 </TabsList>
 
                 <div className="mt-6 min-h-[500px]">
                   <TabsContent value="visualization" className="m-0">
                     <Card className="border-none shadow-none bg-transparent">
                       <CardContent className="p-0">
-                        {cycleData && <CycleVisualization cycleData={cycleData} />}
+                        {cycleData && (
+                          <CycleVisualization cycleData={cycleData} />
+                        )}
                       </CardContent>
                     </Card>
                   </TabsContent>
@@ -1597,62 +1649,132 @@ export function EnhancedStandardCycleContent() {
                       <CardContent>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           {[1, 2, 3, 4].map((pointId) => {
-                            const pt = results.state_points?.[pointId.toString()];
+                            const pt =
+                              results.state_points?.[pointId.toString()];
                             if (!pt) return null;
-                            const colors = {
-                              1: "blue",
-                              2: "red",
-                              3: "green",
-                              4: "amber"
-                            }[pointId] || "gray";
+                            const colors =
+                              {
+                                1: "blue",
+                                2: "red",
+                                3: "green",
+                                4: "amber",
+                              }[pointId] || "gray";
 
                             return (
-                              <div key={pointId} className={`border rounded-lg p-4 border-l-4 border-l-${colors}-500 bg-background/50`}>
+                              <div
+                                key={pointId}
+                                className={`border rounded-lg p-4 border-l-4 border-l-${colors}-500 bg-background/50`}
+                              >
                                 <div className="font-semibold text-lg mb-2 flex justify-between">
                                   <span>Point {pointId}</span>
-                                  <Badge variant="outline">{pointId === 1 ? 'Evap Out' : pointId === 2 ? 'Comp Out' : pointId === 3 ? 'Cond Out' : 'Exp Out'}</Badge>
+                                  <Badge variant="outline">
+                                    {pointId === 1
+                                      ? "Evap Out"
+                                      : pointId === 2
+                                        ? "Comp Out"
+                                        : pointId === 3
+                                          ? "Cond Out"
+                                          : "Exp Out"}
+                                  </Badge>
                                 </div>
                                 <div className="space-y-2 text-sm">
                                   <div className="flex justify-between border-b pb-1 border-dashed">
-                                    <span className="text-muted-foreground">Temperature</span>
-                                    <span>{formatValue(getPropertyValue(pt, ["temp_c", "temperature"]), "°C")}</span>
+                                    <span className="text-muted-foreground">
+                                      Temperature
+                                    </span>
+                                    <span>
+                                      {formatValue(
+                                        getPropertyValue(pt, [
+                                          "temp_c",
+                                          "temperature",
+                                        ]),
+                                        "°C",
+                                      )}
+                                    </span>
                                   </div>
                                   <div className="flex justify-between border-b pb-1 border-dashed">
-                                    <span className="text-muted-foreground">Pressure</span>
-                                    <span>{formatValue((getPropertyValue(pt, ["pressure", "pressure_kpa"]) || 0) / 1000, "MPa")}</span>
+                                    <span className="text-muted-foreground">
+                                      Pressure
+                                    </span>
+                                    <span>
+                                      {formatValue(
+                                        (getPropertyValue(pt, [
+                                          "pressure",
+                                          "pressure_kpa",
+                                        ]) || 0) / 1000,
+                                        "MPa",
+                                      )}
+                                    </span>
                                   </div>
                                   <div className="flex justify-between border-b pb-1 border-dashed">
-                                    <span className="text-muted-foreground">Enthalpy</span>
-                                    <span>{formatValue(getPropertyValue(pt, ["enthalpy", "enthalpy_kj_kg"]), "kJ/kg")}</span>
+                                    <span className="text-muted-foreground">
+                                      Enthalpy
+                                    </span>
+                                    <span>
+                                      {formatValue(
+                                        getPropertyValue(pt, [
+                                          "enthalpy",
+                                          "enthalpy_kj_kg",
+                                        ]),
+                                        "kJ/kg",
+                                      )}
+                                    </span>
                                   </div>
                                   <div className="flex justify-between border-b pb-1 border-dashed">
-                                    <span className="text-muted-foreground">Entropy</span>
-                                    <span>{formatValue(getPropertyValue(pt, ["entropy", "entropy_kj_kgk"]), "kJ/kg·K", 3)}</span>
+                                    <span className="text-muted-foreground">
+                                      Entropy
+                                    </span>
+                                    <span>
+                                      {formatValue(
+                                        getPropertyValue(pt, [
+                                          "entropy",
+                                          "entropy_kj_kgk",
+                                        ]),
+                                        "kJ/kg·K",
+                                        3,
+                                      )}
+                                    </span>
                                   </div>
                                   {pointId === 4 && (
                                     <div className="flex justify-between border-b pb-1 border-dashed">
-                                      <span className="text-muted-foreground">Quality</span>
-                                      <span>{formatValue((getPropertyValue(pt, ["quality", "vapor_quality"]) || 0) * 100, "%")}</span>
+                                      <span className="text-muted-foreground">
+                                        Quality
+                                      </span>
+                                      <span>
+                                        {formatValue(
+                                          (getPropertyValue(pt, [
+                                            "quality",
+                                            "vapor_quality",
+                                          ]) || 0) * 100,
+                                          "%",
+                                        )}
+                                      </span>
                                     </div>
                                   )}
                                 </div>
                               </div>
-                            )
+                            );
                           })}
                         </div>
 
                         <Separator className="my-8" />
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                           <div>
-                            <h3 className="font-semibold mb-4 text-lg">Mass Flow Analysis</h3>
+                            <h3 className="font-semibold mb-4 text-lg">
+                              Mass Flow Analysis
+                            </h3>
                             <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-lg space-y-3">
                               <div className="flex justify-between items-center">
                                 <span>Mass Flow Rate</span>
-                                <span className="font-mono font-bold text-lg">{formatValue(massFlowRate, "kg/s", 4)}</span>
+                                <span className="font-mono font-bold text-lg">
+                                  {formatValue(massFlowRate, "kg/s", 4)}
+                                </span>
                               </div>
                               <div className="flex justify-between items-center">
                                 <span>Volumetric Flow (Suction)</span>
-                                <span className="font-mono font-bold text-lg">{formatValue(volumetricFlowRate, "m³/s", 5)}</span>
+                                <span className="font-mono font-bold text-lg">
+                                  {formatValue(volumetricFlowRate, "m³/s", 5)}
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -1677,91 +1799,147 @@ export function EnhancedStandardCycleContent() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center p-20 space-y-4">
-              <Loader2 className="w-12 h-12 animate-spin text-blue-500" />
-              <p className="text-lg text-muted-foreground">Simulating thermodynamic cycle...</p>
+              <Loader2 className="w-12 h-12 animate-spin text-orange-500" />
+              <p className="text-lg text-muted-foreground">
+                Simulating thermodynamic cycle...
+              </p>
             </div>
           )}
         </div>
       </div>
 
-
-
-
-      {
-        showOnboarding && (
-          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in">
-            <Card className="max-w-2xl w-full shadow-2xl">
-              <CardHeader className="border-b bg-muted/20">
-                <CardTitle className="flex items-center gap-2">
-                  <Info className="h-5 w-5 text-blue-600" />
-                  Welcome to HVAC-R Platform
-                  <Badge variant="outline" className="ml-auto">Screen {onboardingStep + 1} / 4</Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6 space-y-6">
-                {/* Reusing existing onboarding content logic here for simplicity, but wrapped nicely */}
-                {onboardingStep === 0 && (
-                  <div className="text-center space-y-4">
-                    <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl">🚀</div>
-                    <h3 className="text-xl font-bold">Your New Superpower</h3>
-                    <p className="text-muted-foreground">Designed for Engineers, Technicians, and Managers. Simulate, Analyze, and Report in seconds.</p>
+      {showOnboarding && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in">
+          <Card className="max-w-2xl w-full shadow-2xl">
+            <CardHeader className="border-b bg-muted/20">
+              <CardTitle className="flex items-center gap-2">
+                <Info className="h-5 w-5 text-orange-600" />
+                Welcome to HVAC-R Platform
+                <Badge variant="outline" className="ml-auto">
+                  Screen {onboardingStep + 1} / 4
+                </Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 space-y-6">
+              {/* Reusing existing onboarding content logic here for simplicity, but wrapped nicely */}
+              {onboardingStep === 0 && (
+                <div className="text-center space-y-4">
+                  <div className="mx-auto w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-3xl">
+                    🚀
                   </div>
-                )}
-                {onboardingStep === 1 && (
-                  <div className="text-center space-y-4">
-                    <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-3xl">⚙️</div>
-                    <h3 className="text-xl font-bold">How it Works</h3>
-                    <p className="text-muted-foreground">1. Select Refrigerant<br />2. Input Temps<br />3. Get Visualizations</p>
-                  </div>
-                )}
-                {onboardingStep === 2 && (
-                  <div className="text-center space-y-4">
-                    <div className="mx-auto w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center text-3xl">📊</div>
-                    <h3 className="text-xl font-bold">Professional Reports</h3>
-                    <p className="text-muted-foreground">Export PDF reports for your clients or save calculations to your project history.</p>
-                  </div>
-                )}
-                {onboardingStep === 3 && (
-                  <div className="text-center space-y-4">
-                    <div className="mx-auto w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center text-3xl">✨</div>
-                    <h3 className="text-xl font-bold">Let's Get Started!</h3>
-                    <Button onClick={() => {
-                      localStorage.setItem("hvac_platform_onboarding_completed", "true");
-                      setShowOnboarding(false);
-                    }} className="w-full">Start Calculating</Button>
-                  </div>
-                )}
-              </CardContent>
-              {onboardingStep < 3 && (
-                <div className="p-4 border-t bg-muted/20 flex justify-between">
-                  <Button variant="ghost" onClick={() => setShowOnboarding(false)}>Skip</Button>
-                  <Button onClick={() => setOnboardingStep(s => s + 1)}>Next</Button>
+                  <h3 className="text-xl font-bold">Your New Superpower</h3>
+                  <p className="text-muted-foreground">
+                    Designed for Engineers, Technicians, and Managers. Simulate,
+                    Analyze, and Report in seconds.
+                  </p>
                 </div>
               )}
-            </Card>
-          </div>
-        )
-      }
-    </PageContainer >
+              {onboardingStep === 1 && (
+                <div className="text-center space-y-4">
+                  <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-3xl">
+                    ⚙️
+                  </div>
+                  <h3 className="text-xl font-bold">How it Works</h3>
+                  <p className="text-muted-foreground">
+                    1. Select Refrigerant
+                    <br />
+                    2. Input Temps
+                    <br />
+                    3. Get Visualizations
+                  </p>
+                </div>
+              )}
+              {onboardingStep === 2 && (
+                <div className="text-center space-y-4">
+                  <div className="mx-auto w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center text-3xl">
+                    📊
+                  </div>
+                  <h3 className="text-xl font-bold">Professional Reports</h3>
+                  <p className="text-muted-foreground">
+                    Export PDF reports for your clients or save calculations to
+                    your project history.
+                  </p>
+                </div>
+              )}
+              {onboardingStep === 3 && (
+                <div className="text-center space-y-4">
+                  <div className="mx-auto w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center text-3xl">
+                    ✨
+                  </div>
+                  <h3 className="text-xl font-bold">Let's Get Started!</h3>
+                  <Button
+                    onClick={() => {
+                      localStorage.setItem(
+                        "hvac_platform_onboarding_completed",
+                        "true",
+                      );
+                      setShowOnboarding(false);
+                    }}
+                    className="w-full"
+                  >
+                    Start Calculating
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+            {onboardingStep < 3 && (
+              <div className="p-4 border-t bg-muted/20 flex justify-between">
+                <Button
+                  variant="ghost"
+                  onClick={() => setShowOnboarding(false)}
+                >
+                  Skip
+                </Button>
+                <Button onClick={() => setOnboardingStep((s) => s + 1)}>
+                  Next
+                </Button>
+              </div>
+            )}
+          </Card>
+        </div>
+      )}
+    </PageContainer>
   );
 }
 
-
-
 // Sub-components helpers
-function KPI({ title, value, icon, color, bg }: { title: string; value: string; icon: React.ReactNode; color: string; bg: string }) {
+function KPI({
+  title,
+  value,
+  icon,
+  color,
+  bg,
+}: {
+  title: string;
+  value: string;
+  icon: React.ReactNode;
+  color: string;
+  bg: string;
+}) {
   return (
-    <div className={`p-4 rounded-xl border ${bg} transition-all hover:scale-105 duration-200`}>
+    <div
+      className={`p-4 rounded-xl border ${bg} transition-all hover:scale-105 duration-200`}
+    >
       <div className={`flex items-start justify-between mb-2 ${color}`}>
         <span className="font-medium text-sm text-foreground/80">{title}</span>
         {icon}
       </div>
-      <div className={`text-2xl font-bold tracking-tight ${color}`}>{value}</div>
+      <div className={`text-2xl font-bold tracking-tight ${color}`}>
+        {value}
+      </div>
     </div>
-  )
+  );
 }
 
-function TabTrigger({ value, label, icon }: { value: string; label: string; icon: React.ReactNode }) {
+function TabTrigger({
+  value,
+  label,
+  icon,
+}: {
+  value: string;
+  label: string;
+  icon: React.ReactNode;
+}) {
   return (
     <TabsTrigger
       value={value}
@@ -1772,7 +1950,7 @@ function TabTrigger({ value, label, icon }: { value: string; label: string; icon
         {label}
       </div>
     </TabsTrigger>
-  )
+  );
 }
 // Standalone page version with header and footer
 export function EnhancedStandardCycle() {

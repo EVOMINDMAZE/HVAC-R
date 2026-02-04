@@ -1,9 +1,9 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
-import { Capacitor } from '@capacitor/core';
+import { createContext, useContext, useState, ReactNode } from "react";
+import { Capacitor } from "@capacitor/core";
 
 interface Toast {
   id: string;
-  type: 'success' | 'error' | 'warning' | 'info';
+  type: "success" | "error" | "warning" | "info";
   title: string;
   description?: string;
   duration?: number;
@@ -11,7 +11,7 @@ interface Toast {
 
 interface ToastContextType {
   toasts: Toast[];
-  addToast: (toast: Omit<Toast, 'id'>) => void;
+  addToast: (toast: Omit<Toast, "id">) => void;
   removeToast: (id: string) => void;
 }
 
@@ -20,12 +20,12 @@ const ToastContext = createContext<ToastContextType | undefined>(undefined);
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const addToast = (toast: Omit<Toast, 'id'>) => {
+  const addToast = (toast: Omit<Toast, "id">) => {
     // Generate a more unique ID by combining timestamp with random number
     const id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const newToast = { ...toast, id };
 
-    setToasts(prev => [...prev, newToast]);
+    setToasts((prev) => [...prev, newToast]);
 
     // Auto-remove toast after duration (default 5 seconds)
     const duration = toast.duration || 5000;
@@ -35,7 +35,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   };
 
   const removeToast = (id: string) => {
-    setToasts(prev => prev.filter(toast => toast.id !== id));
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
   };
 
   return (
@@ -49,38 +49,40 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 function ToastContainer() {
   const { toasts, removeToast } = useToast();
 
-  const getToastStyles = (type: Toast['type']) => {
+  const getToastStyles = (type: Toast["type"]) => {
     switch (type) {
-      case 'success':
-        return 'bg-green-50 border-green-200 text-green-800';
-      case 'error':
-        return 'bg-red-50 border-red-200 text-red-800';
-      case 'warning':
-        return 'bg-yellow-50 border-yellow-200 text-yellow-800';
-      case 'info':
-        return 'bg-blue-50 border-blue-200 text-blue-800';
+      case "success":
+        return "bg-green-50 border-green-200 text-green-800";
+      case "error":
+        return "bg-red-50 border-red-200 text-red-800";
+      case "warning":
+        return "bg-yellow-50 border-yellow-200 text-yellow-800";
+      case "info":
+        return "bg-orange-50 border-orange-200 text-orange-800";
       default:
-        return 'bg-gray-50 border-gray-200 text-gray-800';
+        return "bg-gray-50 border-gray-200 text-gray-800";
     }
   };
 
-  const getIcon = (type: Toast['type']) => {
+  const getIcon = (type: Toast["type"]) => {
     switch (type) {
-      case 'success':
-        return '✓';
-      case 'error':
-        return '✕';
-      case 'warning':
-        return '⚠';
-      case 'info':
-        return 'ℹ';
+      case "success":
+        return "✓";
+      case "error":
+        return "✕";
+      case "warning":
+        return "⚠";
+      case "info":
+        return "ℹ";
       default:
-        return '';
+        return "";
     }
   };
 
   return (
-    <div className={`fixed right-4 z-[11000] space-y-2 ${Capacitor.isNativePlatform() ? 'top-14 pt-safe' : 'top-4'}`}>
+    <div
+      className={`fixed right-4 z-[11000] space-y-2 ${Capacitor.isNativePlatform() ? "top-14 pt-safe" : "top-4"}`}
+    >
       {toasts.map((toast) => (
         <div
           key={toast.id}
@@ -88,7 +90,9 @@ function ToastContainer() {
         >
           <div className="flex items-start">
             <div className="flex-shrink-0 mr-3">
-              <span className="text-lg font-semibold">{getIcon(toast.type)}</span>
+              <span className="text-lg font-semibold">
+                {getIcon(toast.type)}
+              </span>
             </div>
             <div className="flex-1">
               <p className="font-semibold">{toast.title}</p>
@@ -112,7 +116,7 @@ function ToastContainer() {
 export function useToast() {
   const context = useContext(ToastContext);
   if (context === undefined) {
-    throw new Error('useToast must be used within a ToastProvider');
+    throw new Error("useToast must be used within a ToastProvider");
   }
   return context;
 }

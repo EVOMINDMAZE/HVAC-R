@@ -20,7 +20,7 @@ We utilize Supabase Edge Functions (Deno) to handle all business logic and autom
     - **External API**: Send SMS (Telnyx), Email (Resend), etc.
     - **Database Update**: Write logs back to `system_logs` or update job status.
 
-## 3. Core Automations (Phase 2)
+## 3. Core Automations (Active)
 
 ### A. Review Hunter
 - **Trigger**: Job status changes to `completed`.
@@ -45,7 +45,15 @@ We utilize Supabase Edge Functions (Deno) to handle all business logic and autom
     3.  Log recovery/recharge amounts to the `epa_logs` table.
 - [x] **Implementation**: `supabase/functions/epa-monitor`
 
-### D. Smart Triage Analysis
+### D. Weather & Selling Points Bot
+- **Trigger**: Client Profile view or Inventory scan.
+- **Logic**:
+    1.  **Phase-Out Detector**: Checks for R-22 equipment/assets.
+    2.  **Weather Impact**: Fetches 7-day forecast for client ZIP code.
+    3.  **Cross-Reference**: Matches extreme weather (>90°F) against aging assets (>10y).
+- **Implementation**: `supabase/functions/analyze-selling-points`
+
+### E. Smart Triage Analysis
 - **Trigger**: New record in `triage_submissions`.
 - **Logic**:
     1.  Fetch uploaded photo URLs.
@@ -59,7 +67,15 @@ We utilize Supabase Edge Functions (Deno) to handle all business logic and autom
 - **Implementation**: `supabase/functions/ai-gateway`
 
 ## 4. Scalability
-This architecture creates a stateless system.
+7.  **Weather-Based Intelligence & Selling Points Bot:**
+    *   **Alerts**: Extreme weather impact detection.
+    *   **Proactive Sales**: Identification of R-22 phase-out replacement opportunities.
+    *   **Logic**: Fetches forecasts and matches against equipment age/type.
+
+---
+
+## 4. Technical Architecture (Under the Hood) ⚙️
+a stateless system.
 - **10 Users**: Free tier handles it easily.
 - **10,000 Users**: Functions scale horizontally. We pay only for execution time.
 - **Concurrency**: Unlike a single API server which can block, Edge Functions run in parallel isolates.

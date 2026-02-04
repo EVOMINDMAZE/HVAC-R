@@ -1,452 +1,79 @@
 
-Running 2 tests using 2 workers
+Running 1 test using 1 worker
 
-  -  1 [chromium] › e2e/offline-mode.spec.ts:81:10 › Offline Mode › should prevent saving new calculations when offline
-BROWSER LOG: [vite] connecting...
-BROWSER LOG: [vite] connected.
-BROWSER LOG: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
-BROWSER LOG: Initializing Supabase Client... {url: https://rxqflxmzsqhqrzffcsej.supabase.co, configured: true, valid: true, isLocalhost: false}
-BROWSER LOG: The default export of @sanity/image-url has been deprecated. Use the named export `createImageUrlBuilder` instead.
-BROWSER LOG: 🛡️ Global error handler and JSON.parse monitor initialized
-BROWSER LOG: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
-BROWSER LOG: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
-BROWSER LOG: [useSupabaseAuth] Starting async session fetch...
-BROWSER LOG: [useSupabaseAuth] Starting async session fetch...
-BROWSER LOG: [useSupabaseAuth] Session fetch completed {hasSession: false, error: null}
-BROWSER LOG: [useSupabaseAuth] Session fetch completed {hasSession: false, error: null}
-BROWSER LOG: You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
-BROWSER LOG: You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
-BROWSER LOG: [fetchUserRole] Starting role fetch for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: [DEBUG] Full User Metadata: {email_verified: true, name: TECHNICIAN, role: technician}
-BROWSER LOG: [fetchUserRole] Found role in user_metadata: technician
-BROWSER LOG: [fetchUserRole] Starting role fetch for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: [DEBUG] Full User Metadata: {email_verified: true, name: TECHNICIAN, role: technician}
-BROWSER LOG: [fetchUserRole] Found role in user_metadata: technician
-BROWSER LOG: [SignIn] Login successful, role: technician
-BROWSER LOG: Error fetching jobs: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
-    at fetch (http://lo…alhost:8080/client/pages/tech/JobBoard.tsx:48:37), hint: , code: }
-BROWSER LOG: Error fetching jobs: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
-    at fetch (http://lo…alhost:8080/client/pages/tech/JobBoard.tsx:48:37), hint: , code: }
-BROWSER LOG: Error fetching projects: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
-    at fetch (http://lo…ost:8080/client/components/JobSelector.tsx:45:33), hint: , code: }
-BROWSER LOG: Error fetching projects: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
-    at fetch (http://lo…ost:8080/client/components/JobSelector.tsx:45:33), hint: , code: }
-BROWSER LOG: [vite] connecting...
-BROWSER LOG: [vite] connected.
-BROWSER LOG: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
-BROWSER LOG: Initializing Supabase Client... {url: https://rxqflxmzsqhqrzffcsej.supabase.co, configured: true, valid: true, isLocalhost: false}
-BROWSER LOG: The default export of @sanity/image-url has been deprecated. Use the named export `createImageUrlBuilder` instead.
-BROWSER LOG: 🛡️ Global error handler and JSON.parse monitor initialized
-BROWSER LOG: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
-BROWSER LOG: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
-BROWSER LOG: [useSupabaseAuth] Starting async session fetch...
-BROWSER LOG: [useSupabaseAuth] Starting async session fetch...
-BROWSER LOG: [fetchUserRole] Starting role fetch for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: [DEBUG] Full User Metadata: {email_verified: true, name: TECHNICIAN, role: technician}
-BROWSER LOG: [fetchUserRole] Found role in user_metadata: technician
-BROWSER LOG: useEffect triggered - user: true supabase: true
-BROWSER LOG: User authenticated, fetching calculations...
-BROWSER LOG: Supabase client present: true
-BROWSER LOG: Attempting to fetch calculations for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: Skipping server proxy check in Capacitor environment
-BROWSER LOG: useEffect triggered - user: true supabase: true
-BROWSER LOG: User authenticated, fetching calculations...
-BROWSER LOG: Supabase client present: true
-BROWSER LOG: Attempting to fetch calculations for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: Skipping server proxy check in Capacitor environment
-BROWSER LOG: useEffect triggered - user: true supabase: true
-BROWSER LOG: User authenticated, fetching calculations...
-BROWSER LOG: Supabase client present: true
-BROWSER LOG: Attempting to fetch calculations for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: Skipping server proxy check in Capacitor environment
-BROWSER LOG: useEffect triggered - user: true supabase: true
-BROWSER LOG: User authenticated, fetching calculations...
-BROWSER LOG: Supabase client present: true
-BROWSER LOG: Attempting to fetch calculations for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: Skipping server proxy check in Capacitor environment
-BROWSER LOG: [vite] connecting...
-BROWSER LOG: [vite] connected.
-BROWSER LOG: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
-BROWSER LOG: Initializing Supabase Client... {url: https://rxqflxmzsqhqrzffcsej.supabase.co, configured: true, valid: true, isLocalhost: false}
-BROWSER LOG: The default export of @sanity/image-url has been deprecated. Use the named export `createImageUrlBuilder` instead.
-BROWSER LOG: 🛡️ Global error handler and JSON.parse monitor initialized
-BROWSER LOG: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
-BROWSER LOG: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
-BROWSER LOG: [useSupabaseAuth] Starting async session fetch...
-BROWSER LOG: [useSupabaseAuth] Starting async session fetch...
-BROWSER LOG: [fetchUserRole] Starting role fetch for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: [DEBUG] Full User Metadata: {email_verified: true, name: TECHNICIAN, role: technician}
-BROWSER LOG: [fetchUserRole] Found role in user_metadata: technician
-BROWSER LOG: useEffect triggered - user: true supabase: true
-BROWSER LOG: User authenticated, fetching calculations...
-BROWSER LOG: Supabase client present: true
-BROWSER LOG: Attempting to fetch calculations for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: Skipping server proxy check in Capacitor environment
-BROWSER LOG: useEffect triggered - user: true supabase: true
-BROWSER LOG: User authenticated, fetching calculations...
-BROWSER LOG: Supabase client present: true
-BROWSER LOG: Attempting to fetch calculations for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: Skipping server proxy check in Capacitor environment
-BROWSER LOG: useEffect triggered - user: true supabase: true
-BROWSER LOG: User authenticated, fetching calculations...
-BROWSER LOG: Supabase client present: true
-BROWSER LOG: Attempting to fetch calculations for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: Skipping server proxy check in Capacitor environment
-BROWSER LOG: useEffect triggered - user: true supabase: true
-BROWSER LOG: User authenticated, fetching calculations...
-BROWSER LOG: Supabase client present: true
-BROWSER LOG: Attempting to fetch calculations for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: Skipping server proxy check in Capacitor environment
-BROWSER LOG: [useSupabaseAuth] Session fetch completed {hasSession: true, error: null}
-BROWSER LOG: [fetchUserRole] Starting role fetch for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: [DEBUG] Full User Metadata: {email_verified: true, name: TECHNICIAN, role: technician}
-BROWSER LOG: [fetchUserRole] Found role in user_metadata: technician
-BROWSER LOG: useEffect triggered - user: true supabase: true
-BROWSER LOG: User authenticated, fetching calculations...
-BROWSER LOG: Supabase client present: true
-BROWSER LOG: Attempting to fetch calculations for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: Skipping server proxy check in Capacitor environment
-BROWSER LOG: useEffect triggered - user: true supabase: true
-BROWSER LOG: User authenticated, fetching calculations...
-BROWSER LOG: Supabase client present: true
-BROWSER LOG: Attempting to fetch calculations for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: Skipping server proxy check in Capacitor environment
-BROWSER LOG: You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
-BROWSER LOG: You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
-BROWSER LOG: [useSupabaseAuth] Session fetch completed {hasSession: true, error: null}
-BROWSER LOG: [fetchUserRole] Starting role fetch for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: [DEBUG] Full User Metadata: {email_verified: true, name: TECHNICIAN, role: technician}
-BROWSER LOG: [fetchUserRole] Found role in user_metadata: technician
-BROWSER LOG: useEffect triggered - user: true supabase: true
-BROWSER LOG: User authenticated, fetching calculations...
-BROWSER LOG: Supabase client present: true
-BROWSER LOG: Attempting to fetch calculations for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: Skipping server proxy check in Capacitor environment
-BROWSER LOG: useEffect triggered - user: true supabase: true
-BROWSER LOG: User authenticated, fetching calculations...
-BROWSER LOG: Supabase client present: true
-BROWSER LOG: Attempting to fetch calculations for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: Skipping server proxy check in Capacitor environment
-BROWSER LOG: [fetchUserRole] Starting role fetch for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: [DEBUG] Full User Metadata: {email_verified: true, name: TECHNICIAN, role: technician}
-BROWSER LOG: [fetchUserRole] Found role in user_metadata: technician
-BROWSER LOG: useEffect triggered - user: true supabase: true
-BROWSER LOG: User authenticated, fetching calculations...
-BROWSER LOG: Supabase client present: true
-BROWSER LOG: Attempting to fetch calculations for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: Skipping server proxy check in Capacitor environment
-BROWSER LOG: useEffect triggered - user: true supabase: true
-BROWSER LOG: User authenticated, fetching calculations...
-BROWSER LOG: Supabase client present: true
-BROWSER LOG: Attempting to fetch calculations for user: c63198bf-8bbf-4499-b918-15a69dbbbde6
-BROWSER LOG: Skipping server proxy check in Capacitor environment
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: 🚨 Error in fetchCalculations.supabase
-BROWSER LOG: Error: TypeError: Failed to fetch
-BROWSER LOG: Error details: {name: undefined, message: TypeError: Failed to fetch, code: , stack: undefined}
-BROWSER LOG: Error type: object
-BROWSER LOG: Error constructor: Object
-BROWSER LOG: Error properties: [message, details, hint, code]
-BROWSER LOG: message: TypeError: Failed to fetch
-BROWSER LOG: code: 
-BROWSER LOG: details: TypeError: Failed to fetch
-    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12
-    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)
-BROWSER LOG: hint: 
-BROWSER LOG: Error as JSON: {
-  "message": "TypeError: Failed to fetch",
-  "details": "TypeError: Failed to fetch\n    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12\n    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)",
-  "hint": "",
-  "code": ""
-}
-BROWSER LOG: Extracted message: TypeError: Failed to fetch
-BROWSER LOG: console.groupEnd
-BROWSER LOG: Supabase client returned error, falling back to cache: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
-    at fetch (http://lo…eSupabaseCalculations.tsx?t=1769829094798:196:29), hint: , code: }
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: 🚨 Error in fetchCalculations.supabase
-BROWSER LOG: Error: TypeError: Failed to fetch
-BROWSER LOG: Error details: {name: undefined, message: TypeError: Failed to fetch, code: , stack: undefined}
-BROWSER LOG: Error type: object
-BROWSER LOG: Error constructor: Object
-BROWSER LOG: Error properties: [message, details, hint, code]
-BROWSER LOG: message: TypeError: Failed to fetch
-BROWSER LOG: code: 
-BROWSER LOG: details: TypeError: Failed to fetch
-    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12
-    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)
-BROWSER LOG: hint: 
-BROWSER LOG: Error as JSON: {
-  "message": "TypeError: Failed to fetch",
-  "details": "TypeError: Failed to fetch\n    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12\n    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)",
-  "hint": "",
-  "code": ""
-}
-BROWSER LOG: Extracted message: TypeError: Failed to fetch
-BROWSER LOG: console.groupEnd
-BROWSER LOG: Supabase client returned error, falling back to cache: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
-    at fetch (http://lo…eSupabaseCalculations.tsx?t=1769829094798:196:29), hint: , code: }
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: 🚨 Error in fetchCalculations.supabase
-BROWSER LOG: Error: TypeError: Failed to fetch
-BROWSER LOG: Error details: {name: undefined, message: TypeError: Failed to fetch, code: , stack: undefined}
-BROWSER LOG: Error type: object
-BROWSER LOG: Error constructor: Object
-BROWSER LOG: Error properties: [message, details, hint, code]
-BROWSER LOG: message: TypeError: Failed to fetch
-BROWSER LOG: code: 
-BROWSER LOG: details: TypeError: Failed to fetch
-    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12
-    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)
-BROWSER LOG: hint: 
-BROWSER LOG: Error as JSON: {
-  "message": "TypeError: Failed to fetch",
-  "details": "TypeError: Failed to fetch\n    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12\n    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)",
-  "hint": "",
-  "code": ""
-}
-BROWSER LOG: Extracted message: TypeError: Failed to fetch
-BROWSER LOG: console.groupEnd
-BROWSER LOG: Supabase client returned error, falling back to cache: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
-    at fetch (http://lo…eSupabaseCalculations.tsx?t=1769829094798:196:29), hint: , code: }
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: 🚨 Error in fetchCalculations.supabase
-BROWSER LOG: Error: TypeError: Failed to fetch
-BROWSER LOG: Error details: {name: undefined, message: TypeError: Failed to fetch, code: , stack: undefined}
-BROWSER LOG: Error type: object
-BROWSER LOG: Error constructor: Object
-BROWSER LOG: Error properties: [message, details, hint, code]
-BROWSER LOG: message: TypeError: Failed to fetch
-BROWSER LOG: code: 
-BROWSER LOG: details: TypeError: Failed to fetch
-    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12
-    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)
-BROWSER LOG: hint: 
-BROWSER LOG: Error as JSON: {
-  "message": "TypeError: Failed to fetch",
-  "details": "TypeError: Failed to fetch\n    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12\n    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)",
-  "hint": "",
-  "code": ""
-}
-BROWSER LOG: Extracted message: TypeError: Failed to fetch
-BROWSER LOG: console.groupEnd
-BROWSER LOG: Supabase client returned error, falling back to cache: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
-    at fetch (http://lo…eSupabaseCalculations.tsx?t=1769829094798:196:29), hint: , code: }
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: 🚨 Error in fetchCalculations.supabase
-BROWSER LOG: Error: TypeError: Failed to fetch
-BROWSER LOG: Error details: {name: undefined, message: TypeError: Failed to fetch, code: , stack: undefined}
-BROWSER LOG: Error type: object
-BROWSER LOG: Error constructor: Object
-BROWSER LOG: Error properties: [message, details, hint, code]
-BROWSER LOG: message: TypeError: Failed to fetch
-BROWSER LOG: code: 
-BROWSER LOG: details: TypeError: Failed to fetch
-    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12
-    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)
-BROWSER LOG: hint: 
-BROWSER LOG: Error as JSON: {
-  "message": "TypeError: Failed to fetch",
-  "details": "TypeError: Failed to fetch\n    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12\n    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)",
-  "hint": "",
-  "code": ""
-}
-BROWSER LOG: Extracted message: TypeError: Failed to fetch
-BROWSER LOG: console.groupEnd
-BROWSER LOG: Supabase client returned error, falling back to cache: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
-    at fetch (http://lo…eSupabaseCalculations.tsx?t=1769829094798:196:29), hint: , code: }
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: 🚨 Error in fetchCalculations.supabase
-BROWSER LOG: Error: TypeError: Failed to fetch
-BROWSER LOG: Error details: {name: undefined, message: TypeError: Failed to fetch, code: , stack: undefined}
-BROWSER LOG: Error type: object
-BROWSER LOG: Error constructor: Object
-BROWSER LOG: Error properties: [message, details, hint, code]
-BROWSER LOG: message: TypeError: Failed to fetch
-BROWSER LOG: code: 
-BROWSER LOG: details: TypeError: Failed to fetch
-    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12
-    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)
-BROWSER LOG: hint: 
-BROWSER LOG: Error as JSON: {
-  "message": "TypeError: Failed to fetch",
-  "details": "TypeError: Failed to fetch\n    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12\n    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)",
-  "hint": "",
-  "code": ""
-}
-BROWSER LOG: Extracted message: TypeError: Failed to fetch
-BROWSER LOG: console.groupEnd
-BROWSER LOG: Supabase client returned error, falling back to cache: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
-    at fetch (http://lo…eSupabaseCalculations.tsx?t=1769829094798:196:29), hint: , code: }
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: 🚨 Error in fetchCalculations.supabase
-BROWSER LOG: Error: TypeError: Failed to fetch
-BROWSER LOG: Error details: {name: undefined, message: TypeError: Failed to fetch, code: , stack: undefined}
-BROWSER LOG: Error type: object
-BROWSER LOG: Error constructor: Object
-BROWSER LOG: Error properties: [message, details, hint, code]
-BROWSER LOG: message: TypeError: Failed to fetch
-BROWSER LOG: code: 
-BROWSER LOG: details: TypeError: Failed to fetch
-    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12
-    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)
-BROWSER LOG: hint: 
-BROWSER LOG: Error as JSON: {
-  "message": "TypeError: Failed to fetch",
-  "details": "TypeError: Failed to fetch\n    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12\n    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)",
-  "hint": "",
-  "code": ""
-}
-BROWSER LOG: Extracted message: TypeError: Failed to fetch
-BROWSER LOG: console.groupEnd
-BROWSER LOG: Supabase client returned error, falling back to cache: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
-    at fetch (http://lo…eSupabaseCalculations.tsx?t=1769829094798:196:29), hint: , code: }
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: 🚨 Error in fetchCalculations.supabase
-BROWSER LOG: Error: TypeError: Failed to fetch
-BROWSER LOG: Error details: {name: undefined, message: TypeError: Failed to fetch, code: , stack: undefined}
-BROWSER LOG: Error type: object
-BROWSER LOG: Error constructor: Object
-BROWSER LOG: Error properties: [message, details, hint, code]
-BROWSER LOG: message: TypeError: Failed to fetch
-BROWSER LOG: code: 
-BROWSER LOG: details: TypeError: Failed to fetch
-    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12
-    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)
-BROWSER LOG: hint: 
-BROWSER LOG: Error as JSON: {
-  "message": "TypeError: Failed to fetch",
-  "details": "TypeError: Failed to fetch\n    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12\n    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)",
-  "hint": "",
-  "code": ""
-}
-BROWSER LOG: Extracted message: TypeError: Failed to fetch
-BROWSER LOG: console.groupEnd
-BROWSER LOG: Supabase client returned error, falling back to cache: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
-    at fetch (http://lo…eSupabaseCalculations.tsx?t=1769829094798:196:29), hint: , code: }
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: 🚨 Error in fetchCalculations.supabase
-BROWSER LOG: Error: TypeError: Failed to fetch
-BROWSER LOG: Error details: {name: undefined, message: TypeError: Failed to fetch, code: , stack: undefined}
-BROWSER LOG: Error type: object
-BROWSER LOG: Error constructor: Object
-BROWSER LOG: Error properties: [message, details, hint, code]
-BROWSER LOG: message: TypeError: Failed to fetch
-BROWSER LOG: code: 
-BROWSER LOG: details: TypeError: Failed to fetch
-    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12
-    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)
-BROWSER LOG: hint: 
-BROWSER LOG: Error as JSON: {
-  "message": "TypeError: Failed to fetch",
-  "details": "TypeError: Failed to fetch\n    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12\n    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)",
-  "hint": "",
-  "code": ""
-}
-BROWSER LOG: Extracted message: TypeError: Failed to fetch
-BROWSER LOG: console.groupEnd
-BROWSER LOG: Supabase client returned error, falling back to cache: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
-    at fetch (http://lo…eSupabaseCalculations.tsx?t=1769829094798:196:29), hint: , code: }
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: 🚨 Error in fetchCalculations.supabase
-BROWSER LOG: Error: TypeError: Failed to fetch
-BROWSER LOG: Error details: {name: undefined, message: TypeError: Failed to fetch, code: , stack: undefined}
-BROWSER LOG: Error type: object
-BROWSER LOG: Error constructor: Object
-BROWSER LOG: Error properties: [message, details, hint, code]
-BROWSER LOG: message: TypeError: Failed to fetch
-BROWSER LOG: code: 
-BROWSER LOG: details: TypeError: Failed to fetch
-    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40
-    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12
-    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)
-BROWSER LOG: hint: 
-BROWSER LOG: Error as JSON: {
-  "message": "TypeError: Failed to fetch",
-  "details": "TypeError: Failed to fetch\n    at fetch (http://localhost:8080/client/lib/supabase.ts:49:28)\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11447:40\n    at http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=3af14fc6:11462:12\n    at async fetchCalculations (http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1769829094798:196:29)",
-  "hint": "",
-  "code": ""
-}
-BROWSER LOG: Extracted message: TypeError: Failed to fetch
-BROWSER LOG: console.groupEnd
-BROWSER LOG: Supabase client returned error, falling back to cache: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
-    at fetch (http://lo…eSupabaseCalculations.tsx?t=1769829094798:196:29), hint: , code: }
-BROWSER LOG: Failed to load resource: the server responded with a status of 404 ()
-BROWSER LOG: Error fetching projects: {code: 42P01, details: null, hint: null, message: relation "public.projects" does not exist}
-BROWSER LOG: Failed to load resource: the server responded with a status of 404 ()
-BROWSER LOG: Error fetching projects: {code: 42P01, details: null, hint: null, message: relation "public.projects" does not exist}
-BROWSER LOG: Failed to load resource: the server responded with a status of 404 ()
-BROWSER LOG: Error fetching projects: {code: 42P01, details: null, hint: null, message: relation "public.projects" does not exist}
-BROWSER LOG: Failed to load resource: the server responded with a status of 404 ()
-BROWSER LOG: Error fetching projects: {code: 42P01, details: null, hint: null, message: relation "public.projects" does not exist}
-BROWSER LOG: Failed to load resource: the server responded with a status of 404 ()
-BROWSER LOG: Error fetching projects: {code: 42P01, details: null, hint: null, message: relation "public.projects" does not exist}
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: Failed to load resource: net::ERR_FAILED
-BROWSER LOG: Failed to load resource: the server responded with a status of 404 ()
-BROWSER LOG: Failed to load resource: the server responded with a status of 404 ()
-BROWSER LOG: Failed to load resource: the server responded with a status of 404 ()
-BROWSER LOG: Failed to load resource: the server responded with a status of 404 ()
-BROWSER LOG: Failed to load resource: the server responded with a status of 404 ()
-  ✘  2 [chromium] › e2e/offline-mode.spec.ts:43:5 › Offline Mode › should load cached calculations when offline (6.9s)
+Starting Login...
+Login Successful
+Navigating to Clients to create new client...
+Client Created Successfully
+Navigating to Dispatch...
+  ✘  1 [chromium] › e2e/debug_job.spec.ts:3:1 › Debug Job Creation Visibility (18.5s)
+Starting Login...
+Login Successful
+Navigating to Clients to create new client...
+Client Created Successfully
+Navigating to Dispatch...
+  ✘  2 [chromium] › e2e/debug_job.spec.ts:3:1 › Debug Job Creation Visibility (retry #1) (19.5s)
 
 
-  1) [chromium] › e2e/offline-mode.spec.ts:43:5 › Offline Mode › should load cached calculations when offline 
+  1) [chromium] › e2e/debug_job.spec.ts:3:1 › Debug Job Creation Visibility ────────────────────────
 
-    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
-
-    Expected pattern: [32m/.*\/history/[39m
-    Received string:  [31m"http://localhost:8080/dashboard"[39m
-    Timeout: 5000ms
-
+    TimeoutError: page.click: Timeout 15000ms exceeded.
     Call log:
-    [2m  - Expect "toHaveURL" with timeout 5000ms[22m
-    [2m    9 × unexpected value "http://localhost:8080/dashboard"[22m
+    [2m  - waiting for locator('button[type="submit"]')[22m
 
 
-      73 |
-      74 |         // Wait for URL update
-    > 75 |         await expect(page).toHaveURL(/.*\/history/);
-         |                            ^
-      76 |
-      77 |         // Wait for the rows to load (or the "offline" state to settle)
-      78 |         await expect(page.getByText('Offline Test Calc')).toBeVisible({ timeout: 20000 });
-        at /Users/riad/hvacR/HVAC-R/e2e/offline-mode.spec.ts:75:28
+      94 |
+      95 |     // Submit
+    > 96 |     await page.click('button[type="submit"]'); // "Dispatch Job"
+         |                ^
+      97 |
+      98 |     // 6. Verify Job Creation
+      99 |     // Check for "Job created successfully" toast or dialog close
+        at /Users/riad/hvacR/HVAC-R/e2e/debug_job.spec.ts:96:16
 
-    Error Context: test-results/offline-mode-Offline-Mode--5a996-d-calculations-when-offline-chromium/error-context.md
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/debug_job-Debug-Job-Creation-Visibility-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/debug_job-Debug-Job-Creation-Visibility-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/debug_job-Debug-Job-Creation-Visibility-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    TimeoutError: page.click: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('button[type="submit"]')[22m
+
+
+      94 |
+      95 |     // Submit
+    > 96 |     await page.click('button[type="submit"]'); // "Dispatch Job"
+         |                ^
+      97 |
+      98 |     // 6. Verify Job Creation
+      99 |     // Check for "Job created successfully" toast or dialog close
+        at /Users/riad/hvacR/HVAC-R/e2e/debug_job.spec.ts:96:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/debug_job-Debug-Job-Creation-Visibility-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/debug_job-Debug-Job-Creation-Visibility-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/debug_job-Debug-Job-Creation-Visibility-chromium-retry1/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/debug_job-Debug-Job-Creation-Visibility-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/debug_job-Debug-Job-Creation-Visibility-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
 
   1 failed
-    [chromium] › e2e/offline-mode.spec.ts:43:5 › Offline Mode › should load cached calculations when offline 
-  1 skipped
-
-To open last HTML report run:
-[36m[39m
-[36m  npx playwright show-report[39m
-[36m[39m
+    [chromium] › e2e/debug_job.spec.ts:3:1 › Debug Job Creation Visibility ─────────────────────────

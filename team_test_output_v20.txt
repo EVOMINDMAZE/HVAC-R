@@ -1,0 +1,651 @@
+
+Running 1 test using 1 worker
+
+Starting Login...
+[BROWSER debug]: [vite] connecting...
+[BROWSER info]: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[BROWSER log]: 🛡️ Global error handler and JSON.parse monitor initialized
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+[BROWSER debug]: [vite] connected.
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION undefined
+[BROWSER log]: [AuthDebug] Auth State Change: SIGNED_IN admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER warning]: You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: useEffect triggered - user: true supabase: true
+[BROWSER log]: User authenticated, fetching calculations...
+[BROWSER log]: Supabase client present: true
+[BROWSER log]: Attempting to fetch calculations for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER debug]: Skipping server proxy check in Capacitor environment
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [SignIn] Login successful, role: admin
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: useEffect triggered - user: true supabase: true
+[BROWSER log]: User authenticated, fetching calculations...
+[BROWSER log]: Supabase client present: true
+[BROWSER log]: Attempting to fetch calculations for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER debug]: Skipping server proxy check in Capacitor environment
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: useEffect triggered - user: true supabase: true
+[BROWSER log]: User authenticated, fetching calculations...
+[BROWSER log]: Supabase client present: true
+[BROWSER log]: Attempting to fetch calculations for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER debug]: Skipping server proxy check in Capacitor environment
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: useEffect triggered - user: true supabase: true
+[BROWSER log]: User authenticated, fetching calculations...
+[BROWSER log]: Supabase client present: true
+[BROWSER log]: Attempting to fetch calculations for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER debug]: Skipping server proxy check in Capacitor environment
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: useEffect triggered - user: true supabase: true
+[BROWSER log]: User authenticated, fetching calculations...
+[BROWSER log]: Supabase client present: true
+[BROWSER log]: Attempting to fetch calculations for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER debug]: Skipping server proxy check in Capacitor environment
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: useEffect triggered - user: true supabase: true
+[BROWSER log]: User authenticated, fetching calculations...
+[BROWSER log]: Supabase client present: true
+[BROWSER log]: Attempting to fetch calculations for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER debug]: Skipping server proxy check in Capacitor environment
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER error]: Failed to load resource: the server responded with a status of 400 ()
+[BROWSER error]: Error fetching invoices: {code: 42703, details: null, hint: null, message: column invoices.amount_cents does not exist}
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER error]: Failed to load resource: the server responded with a status of 400 ()
+[BROWSER error]: Error fetching invoices: {code: 42703, details: null, hint: null, message: column invoices.amount_cents does not exist}
+[BROWSER error]: Failed to load resource: the server responded with a status of 404 ()
+[BROWSER error]: 🚨 JSON.parse FAILED: {error: Unexpected end of JSON input, source: Unknown, textPreview: , textLength: 0, isHTML: false}
+Login Successful
+Navigating to Team Settings...
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER error]: Failed to load resource: the server responded with a status of 400 ()
+[BROWSER error]: Error fetching invoices: {code: 42703, details: null, hint: null, message: column invoices.amount_cents does not exist}
+[BROWSER error]: Failed to load resource: the server responded with a status of 404 ()
+[BROWSER error]: 🚨 JSON.parse FAILED: {error: Unexpected end of JSON input, source: Unknown, textPreview: , textLength: 0, isHTML: false}
+[BROWSER startGroup]: 🚨 Error in fetchCalculations.supabase
+[BROWSER error]: Error: TypeError: Failed to fetch
+[BROWSER log]: Error details: {name: undefined, message: TypeError: Failed to fetch, code: , stack: undefined}
+[BROWSER log]: Error type: object
+[BROWSER log]: Error constructor: Object
+[BROWSER log]: Error properties: [message, details, hint, code]
+[BROWSER log]: message: TypeError: Failed to fetch
+[BROWSER log]: code: 
+[BROWSER log]: details: TypeError: Failed to fetch
+    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11448:23
+    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11462:12
+    at async fetchCalculations (http://localhost:8087/client/hooks/useSupabaseCalculations.tsx?t=1770004516631:196:29)
+[BROWSER log]: hint: 
+[BROWSER log]: Error as JSON: {
+  "message": "TypeError: Failed to fetch",
+  "details": "TypeError: Failed to fetch\n    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11448:23\n    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11462:12\n    at async fetchCalculations (http://localhost:8087/client/hooks/useSupabaseCalculations.tsx?t=1770004516631:196:29)",
+  "hint": "",
+  "code": ""
+}
+[BROWSER log]: Extracted message: TypeError: Failed to fetch
+[BROWSER endGroup]: console.groupEnd
+[BROWSER warning]: Supabase client returned error, falling back to cache: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
+    at http://localhost…eSupabaseCalculations.tsx?t=1770004516631:196:29), hint: , code: }
+[BROWSER warning]: No cached calculations found to fallback to
+[BROWSER startGroup]: 🚨 Error in fetchCalculations.supabase
+[BROWSER error]: Error: TypeError: Failed to fetch
+[BROWSER log]: Error details: {name: undefined, message: TypeError: Failed to fetch, code: , stack: undefined}
+[BROWSER log]: Error type: object
+[BROWSER log]: Error constructor: Object
+[BROWSER log]: Error properties: [message, details, hint, code]
+[BROWSER log]: message: TypeError: Failed to fetch
+[BROWSER log]: code: 
+[BROWSER log]: details: TypeError: Failed to fetch
+    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11448:23
+    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11462:12
+    at async fetchCalculations (http://localhost:8087/client/hooks/useSupabaseCalculations.tsx?t=1770004516631:196:29)
+[BROWSER log]: hint: 
+[BROWSER log]: Error as JSON: {
+  "message": "TypeError: Failed to fetch",
+  "details": "TypeError: Failed to fetch\n    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11448:23\n    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11462:12\n    at async fetchCalculations (http://localhost:8087/client/hooks/useSupabaseCalculations.tsx?t=1770004516631:196:29)",
+  "hint": "",
+  "code": ""
+}
+[BROWSER log]: Extracted message: TypeError: Failed to fetch
+[BROWSER endGroup]: console.groupEnd
+[BROWSER warning]: Supabase client returned error, falling back to cache: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
+    at http://localhost…eSupabaseCalculations.tsx?t=1770004516631:196:29), hint: , code: }
+[BROWSER warning]: No cached calculations found to fallback to
+[BROWSER startGroup]: 🚨 Error in fetchCalculations.supabase
+[BROWSER error]: Error: TypeError: Failed to fetch
+[BROWSER log]: Error details: {name: undefined, message: TypeError: Failed to fetch, code: , stack: undefined}
+[BROWSER log]: Error type: object
+[BROWSER log]: Error constructor: Object
+[BROWSER log]: Error properties: [message, details, hint, code]
+[BROWSER log]: message: TypeError: Failed to fetch
+[BROWSER log]: code: 
+[BROWSER log]: details: TypeError: Failed to fetch
+    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11448:23
+    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11462:12
+    at async fetchCalculations (http://localhost:8087/client/hooks/useSupabaseCalculations.tsx?t=1770004516631:196:29)
+[BROWSER log]: hint: 
+[BROWSER log]: Error as JSON: {
+  "message": "TypeError: Failed to fetch",
+  "details": "TypeError: Failed to fetch\n    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11448:23\n    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11462:12\n    at async fetchCalculations (http://localhost:8087/client/hooks/useSupabaseCalculations.tsx?t=1770004516631:196:29)",
+  "hint": "",
+  "code": ""
+}
+[BROWSER log]: Extracted message: TypeError: Failed to fetch
+[BROWSER endGroup]: console.groupEnd
+[BROWSER warning]: Supabase client returned error, falling back to cache: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
+    at http://localhost…eSupabaseCalculations.tsx?t=1770004516631:196:29), hint: , code: }
+[BROWSER warning]: No cached calculations found to fallback to
+[BROWSER startGroup]: 🚨 Error in fetchCalculations.supabase
+[BROWSER error]: Error: TypeError: Failed to fetch
+[BROWSER log]: Error details: {name: undefined, message: TypeError: Failed to fetch, code: , stack: undefined}
+[BROWSER log]: Error type: object
+[BROWSER log]: Error constructor: Object
+[BROWSER log]: Error properties: [message, details, hint, code]
+[BROWSER log]: message: TypeError: Failed to fetch
+[BROWSER log]: code: 
+[BROWSER log]: details: TypeError: Failed to fetch
+    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11448:23
+    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11462:12
+    at async fetchCalculations (http://localhost:8087/client/hooks/useSupabaseCalculations.tsx?t=1770004516631:196:29)
+[BROWSER log]: hint: 
+[BROWSER log]: Error as JSON: {
+  "message": "TypeError: Failed to fetch",
+  "details": "TypeError: Failed to fetch\n    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11448:23\n    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11462:12\n    at async fetchCalculations (http://localhost:8087/client/hooks/useSupabaseCalculations.tsx?t=1770004516631:196:29)",
+  "hint": "",
+  "code": ""
+}
+[BROWSER log]: Extracted message: TypeError: Failed to fetch
+[BROWSER endGroup]: console.groupEnd
+[BROWSER warning]: Supabase client returned error, falling back to cache: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
+    at http://localhost…eSupabaseCalculations.tsx?t=1770004516631:196:29), hint: , code: }
+[BROWSER warning]: No cached calculations found to fallback to
+[BROWSER startGroup]: 🚨 Error in fetchCalculations.supabase
+[BROWSER error]: Error: TypeError: Failed to fetch
+[BROWSER log]: Error details: {name: undefined, message: TypeError: Failed to fetch, code: , stack: undefined}
+[BROWSER log]: Error type: object
+[BROWSER log]: Error constructor: Object
+[BROWSER log]: Error properties: [message, details, hint, code]
+[BROWSER log]: message: TypeError: Failed to fetch
+[BROWSER log]: code: 
+[BROWSER log]: details: TypeError: Failed to fetch
+    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11448:23
+    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11462:12
+    at async fetchCalculations (http://localhost:8087/client/hooks/useSupabaseCalculations.tsx?t=1770004516631:196:29)
+[BROWSER log]: hint: 
+[BROWSER log]: Error as JSON: {
+  "message": "TypeError: Failed to fetch",
+  "details": "TypeError: Failed to fetch\n    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11448:23\n    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11462:12\n    at async fetchCalculations (http://localhost:8087/client/hooks/useSupabaseCalculations.tsx?t=1770004516631:196:29)",
+  "hint": "",
+  "code": ""
+}
+[BROWSER log]: Extracted message: TypeError: Failed to fetch
+[BROWSER endGroup]: console.groupEnd
+[BROWSER warning]: Supabase client returned error, falling back to cache: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
+    at http://localhost…eSupabaseCalculations.tsx?t=1770004516631:196:29), hint: , code: }
+[BROWSER warning]: No cached calculations found to fallback to
+[BROWSER startGroup]: 🚨 Error in fetchCalculations.supabase
+[BROWSER error]: Error: TypeError: Failed to fetch
+[BROWSER log]: Error details: {name: undefined, message: TypeError: Failed to fetch, code: , stack: undefined}
+[BROWSER log]: Error type: object
+[BROWSER log]: Error constructor: Object
+[BROWSER log]: Error properties: [message, details, hint, code]
+[BROWSER log]: message: TypeError: Failed to fetch
+[BROWSER log]: code: 
+[BROWSER log]: details: TypeError: Failed to fetch
+    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11448:23
+    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11462:12
+    at async fetchCalculations (http://localhost:8087/client/hooks/useSupabaseCalculations.tsx?t=1770004516631:196:29)
+[BROWSER log]: hint: 
+[BROWSER log]: Error as JSON: {
+  "message": "TypeError: Failed to fetch",
+  "details": "TypeError: Failed to fetch\n    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11448:23\n    at http://localhost:8087/node_modules/.vite/deps/@supabase_supabase-js.js?v=ecf63283:11462:12\n    at async fetchCalculations (http://localhost:8087/client/hooks/useSupabaseCalculations.tsx?t=1770004516631:196:29)",
+  "hint": "",
+  "code": ""
+}
+[BROWSER log]: Extracted message: TypeError: Failed to fetch
+[BROWSER endGroup]: console.groupEnd
+[BROWSER warning]: Supabase client returned error, falling back to cache: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
+    at http://localhost…eSupabaseCalculations.tsx?t=1770004516631:196:29), hint: , code: }
+[BROWSER warning]: No cached calculations found to fallback to
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER debug]: [vite] connecting...
+[BROWSER debug]: [vite] connected.
+[BROWSER info]: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[BROWSER log]: 🛡️ Global error handler and JSON.parse monitor initialized
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: false, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: false, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+[BROWSER log]: [AuthDebug] Auth State Change: SIGNED_IN admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+On Team Page
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+Found 0 team members.
+TEST FAILED AT URL: http://localhost:8087/settings/team
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+  ✘  1 [chromium] › e2e/verify_team.spec.ts:3:1 › Verify Team Member Invitation and Visibility (2.9s)
+Starting Login...
+[BROWSER debug]: [vite] connecting...
+[BROWSER info]: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[BROWSER log]: 🛡️ Global error handler and JSON.parse monitor initialized
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+[BROWSER debug]: [vite] connected.
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION undefined
+[BROWSER log]: [AuthDebug] Auth State Change: SIGNED_IN admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+Login Successful
+Navigating to Team Settings...
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [SignIn] Login successful, role: admin
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER warning]: You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
+[BROWSER debug]: [vite] connecting...
+[BROWSER debug]: [vite] connected.
+[BROWSER info]: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[BROWSER log]: 🛡️ Global error handler and JSON.parse monitor initialized
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: false, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: false, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+[BROWSER log]: [AuthDebug] Auth State Change: SIGNED_IN admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+On Team Page
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+Found 0 team members.
+TEST FAILED AT URL: http://localhost:8087/settings/team
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+  ✘  2 [chromium] › e2e/verify_team.spec.ts:3:1 › Verify Team Member Invitation and Visibility (retry #1) (2.3s)
+
+
+  1) [chromium] › e2e/verify_team.spec.ts:3:1 › Verify Team Member Invitation and Visibility ───────
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: > [32m0[39m
+    Received:   [31m0[39m
+
+      31 |
+      32 |         // In our case, after the fix, the admin should see themselves.
+    > 33 |         expect(memberCount).toBeGreaterThan(0);
+         |                             ^
+      34 |
+      35 |         // 4. Invite New Member
+      36 |         console.log('Filling Invite Form...');
+        at /Users/riad/hvacR/HVAC-R/e2e/verify_team.spec.ts:33:29
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/verify_team-Verify-Team-Member-Invitation-and-Visibility-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/verify_team-Verify-Team-Member-Invitation-and-Visibility-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/verify_team-Verify-Team-Member-Invitation-and-Visibility-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: > [32m0[39m
+    Received:   [31m0[39m
+
+      31 |
+      32 |         // In our case, after the fix, the admin should see themselves.
+    > 33 |         expect(memberCount).toBeGreaterThan(0);
+         |                             ^
+      34 |
+      35 |         // 4. Invite New Member
+      36 |         console.log('Filling Invite Form...');
+        at /Users/riad/hvacR/HVAC-R/e2e/verify_team.spec.ts:33:29
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/verify_team-Verify-Team-Member-Invitation-and-Visibility-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/verify_team-Verify-Team-Member-Invitation-and-Visibility-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/verify_team-Verify-Team-Member-Invitation-and-Visibility-chromium-retry1/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/verify_team-Verify-Team-Member-Invitation-and-Visibility-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/verify_team-Verify-Team-Member-Invitation-and-Visibility-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › e2e/verify_team.spec.ts:3:1 › Verify Team Member Invitation and Visibility ────────

@@ -36,7 +36,6 @@ import {
 import CompanySettings from "./CompanySettings";
 import { PageContainer } from "@/components/PageContainer";
 
-
 // User data comes from Supabase authentication and real backend data
 
 export function Profile() {
@@ -346,7 +345,11 @@ export function Profile() {
 
       <PageContainer variant="standard">
         <div className="max-w-4xl mx-auto">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
             <TabsList className="grid w-full grid-cols-4 mb-8 bg-muted border border-border">
               <TabsTrigger
                 value="profile"
@@ -383,7 +386,7 @@ export function Profile() {
             {/* Profile Tab */}
             <TabsContent value="profile" className="space-y-6">
               <Card className="bg-card shadow-lg border-border">
-                <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-900 dark:to-indigo-900 text-white">
+                <CardHeader className="bg-gradient-to-r from-orange-600 to-orange-700 dark:from-orange-900 dark:to-orange-800 text-white">
                   <CardTitle>Profile Information</CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
@@ -395,7 +398,7 @@ export function Profile() {
                           src={user.avatar}
                           alt={`${user.firstName} ${user.lastName}`}
                         />
-                        <AvatarFallback className="text-xl bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300">
+                        <AvatarFallback className="text-xl bg-orange-100 text-orange-600 dark:bg-orange-900 dark:text-orange-300">
                           {user.firstName.charAt(0)}
                           {user.lastName.charAt(0)}
                         </AvatarFallback>
@@ -459,7 +462,7 @@ export function Profile() {
                           onChange={(e) =>
                             handleInputChange("firstName", e.target.value)
                           }
-                          className="pl-10 border-input focus:border-blue-500"
+                          className="pl-10 border-input focus:border-orange-500"
                         />
                       </div>
                     </div>
@@ -472,7 +475,7 @@ export function Profile() {
                         onChange={(e) =>
                           handleInputChange("lastName", e.target.value)
                         }
-                        className="border-input focus:border-blue-500"
+                        className="border-input focus:border-orange-500"
                       />
                     </div>
 
@@ -487,7 +490,7 @@ export function Profile() {
                           onChange={(e) =>
                             handleInputChange("email", e.target.value)
                           }
-                          className="pl-10 border-input focus:border-blue-500"
+                          className="pl-10 border-input focus:border-orange-500"
                         />
                       </div>
                     </div>
@@ -502,7 +505,7 @@ export function Profile() {
                           onChange={(e) =>
                             handleInputChange("phone", e.target.value)
                           }
-                          className="pl-10 border-input focus:border-blue-500"
+                          className="pl-10 border-input focus:border-orange-500"
                         />
                       </div>
                     </div>
@@ -517,7 +520,7 @@ export function Profile() {
                           onChange={(e) =>
                             handleInputChange("company", e.target.value)
                           }
-                          className="pl-10 border-input focus:border-blue-500"
+                          className="pl-10 border-input focus:border-orange-500"
                         />
                       </div>
                     </div>
@@ -532,7 +535,7 @@ export function Profile() {
                           onChange={(e) =>
                             handleInputChange("location", e.target.value)
                           }
-                          className="pl-10 border-input focus:border-blue-500"
+                          className="pl-10 border-input focus:border-orange-500"
                         />
                       </div>
                     </div>
@@ -566,7 +569,9 @@ export function Profile() {
                     <h3 className="text-lg font-semibold">Change Password</h3>
                     <div className="grid gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="currentPassword">Current Password</Label>
+                        <Label htmlFor="currentPassword">
+                          Current Password
+                        </Label>
                         <Input
                           id="currentPassword"
                           type="password"
@@ -577,7 +582,7 @@ export function Profile() {
                               currentPassword: e.target.value,
                             }))
                           }
-                          className="border-input focus:border-blue-500"
+                          className="border-input focus:border-orange-500"
                           required
                         />
                       </div>
@@ -593,7 +598,7 @@ export function Profile() {
                               newPassword: e.target.value,
                             }))
                           }
-                          className="border-input focus:border-blue-500"
+                          className="border-input focus:border-orange-500"
                           minLength={6}
                           required
                         />
@@ -612,7 +617,7 @@ export function Profile() {
                               confirmNewPassword: e.target.value,
                             }))
                           }
-                          className="border-input focus:border-blue-500"
+                          className="border-input focus:border-orange-500"
                           minLength={6}
                           required
                         />
@@ -647,7 +652,7 @@ export function Profile() {
             {/* Billing Tab */}
             <TabsContent value="billing" className="space-y-6">
               <Card className="bg-card shadow-lg border-border">
-                <CardHeader className="bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-900 dark:to-indigo-900 text-white">
+                <CardHeader className="bg-gradient-to-r from-slate-600 to-slate-700 dark:from-slate-800 dark:to-slate-900 text-white">
                   <CardTitle className="flex items-center">
                     <CreditCard className="h-5 w-5 mr-2" />
                     Billing & Usage
@@ -656,7 +661,7 @@ export function Profile() {
                 <CardContent className="p-6">
                   {subscriptionLoading ? (
                     <div className="text-center py-8">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600 mx-auto"></div>
                       <p className="text-muted-foreground mt-2">
                         Loading subscription details...
                       </p>
@@ -684,7 +689,7 @@ export function Profile() {
                               Next billing:{" "}
                               {new Date(
                                 subscription.subscription.current_period_end *
-                                1000,
+                                  1000,
                               ).toLocaleDateString()}
                             </p>
                             {subscription.subscription.cancel_at_period_end && (
@@ -711,7 +716,9 @@ export function Profile() {
                             className="justify-start bg-primary hover:bg-primary/90 text-primary-foreground"
                           >
                             <CreditCard className="h-4 w-4 mr-2" />
-                            {portalLoading ? "Loading..." : "Manage Subscription"}
+                            {portalLoading
+                              ? "Loading..."
+                              : "Manage Subscription"}
                           </Button>
                         ) : (
                           <Button
@@ -862,7 +869,9 @@ export function Profile() {
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="celsius">Celsius (°C)</SelectItem>
+                            <SelectItem value="celsius">
+                              Celsius (°C)
+                            </SelectItem>
                             <SelectItem value="fahrenheit">
                               Fahrenheit (°F)
                             </SelectItem>
@@ -940,8 +949,6 @@ export function Profile() {
           </Tabs>
         </div>
       </PageContainer>
-
     </div>
-
   );
 }

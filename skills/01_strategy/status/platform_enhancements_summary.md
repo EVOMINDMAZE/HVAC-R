@@ -159,6 +159,33 @@ const getPropertyValue = (obj, propertyNames) => {
 
 ---
 
+### 7. Global UI/UX Standardization ("The Office Theme") ✅
+
+**Status**: Standardized across all popovers, dropdowns, and modals.
+
+**Features**:
+- **Standardized Colors**: `bg-white/95 dark:bg-slate-950/95` background with `backdrop-blur-xl`.
+- **Neutral Interaction**: Overrode default accent highlights with neutral slate (`hover:bg-slate-50 dark:hover:bg-slate-800`).
+- **Input Clarity**: Removed distracting rings on search inputs in switchers.
+- **Hover-Only Highlighting**: Implemented a "clean-on-open" policy where items only highlight when explicitly hovered.
+
+**Impact**: Higher professional polish, reduced visual noise, and better accessibility in low-light environments.
+
+---
+
+### 8. RBAC Tier Consolidation ✅
+
+**Status**: Integrated into Auth middleware and Database RLS.
+
+**Features**:
+- **New "Student" Role**: Created dedicated path for learners with access to Web Stories and Calculators without commercial job risk.
+- **Enhanced "Client" Portal**: Locked down to `/portal` and `/history` with automatic redirection for unauthenticated or unauthorized route attempts.
+- **Unified Manager Tier**: Multi-tenant isolation verified for company-level supervisors.
+
+**Impact**: Simplified enterprise onboarding and improved security posture for multi-tenant deployments.
+
+---
+
 ## 🎯 Target Audience Impact
 
 ### For Technicians & Field Engineers

@@ -71,7 +71,7 @@ supabase db push
 supabase functions deploy ai-gateway ai-troubleshoot analyze-triage-media
 
 # Deploy business automations
-supabase functions deploy review-hunter invoice-chaser billing
+supabase functions deploy review-hunter invoice-chaser webhook-dispatcher invite-user
 ```
 
 ## Step 6: Set Environment Variables in Supabase
@@ -100,8 +100,8 @@ We have standardized on an **AI Gateway** pattern to centralize model management
 
 Add these Edge Function secrets in Supabase (Settings → Environment Variables → Edge Function Secrets):
 
-- `XAI_API_KEY` – For Grok-2 Vision (Triage & Warranty).
-- `DEEPSEEK_API_KEY` – For DeepSeek-V3 (General Reasoning).
+- `XAI_API_KEY` – For Grok-2 and Grok-2 Vision (Triage & Warranty).
+- `DEEPSEEK_API_KEY` – For DeepSeek-Reasoner (General Reasoning & Physics).
 - `GROQ_API_KEY` – For Llama-3 (Fast Fallback).
 
 All functions (e.g., `ai-troubleshoot`) now call `ai-gateway` internally.
@@ -180,7 +180,8 @@ Once configured, the billing flow will work as follows:
 
 To ensure Technicians see only their assigned jobs WITHOUT recursive policy errors:
 
-1. **Non-Recursive Membership Check**: Use a simple look-up or join, avoid calling functions that query the same table.
-2. **Role-Based Policies**:
-   - `SELECT`: `(auth.uid() = technician_id) OR (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'))`
-3. **Session Verification**: Ensure the frontend `useSupabaseAuth` hook is initialized before fetching RLS-protected data to avoid 400 errors.
+1. **Non-Recursive Membership Check**: Use `get_my_company_id()` which is defined as `SECURITY DEFINER` to bypass recursion.
+2. **Standardized Role Check**: Use `get_my_role()` to enforce RBAC in `USING` clauses.
+3. **Role-Based Policies**:
+   - `SELECT` (Jobs): `(auth.uid() = technician_id) OR (get_my_role() IN ('admin', 'manager'))`
+4. **Metadata Isolation**: Use `get_my_company_metadata()` to allow non-owners to safely fetch branding without granting direct access to the `companies` table.

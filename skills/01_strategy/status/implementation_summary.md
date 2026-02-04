@@ -65,9 +65,14 @@
 - **Client portal integration** for self-service opt-outs
 
 ### 7. Native Automation Infrastructure
-- **Serverless Edge Functions** (`webhook-dispatcher`, `review-hunter`)
+- **Serverless Edge Functions** (`webhook-dispatcher`, `review-hunter`, `invoice-chaser`)
 - **Direct database access** for white-labeling and preference checks
 - **Resend & Telnyx** integration for multi-channel delivery
+
+### 8. Commercial Dashboards & Analytics
+- **Revenue at Risk**: Real-time aggregation of unpaid/overdue invoices.
+- **Lead Pipeline**: Visualizing triage-to-job conversion rates.
+- **Multi-Tenant Hardening**: Standardized RBAC policies for secure company isolation.
 
 ---
 
@@ -96,7 +101,9 @@ VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...
 STRIPE_SECRET_KEY=sk_test_...
 
 # AI / Vision
-OPENAI_API_KEY=sk-...
+XAI_API_KEY=xai-...
+DEEPSEEK_API_KEY=sk-...
+GROQ_API_KEY=gsk_...
 ```
 
 ## 🚀 Next Steps

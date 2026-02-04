@@ -34,3 +34,6 @@ supabase/.branches
 # Test results
 test-results/
 coverage/
+playwright-report/
+playwright/.auth/
+playwright/.auth/*.json

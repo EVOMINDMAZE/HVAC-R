@@ -66,9 +66,11 @@ export default {
           indigo: "#4338ca",
         },
         brand: {
-          blue: "#2563EB", // Royal Blue
-          red: "#DC2626",  // Bright Red
-          dark: "#0F172A", // Slate 900
+          orange: "#ea580c", // ThermoNeural Orange (Primary)
+          amber: "#f59e0b", // Amber (Secondary accent)
+          red: "#DC2626", // Bright Red (Alerts)
+          dark: "#0F172A", // Slate 900 (Backgrounds)
+          slate: "#334155", // Slate 700 (Text)
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

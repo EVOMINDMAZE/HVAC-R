@@ -85,3 +85,20 @@ This document details the functional and technical specifications for the four H
 *   **Logic:** Strict validation rules implementing EPA 40 CFR Part 82.
 *   **Reporting:** One-click "Export Compliance Log" CSV for auditors.
 
+---
+
+## 5. Weather-Based Intelligence & Selling Points Bot ⛈️
+**Concept:** "Selling with Science & Data."
+**Goal:** Transform passive maintenance into proactive, high-value replacement sales.
+
+### User Flow
+1.  **Ingest:** System fetches 7-day weather forecasts for tech/client service area.
+2.  **Filter:** AI cross-references incoming extreme temperatures with existing client asset data (Age > 10y, R-22 type).
+3.  **Alert:** Professional dashboard notification: "High probability of failure at Smith Residence - Heatwave incoming."
+4.  **Execute:** One-click generation of a "Pre-emptive Maintenance" proposal.
+
+### Technical Spec
+*   **APIs:** Open-Meteo (Weather/Geocoding).
+*   **Processing:** `analyze-selling-points` Edge Function.
+*   **Output:** Dynamic selling points injected into the Client Opportunities dashboard.
+

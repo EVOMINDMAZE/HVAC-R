@@ -16,7 +16,7 @@ import {
   Book,
   Users,
   Zap,
-  ArrowRight
+  ArrowRight,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -111,10 +111,11 @@ const faqs = [
     questions: [
       {
         question: "How do I troubleshoot cascade system convergence issues?",
-        answer: "Ensure your intermediate temperature guesses are reasonable and that the heat exchanger approach temperature is feasible (typically > 3-5K)."
-      }
-    ]
-  }
+        answer:
+          "Ensure your intermediate temperature guesses are reasonable and that the heat exchanger approach temperature is feasible (typically > 3-5K).",
+      },
+    ],
+  },
 ];
 
 const containerVariants = {
@@ -164,14 +165,14 @@ export function HelpCenter() {
     .filter((category) => category.questions.length > 0);
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-blue-500/30">
+    <div className="min-h-screen bg-background text-foreground selection:bg-orange-500/30">
       <Header variant="landing" />
 
       {/* Background Elements */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-500/10 blur-[100px] animate-pulse" />
-        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-purple-500/10 blur-[100px] animate-pulse delay-1000" />
-        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-indigo-500/10 blur-[100px] animate-pulse delay-2000" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-orange-500/10 blur-[100px] animate-pulse" />
+        <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-slate-500/10 blur-[100px] animate-pulse delay-1000" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-slate-500/10 blur-[100px] animate-pulse delay-2000" />
       </div>
 
       <main className="relative z-10 pt-24 pb-20 px-4">
@@ -183,12 +184,15 @@ export function HelpCenter() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16 max-w-3xl mx-auto"
           >
-            <Badge variant="outline" className="mb-6 border-blue-200 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800 backdrop-blur-sm">
+            <Badge
+              variant="outline"
+              className="mb-6 border-orange-200 bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800 backdrop-blur-sm"
+            >
               Help Center
             </Badge>
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
               How can we
-              <span className="bg-gradient-to-r from-blue-600 to-red-600 bg-clip-text text-transparent ml-3">
+              <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent ml-3">
                 help you?
               </span>
             </h1>
@@ -204,7 +208,7 @@ export function HelpCenter() {
                 placeholder="Search for answers, topics, or keywords..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 pr-4 py-7 text-lg border-primary/20 focus:border-blue-500 focus:ring-blue-500 rounded-2xl shadow-lg shadow-blue-500/5 bg-card/80 backdrop-blur-md"
+                className="pl-12 pr-4 py-7 text-lg border-primary/20 focus:border-orange-500 focus:ring-orange-500 rounded-2xl shadow-lg shadow-orange-500/5 bg-card/80 backdrop-blur-md"
               />
             </div>
           </motion.div>
@@ -215,12 +219,16 @@ export function HelpCenter() {
               <div className="sticky top-24 space-y-6">
                 <Card className="bg-card/50 backdrop-blur-md shadow-lg border-border overflow-hidden">
                   <CardHeader className="bg-muted/50 border-b border-border pb-4">
-                    <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Categories</CardTitle>
+                    <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                      Categories
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="p-2 space-y-1">
                     <Button
-                      variant={selectedCategory === null ? "secondary" : "ghost"}
-                      className={`w-full justify-start ${selectedCategory === null ? 'bg-primary/10 text-primary hover:bg-primary/20' : 'text-muted-foreground hover:bg-muted'}`}
+                      variant={
+                        selectedCategory === null ? "secondary" : "ghost"
+                      }
+                      className={`w-full justify-start ${selectedCategory === null ? "bg-primary/10 text-primary hover:bg-primary/20" : "text-muted-foreground hover:bg-muted"}`}
                       onClick={() => setSelectedCategory(null)}
                     >
                       All Topics
@@ -233,7 +241,7 @@ export function HelpCenter() {
                             ? "secondary"
                             : "ghost"
                         }
-                        className={`w-full justify-start text-left truncate ${selectedCategory === category.category ? 'bg-primary/10 text-primary hover:bg-primary/20' : 'text-muted-foreground hover:bg-muted'}`}
+                        className={`w-full justify-start text-left truncate ${selectedCategory === category.category ? "bg-primary/10 text-primary hover:bg-primary/20" : "text-muted-foreground hover:bg-muted"}`}
                         onClick={() => setSelectedCategory(category.category)}
                       >
                         {category.category}
@@ -242,14 +250,19 @@ export function HelpCenter() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg border-none">
+                <Card className="bg-gradient-to-br from-orange-600 to-slate-700 text-white shadow-lg border-none">
                   <CardContent className="p-6">
                     <h3 className="font-bold text-lg mb-2">Need More Help?</h3>
-                    <p className="text-blue-100 text-sm mb-4">Our engineering support team is standing by.</p>
+                    <p className="text-orange-100 text-sm mb-4">
+                      Our engineering support team is standing by.
+                    </p>
                     <Button
                       variant="secondary"
                       className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm"
-                      onClick={() => window.location.href = 'mailto:support@thermoneural.com'}
+                      onClick={() =>
+                        (window.location.href =
+                          "mailto:support@thermoneural.com")
+                      }
                     >
                       <Mail className="h-4 w-4 mr-2" />
                       Contact Support
@@ -280,19 +293,27 @@ export function HelpCenter() {
                         <CardContent className="p-0 divide-y divide-border">
                           {category.questions.map((faq, index) => {
                             const questionId = `${category.category}-${index}`;
-                            const isExpanded = expandedQuestions.has(questionId);
+                            const isExpanded =
+                              expandedQuestions.has(questionId);
 
                             return (
-                              <div key={index} className="group transition-colors bg-card/0 hover:bg-muted/30">
+                              <div
+                                key={index}
+                                className="group transition-colors bg-card/0 hover:bg-muted/30"
+                              >
                                 <button
                                   className="w-full p-6 text-left focus:outline-none"
                                   onClick={() => toggleQuestion(questionId)}
                                 >
                                   <div className="flex items-start justify-between gap-4">
-                                    <h3 className={`text-base font-medium transition-colors ${isExpanded ? 'text-primary' : 'text-foreground group-hover:text-primary'}`}>
+                                    <h3
+                                      className={`text-base font-medium transition-colors ${isExpanded ? "text-primary" : "text-foreground group-hover:text-primary"}`}
+                                    >
                                       {faq.question}
                                     </h3>
-                                    <div className={`mt-1 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
+                                    <div
+                                      className={`mt-1 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+                                    >
                                       {isExpanded ? (
                                         <ChevronUp className="h-5 w-5 text-primary" />
                                       ) : (
@@ -330,8 +351,12 @@ export function HelpCenter() {
                     <div className="bg-muted/30 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                       <Search className="h-6 w-6 text-muted-foreground" />
                     </div>
-                    <h3 className="text-lg font-medium text-foreground">No results found</h3>
-                    <p className="text-muted-foreground mt-2">Try adjusting your search terms.</p>
+                    <h3 className="text-lg font-medium text-foreground">
+                      No results found
+                    </h3>
+                    <p className="text-muted-foreground mt-2">
+                      Try adjusting your search terms.
+                    </p>
                   </div>
                 )}
               </motion.div>
@@ -340,7 +365,9 @@ export function HelpCenter() {
 
           {/* Resource Cards */}
           <div className="mt-24">
-            <h2 className="text-2xl font-bold text-center mb-12">Other Resources</h2>
+            <h2 className="text-2xl font-bold text-center mb-12">
+              Other Resources
+            </h2>
             <div className="grid md:grid-cols-3 gap-8">
               <ResourceCard
                 icon={<Book className="h-8 w-8 text-green-500" />}
@@ -350,7 +377,7 @@ export function HelpCenter() {
                 colorClass="green"
               />
               <ResourceCard
-                icon={<Users className="h-8 w-8 text-blue-500" />}
+                icon={<Users className="h-8 w-8 text-orange-500" />}
                 title="Community"
                 description="Connect with other engineers, share knowledge, and get advice."
                 action="Join Community"
@@ -375,29 +402,46 @@ export function HelpCenter() {
 // Helper Components
 function HashIcon({ category }: { category: string }) {
   let icon = <HelpCircle className="h-5 w-5 mr-2 text-primary" />;
-  if (category.includes("Account")) icon = <Users className="h-5 w-5 mr-2 text-primary" />;
-  if (category.includes("Calculation")) icon = <Zap className="h-5 w-5 mr-2 text-primary" />;
-  if (category.includes("Support") || category.includes("Troubleshooting")) icon = <Phone className="h-5 w-5 mr-2 text-primary" />;
+  if (category.includes("Account"))
+    icon = <Users className="h-5 w-5 mr-2 text-primary" />;
+  if (category.includes("Calculation"))
+    icon = <Zap className="h-5 w-5 mr-2 text-primary" />;
+  if (category.includes("Support") || category.includes("Troubleshooting"))
+    icon = <Phone className="h-5 w-5 mr-2 text-primary" />;
 
   return icon;
 }
 
-function ResourceCard({ icon, title, description, action, colorClass }: { icon: any, title: string, description: string, action: string, colorClass: string }) {
+function ResourceCard({
+  icon,
+  title,
+  description,
+  action,
+  colorClass,
+}: {
+  icon: any;
+  title: string;
+  description: string;
+  action: string;
+  colorClass: string;
+}) {
   const colorMap: Record<string, string> = {
     green: "hover:border-green-500/50 hover:shadow-green-500/20",
-    blue: "hover:border-blue-500/50 hover:shadow-blue-500/20",
-    amber: "hover:border-amber-500/50 hover:shadow-amber-500/20"
+    blue: "hover:border-orange-500/50 hover:shadow-orange-500/20",
+    amber: "hover:border-amber-500/50 hover:shadow-amber-500/20",
   };
 
   return (
-    <Card className={`bg-card/50 backdrop-blur-sm border-border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${colorMap[colorClass]} group`}>
+    <Card
+      className={`bg-card/50 backdrop-blur-sm border-border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${colorMap[colorClass]} group`}
+    >
       <CardContent className="p-8 text-center flex flex-col items-center h-full">
-        <div className={`p-4 rounded-2xl bg-${colorClass}-50 dark:bg-${colorClass}-900/10 mb-6 group-hover:scale-110 transition-transform duration-300`}>
+        <div
+          className={`p-4 rounded-2xl bg-${colorClass}-50 dark:bg-${colorClass}-900/10 mb-6 group-hover:scale-110 transition-transform duration-300`}
+        >
           {icon}
         </div>
-        <h3 className="text-xl font-bold text-foreground mb-3">
-          {title}
-        </h3>
+        <h3 className="text-xl font-bold text-foreground mb-3">{title}</h3>
         <p className="text-muted-foreground mb-8 leading-relaxed max-w-xs mx-auto">
           {description}
         </p>

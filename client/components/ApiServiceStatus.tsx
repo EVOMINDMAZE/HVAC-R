@@ -151,8 +151,8 @@ export function ApiServiceStatus() {
               cause calculations to fail.
             </p>
             <p className="text-red-700 text-xs mt-1">
-              The calculation service may be experiencing downtime. Please
-              try again later.
+              The calculation service may be experiencing downtime. Please try
+              again later.
             </p>
           </div>
         )}
@@ -201,16 +201,15 @@ export function ApiServiceStatus() {
         </div>
 
         {hasOfflineServices && (
-          <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
-            <p className="text-blue-800 text-sm font-medium">
+          <div className="mt-4 p-3 bg-orange-50 border border-orange-200 rounded-md">
+            <p className="text-orange-800 text-sm font-medium">
               💡 Troubleshooting Tips:
             </p>
-            <ul className="text-blue-700 text-xs mt-1 space-y-1">
+            <ul className="text-orange-700 text-xs mt-1 space-y-1">
               <li>• Check your internet connection</li>
               <li>• Try refreshing the page</li>
               <li>
-                • The service may be starting up (this can take 30-60
-                seconds)
+                • The service may be starting up (this can take 30-60 seconds)
               </li>
               <li>• If problems persist, contact support</li>
             </ul>

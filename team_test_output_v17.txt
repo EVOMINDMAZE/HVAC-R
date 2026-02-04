@@ -1,0 +1,378 @@
+
+Running 1 test using 1 worker
+
+Starting Login...
+[BROWSER debug]: [vite] connecting...
+[BROWSER debug]: [vite] connected.
+[BROWSER info]: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[BROWSER log]: 🛡️ Global error handler and JSON.parse monitor initialized
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION undefined
+[BROWSER log]: [AuthDebug] Auth State Change: SIGNED_IN admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+Login Successful
+Navigating to Team Settings...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER debug]: [vite] connecting...
+[BROWSER debug]: [vite] connected.
+[BROWSER info]: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[BROWSER log]: 🛡️ Global error handler and JSON.parse monitor initialized
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: false, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: false, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+[BROWSER log]: [AuthDebug] Auth State Change: SIGNED_IN admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER error]: Failed to load resource: the server responded with a status of 400 ()
+[BROWSER error]: Error fetching team {code: P0001, details: null, hint: null, message: DEBUG INFO: Role: admin, Company: 087da65b-4ea6-4d…ws: 1, User: e74f92ab-9c58-45d7-9a0c-4adbe6460f65}
+[BROWSER error]: Failed to load resource: the server responded with a status of 400 ()
+[BROWSER error]: Error fetching team {code: P0001, details: null, hint: null, message: DEBUG INFO: Role: admin, Company: 087da65b-4ea6-4d…ws: 1, User: e74f92ab-9c58-45d7-9a0c-4adbe6460f65}
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER error]: Failed to load resource: the server responded with a status of 400 ()
+[BROWSER error]: Error fetching team {code: P0001, details: null, hint: null, message: DEBUG INFO: Role: admin, Company: 087da65b-4ea6-4d…ws: 1, User: e74f92ab-9c58-45d7-9a0c-4adbe6460f65}
+[BROWSER error]: Failed to load resource: the server responded with a status of 400 ()
+[BROWSER error]: Error fetching team {code: P0001, details: null, hint: null, message: DEBUG INFO: Role: admin, Company: 087da65b-4ea6-4d…ws: 1, User: e74f92ab-9c58-45d7-9a0c-4adbe6460f65}
+[BROWSER error]: Failed to load resource: the server responded with a status of 400 ()
+[BROWSER error]: Error fetching team {code: P0001, details: null, hint: null, message: DEBUG INFO: Role: admin, Company: 087da65b-4ea6-4d…ws: 1, User: e74f92ab-9c58-45d7-9a0c-4adbe6460f65}
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+On Team Page
+Found 1 team members.
+Filling Invite Form...
+Sending Invite...
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER error]: Failed to load resource: the server responded with a status of 400 ()
+TEST FAILED AT URL: http://localhost:8087/settings/team
+  ✘  1 [chromium] › e2e/verify_team.spec.ts:3:1 › Verify Team Member Invitation and Visibility (18.6s)
+Starting Login...
+[BROWSER debug]: [vite] connecting...
+[BROWSER info]: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[BROWSER log]: 🛡️ Global error handler and JSON.parse monitor initialized
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+[BROWSER debug]: [vite] connected.
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION undefined
+[BROWSER log]: [AuthDebug] Auth State Change: SIGNED_IN admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+Login Successful
+Navigating to Team Settings...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [SignIn] Login successful, role: admin
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER warning]: You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
+[BROWSER debug]: [vite] connecting...
+[BROWSER debug]: [vite] connected.
+[BROWSER info]: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[BROWSER log]: 🛡️ Global error handler and JSON.parse monitor initialized
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: false, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: false, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+[BROWSER log]: [AuthDebug] Auth State Change: SIGNED_IN admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /settings/team, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+On Team Page
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+Found 0 team members.
+TEST FAILED AT URL: http://localhost:8087/settings/team
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER error]: Failed to load resource: the server responded with a status of 400 ()
+[BROWSER error]: Error fetching team {code: P0001, details: null, hint: null, message: DEBUG INFO: Role: admin, Company: 087da65b-4ea6-4d…ws: 1, User: e74f92ab-9c58-45d7-9a0c-4adbe6460f65}
+[BROWSER error]: Failed to load resource: the server responded with a status of 400 ()
+[BROWSER error]: Failed to load resource: the server responded with a status of 400 ()
+[BROWSER error]: Error fetching team {code: P0001, details: null, hint: null, message: DEBUG INFO: Role: admin, Company: 087da65b-4ea6-4d…ws: 1, User: e74f92ab-9c58-45d7-9a0c-4adbe6460f65}
+[BROWSER error]: Error fetching team {code: P0001, details: null, hint: null, message: DEBUG INFO: Role: admin, Company: 087da65b-4ea6-4d…ws: 1, User: e74f92ab-9c58-45d7-9a0c-4adbe6460f65}
+[BROWSER error]: Failed to load resource: the server responded with a status of 400 ()
+[BROWSER error]: Error fetching team {code: P0001, details: null, hint: null, message: DEBUG INFO: Role: admin, Company: 087da65b-4ea6-4d…ws: 1, User: e74f92ab-9c58-45d7-9a0c-4adbe6460f65}
+[BROWSER error]: Failed to load resource: the server responded with a status of 400 ()
+[BROWSER error]: Error fetching team {code: P0001, details: null, hint: null, message: DEBUG INFO: Role: admin, Company: 087da65b-4ea6-4d…ws: 1, User: e74f92ab-9c58-45d7-9a0c-4adbe6460f65}
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+  ✘  2 [chromium] › e2e/verify_team.spec.ts:3:1 › Verify Team Member Invitation and Visibility (retry #1) (1.7s)
+
+
+  1) [chromium] › e2e/verify_team.spec.ts:3:1 › Verify Team Member Invitation and Visibility ───────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByText('Invitation Sent')
+    Expected: visible
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByText('Invitation Sent')[22m
+
+
+      46 |
+      47 |         // 5. Verify Success Toast
+    > 48 |         await expect(page.getByText('Invitation Sent')).toBeVisible({ timeout: 15000 });
+         |                                                         ^
+      49 |         console.log('Invitation Sent Successfully');
+      50 |
+      51 |         // 6. Verify Member appears in list (optional but recommended)
+        at /Users/riad/hvacR/HVAC-R/e2e/verify_team.spec.ts:48:57
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/verify_team-Verify-Team-Member-Invitation-and-Visibility-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/verify_team-Verify-Team-Member-Invitation-and-Visibility-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/verify_team-Verify-Team-Member-Invitation-and-Visibility-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: > [32m0[39m
+    Received:   [31m0[39m
+
+      31 |
+      32 |         // In our case, after the fix, the admin should see themselves.
+    > 33 |         expect(memberCount).toBeGreaterThan(0);
+         |                             ^
+      34 |
+      35 |         // 4. Invite New Member
+      36 |         console.log('Filling Invite Form...');
+        at /Users/riad/hvacR/HVAC-R/e2e/verify_team.spec.ts:33:29
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/verify_team-Verify-Team-Member-Invitation-and-Visibility-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/verify_team-Verify-Team-Member-Invitation-and-Visibility-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/verify_team-Verify-Team-Member-Invitation-and-Visibility-chromium-retry1/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/verify_team-Verify-Team-Member-Invitation-and-Visibility-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/verify_team-Verify-Team-Member-Invitation-and-Visibility-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › e2e/verify_team.spec.ts:3:1 › Verify Team Member Invitation and Visibility ────────

@@ -91,8 +91,16 @@ function mdToHtml(md: string) {
     (m) => {
       const lines = m.trim().split("\n").filter(Boolean);
       if (lines.length < 2) return m;
-      const header = lines[0].replace(/^\||\|$/g, "").split("|").map((s) => s.trim());
-      const rows = lines.slice(2).map((l) => l.replace(/^\||\|$/g, "").split("|").map((s) => s.trim()));
+      const header = lines[0]
+        .replace(/^\||\|$/g, "")
+        .split("|")
+        .map((s) => s.trim());
+      const rows = lines.slice(2).map((l) =>
+        l
+          .replace(/^\||\|$/g, "")
+          .split("|")
+          .map((s) => s.trim()),
+      );
       const thead = `<thead class=\"bg-slate-50 dark:bg-slate-800 text-left text-foreground\"><tr>${header.map((h) => `<th class=\"px-3 py-2 font-semibold\">${h}</th>`).join("")}</tr></thead>`;
       const tbody = `<tbody>${rows.map((r) => `<tr>${r.map((c) => `<td class=\"px-3 py-2 border-t border-slate-200 dark:border-slate-700 text-foreground\">${c}</td>`).join("")}</tr>`).join("")}</tbody>`;
       return `<div class=\"overflow-auto my-4\"><table class=\"min-w-full border-collapse text-sm\">${thead}${tbody}</table></div>`;
@@ -106,29 +114,41 @@ function mdToHtml(md: string) {
   );
 
   // Bold and italic
-  out = out.replace(/\*\*(.*?)\*\*/gim, "<strong class=\"font-bold text-foreground\">$1</strong>");
-  out = out.replace(/\*(.*?)\*/gim, "<em class=\"italic\">$1</em>");
+  out = out.replace(
+    /\*\*(.*?)\*\*/gim,
+    '<strong class="font-bold text-foreground">$1</strong>',
+  );
+  out = out.replace(/\*(.*?)\*/gim, '<em class="italic">$1</em>');
 
   // Links
   out = out.replace(
     /\[([^\]]+)\]\(([^)]+)\)/gim,
-    '<a class=\"text-blue-600 dark:text-blue-400 underline\" href="$2" target=\"_blank\" rel=\"noreferrer\">$1</a>',
+    '<a class=\"text-orange-600 dark:text-orange-400 underline\" href="$2" target=\"_blank\" rel=\"noreferrer\">$1</a>',
   );
 
   // List replacements remain mostly the same structure but semantic classes
-  out = out.replace(/(^|\n)\d+\.\s+(.*)/gim, "$1<li class=\"text-foreground\">$2</li>");
+  out = out.replace(
+    /(^|\n)\d+\.\s+(.*)/gim,
+    '$1<li class="text-foreground">$2</li>',
+  );
   out = out.replace(/(<li>[\s\S]*?<\/li>)/gim, (m) => {
     return `<ol class=\"list-decimal ml-6 mt-2 marker:text-muted-foreground\">${m}</ol>`;
   });
 
-  out = out.replace(/(^|\n)-\s+(.*)/gim, "$1<li class=\"text-foreground\">$2</li>");
+  out = out.replace(
+    /(^|\n)-\s+(.*)/gim,
+    '$1<li class="text-foreground">$2</li>',
+  );
   out = out.replace(/(<li>[\s\S]*?<\/li>)/gim, (m) => {
     return `<ul class=\"list-disc list-inside ml-6 mt-2 marker:text-muted-foreground\">${m}</ul>`;
   });
 
   // Paragraphs
   out = out.replace(/\n{2,}/g, "\n\n");
-  const paragraphs = out.split(/\n\n/).map((p) => p.trim()).filter(Boolean);
+  const paragraphs = out
+    .split(/\n\n/)
+    .map((p) => p.trim())
+    .filter(Boolean);
   out = paragraphs
     .map((p) => {
       if (
@@ -316,19 +336,25 @@ export function DocsViewer({
           <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-800 sticky top-0 bg-white dark:bg-slate-900 z-10">
             <h2 className="text-xl font-bold text-foreground">{title}</h2>
             <div className="flex items-center gap-2">
-              <Button variant="ghost" onClick={onClose} className="hover:bg-slate-100 dark:hover:bg-slate-800">
+              <Button
+                variant="ghost"
+                onClick={onClose}
+                className="hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
                 <X className="h-4 w-4" />
               </Button>
             </div>
           </div>
           <div
             ref={contentRef}
-            className="p-6 prose prose-slate dark:prose-invert prose-lg max-w-none overflow-auto prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-blockquote:bg-slate-50 dark:prose-blockquote:bg-slate-800/50 prose-pre:bg-slate-900"
+            className="p-6 prose prose-slate dark:prose-invert prose-lg max-w-none overflow-auto prose-a:text-orange-600 dark:prose-a:text-orange-400 prose-blockquote:bg-slate-50 dark:prose-blockquote:bg-slate-800/50 prose-pre:bg-slate-900"
           >
             {loading ? (
               <div className="flex items-center justify-center py-20">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mr-4"></div>
-                <div className="text-gray-700 dark:text-gray-300">Loading article…</div>
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-orange-600 mr-4"></div>
+                <div className="text-gray-700 dark:text-gray-300">
+                  Loading article…
+                </div>
               </div>
             ) : (
               <div dangerouslySetInnerHTML={{ __html: content || "" }} />
@@ -340,12 +366,14 @@ export function DocsViewer({
           className="hidden lg:block col-span-1 border-l border-slate-200 dark:border-slate-800 p-4 overflow-auto bg-slate-50/50 dark:bg-slate-900/50"
           style={{ maxHeight: "90vh" }}
         >
-          <h4 className="text-sm font-semibold mb-2 text-foreground">On this page</h4>
+          <h4 className="text-sm font-semibold mb-2 text-foreground">
+            On this page
+          </h4>
           <nav className="space-y-1 text-sm">
             {headings.map((h) => (
               <button
                 key={h.id}
-                className={`w-full text-left truncate hover:text-blue-600 dark:hover:text-blue-400 py-1 text-sm transition-colors ${h.level > 2 ? "pl-4 text-muted-foreground" : "font-medium text-foreground"}`}
+                className={`w-full text-left truncate hover:text-orange-600 dark:hover:text-orange-400 py-1 text-sm transition-colors ${h.level > 2 ? "pl-4 text-muted-foreground" : "font-medium text-foreground"}`}
                 onClick={() => {
                   const el = contentRef.current?.querySelector(`#${h.id}`);
                   if (el)

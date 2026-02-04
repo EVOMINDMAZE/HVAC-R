@@ -94,14 +94,14 @@ export default function EstimateBuilder() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-slate-950 dark:to-slate-900 pb-12">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 pb-12">
       <PageContainer variant="standard" className="space-y-6">
         <div className="max-w-4xl mx-auto space-y-6">
           <div className="flex flex-col gap-2">
             <Button
               variant="ghost"
               className="w-fit pl-0 hover:bg-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-200"
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate("/dashboard")}
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Dashboard
@@ -110,7 +110,9 @@ export default function EstimateBuilder() {
               <h1 className="text-2xl md:text-3xl font-bold text-foreground">
                 Instant Estimate Builder
               </h1>
-              <Badge variant="outline" className="bg-white/50 backdrop-blur-sm">Preview</Badge>
+              <Badge variant="outline" className="bg-white/50 backdrop-blur-sm">
+                Preview
+              </Badge>
             </div>
           </div>
 
@@ -225,7 +227,7 @@ export default function EstimateBuilder() {
                   <div>${estimate.subtotal.toFixed(2)}</div>
                 </div>
               </div>
-              <div className="mt-4 p-4 rounded-lg border-2 border-blue-300 bg-blue-50 text-blue-900 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-300 font-bold text-lg">
+              <div className="mt-4 p-4 rounded-lg border-2 border-orange-300 bg-orange-50 text-orange-900 dark:bg-orange-900/30 dark:border-orange-800 dark:text-orange-300 font-bold text-lg">
                 Total: ${estimate.total.toFixed(2)}
               </div>
               <div className="mt-4">

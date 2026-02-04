@@ -1,0 +1,186 @@
+
+Running 1 test using 1 worker
+
+Starting Login...
+[BROWSER debug]: [vite] connecting...
+[BROWSER debug]: [vite] connected.
+[BROWSER info]: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[BROWSER log]: 🛡️ Global error handler and JSON.parse monitor initialized
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+Login Successful
+Navigating to Clients to create new client...
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER debug]: [vite] connecting...
+[BROWSER debug]: [vite] connected.
+[BROWSER info]: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[BROWSER log]: 🛡️ Global error handler and JSON.parse monitor initialized
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: false, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: false, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+TEST FAILED AT URL: http://localhost:8087/dashboard/clients
+  ✘  1 [chromium] › e2e/debug_job.spec.ts:3:1 › Debug Job Creation Visibility (16.9s)
+Starting Login...
+[BROWSER debug]: [vite] connecting...
+[BROWSER debug]: [vite] connected.
+[BROWSER info]: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[BROWSER log]: 🛡️ Global error handler and JSON.parse monitor initialized
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+Login Successful
+Navigating to Clients to create new client...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER debug]: [vite] connecting...
+[BROWSER debug]: [vite] connected.
+[BROWSER info]: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[BROWSER log]: 🛡️ Global error handler and JSON.parse monitor initialized
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: false, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: false, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+TEST FAILED AT URL: http://localhost:8087/dashboard/clients
+  ✘  2 [chromium] › e2e/debug_job.spec.ts:3:1 › Debug Job Creation Visibility (retry #1) (17.0s)
+
+
+  1) [chromium] › e2e/debug_job.spec.ts:3:1 › Debug Job Creation Visibility ────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByText('Client Management')
+    Expected: visible
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByText('Client Management')[22m
+
+
+      42 |
+      43 |         // Wait for page to fully load or timeout
+    > 44 |         await expect(page.getByText('Client Management')).toBeVisible({ timeout: 15000 });
+         |                                                           ^
+      45 |         console.log('On Clients Page');
+      46 |
+      47 |         // Click "Add New Client" or "Add Your First Client"
+        at /Users/riad/hvacR/HVAC-R/e2e/debug_job.spec.ts:44:59
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/debug_job-Debug-Job-Creation-Visibility-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/debug_job-Debug-Job-Creation-Visibility-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/debug_job-Debug-Job-Creation-Visibility-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByText('Client Management')
+    Expected: visible
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByText('Client Management')[22m
+
+
+      42 |         const addClientBtn = page.getByRole('button', { name: /Add.*Client/i }).first();
+      43 |         await addClientBtn.click();
+    > 44 |
+         | ^
+      45 |         await expect(page.getByRole('dialog')).toBeVisible();
+      46 |
+      47 |         const clientName = `Test Client ${Date.now()}`;
+        at /Users/riad/hvacR/HVAC-R/e2e/debug_job.spec.ts:44:59
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/debug_job-Debug-Job-Creation-Visibility-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/debug_job-Debug-Job-Creation-Visibility-chromium-retry1/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/debug_job-Debug-Job-Creation-Visibility-chromium-retry1/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/debug_job-Debug-Job-Creation-Visibility-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/debug_job-Debug-Job-Creation-Visibility-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › e2e/debug_job.spec.ts:3:1 › Debug Job Creation Visibility ─────────────────────────

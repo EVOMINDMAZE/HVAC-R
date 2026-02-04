@@ -408,7 +408,7 @@ export default function JobDetails() {
                     size="sm"
                     onClick={startRecording}
                     disabled={isTranscribing}
-                    className="border-blue-200 hover:bg-blue-50 dark:border-blue-800 dark:hover:bg-blue-950"
+                    className="border-orange-200 hover:bg-orange-50 dark:border-orange-800 dark:hover:bg-orange-950"
                   >
                     {isTranscribing ? (
                       <>
@@ -417,7 +417,7 @@ export default function JobDetails() {
                       </>
                     ) : (
                       <>
-                        <Mic className="w-4 h-4 mr-2 text-blue-500" />
+                        <Mic className="w-4 h-4 mr-2 text-orange-500" />
                         Add Voice Note
                       </>
                     )}

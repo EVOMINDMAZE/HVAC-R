@@ -1,0 +1,126 @@
+
+Running 1 test using 1 worker
+
+Starting Login...
+[BROWSER debug]: [vite] connecting...
+[BROWSER info]: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[BROWSER log]: 🛡️ Global error handler and JSON.parse monitor initialized
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+[BROWSER debug]: [vite] connected.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+Login Successful
+Navigating to Clients to create new client...
+[BROWSER debug]: [vite] connecting...
+[BROWSER debug]: [vite] connected.
+[BROWSER info]: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[BROWSER log]: 🛡️ Global error handler and JSON.parse monitor initialized
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: false, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: false, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+TEST FAILED AT URL: http://localhost:8087/dashboard/clients
+  ✘  1 [chromium] › e2e/debug_job.spec.ts:3:1 › Debug Job Creation Visibility (16.3s)
+Starting Login...
+[BROWSER debug]: [vite] connecting...
+[BROWSER debug]: [vite] connected.
+[BROWSER info]: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[BROWSER log]: 🛡️ Global error handler and JSON.parse monitor initialized
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+[BROWSER debug]: [vite] invalidate /client/hooks/useSupabaseAuth.tsx: Could not Fast Refresh ("useAuth" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react-swc#consistent-components-exports
+[BROWSER debug]: [vite] hot updated: /client/hooks/useSupabaseAuth.tsx
+[BROWSER debug]: [vite] hot updated: /client/global.css
+[BROWSER debug]: [vite] hot updated: /client/App.tsx
+[BROWSER debug]: [vite] hot updated: /client/global.css
+[BROWSER debug]: [vite] hot updated: /client/pages/SignIn.tsx
+[BROWSER debug]: [vite] hot updated: /client/pages/tech/JobBoard.tsx
+[BROWSER debug]: [vite] hot updated: /client/components/SubscriptionGuard.tsx
+[BROWSER debug]: [vite] hot updated: /client/components/Layout.tsx
+[BROWSER debug]: [vite] hot updated: /client/pages/SignUp.tsx
+[BROWSER debug]: [vite] hot updated: /client/components/Footer.tsx
+[BROWSER debug]: [vite] hot updated: /client/components/Sidebar.tsx
+[BROWSER debug]: [vite] hot updated: /client/components/Header.tsx
+[BROWSER debug]: [vite] hot updated: /client/components/JobSelector.tsx
+TEST FAILED AT URL: http://localhost:8087/signin
+  ✘  2 [chromium] › e2e/debug_job.spec.ts:3:1 › Debug Job Creation Visibility (retry #1) (16.0s)
+
+
+  1) [chromium] › e2e/debug_job.spec.ts:3:1 › Debug Job Creation Visibility ────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByText('Client Management')
+    Expected: visible
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 15000ms[22m
+    [2m  - waiting for getByText('Client Management')[22m
+
+
+      42 |
+      43 |         // Wait for page to fully load or timeout
+    > 44 |         await expect(page.getByText('Client Management')).toBeVisible({ timeout: 15000 });
+         |                                                           ^
+      45 |         console.log('On Clients Page');
+      46 |
+      47 |         // Click "Add New Client" or "Add Your First Client"
+        at /Users/riad/hvacR/HVAC-R/e2e/debug_job.spec.ts:44:59
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/debug_job-Debug-Job-Creation-Visibility-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/debug_job-Debug-Job-Creation-Visibility-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/debug_job-Debug-Job-Creation-Visibility-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Expected pattern: [32m/.*dashboard/[39m
+    Received string:  [31m"http://localhost:8087/signin"[39m
+    Timeout: 15000ms
+
+    Call log:
+    [2m  - Expect "toHaveURL" with timeout 15000ms[22m
+    [2m    19 × unexpected value "http://localhost:8087/signin"[22m
+
+
+      34 |         console.log('Navigating to Clients to create new client...');
+      35 |         await page.goto('/dashboard/clients');
+    > 36 |
+         | ^
+      37 |         // Wait for page to fully load or timeout
+      38 |         await expect(page.getByText('Client Management')).toBeVisible({ timeout: 15000 });
+      39 |         console.log('On Clients Page');
+        at /Users/riad/hvacR/HVAC-R/e2e/debug_job.spec.ts:36:28
+
+    Error: apiRequestContext._wrapApiCall: ENOENT: no such file or directory, open '/Users/riad/hvacR/HVAC-R/test-results/.playwright-artifacts-1/traces/59b7003b0049229943bb-eaf5dd6edf8000e50afd-retry1.trace'
+
+    Error: ENOENT: no such file or directory, open '/Users/riad/hvacR/HVAC-R/test-results/.playwright-artifacts-1/069b84543ead15e0af862fe95d7aec16.zip'
+
+    [31mTest timeout of 60000ms exceeded.[39m
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/debug_job-Debug-Job-Creation-Visibility-chromium-retry1/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/debug_job-Debug-Job-Creation-Visibility-chromium-retry1/error-context.md
+
+  1 failed
+    [chromium] › e2e/debug_job.spec.ts:3:1 › Debug Job Creation Visibility ─────────────────────────

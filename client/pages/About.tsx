@@ -21,7 +21,7 @@ const staggerContainer = {
 
 export function About() {
   const stats = [
-    { label: "Verified Models", value: "NIST", color: "text-blue-500" },
+    { label: "Verified Models", value: "NIST", color: "text-orange-500" },
     { label: "Validations", value: "100%", color: "text-emerald-500" },
     { label: "Global Standard", value: "SI/IP", color: "text-purple-500" },
   ];
@@ -45,20 +45,30 @@ export function About() {
             variants={staggerContainer}
           >
             <motion.div variants={fadeInUp}>
-              <Badge variant="outline" className="mb-6 border-orange-200 bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800 backdrop-blur-sm">
+              <Badge
+                variant="outline"
+                className="mb-6 border-orange-200 bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800 backdrop-blur-sm"
+              >
                 Our Mission
               </Badge>
             </motion.div>
 
-            <motion.h1 variants={fadeInUp} className="text-4xl md:text-6xl font-bold tracking-tight mb-8">
+            <motion.h1
+              variants={fadeInUp}
+              className="text-4xl md:text-6xl font-bold tracking-tight mb-8"
+            >
               Empowering the World's <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-red-600 to-amber-600">
                 Thermodynamic Innovation
               </span>
             </motion.h1>
 
-            <motion.p variants={fadeInUp} className="text-xl text-muted-foreground leading-relaxed">
-              We're dedicated to building the most accurate, accessible, and powerful tools for the next generation of HVAC&R engineers.
+            <motion.p
+              variants={fadeInUp}
+              className="text-xl text-muted-foreground leading-relaxed"
+            >
+              We're dedicated to building the most accurate, accessible, and
+              powerful tools for the next generation of HVAC&R engineers.
             </motion.p>
           </motion.div>
 
@@ -70,9 +80,18 @@ export function About() {
             className="grid grid-cols-2 md:grid-cols-3 gap-8 mb-24 max-w-3xl mx-auto"
           >
             {stats.map((stat, i) => (
-              <div key={i} className="text-center p-6 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 backdrop-blur-sm shadow-sm hover:shadow-lg transition-all duration-300">
-                <div className={`text-4xl md:text-5xl font-bold mb-2 ${stat.color}`}>{stat.value}</div>
-                <div className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{stat.label}</div>
+              <div
+                key={i}
+                className="text-center p-6 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 backdrop-blur-sm shadow-sm hover:shadow-lg transition-all duration-300"
+              >
+                <div
+                  className={`text-4xl md:text-5xl font-bold mb-2 ${stat.color}`}
+                >
+                  {stat.value}
+                </div>
+                <div className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                  {stat.label}
+                </div>
               </div>
             ))}
           </motion.div>
@@ -95,7 +114,10 @@ export function About() {
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground leading-relaxed text-lg">
-                      To provide HVAC&R engineers with unmatched tools for thermodynamic calculations. We simplify the complex, ensuring accuracy without compromising on speed or usability.
+                      To provide HVAC&R engineers with unmatched tools for
+                      thermodynamic calculations. We simplify the complex,
+                      ensuring accuracy without compromising on speed or
+                      usability.
                     </p>
                   </CardContent>
                 </Card>
@@ -116,7 +138,9 @@ export function About() {
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground leading-relaxed text-lg">
-                      A future where every refrigeration system is optimized for maximum efficiency and minimal environmental impact, powered by intelligent software.
+                      A future where every refrigeration system is optimized for
+                      maximum efficiency and minimal environmental impact,
+                      powered by intelligent software.
                     </p>
                   </CardContent>
                 </Card>
@@ -136,9 +160,24 @@ export function About() {
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
               {[
-                { icon: Users, title: "Engineering", desc: "Decades of combined field experience.", color: "orange" },
-                { icon: Award, title: "R&D", desc: "Pushing the boundaries of thermodynamic modeling.", color: "red" },
-                { icon: Target, title: "Product", desc: "Building intuitive interfaces for complex problems.", color: "amber" }
+                {
+                  icon: Users,
+                  title: "Engineering",
+                  desc: "Decades of combined field experience.",
+                  color: "orange",
+                },
+                {
+                  icon: Award,
+                  title: "R&D",
+                  desc: "Pushing the boundaries of thermodynamic modeling.",
+                  color: "red",
+                },
+                {
+                  icon: Target,
+                  title: "Product",
+                  desc: "Building intuitive interfaces for complex problems.",
+                  color: "amber",
+                },
               ].map((item, index) => (
                 <motion.div
                   key={index}
@@ -146,12 +185,20 @@ export function About() {
                   transition={{ type: "spring", stiffness: 300 }}
                   className="group relative"
                 >
-                  <div className={`absolute inset-0 bg-${item.color}-500/5 rounded-2xl transform rotate-1 group-hover:rotate-2 transition-transform duration-300`} />
+                  <div
+                    className={`absolute inset-0 bg-${item.color}-500/5 rounded-2xl transform rotate-1 group-hover:rotate-2 transition-transform duration-300`}
+                  />
                   <Card className="relative h-full bg-card border-border text-center overflow-hidden">
-                    <div className={`absolute top-0 inset-x-0 h-1 bg-${item.color}-500/50`} />
+                    <div
+                      className={`absolute top-0 inset-x-0 h-1 bg-${item.color}-500/50`}
+                    />
                     <CardContent className="p-8">
-                      <div className={`w-20 h-20 bg-${item.color}-100 dark:bg-${item.color}-900/20 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                        <item.icon className={`h-10 w-10 text-${item.color}-600 dark:text-${item.color}-400`} />
+                      <div
+                        className={`w-20 h-20 bg-${item.color}-100 dark:bg-${item.color}-900/20 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300`}
+                      >
+                        <item.icon
+                          className={`h-10 w-10 text-${item.color}-600 dark:text-${item.color}-400`}
+                        />
                       </div>
                       <h3 className="text-xl font-semibold mb-3">
                         {item.title}
@@ -177,27 +224,48 @@ export function About() {
 
             <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
               <div>
-                <h2 className="text-3xl md:text-5xl font-bold mb-6">Built on Trust & <br />Precision</h2>
+                <h2 className="text-3xl md:text-5xl font-bold mb-6">
+                  Built on Trust & <br />
+                  Precision
+                </h2>
                 <p className="text-slate-300 text-lg leading-relaxed mb-8">
-                  Our software isn't just a tool; it's a commitment to engineering integrity. We validate every model against NIST standards to ensure your calculations are field-ready.
+                  Our software isn't just a tool; it's a commitment to
+                  engineering integrity. We validate every model against NIST
+                  standards to ensure your calculations are field-ready.
                 </p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {[
-                  { title: "Accuracy", desc: "Verified against NIST standards." },
-                  { title: "Innovation", desc: "Cutting-edge solver algorithms." },
-                  { title: "Sustainability", desc: "Eco-friendly refrigerant focus." },
-                  { title: "Community", desc: "Built for engineers, by engineers." }
+                  {
+                    title: "Accuracy",
+                    desc: "Verified against NIST standards.",
+                  },
+                  {
+                    title: "Innovation",
+                    desc: "Cutting-edge solver algorithms.",
+                  },
+                  {
+                    title: "Sustainability",
+                    desc: "Eco-friendly refrigerant focus.",
+                  },
+                  {
+                    title: "Community",
+                    desc: "Built for engineers, by engineers.",
+                  },
                 ].map((val, i) => (
-                  <div key={i} className="bg-white/5 border border-white/10 p-6 rounded-xl hover:bg-white/10 transition-colors">
-                    <h4 className="text-lg font-bold text-orange-400 mb-2">{val.title}</h4>
+                  <div
+                    key={i}
+                    className="bg-white/5 border border-white/10 p-6 rounded-xl hover:bg-white/10 transition-colors"
+                  >
+                    <h4 className="text-lg font-bold text-orange-400 mb-2">
+                      {val.title}
+                    </h4>
                     <p className="text-sm text-slate-300">{val.desc}</p>
                   </div>
                 ))}
               </div>
             </div>
           </motion.div>
-
         </div>
       </main>
 

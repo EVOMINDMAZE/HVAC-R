@@ -1,0 +1,374 @@
+
+Running 1 test using 1 worker
+
+Starting Login...
+[BROWSER debug]: [vite] connecting...
+[BROWSER info]: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[BROWSER log]: 🛡️ Global error handler and JSON.parse monitor initialized
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+[BROWSER debug]: [vite] connected.
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION undefined
+[BROWSER log]: [AuthDebug] Auth State Change: SIGNED_IN admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+[BROWSER log]: useEffect triggered - user: false supabase: true
+[BROWSER log]: User not authenticated, clearing calculations
+Login Successful
+Navigating to Clients to create new client...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER debug]: [vite] connecting...
+[BROWSER debug]: [vite] connected.
+[BROWSER info]: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[BROWSER log]: 🛡️ Global error handler and JSON.parse monitor initialized
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: false, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: false, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+[BROWSER log]: [AuthDebug] Auth State Change: SIGNED_IN admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/clients, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/companies?select=id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/companies?select=id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/companies?select=id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/calculations?select=*&calculation_type=eq.project&order=created_at.desc
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/calculations?select=*&calculation_type=eq.project&order=created_at.desc
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/calculations?select=*&calculation_type=eq.project&order=created_at.desc
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/companies?select=id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65 -> 200
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/clients?select=*&company_id=eq.087da65b-4ea6-4d93-ba07-03ba6f88a7de&order=created_at.desc
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/calculations?select=*&calculation_type=eq.project&order=created_at.desc -> 200
+On Clients Page
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/companies?select=id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65 -> 200
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/clients?select=*&company_id=eq.087da65b-4ea6-4d93-ba07-03ba6f88a7de&order=created_at.desc
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/calculations?select=*&calculation_type=eq.project&order=created_at.desc -> 200
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/calculations?select=*&calculation_type=eq.project&order=created_at.desc -> 200
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/companies?select=id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65 -> 200
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/clients?select=*&company_id=eq.087da65b-4ea6-4d93-ba07-03ba6f88a7de&order=created_at.desc
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/clients?select=*&company_id=eq.087da65b-4ea6-4d93-ba07-03ba6f88a7de&order=created_at.desc -> 200
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/clients?select=*&company_id=eq.087da65b-4ea6-4d93-ba07-03ba6f88a7de&order=created_at.desc -> 200
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/clients?select=*&company_id=eq.087da65b-4ea6-4d93-ba07-03ba6f88a7de&order=created_at.desc -> 200
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: Checking for existing company for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/companies?select=id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/companies?select=id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65 -> 200
+[BROWSER log]: Creating client linked to company: 087da65b-4ea6-4d93-ba07-03ba6f88a7de
+[BROWSER log]: Client Payload: {name: Test Client 1770004698025, contact_email: client1770004698038@test.com, contact_phone: 555-0123, address: 123 Test St, company_id: 087da65b-4ea6-4d93-ba07-03ba6f88a7de}
+>> [NET REQUEST] POST https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/clients?columns=%22name%22%2C%22contact_email%22%2C%22contact_phone%22%2C%22address%22%2C%22company_id%22&select=*
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+>> [NET RESPONSE] POST https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/clients?columns=%22name%22%2C%22contact_email%22%2C%22contact_phone%22%2C%22address%22%2C%22company_id%22&select=* -> 201
+[BROWSER log]: Client created successfully: {id: db9ba8e0-82a0-473b-801e-f2b608c9c60e, company_id: 087da65b-4ea6-4d93-ba07-03ba6f88a7de, name: Test Client 1770004698025, contact_name: null, contact_phone: 555-0123}
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+Client Created Successfully
+Navigating to Dispatch...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER log]: [fetchUserRoleData] user_roles error: TypeError: Failed to fetch
+[BROWSER log]: [fetchUserRoleData] Falling back to companies...
+[BROWSER debug]: [vite] connecting...
+[BROWSER debug]: [vite] connected.
+[BROWSER info]: %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold
+[BROWSER log]: 🛡️ Global error handler and JSON.parse monitor initialized
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/dispatch, isAuthenticated: false, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/dispatch, isAuthenticated: false, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.
+[BROWSER warning]: ⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.
+[BROWSER log]: [AuthDebug] Auth State Change: SIGNED_IN admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/dispatch, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/dispatch, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/dispatch, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/dispatch, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/dispatch, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/dispatch, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/dispatch, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/dispatch, isAuthenticated: true, isLoading: true, role: null, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Loading...
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/dispatch, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/dispatch, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/dispatch, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: [ProtectedRouteDebug] Check: {path: /dashboard/dispatch, isAuthenticated: true, isLoading: false, role: admin, bypass: false}
+[BROWSER log]: [ProtectedRouteDebug] Access Granted.
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/jobs?select=*%2Cclient%3Aclients%28name%2Ccontact_phone%29%2Casset%3Aassets%28name%29&order=scheduled_at.asc
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=user_id%2Crole&role=in.%28technician%2Ctech%29
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/jobs?select=*%2Cclient%3Aclients%28name%2Ccontact_phone%29%2Casset%3Aassets%28name%29&order=scheduled_at.asc
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=user_id%2Crole&role=in.%28technician%2Ctech%29
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+[BROWSER log]: [AuthDebug] Auth State Change: INITIAL_SESSION admin@admin.com
+[BROWSER log]: [fetchUserRoleData] Starting for user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+[BROWSER log]: [fetchUserRoleData] Querying user_roles...
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/calculations?select=*&calculation_type=eq.project&order=created_at.desc
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/calculations?select=*&calculation_type=eq.project&order=created_at.desc
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/calculations?select=*&calculation_type=eq.project&order=created_at.desc
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/calculations?select=*&calculation_type=eq.project&order=created_at.desc -> 200
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=user_id%2Crole&role=in.%28technician%2Ctech%29 -> 200
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/calculations?select=*&calculation_type=eq.project&order=created_at.desc -> 200
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=user_id%2Crole&role=in.%28technician%2Ctech%29 -> 200
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/jobs?select=*%2Cclient%3Aclients%28name%2Ccontact_phone%29%2Casset%3Aassets%28name%29&order=scheduled_at.asc -> 200
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/calculations?select=*&calculation_type=eq.project&order=created_at.desc -> 200
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/jobs?select=*%2Cclient%3Aclients%28name%2Ccontact_phone%29%2Casset%3Aassets%28name%29&order=scheduled_at.asc -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+[BROWSER log]: Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1 -> 200
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+[BROWSER log]: [fetchUserRoleData] Found role in user_roles: admin
+Waiting for client list to populate...
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=user_id%2Crole&role=in.%28technician%2Ctech%29
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=company_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=user_id%2Crole&role=in.%28technician%2Ctech%29 -> 200
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=company_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65 -> 200
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/clients?select=id%2Cname%2Caddress&order=name.asc
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/clients?select=id%2Cname%2Caddress&order=name.asc -> 200
+Selected Client: Dummy Client
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/assets?select=id%2Cname&client_id=eq.bdb17c33-d176-4c46-bdfa-4c23a0259656
+Clicking Dispatch Job button...
+[BROWSER log]: [CreateJobDebug] handleSubmit started
+Clicked Dispatch Job button.
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/assets?select=id%2Cname&client_id=eq.bdb17c33-d176-4c46-bdfa-4c23a0259656 -> 200
+[BROWSER log]: [CreateJobDebug] EXPLICIT TECH ID: 
+>> [NET REQUEST] POST https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/jobs?select=*
+>> [NET RESPONSE] POST https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/jobs?select=* -> 201
+[BROWSER log]: [CreateJobDebug] Insertion successful: [Object]
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/jobs?select=*%2Cclient%3Aclients%28name%2Ccontact_phone%29%2Casset%3Aassets%28name%29&order=scheduled_at.asc
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/jobs?select=*%2Cclient%3Aclients%28name%2Ccontact_phone%29%2Casset%3Aassets%28name%29&order=scheduled_at.asc -> 200
+>> [NET REQUEST] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/jobs?select=*%2Cclient%3Aclients%28name%2Ccontact_phone%29%2Casset%3Aassets%28name%29&order=scheduled_at.asc
+>> [NET RESPONSE] GET https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/jobs?select=*%2Cclient%3Aclients%28name%2Ccontact_phone%29%2Casset%3Aassets%28name%29&order=scheduled_at.asc -> 200
+Job Creation Dialog Closed
+  ✓  1 [chromium] › e2e/debug_job.spec.ts:3:1 › Debug Job Creation Visibility (4.9s)
+
+  1 passed (5.7s)

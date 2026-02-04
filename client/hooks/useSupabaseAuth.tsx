@@ -109,51 +109,64 @@ export const useSupabaseAuth = () => {
   };
 
   const fetchUserRoleData = async (currentUser: User) => {
-
+    console.log('[fetchUserRoleData] Starting for user:', currentUser.id);
     if (!currentUser) return { role: null, companyId: null };
 
-    if (currentUser.email === 'admin@admin.com') {
-
-      // Use REAL Admin Company ID from DB: 087da65b-4ea6-4d93-ba07-03ba6f88a7de
-      return { role: 'admin' as UserRole, companyId: '087da65b-4ea6-4d93-ba07-03ba6f88a7de' };
-    }
-
-    // Hardcode for E2E Test Tech User to bypass potential RLS/RPC hangs
-    if (currentUser.email === 'tech@test.com') { // Removed ID check to avoid confusion
-
-      return { role: 'technician' as UserRole, companyId: '087da65b-4ea6-4d93-ba07-03ba6f88a7de' };
-    }
+    // Helper for timeout
+    const withTimeout = (promise: Promise<any>, timeoutMs: number = 10000) => {
+      return Promise.race([
+        promise,
+        new Error('Timeout after ' + timeoutMs + 'ms')
+      ]);
+    };
 
     try {
-      // Direct Table Query (Skip RPCs as they confuse the test/dont exist)
-
-      const { data: roleData, error: tableError } = await supabase
+      console.log('[fetchUserRoleData] Querying user_roles...');
+      const rolePromise = supabase
         .from('user_roles')
         .select('role, company_id')
         .eq('user_id', currentUser.id)
-        .single();
+        .limit(1);
 
+      const result = await Promise.race([
+        rolePromise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error('DB Timeout')), 10000))
+      ]) as any;
 
+      const { data: roleData, error: tableError } = result;
 
-      if (roleData) {
-        return { role: roleData.role as UserRole, companyId: roleData.company_id };
+      if (tableError) console.log('[fetchUserRoleData] user_roles error:', tableError.message);
+
+      if (roleData && roleData.length > 0) {
+        console.log('[fetchUserRoleData] Found role in user_roles:', roleData[0].role);
+        return { role: roleData[0].role as UserRole, companyId: roleData[0].company_id };
       }
 
-      const { data: companyData } = await supabase
+      console.log('[fetchUserRoleData] Falling back to companies...');
+      const companyPromise = supabase
         .from('companies')
         .select('id')
         .eq('user_id', currentUser.id)
         .limit(1);
 
-      if (companyData && companyData.length > 0) {
+      const compResult = await Promise.race([
+        companyPromise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error('DB Timeout')), 10000))
+      ]) as any;
 
+      const { data: companyData, error: companyError } = compResult;
+
+      if (companyError) console.log('[fetchUserRoleData] companies error:', companyError.message);
+
+      if (companyData && companyData.length > 0) {
+        console.log('[fetchUserRoleData] Found ownership in companies:', companyData[0].id);
         return { role: 'admin' as UserRole, companyId: companyData[0].id };
       }
     } catch (err) {
-      console.error('[fetchUserRoleData] Table fetch error:', err);
+      console.error('[fetchUserRoleData] Table fetch catch error:', err);
     }
 
-
+    console.log('[fetchUserRoleData] No role found, returning null');
     return { role: null, companyId: null };
   };
 
@@ -219,20 +232,22 @@ export const useSupabaseAuth = () => {
 
     initializeSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('[AuthDebug] Auth State Change:', event, session?.user?.email);
       setSession(session);
       setUser(session?.user ?? null);
 
       if (session?.user) {
-        const { role, companyId } = await fetchUserRoleData(session.user);
-        setRole(role);
-        setCompanyId(companyId);
+        fetchUserRoleData(session.user).then(({ role, companyId }) => {
+          setRole(role);
+          setCompanyId(companyId);
+          setIsLoading(false);
+        });
       } else {
         setRole(null);
         setCompanyId(null);
+        setIsLoading(false);
       }
-      setIsLoading(false);
     });
 
     return () => {

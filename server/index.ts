@@ -52,16 +52,14 @@ export function createServer() {
 
   // Middleware
   // Configure CORS origins.
-  const defaultAllowed =
-    process.env.NODE_ENV === "production"
-      ? [
-          "https://173ba54839db44079504686aa5642124-7d4f8c681adb406aa7578b14f.fly.dev",
-        ]
-      : [
-          "http://localhost:8080",
-          "http://localhost:3000",
-          "http://localhost:8081",
-        ];
+  const defaultAllowed = [
+    "https://173ba54839db44079504686aa5642124-7d4f8c681adb406aa5642124-7d4f8c681adb406aa7578b14f.fly.dev",
+    "http://localhost:8080",
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:8081",
+    "http://localhost:5173",
+  ];
 
   const envList = process.env.ALLOWED_CORS_ORIGINS
     ? process.env.ALLOWED_CORS_ORIGINS.split(",")
@@ -113,6 +111,10 @@ export function createServer() {
       return res.status(401).json({ error: "Authentication required" });
     // Heuristic: JWTs have at least two dots
     if ((token.match(/\./g) || []).length >= 2) {
+      return authenticateSupabaseToken(req, res, next);
+    }
+    // If Supabase is configured, treat all tokens as Supabase JWTs (might be missing dots due to encoding?)
+    if (process.env.VITE_SUPABASE_URL) {
       return authenticateSupabaseToken(req, res, next);
     }
     return authenticateToken(req, res, next);

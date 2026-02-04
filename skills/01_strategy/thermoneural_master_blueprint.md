@@ -28,7 +28,7 @@ This document serves as the **single source of truth** for the ThermoNeural plat
 ## 3. Functional Ecosystem (The "What") 🛠️
 
 ### A. The Physics Engine (Calculators) 🌡️
-*Powered by a custom TypeScript Thermodynamics Library.*
+*Powered by a Hybrid Architecture: TypeScript UI + Python/CoolProp on Render.*
 
 1.  **Standard Vapor Compression Cycle:**
     *   **Inputs:** Pressure (PSIG), Saturation Temp, Line Temp.
@@ -54,7 +54,7 @@ This document serves as the **single source of truth** for the ThermoNeural plat
 
 1.  **Context Strategy (The "Medical Record"):**
     *   **Job System:** Technicians "Check In" to a Job (e.g., "Smith Residence").
-    *   **Data Linking:** Every subsequent calculation is Foreign-Keyed to that `project_id`.
+    *   **Data Linking:** Every subsequent calculation is Foreign-Keyed to that `job_id`.
 2.  **Automated Warranty Claims (The "Cash Finder") 🛡️:**
     *   **Scanner:** OCR scans of Nameplate -> Auto-lookup of Warranty Status.
     *   **Claim Bot:** Auto-generates the claim PDF for Manufacturer submission.
@@ -69,11 +69,13 @@ This document serves as the **single source of truth** for the ThermoNeural plat
     *   **Value:** A tangible PDF the tech can sell to the homeowner ($50-$100).
 5.  **Invoice Management & Billing:**
     *   **Features:** One-click invoice generation from Job context.
+    *   **Reporting:** One-click "Export Compliance Log" CSV for auditors.
     *   **Automation:** Integrated "Invoice Chaser" to automate follow-ups for unpaid builds.
     *   **Value:** Direct path from "Fix" to "Cash".
-6.  **Professional Estimator:**
-    *   **Builder:** Drag-and-drop line items for parts and labor.
-    *   **Output:** Professional PDF Quotes with Company Branding.
+7.  **Weather-Based Intelligence & Selling Points Bot:**
+    *   **Alerts**: Incoming heatwave (>90°F) alerts for clients with aging or vulnerable equipment.
+    *   **Proactive Sales**: Automatic identification of R-22 replacement opportunities.
+    *   **Value**: Automated service lead generation based on external data.
 
 ### C. The Customer Experience Layer (AI) 🤖
 *Bridging the gap between Homeowner and Technician.*
@@ -86,7 +88,8 @@ This document serves as the **single source of truth** for the ThermoNeural plat
     *   **Format:** TikTok-style technical guides.
     *   **Content:** "A2L Safety", "EPA Updates", "Troubleshooting".
 3.  **AI Diagnostics Assistant:**
-    *   **Persona:** "The Master Tech in your pocket" (RAG manual lookup).
+    *   **Implementation:** LLM-driven via the **AI Gateway** (DeepSeek/Grok).
+    *   **Persona:** "The Master Tech in your pocket" (Technical troubleshooting & diagnostics).
 
 ---
 
@@ -115,7 +118,8 @@ This document serves as the **single source of truth** for the ThermoNeural plat
 
 ### Key Database Tables
 *   `companies`: Tenant profiles (Branding colors, logos).
-*   `projects` (or `jobs`): The core "Context" unit.
+*   `jobs`: The core "Context" unit.
+*   `user_roles`: RBAC assignments (Owner, Admin, Manager, Tech, Client).
 *   `calculations`: JSONB storage of physics inputs/results.
 *   `licenses`: Managing User Access tiers.
 *   `integrations`: Storing OAuth tokens for Smart Home providers.
@@ -126,10 +130,30 @@ This document serves as the **single source of truth** for the ThermoNeural plat
 
 ---
 
+## 4.5. Multi-Tenant Security (RBAC) 🛡️
+
+ThermoNeural uses a robust **Standardized RBAC Tier** system via PostgreSQL Row Level Security (RLS).
+
+### Access Tiers:
+- **Owner**: Full access to company billing, developer settings, and all data.
+- **Admin**: Full operational access to company data (Jobs, Clients, Team).
+- **Manager**: View/Manage all jobs and team members within their specific company.
+- **Tech / Technician**: View assigned jobs, update job status, and perform calculations.
+- **Student**: Access to training tools and calculators; no commercial job access.
+- **Client**: View their own job history and asset telemetry.
+
+### Security Helpers:
+- `get_my_company_id()`: Securely resolves the company ID for the session.
+- `get_my_role()`: Resolves the current user's role without RLS recursion.
+- `get_my_company_metadata()`: Exposed RPC for non-owners to fetch white-labeling data securely.
+
+---
+
 ## 5. Design Language & UX 🎨
 
-**Theme:** "Glassmorphic Industrial"
-*   **Visuals:** Dark Mode standard. Frosted glass panels (`backdrop-blur-md`). Neon accent colors (Blue for Cooling, Red for Heating, Green for Efficiency).
+**Theme:** "Glassmorphic Industrial" (The "Office" Standard)
+*   **Visuals:** Dark Mode standard. Frosted glass panels (`backdrop-blur-xl`). Neon accent colors (Blue for Cooling, Red for Heating, Green for Efficiency).
+*   **Dropdowns/Popovers:** Neutral slate highlights (`hover:bg-slate-800/50`) to avoid accent color fatigue.
 *   **Interaction:**
     *   **Haptic Feedback:** Sliders snap to common values.
     *   **Feedback:** Toast notifications for every "Save" (Gamification reward).

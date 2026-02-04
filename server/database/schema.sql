@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS users (
     subscription_plan TEXT DEFAULT 'free',
     subscription_status TEXT DEFAULT 'active',
     trial_ends_at DATETIME,
+    preferences TEXT DEFAULT '{}',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -68,6 +69,79 @@ INSERT OR REPLACE INTO subscription_plans (name, display_name, price_monthly, pr
 ('free', 'Free', 0.00, 0.00, 10, '["Basic calculations", "Email support", "Standard cycle analysis"]'),
 ('professional', 'Professional', 29.99, 299.99, 500, '["All calculation types", "Priority support", "Export capabilities", "Calculation history", "Advanced analysis"]'),
 ('enterprise', 'Enterprise', 99.99, 999.99, -1, '["Unlimited calculations", "24/7 support", "Custom integrations", "Team collaboration", "Advanced reporting", "API access"]');
+
+-- User roles table
+CREATE TABLE IF NOT EXISTS user_roles (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    role TEXT NOT NULL,
+    company_id INTEGER,
+    client_id INTEGER,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
+-- Companies table
+CREATE TABLE IF NOT EXISTS companies (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    user_id INTEGER NOT NULL,
+    seat_limit INTEGER DEFAULT 5,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
+-- Clients table
+CREATE TABLE IF NOT EXISTS clients (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    company_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    contact_name TEXT,
+    contact_phone TEXT,
+    contact_email TEXT,
+    address TEXT,
+    notes TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (company_id) REFERENCES companies (id) ON DELETE CASCADE
+);
+
+-- Assets table
+CREATE TABLE IF NOT EXISTS assets (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    client_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    type TEXT,
+    model TEXT,
+    serial TEXT,
+    location TEXT,
+    installation_date DATETIME,
+    warranty_expires DATETIME,
+    notes TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (client_id) REFERENCES clients (id) ON DELETE CASCADE
+);
+
+-- Jobs table
+CREATE TABLE IF NOT EXISTS jobs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    company_id INTEGER NOT NULL,
+    client_id INTEGER NOT NULL,
+    asset_id INTEGER,
+    title TEXT NOT NULL,
+    description TEXT,
+    status TEXT DEFAULT 'pending',
+    priority TEXT DEFAULT 'normal',
+    technician_id INTEGER,
+    scheduled_at DATETIME,
+    completed_at DATETIME,
+    notes TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (company_id) REFERENCES companies (id) ON DELETE CASCADE,
+    FOREIGN KEY (client_id) REFERENCES clients (id) ON DELETE CASCADE,
+    FOREIGN KEY (asset_id) REFERENCES assets (id) ON DELETE SET NULL,
+    FOREIGN KEY (technician_id) REFERENCES users (id) ON DELETE SET NULL
+);
 
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);

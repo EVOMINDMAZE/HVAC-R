@@ -7,7 +7,7 @@ This document is the **Single Source of Truth** for the Smart Asset Integration 
 ## 🎯 The Objective
 To connect HVAC/R equipment data streams to our platform so we can:
 1.  **Monitor Health:** See real-time temperatures and pressures.
-2.  **Alert:** WhatsApp/SMS warnings when things break.
+2.  **Alert:** WhatsApp/SMS warnings when things break (via Supabase Edge Functions).
 3.  **Analyze:** Use AI to predict failures.
 
 ## 🧩 The Challenge
@@ -79,13 +79,13 @@ We support two strict workflows. We deliberately ignore complex "hub" setups in 
 ### Step 2: The Invite Workflow (Completed)
 - [x] Create Database Webhook (Supabase -> Edge Function).
     - **Target**: `webhook-dispatcher`
-    - **Trigger**: INSERT on `workflow_requests`.
+    - **Trigger**: UPDATE on `jobs` or manual trigger.
 - [x] Configure Resend Integration.
     - [x] API Key set in Supabase Secrets.
     - [x] Branded email templates designed in `_shared/templates`.
 
-### Step 3: Provider Integrations (Phase 2 - Real Integration)
-**Goal:** Replace simulations with production OAuth handlers.
+### Step 3: Provider Integrations (Active)
+**Goal:** Production OAuth handlers live for major providers.
 
 #### 3A. The "Triad" Strategy 🔑
 - [x] **2. Google Nest** (✅ LIVE & TESTED)

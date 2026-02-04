@@ -222,6 +222,36 @@ function initializePreparedStatements() {
     billingDb.markEventProcessed = db.prepare(`
       UPDATE billing_events SET processed = TRUE WHERE stripe_event_id = ?
     `);
+
+    // Team management operations
+    teamDb.getByCompanyId = db.prepare(`
+      SELECT ur.user_id, ur.role, u.email 
+      FROM user_roles ur 
+      LEFT JOIN users u ON ur.user_id = u.id 
+      WHERE ur.company_id = ?
+    `);
+
+    teamDb.getByUserId = db.prepare(`
+      SELECT * FROM user_roles WHERE user_id = ?
+    `);
+
+    teamDb.createOrUpdate = db.prepare(`
+      INSERT OR REPLACE INTO user_roles (user_id, role, company_id, client_id) 
+      VALUES (?, ?, ?, ?)
+    `);
+
+    teamDb.updateRole = db.prepare(`
+      UPDATE user_roles SET role = ? WHERE user_id = ?
+    `);
+
+    teamDb.deleteByUserId = db.prepare(`
+      DELETE FROM user_roles WHERE user_id = ?
+    `);
+
+    teamDb.countByCompanyId = db.prepare(`
+      SELECT COUNT(*) as count FROM user_roles 
+      WHERE company_id = ? AND role IN ('admin', 'manager', 'tech')
+    `);
   } catch (error) {
     console.error("Failed to initialize prepared statements:", error);
     throw error;
@@ -327,6 +357,16 @@ export const billingDb = {
   createEvent: null as any,
   findEventById: null as any,
   markEventProcessed: null as any,
+};
+
+// Team operations
+export const teamDb = {
+  getByCompanyId: null as any,
+  getByUserId: null as any,
+  createOrUpdate: null as any,
+  updateRole: null as any,
+  deleteByUserId: null as any,
+  countByCompanyId: null as any,
 };
 
 // Initialize database lazily when first needed

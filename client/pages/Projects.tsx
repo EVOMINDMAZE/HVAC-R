@@ -62,8 +62,8 @@ export default function Projects() {
       <div className="space-y-6">
         <Button
           variant="ghost"
-          className="mb-2 pl-0 hover:bg-transparent hover:text-blue-600 dark:hover:text-blue-400"
-          onClick={() => navigate('/dashboard')}
+          className="mb-2 pl-0 hover:bg-transparent hover:text-orange-600 dark:hover:text-orange-400"
+          onClick={() => navigate("/dashboard")}
         >
           <ArrowLeft className="w-4 h-4 mr-2" /> Back
         </Button>
@@ -142,7 +142,10 @@ export default function Projects() {
               ) : (
                 <div className="space-y-3">
                   {projects.map((p) => (
-                    <div key={p.id} className="p-3 rounded border bg-card dark:border-slate-700">
+                    <div
+                      key={p.id}
+                      className="p-3 rounded border bg-card dark:border-slate-700"
+                    >
                       <div className="flex items-center justify-between">
                         <div className="font-semibold truncate">
                           {p.name || p.inputs?.name || "Project"}

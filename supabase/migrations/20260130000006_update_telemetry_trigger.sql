@@ -5,10 +5,10 @@ DECLARE
     triggered BOOLEAN;
     alert_msg TEXT;
     
-    -- Variables for Queue Insertion
+    -- Variables for Queue Insertion (Edge Functions handle automations)
     asset_owner_id UUID;
     client_phone TEXT;
-    member_n8n_url TEXT;
+    webhook_target_url TEXT;
 BEGIN
     -- Loop through active rules for this asset
     FOR rule IN 
@@ -41,22 +41,22 @@ BEGIN
             INSERT INTO public.rules_alerts (rule_id, asset_id, reading_id, message, severity, status)
             VALUES (rule.id, NEW.asset_id, NEW.id, alert_msg, 'mod', 'new');
             
-            -- 2. Fetch Context (Owner, Phone, and N8N Config)
+            -- 2. Fetch Context (Owner and Phone for Edge Function processing)
             SELECT 
                 co.user_id, 
                 cl.contact_phone,
-                co.n8n_config->>'webhook_url'
+                NULL::TEXT -- Webhook URL no longer needed, Edge Functions handle routing
             INTO 
                 asset_owner_id, 
                 client_phone,
-                member_n8n_url
+                webhook_target_url
             FROM public.assets a
             JOIN public.clients cl ON a.client_id = cl.id
             JOIN public.companies co ON cl.company_id = co.id
             WHERE a.id = NEW.asset_id;
 
-            -- 3. Trigger n8n via Queue (workflow_requests)
-            -- This inserts a row, which Supabase Webhook sends to n8n
+            -- 3. Queue automation request for Edge Functions (webhook-dispatcher)
+            -- This inserts a row, which triggers Supabase Edge Functions
             IF asset_owner_id IS NOT NULL THEN
                 -- Default phone fallback if missing
                 IF client_phone IS NULL THEN
@@ -70,7 +70,7 @@ BEGIN
                     input_payload
                 ) VALUES (
                     asset_owner_id,
-                    'whatsapp_alert', -- Matches n8n Switch Node
+                    'whatsapp_alert', -- Processed by webhook-dispatcher Edge Function
                     'pending',
                     jsonb_build_object(
                         'phone', client_phone,
@@ -78,7 +78,7 @@ BEGIN
                         'asset_id', NEW.asset_id,
                         'reading_value', NEW.value,
                         'timestamp', NOW(),
-                        'target_webhook_url', member_n8n_url -- Crucial for Routing
+                        'target_webhook_url', webhook_target_url -- Reserved for future custom webhook support
                     )
                 );
             END IF;

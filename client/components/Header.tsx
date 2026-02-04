@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Calculator, User, Menu, X, Flame, ArrowLeft } from "lucide-react";
 import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
@@ -47,7 +46,8 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
   }, [variant]);
 
   // Show back button on any page that is not Landing or Dashboard
-  const showBackButton = location.pathname !== "/" && location.pathname !== "/dashboard";
+  const showBackButton =
+    location.pathname !== "/" && location.pathname !== "/dashboard";
   const isNative = Capacitor.isNativePlatform();
 
   const handleSignOut = async () => {
@@ -78,14 +78,18 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
 
     return (
       <div
-        className={`bg-background/90 backdrop-blur-sm shadow-sm transition-colors z-50 relative ${isNative ? 'pt-safe-hard' : ''}`}
+        className={`bg-background/90 backdrop-blur-sm shadow-sm transition-colors z-50 relative ${isNative ? "pt-safe-hard" : ""}`}
         style={{
-          paddingTop: isNative ? "60px" : undefined
+          paddingTop: isNative ? "60px" : undefined,
         }}
       >
         <div className="max-w-[1600px] mx-auto px-4 py-4">
-          <div className={`${isNative ? 'flex flex-col gap-4' : 'flex items-center justify-between gap-4'}`}>
-            <div className={`${isNative ? 'w-full flex justify-center border-b border-border/10 pb-4' : 'flex items-center gap-4 min-w-0'}`}>
+          <div
+            className={`${isNative ? "flex flex-col gap-4" : "flex items-center justify-between gap-4"}`}
+          >
+            <div
+              className={`${isNative ? "w-full flex justify-center border-b border-border/10 pb-4" : "flex items-center gap-4 min-w-0"}`}
+            >
               {!isNative && showBackButton && (
                 <Button
                   variant="ghost"
@@ -98,11 +102,14 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 </Button>
               )}
 
-              <Link to="/dashboard" className="flex items-center gap-3 hover:opacity-90 transition-opacity py-1 shrink-0">
+              <Link
+                to="/dashboard"
+                className="flex items-center gap-3 hover:opacity-90 transition-opacity py-1 shrink-0"
+              >
                 <img
                   src="/logo-landscape.png"
                   alt="ThermoNeural"
-                  className={`${isNative ? 'h-12 w-auto' : 'h-10 md:h-12 w-auto'} object-contain mix-blend-multiply dark:mix-blend-screen dark:invert`}
+                  className={`${isNative ? "h-12 w-auto" : "h-10 md:h-12 w-auto"} object-contain mix-blend-multiply dark:mix-blend-screen dark:invert`}
                 />
               </Link>
 
@@ -115,7 +122,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 <div className="relative">
                   <input
                     placeholder="Search calculations, projects or tools..."
-                    className="w-48 md:w-96 rounded-md border border-input bg-background px-4 py-2 text-sm focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900 transition-colors"
+                    className="w-48 md:w-96 rounded-md border border-input bg-background px-4 py-2 text-sm focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-900 transition-colors"
                   />
                   <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
                     ⌘K
@@ -124,8 +131,9 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               </div>
             </div>
 
-            <div className={`${isNative ? 'w-full flex items-center justify-between px-2' : 'flex items-center gap-3'}`}>
-
+            <div
+              className={`${isNative ? "w-full flex items-center justify-between px-2" : "flex items-center gap-3"}`}
+            >
               {/* Native Mobile: Back Button on the left of the bottom row */}
               {isNative && (
                 <div className="flex-1">
@@ -139,7 +147,9 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                       <ArrowLeft className="h-5 w-5" />
                       Back
                     </Button>
-                  ) : <div />}
+                  ) : (
+                    <div />
+                  )}
                 </div>
               )}
 
@@ -147,8 +157,10 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 {/* Header horizontal nav intentionally hidden for dashboard to avoid duplication with Sidebar */}
               </nav>
 
-              <div className={`${isNative ? 'flex items-center gap-4' : 'flex items-center mr-2'}`}>
-                <div className={isNative ? '' : 'hidden md:block mr-2'}>
+              <div
+                className={`${isNative ? "flex items-center gap-4" : "flex items-center mr-2"}`}
+              >
+                <div className={isNative ? "" : "hidden md:block mr-2"}>
                   <ModeToggle />
                 </div>
 
@@ -207,18 +219,15 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                     {isAvatarOpen && (
                       <div
                         role="menu"
-                        className="absolute right-0 mt-2 w-40 bg-card border border-border rounded-md shadow-lg z-[9999] transition-colors"
+                        className="absolute right-0 mt-2 w-40 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-md shadow-lg z-[9999] transition-colors"
                       >
-                        {/* We need to include the inner content to replace it correctly or just not match the inner content.
-                             The TargetContent includes `isAvatarOpen && (...)`. I should include it.
-                          */}
                         <nav className="flex flex-col p-2">
                           <Link
                             to="/profile"
                             onClick={() => setIsAvatarOpen(false)}
                             role="menuitem"
                             tabIndex={0}
-                            className="px-3 py-2 text-sm text-foreground hover:bg-secondary rounded transition-colors"
+                            className="px-3 py-2 text-sm text-foreground hover:bg-slate-50 dark:hover:bg-slate-800 rounded transition-colors"
                           >
                             Profile
                           </Link>
@@ -227,7 +236,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                             onClick={() => setIsAvatarOpen(false)}
                             role="menuitem"
                             tabIndex={0}
-                            className="px-3 py-2 text-sm text-foreground hover:bg-secondary rounded transition-colors"
+                            className="px-3 py-2 text-sm text-foreground hover:bg-slate-50 dark:hover:bg-slate-800 rounded transition-colors"
                           >
                             Settings
                           </Link>
@@ -237,7 +246,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                               handleSignOut();
                             }}
                             role="menuitem"
-                            className="text-left px-3 py-2 text-sm text-destructive hover:bg-secondary rounded transition-colors"
+                            className="text-left px-3 py-2 text-sm text-destructive hover:bg-slate-50 dark:hover:bg-slate-800 rounded transition-colors"
                           >
                             Sign Out
                           </button>
@@ -251,7 +260,6 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               </div>
             </div>
           </div>
-
 
           {/* Mobile Navigation */}
           {isMobileMenuOpen && (
@@ -269,7 +277,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                   <Link
                     key={item.to}
                     to={item.to}
-                    className="flex items-center gap-2 text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400 font-medium px-2 py-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    className="flex items-center gap-2 text-slate-700 hover:text-orange-600 dark:text-slate-300 dark:hover:text-orange-400 font-medium px-2 py-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     <item.icon className="h-5 w-5" />
@@ -282,19 +290,23 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 {/* 2. Toolbox */}
                 {toolbox.visible && (
                   <div className="px-2 py-2">
-                    <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Toolbox</h4>
+                    <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                      Toolbox
+                    </h4>
                     <div className="grid grid-cols-2 gap-2">
-                      {toolbox.items.map(item => (
+                      {toolbox.items.map((item) => (
                         <Link
                           key={item.to}
                           to={item.to}
                           onClick={() => setIsMobileMenuOpen(false)}
-                          className="flex flex-col items-center justify-center gap-1 p-2 rounded bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-800 transition-all text-center"
+                          className="flex flex-col items-center justify-center gap-1 p-2 rounded bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-800 hover:border-orange-200 dark:hover:border-orange-800 transition-all text-center"
                         >
-                          <div className="p-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
+                          <div className="p-1 rounded-full bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400">
                             <item.icon className="h-4 w-4" />
                           </div>
-                          <span className="text-xs font-medium text-slate-700 dark:text-slate-300">{item.label}</span>
+                          <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                            {item.label}
+                          </span>
                         </Link>
                       ))}
                     </div>
@@ -305,7 +317,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 {office.visible && (
                   <div className="px-2 py-2">
                     <div className="space-y-1">
-                      {office.items.map(item => (
+                      {office.items.map((item) => (
                         <Link
                           key={item.to}
                           to={item.to}
@@ -314,7 +326,11 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                         >
                           <item.icon className="h-4 w-4" />
                           <span>{item.label}</span>
-                          {item.badge && <span className="ml-auto bg-blue-100 text-blue-600 text-[10px] font-bold px-1.5 py-0.5 rounded-full">{item.badge}</span>}
+                          {item.badge && (
+                            <span className="ml-auto bg-orange-100 text-orange-600 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                              {item.badge}
+                            </span>
+                          )}
                         </Link>
                       ))}
                     </div>
@@ -355,12 +371,12 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
 
   return (
     <header
-      className={`bg-background/80 backdrop-blur-md border-b border-border sticky top-0 z-50 shadow-sm transition-all duration-200 ${isNative ? 'pt-safe-hard' : ''}`}
+      className={`bg-background/80 backdrop-blur-md border-b border-border sticky top-0 z-50 shadow-sm transition-all duration-200 ${isNative ? "pt-safe-hard" : ""}`}
       style={{
         // FORCE padding to clear Dynamic Island (approx 54px + buffer)
         // We use a hard 60px because env() can be unreliable in some webviews
         paddingTop: isNative ? "50px" : undefined,
-        height: isNative ? "auto" : undefined
+        height: isNative ? "auto" : undefined,
       }}
     >
       <div className="max-w-[1600px] mx-auto px-4 pb-2">
@@ -383,7 +399,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               <img
                 src="/logo-landscape.png"
                 alt="ThermoNeural Logo"
-                className={`${isNative ? 'h-9' : 'h-12 md:h-14'} w-auto object-contain mix-blend-multiply dark:mix-blend-screen dark:invert scale-[1.25] origin-left transition-all`}
+                className={`${isNative ? "h-9" : "h-12 md:h-14"} w-auto object-contain mix-blend-multiply dark:mix-blend-screen dark:invert scale-[1.25] origin-left transition-all`}
               />
             </Link>
           </div>
@@ -391,12 +407,37 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
           {/* Web Desktop Nav - Hidden on Native Mobile */}
           {!isNative && !isAuthenticated && (
             <nav className="hidden md:flex items-center space-x-8">
-              <Link to="/features" className="text-muted-foreground hover:text-blue-600 font-medium transition-colors font-display">Features</Link>
-              <Link to="/pricing" className="text-muted-foreground hover:text-blue-600 font-medium transition-colors font-display">Pricing</Link>
-              <Link to="/about" className="text-muted-foreground hover:text-blue-600 font-medium transition-colors font-display">About</Link>
+              <Link
+                to="/features"
+                className="text-muted-foreground hover:text-orange-600 font-medium transition-colors font-display"
+              >
+                Features
+              </Link>
+              <Link
+                to="/pricing"
+                className="text-muted-foreground hover:text-orange-600 font-medium transition-colors font-display"
+              >
+                Pricing
+              </Link>
+              <Link
+                to="/about"
+                className="text-muted-foreground hover:text-orange-600 font-medium transition-colors font-display"
+              >
+                About
+              </Link>
               <div className="w-px h-6 bg-slate-200 dark:bg-slate-800"></div>
-              <Link to="/help-center" className="text-muted-foreground hover:text-blue-600 font-medium text-sm transition-colors font-display">Help</Link>
-              <Link to="/contact" className="text-muted-foreground hover:text-blue-600 font-medium text-sm transition-colors font-display">Support</Link>
+              <Link
+                to="/help-center"
+                className="text-muted-foreground hover:text-orange-600 font-medium text-sm transition-colors font-display"
+              >
+                Help
+              </Link>
+              <Link
+                to="/contact"
+                className="text-muted-foreground hover:text-orange-600 font-medium text-sm transition-colors font-display"
+              >
+                Support
+              </Link>
             </nav>
           )}
 
@@ -409,12 +450,19 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 <span className="text-sm text-muted-foreground hidden md:block">
                   {user?.email}
                 </span>
-                <Link to="/dashboard" className={isNative ? "hidden" : "hidden md:block"}>
-                  <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-md shadow-blue-500/20 transition-all hover:scale-105">
+                <Link
+                  to="/dashboard"
+                  className={isNative ? "hidden" : "hidden md:block"}
+                >
+                  <Button className="bg-orange-600 hover:bg-orange-700 text-white font-semibold shadow-md shadow-orange-500/20 transition-all hover:scale-105">
                     Go to Dashboard
                   </Button>
                 </Link>
-                <Button variant="outline" onClick={handleSignOut} className="hidden md:flex">
+                <Button
+                  variant="outline"
+                  onClick={handleSignOut}
+                  className="hidden md:flex"
+                >
                   Sign Out
                 </Button>
                 <Button
@@ -423,18 +471,29 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                   className="md:hidden"
                 >
-                  {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                  {isMobileMenuOpen ? (
+                    <X className="h-6 w-6" />
+                  ) : (
+                    <Menu className="h-6 w-6" />
+                  )}
                 </Button>
               </>
             ) : (
               // Unauthenticated State
               <>
-                <div className={isNative ? "hidden" : "flex items-center gap-2"}>
+                <div
+                  className={isNative ? "hidden" : "flex items-center gap-2"}
+                >
                   <Link to="/signin">
-                    <Button variant="ghost" className="text-muted-foreground hover:text-foreground">Sign In</Button>
+                    <Button
+                      variant="ghost"
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      Sign In
+                    </Button>
                   </Link>
                   <Link to="/signup">
-                    <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 shadow-md shadow-blue-500/20 transition-all hover:scale-105">
+                    <Button className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-6 shadow-md shadow-orange-500/20 transition-all hover:scale-105">
                       Start Free Trial
                     </Button>
                   </Link>
@@ -446,7 +505,11 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                   onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                   className="md:hidden"
                 >
-                  {isMobileMenuOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
+                  {isMobileMenuOpen ? (
+                    <X className="h-7 w-7" />
+                  ) : (
+                    <Menu className="h-7 w-7" />
+                  )}
                 </Button>
               </>
             )}
@@ -457,12 +520,15 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
         {isNative && !isAuthenticated && !isMobileMenuOpen && (
           <div className="mt-4 flex gap-3 px-1 animate-in fade-in slide-in-from-top-2 duration-300">
             <Link to="/signin" className="flex-1">
-              <Button variant="outline" className="w-full h-10 text-sm font-semibold border-slate-300 dark:border-slate-700">
+              <Button
+                variant="outline"
+                className="w-full h-10 text-sm font-semibold border-slate-300 dark:border-slate-700"
+              >
                 Sign In
               </Button>
             </Link>
             <Link to="/signup" className="flex-1">
-              <Button className="w-full h-10 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow-sm">
+              <Button className="w-full h-10 bg-orange-600 hover:bg-orange-700 text-white text-sm font-semibold shadow-sm">
                 Start Free Trial
               </Button>
             </Link>
@@ -473,7 +539,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
         {isNative && isAuthenticated && !isMobileMenuOpen && (
           <div className="mt-4 px-1 animate-in fade-in slide-in-from-top-2 duration-300">
             <Link to="/dashboard">
-              <Button className="w-full h-10 bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-sm">
+              <Button className="w-full h-10 bg-orange-600 hover:bg-orange-700 text-white font-semibold shadow-sm">
                 Go to Dashboard
               </Button>
             </Link>
@@ -490,7 +556,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                   <Link
                     key={item.to}
                     to={item.to}
-                    className="flex items-center gap-2 text-slate-700 hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400 font-medium px-2 py-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    className="flex items-center gap-2 text-slate-700 hover:text-orange-600 dark:text-slate-300 dark:hover:text-orange-400 font-medium px-2 py-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     <item.icon className="h-5 w-5" />
@@ -503,19 +569,23 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 {/* 2. Toolbox */}
                 {toolbox.visible && (
                   <div className="px-2 py-2">
-                    <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Toolbox</h4>
+                    <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                      Toolbox
+                    </h4>
                     <div className="grid grid-cols-2 gap-2">
-                      {toolbox.items.map(item => (
+                      {toolbox.items.map((item) => (
                         <Link
                           key={item.to}
                           to={item.to}
                           onClick={() => setIsMobileMenuOpen(false)}
-                          className="flex flex-col items-center justify-center gap-1 p-2 rounded bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-800 hover:border-blue-200 dark:hover:border-blue-800 transition-all text-center"
+                          className="flex flex-col items-center justify-center gap-1 p-2 rounded bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-800 hover:border-orange-200 dark:hover:border-orange-800 transition-all text-center"
                         >
-                          <div className="p-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
+                          <div className="p-1 rounded-full bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400">
                             <item.icon className="h-4 w-4" />
                           </div>
-                          <span className="text-xs font-medium text-slate-700 dark:text-slate-300">{item.label}</span>
+                          <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                            {item.label}
+                          </span>
                         </Link>
                       ))}
                     </div>
@@ -526,7 +596,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 {office.visible && (
                   <div className="px-2 py-2">
                     <div className="space-y-1">
-                      {office.items.map(item => (
+                      {office.items.map((item) => (
                         <Link
                           key={item.to}
                           to={item.to}
@@ -535,7 +605,11 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                         >
                           <item.icon className="h-4 w-4" />
                           <span>{item.label}</span>
-                          {item.badge && <span className="ml-auto bg-blue-100 text-blue-600 text-[10px] font-bold px-1.5 py-0.5 rounded-full">{item.badge}</span>}
+                          {item.badge && (
+                            <span className="ml-auto bg-orange-100 text-orange-600 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                              {item.badge}
+                            </span>
+                          )}
                         </Link>
                       ))}
                     </div>
@@ -557,10 +631,34 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               </nav>
             ) : (
               <nav className="flex flex-col space-y-4">
-                <Link to="/features" onClick={() => setIsMobileMenuOpen(false)} className="px-2 py-1 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md">Features</Link>
-                <Link to="/pricing" onClick={() => setIsMobileMenuOpen(false)} className="px-2 py-1 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md">Pricing</Link>
-                <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="px-2 py-1 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md">About</Link>
-                <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="px-2 py-1 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md">Contact</Link>
+                <Link
+                  to="/features"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="px-2 py-1 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md"
+                >
+                  Features
+                </Link>
+                <Link
+                  to="/pricing"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="px-2 py-1 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md"
+                >
+                  Pricing
+                </Link>
+                <Link
+                  to="/about"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="px-2 py-1 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md"
+                >
+                  About
+                </Link>
+                <Link
+                  to="/contact"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="px-2 py-1 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md"
+                >
+                  Contact
+                </Link>
               </nav>
             )}
           </div>

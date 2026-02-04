@@ -128,16 +128,16 @@ export function JobSelector() {
                             </span>
                         </div>
                     </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="no-job">
+                    <SelectContent className="bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800">
+                        <SelectItem value="no-job" className="focus:!bg-transparent hover:!bg-slate-50 dark:hover:!bg-slate-800 focus:text-slate-900 dark:focus:text-slate-50">
                             <span className="text-muted-foreground italic">No Active Job</span>
                         </SelectItem>
                         {projects.map((project) => (
-                            <SelectItem key={project.id} value={project.id}>
+                            <SelectItem key={project.id} value={project.id} className="focus:!bg-transparent hover:!bg-slate-50 dark:hover:!bg-slate-800 focus:text-slate-900 dark:focus:text-slate-50">
                                 {project.name}
                             </SelectItem>
                         ))}
-                        <SelectItem value="create_new" className="text-primary focus:text-primary font-medium border-t mt-1 cursor-pointer">
+                        <SelectItem value="create_new" className="text-primary focus:!bg-transparent hover:!bg-slate-50 dark:hover:!bg-slate-800 focus:text-slate-900 dark:focus:text-slate-50 font-medium border-t mt-1 cursor-pointer">
                             <div className="flex items-center">
                                 <PlusCircle className="mr-2 h-3.5 w-3.5" />
                                 Create New Project...

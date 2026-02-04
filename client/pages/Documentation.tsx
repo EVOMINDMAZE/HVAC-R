@@ -15,11 +15,10 @@ import {
   FileText,
   Rocket,
   Calculator,
-  Thermometer
+  Thermometer,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { PageContainer } from "@/components/PageContainer";
-
 
 const documentation: {
   category: string;
@@ -32,76 +31,85 @@ const documentation: {
     readTime: string;
   }[];
 }[] = [
-    {
-      category: "Getting Started",
-      icon: Rocket,
-      colorClass: "text-blue-600 dark:text-blue-400",
-      gradientClass: "from-blue-500/10 to-transparent",
-      articles: [
-        {
-          title: "Welcome to ThermoNeural",
-          description: "Get started with our HVAC-R calculation platform. Learn basic navigation and key features.",
-          readTime: "3 min read"
-        },
-        {
-          title: "Creating Your First Calculation",
-          description: "Step-by-step guide to performing your first HVAC calculation using our Field Tools.",
-          readTime: "5 min read"
-        },
-        {
-          title: "Understanding Your Dashboard",
-          description: "Navigate the dashboard, view history, and manage your saved calculations.",
-          readTime: "4 min read"
-        }
-      ]
-    },
-    {
-      category: "Field Tools",
-      icon: Calculator,
-      colorClass: "text-green-600 dark:text-green-400",
-      gradientClass: "from-green-500/10 to-transparent",
-      articles: [
-        {
-          title: "Superheat & Subcooling Calculator",
-          description: "Learn how to use the superheat and subcooling calculators for accurate refrigerant charging.",
-          readTime: "6 min read"
-        },
-        {
-          title: "A2L Leak Detection Guide",
-          description: "Best practices for using the A2L refrigerant leak detection and safety calculator.",
-          readTime: "5 min read"
-        },
-        {
-          title: "Psychrometric Calculations",
-          description: "Understanding wet bulb, dry bulb, and humidity calculations for HVAC systems.",
-          readTime: "7 min read"
-        }
-      ]
-    },
-    {
-      category: "HVAC Reference",
-      icon: Thermometer,
-      colorClass: "text-orange-600 dark:text-orange-400",
-      gradientClass: "from-orange-500/10 to-transparent",
-      articles: [
-        {
-          title: "Refrigerant Properties",
-          description: "Quick reference for common refrigerants including R-410A, R-32, R-454B, and more.",
-          readTime: "4 min read"
-        },
-        {
-          title: "PT Chart Reference",
-          description: "How to use pressure-temperature charts for system diagnostics.",
-          readTime: "5 min read"
-        },
-        {
-          title: "System Troubleshooting",
-          description: "Common HVAC issues and how our AI-powered diagnostics can help identify them.",
-          readTime: "8 min read"
-        }
-      ]
-    }
-  ];
+  {
+    category: "Getting Started",
+    icon: Rocket,
+    colorClass: "text-orange-600 dark:text-orange-400",
+    gradientClass: "from-orange-500/10 to-transparent",
+    articles: [
+      {
+        title: "Welcome to ThermoNeural",
+        description:
+          "Get started with our HVAC-R calculation platform. Learn basic navigation and key features.",
+        readTime: "3 min read",
+      },
+      {
+        title: "Creating Your First Calculation",
+        description:
+          "Step-by-step guide to performing your first HVAC calculation using our Field Tools.",
+        readTime: "5 min read",
+      },
+      {
+        title: "Understanding Your Dashboard",
+        description:
+          "Navigate the dashboard, view history, and manage your saved calculations.",
+        readTime: "4 min read",
+      },
+    ],
+  },
+  {
+    category: "Field Tools",
+    icon: Calculator,
+    colorClass: "text-green-600 dark:text-green-400",
+    gradientClass: "from-green-500/10 to-transparent",
+    articles: [
+      {
+        title: "Superheat & Subcooling Calculator",
+        description:
+          "Learn how to use the superheat and subcooling calculators for accurate refrigerant charging.",
+        readTime: "6 min read",
+      },
+      {
+        title: "A2L Leak Detection Guide",
+        description:
+          "Best practices for using the A2L refrigerant leak detection and safety calculator.",
+        readTime: "5 min read",
+      },
+      {
+        title: "Psychrometric Calculations",
+        description:
+          "Understanding wet bulb, dry bulb, and humidity calculations for HVAC systems.",
+        readTime: "7 min read",
+      },
+    ],
+  },
+  {
+    category: "HVAC Reference",
+    icon: Thermometer,
+    colorClass: "text-orange-600 dark:text-orange-400",
+    gradientClass: "from-orange-500/10 to-transparent",
+    articles: [
+      {
+        title: "Refrigerant Properties",
+        description:
+          "Quick reference for common refrigerants including R-410A, R-32, R-454B, and more.",
+        readTime: "4 min read",
+      },
+      {
+        title: "PT Chart Reference",
+        description:
+          "How to use pressure-temperature charts for system diagnostics.",
+        readTime: "5 min read",
+      },
+      {
+        title: "System Troubleshooting",
+        description:
+          "Common HVAC issues and how our AI-powered diagnostics can help identify them.",
+        readTime: "8 min read",
+      },
+    ],
+  },
+];
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -117,7 +125,6 @@ const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 },
 };
-
 
 export function Documentation() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -179,17 +186,16 @@ export function Documentation() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-blue-500/30">
+    <div className="min-h-screen bg-background text-foreground selection:bg-orange-500/30">
       <Header variant="landing" />
 
       {/* Background Elements */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-blue-500/5 blur-[100px]" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-purple-500/5 blur-[100px]" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-orange-500/5 blur-[100px]" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-slate-500/5 blur-[100px]" />
       </div>
 
       <PageContainer variant="standard" className="relative z-10 pt-24 pb-20">
-
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -200,13 +206,13 @@ export function Documentation() {
           <div className="max-w-3xl">
             <Badge
               variant="outline"
-              className="mb-6 border-blue-200 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800 backdrop-blur-sm"
+              className="mb-6 border-orange-200 bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800 backdrop-blur-sm"
             >
               Documentation
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
               Engineering
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent ml-3">
+              <span className="bg-gradient-to-r from-orange-600 to-slate-600 bg-clip-text text-transparent ml-3">
                 Knowledge Base
               </span>
             </h1>
@@ -247,7 +253,11 @@ export function Documentation() {
             <Button
               variant={selectedCategory === null ? "secondary" : "ghost"}
               size="sm"
-              className={selectedCategory === null ? "bg-primary/10 text-primary" : "text-muted-foreground"}
+              className={
+                selectedCategory === null
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground"
+              }
               onClick={() => setSelectedCategory(null)}
             >
               All Categories
@@ -263,10 +273,11 @@ export function Documentation() {
                       : "ghost"
                   }
                   size="sm"
-                  className={`${selectedCategory === category.category
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground"
-                    }`}
+                  className={`${
+                    selectedCategory === category.category
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground"
+                  }`}
                   onClick={() =>
                     setSelectedCategory(
                       selectedCategory === category.category
@@ -295,9 +306,12 @@ export function Documentation() {
               <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
                 <Search className="w-8 h-8 text-muted-foreground" />
               </div>
-              <h3 className="text-lg font-semibold text-foreground">No documentation found</h3>
+              <h3 className="text-lg font-semibold text-foreground">
+                No documentation found
+              </h3>
               <p className="text-muted-foreground mt-2 max-w-sm">
-                We're currently updating our knowledge base. Please check back soon for detailed guides and tutorials.
+                We're currently updating our knowledge base. Please check back
+                soon for detailed guides and tutorials.
               </p>
             </div>
           ) : (
@@ -305,11 +319,13 @@ export function Documentation() {
               const IconComponent = category.icon;
               return (
                 <motion.div key={category.category} variants={itemVariants}>
-                  <Card
-                    className="bg-card/50 backdrop-blur-sm shadow-sm border-border overflow-hidden"
-                  >
-                    <CardHeader className={`bg-gradient-to-r ${category.gradientClass} border-b border-border py-4`}>
-                      <CardTitle className={`flex items-center text-xl font-semibold ${category.colorClass}`}>
+                  <Card className="bg-card/50 backdrop-blur-sm shadow-sm border-border overflow-hidden">
+                    <CardHeader
+                      className={`bg-gradient-to-r ${category.gradientClass} border-b border-border py-4`}
+                    >
+                      <CardTitle
+                        className={`flex items-center text-xl font-semibold ${category.colorClass}`}
+                      >
                         <IconComponent className="h-6 w-6 mr-3" />
                         {category.category}
                       </CardTitle>
@@ -333,7 +349,10 @@ export function Documentation() {
                                 {article.description}
                               </p>
                               <div className="flex items-center justify-between mt-auto">
-                                <Badge variant="outline" className="text-xs bg-muted/50 border-border font-normal">
+                                <Badge
+                                  variant="outline"
+                                  className="text-xs bg-muted/50 border-border font-normal"
+                                >
                                   {article.readTime}
                                 </Badge>
                                 <div className="flex items-center text-xs text-muted-foreground group-hover:text-primary transition-colors">
@@ -355,10 +374,12 @@ export function Documentation() {
 
         {/* Quick Links */}
         <div className="mt-20">
-          <h2 className="text-2xl font-bold text-center mb-8">More Ways to Learn</h2>
+          <h2 className="text-2xl font-bold text-center mb-8">
+            More Ways to Learn
+          </h2>
           <div className="grid md:grid-cols-3 gap-6">
             <QuickLinkCard
-              icon={<Download className="h-8 w-8 text-blue-500" />}
+              icon={<Download className="h-8 w-8 text-orange-500" />}
               title="PDF Guides"
               description="Download comprehensive guides for offline reading and sharing with your team."
               action="Download All"
@@ -370,7 +391,7 @@ export function Documentation() {
               action="Watch Videos"
             />
             <QuickLinkCard
-              icon={<Users className="h-8 w-8 text-purple-500" />}
+              icon={<Users className="h-8 w-8 text-slate-500" />}
               title="Community Forum"
               description="Connect with thousands of other engineers to share tips and solve problems."
               action="Join Forum"
@@ -391,7 +412,17 @@ export function Documentation() {
   );
 }
 
-function QuickLinkCard({ icon, title, description, action }: { icon: any, title: string, description: string, action: string }) {
+function QuickLinkCard({
+  icon,
+  title,
+  description,
+  action,
+}: {
+  icon: any;
+  title: string;
+  description: string;
+  action: string;
+}) {
   return (
     <Card className="bg-card/50 backdrop-blur-sm border-border hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group text-center">
       <CardContent className="p-8 flex flex-col items-center h-full">
@@ -402,10 +433,13 @@ function QuickLinkCard({ icon, title, description, action }: { icon: any, title:
         <p className="text-muted-foreground mb-8 leading-relaxed text-sm">
           {description}
         </p>
-        <Button variant="outline" className="mt-auto w-full group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary">
+        <Button
+          variant="outline"
+          className="mt-auto w-full group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary"
+        >
           {action}
         </Button>
       </CardContent>
     </Card>
-  )
+  );
 }

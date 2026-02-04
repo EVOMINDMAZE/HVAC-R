@@ -3,12 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface EquipmentDiagramProps {
   type:
-  | "compressor"
-  | "evaporator"
-  | "condenser"
-  | "expansion-valve"
-  | "heat-exchanger"
-  | "complete-cycle";
+    | "compressor"
+    | "evaporator"
+    | "condenser"
+    | "expansion-valve"
+    | "heat-exchanger"
+    | "complete-cycle";
   width?: number;
   height?: number;
   showLabels?: boolean;
@@ -103,7 +103,7 @@ export function EquipmentDiagram({
                   x="35"
                   y="95"
                   textAnchor="middle"
-                  className="text-xs fill-blue-600"
+                  className="text-xs fill-orange-600"
                 >
                   Suction
                 </text>
@@ -411,7 +411,7 @@ export function EquipmentDiagram({
                   x="145"
                   y="95"
                   textAnchor="middle"
-                  className="text-xs fill-blue-600"
+                  className="text-xs fill-orange-600"
                 >
                   Low P
                 </text>
@@ -444,7 +444,7 @@ export function EquipmentDiagram({
                 x="50"
                 y="25"
                 textAnchor="middle"
-                className="text-xs font-medium fill-blue-600"
+                className="text-xs font-medium fill-orange-600"
               >
                 Evaporator
               </text>
@@ -688,15 +688,21 @@ export function EquipmentDiagrams({
   }, [cycleData?.cycleType]);
 
   return (
-    <div className={`rounded-xl border ${theme.border} ${theme.bg} p-6 transition-all`}>
+    <div
+      className={`rounded-xl border ${theme.border} ${theme.bg} p-6 transition-all`}
+    >
       {/* Header Info */}
       {cycleData && (
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h3 className={`text-lg font-bold ${theme.accent} flex items-center gap-2`}>
+            <h3
+              className={`text-lg font-bold ${theme.accent} flex items-center gap-2`}
+            >
               {cycleData.refrigerant}
               <span className="text-sm font-medium opacity-70 text-foreground">
-                {cycleData.cycleType === "cascade-low" ? "Low Stage" : "High Stage"}
+                {cycleData.cycleType === "cascade-low"
+                  ? "Low Stage"
+                  : "High Stage"}
               </span>
             </h3>
           </div>
@@ -723,7 +729,9 @@ export function EquipmentDiagrams({
         </div>
 
         {/* Decorative Background Glow */}
-        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-tr from-transparent via-white/50 to-transparent dark:via-white/5 opacity-50 blur-3xl rounded-full pointer-events-none`} />
+        <div
+          className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-tr from-transparent via-white/50 to-transparent dark:via-white/5 opacity-50 blur-3xl rounded-full pointer-events-none`}
+        />
       </div>
 
       {/* Clean Data Grid - Replaces the bulky cards */}
@@ -737,31 +745,47 @@ export function EquipmentDiagrams({
               <div className="absolute top-0 left-0 w-1 h-full bg-muted group-hover:bg-primary transition-colors" />
               <div className="p-3 pl-5">
                 <div className="flex justify-between items-start mb-1.5">
-                  <div className={`text-[10px] font-bold uppercase tracking-wider ${theme.pointText} ${theme.pointBg} px-1.5 py-0.5 rounded`}>
+                  <div
+                    className={`text-[10px] font-bold uppercase tracking-wider ${theme.pointText} ${theme.pointBg} px-1.5 py-0.5 rounded`}
+                  >
                     State {index + 1}
                   </div>
                   <span className="text-[10px] text-muted-foreground font-mono">
-                    {index === 0 ? "Evap Out" :
-                      index === 1 ? "Comp Out" :
-                        index === 2 ? "Cond Out" :
-                          "Exp Out"}
+                    {index === 0
+                      ? "Evap Out"
+                      : index === 1
+                        ? "Comp Out"
+                        : index === 2
+                          ? "Cond Out"
+                          : "Exp Out"}
                   </span>
                 </div>
 
-                <h4 className="text-xs font-medium text-foreground mb-2 truncate" title={point.name}>{point.name}</h4>
+                <h4
+                  className="text-xs font-medium text-foreground mb-2 truncate"
+                  title={point.name}
+                >
+                  {point.name}
+                </h4>
 
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px] font-mono text-muted-foreground">
                   <div className="flex justify-between items-baseline group-hover:text-foreground transition-colors">
                     <span>T:</span>
-                    <span className="font-semibold">{point.temperature?.toFixed(1) ?? "-"}°C</span>
+                    <span className="font-semibold">
+                      {point.temperature?.toFixed(1) ?? "-"}°C
+                    </span>
                   </div>
                   <div className="flex justify-between items-baseline group-hover:text-foreground transition-colors">
                     <span>P:</span>
-                    <span className="font-semibold">{((point.pressure || 0) / 1000).toFixed(1)} MPa</span>
+                    <span className="font-semibold">
+                      {((point.pressure || 0) / 1000).toFixed(1)} MPa
+                    </span>
                   </div>
                   <div className="flex justify-between items-baseline group-hover:text-foreground transition-colors col-span-2">
                     <span>h:</span>
-                    <span className="font-semibold">{point.enthalpy?.toFixed(1) ?? "-"} kJ/kg</span>
+                    <span className="font-semibold">
+                      {point.enthalpy?.toFixed(1) ?? "-"} kJ/kg
+                    </span>
                   </div>
                 </div>
               </div>

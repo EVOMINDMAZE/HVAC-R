@@ -372,28 +372,28 @@ export function CascadeCycleContent() {
 
       const ltWork = asNum(
         resultData.lt_cycle_performance?.work_of_compression_kj_kg ??
-        resultData.lt_cycle?.performance?.work_of_compression_kj_kg ??
-        resultData.lt_cycle?.work_of_compression_kj_kg ??
-        (resultData.performance as any)?.lt_cycle_work_of_compression_kj_kg,
+          resultData.lt_cycle?.performance?.work_of_compression_kj_kg ??
+          resultData.lt_cycle?.work_of_compression_kj_kg ??
+          (resultData.performance as any)?.lt_cycle_work_of_compression_kj_kg,
       );
       const htWork = asNum(
         resultData.ht_cycle_performance?.work_of_compression_kj_kg ??
-        resultData.ht_cycle?.performance?.work_of_compression_kj_kg ??
-        resultData.ht_cycle?.work_of_compression_kj_kg ??
-        (resultData.performance as any)?.ht_cycle_work_of_compression_kj_kg,
+          resultData.ht_cycle?.performance?.work_of_compression_kj_kg ??
+          resultData.ht_cycle?.work_of_compression_kj_kg ??
+          (resultData.performance as any)?.ht_cycle_work_of_compression_kj_kg,
       );
 
       const ltRefrigerationEffect = asNum(
         resultData.lt_cycle_performance?.refrigeration_effect_kj_kg ??
-        resultData.lt_cycle?.performance?.refrigeration_effect_kj_kg ??
-        resultData.lt_cycle?.refrigeration_effect_kj_kg ??
-        (resultData.performance as any)?.lt_cycle_refrigeration_effect_kj_kg,
+          resultData.lt_cycle?.performance?.refrigeration_effect_kj_kg ??
+          resultData.lt_cycle?.refrigeration_effect_kj_kg ??
+          (resultData.performance as any)?.lt_cycle_refrigeration_effect_kj_kg,
       );
       const htRefrigerationEffect = asNum(
         resultData.ht_cycle_performance?.refrigeration_effect_kj_kg ??
-        resultData.ht_cycle?.performance?.refrigeration_effect_kj_kg ??
-        resultData.ht_cycle?.refrigeration_effect_kj_kg ??
-        (resultData.performance as any)?.ht_cycle_refrigeration_effect_kj_kg,
+          resultData.ht_cycle?.performance?.refrigeration_effect_kj_kg ??
+          resultData.ht_cycle?.refrigeration_effect_kj_kg ??
+          (resultData.performance as any)?.ht_cycle_refrigeration_effect_kj_kg,
       );
 
       const totalWork = ltWork + htWork;
@@ -402,15 +402,15 @@ export function CascadeCycleContent() {
 
       const ltCop = asNum(
         resultData.lt_cycle_performance?.cop ??
-        resultData.lt_cycle?.performance?.cop ??
-        resultData.lt_cycle?.cop ??
-        (resultData.performance as any)?.lt_cycle_cop,
+          resultData.lt_cycle?.performance?.cop ??
+          resultData.lt_cycle?.cop ??
+          (resultData.performance as any)?.lt_cycle_cop,
       );
       const htCop = asNum(
         resultData.ht_cycle_performance?.cop ??
-        resultData.ht_cycle?.performance?.cop ??
-        resultData.ht_cycle?.cop ??
-        (resultData.performance as any)?.ht_cycle_cop,
+          resultData.ht_cycle?.performance?.cop ??
+          resultData.ht_cycle?.cop ??
+          (resultData.performance as any)?.ht_cycle_cop,
       );
       const avgCop = (ltCop + htCop) / 2;
 
@@ -616,11 +616,12 @@ export function CascadeCycleContent() {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-slate-600 to-orange-600 bg-clip-text text-transparent">
               Enhanced Cascade System
             </h1>
             <p className="text-muted-foreground mt-1 text-lg">
-              Advanced dual-cycle analysis for ultra-low temperature applications
+              Advanced dual-cycle analysis for ultra-low temperature
+              applications
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -637,13 +638,12 @@ export function CascadeCycleContent() {
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
-
           {/* LEFT SIDEBAR: CONFIGURATION */}
           <div className="xl:col-span-4 space-y-6 xl:sticky xl:top-24">
-            <Card className="border-t-4 border-t-purple-500 shadow-lg dark:bg-slate-900/50 backdrop-blur-sm max-h-[calc(100vh-8rem)] overflow-y-auto">
+            <Card className="border-t-4 border-t-slate-500 shadow-lg dark:bg-slate-900/50 backdrop-blur-sm max-h-[calc(100vh-8rem)] overflow-y-auto">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Calculator className="w-5 h-5 text-purple-500" />
+                  <Calculator className="w-5 h-5 text-slate-500" />
                   System Configuration
                 </CardTitle>
                 <CardDescription>
@@ -651,7 +651,6 @@ export function CascadeCycleContent() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-
                 {/* LOW STAGE */}
                 <div className="space-y-4 border rounded-lg p-4 bg-cyan-50/20 dark:bg-cyan-900/10 border-cyan-100 dark:border-cyan-800/30">
                   <div className="flex items-center gap-2 text-cyan-700 dark:text-cyan-400 font-semibold mb-2">
@@ -659,10 +658,14 @@ export function CascadeCycleContent() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-xs uppercase text-muted-foreground font-bold">Refrigerant</Label>
+                    <Label className="text-xs uppercase text-muted-foreground font-bold">
+                      Refrigerant
+                    </Label>
                     <EnhancedRefrigerantSelector
                       value={formData.ltCycle.refrigerant}
-                      onChange={(val) => handleRefrigerantChange("ltCycle", val)}
+                      onChange={(val) =>
+                        handleRefrigerantChange("ltCycle", val)
+                      }
                     />
                   </div>
 
@@ -672,7 +675,13 @@ export function CascadeCycleContent() {
                       <Input
                         type="number"
                         value={formData.ltCycle.evaporatorTemp}
-                        onChange={(e) => handleCycleInputChange("ltCycle", "evaporatorTemp", parseFloat(e.target.value))}
+                        onChange={(e) =>
+                          handleCycleInputChange(
+                            "ltCycle",
+                            "evaporatorTemp",
+                            parseFloat(e.target.value),
+                          )
+                        }
                         className="h-8"
                       />
                     </div>
@@ -681,7 +690,13 @@ export function CascadeCycleContent() {
                       <Input
                         type="number"
                         value={formData.ltCycle.condenserTemp}
-                        onChange={(e) => handleCycleInputChange("ltCycle", "condenserTemp", parseFloat(e.target.value))}
+                        onChange={(e) =>
+                          handleCycleInputChange(
+                            "ltCycle",
+                            "condenserTemp",
+                            parseFloat(e.target.value),
+                          )
+                        }
                         className="h-8"
                       />
                     </div>
@@ -690,7 +705,13 @@ export function CascadeCycleContent() {
                       <Input
                         type="number"
                         value={formData.ltCycle.superheat}
-                        onChange={(e) => handleCycleInputChange("ltCycle", "superheat", parseFloat(e.target.value))}
+                        onChange={(e) =>
+                          handleCycleInputChange(
+                            "ltCycle",
+                            "superheat",
+                            parseFloat(e.target.value),
+                          )
+                        }
                         className="h-8"
                       />
                     </div>
@@ -699,7 +720,13 @@ export function CascadeCycleContent() {
                       <Input
                         type="number"
                         value={formData.ltCycle.subcooling}
-                        onChange={(e) => handleCycleInputChange("ltCycle", "subcooling", parseFloat(e.target.value))}
+                        onChange={(e) =>
+                          handleCycleInputChange(
+                            "ltCycle",
+                            "subcooling",
+                            parseFloat(e.target.value),
+                          )
+                        }
                         className="h-8"
                       />
                     </div>
@@ -721,22 +748,28 @@ export function CascadeCycleContent() {
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
                     <span className="bg-card px-2 text-muted-foreground flex items-center gap-2">
-                      <ArrowDownCircle className="w-4 h-4" /> Cascade Heat Exchanger
+                      <ArrowDownCircle className="w-4 h-4" /> Cascade Heat
+                      Exchanger
                     </span>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-purple-600 dark:text-purple-400">Interstage ΔT (°C)</Label>
+                  <Label className="text-slate-600 dark:text-slate-400">
+                    Interstage ΔT (°C)
+                  </Label>
                   <div className="flex gap-2 items-center">
                     <Input
                       type="number"
                       value={formData.cascadeHeatExchangerDT}
-                      onChange={(e) => handleCascadeDTChange(parseFloat(e.target.value))}
-                      className="border-purple-200 dark:border-purple-900 focus:border-purple-500"
+                      onChange={(e) =>
+                        handleCascadeDTChange(parseFloat(e.target.value))
+                      }
+                      className="border-slate-200 dark:border-slate-900 focus:border-slate-500"
                     />
                     <span className="text-xs text-muted-foreground whitespace-nowrap">
-                      (Rec: {RECOMMENDED_GUIDANCE.cascadeDeltaT.min}-{RECOMMENDED_GUIDANCE.cascadeDeltaT.max}°C)
+                      (Rec: {RECOMMENDED_GUIDANCE.cascadeDeltaT.min}-
+                      {RECOMMENDED_GUIDANCE.cascadeDeltaT.max}°C)
                     </span>
                   </div>
                 </div>
@@ -748,10 +781,14 @@ export function CascadeCycleContent() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-xs uppercase text-muted-foreground font-bold">Refrigerant</Label>
+                    <Label className="text-xs uppercase text-muted-foreground font-bold">
+                      Refrigerant
+                    </Label>
                     <EnhancedRefrigerantSelector
                       value={formData.htCycle.refrigerant}
-                      onChange={(val) => handleRefrigerantChange("htCycle", val)}
+                      onChange={(val) =>
+                        handleRefrigerantChange("htCycle", val)
+                      }
                     />
                   </div>
 
@@ -761,7 +798,13 @@ export function CascadeCycleContent() {
                       <Input
                         type="number"
                         value={formData.htCycle.evaporatorTemp}
-                        onChange={(e) => handleCycleInputChange("htCycle", "evaporatorTemp", parseFloat(e.target.value))}
+                        onChange={(e) =>
+                          handleCycleInputChange(
+                            "htCycle",
+                            "evaporatorTemp",
+                            parseFloat(e.target.value),
+                          )
+                        }
                         className="h-8"
                       />
                     </div>
@@ -770,7 +813,13 @@ export function CascadeCycleContent() {
                       <Input
                         type="number"
                         value={formData.htCycle.condenserTemp}
-                        onChange={(e) => handleCycleInputChange("htCycle", "condenserTemp", parseFloat(e.target.value))}
+                        onChange={(e) =>
+                          handleCycleInputChange(
+                            "htCycle",
+                            "condenserTemp",
+                            parseFloat(e.target.value),
+                          )
+                        }
                         className="h-8"
                       />
                     </div>
@@ -779,7 +828,13 @@ export function CascadeCycleContent() {
                       <Input
                         type="number"
                         value={formData.htCycle.superheat}
-                        onChange={(e) => handleCycleInputChange("htCycle", "superheat", parseFloat(e.target.value))}
+                        onChange={(e) =>
+                          handleCycleInputChange(
+                            "htCycle",
+                            "superheat",
+                            parseFloat(e.target.value),
+                          )
+                        }
                         className="h-8"
                       />
                     </div>
@@ -788,7 +843,13 @@ export function CascadeCycleContent() {
                       <Input
                         type="number"
                         value={formData.htCycle.subcooling}
-                        onChange={(e) => handleCycleInputChange("htCycle", "subcooling", parseFloat(e.target.value))}
+                        onChange={(e) =>
+                          handleCycleInputChange(
+                            "htCycle",
+                            "subcooling",
+                            parseFloat(e.target.value),
+                          )
+                        }
                         className="h-8"
                       />
                     </div>
@@ -805,9 +866,13 @@ export function CascadeCycleContent() {
 
                 <div className="pt-2 gap-2 flex flex-col">
                   <Button
-                    className="w-full h-12 text-lg font-semibold shadow-lg shadow-purple-500/10 hover:shadow-purple-500/20 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+                    className="w-full h-12 text-lg font-semibold shadow-lg shadow-slate-500/10 hover:shadow-slate-500/20 bg-gradient-to-r from-slate-600 to-orange-600 hover:from-slate-700 hover:to-orange-700"
                     onClick={handleCalculate}
-                    disabled={loading || !formData.ltCycle.refrigerant || !formData.htCycle.refrigerant}
+                    disabled={
+                      loading ||
+                      !formData.ltCycle.refrigerant ||
+                      !formData.htCycle.refrigerant
+                    }
                   >
                     {loading ? (
                       <>
@@ -836,7 +901,6 @@ export function CascadeCycleContent() {
                     <AlertDescription>{error}</AlertDescription>
                   </Alert>
                 )}
-
               </CardContent>
             </Card>
           </div>
@@ -846,41 +910,58 @@ export function CascadeCycleContent() {
             {!result ? (
               <div className="min-h-[600px] flex flex-col items-center justify-center border-4 border-dashed rounded-xl bg-muted/20 text-muted-foreground p-8 text-center animate-in fade-in zoom-in-95 duration-500">
                 <div className="p-6 bg-background rounded-full shadow-lg mb-6">
-                  <Activity className="h-12 w-12 text-purple-500" />
+                  <Activity className="h-12 w-12 text-slate-500" />
                 </div>
                 <h3 className="text-2xl font-bold mb-2">Ready to Simulate</h3>
                 <p className="max-w-md">
-                  Configure the Low and High temperature cycles to analyze the performance of the complete cascade refrigeration system.
+                  Configure the Low and High temperature cycles to analyze the
+                  performance of the complete cascade refrigeration system.
                 </p>
               </div>
             ) : (
               <div className="animate-in slide-in-from-bottom-5 duration-700 space-y-6">
-
                 {/* KPI Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <Card className="bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-950/30 dark:to-emerald-900/10 border-green-200 dark:border-green-800">
                     <CardContent className="p-6 flex flex-col items-center justify-center text-center">
-                      <span className="text-sm font-medium text-green-700 dark:text-green-400 uppercase tracking-wider">System COP</span>
-                      <span className="text-4xl font-bold text-green-800 dark:text-green-300 mt-2">{result.overall_performance?.cop?.toFixed(2) ?? "N/A"}</span>
+                      <span className="text-sm font-medium text-green-700 dark:text-green-400 uppercase tracking-wider">
+                        System COP
+                      </span>
+                      <span className="text-4xl font-bold text-green-800 dark:text-green-300 mt-2">
+                        {result.overall_performance?.cop?.toFixed(2) ?? "N/A"}
+                      </span>
                     </CardContent>
                   </Card>
-                  <Card className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950/30 dark:to-indigo-900/10 border-blue-200 dark:border-blue-800">
+                  <Card className="bg-gradient-to-br from-slate-50 to-orange-100 dark:from-slate-950/30 dark:to-orange-900/10 border-slate-200 dark:border-slate-800">
                     <CardContent className="p-6 flex flex-col items-center justify-center text-center">
-                      <span className="text-sm font-medium text-blue-700 dark:text-blue-400 uppercase tracking-wider">Efficiency</span>
-                      <span className="text-4xl font-bold text-blue-800 dark:text-blue-300 mt-2">{result.overall_performance?.system_efficiency?.toFixed(1) ?? "N/A"}%</span>
+                      <span className="text-sm font-medium text-slate-700 dark:text-slate-400 uppercase tracking-wider">
+                        Efficiency
+                      </span>
+                      <span className="text-4xl font-bold text-slate-800 dark:text-slate-300 mt-2">
+                        {result.overall_performance?.system_efficiency?.toFixed(
+                          1,
+                        ) ?? "N/A"}
+                        %
+                      </span>
                     </CardContent>
                   </Card>
-                  <Card className="bg-gradient-to-br from-purple-50 to-violet-100 dark:from-purple-950/30 dark:to-violet-900/10 border-purple-200 dark:border-purple-800">
+                  <Card className="bg-gradient-to-br from-slate-50 to-violet-100 dark:from-slate-950/30 dark:to-violet-900/10 border-slate-200 dark:border-slate-800">
                     <CardContent className="p-6 flex flex-col items-center justify-center text-center">
-                      <span className="text-sm font-medium text-purple-700 dark:text-purple-400 uppercase tracking-wider">Total Work</span>
+                      <span className="text-sm font-medium text-slate-700 dark:text-slate-400 uppercase tracking-wider">
+                        Total Work
+                      </span>
                       <div className="flex items-baseline gap-1 mt-2">
-                        <span className="text-4xl font-bold text-purple-800 dark:text-purple-300">
+                        <span className="text-4xl font-bold text-slate-800 dark:text-slate-300">
                           {(
-                            (result.lt_cycle_performance?.work_of_compression_kj_kg || 0) +
-                            (result.ht_cycle_performance?.work_of_compression_kj_kg || 0)
+                            (result.lt_cycle_performance
+                              ?.work_of_compression_kj_kg || 0) +
+                            (result.ht_cycle_performance
+                              ?.work_of_compression_kj_kg || 0)
                           ).toFixed(1)}
                         </span>
-                        <span className="text-sm text-purple-600 dark:text-purple-400">kJ/kg</span>
+                        <span className="text-sm text-slate-600 dark:text-slate-400">
+                          kJ/kg
+                        </span>
                       </div>
                     </CardContent>
                   </Card>
@@ -915,27 +996,55 @@ export function CascadeCycleContent() {
                       <Card className="border-l-4 border-l-cyan-500 overflow-hidden dark:bg-slate-900/40">
                         <div className="bg-cyan-500/10 p-4 border-b border-cyan-100 dark:border-cyan-800/20 flex justify-between items-center">
                           <h3 className="font-bold text-cyan-700 dark:text-cyan-400 flex items-center gap-2">
-                            <Thermometer className="w-4 h-4" /> Low Temp Cycle ({result.lt_cycle_performance?.refrigerant})
+                            <Thermometer className="w-4 h-4" /> Low Temp Cycle (
+                            {result.lt_cycle_performance?.refrigerant})
                           </h3>
-                          <Badge variant="outline" className="border-cyan-200 text-cyan-700">Evap: {formData.ltCycle.evaporatorTemp}°C</Badge>
+                          <Badge
+                            variant="outline"
+                            className="border-cyan-200 text-cyan-700"
+                          >
+                            Evap: {formData.ltCycle.evaporatorTemp}°C
+                          </Badge>
                         </div>
                         <CardContent className="p-0">
                           <div className="grid grid-cols-2 divide-x divide-y dark:divide-slate-800">
                             <div className="p-4 text-center">
-                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">{result.lt_cycle_performance?.cop?.toFixed(2)}</div>
-                              <div className="text-xs text-muted-foreground uppercase">COP</div>
+                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">
+                                {result.lt_cycle_performance?.cop?.toFixed(2)}
+                              </div>
+                              <div className="text-xs text-muted-foreground uppercase">
+                                COP
+                              </div>
                             </div>
                             <div className="p-4 text-center">
-                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">{result.lt_cycle_performance?.refrigeration_effect_kj_kg?.toFixed(1)}</div>
-                              <div className="text-xs text-muted-foreground uppercase">Ref. Effect (kJ/kg)</div>
+                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">
+                                {result.lt_cycle_performance?.refrigeration_effect_kj_kg?.toFixed(
+                                  1,
+                                )}
+                              </div>
+                              <div className="text-xs text-muted-foreground uppercase">
+                                Ref. Effect (kJ/kg)
+                              </div>
                             </div>
                             <div className="p-4 text-center">
-                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">{result.lt_cycle_performance?.work_of_compression_kj_kg?.toFixed(1)}</div>
-                              <div className="text-xs text-muted-foreground uppercase">Work Input (kJ/kg)</div>
+                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">
+                                {result.lt_cycle_performance?.work_of_compression_kj_kg?.toFixed(
+                                  1,
+                                )}
+                              </div>
+                              <div className="text-xs text-muted-foreground uppercase">
+                                Work Input (kJ/kg)
+                              </div>
                             </div>
                             <div className="p-4 text-center">
-                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">{result.lt_cycle_performance?.pressure_ratio?.toFixed(2) ?? "-"}</div>
-                              <div className="text-xs text-muted-foreground uppercase">Compression Ratio</div>
+                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">
+                                {result.lt_cycle_performance?.pressure_ratio?.toFixed(
+                                  2,
+                                ) ?? "-"}
+                              </div>
+                              <div className="text-xs text-muted-foreground uppercase">
+                                Compression Ratio
+                              </div>
                             </div>
                           </div>
                         </CardContent>
@@ -945,27 +1054,55 @@ export function CascadeCycleContent() {
                       <Card className="border-l-4 border-l-orange-500 overflow-hidden dark:bg-slate-900/40">
                         <div className="bg-orange-500/10 p-4 border-b border-orange-100 dark:border-orange-800/20 flex justify-between items-center">
                           <h3 className="font-bold text-orange-700 dark:text-orange-400 flex items-center gap-2">
-                            <Zap className="w-4 h-4" /> High Temp Cycle ({result.ht_cycle_performance?.refrigerant})
+                            <Zap className="w-4 h-4" /> High Temp Cycle (
+                            {result.ht_cycle_performance?.refrigerant})
                           </h3>
-                          <Badge variant="outline" className="border-orange-200 text-orange-700">Evap: {formData.htCycle.evaporatorTemp}°C</Badge>
+                          <Badge
+                            variant="outline"
+                            className="border-orange-200 text-orange-700"
+                          >
+                            Evap: {formData.htCycle.evaporatorTemp}°C
+                          </Badge>
                         </div>
                         <CardContent className="p-0">
                           <div className="grid grid-cols-2 divide-x divide-y dark:divide-slate-800">
                             <div className="p-4 text-center">
-                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">{result.ht_cycle_performance?.cop?.toFixed(2)}</div>
-                              <div className="text-xs text-muted-foreground uppercase">COP</div>
+                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">
+                                {result.ht_cycle_performance?.cop?.toFixed(2)}
+                              </div>
+                              <div className="text-xs text-muted-foreground uppercase">
+                                COP
+                              </div>
                             </div>
                             <div className="p-4 text-center">
-                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">{result.ht_cycle_performance?.refrigeration_effect_kj_kg?.toFixed(1)}</div>
-                              <div className="text-xs text-muted-foreground uppercase">Ref. Effect (kJ/kg)</div>
+                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">
+                                {result.ht_cycle_performance?.refrigeration_effect_kj_kg?.toFixed(
+                                  1,
+                                )}
+                              </div>
+                              <div className="text-xs text-muted-foreground uppercase">
+                                Ref. Effect (kJ/kg)
+                              </div>
                             </div>
                             <div className="p-4 text-center">
-                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">{result.ht_cycle_performance?.work_of_compression_kj_kg?.toFixed(1)}</div>
-                              <div className="text-xs text-muted-foreground uppercase">Work Input (kJ/kg)</div>
+                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">
+                                {result.ht_cycle_performance?.work_of_compression_kj_kg?.toFixed(
+                                  1,
+                                )}
+                              </div>
+                              <div className="text-xs text-muted-foreground uppercase">
+                                Work Input (kJ/kg)
+                              </div>
                             </div>
                             <div className="p-4 text-center">
-                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">{result.ht_cycle_performance?.pressure_ratio?.toFixed(2) ?? "-"}</div>
-                              <div className="text-xs text-muted-foreground uppercase">Compression Ratio</div>
+                              <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">
+                                {result.ht_cycle_performance?.pressure_ratio?.toFixed(
+                                  2,
+                                ) ?? "-"}
+                              </div>
+                              <div className="text-xs text-muted-foreground uppercase">
+                                Compression Ratio
+                              </div>
                             </div>
                           </div>
                         </CardContent>
@@ -978,22 +1115,40 @@ export function CascadeCycleContent() {
                       <CardHeader className="flex flex-row items-center justify-between">
                         <div>
                           <CardTitle>Pressure-Enthalpy Diagrams</CardTitle>
-                          <CardDescription>Visualize the thermodynamic cycle for each stage</CardDescription>
+                          <CardDescription>
+                            Visualize the thermodynamic cycle for each stage
+                          </CardDescription>
                         </div>
                         <div className="flex gap-2">
                           <Button
-                            variant={selectedVisualizationCycle === "lt" ? "default" : "outline"}
+                            variant={
+                              selectedVisualizationCycle === "lt"
+                                ? "default"
+                                : "outline"
+                            }
                             size="sm"
                             onClick={() => setSelectedVisualizationCycle("lt")}
-                            className={selectedVisualizationCycle === "lt" ? "bg-cyan-600 hover:bg-cyan-700" : ""}
+                            className={
+                              selectedVisualizationCycle === "lt"
+                                ? "bg-cyan-600 hover:bg-cyan-700"
+                                : ""
+                            }
                           >
                             Low Temp ({formData.ltCycle.refrigerant})
                           </Button>
                           <Button
-                            variant={selectedVisualizationCycle === "ht" ? "default" : "outline"}
+                            variant={
+                              selectedVisualizationCycle === "ht"
+                                ? "default"
+                                : "outline"
+                            }
                             size="sm"
                             onClick={() => setSelectedVisualizationCycle("ht")}
-                            className={selectedVisualizationCycle === "ht" ? "bg-orange-600 hover:bg-orange-700" : ""}
+                            className={
+                              selectedVisualizationCycle === "ht"
+                                ? "bg-orange-600 hover:bg-orange-700"
+                                : ""
+                            }
                           >
                             High Temp ({formData.htCycle.refrigerant})
                           </Button>
@@ -1001,8 +1156,16 @@ export function CascadeCycleContent() {
                       </CardHeader>
                       <CardContent>
                         {(() => {
-                          const vizData = getVisualizationData(selectedVisualizationCycle);
-                          return vizData ? <CycleVisualization cycleData={vizData} /> : <div className="p-12 text-center text-muted-foreground">Visualization Data Unavailable</div>;
+                          const vizData = getVisualizationData(
+                            selectedVisualizationCycle,
+                          );
+                          return vizData ? (
+                            <CycleVisualization cycleData={vizData} />
+                          ) : (
+                            <div className="p-12 text-center text-muted-foreground">
+                              Visualization Data Unavailable
+                            </div>
+                          );
                         })()}
                       </CardContent>
                     </Card>
@@ -1015,12 +1178,15 @@ export function CascadeCycleContent() {
                         {(() => {
                           const ltData = getVisualizationData("lt");
                           return ltData ? (
-                            <EquipmentDiagrams cycleData={ltData} isAnimating={!loading} />
+                            <EquipmentDiagrams
+                              cycleData={ltData}
+                              isAnimating={!loading}
+                            />
                           ) : (
                             <div className="h-64 flex items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-muted-foreground bg-slate-50 dark:bg-slate-900/50">
                               Low Temp Data Unavailable
                             </div>
-                          )
+                          );
                         })()}
                       </div>
 
@@ -1029,12 +1195,15 @@ export function CascadeCycleContent() {
                         {(() => {
                           const htData = getVisualizationData("ht");
                           return htData ? (
-                            <EquipmentDiagrams cycleData={htData} isAnimating={!loading} />
+                            <EquipmentDiagrams
+                              cycleData={htData}
+                              isAnimating={!loading}
+                            />
                           ) : (
                             <div className="h-64 flex items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-muted-foreground bg-slate-50 dark:bg-slate-900/50">
                               High Temp Data Unavailable
                             </div>
-                          )
+                          );
                         })()}
                       </div>
                     </div>

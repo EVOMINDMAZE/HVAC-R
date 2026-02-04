@@ -12,7 +12,7 @@ export function CalculationDetailsModal({
   const getCalculationColor = (type: string) => {
     switch (type) {
       case "Standard Cycle":
-        return "bg-blue-100 text-blue-800";
+        return "bg-orange-100 text-orange-800";
       case "Refrigerant Comparison":
         return "bg-green-100 text-green-800";
       case "Cascade Cycle":
@@ -228,7 +228,7 @@ export function CalculationDetailsModal({
         return (
           <div className="space-y-6">
             <div>
-              <h5 className="font-semibold text-blue-600 mb-3">
+              <h5 className="font-semibold text-orange-600 mb-3">
                 Low-Temperature Cycle
               </h5>
               <div className="grid grid-cols-2 gap-4 ml-4">
@@ -660,8 +660,8 @@ export function CalculationDetailsModal({
                   </div>
                   <div className="text-sm text-green-500">COP</div>
                 </div>
-                <div className="p-4 bg-blue-50 rounded-lg">
-                  <div className="text-lg font-semibold text-blue-600">
+                <div className="p-4 bg-orange-50 rounded-lg">
+                  <div className="text-lg font-semibold text-orange-600">
                     {fmt(
                       pick(perf, [
                         ["refrigeration_effect_kj_kg"],
@@ -678,7 +678,7 @@ export function CalculationDetailsModal({
                           1,
                         ) + " kJ/kg"}
                   </div>
-                  <div className="text-sm text-blue-500">
+                  <div className="text-sm text-orange-500">
                     Refrigeration Effect
                   </div>
                 </div>
@@ -873,7 +873,7 @@ export function CalculationDetailsModal({
                 ]) || {};
               return (
                 <div key={index} className="p-4 border rounded-lg">
-                  <h6 className="font-semibold text-blue-600 mb-2">
+                  <h6 className="font-semibold text-orange-600 mb-2">
                     {result.refrigerant || result.name || `Result ${index + 1}`}
                   </h6>
                   <div className="grid grid-cols-2 gap-2 text-sm">
@@ -1052,7 +1052,7 @@ export function CalculationDetailsModal({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h6 className="font-semibold text-blue-600 mb-3">
+                <h6 className="font-semibold text-orange-600 mb-3">
                   Low-Temperature Cycle
                 </h6>
                 <div className="space-y-2 text-sm">

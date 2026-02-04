@@ -1,17 +1,24 @@
-
 export const generateEmailHtml = (data: {
-    companyName: string;
-    headline: string;
-    firstParagraph: string;
-    secondParagraph?: string;
-    infoBox?: { label: string; value: string };
-    cta?: { text: string; url: string };
-    footerText?: string;
+  companyName: string;
+  headline: string;
+  firstParagraph: string;
+  secondParagraph?: string;
+  infoBox?: { label: string; value: string };
+  cta?: { text: string; url: string };
+  footerText?: string;
 }) => {
-    const { companyName, headline, firstParagraph, secondParagraph, infoBox, cta, footerText } = data;
-    const currentYear = new Date().getFullYear();
+  const {
+    companyName,
+    headline,
+    firstParagraph,
+    secondParagraph,
+    infoBox,
+    cta,
+    footerText,
+  } = data;
+  const currentYear = new Date().getFullYear();
 
-    return `
+  return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,12 +35,12 @@ export const generateEmailHtml = (data: {
         h1 { color: #0f172a; font-size: 24px; font-weight: 700; margin: 0 0 16px; }
         p { font-size: 16px; line-height: 1.6; margin: 0 0 24px; color: #475569; }
         .btn-container { text-align: center; margin: 32px 0; }
-        .btn { background-color: #2563eb !important; color: #ffffff !important; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block; mso-padding-alt: 0; text-underline-color: #2563eb; }
+        .btn { background-color: #ea580c !important; color: #ffffff !important; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block; mso-padding-alt: 0; text-underline-color: #ea580c; }
         /* Dark Mode Support */
         @media (prefers-color-scheme: dark) {
-            .btn { background-color: #2563eb !important; color: #ffffff !important; }
+            .btn { background-color: #ea580c !important; color: #ffffff !important; }
         }
-        .info-box { background-color: #f1f5f9; border-left: 4px solid #2563eb; padding: 20px; border-radius: 6px; margin-bottom: 24px; }
+        .info-box { background-color: #f1f5f9; border-left: 4px solid #ea580c; padding: 20px; border-radius: 6px; margin-bottom: 24px; }
         .info-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; font-weight: 700; display: block; margin-bottom: 4px; }
         .info-value { font-size: 18px; color: #0f172a; font-weight: 600; margin: 0; }
         .footer { background-color: #f8fafc; padding: 32px; text-align: center; border-top: 1px solid #e2e8f0; }
@@ -54,18 +61,26 @@ export const generateEmailHtml = (data: {
                         <div class="content">
                             <h1>${headline}</h1>
                             <p>${firstParagraph}</p>
-                            ${secondParagraph ? `<p>${secondParagraph}</p>` : ''}
+                            ${secondParagraph ? `<p>${secondParagraph}</p>` : ""}
                             
-                            ${infoBox ? `
+                            ${
+                              infoBox
+                                ? `
                             <div class="info-box">
                                 <span class="info-label">${infoBox.label}</span>
                                 <p class="info-value">${infoBox.value}</p>
-                            </div>` : ''}
+                            </div>`
+                                : ""
+                            }
 
-                            ${cta ? `
+                            ${
+                              cta
+                                ? `
                             <div class="btn-container">
                                 <a href="${cta.url}" class="btn">${cta.text}</a>
-                            </div>` : ''}
+                            </div>`
+                                : ""
+                            }
 
                             <p style="font-size: 14px; color: #94a3b8; text-align: center; margin-top: 32px;">
                                 Questions? Reply to this email to contact ${companyName} directly.

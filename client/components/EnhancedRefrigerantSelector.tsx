@@ -258,7 +258,7 @@ export function EnhancedRefrigerantSelector({
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-blue-500" />
+                <Shield className="h-4 w-4 text-orange-500" />
                 <div>
                   <div className="text-sm font-medium">Safety</div>
                   <div className="text-sm text-gray-600">
@@ -325,7 +325,7 @@ export function EnhancedRefrigerantSelector({
 
             {/* Suggested Operating Range */}
             {onSuggestedRangeApply && (
-              <div className="border rounded-lg p-4 bg-blue-50 relative">
+              <div className="border rounded-lg p-4 bg-orange-50 relative">
                 {aiLoading && (
                   <div className="absolute inset-0 flex items-center justify-center rounded-lg z-20 bg-white/60 backdrop-blur-sm">
                     <div className="flex flex-col items-center gap-2">

@@ -1,8 +1,22 @@
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
-import { Check, Loader2, ShieldCheck, ArrowLeft, Zap, Star } from "lucide-react";
+import {
+  Check,
+  Loader2,
+  ShieldCheck,
+  ArrowLeft,
+  Zap,
+  Star,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
@@ -13,14 +27,18 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 
 // Initialize Stripe (Replace with your Publishable Key)
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "pk_test_placeholder");
+const stripePromise = loadStripe(
+  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "pk_test_placeholder",
+);
 
 export default function Pricing() {
   const { user, isAuthenticated } = useSupabaseAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [billingInterval, setBillingInterval] = useState<"monthly" | "yearly">("monthly");
+  const [billingInterval, setBillingInterval] = useState<"monthly" | "yearly">(
+    "monthly",
+  );
 
   const handleSubscribe = async () => {
     setLoading(true);
@@ -31,7 +49,10 @@ export default function Pricing() {
       // HVAC-R Pro Monthly Subscription ($29.99)
       const PRICE_ID = "price_1RoubeDEMsXB9pF0W6wzgCFX";
 
-      const { data: { session }, error } = await supabase.auth.getSession();
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
       if (!session) {
         toast({
           title: "Authentication Required",
@@ -50,7 +71,7 @@ export default function Pricing() {
             Authorization: `Bearer ${session.access_token}`,
           },
           body: JSON.stringify({ priceId: PRICE_ID }),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -69,7 +90,8 @@ export default function Pricing() {
       toast({
         variant: "destructive",
         title: "Payment Failed",
-        description: error.message || "Could not initiate checkout. Please try again.",
+        description:
+          error.message || "Could not initiate checkout. Please try again.",
       });
     } finally {
       setLoading(false);
@@ -83,14 +105,14 @@ export default function Pricing() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-purple-500/30">
+    <div className="min-h-screen bg-background text-foreground selection:bg-orange-500/30">
       <Header variant="landing" />
 
       <main className="flex-grow pt-24 pb-20 px-4 relative overflow-hidden">
         {/* Background Elements */}
-        <div className="absolute top-0 inset-x-0 h-[600px] bg-gradient-to-b from-purple-50/50 to-transparent dark:from-purple-900/10 dark:to-transparent pointer-events-none -z-10" />
-        <div className="absolute top-[10%] right-[-10%] w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-[10%] left-[-10%] w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute top-0 inset-x-0 h-[600px] bg-gradient-to-b from-orange-50/50 to-transparent dark:from-orange-900/10 dark:to-transparent pointer-events-none -z-10" />
+        <div className="absolute top-[10%] right-[-10%] w-[600px] h-[600px] bg-orange-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-[10%] left-[-10%] w-[600px] h-[600px] bg-orange-500/10 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="max-w-[1600px] mx-auto">
           <motion.div
@@ -102,7 +124,7 @@ export default function Pricing() {
             <Button
               variant="ghost"
               className="mb-8 hover:bg-transparent hover:text-primary pl-0"
-              onClick={() => navigate(isAuthenticated ? '/dashboard' : '/')}
+              onClick={() => navigate(isAuthenticated ? "/dashboard" : "/")}
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Dashboard
@@ -110,12 +132,13 @@ export default function Pricing() {
 
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
               Simple, Transparent <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-orange-700">
                 Pricing
               </span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Choose the plan that fits your needs. No hidden fees. Cancel anytime.
+              Choose the plan that fits your needs. No hidden fees. Cancel
+              anytime.
             </p>
           </motion.div>
 
@@ -145,7 +168,7 @@ export default function Pricing() {
                       "Standard Vapor Compression Cycles",
                       "Basic Interactive Charts",
                       "Limited Calculation History",
-                      "Community Support"
+                      "Community Support",
                     ].map((feature, i) => (
                       <div key={i} className="flex items-center">
                         <div className="h-5 w-5 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mr-3 shrink-0">
@@ -157,7 +180,11 @@ export default function Pricing() {
                   </div>
                 </CardContent>
                 <CardFooter className="mt-auto pt-8">
-                  <Button variant="outline" className="w-full h-12 text-lg" disabled>
+                  <Button
+                    variant="outline"
+                    className="w-full h-12 text-lg"
+                    disabled
+                  >
                     Current Plan
                   </Button>
                 </CardFooter>
@@ -171,10 +198,10 @@ export default function Pricing() {
               transition={{ delay: 0.3 }}
               className="relative"
             >
-              <div className="absolute -inset-[2px] rounded-[22px] bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 opacity-75 blur-sm animate-pulse" />
+              <div className="absolute -inset-[2px] rounded-[22px] bg-gradient-to-r from-slate-600 via-orange-600 to-slate-600 opacity-75 blur-sm animate-pulse" />
               <Card className="h-full relative overflow-hidden border-transparent bg-background/90 backdrop-blur-xl transition-all duration-300">
                 <div className="absolute top-0 right-0 p-4">
-                  <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 border-0 text-white px-3 py-1">
+                  <Badge className="bg-gradient-to-r from-slate-600 to-orange-600 border-0 text-white px-3 py-1">
                     Most Popular
                   </Badge>
                 </div>
@@ -189,7 +216,9 @@ export default function Pricing() {
                 </CardHeader>
                 <CardContent>
                   <div className="mb-6">
-                    <span className="text-5xl font-bold text-foreground">$29</span>
+                    <span className="text-5xl font-bold text-foreground">
+                      $29
+                    </span>
                     <span className="text-muted-foreground ml-2">/ month</span>
                   </div>
                   <div className="space-y-4">
@@ -199,24 +228,30 @@ export default function Pricing() {
                       "Professional PDF Reports & Exports",
                       "Team Collaboration Tools",
                       "Priority Email Support",
-                      "Cloud Synchronization"
+                      "Cloud Synchronization",
                     ].map((feature, i) => (
                       <div key={i} className="flex items-center">
-                        <div className="h-5 w-5 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mr-3 shrink-0">
-                          <Check className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+                        <div className="h-5 w-5 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mr-3 shrink-0">
+                          <Check className="h-3 w-3 text-orange-600 dark:text-orange-400" />
                         </div>
-                        <span className="font-medium text-foreground">{feature}</span>
+                        <span className="font-medium text-foreground">
+                          {feature}
+                        </span>
                       </div>
                     ))}
                   </div>
                 </CardContent>
                 <CardFooter className="mt-auto pt-8">
                   <Button
-                    className="w-full h-12 text-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg shadow-blue-500/25 border-0"
+                    className="w-full h-12 text-lg bg-gradient-to-r from-slate-600 to-orange-600 hover:from-slate-700 hover:to-orange-700 text-white shadow-lg shadow-orange-500/25 border-0"
                     onClick={handleSubscribe}
                     disabled={loading}
                   >
-                    {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "Upgrade to Pro"}
+                    {loading ? (
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    ) : (
+                      "Upgrade to Pro"
+                    )}
                   </Button>
                 </CardFooter>
               </Card>

@@ -11,6 +11,7 @@ Welcome to the **ThermoNeural (HVAC-R)** developer documentation. This guide pro
 - **Styling:** [Tailwind CSS](https://tailwindcss.com/)
 - **Architecture:** Route-based code splitting (80% bundle reduction)
 - **UI Components:** [Radix UI](https://www.radix-ui.com/) (Headless), [Shadcn UI](https://ui.shadcn.com/) implementation patterns
+    - **Standards:** Dropdowns and popovers utilize the "Office" theme (`bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl`) with neutral slate highlights.
 - **State Management:** React Context + Hooks (`useSupabaseAuth`, `useToast`, etc.)
 - **Routing:** `react-router-dom` (Standardized under `/dashboard/*`)
 - **SEO:** `react-helmet-async` with generic `<SEO />` component
@@ -95,7 +96,10 @@ Authentication is handled via Supabase Auth. The frontend uses `useSupabaseAuth`
 - **Session Persistence:** Tokens are stored in `localStorage` by the Supabase client to survive PWA reloads.
 - **Protected Routes:** `ProtectedRoute` component ensures only authenticated users access secured pages.
 - **RBAC:**
-  - **Admin/Tech**: Full access to Dashboard, Jobs, and Tools.
+  - **Admin**: Full access to Dashboard, Jobs, Teams, and Company settings.
+  - **Manager**: View/Manage all jobs and team members within their specific company.
+  - **Tech / Technician**: View assigned jobs, update status, and perform calculations.
+  - **Student**: Access to calculators and learning materials (Web Stories).
   - **Client**: Restricted to `/portal`, `/history`, and `/track-job`. Attempts to access unrestricted routes are automatically redirected.
 
 ### Calculations
@@ -105,8 +109,12 @@ Calculations (e.g., Standard Cycle, Cascade Cycle) employ a **Hybrid Architectur
 - **Server-Side:** Heavy thermodynamic properties (via CoolProp) are calculated in a **Python/FastAPI Service** hosted on **Render**.
     - This service ensures accurate thermodynamic modeling (e.g., standard cycle, cascade).
 - **AI Logic**: All AI features follow the **AI Gateway Pattern**.
-    - **Gateway**: `supabase/functions/ai-gateway` acts as the central router for all LLM requests (xAI, DeepSeek, Groq).
-    - **Functions**: `ai-troubleshoot` and `analyze-triage-media` call the gateway instead of calling providers directly.
+    - **Gateway**: `supabase/functions/ai-gateway` acts as the central router for all LLM requests.
+    - **Routing Modes**:
+        - `fast-reasoning`: Grok-2 (`grok-2-1212`) for complex logic and reasoning.
+        - `vision`: Grok-2 Vision (`grok-2-vision-1212`) for media analysis.
+        - `physics`: DeepSeek (`deepseek-reasoner`) for thermodynamic and technical validation.
+        - `general`: Groq (`llama-3.3-70b-versatile`) for fast chat and UI text.
     - **Dual Persona**: Supports "Homeowner" (safety first) and "Technician" (technical data) personas via context injection in the calling functions.
 - **API Client:** `client/lib/api.ts` handles all external requests. It automatically injects the Supabase Access Token into the `Authorization` header for secure endpoints.
 
