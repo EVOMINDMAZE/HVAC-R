@@ -38,6 +38,15 @@ import {
 import { supabaseDiag } from "./routes/diagnostics.ts";
 import { uploadAvatar } from "./routes/storage.ts";
 import {
+  analyzePatterns,
+  getRelatedPatterns,
+  createSymptomOutcomePattern,
+  createMeasurementAnomalyPattern,
+  updatePatternFeedback,
+  getPatternsByType,
+  enhancedTroubleshoot,
+} from "./routes/ai-patterns.ts";
+import {
   getTeam,
   inviteTeamMember,
   updateTeamMemberRole,
@@ -185,6 +194,35 @@ export function createServer() {
 
   // Server-side PDF report generation
   app.post("/api/reports/generate", authenticateEither, generateReportPdf);
+
+  // AI Pattern Recognition Routes
+  app.post("/api/ai/patterns/analyze", authenticateEither, analyzePatterns);
+  app.post("/api/ai/patterns/related", authenticateEither, getRelatedPatterns);
+  app.post(
+    "/api/ai/patterns/symptom-outcome",
+    authenticateEither,
+    createSymptomOutcomePattern,
+  );
+  app.post(
+    "/api/ai/patterns/measurement-anomaly",
+    authenticateEither,
+    createMeasurementAnomalyPattern,
+  );
+  app.put(
+    "/api/ai/patterns/:patternId/feedback",
+    authenticateEither,
+    updatePatternFeedback,
+  );
+  app.get(
+    "/api/ai/patterns/:companyId/:type",
+    authenticateEither,
+    getPatternsByType,
+  );
+  app.post(
+    "/api/ai/enhanced-troubleshoot",
+    authenticateEither,
+    enhancedTroubleshoot,
+  );
 
   // Error handling middleware
   app.use(

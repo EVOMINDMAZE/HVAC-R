@@ -60,53 +60,102 @@ const SYMPTOMS = [
   { id: "noisy", label: "Unusual noise/vibration" },
 ];
 
-function AiAnalysisDisplay({ data }: { data: any }) {
-  if (!data) return null;
+import { EnhancedTroubleshooting } from "@/components/ai/EnhancedTroubleshooting";
+import { TechnicianFeedback } from "@/components/ai/TechnicianFeedback";
+import { aiPatternsAPI } from "@/lib/ai-patterns";
+
+function AiAnalysisDisplay({
+  data,
+  symptoms,
+  measurements,
+  equipmentModel,
+  companyId,
+}: {
+  data: any;
+  symptoms: string[];
+  measurements: Record<string, number>;
+  equipmentModel?: string;
+  companyId: string;
+}) {
+  const [patternData, setPatternData] = useState(null);
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+
+  const handleRecommendationSelect = (recommendation) => {
+    console.log("Selected recommendation:", recommendation);
+    // Integrate with existing action flow
+  };
+
+  const handleFeedbackSubmit = (feedback) => {
+    console.log("Feedback submitted:", feedback);
+    setFeedbackSubmitted(true);
+  };
 
   return (
-    <div className="space-y-8 animate-in slide-in-from-bottom-5 duration-700">
-      {/* 1. Expert Summary Badge & Content */}
-      <Card className="overflow-hidden border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl">
-        <div className="absolute top-0 left-0 w-1 bg-gradient-to-b from-slate-500 to-slate-600 h-full" />
-        <CardHeader className="bg-gradient-to-r from-slate-50 to-white dark:from-slate-900 dark:to-slate-900 border-b border-slate-100 dark:border-slate-900/50 pb-4">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-slate-100 dark:bg-slate-900/50 flex items-center justify-center border border-slate-200 dark:border-slate-700">
-                <Bot className="h-6 w-6 text-slate-600 dark:text-slate-400" />
-              </div>
-              <div>
-                <CardTitle className="text-xl font-bold text-slate-950 dark:text-slate-100">
-                  Expert Analysis
-                </CardTitle>
-                <CardDescription className="text-slate-600/80 dark:text-slate-300">
-                  AI-Generated Diagnostic Report
-                </CardDescription>
-              </div>
-            </div>
+    <div className="space-y-8">
+      {/* Enhanced Pattern Recognition */}
+      <EnhancedTroubleshooting
+        symptoms={symptoms}
+        measurements={measurements}
+        equipmentModel={equipmentModel}
+        companyId={companyId}
+        onRecommendationSelect={handleRecommendationSelect}
+      />
 
-            {data.urgency && (
-              <Badge
-                variant={
-                  data.urgency.toLowerCase() === "urgent"
-                    ? "destructive"
-                    : "outline"
-                }
-                className={`
-                  px-4 py-1.5 text-sm font-medium uppercase tracking-wide
-                  ${data.urgency.toLowerCase() !== "urgent" ? "bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-950 dark:text-slate-300 dark:border-slate-800" : ""}
-                `}
-              >
-                {data.urgency} Priority
-              </Badge>
-            )}
-          </div>
-        </CardHeader>
-        <CardContent className="pt-6 pb-8 px-6 md:px-8">
-          <div className="text-lg md:text-xl leading-relaxed text-slate-700 dark:text-slate-200 font-medium">
-            {data.summary}
-          </div>
-        </CardContent>
-      </Card>
+      {/* Existing AI Analysis */}
+      {data && (
+        <Card className="overflow-hidden border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl">
+          <div className="absolute top-0 left-0 w-1 bg-gradient-to-b from-slate-500 to-slate-600 h-full" />
+          <CardHeader className="bg-gradient-to-r from-slate-50 to-white dark:from-slate-900 dark:to-slate-900 border-b border-slate-100 dark:border-slate-900/50 pb-4">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-slate-100 dark:bg-slate-900/50 flex items-center justify-center border border-slate-200 dark:border-slate-700">
+                  <Bot className="h-6 w-6 text-slate-600 dark:text-slate-400" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl font-bold text-slate-950 dark:text-slate-100">
+                    Expert Analysis
+                  </CardTitle>
+                  <CardDescription className="text-slate-600/80 dark:text-slate-300">
+                    AI-Generated Diagnostic Report
+                  </CardDescription>
+                </div>
+              </div>
+
+              {data.urgency && (
+                <Badge
+                  variant={
+                    data.urgency.toLowerCase() === "urgent"
+                      ? "destructive"
+                      : "outline"
+                  }
+                  className={`
+                    px-4 py-1.5 text-sm font-medium uppercase tracking-wide
+                    ${data.urgency.toLowerCase() !== "urgent" ? "bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-950 dark:text-slate-300 dark:border-slate-800" : ""}
+                  `}
+                >
+                  {data.urgency} Priority
+                </Badge>
+              )}
+            </div>
+          </CardHeader>
+          <CardContent className="pt-6 pb-8 px-6 md:px-8">
+            <div className="text-lg md:text-xl leading-relaxed text-slate-700 dark:text-slate-200 font-medium">
+              {data.summary}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Technician Feedback */}
+      {!feedbackSubmitted && (
+        <TechnicianFeedback
+          diagnosis={data?.diagnosis || "General troubleshooting"}
+          recommendedActions={data?.recommended_actions || []}
+          symptoms={symptoms}
+          equipmentModel={equipmentModel}
+          troubleshootingSessionId="current-session-id" // Replace with actual session ID
+        />
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* 2. Probable Causes */}
@@ -1204,7 +1253,24 @@ export function TroubleshootingContent() {
                   </Card>
                 )}
 
-                {aiResponse && <AiAnalysisDisplay data={aiResponse} />}
+                {aiResponse && (
+                  <AiAnalysisDisplay
+                    data={aiResponse}
+                    symptoms={[symptom]}
+                    measurements={{
+                      suction_pressure: suctionPressure
+                        ? Number(suctionPressure)
+                        : undefined,
+                      head_pressure: headPressure
+                        ? Number(headPressure)
+                        : undefined,
+                      voltage: voltage ? Number(voltage) : undefined,
+                      current: current ? Number(current) : undefined,
+                    }}
+                    equipmentModel={modelSerial || undefined}
+                    companyId="default-company" // TODO: Get from user context
+                  />
+                )}
               </TabsContent>
             </Tabs>
           </div>

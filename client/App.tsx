@@ -1,4 +1,11 @@
-import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+  useLocation,
+} from "react-router-dom";
 import { useEffect, Suspense, lazy } from "react";
 import { SupabaseAuthProvider, useAuth } from "@/hooks/useSupabaseAuth";
 import { ToastProvider, useToast } from "@/hooks/useToast";
@@ -12,12 +19,22 @@ import { SignUp } from "@/pages/SignUp";
 import NotFound from "@/pages/NotFound";
 
 // Lazy-loaded route components for code-splitting
-const A2LLandingPage = lazy(() => import("@/pages/A2LLandingPage").then(m => ({ default: m.A2LLandingPage })));
-const Features = lazy(() => import("@/pages/Features").then(m => ({ default: m.Features })));
+const A2LLandingPage = lazy(() =>
+  import("@/pages/A2LLandingPage").then((m) => ({ default: m.A2LLandingPage })),
+);
+const Features = lazy(() =>
+  import("@/pages/Features").then((m) => ({ default: m.Features })),
+);
 const Pricing = lazy(() => import("@/pages/Pricing"));
-const Dashboard = lazy(() => import("@/pages/Dashboard").then(m => ({ default: m.Dashboard })));
-const Profile = lazy(() => import("@/pages/Profile").then(m => ({ default: m.Profile })));
-const History = lazy(() => import("@/pages/History").then(m => ({ default: m.History })));
+const Dashboard = lazy(() =>
+  import("@/pages/Dashboard").then((m) => ({ default: m.Dashboard })),
+);
+const Profile = lazy(() =>
+  import("@/pages/Profile").then((m) => ({ default: m.Profile })),
+);
+const History = lazy(() =>
+  import("@/pages/History").then((m) => ({ default: m.History })),
+);
 const AdvancedReporting = lazy(() => import("@/pages/AdvancedReporting"));
 const Troubleshooting = lazy(() => import("@/pages/Troubleshooting"));
 const DIYCalculators = lazy(() => import("@/pages/DIYCalculators"));
@@ -27,9 +44,17 @@ const Jobs = lazy(() => import("@/pages/Jobs"));
 const CompanySettings = lazy(() => import("@/pages/CompanySettings"));
 const Team = lazy(() => import("@/pages/settings/Team"));
 const Projects = lazy(() => import("@/pages/Projects"));
-const ClientDetail = lazy(() => import("@/pages/ClientDetail").then(m => ({ default: m.ClientDetail })));
-const Clients = lazy(() => import("@/pages/Clients").then(m => ({ default: m.Clients })));
-const ClientDashboard = lazy(() => import("@/pages/ClientDashboard").then(m => ({ default: m.ClientDashboard })));
+const ClientDetail = lazy(() =>
+  import("@/pages/ClientDetail").then((m) => ({ default: m.ClientDetail })),
+);
+const Clients = lazy(() =>
+  import("@/pages/Clients").then((m) => ({ default: m.Clients })),
+);
+const ClientDashboard = lazy(() =>
+  import("@/pages/ClientDashboard").then((m) => ({
+    default: m.ClientDashboard,
+  })),
+);
 const ClientTrackJob = lazy(() => import("@/pages/ClientTrackJob"));
 const Dispatch = lazy(() => import("@/pages/dashboard/Dispatch"));
 const TriageDashboard = lazy(() => import("@/pages/dashboard/TriageDashboard"));
@@ -38,35 +63,81 @@ const ActiveJob = lazy(() => import("@/pages/tech/ActiveJob"));
 import JobBoard from "@/pages/tech/JobBoard"; // Direct import for debugging
 const FleetDashboard = lazy(() => import("@/pages/dashboard/FleetDashboard"));
 const Career = lazy(() => import("@/pages/Career"));
-const StandardCycle = lazy(() => import("@/pages/StandardCycle").then(m => ({ default: m.StandardCycle })));
-const RefrigerantComparison = lazy(() => import("@/pages/RefrigerantComparison").then(m => ({ default: m.RefrigerantComparison })));
-const CascadeCycle = lazy(() => import("@/pages/CascadeCycle").then(m => ({ default: m.CascadeCycle })));
-const RefrigerantInventory = lazy(() => import("@/pages/refrigerant/Inventory"));
-const ComplianceReport = lazy(() => import("@/pages/refrigerant/ComplianceReport"));
-const LeakRateCalculator = lazy(() => import("@/pages/refrigerant/LeakRateCalculator"));
+const StandardCycle = lazy(() =>
+  import("@/pages/StandardCycle").then((m) => ({ default: m.StandardCycle })),
+);
+const RefrigerantComparison = lazy(() =>
+  import("@/pages/RefrigerantComparison").then((m) => ({
+    default: m.RefrigerantComparison,
+  })),
+);
+const CascadeCycle = lazy(() =>
+  import("@/pages/CascadeCycle").then((m) => ({ default: m.CascadeCycle })),
+);
+const RefrigerantInventory = lazy(
+  () => import("@/pages/refrigerant/Inventory"),
+);
+const ComplianceReport = lazy(
+  () => import("@/pages/refrigerant/ComplianceReport"),
+);
+const LeakRateCalculator = lazy(
+  () => import("@/pages/refrigerant/LeakRateCalculator"),
+);
 const WarrantyScanner = lazy(() => import("@/pages/warranty/WarrantyScanner"));
 const Triage = lazy(() => import("@/pages/public/Triage"));
 const IAQWizard = lazy(() => import("@/pages/iaq/IAQWizard"));
-const About = lazy(() => import("@/pages/About").then(m => ({ default: m.About })));
-const Blog = lazy(() => import("@/pages/Blog").then(m => ({ default: m.Blog })));
-const BlogPost = lazy(() => import("@/pages/BlogPost").then(m => ({ default: m.BlogPost })));
-const Contact = lazy(() => import("@/pages/Contact").then(m => ({ default: m.Contact })));
-const Documentation = lazy(() => import("@/pages/Documentation").then(m => ({ default: m.Documentation })));
-const HelpCenter = lazy(() => import("@/pages/HelpCenter").then(m => ({ default: m.HelpCenter })));
-const StripeDebug = lazy(() => import("@/pages/StripeDebug").then(m => ({ default: m.StripeDebug })));
-const Privacy = lazy(() => import("@/pages/Privacy").then(m => ({ default: m.Privacy })));
-const TermsOfService = lazy(() => import("@/pages/TermsOfService").then(m => ({ default: m.TermsOfService })));
-const WebStories = lazy(() => import("@/pages/WebStories").then(m => ({ default: m.WebStories })));
-const Podcasts = lazy(() => import("@/pages/Podcasts").then(m => ({ default: m.Podcasts })));
-const IntegrationLanding = lazy(() => import("@/pages/IntegrationLanding").then(m => ({ default: m.IntegrationLanding })));
-const Callback = lazy(() => import("@/pages/Callback").then(m => ({ default: m.Callback })));
+const About = lazy(() =>
+  import("@/pages/About").then((m) => ({ default: m.About })),
+);
+const Blog = lazy(() =>
+  import("@/pages/Blog").then((m) => ({ default: m.Blog })),
+);
+const BlogPost = lazy(() =>
+  import("@/pages/BlogPost").then((m) => ({ default: m.BlogPost })),
+);
+const Contact = lazy(() =>
+  import("@/pages/Contact").then((m) => ({ default: m.Contact })),
+);
+const Documentation = lazy(() =>
+  import("@/pages/Documentation").then((m) => ({ default: m.Documentation })),
+);
+const HelpCenter = lazy(() =>
+  import("@/pages/HelpCenter").then((m) => ({ default: m.HelpCenter })),
+);
+const StripeDebug = lazy(() =>
+  import("@/pages/StripeDebug").then((m) => ({ default: m.StripeDebug })),
+);
+const Privacy = lazy(() =>
+  import("@/pages/Privacy").then((m) => ({ default: m.Privacy })),
+);
+const TermsOfService = lazy(() =>
+  import("@/pages/TermsOfService").then((m) => ({ default: m.TermsOfService })),
+);
+const WebStories = lazy(() =>
+  import("@/pages/WebStories").then((m) => ({ default: m.WebStories })),
+);
+const Podcasts = lazy(() =>
+  import("@/pages/Podcasts").then((m) => ({ default: m.Podcasts })),
+);
+const IntegrationLanding = lazy(() =>
+  import("@/pages/IntegrationLanding").then((m) => ({
+    default: m.IntegrationLanding,
+  })),
+);
+const Callback = lazy(() =>
+  import("@/pages/Callback").then((m) => ({ default: m.Callback })),
+);
 const AgentSandbox = lazy(() => import("@/pages/AgentSandbox"));
+const PatternInsights = lazy(() =>
+  import("@/pages/ai/PatternInsights").then((m) => ({
+    default: m.PatternInsights,
+  })),
+);
 import { ErrorModal } from "@/components/ErrorModal";
 import { SupportBar } from "@/components/SupportBar";
 import { Layout } from "@/components/Layout";
 import { Toaster } from "@/components/ui/toaster";
 import { SubscriptionGuard } from "@/components/SubscriptionGuard";
-
 
 function shouldBypassAuth() {
   try {
@@ -87,10 +158,16 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const bypass = shouldBypassAuth();
   const location = useLocation();
 
-  console.log('[ProtectedRouteDebug] Check:', { path: location.pathname, isAuthenticated, isLoading, role, bypass });
+  console.log("[ProtectedRouteDebug] Check:", {
+    path: location.pathname,
+    isAuthenticated,
+    isLoading,
+    role,
+    bypass,
+  });
 
   if (isLoading && !bypass) {
-    console.log('[ProtectedRouteDebug] Loading...');
+    console.log("[ProtectedRouteDebug] Loading...");
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -102,18 +179,31 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (!isAuthenticated && !bypass) {
-    console.log('[ProtectedRouteDebug] Not authenticated. Redirecting to /signin');
+    console.log(
+      "[ProtectedRouteDebug] Not authenticated. Redirecting to /signin",
+    );
     return <Navigate to="/signin" replace />;
   }
 
   // RBAC Redirection Logic
-  if (role === 'client') {
-    const allowedClientRoutes = ['/portal', '/history', '/track-job', '/settings', '/dashboard/jobs', '/triage'];
-    const isAllowed = allowedClientRoutes.some(route => location.pathname.startsWith(route));
+  if (role === "client") {
+    const allowedClientRoutes = [
+      "/portal",
+      "/history",
+      "/track-job",
+      "/settings",
+      "/dashboard/jobs",
+      "/triage",
+    ];
+    const isAllowed = allowedClientRoutes.some((route) =>
+      location.pathname.startsWith(route),
+    );
 
     // If client is trying to access restricted areas, redirect to portal
     if (!isAllowed) {
-      console.log('[ProtectedRouteDebug] Client restricted. Redirecting to /portal');
+      console.log(
+        "[ProtectedRouteDebug] Client restricted. Redirecting to /portal",
+      );
       return <Navigate to="/portal" replace />;
     }
     // Render with Layout so clients see their scoped Sidebar
@@ -121,31 +211,45 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   // Technician Logic
-  if (role === 'technician' || role === 'tech') {
+  if (role === "technician" || role === "tech") {
     // Techs only allowed: /tech, /tools, /settings/profile (maybe), /help, /about
     // Explicitly BLOCK: /dashboard (executive), /settings/company, /dashboard/dispatch
-    const blockedRoutes = ['/dashboard', '/settings/company', '/history', '/portal'];
+    const blockedRoutes = [
+      "/dashboard",
+      "/settings/company",
+      "/history",
+      "/portal",
+    ];
     // Allow /dashboard/jobs if it's their view? No, use /tech/jobs.
 
     // Simple block list approach
-    const isBlocked = blockedRoutes.some(route => location.pathname.startsWith(route));
+    const isBlocked = blockedRoutes.some((route) =>
+      location.pathname.startsWith(route),
+    );
     // Exception: /dashboard/jobs is blocked in favor of /tech
 
     // Actually, safest is to redirect /dashboard root to /tech
-    if (location.pathname === '/dashboard' || location.pathname.startsWith('/dashboard/dispatch')) {
-      console.log('[ProtectedRouteDebug] Tech restricted from Exec Dashboard. Redirecting to /tech');
+    if (
+      location.pathname === "/dashboard" ||
+      location.pathname.startsWith("/dashboard/dispatch")
+    ) {
+      console.log(
+        "[ProtectedRouteDebug] Tech restricted from Exec Dashboard. Redirecting to /tech",
+      );
       return <Navigate to="/tech" replace />;
     }
   }
 
   // Logic for Admin/Standard Users
   // If non-admin tries to access portal, redirect to dashboard
-  if (location.pathname.startsWith('/portal') && role !== 'admin') {
-    console.log('[ProtectedRouteDebug] Non-admin restricted. Redirecting to /dashboard');
+  if (location.pathname.startsWith("/portal") && role !== "admin") {
+    console.log(
+      "[ProtectedRouteDebug] Non-admin restricted. Redirecting to /dashboard",
+    );
     return <Navigate to="/dashboard" replace />;
   }
 
-  console.log('[ProtectedRouteDebug] Access Granted.');
+  console.log("[ProtectedRouteDebug] Access Granted.");
   // Wrap protected pages in the app Layout for consistent navigation
   return <Layout>{children}</Layout>;
 }
@@ -168,7 +272,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 
   if (isAuthenticated || bypass) {
     // Redirect based on Role
-    if (role === 'client') {
+    if (role === "client") {
       return <Navigate to="/portal" replace />;
     }
     return <Navigate to="/dashboard" replace />;
@@ -184,11 +288,13 @@ function AppRoutes() {
 
   return (
     <AnimatePresence mode="wait">
-      <Suspense fallback={
-        <div className="min-h-screen bg-background flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-        </div>
-      }>
+      <Suspense
+        fallback={
+          <div className="min-h-screen bg-background flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          </div>
+        }
+      >
         <Routes location={location} key={location.pathname}>
           {/* Public Routes */}
           <Route path="/" element={<Landing />} />
@@ -252,11 +358,14 @@ function AppRoutes() {
           />
 
           {/* Technician Routes */}
-          <Route path="/tech" element={
-            <ProtectedRoute>
-              <JobBoard />
-            </ProtectedRoute>
-          } />
+          <Route
+            path="/tech"
+            element={
+              <ProtectedRoute>
+                <JobBoard />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/tech/jobs/:id"
             element={
@@ -479,12 +588,21 @@ function AppRoutes() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/ai/pattern-insights"
+            element={
+              <ProtectedRoute>
+                <PatternInsights companyId="default-company" />{" "}
+                {/* TODO: Get from user context */}
+              </ProtectedRoute>
+            }
+          />
 
           {/* 404 Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
-    </AnimatePresence >
+    </AnimatePresence>
   );
 }
 
