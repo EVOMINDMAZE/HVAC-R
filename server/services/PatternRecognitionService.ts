@@ -252,6 +252,7 @@ export class PatternRecognitionService {
         throw new Error("Diagnosis is required");
       }
       if (!outcome || !["success", "partial", "failed"].includes(outcome)) {
+        console.log("Invalid outcome:", outcome, "Type:", typeof outcome);
         throw new Error("Outcome must be success, partial, or failed");
       }
       if (!companyId) {

@@ -41,6 +41,7 @@ import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { apiClient } from "@/lib/api";
 import { consumeCalculationPreset } from "@/lib/historyPresets";
 import { useToast } from "@/hooks/use-toast";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { ApiServiceStatus } from "@/components/ApiServiceStatus";
 import { PageContainer } from "@/components/PageContainer";
 
@@ -286,6 +287,7 @@ function AiAnalysisDisplay({
 export function TroubleshootingContent() {
   const { saveCalculation } = useSupabaseCalculations();
   const { toast } = useToast();
+  const { companyId } = useSupabaseAuth();
 
   // --- State ---
   const [symptom, setSymptom] = useState<string>("no_cooling");
@@ -1268,7 +1270,7 @@ export function TroubleshootingContent() {
                       current: current ? Number(current) : undefined,
                     }}
                     equipmentModel={modelSerial || undefined}
-                    companyId="default-company" // TODO: Get from user context
+                    companyId={companyId || ""} // Get from user context
                   />
                 )}
               </TabsContent>

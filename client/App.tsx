@@ -154,7 +154,12 @@ function shouldBypassAuth() {
 
 // Protected Route Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading, role } = useAuth();
+  const {
+    isAuthenticated,
+    isLoading,
+    role,
+    companyId: userCompanyId,
+  } = useAuth();
   const bypass = shouldBypassAuth();
   const location = useLocation();
 
@@ -256,7 +261,12 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
 // Public Route Component (redirect if authenticated)
 function PublicRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading, role } = useAuth();
+  const {
+    isAuthenticated,
+    isLoading,
+    role,
+    companyId: userCompanyId,
+  } = useAuth();
   const bypass = shouldBypassAuth();
 
   if (isLoading && !bypass) {
@@ -592,7 +602,7 @@ function AppRoutes() {
             path="/ai/pattern-insights"
             element={
               <ProtectedRoute>
-                <PatternInsights companyId="default-company" />{" "}
+                <PatternInsights companyId={userCompanyId || ""} />{" "}
                 {/* TODO: Get from user context */}
               </ProtectedRoute>
             }
