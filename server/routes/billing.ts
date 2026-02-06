@@ -137,7 +137,6 @@ router.get("/subscription", authenticateSupabaseToken, async (req, res) => {
 // Stripe webhook handler
 router.post(
   "/webhook",
-  express.raw({ type: "application/json" }),
   async (req, res) => {
     const sig = req.headers["stripe-signature"] as string;
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -146,7 +145,8 @@ router.post(
 
     let event;
     try {
-      event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+      const rawBody = (req as any).rawBody;
+      event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
     } catch (err: any) {
       console.error("Webhook signature verification failed:", err.message);
       return res.status(400).send(`Webhook Error: ${err.message}`);
