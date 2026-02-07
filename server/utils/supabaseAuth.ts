@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import jwt from "jsonwebtoken";
+import { getSupabaseClient } from "./supabase";
 
 // Supabase JWT verification middleware
 export const authenticateSupabaseToken: RequestHandler = async (
@@ -18,32 +18,39 @@ export const authenticateSupabaseToken: RequestHandler = async (
       });
     }
 
-    // Decode the Supabase JWT token without verification for now
-    // In production, you should verify the JWT signature using Supabase JWT secret
-    const decoded = jwt.decode(token) as any;
-    console.log("Decoded token:", decoded ? "valid" : "invalid");
+    // Verify token using Supabase Auth API
+    const supabase = getSupabaseClient(token);
+    if (!supabase) {
+      console.error("Supabase client not initialized (missing env vars)");
+      return res.status(500).json({ error: "Server configuration error" });
+    }
 
-    if (!decoded || !decoded.sub) {
-      console.log("Invalid token structure");
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser();
+
+    if (error || !user) {
+      console.log("Invalid token verified by Supabase");
       return res.status(401).json({
         error: "Invalid token",
       });
     }
 
     // Create a user object from the Supabase token
-    const user = {
-      id: decoded.sub,
-      email: decoded.email,
-      stripe_customer_id: decoded.user_metadata?.stripe_customer_id || null,
+    const userPayload = {
+      id: user.id,
+      email: user.email,
+      stripe_customer_id: user.user_metadata?.stripe_customer_id || null,
       stripe_subscription_id:
-        decoded.user_metadata?.stripe_subscription_id || null,
-      subscription_plan: decoded.user_metadata?.subscription_plan || "free",
+        user.user_metadata?.stripe_subscription_id || null,
+      subscription_plan: user.user_metadata?.subscription_plan || "free",
       subscription_status:
-        decoded.user_metadata?.subscription_status || "active",
+        user.user_metadata?.subscription_status || "active",
     };
 
     // Add user to request object
-    (req as any).user = user;
+    (req as any).user = userPayload;
     next();
   } catch (error) {
     console.error("Supabase authentication error:", error);
