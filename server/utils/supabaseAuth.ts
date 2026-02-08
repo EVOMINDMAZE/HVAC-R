@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import jwt from "jsonwebtoken";
+import { createClient } from "@supabase/supabase-js";
 
 // Supabase JWT verification middleware
 export const authenticateSupabaseToken: RequestHandler = async (
@@ -8,7 +8,7 @@ export const authenticateSupabaseToken: RequestHandler = async (
   next,
 ) => {
   try {
-    console.log("Auth middleware called for:", req.path);
+    // console.log("Auth middleware called for:", req.path);
     const token = req.headers.authorization?.replace("Bearer ", "");
 
     if (!token) {
@@ -18,32 +18,40 @@ export const authenticateSupabaseToken: RequestHandler = async (
       });
     }
 
-    // Decode the Supabase JWT token without verification for now
-    // In production, you should verify the JWT signature using Supabase JWT secret
-    const decoded = jwt.decode(token) as any;
-    console.log("Decoded token:", decoded ? "valid" : "invalid");
+    const supabaseUrl = process.env.VITE_SUPABASE_URL;
+    const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
 
-    if (!decoded || !decoded.sub) {
-      console.log("Invalid token structure");
+    if (!supabaseUrl || !supabaseAnonKey) {
+       console.error("Supabase credentials missing in server environment");
+       return res.status(500).json({ error: "Server configuration error" });
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+    // Verify the JWT by fetching the user from Supabase Auth
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+
+    if (error || !user) {
+      console.log("Invalid token:", error?.message);
       return res.status(401).json({
         error: "Invalid token",
       });
     }
 
-    // Create a user object from the Supabase token
-    const user = {
-      id: decoded.sub,
-      email: decoded.email,
-      stripe_customer_id: decoded.user_metadata?.stripe_customer_id || null,
+    // Create a user object from the Supabase user
+    const userObj = {
+      id: user.id,
+      email: user.email,
+      stripe_customer_id: user.user_metadata?.stripe_customer_id || null,
       stripe_subscription_id:
-        decoded.user_metadata?.stripe_subscription_id || null,
-      subscription_plan: decoded.user_metadata?.subscription_plan || "free",
+        user.user_metadata?.stripe_subscription_id || null,
+      subscription_plan: user.user_metadata?.subscription_plan || "free",
       subscription_status:
-        decoded.user_metadata?.subscription_status || "active",
+        user.user_metadata?.subscription_status || "active",
     };
 
     // Add user to request object
-    (req as any).user = user;
+    (req as any).user = userObj;
     next();
   } catch (error) {
     console.error("Supabase authentication error:", error);
