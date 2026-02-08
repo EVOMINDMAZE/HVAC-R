@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Calculator, User, Menu, X, Flame, ArrowLeft } from "lucide-react";
+import { Calculator, User, Menu, X, Flame, ArrowLeft, Loader2, LogOut } from "lucide-react";
 import { NavLink, Link, useNavigate, useLocation } from "react-router-dom";
 import { Capacitor } from "@capacitor/core";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import { JobSelector } from "@/components/JobSelector";
+import { CompanySwitcher } from "@/components/CompanySwitcher";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
 
 interface HeaderProps {
@@ -15,7 +16,7 @@ interface HeaderProps {
 }
 
 export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
-  const { user, isAuthenticated, signOut } = useSupabaseAuth();
+  const { user, isAuthenticated, signOut, companies, isRefreshing } = useSupabaseAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { addToast } = useToast();
@@ -51,6 +52,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
   const isNative = Capacitor.isNativePlatform();
 
   const handleSignOut = async () => {
+    console.log("[Header] Sign out triggered");
     try {
       await signOut();
       // Always treat as success for UX - clear state and redirect
@@ -113,8 +115,9 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 />
               </Link>
 
-              <div className="hidden md:block ml-4">
+              <div className="hidden md:flex items-center gap-2 ml-4">
                 <JobSelector />
+                <CompanySwitcher />
               </div>
 
               {/* Desktop search */}
@@ -193,7 +196,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                       {user?.user_metadata?.full_name ?? ""}
                     </span>
                   </div>
-                  <div className="hidden md:block relative" ref={avatarRef}>
+                  <div className="hidden md:block relative overflow-visible" ref={avatarRef}>
                     {/* ... Avatar Code ... */}
                     <button
                       type="button"
@@ -246,8 +249,9 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                               handleSignOut();
                             }}
                             role="menuitem"
-                            className="text-left px-3 py-2 text-sm text-destructive hover:bg-slate-50 dark:hover:bg-slate-800 rounded transition-colors"
+                            className="flex items-center gap-2 text-left px-3 py-2 text-sm text-destructive hover:bg-slate-50 dark:hover:bg-slate-800 rounded transition-colors w-full"
                           >
+                            <LogOut className="w-4 h-4" />
                             Sign Out
                           </button>
                         </nav>
@@ -266,9 +270,12 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
             <div className="md:hidden mt-4 pt-4 border-t border-gray-100 dark:border-slate-800 animate-in slide-in-from-top-2">
               <nav className="flex flex-col space-y-1">
                 {/* 0. Mobile Only Controls */}
-                <div className="flex items-center justify-between gap-4 mb-4 pb-4 border-b border-gray-100 dark:border-slate-800">
+                <div className="flex flex-col gap-3 mb-4 pb-4 border-b border-gray-100 dark:border-slate-800">
                   <div className="w-full">
                     <JobSelector />
+                  </div>
+                  <div className="w-full">
+                    <CompanySwitcher />
                   </div>
                 </div>
 
@@ -358,6 +365,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                       setIsMobileMenuOpen(false);
                     }}
                   >
+                    <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
                   </Button>
                 </div>
@@ -451,11 +459,17 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                   {user?.email}
                 </span>
                 <Link
-                  to="/dashboard"
+                  to={companies.length > 0 ? "/dashboard" : "/join-company"}
                   className={isNative ? "hidden" : "hidden md:block"}
                 >
-                  <Button className="bg-orange-600 hover:bg-orange-700 text-white font-semibold shadow-md shadow-orange-500/20 transition-all hover:scale-105">
-                    Go to Dashboard
+                  <Button 
+                    className="bg-orange-600 hover:bg-orange-700 text-white font-semibold shadow-md shadow-orange-500/20 transition-all hover:scale-105"
+                    disabled={isRefreshing}
+                  >
+                    {isRefreshing ? (
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    ) : null}
+                    {companies.length > 0 ? "Go to Dashboard" : "Join Organization"}
                   </Button>
                 </Link>
                 <Button
@@ -538,9 +552,9 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
         {/* Native Mobile ONLY: Authenticated Dashboard Link */}
         {isNative && isAuthenticated && !isMobileMenuOpen && (
           <div className="mt-4 px-1 animate-in fade-in slide-in-from-top-2 duration-300">
-            <Link to="/dashboard">
+            <Link to={companies.length > 0 ? "/dashboard" : "/join-company"}>
               <Button className="w-full h-10 bg-orange-600 hover:bg-orange-700 text-white font-semibold shadow-sm">
-                Go to Dashboard
+                {companies.length > 0 ? "Go to Dashboard" : "Join Organization"}
               </Button>
             </Link>
           </div>
@@ -625,6 +639,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                       setIsMobileMenuOpen(false);
                     }}
                   >
+                    <LogOut className="w-4 h-4 mr-2" />
                     Sign Out
                   </Button>
                 </div>

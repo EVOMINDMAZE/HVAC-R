@@ -15,9 +15,9 @@
 
 | Component | Tech Stack | Hosted On | Purpose | Critical Rule |
 | :--- | :--- | :--- | :--- | :--- |
-| **Client** | React, Vite, Tailwind | Netlify | UI/UX, Dashboards | **NO DOCKER**. PWA Only. |
+| **Client** | React, Vite, Tailwind | Netlify | UI/UX, Dashboards | **PWA Only**. No Docker for client. |
 | **Server** | Node.js, Express | Netlify (Functions) | API Proxy, Webhooks | Stateless. |
-| **Database** | PostgreSQL | Supabase | Auth, Data | **Use Supabase CLI**. |
+| **Database** | PostgreSQL | Supabase (Local Docker for dev, Cloud for prod) | Auth, Data | **Use Supabase CLI with Docker for local development**. |
 | **Math Engine** | Python/Go | **Render** | Thermodynamics, Energy Models | **External Repo** (`thermoneural-calc`). Accessed via API only. |
 | **Automation**| TypeScript (Deno) | **Supabase Edge** | User Automation, Workflows | **Native**. Triggered by DB events or Schedule. |
 
@@ -34,19 +34,21 @@
 
 ## 4. Operational Rules ⚠️
 
-1.  **Docker Ban**: Do **NOT** use Docker or `supabase start` for the Main Application.
-2.  **Cloud-Direct DB**: Always use `supabase db push` to apply migrations to the live project (`rxqflxmzsqhqrzffcsej`). Local DB simulation is deprecated.
+1.  **Docker for Local Development**: Use Docker with `supabase start` for local database development. Configure `.env` with `localhost:54321` for local development.
+2.  **Cloud for Production**: Use `supabase db push` to apply migrations to the live cloud project (`rxqflxmzsqhqrzffcsej`). Production environment uses cloud Supabase exclusively.
 3.  **Render for Math**: If `numpy` or `scipy` is needed, it goes to the **Render Service**, not the Node.js backend.
 4.  **Native First**: Prefer Supabase Edge Functions for automations. Do not spin up external servers unless absolutely necessary.
 
 ## 5. Development Setup 🛠️
 
 1.  **Install**: `npm install`
-2.  **Env**: `cp .env.example .env` (See `.env.example` for required keys).
-3.  **Start**: `npm run dev` (Runs Client :8080 and Server :3001).
+2.  **Supabase CLI**: Install globally: `npm install -g supabase`
+3.  **Start Local Supabase**: `supabase start` (Starts local Docker containers for database, auth, and storage)
+4.  **Env**: `cp .env.example .env` (See `.env.example` for required keys). For local development, ensure `VITE_SUPABASE_URL=http://localhost:54321`
+5.  **Start App**: `npm run dev` (Runs Client :8080 and Server :3001).
 
 ## 6. Key Configuration Keys 🔑
--   `VITE_SUPABASE_URL`: Supabase Endpoint.
+-   `VITE_SUPABASE_URL`: Supabase Endpoint. Use `http://localhost:54321` for local development with Docker, or cloud URL for production.
 -   `VITE_CALCULATION_SERVICE_URL`: URL for the Render Math Engine.
 -   `RENDER_API_KEY`: (Server-side) For managing Render services.
 

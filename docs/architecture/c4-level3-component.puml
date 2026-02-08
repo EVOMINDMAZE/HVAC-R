@@ -1,0 +1,91 @@
+@startuml ThermoNeural_Component_Diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Component Diagram - Web Application (React Frontend)
+
+Container(web_app, "Web Application", "React 18, TypeScript, Vite", "Main user interface")
+
+Container_Boundary(web_app_boundary, "Web Application Components") {
+    Component(router, "Router", "React Router 6", "Route handling and navigation")
+    
+    Component(auth_context, "Auth Context", "React Context", "Authentication state management")
+    Component(company_context, "Company Context", "React Context", "Multi-tenant company switching")
+    Component(subscription_context, "Subscription Context", "React Context", "Feature access control")
+    
+    Component(calc_components, "Calculator Components", "React", "Physics calculation UIs")
+    Component(job_components, "Job Components", "React", "Job management UIs")
+    Component(team_components, "Team Components", "React", "Team management UIs")
+    Component(report_components, "Report Components", "React", "PDF report generation UIs")
+    Component(ai_components, "AI Components", "React", "Diagnostics and pattern UIs")
+    
+    Component(calc_hooks, "Calculation Hooks", "Custom Hooks", "Physics calculation logic")
+    Component(auth_hooks, "Auth Hooks", "Custom Hooks", "Supabase auth integration")
+    Component(api_hooks, "API Hooks", "Custom Hooks", "Data fetching and caching")
+    
+    Component(ui_library, "UI Library", "Shadcn UI, Tailwind", "Reusable UI components")
+    Component(feature_lock, "Feature Lock", "React Component", "Subscription-based feature gating")
+    
+    Component(pwa_service, "PWA Service", "Service Worker", "Offline capability and caching")
+    Component(storage_manager, "Storage Manager", "TypeScript", "Local storage and IndexedDB")
+    Component(consent_banner, "Consent Banner", "React Component", "Cookie consent UI with customization options")
+    Component(privacy_page, "Privacy Policy Page", "React Component", "Full privacy policy with DSR request forms")
+    Component(privacy_hooks, "Privacy Hooks", "Custom Hooks", "Consent management and DSR API integration")
+}
+
+Container(api_server, "API Server", "Express.js", "Backend API") {
+    Container_Boundary(api_server_components, "API Server Components") {
+        Component(privacy_routes, "Privacy Routes", "Express.js", "Consent recording, DSR processing, data export")
+    }
+}
+Container(edge_functions, "Edge Functions", "Deno", "Serverless functions")
+ContainerDb(supabase, "Supabase", "PostgreSQL", "Database and auth") {
+    ContainerDb(user_consents, "User Consents Table", "PostgreSQL", "GDPR/CCPA consent tracking")
+}
+
+Rel(router, auth_context, "Uses")
+Rel(router, company_context, "Uses")
+Rel(router, subscription_context, "Uses")
+Rel(router, privacy_page, "Routes to")
+
+Rel(auth_context, auth_hooks, "Uses")
+Rel(auth_hooks, supabase, "Authenticates", "HTTPS")
+Rel(consent_banner, privacy_hooks, "Uses")
+Rel(privacy_page, privacy_hooks, "Uses")
+Rel(privacy_hooks, privacy_routes, "API calls", "HTTPS/JSON")
+Rel(privacy_routes, user_consents, "Records consents", "SQL")
+
+Rel(company_context, api_hooks, "Uses")
+Rel(subscription_context, api_hooks, "Uses")
+
+Rel(calc_components, calc_hooks, "Uses")
+Rel(calc_hooks, api_server, "Saves calculations", "HTTPS")
+Rel(calc_hooks, storage_manager, "Caches offline", "Local")
+
+Rel(job_components, api_hooks, "Uses")
+Rel(team_components, api_hooks, "Uses")
+Rel(report_components, api_hooks, "Uses")
+Rel(ai_components, edge_functions, "AI requests", "HTTPS")
+
+Rel(api_hooks, api_server, "API calls", "HTTPS/JSON")
+Rel(api_hooks, edge_functions, "Edge calls", "HTTPS/JSON")
+
+Rel(calc_components, ui_library, "Renders")
+Rel(job_components, ui_library, "Renders")
+Rel(team_components, ui_library, "Renders")
+Rel(report_components, ui_library, "Renders")
+Rel(ai_components, ui_library, "Renders")
+Rel(consent_banner, ui_library, "Renders")
+Rel(privacy_page, ui_library, "Renders")
+
+Rel(feature_lock, subscription_context, "Checks access")
+Rel(calc_components, feature_lock, "Validates")
+Rel(ai_components, feature_lock, "Validates")
+
+Rel(pwa_service, storage_manager, "Manages cache")
+Rel(web_app, pwa_service, "Registers")
+
+SHOW_LEGEND()
+
+@enduml

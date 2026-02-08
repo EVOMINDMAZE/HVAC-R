@@ -1,3 +1,9 @@
+---
+name: ThermoNeural Master Execution Plan 📋
+description: This document is the Active Roadmap. It breaks down every single task required to build the "Blue Ocean" features (EPA, Automations, Warranty, etc.).
+version: 1.0
+---
+
 # ThermoNeural Master Execution Plan 📋
 
 This document is the **Active Roadmap**. It breaks down every single task required to build the "Blue Ocean" features (EPA, Automations, Warranty, etc.).
@@ -25,7 +31,7 @@ This document is the **Active Roadmap**. It breaks down every single task requir
   - [x] Create `client/pages/refrigerant/ComplianceReport.tsx`.
   - [x] Feature: "Export CSV" button (matches EPA format).
 
-## 🎉 PHASE 1 COMPLETE!
+## 🎉 PHASE 1 COMPLETE
 
 ---
 

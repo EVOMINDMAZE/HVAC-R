@@ -21,7 +21,7 @@ if (loginError || !session) {
 }
 
 const token = session.access_token;
-const email = "hanniz.riadus@outlook.com";
+const email = "test@example.com";
 
 // TEST RPC DIRECTLY
 console.log(`Testing RPC get_user_id_by_email for ${email}...`);

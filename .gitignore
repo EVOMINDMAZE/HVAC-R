@@ -35,5 +35,8 @@ supabase/.branches
 test-results/
 coverage/
 playwright-report/
-playwright/.auth/
-playwright/.auth/*.json
+playwright.auth/
+playwright.auth/*.json
+
+# Session files
+session-*.md

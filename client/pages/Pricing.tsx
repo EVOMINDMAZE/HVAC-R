@@ -7,6 +7,8 @@ import {
   ArrowLeft,
   Zap,
   Star,
+  Building,
+  Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
@@ -25,6 +28,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
+import { PLANS, STRIPE_PRICE_IDS } from "@/lib/stripe";
 
 // Initialize Stripe (Replace with your Publishable Key)
 const stripePromise = loadStripe(
@@ -34,31 +38,42 @@ const stripePromise = loadStripe(
 export default function Pricing() {
   const { user, isAuthenticated } = useSupabaseAuth();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<string | null>(null);
   const navigate = useNavigate();
   const [billingInterval, setBillingInterval] = useState<"monthly" | "yearly">(
     "monthly",
   );
 
-  const handleSubscribe = async () => {
-    setLoading(true);
+  const handleSubscribe = async (planId: string) => {
+    setLoading(planId);
     try {
       const stripe = await stripePromise;
       if (!stripe) throw new Error("Stripe failed to load");
 
-      // HVAC-R Pro Monthly Subscription ($29.99)
-      const PRICE_ID = "price_1RoubeDEMsXB9pF0W6wzgCFX";
+      // Get the appropriate price ID based on plan and billing interval
+      let priceId = "";
+      if (planId === "pro" && billingInterval === "monthly") {
+        priceId = STRIPE_PRICE_IDS.PROFESSIONAL_MONTHLY;
+      } else if (planId === "pro" && billingInterval === "yearly") {
+        priceId = STRIPE_PRICE_IDS.PROFESSIONAL_YEARLY;
+      } else if (planId === "business" && billingInterval === "monthly") {
+        priceId = STRIPE_PRICE_IDS.ENTERPRISE_MONTHLY;
+      } else if (planId === "business" && billingInterval === "yearly") {
+        priceId = STRIPE_PRICE_IDS.ENTERPRISE_YEARLY;
+      } else {
+        throw new Error("Invalid plan selection");
+      }
 
       const {
         data: { session },
-        error,
+        error: sessionError,
       } = await supabase.auth.getSession();
-      if (!session) {
+      if (!session || sessionError) {
         toast({
           title: "Authentication Required",
           description: "Please sign in to upgrade your plan.",
         });
-        navigate("/signin"); // Redirect to sign in if not authenticated
+        navigate("/signin");
         return;
       }
 
@@ -70,7 +85,7 @@ export default function Pricing() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${session.access_token}`,
           },
-          body: JSON.stringify({ priceId: PRICE_ID }),
+          body: JSON.stringify({ priceId }),
         },
       );
 
@@ -94,7 +109,7 @@ export default function Pricing() {
           error.message || "Could not initiate checkout. Please try again.",
       });
     } finally {
-      setLoading(false);
+      setLoading(null);
     }
   };
 
@@ -102,6 +117,17 @@ export default function Pricing() {
     initial: { opacity: 0, y: 30 },
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.5, ease: "easeOut" },
+  };
+
+  // Get plans based on billing interval
+  const getPlan = (basePlan: keyof typeof PLANS) => {
+    if (billingInterval === "yearly" && basePlan === "PRO") {
+      return PLANS.PRO_YEARLY;
+    }
+    if (billingInterval === "yearly" && basePlan === "BUSINESS") {
+      return PLANS.BUSINESS_YEARLY;
+    }
+    return PLANS[basePlan];
   };
 
   return (
@@ -140,9 +166,31 @@ export default function Pricing() {
               Choose the plan that fits your needs. No hidden fees. Cancel
               anytime.
             </p>
+
+            {/* Billing Interval Toggle */}
+            <div className="flex justify-center mt-8">
+              <Tabs
+                defaultValue="monthly"
+                value={billingInterval}
+                onValueChange={(value) =>
+                  setBillingInterval(value as "monthly" | "yearly")
+                }
+                className="w-full max-w-sm"
+              >
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="monthly">Monthly</TabsTrigger>
+                  <TabsTrigger value="yearly">
+                    Yearly{" "}
+                    <Badge className="ml-2 bg-green-600 hover:bg-green-700">
+                      Save 2 months
+                    </Badge>
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {/* Free Plan */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -152,7 +200,7 @@ export default function Pricing() {
               <Card className="h-full relative overflow-hidden border-border bg-card/50 backdrop-blur-sm hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="text-2xl font-bold flex items-center justify-between">
-                    Starter
+                    Free
                   </CardTitle>
                   <CardDescription className="text-base mt-2">
                     Essential tools for students and hobbyists.
@@ -161,15 +209,12 @@ export default function Pricing() {
                 <CardContent>
                   <div className="mb-6">
                     <span className="text-4xl font-bold">$0</span>
-                    <span className="text-muted-foreground ml-2">/ month</span>
+                    <span className="text-muted-foreground ml-2">
+                      / {billingInterval === "yearly" ? "year" : "month"}
+                    </span>
                   </div>
                   <div className="space-y-4">
-                    {[
-                      "Standard Vapor Compression Cycles",
-                      "Basic Interactive Charts",
-                      "Limited Calculation History",
-                      "Community Support",
-                    ].map((feature, i) => (
+                    {PLANS.FREE.features.map((feature, i) => (
                       <div key={i} className="flex items-center">
                         <div className="h-5 w-5 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mr-3 shrink-0">
                           <Check className="h-3 w-3 text-slate-600 dark:text-slate-400" />
@@ -183,9 +228,9 @@ export default function Pricing() {
                   <Button
                     variant="outline"
                     className="w-full h-12 text-lg"
-                    disabled
+                    onClick={() => navigate("/signup")}
                   >
-                    Current Plan
+                    Get Started Free
                   </Button>
                 </CardFooter>
               </Card>
@@ -193,8 +238,8 @@ export default function Pricing() {
 
             {/* Pro Plan */}
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
               className="relative"
             >
@@ -207,7 +252,7 @@ export default function Pricing() {
                 </div>
                 <CardHeader>
                   <CardTitle className="text-2xl font-bold flex items-center gap-2">
-                    Professional
+                    Pro
                     <Zap className="h-5 w-5 text-amber-400 fill-amber-400" />
                   </CardTitle>
                   <CardDescription className="text-base mt-2">
@@ -217,19 +262,19 @@ export default function Pricing() {
                 <CardContent>
                   <div className="mb-6">
                     <span className="text-5xl font-bold text-foreground">
-                      $29
+                      ${getPlan("PRO").price}
                     </span>
-                    <span className="text-muted-foreground ml-2">/ month</span>
+                    <span className="text-muted-foreground ml-2">
+                      / {billingInterval === "yearly" ? "year" : "month"}
+                      {billingInterval === "yearly" && (
+                        <span className="ml-2 text-sm text-green-600 font-medium">
+                          (Save ${PLANS.PRO.price * 12 - PLANS.PRO_YEARLY.price})
+                        </span>
+                      )}
+                    </span>
                   </div>
                   <div className="space-y-4">
-                    {[
-                      "Advanced Multi-Stage Systems",
-                      "Unlimited Calculation History",
-                      "Professional PDF Reports & Exports",
-                      "Team Collaboration Tools",
-                      "Priority Email Support",
-                      "Cloud Synchronization",
-                    ].map((feature, i) => (
+                    {getPlan("PRO").features.map((feature, i) => (
                       <div key={i} className="flex items-center">
                         <div className="h-5 w-5 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mr-3 shrink-0">
                           <Check className="h-3 w-3 text-orange-600 dark:text-orange-400" />
@@ -244,10 +289,10 @@ export default function Pricing() {
                 <CardFooter className="mt-auto pt-8">
                   <Button
                     className="w-full h-12 text-lg bg-gradient-to-r from-slate-600 to-orange-600 hover:from-slate-700 hover:to-orange-700 text-white shadow-lg shadow-orange-500/25 border-0"
-                    onClick={handleSubscribe}
-                    disabled={loading}
+                    onClick={() => handleSubscribe("pro")}
+                    disabled={loading === "pro"}
                   >
-                    {loading ? (
+                    {loading === "pro" ? (
                       <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     ) : (
                       "Upgrade to Pro"
@@ -256,9 +301,153 @@ export default function Pricing() {
                 </CardFooter>
               </Card>
             </motion.div>
+
+            {/* Business Plan */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="relative"
+            >
+              <div className="absolute -inset-[2px] rounded-[22px] bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 opacity-75 blur-sm" />
+              <Card className="h-full relative overflow-hidden border-transparent bg-background/90 backdrop-blur-xl transition-all duration-300">
+                <div className="absolute top-0 right-0 p-4">
+                  <Badge className="bg-gradient-to-r from-indigo-600 to-purple-600 border-0 text-white px-3 py-1">
+                    Business
+                  </Badge>
+                </div>
+                <CardHeader>
+                  <CardTitle className="text-2xl font-bold flex items-center gap-2">
+                    Business
+                    <Building className="h-5 w-5 text-indigo-400" />
+                  </CardTitle>
+                  <CardDescription className="text-base mt-2">
+                    Complete "Business in a Box" for HVAC business owners.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="mb-6">
+                    <span className="text-5xl font-bold text-foreground">
+                      ${getPlan("BUSINESS").price}
+                    </span>
+                    <span className="text-muted-foreground ml-2">
+                      / {billingInterval === "yearly" ? "year" : "month"}
+                      {billingInterval === "yearly" && (
+                        <span className="ml-2 text-sm text-green-600 font-medium">
+                          (Save ${PLANS.BUSINESS.price * 12 - PLANS.BUSINESS_YEARLY.price})
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                  <div className="space-y-4">
+                    {getPlan("BUSINESS").features.map((feature, i) => (
+                      <div key={i} className="flex items-center">
+                        <div className="h-5 w-5 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center mr-3 shrink-0">
+                          <Check className="h-3 w-3 text-indigo-600 dark:text-indigo-400" />
+                        </div>
+                        <span className="font-medium text-foreground">
+                          {feature}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+                <CardFooter className="mt-auto pt-8">
+                  <Button
+                    className="w-full h-12 text-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg shadow-purple-500/25 border-0"
+                    onClick={() => handleSubscribe("business")}
+                    disabled={loading === "business"}
+                  >
+                    {loading === "business" ? (
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    ) : (
+                      "Get Business Plan"
+                    )}
+                  </Button>
+                </CardFooter>
+              </Card>
+            </motion.div>
           </div>
 
-          {/* Trusted by section removed until specific partnerships are established */}
+          {/* Comparison Table */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="mt-24 max-w-5xl mx-auto"
+          >
+            <h2 className="text-3xl font-bold text-center mb-8">
+              Compare All Features
+            </h2>
+            <div className="rounded-xl border border-border bg-card overflow-hidden">
+              <div className="grid grid-cols-4 border-b border-border bg-muted/50">
+                <div className="p-4 font-semibold">Feature</div>
+                <div className="p-4 text-center font-semibold">Free</div>
+                <div className="p-4 text-center font-semibold">Pro</div>
+                <div className="p-4 text-center font-semibold">Business</div>
+              </div>
+              {[
+                { name: "Calculations per month", free: "10", pro: "Unlimited", business: "Unlimited" },
+                { name: "Calculation History", free: "Limited", pro: "Unlimited", business: "Unlimited" },
+                { name: "Advanced Analysis Tools", free: "Basic", pro: "✓ All", business: "✓ All" },
+                { name: "PDF Export & Reports", free: "✗", pro: "✓ Advanced", business: "✓ Advanced + White-label" },
+                { name: "API Access", free: "✗", pro: "✓", business: "✓" },
+                { name: "Team Collaboration", free: "✗", pro: "Basic", business: "✓ Up to 5 users" },
+                { name: "Client Portal", free: "✗", pro: "✗", business: "✓" },
+                { name: "Automation Engine", free: "✗", pro: "✗", business: "✓" },
+                { name: "Business Analytics", free: "✗", pro: "Basic", business: "✓ Advanced" },
+                { name: "Support", free: "Email", pro: "Priority Email", business: "Dedicated + SLA" },
+              ].map((row, i) => (
+                <div key={i} className={`grid grid-cols-4 ${i % 2 === 0 ? "bg-card" : "bg-muted/30"} border-b border-border last:border-b-0`}>
+                  <div className="p-4 font-medium">{row.name}</div>
+                  <div className="p-4 text-center">{row.free}</div>
+                  <div className="p-4 text-center">{row.pro}</div>
+                  <div className="p-4 text-center">{row.business}</div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* FAQ Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="mt-24 max-w-3xl mx-auto"
+          >
+            <h2 className="text-3xl font-bold text-center mb-8">
+              Frequently Asked Questions
+            </h2>
+            <div className="space-y-4">
+              {[
+                {
+                  q: "Can I switch plans at any time?",
+                  a: "Yes, you can upgrade or downgrade at any time. When upgrading, you'll be charged the prorated difference. When downgrading, changes take effect at the end of your billing cycle."
+                },
+                {
+                  q: "Do you offer discounts for students or non-profits?",
+                  a: "Yes! We offer 50% discounts for verified students and educational institutions. Contact our support team for more information."
+                },
+                {
+                  q: "What happens if I exceed my calculation limit on the Free plan?",
+                  a: "You'll receive a notification and won't be able to perform additional calculations until the next monthly reset. You can upgrade to Pro for unlimited calculations."
+                },
+                {
+                  q: "Is there a free trial for paid plans?",
+                  a: "We offer a 14-day free trial for both Pro and Business plans. No credit card required to start the trial."
+                },
+                {
+                  q: "How does team collaboration work on the Business plan?",
+                  a: "The Business plan includes up to 5 user seats. You can invite team members and assign them roles (admin, technician, client). Additional seats can be purchased for $39/month each."
+                },
+              ].map((faq, i) => (
+                <div key={i} className="border border-border rounded-lg p-6 bg-card/50">
+                  <h3 className="font-semibold text-lg mb-2">{faq.q}</h3>
+                  <p className="text-muted-foreground">{faq.a}</p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </main>
       <Footer />

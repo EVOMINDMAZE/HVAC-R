@@ -1,5 +1,25 @@
 import { RequestHandler } from "express";
 import { supabaseAdmin } from "../utils/supabase.js";
+import {
+  stripe,
+  updateSubscription as stripeUpdateSubscription,
+  cancelSubscription as stripeCancelSubscription,
+} from "../utils/stripe.js";
+
+// Helper to get Stripe Price ID from plan name and billing cycle
+const getPlanPriceId = (planName: string, billingCycle: "monthly" | "yearly" = "monthly") => {
+  if (planName === "pro") {
+    return billingCycle === "yearly"
+      ? process.env.VITE_STRIPE_PROFESSIONAL_YEARLY_PRICE_ID
+      : process.env.VITE_STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID;
+  }
+  if (planName === "business") {
+    return billingCycle === "yearly"
+      ? process.env.VITE_STRIPE_ENTERPRISE_YEARLY_PRICE_ID
+      : process.env.VITE_STRIPE_ENTERPRISE_MONTHLY_PRICE_ID;
+  }
+  return null;
+};
 
 // Fallback subscription plans data when database is unavailable
 const FALLBACK_PLANS = [
@@ -9,48 +29,55 @@ const FALLBACK_PLANS = [
     display_name: "Free",
     price_monthly: 0,
     price_yearly: 0,
-    calculations_limit: 5,
+    calculations_limit: 10,
     features: [
-      "5 calculations per week",
-      "Standard cycle analysis",
-      "Basic refrigerant comparison",
+      "10 calculations per month",
+      "Standard cycle analysis (basic parameters)",
+      "Basic refrigerant comparison (2 refrigerants max)",
+      "Compliance reference (read-only)",
       "Email support",
-      "Basic results export",
+      "1 saved project",
     ],
     is_active: true,
   },
   {
-    id: "plan-solo",
-    name: "solo",
-    display_name: "Solo",
-    price_monthly: 29,
-    price_yearly: 290,
-    calculations_limit: 50,
+    id: "plan-pro",
+    name: "pro",
+    display_name: "Pro",
+    price_monthly: 49,
+    price_yearly: 490,
+    calculations_limit: -1, // Unlimited
     features: [
-      "50 calculations per week",
-      "All calculation tools",
-      "Advanced refrigerant database",
+      "Unlimited calculations",
+      "All analysis tools (cascade, advanced cycles)",
+      "Advanced refrigerant comparison (unlimited)",
+      "PDF export & advanced reporting",
+      "API access for integrations",
       "Priority email support",
-      "Detailed PDF reports",
+      "10 saved projects",
+      "Basic white-label (personal logo on reports)",
     ],
     is_active: true,
     savings: 17,
   },
   {
-    id: "plan-professional",
-    name: "professional",
-    display_name: "Professional",
-    price_monthly: 99,
-    price_yearly: 990,
+    id: "plan-business",
+    name: "business",
+    display_name: "Business",
+    price_monthly: 199,
+    price_yearly: 1990,
     calculations_limit: -1, // Unlimited
     features: [
-      "Unlimited calculations",
-      "All professional features",
-      "Custom refrigerant properties",
-      "Batch processing",
-      "Full API access",
-      "Phone support",
-      "Team collaboration",
+      "Everything in Pro",
+      "Team collaboration (up to 5 users included)",
+      "White-label branding (company logo, colors, domain)",
+      "Client portal for customer access",
+      "Automation engine (Review Hunter, Invoice Chaser)",
+      "Advanced analytics & business dashboards",
+      "Custom training sessions",
+      "SLA guarantee",
+      "Unlimited projects",
+      "Dedicated support",
     ],
     is_active: true,
     savings: 17,
@@ -171,7 +198,24 @@ export const updateSubscription: RequestHandler = async (req, res) => {
 
     const planToUse = newPlan || FALLBACK_PLANS.find(p => p.name === planName);
 
-    // 2. Update User Metadata in Supabase Auth
+    // 2. Update Stripe Subscription if exists
+    if (user.stripe_subscription_id) {
+      const priceId = getPlanPriceId(planName, billingCycle);
+      if (priceId) {
+        try {
+          await stripeUpdateSubscription(user.stripe_subscription_id, priceId);
+          console.log(`Updated Stripe subscription ${user.stripe_subscription_id} to ${priceId}`);
+        } catch (stripeError: any) {
+          console.error("Stripe subscription update failed:", stripeError);
+          return res.status(500).json({
+            error: "Subscription update failed",
+            details: stripeError.message,
+          });
+        }
+      }
+    }
+
+    // 3. Update User Metadata in Supabase Auth
     // We assume user.id is the Supabase UUID
     const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
       user.id,
@@ -209,6 +253,20 @@ export const cancelSubscription: RequestHandler = async (req, res) => {
   try {
     const user = (req as any).user;
 
+    // Cancel Stripe subscription if exists
+    if (user.stripe_subscription_id) {
+      try {
+        await stripeCancelSubscription(user.stripe_subscription_id);
+        console.log(`Cancelled Stripe subscription ${user.stripe_subscription_id}`);
+      } catch (stripeError: any) {
+        console.error("Stripe subscription cancellation failed:", stripeError);
+        return res.status(500).json({
+          error: "Cancellation failed",
+          details: stripeError.message,
+        });
+      }
+    }
+
     if (supabaseAdmin) {
       await supabaseAdmin.auth.admin.updateUserById(
         user.id,
@@ -229,30 +287,55 @@ export const cancelSubscription: RequestHandler = async (req, res) => {
   }
 };
 
-// Mock payment intent for demo purposes
+// Create PaymentIntent
 export const createPaymentIntent: RequestHandler = async (req, res) => {
   try {
     const { planName, billingCycle } = req.body;
+    const user = (req as any).user;
 
-    // Find plan logic... validation...
-    // Return mock intent
-    const mockPaymentIntent = {
-      id: `pi_mock_${Date.now()}`,
-      client_secret: `pi_mock_${Date.now()}_secret`,
-      amount: 1000,
+    const plan = FALLBACK_PLANS.find((p) => p.name === planName);
+    if (!plan) {
+      return res.status(400).json({ error: "Invalid plan" });
+    }
+
+    let amount = plan.price_monthly * 100;
+    if (billingCycle === "yearly") {
+      amount = plan.price_yearly * 100;
+    }
+
+    if (amount <= 0) {
+      return res.status(400).json({ error: "Invalid amount for payment" });
+    }
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount,
       currency: "usd",
-      status: "requires_payment_method",
-    };
+      metadata: {
+        planName,
+        billingCycle,
+        userId: user?.id,
+      },
+      customer: user?.stripe_customer_id,
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
 
     res.json({
       success: true,
-      data: mockPaymentIntent,
+      data: {
+        client_secret: paymentIntent.client_secret,
+        id: paymentIntent.id,
+        amount: paymentIntent.amount,
+        currency: paymentIntent.currency,
+        status: paymentIntent.status,
+      },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Create payment intent error:", error);
     res.status(500).json({
       error: "Internal server error",
-      details: "Failed to create payment intent",
+      details: error.message,
     });
   }
 };

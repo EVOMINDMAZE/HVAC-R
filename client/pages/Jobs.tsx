@@ -63,10 +63,11 @@ interface Technician {
   id: string;
   full_name: string | null;
   email: string | null;
+  role?: string;
 }
 
 export default function Jobs() {
-  const { user, role } = useSupabaseAuth();
+  const { user, role, companyId } = useSupabaseAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -112,24 +113,34 @@ export default function Jobs() {
 
   const fetchTechnicians = async () => {
     try {
-      // In a real app, you'd fetch this from a 'profiles' table or similar where role='technician'
-      // For now, let's fetch all users from profiles if it exists, or simulated
-      // Assuming we have a public profiles table or similar view
-
-      // NOTE: Since user access to auth.users is restricted, we rely on the `profiles` table
+      console.log("[Jobs] Fetching technicians from user_roles...");
+      // profiles table doesn't exist, use user_roles instead
       const { data, error } = await supabase
-        .from("profiles")
-        .select("id, full_name, email")
-        .eq("role", "technician");
+        .from("user_roles")
+        .select("user_id, role")
+        .in("role", ["technician", "tech"]);
+
+      console.log("[Jobs] Technicians query result:", { data, error });
 
       if (error) {
-        console.error("Error fetching technicians:", error);
+        console.error("[Jobs] Error fetching technicians:", error);
         // Fallback or silent fail if table setup is incomplete
+      } else if (data) {
+        // Transform to match Technician interface
+        const techs = data.map((t: any) => ({
+          id: t.user_id,
+          full_name: `${t.role === "technician" ? "Technician" : "Tech"} (${t.user_id.slice(0, 8)})`,
+          email: "technician@example.com",
+          role: t.role,
+        }));
+        console.log("[Jobs] Setting technicians:", techs.length);
+        setTechnicians(techs);
       } else {
-        setTechnicians(data || []);
+        console.log("[Jobs] No technicians data returned");
+        setTechnicians([]);
       }
     } catch (err) {
-      console.error("Failed to fetch techs", err);
+      console.error("[Jobs] Failed to fetch techs", err);
     }
   };
 
@@ -186,16 +197,20 @@ export default function Jobs() {
 
     try {
       setCreating(true);
+      if (!companyId) {
+        throw new Error("You must be assigned to a company to create jobs");
+      }
       const { data, error } = await supabase
         .from("jobs")
         .insert({
           user_id: user.id,
+          company_id: companyId,
           client_name: newJob.client_name,
           job_name: newJob.job_name,
-          status: newJob.technician_id ? "assigned" : newJob.status, // Auto-assign status
+          status: "pending",
           address: newJob.address || null,
           notes: newJob.notes || null,
-          technician_id: newJob.technician_id || null, // Assign tech
+          technician_id: newJob.technician_id || null,
           photos: [],
         })
         .select()
@@ -545,6 +560,9 @@ export default function Jobs() {
                             variant="ghost"
                             size="icon"
                             className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-muted"
+                            onClick={() =>
+                              navigate(`/dashboard/jobs/${job.id}`)
+                            }
                           >
                             <FileText className="w-4 h-4 text-muted-foreground" />
                           </Button>

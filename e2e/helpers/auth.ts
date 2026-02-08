@@ -12,23 +12,23 @@ export interface UserCredentials {
 
 export const USER_CREDENTIALS: Record<UserRole, UserCredentials> = {
   admin: {
-    email: process.env.TEST_ADMIN_EMAIL || "admin@admin.com",
-    password: process.env.TEST_ADMIN_PASSWORD || "password1",
+    email: "admin@admin.com",
+    password: "ThermoAdmin$2026!",
     role: "admin",
   },
   technician: {
-    email: process.env.TEST_TECHNICIAN_EMAIL || "tech@test.com",
-    password: process.env.TEST_TECHNICIAN_PASSWORD || "Password123!",
+    email: "tech@test.com",
+    password: "Password123!",
     role: "technician",
   },
   client: {
-    email: process.env.TEST_CLIENT_EMAIL || "client@test.com",
-    password: process.env.TEST_CLIENT_PASSWORD || "Password123!",
+    email: "client@test.com",
+    password: "Password123!",
     role: "client",
   },
   student: {
-    email: process.env.TEST_STUDENT_EMAIL || "student@test.com",
-    password: process.env.TEST_STUDENT_PASSWORD || "Password123!",
+    email: "student@test.com",
+    password: "Password123!",
     role: "student",
   },
 };

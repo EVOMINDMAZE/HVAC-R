@@ -52,8 +52,6 @@ async function setup() {
 
     if (!adminUser) {
         console.error("Admin user not found! Available emails:", users.map(u => u.email));
-        // Fallback: Try to use the KNOWN multi-tenant user if admin is missing
-        // const altUser = users.find(u => u.email === 'hanniz.riadus@outlook.com');
         return;
     }
     console.log(`Found Admin: ${adminUser.id}`);

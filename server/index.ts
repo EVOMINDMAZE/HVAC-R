@@ -52,6 +52,15 @@ import {
   updateTeamMemberRole,
   removeTeamMember,
 } from "./routes/team.ts";
+import {
+  recordConsent,
+  getUserConsents,
+  checkConsent,
+  submitDataSubjectRequest,
+  exportUserData,
+} from "./routes/privacy.ts";
+import { getFleetStatus } from "./routes/fleet.ts";
+import { dynamicRateLimiter } from "./middleware/rateLimit.ts";
 
 export function createServer() {
   const app = express();
@@ -94,6 +103,7 @@ export function createServer() {
 
   app.use(express.json({ limit: "30mb" }));
   app.use(express.urlencoded({ extended: true, limit: "30mb" }));
+  app.use(dynamicRateLimiter);
 
   app.use((req, _res, next) => {
     console.log(`[server] ${req.method} ${req.path}`);
@@ -148,6 +158,16 @@ export function createServer() {
   app.post("/api/team/invite", authenticateEither, inviteTeamMember);
   app.put("/api/team/role", authenticateEither, updateTeamMemberRole);
   app.delete("/api/team/member", authenticateEither, removeTeamMember);
+
+  // Privacy & consent routes
+  app.post("/api/privacy/consent", authenticateEither, recordConsent);
+  app.get("/api/privacy/consent", authenticateEither, getUserConsents);
+  app.get("/api/privacy/consent/check", authenticateEither, checkConsent);
+  app.post("/api/privacy/dsr", authenticateEither, submitDataSubjectRequest);
+  app.post("/api/privacy/export", authenticateEither, exportUserData);
+
+  // Fleet management routes
+  app.get("/api/fleet/status", authenticateEither, getFleetStatus);
 
   // Subscription routes
   app.get("/api/subscriptions/plans", getSubscriptionPlans);

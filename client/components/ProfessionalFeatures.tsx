@@ -68,6 +68,7 @@ const UNIT_SYSTEMS: Record<string, UnitSystem> = {
 };
 
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { useProFeature } from "@/hooks/useFeatureAccess";
 
 export function ProfessionalFeatures({
   cycleData,
@@ -83,15 +84,7 @@ export function ProfessionalFeatures({
   };
   const [unitSystem, setUnitSystem] = useState<"SI" | "Imperial">("SI");
   const { user } = useSupabaseAuth();
-  const subscriptionPlan =
-    (user as any)?.user_metadata?.subscription_plan ||
-    (user as any)?.user_metadata?.plan ||
-    (user as any)?.subscription_plan ||
-    (user as any)?.app_metadata?.plan ||
-    null;
-  const isPro =
-    typeof subscriptionPlan === "string" &&
-    /(pro|professional)/i.test(subscriptionPlan);
+  const { hasAccess: isPro } = useProFeature('Professional Features');
   const [reportConfig, setReportConfig] = useState({
     includeCalculations: true,
     includeDiagrams: true,
@@ -768,6 +761,21 @@ export function ProfessionalFeatures({
 
   // Generate fully server-side PDF report
   const generateReport = async () => {
+    if (!isPro) {
+      try {
+        window.dispatchEvent(
+          new CustomEvent("app:error", {
+            detail: {
+              title: "Upgrade required",
+              message:
+                "Professional report generation is available on Professional plans only.",
+              upgradeRequired: true,
+            },
+          }),
+        );
+      } catch (e) {}
+      return;
+    }
     try {
       // Capture the main diagram canvas image (high resolution)
       let diagramDataUrl: string | null = null;
@@ -2128,6 +2136,14 @@ export function ProfessionalFeatures({
                     <Download className="h-5 w-5 mr-3" />
                     <span className="align-middle">
                       Generate Professional Report
+                      {!isPro && (
+                        <Badge
+                          variant="destructive"
+                          className="ml-2 text-xs"
+                        >
+                          Pro
+                        </Badge>
+                      )}
                     </span>
                   </Button>
                   <div className="text-sm text-muted-foreground mt-1">

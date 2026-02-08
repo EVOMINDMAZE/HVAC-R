@@ -34,7 +34,7 @@ if (!supabaseUrl || !supabaseServiceKey) {
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-const TARGET_EMAIL = "hanniz.riadus@outlook.com";
+const TARGET_EMAIL = "admin@admin.com";
 
 async function debugUser() {
     console.log(`--- Debugging User: ${TARGET_EMAIL} ---`);

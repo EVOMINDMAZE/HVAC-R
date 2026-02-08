@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
-import { userDb, sessionDb, User } from "../database/index.ts";
-import { AuthUtils } from "../utils/auth.ts";
+import { supabaseAdmin, getSupabaseClient } from "../utils/supabase.js";
+import { authenticateSupabaseToken } from "../utils/supabaseAuth.js";
 
 interface SignUpRequest {
   email: string;
@@ -29,71 +29,60 @@ export const signUp: RequestHandler = async (req, res) => {
       });
     }
 
-    // Validate email format
-    if (!AuthUtils.validateEmail(email)) {
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      return res.status(500).json({ error: "Supabase client not configured" });
+    }
+
+    // Use signUp
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          first_name: firstName,
+          last_name: lastName,
+          company,
+          role,
+          phone,
+        },
+      },
+    });
+
+    if (error) {
       return res.status(400).json({ 
-        error: 'Invalid email format' 
+        error: 'Sign up failed', 
+        details: error.message 
       });
     }
 
-    // Validate password strength
-    const passwordValidation = AuthUtils.validatePassword(password);
-    if (!passwordValidation.isValid) {
-      return res.status(400).json({ 
-        error: 'Password validation failed', 
-        details: passwordValidation.message 
-      });
+    if (!data.user) {
+      return res.status(500).json({ error: "User creation failed" });
     }
 
-    // Check if user already exists
-    const existingUser = userDb.findByEmail.get(email.toLowerCase()) as User | undefined;
-    if (existingUser) {
-      return res.status(400).json({ 
-        error: 'User already exists', 
-        details: 'An account with this email address already exists' 
-      });
-    }
-
-    // Hash password
-    const passwordHash = await AuthUtils.hashPassword(password);
-
-    // Create user
-    const result = userDb.create.run(
-      email.toLowerCase(),
-      passwordHash,
-      firstName,
-      lastName,
-      company || null,
-      role || null,
-      phone || null
-    );
-
-    // Get created user
-    const user = userDb.findById.get(result.lastInsertRowid) as User;
-
-    // Create session
-    const sessionToken = AuthUtils.generateSessionToken();
-    const expiresAt = AuthUtils.getExpiryDate(30); // 30 days
-
-    sessionDb.create.run(user.id, sessionToken, expiresAt);
-
-    // Remove password hash from response
-    const { password_hash, ...userResponse } = user;
+    // If session is null, email confirmation might be required
+    // For backward compatibility, we might want to ensure a session, but if Supabase requires email, we can't force it easily without admin
+    // However, if we use admin.createUser with email_confirm: true, we can then sign in.
+    // Let's stick to standard signUp flow. If session is missing, client handles it.
 
     res.status(201).json({
       success: true,
       data: {
-        user: userResponse,
-        token: sessionToken,
-        expiresAt
+        user: {
+          id: data.user.id,
+          email: data.user.email,
+          ...data.user.user_metadata
+        },
+        token: data.session?.access_token || null,
+        expiresAt: data.session?.expires_at || null
       }
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Sign up error:', error);
     res.status(500).json({ 
       error: 'Internal server error', 
-      details: 'Failed to create account' 
+      details: error.message || 'Failed to create account' 
     });
   }
 };
@@ -102,7 +91,6 @@ export const signIn: RequestHandler = async (req, res) => {
   try {
     const { email, password }: SignInRequest = req.body;
 
-    // Validate input
     if (!email || !password) {
       return res.status(400).json({ 
         error: 'Missing credentials', 
@@ -110,47 +98,45 @@ export const signIn: RequestHandler = async (req, res) => {
       });
     }
 
-    // Find user
-    const user = userDb.findByEmail.get(email.toLowerCase()) as User | undefined;
-    if (!user) {
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      return res.status(500).json({ error: "Supabase client not configured" });
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
       return res.status(401).json({ 
         error: 'Invalid credentials', 
-        details: 'Email or password is incorrect' 
+        details: error.message 
       });
     }
 
-    // Verify password
-    const isValidPassword = await AuthUtils.comparePassword(password, user.password_hash);
-    if (!isValidPassword) {
-      return res.status(401).json({ 
-        error: 'Invalid credentials', 
-        details: 'Email or password is incorrect' 
-      });
+    if (!data.session) {
+      return res.status(500).json({ error: "Failed to create session" });
     }
-
-    // Create session
-    const sessionToken = AuthUtils.generateSessionToken();
-    const expiresAt = AuthUtils.getExpiryDate(30); // 30 days
-
-    sessionDb.create.run(user.id, sessionToken, expiresAt);
-
-    // Remove password hash from response
-    const { password_hash, ...userResponse } = user;
 
     res.json({
       success: true,
       data: {
-        user: userResponse,
-        token: sessionToken,
-        expiresAt
+        user: {
+          id: data.user.id,
+          email: data.user.email,
+          ...data.user.user_metadata
+        },
+        token: data.session.access_token,
+        expiresAt: data.session.expires_at
       }
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Sign in error:', error);
     res.status(500).json({ 
       error: 'Internal server error', 
-      details: 'Failed to sign in' 
+      details: error.message || 'Failed to sign in' 
     });
   }
 };
@@ -160,7 +146,10 @@ export const signOut: RequestHandler = async (req, res) => {
     const token = req.headers.authorization?.replace('Bearer ', '');
     
     if (token) {
-      sessionDb.deleteByToken.run(token);
+      const supabase = getSupabaseClient(token);
+      if (supabase) {
+        await supabase.auth.signOut();
+      }
     }
 
     res.json({
@@ -168,11 +157,11 @@ export const signOut: RequestHandler = async (req, res) => {
       message: 'Signed out successfully'
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Sign out error:', error);
     res.status(500).json({ 
       error: 'Internal server error', 
-      details: 'Failed to sign out' 
+      details: error.message || 'Failed to sign out' 
     });
   }
 };
@@ -187,58 +176,39 @@ export const getCurrentUser: RequestHandler = async (req, res) => {
       });
     }
 
-    const session = sessionDb.findByToken.get(token);
-    if (!session) {
-      return res.status(401).json({ 
-        error: 'Invalid or expired session' 
-      });
+    const supabase = getSupabaseClient(token);
+    if (!supabase) {
+        return res.status(500).json({ error: "Supabase client not configured" });
     }
 
-    // Remove password hash from response
-    const { password_hash, ...userResponse } = session;
+    const { data: { user }, error } = await supabase.auth.getUser();
+
+    if (error || !user) {
+      return res.status(401).json({ 
+        error: 'Invalid or expired session',
+        details: error?.message
+      });
+    }
 
     res.json({
       success: true,
       data: {
-        user: userResponse
+        user: {
+            id: user.id,
+            email: user.email,
+            ...user.user_metadata
+        }
       }
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Get current user error:', error);
     res.status(500).json({ 
       error: 'Internal server error', 
-      details: 'Failed to get user information' 
+      details: error.message || 'Failed to get user information' 
     });
   }
 };
 
-// Middleware to authenticate requests
-export const authenticateToken: RequestHandler = async (req, res, next) => {
-  try {
-    const token = req.headers.authorization?.replace('Bearer ', '');
-    
-    if (!token) {
-      return res.status(401).json({ 
-        error: 'Authentication required' 
-      });
-    }
-
-    const session = sessionDb.findByToken.get(token);
-    if (!session) {
-      return res.status(401).json({ 
-        error: 'Invalid or expired session' 
-      });
-    }
-
-    // Add user to request object
-    (req as any).user = session;
-    next();
-
-  } catch (error) {
-    console.error('Authentication error:', error);
-    res.status(500).json({ 
-      error: 'Authentication failed' 
-    });
-  }
-};
+// Re-export the Supabase authentication middleware as the default authentication method
+export const authenticateToken = authenticateSupabaseToken;

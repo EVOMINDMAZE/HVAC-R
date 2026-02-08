@@ -1,0 +1,195 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/New_York"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "npm"
+      - "security"
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+      include: "scope"
+    groups:
+      security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
+        update-types:
+          - "major"
+          - "minor"
+          - "patch"
+      development-dependencies:
+        applies-to: version-updates
+        dependency-type: "development"
+        patterns:
+          - "@types/*"
+          - "eslint*"
+          - "prettier*"
+          - "typescript"
+          - "vite*"
+          - "vitest*"
+          - "tailwindcss*"
+          - "postcss*"
+          - "autoprefixer"
+      production-dependencies:
+        applies-to: version-updates
+        dependency-type: "production"
+        patterns:
+          - "react*"
+          - "@supabase/*"
+          - "@stripe/*"
+          - "axios"
+          - "framer-motion"
+          - "zustand"
+      react-ecosystem:
+        applies-to: version-updates
+        patterns:
+          - "react*"
+          - "react-router*"
+          - "lucide-react"
+          - "clsx"
+          - "tailwind-merge"
+    ignore:
+      - dependency-name: "node"
+        versions: [">=18.0.0"]
+      - dependency-name: "typescript"
+        versions: [">=5.0.0"]
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+    rebase-strategy: "auto"
+    target-branch: "develop"
+    reviewers:
+      - "@team/engineering-leads"
+    assignees:
+      - "@team/frontend"
+      - "@team/backend"
+    milestone: 2
+    pull-request-branch-name:
+      separator: "-"
+    commit-message:
+      prefix: "chore(deps)"
+    on:
+      schedule:
+        - cron: "0 9 * * 1"
+      workflow_dispatch:
+        inputs:
+          log-level:
+            description: "Log level"
+            required: true
+            default: "warning"
+            type: choice
+            options:
+              - "info"
+              - "warning"
+              - "error"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/New_York"
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "security"
+    commit-message:
+      prefix: "chore(ci)"
+    groups:
+      github-actions-updates:
+        applies-to: version-updates
+        patterns:
+          - "*"
+    ignore:
+      - dependency-name: "actions/checkout"
+        versions: [">=4.0.0"]
+      - dependency-name: "actions/setup-node"
+        versions: [">=4.0.0"]
+    allow:
+      - dependency-type: "direct"
+    on:
+      schedule:
+        - cron: "0 9 * * 1"
+      workflow_dispatch:
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/New_York"
+    labels:
+      - "dependencies"
+      - "docker"
+      - "security"
+    commit-message:
+      prefix: "chore(docker)"
+    on:
+      schedule:
+        - cron: "0 9 1 * *"
+      workflow_dispatch:
+
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      time: "09:00"
+      timezone: "America/New_York"
+    labels:
+      - "dependencies"
+      - "python"
+      - "security"
+    commit-message:
+      prefix: "chore(py)"
+    on:
+      schedule:
+        - cron: "0 9 1 * *"
+      workflow_dispatch:
+
+vulnerability-alerts:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    labels:
+      - "security"
+      - "urgent"
+    commit-message:
+      prefix: "fix(deps)"
+    on:
+      schedule:
+        - cron: "0 8 * * *"
+      workflow_dispatch:
+    dependency-review:
+      severity: "critical"
+      license: "all"
+      ignore: []
+
+security-updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    labels:
+      - "security"
+      - "urgent"
+    commit-message:
+      prefix: "fix(deps)"
+    on:
+      schedule:
+        - cron: "0 8 * * *"
+      workflow_dispatch:
+    ignore-conditions:
+      - dependency-name: "xlsx"
+        reason: "Waiting for upstream fix - see VULNERABILITY_REPORT.md"
+        until: "2026-03-01"

@@ -18,26 +18,18 @@ vi.mock("../../../server/utils/supabase.js", () => ({
             })),
           })),
         })),
-        update: vi.fn(() => ({
-          eq: vi.fn(() =>
-            Promise.resolve({
-              data: { id: "test-pattern-id" },
-              error: null,
-            }),
-          ),
-        })),
-        eq: vi.fn(() => ({
-          order: vi.fn(() => ({
-            limit: vi.fn(() => ({
-              range: vi.fn(() =>
-                Promise.resolve({
-                  data: [],
-                  error: null,
-                }),
-              ),
-            })),
-          })),
-        })),
+        update: vi.fn(() =>
+          Promise.resolve({
+            data: { id: "test-pattern-id" },
+            error: null,
+          }),
+        ),
+        insert: vi.fn(() =>
+          Promise.resolve({
+            data: { id: "test-pattern-id" },
+            error: null,
+          }),
+        ),
       })),
       insert: vi.fn(() =>
         Promise.resolve({
@@ -54,14 +46,14 @@ vi.mock("../../../server/utils/supabase.js", () => ({
         ),
       })),
     })),
-    rpc: vi.fn((fnName: string, params: any) => {
+    rpc: vi.fn((fnName: string, _params: any) => {
       if (fnName === "update_pattern_occurrence") {
-        return Promise.resolve("test-pattern-id");
+        return Promise.resolve({ data: "test-pattern-id", error: null });
       }
       if (fnName === "get_related_patterns") {
-        return Promise.resolve([]);
+        return Promise.resolve({ data: [], error: null });
       }
-      return Promise.resolve([]);
+      return Promise.resolve({ data: [], error: null });
     }),
   },
 }));
@@ -90,12 +82,9 @@ describe("PatternRecognitionService", () => {
       // Test with invalid data that might cause errors
       const companyId = "";
 
-      try {
-        await patternService.analyzeHistoricalData(companyId);
-        expect(true).toBe(true); // Should not throw
-      } catch (error) {
-        expect(error).toBeDefined();
-      }
+      const analysis = await patternService.analyzeHistoricalData(companyId);
+
+      expect(analysis).toBeDefined();
     });
   });
 
@@ -107,6 +96,7 @@ describe("PatternRecognitionService", () => {
 
       const patterns = await patternService.getRelatedPatterns(
         symptoms,
+        {} as Record<string, number>,
         equipmentModel,
         companyId,
       );

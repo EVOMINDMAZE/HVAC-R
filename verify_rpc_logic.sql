@@ -4,7 +4,7 @@ DECLARE
     target_user_id UUID;
 BEGIN
     -- 1. Find the user ID
-    SELECT id INTO target_user_id FROM auth.users WHERE email = 'hanniz.riadus@outlook.com';
+    SELECT id INTO target_user_id FROM auth.users WHERE email = 'admin@admin.com';
     
     RAISE NOTICE 'Testing for User ID: %', target_user_id;
 

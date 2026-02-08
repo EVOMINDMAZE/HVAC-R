@@ -1,22 +1,20 @@
 import { useState, useEffect } from "react";
-import { stripePromise } from "@/lib/stripe";
 import { useSupabaseAuth } from "./useSupabaseAuth";
-import { AuthErrorHandler } from "@/utils/authErrorHandler";
+import { stripePromise } from "@/lib/stripe";
 
-interface Subscription {
-  id: string;
-  status: string;
-  current_period_start: number;
-  current_period_end: number;
-  cancel_at_period_end: boolean;
-  plan: string;
-  amount: number;
-  currency: string;
-  interval: string;
+interface StripeSubscription {
+  id?: string;
+  status?: string;
+  plan?: string;
+  amount?: number;
+  interval?: string;
+  current_period_end?: number;
+  cancel_at_period_end?: boolean;
+  [key: string]: any;
 }
 
 interface SubscriptionData {
-  subscription: Subscription | null;
+  subscription: StripeSubscription | null;
   plan: string;
   status: string;
 }
@@ -25,8 +23,7 @@ export function useSubscription() {
   const [subscription, setSubscription] = useState<SubscriptionData | null>(
     null,
   );
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const { isAuthenticated, session } = useSupabaseAuth();
 
   const fetchSubscription = async () => {
@@ -39,171 +36,43 @@ export function useSubscription() {
     try {
       setLoading(true);
 
-      // Feature flag: only call billing services when explicitly enabled
       const billingEnabled = import.meta.env.VITE_BILLING_ENABLED === "true";
       if (!billingEnabled) {
         setSubscription({ subscription: null, plan: "free", status: "active" });
-        setLoading(false);
         return;
       }
 
       const token = session?.access_token;
-
-      if (!token) {
-        throw new Error("No access token available");
-      }
-
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 
-      if (!supabaseUrl || supabaseUrl === "your-supabase-project-url") {
-        setSubscription({ subscription: null, plan: "free", status: "active" });
-        setLoading(false);
-        return;
-      }
-
-      console.log("Fetching subscription from Supabase Edge Function", {
-        supabaseUrl,
-        hasToken: !!token,
-      });
-
-      // Add retry/backoff logic for edge function calls
-      const maxRetries = 3;
-      let attempt = 0;
-      let response: Response | null = null;
-      let lastError: any = null;
-
-      while (attempt < maxRetries) {
-        attempt += 1;
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 8000);
-
-        try {
-          console.log(
-            `Attempt ${attempt} fetching subscription from Edge Function: ${supabaseUrl}/functions/v1/billing/subscription`,
-          );
-          response = await fetch(
-            `${supabaseUrl}/functions/v1/billing/subscription`,
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-              signal: controller.signal,
-              mode: "cors",
-            },
-          );
-
-          clearTimeout(timeout);
-
-          if (response.ok) {
-            break; // success
-          } else {
-            // Non-OK response — capture and break to handle below
-            console.error(
-              `Edge function responded with status ${response.status}`,
-            );
-            break;
-          }
-        } catch (err: any) {
-          lastError = err;
-          clearTimeout(timeout);
-          console.warn(`Fetch attempt ${attempt} failed:`, err.message || err);
-          // exponential backoff before retrying
-          const backoff = 500 * Math.pow(2, attempt - 1);
-          await new Promise((r) => setTimeout(r, backoff));
-        }
-      }
-
-      if (!response) {
-        console.error(
-          "All attempts to call Supabase Edge Function failed",
-          lastError,
-        );
-        // Try fallback to internal server API (/api/subscriptions/current)
-        try {
-          console.log(
-            "Attempting fallback to internal API /api/subscriptions/current",
-          );
-          const fallbackController = new AbortController();
-          const fallbackTimeout = setTimeout(
-            () => fallbackController.abort(),
-            8000,
-          );
-          const fallbackResponse = await fetch(
-            `${window.location.origin}/api/subscriptions/current`,
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-              signal: fallbackController.signal,
-            },
-          );
-          clearTimeout(fallbackTimeout);
-
-          if (fallbackResponse.ok) {
-            const fallbackData = await fallbackResponse.json();
-            setSubscription(fallbackData);
-            return;
-          } else {
-            console.error(
-              "Fallback API responded with non-OK status",
-              fallbackResponse.status,
-            );
-          }
-        } catch (fallbackErr: any) {
-          console.error("Fallback attempt failed:", fallbackErr);
-        }
-
-        // Final fallback to free plan when network fails
-        setSubscription({ subscription: null, plan: "free", status: "active" });
-        setError(lastError?.message || "Network error");
-        return;
-      }
-
-      if (!response.ok) {
-        // Check for auth-related errors
-        if (response.status === 401) {
-          AuthErrorHandler.handleAuthError(
-            new Error("Unauthorized - invalid token"),
-          );
-          return;
-        }
-        let errorMsg = `HTTP ${response.status}: Failed to fetch subscription`;
-        try {
-          const errData = await response.json();
-          console.error("Subscription API error response:", errData);
-          errorMsg = errData.error || errData.message || errorMsg;
-        } catch (e) {
-          console.error(
-            "Could not parse error body from subscription endpoint",
-            e,
-          );
-        }
-        setError(errorMsg);
-        // Fallback to free plan on server error
+      if (!token || !supabaseUrl || supabaseUrl.includes("your-supabase")) {
         setSubscription({ subscription: null, plan: "free", status: "active" });
         return;
       }
 
-      try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+
+      const response = await fetch(
+        `${supabaseUrl}/functions/v1/billing/subscription`,
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+          signal: controller.signal,
+        },
+      );
+
+      clearTimeout(timeout);
+
+      if (response.ok) {
         const data = await response.json();
         setSubscription(data);
-      } catch (parseErr) {
-        console.error("Failed to parse subscription response json:", parseErr);
+      } else {
         setSubscription({ subscription: null, plan: "free", status: "active" });
-        setError("Failed to parse subscription response");
       }
-    } catch (err: any) {
-      // Handle auth errors specifically
-      if (
-        err.message.includes("Invalid Refresh Token") ||
-        err.message.includes("Unauthorized")
-      ) {
-        AuthErrorHandler.handleAuthError(err);
-        return;
-      }
-      setError(err.message);
+    } catch (err) {
+      console.warn("Subscription fetch failed, using free plan:", err);
+      setSubscription({ subscription: null, plan: "free", status: "active" });
     } finally {
       setLoading(false);
     }
@@ -216,7 +85,6 @@ export function useSubscription() {
   return {
     subscription,
     loading,
-    error,
     refetch: fetchSubscription,
   };
 }

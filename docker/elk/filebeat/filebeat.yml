@@ -1,0 +1,56 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/*.log
+    fields:
+      type: application-logs
+    fields_under_root: true
+    
+  - type: docker
+    containers.ids: '*'
+    fields:
+      type: container-logs
+    fields_under_root: true
+
+processors:
+  - add_docker_metadata: ~
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  - add_cloud_metadata: ~
+  - add_fields:
+      target: ''
+      fields:
+        environment: ${ENVIRONMENT:production}
+        application: thermoneural
+
+output.logstash:
+  hosts: ["logstash:5000"]
+  ssl.enabled: false
+  timeout: 30
+  max_retries: 3
+  backoff.init: 1
+  backoff.max: 60
+
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 7
+  permissions: 0644
+
+monitoring:
+  enabled: true
+  elasticsearch:
+    hosts: ["http://elasticsearch:9200"]
+
+setup.template:
+  name: thermoneural
+  pattern: thermoneural-*
+  settings:
+    index.number_of_shards: 1
+    index.number_of_replicas: 0
+
+setup.kibana:
+  host: "http://kibana:5601"

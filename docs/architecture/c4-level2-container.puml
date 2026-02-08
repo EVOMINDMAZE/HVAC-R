@@ -1,0 +1,66 @@
+@startuml ThermoNeural_Container_Diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Container Diagram - ThermoNeural HVAC-R Platform
+
+Person(technician, "HVAC Technician", "Performs calculations, manages jobs")
+Person(manager, "Business Manager", "Manages team, reviews reports")
+
+System_Boundary(thermoneural, "ThermoNeural Platform") {
+    Container(web_app, "Web Application", "React 18, TypeScript, Vite", "Main user interface for calculations and business operations")
+    Container(mobile_app, "Mobile App", "Capacitor, iOS/Android", "Native mobile wrapper with offline capabilities")
+    
+    Container(api_server, "API Server", "Express.js, Node.js", "REST API for business logic and calculations") {
+        Container(privacy_api, "Privacy API", "Express.js", "GDPR/CCPA compliance endpoints for consent and DSR")
+    }
+    Container(edge_functions, "Edge Functions", "Deno, TypeScript", "Serverless functions for automations and AI")
+    
+    ContainerDb(postgres, "PostgreSQL", "PostgreSQL 17", "Primary database with RLS policies")
+    ContainerDb(storage, "Object Storage", "Supabase Storage", "File uploads and assets")
+    Container(cache, "Cache", "Redis/Memory", "Session and calculation caching")
+    
+    Container(ai_gateway, "AI Gateway", "Deno", "Unified routing for LLM providers")
+    Container(pattern_recognition, "Pattern Recognition", "TypeScript", "ML service for symptom-outcome correlation")
+}
+
+System_Ext(stripe, "Stripe", "Payment processing")
+System_Ext(resend, "Resend", "Email delivery")
+System_Ext(telnyx, "Telnyx", "SMS delivery")
+System_Ext(openmeteo, "Open-Meteo", "Weather API")
+System_Ext(grok, "Grok Vision", "Image analysis")
+System_Ext(deepseek, "DeepSeek", "LLM diagnostics")
+System_Ext(iot, "IoT Providers", "Thermostat data")
+
+Rel(technician, web_app, "Uses", "HTTPS")
+Rel(technician, mobile_app, "Uses", "HTTPS")
+Rel(manager, web_app, "Manages", "HTTPS")
+
+Rel(web_app, api_server, "API calls", "JSON/HTTPS")
+Rel(web_app, privacy_api, "Manages consent / DSR requests", "HTTPS/JSON")
+Rel(web_app, edge_functions, "Direct calls", "JSON/HTTPS")
+Rel(mobile_app, api_server, "API calls", "JSON/HTTPS")
+Rel(mobile_app, edge_functions, "Direct calls", "JSON/HTTPS")
+
+Rel(api_server, postgres, "Reads/Writes", "SQL/TCP")
+Rel(privacy_api, postgres, "Stores consents", "SQL/TCP")
+Rel(api_server, storage, "File operations", "HTTPS")
+Rel(api_server, cache, "Cache operations", "TCP")
+
+Rel(edge_functions, postgres, "Reads/Writes", "SQL/TCP")
+Rel(edge_functions, ai_gateway, "AI requests", "Internal")
+Rel(edge_functions, pattern_recognition, "Pattern queries", "Internal")
+
+Rel(ai_gateway, grok, "Vision analysis", "HTTPS/API")
+Rel(ai_gateway, deepseek, "Text diagnostics", "HTTPS/API")
+
+Rel(api_server, stripe, "Payment processing", "HTTPS/API")
+Rel(edge_functions, resend, "Sends emails", "HTTPS/API")
+Rel(edge_functions, telnyx, "Sends SMS", "HTTPS/API")
+Rel(api_server, openmeteo, "Weather data", "HTTPS/API")
+Rel(edge_functions, iot, "Reads telemetry", "HTTPS/API/OAuth")
+
+SHOW_LEGEND()
+
+@enduml

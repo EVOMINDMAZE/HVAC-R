@@ -1,0 +1,15 @@
+{
+  "line-length": false,
+  "table-column-style": false,
+  "no-duplicate-heading": false,
+  "first-line-heading": false,
+  "no-trailing-spaces": true,
+  "no-inline-html": false,
+  "code-block-style": false,
+  "ignores": [
+    "docs/*-report.md",
+    "docs/*-presentation.md",
+    "docs/*-summary.md",
+    "docs/*-checklist.md"
+  ]
+}

@@ -11,10 +11,10 @@ import {
 const router = express.Router();
 
 const priceIdToPlan: { [key: string]: string } = {
-  [process.env.VITE_STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID || ""]: "solo",
-  [process.env.VITE_STRIPE_PROFESSIONAL_YEARLY_PRICE_ID || ""]: "solo",
-  [process.env.VITE_STRIPE_ENTERPRISE_MONTHLY_PRICE_ID || ""]: "professional",
-  [process.env.VITE_STRIPE_ENTERPRISE_YEARLY_PRICE_ID || ""]: "professional",
+  [process.env.VITE_STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID || ""]: "pro",
+  [process.env.VITE_STRIPE_PROFESSIONAL_YEARLY_PRICE_ID || ""]: "pro",
+  [process.env.VITE_STRIPE_ENTERPRISE_MONTHLY_PRICE_ID || ""]: "business",
+  [process.env.VITE_STRIPE_ENTERPRISE_YEARLY_PRICE_ID || ""]: "business",
 };
 
 // Test route
@@ -193,6 +193,7 @@ router.post(
           // We'll rely on userId being present from checkout.
 
           if (userId) {
+            // Update user metadata
             await supabaseAdmin.auth.admin.updateUserById(userId, {
               user_metadata: {
                 subscription_plan: planName,
@@ -201,6 +202,22 @@ router.post(
                 stripe_customer_id: customerId
               }
             });
+
+            // Update subscriptions table
+            await supabaseAdmin
+              .from('subscriptions')
+              .upsert({
+                user_id: userId,
+                stripe_customer_id: customerId,
+                stripe_subscription_id: sub.id,
+                price_id: priceId,
+                plan: planName,
+                status: status,
+                updated_at: new Date().toISOString(),
+              }, {
+                onConflict: 'stripe_subscription_id',
+                ignoreDuplicates: false,
+              });
           } else {
             console.warn("No userId in subscription metadata - cannot update Supabase user automatically", sub.id);
           }
@@ -210,8 +227,10 @@ router.post(
         case "customer.subscription.deleted": {
           const sub = event.data.object as any;
           const userId = sub.metadata?.userId;
+          const customerId = sub.customer;
 
           if (userId) {
+            // Update user metadata
             await supabaseAdmin.auth.admin.updateUserById(userId, {
               user_metadata: {
                 subscription_plan: 'free',
@@ -219,6 +238,21 @@ router.post(
                 stripe_subscription_id: null
               }
             });
+
+            // Update subscriptions table
+            await supabaseAdmin
+              .from('subscriptions')
+              .upsert({
+                user_id: userId,
+                stripe_customer_id: customerId,
+                stripe_subscription_id: sub.id,
+                status: 'canceled',
+                plan: 'free',
+                updated_at: new Date().toISOString(),
+              }, {
+                onConflict: 'stripe_subscription_id',
+                ignoreDuplicates: false,
+              });
           }
           break;
         }

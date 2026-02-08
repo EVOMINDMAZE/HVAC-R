@@ -1,0 +1,21 @@
+
+  ERROR: 5 dead links found in docs/security/SBOM.md !
+  [✖] https://www.npmjs.com/package/react → Status: 403
+  [✖] https://www.npmjs.com/package/@supabase/supabase-js → Status: 403
+  [✖] https://www.npmjs.com/package/stripe → Status: 403
+  [✖] https://www.npmjs.com/package/vite → Status: 403
+  [✖] https://docs.npmjs.com/about-security → Status: 404
+
+  ERROR: 8 dead links found in docs/security/PENETRATION_TEST_SCOPE.md !
+  [✖] https://api-staging.thermoneural.com → Status: 0
+  [✖] mailto:owner@test.thermoneural.com → Status: 400
+  [✖] mailto:admin@test.thermoneural.com → Status: 400
+  [✖] mailto:manager@test.thermoneural.com → Status: 400
+  [✖] mailto:tech@test.thermoneural.com → Status: 400
+  [✖] mailto:client@test.thermoneural.com → Status: 400
+  [✖] mailto:student@test.thermoneural.com → Status: 400
+  [✖] mailto:owner2@test.thermoneural.com → Status: 400
+
+  ERROR: 2 dead links found in docs/monitoring/ELK_SETUP.md !
+  [✖] http://localhost:5601 → Status: 0
+  [✖] http://localhost:5601/api/status → Status: 0

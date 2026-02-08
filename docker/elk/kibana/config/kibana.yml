@@ -1,0 +1,57 @@
+---
+## Kibana Configuration
+
+server.name: "thermoneural-kibana"
+server.host: "0.0.0.0"
+server.publicBaseUrl: "http://localhost:5601"
+
+## Elasticsearch Connection
+elasticsearch.hosts: ["http://elasticsearch:9200"]
+
+## Kibana UI Settings
+server.customResponseHeaders:
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  X-XSS-Protection: "1; mode=block"
+
+## Monitoring
+monitoring.ui.container.elasticsearch.enabled: true
+
+## Logging
+logging:
+  appenders:
+    console:
+      type: console
+      layout:
+        type: pattern
+  root:
+    appenders: [console]
+    level: info
+
+## UI Branding
+server.customBranding:
+  logo: "custom_logo"
+  faviconUrl: "custom_favicon"
+
+## Default Index Pattern
+kibana.defaultAppId: "discover"
+
+## Security (disabled for development)
+# xpack.security.enabled: true
+# xpack.encryptedSavedObjects:
+#   encryptionKey: "your-32-character-minimum-encryption-key"
+
+## Telemetry (disabled)
+telemetry.optIn: false
+telemetry.allowChangingOptInStatus: false
+
+## Advanced Settings
+csp.strict: true
+csp.warnLegacyBrowsers: false
+
+## Data Views
+data_view:
+  defaultIndexPatternId: "thermoneural-logs-*"
+
+## Metrics interval
+metrics.metricsets.ui.container.enabled: true

@@ -78,10 +78,10 @@ export const saveCalculation: RequestHandler = async (req, res) => {
       .from('calculations')
       .insert({
         user_id: user.id,
-        type,
+        calculation_type: type,
         name: name || null,
         notes: notes || null,
-        parameters: parameters, // Supabase handles JSONB automatically if type is json
+        inputs: parameters,
         results: results
       })
       .select()

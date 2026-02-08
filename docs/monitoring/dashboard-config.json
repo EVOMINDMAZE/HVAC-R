@@ -1,0 +1,182 @@
+{
+  "title": "ThermoNeural Operations Dashboard",
+  "description": "Real-time monitoring dashboard for system health and business metrics",
+  "refresh_interval": "30s",
+  "panels": [
+    {
+      "id": "system-health",
+      "title": "System Health Overview",
+      "type": "status",
+      "position": { "x": 0, "y": 0, "width": 12, "height": 2 },
+      "metrics": [
+        { "name": "api_availability", "display": "API Status", "status_map": { "up": "healthy", "down": "critical" } },
+        { "name": "database_health", "display": "Database", "status_map": { "connected": "healthy", "disconnected": "critical" } },
+        { "name": "storage_health", "display": "Storage", "status_map": { "available": "healthy", "unavailable": "critical" } },
+        { "name": "ai_gateway_health", "display": "AI Gateway", "status_map": { "available": "healthy", "unavailable": "warning" } }
+      ]
+    },
+    {
+      "id": "api-metrics",
+      "title": "API Performance",
+      "type": "line",
+      "position": { "x": 0, "y": 2, "width": 8, "height": 4 },
+      "metrics": [
+        { "name": "p95_response_time", "label": "P95 Latency (ms)", "color": "#3b82f6" },
+        { "name": "p99_response_time", "label": "P99 Latency (ms)", "color": "#8b5cf6" },
+        { "name": "avg_response_time", "label": "Avg Latency (ms)", "color": "#10b981" }
+      ],
+      "time_range": "1h",
+      "thresholds": [
+        { "value": 500, "color": "green", "label": "Good" },
+        { "value": 1000, "color": "yellow", "label": "Warning" },
+        { "value": 2000, "color": "red", "label": "Critical" }
+      ]
+    },
+    {
+      "id": "error-rate",
+      "title": "Error Rate",
+      "type": "line",
+      "position": { "x": 8, "y": 2, "width": 4, "height": 4 },
+      "metrics": [
+        { "name": "error_rate", "label": "Error Rate (%)", "color": "#ef4444" }
+      ],
+      "time_range": "1h",
+      "thresholds": [
+        { "value": 0.1, "color": "green", "label": "Good" },
+        { "value": 1.0, "color": "yellow", "label": "Warning" },
+        { "value": 5.0, "color": "red", "label": "Critical" }
+      ]
+    },
+    {
+      "id": "request-volume",
+      "title": "Request Volume",
+      "type": "bar",
+      "position": { "x": 0, "y": 6, "width": 6, "height": 4 },
+      "metrics": [
+        { "name": "requests_total", "label": "Total Requests", "color": "#3b82f6" },
+        { "name": "requests_success", "label": "Successful", "color": "#10b981" },
+        { "name": "requests_error", "label": "Errors", "color": "#ef4444" }
+      ],
+      "time_range": "24h",
+      "group_by": "hour"
+    },
+    {
+      "id": "top-endpoints",
+      "title": "Top Endpoints",
+      "type": "table",
+      "position": { "x": 6, "y": 6, "width": 6, "height": 4 },
+      "columns": [
+        { "key": "path", "label": "Endpoint", "width": "40%" },
+        { "key": "method", "label": "Method", "width": "15%" },
+        { "key": "count", "label": "Requests", "width": "15%" },
+        { "key": "avgDuration", "label": "Avg (ms)", "width": "15%" },
+        { "key": "errorRate", "label": "Error %", "width": "15%" }
+      ],
+      "time_range": "1h"
+    },
+    {
+      "id": "business-metrics",
+      "title": "Business Metrics",
+      "type": "stat",
+      "position": { "x": 0, "y": 10, "width": 4, "height": 3 },
+      "metrics": [
+        { "name": "active_users", "label": "Active Users", "format": "number" },
+        { "name": "calculations_today", "label": "Calculations Today", "format": "number" },
+        { "name": "jobs_created", "label": "Jobs Created", "format": "number" },
+        { "name": "revenue_today", "label": "Revenue Today", "format": "currency" }
+      ],
+      "time_range": "24h"
+    },
+    {
+      "id": "subscription-metrics",
+      "title": "Subscription Overview",
+      "type": "pie",
+      "position": { "x": 4, "y": 10, "width": 4, "height": 3 },
+      "metrics": [
+        { "name": "starter_subscriptions", "label": "Starter", "color": "#3b82f6" },
+        { "name": "professional_subscriptions", "label": "Professional", "color": "#8b5cf6" },
+        { "name": "enterprise_subscriptions", "label": "Enterprise", "color": "#f59e0b" }
+      ],
+      "time_range": "24h"
+    },
+    {
+      "id": "conversion-funnel",
+      "title": "Conversion Funnel",
+      "type": "funnel",
+      "position": { "x": 8, "y": 10, "width": 4, "height": 3 },
+      "steps": [
+        { "name": "Visitors", "key": "visitors" },
+        { "name": "Signups", "key": "signups" },
+        { "name": "Activated", "key": "activated" },
+        { "name": "Subscribed", "key": "subscribed" }
+      ],
+      "time_range": "7d"
+    },
+    {
+      "id": "database-metrics",
+      "title": "Database Performance",
+      "type": "line",
+      "position": { "x": 0, "y": 13, "width": 6, "height": 4 },
+      "metrics": [
+        { "name": "db_query_time_avg", "label": "Avg Query Time (ms)", "color": "#3b82f6" },
+        { "name": "db_connections_active", "label": "Active Connections", "color": "#10b981" },
+        { "name": "db_query_time_p95", "label": "P95 Query Time (ms)", "color": "#f59e0b" }
+      ],
+      "time_range": "1h"
+    },
+    {
+      "id": "infrastructure-metrics",
+      "title": "Infrastructure",
+      "type": "gauge",
+      "position": { "x": 6, "y": 13, "width": 6, "height": 4 },
+      "metrics": [
+        { "name": "cpu_usage", "label": "CPU Usage (%)", "max": 100, "thresholds": [70, 85, 95] },
+        { "name": "memory_usage", "label": "Memory Usage (%)", "max": 100, "thresholds": [70, 85, 95] },
+        { "name": "disk_usage", "label": "Disk Usage (%)", "max": 100, "thresholds": [70, 85, 95] }
+      ],
+      "time_range": "1h"
+    },
+    {
+      "id": "recent-errors",
+      "title": "Recent Errors",
+      "type": "list",
+      "position": { "x": 0, "y": 17, "width": 6, "height": 4 },
+      "columns": [
+        { "key": "timestamp", "label": "Time", "width": "20%" },
+        { "key": "level", "label": "Level", "width": "10%" },
+        { "key": "message", "label": "Message", "width": "50%" },
+        { "key": "path", "label": "Endpoint", "width": "20%" }
+      ],
+      "time_range": "1h",
+      "limit": 50
+    },
+    {
+      "id": "alert-feed",
+      "title": "Active Alerts",
+      "type": "alert-list",
+      "position": { "x": 6, "y": 17, "width": 6, "height": 4 },
+      "filters": {
+        "status": ["firing", "pending"],
+        "severity": ["critical", "high", "medium"]
+      },
+      "columns": [
+        { "key": "severity", "label": "Severity", "width": "15%" },
+        { "key": "name", "label": "Alert", "width": "40%" },
+        { "key": "status", "label": "Status", "width": "15%" },
+        { "key": "fired_at", "label": "Fired", "width": "30%" }
+      ]
+    }
+  ],
+  "time_ranges": [
+    { "label": "15m", "value": "15m" },
+    { "label": "1h", "value": "1h" },
+    { "label": "6h", "value": "6h" },
+    { "label": "24h", "value": "24h" },
+    { "label": "7d", "value": "7d" },
+    { "label": "30d", "value": "30d" }
+  ],
+  "layout": {
+    "columns": 12,
+    "row_height": "80px"
+  }
+}

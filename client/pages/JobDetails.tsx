@@ -62,6 +62,7 @@ interface Job {
 
 export default function JobDetails() {
   const { id } = useParams<{ id: string }>();
+  console.log("[JobDetails] Component mounted, id:", id);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { selectJob, currentJob } = useJob();
@@ -192,14 +193,25 @@ export default function JobDetails() {
   }, [id, authCompanyId]); // Re-fetch if auth company changes
 
   const fetchTechnicians = async () => {
-    // Fetch technicians from profiles (or user_roles view if profiles unchecked)
+    console.log("[JobDetails] Fetching technicians from user_roles...");
+    // Fetch technicians from user_roles (profiles table doesn't exist)
     const { data, error } = await supabase
-      .from("profiles")
-      .select("id, full_name, email")
-      .eq("role", "technician");
+      .from("user_roles")
+      .select("user_id, role")
+      .in("role", ["technician", "tech"]);
+
+    console.log("[JobDetails] Technicians query result:", { data, error });
 
     if (!error && data) {
-      setTechnicians(data);
+      // Transform to match expected format: { id, full_name, email }
+      const techs = data.map((t: any) => ({
+        id: t.user_id,
+        full_name: `${t.role === "technician" ? "Technician" : "Tech"} (${t.user_id.slice(0, 8)})`,
+        email: "no-email@example.com",
+        role: t.role,
+      }));
+      setTechnicians(techs);
+      console.log("[JobDetails] Set technicians:", techs.length);
     } else {
       console.warn("Could not fetch technicians or none found", error);
     }
@@ -207,6 +219,7 @@ export default function JobDetails() {
 
   const fetchJob = async (jobId: string) => {
     try {
+      console.log("[JobDetails] fetchJob called for id:", jobId);
       setLoading(true);
       const { data, error } = await supabase
         .from("jobs")
@@ -214,17 +227,28 @@ export default function JobDetails() {
         .eq("id", jobId)
         .single();
 
-      if (error) throw error;
+      console.log("[JobDetails] Job query result:", { data, error });
+
+      if (error) {
+        console.error("[JobDetails] Job query error details:", {
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
+        });
+        throw error;
+      }
+
+      console.log("[JobDetails] Job data loaded:", data);
       setJob(data);
       if (data.notes) setLocalNotes(data.notes);
     } catch (error: any) {
-      console.error("Error fetching job:", error);
+      console.error("[JobDetails] Error fetching job:", error);
       toast({
-        title: "Error",
-        description: "Failed to load job details.",
+        title: "Failed to load job",
+        description: error?.message || "Unknown error",
         variant: "destructive",
       });
-      navigate("/dashboard/jobs");
     } finally {
       setLoading(false);
     }
@@ -238,12 +262,9 @@ export default function JobDetails() {
         .from("jobs")
         .update({
           technician_id: newTechId === "unassigned" ? null : newTechId,
-          status:
-            newTechId !== "unassigned" && job.status === "pending"
-              ? "assigned"
-              : newTechId === "unassigned" && job.status === "assigned"
-                ? "pending"
-                : job.status,
+          // Don't change status when assigning/unassigning technician
+          // The 'jobs_status_check' constraint prevents 'assigned' status
+          // Keep existing status
         })
         .eq("id", job.id);
 

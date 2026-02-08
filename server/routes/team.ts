@@ -166,10 +166,10 @@ export const inviteTeamMember: RequestHandler = async (req, res) => {
     const { companyId: currentUserCompanyId, role: currentUserRole } =
       await getUserCompanyId(user.id);
     if (!currentUserCompanyId || !currentUserRole) {
-      return res
-        .status(400)
-        .json({ error: "Current user not associated with a company" });
-    }
+    return res
+      .status(403)
+      .json({ error: "Current user not associated with a company" });
+  }
 
     // Permission check
     if (currentUserRole !== "admin" && currentUserRole !== "manager") {
@@ -254,8 +254,14 @@ export const inviteTeamMember: RequestHandler = async (req, res) => {
       }
     }
 
+    // If newUserId is still null, it might be due to user existing but we failed to get ID
+    // or the invite flow didn't return user object as expected (if email confirmation is on)
     if (!newUserId) {
-      return res.status(500).json({ error: "Failed to get or create user ID" });
+        // One last try to get ID if it exists
+        newUserId = await getUserIdByEmail(email);
+        if (!newUserId) {
+             return res.status(500).json({ error: "Failed to get or create user ID" });
+        }
     }
 
     // Create/update user_roles entry

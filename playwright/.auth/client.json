@@ -1,0 +1,14 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:8081",
+      "localStorage": [
+        {
+          "name": "sb-localhost-auth-token",
+          "value": "{\"access_token\":\"eyJhbGciOiJFUzI1NiIsImtpZCI6ImI4MTI2OWYxLTIxZDgtNGYyZS1iNzE5LWMyMjQwYTg0MGQ5MCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjU0MzIxL2F1dGgvdjEiLCJzdWIiOiIwODkwMjFhNi1mMDk5LTQyZDMtYTIzNy0xY2JmYzgyYjRlODkiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzcwNDI1OTcyLCJpYXQiOjE3NzA0MjIzNzIsImVtYWlsIjoiY2xpZW50QHRlc3QuY29tIiwicGhvbmUiOiIiLCJhcHBfbWV0YWRhdGEiOnsicHJvdmlkZXIiOiJlbWFpbCIsInByb3ZpZGVycyI6WyJlbWFpbCJdfSwidXNlcl9tZXRhZGF0YSI6eyJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6IkNMSUVOVCJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6InBhc3N3b3JkIiwidGltZXN0YW1wIjoxNzcwNDIyMzcyfV0sInNlc3Npb25faWQiOiJjYWJmNjViYy01MWM2LTRjZTItYmJjYi04MzQ0MzY2NDUwZDgiLCJpc19hbm9ueW1vdXMiOmZhbHNlfQ.X1EMAsWRcnlhbqbU8HIUrCs2NVFkGuYVRWxahmyW2UuOWsuAUOlQ_Z4uraEIBpSp1Qor5hgIsSnR6P5LlZ8wQw\",\"token_type\":\"bearer\",\"expires_in\":3600,\"expires_at\":1770425972,\"refresh_token\":\"7tvttdjc2i7h\",\"user\":{\"id\":\"089021a6-f099-42d3-a237-1cbfc82b4e89\",\"aud\":\"authenticated\",\"role\":\"authenticated\",\"email\":\"client@test.com\",\"email_confirmed_at\":\"2026-02-06T15:03:11.590299Z\",\"phone\":\"\",\"confirmed_at\":\"2026-02-06T15:03:11.590299Z\",\"last_sign_in_at\":\"2026-02-06T23:59:32.336584255Z\",\"app_metadata\":{\"provider\":\"email\",\"providers\":[\"email\"]},\"user_metadata\":{\"email_verified\":true,\"name\":\"CLIENT\"},\"identities\":[{\"identity_id\":\"2f88bbd1-db9a-4d0c-a610-4cad74ea4136\",\"id\":\"089021a6-f099-42d3-a237-1cbfc82b4e89\",\"user_id\":\"089021a6-f099-42d3-a237-1cbfc82b4e89\",\"identity_data\":{\"email\":\"client@test.com\",\"email_verified\":false,\"phone_verified\":false,\"sub\":\"089021a6-f099-42d3-a237-1cbfc82b4e89\"},\"provider\":\"email\",\"last_sign_in_at\":\"2026-02-06T15:03:11.588308Z\",\"created_at\":\"2026-02-06T15:03:11.588328Z\",\"updated_at\":\"2026-02-06T15:03:11.588328Z\",\"email\":\"client@test.com\"}],\"created_at\":\"2026-02-06T15:03:11.587Z\",\"updated_at\":\"2026-02-06T23:59:32.343109Z\",\"is_anonymous\":false},\"weak_password\":null}"
+        }
+      ]
+    }
+  ]
+}

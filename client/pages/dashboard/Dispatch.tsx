@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import {
   Plus,
   Search,
@@ -29,6 +30,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function Dispatch() {
+  console.log("[Dispatch] Component mounted");
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -84,38 +86,87 @@ export default function Dispatch() {
   }, []);
 
   async function fetchTechnicians() {
-    // Query user_roles as a proxy for technicians since profiles table doesn't exist
-    const { data } = await supabase
-      .from("user_roles")
-      .select("user_id, role")
-      .in("role", ["technician", "tech"]);
+    console.log("[Dispatch] fetchTechnicians() called");
+    try {
+      console.log("[Dispatch] Fetching from user_roles...");
+      // profiles table doesn't exist, use user_roles directly
+      const { data, error } = await supabase
+        .from("user_roles")
+        .select("user_id, role")
+        .in("role", ["technician", "tech"]);
 
-    if (data) {
-      // Map to the expected format
-      setTechnicians(
-        data.map((t) => ({
+      console.log("[Dispatch] Raw query result:", { data, error });
+
+      if (error) {
+        console.error("[Dispatch] Error fetching technicians:", error.message);
+        return;
+      }
+
+      if (data && data.length > 0) {
+        console.log("[Dispatch] Found", data.length, "technicians");
+        const techs = data.map((t: any) => ({
           id: t.user_id,
-          full_name: `Technician (${t.user_id.slice(0, 8)})`,
-          email: "hidden",
-        })),
-      );
+          full_name: `${t.role === "technician" ? "Technician" : "Tech"} (${t.user_id.slice(0, 8)})`,
+          email: "technician@example.com",
+          role: t.role,
+        }));
+        setTechnicians(techs);
+        console.log(`[Dispatch] Loaded ${techs.length} technicians`, techs);
+      } else {
+        console.log("[Dispatch] No technicians found in database!");
+      }
+    } catch (err) {
+      console.error("[Dispatch] Failed to fetch technicians:", err);
     }
   }
 
+  // Debug: log technicians state changes
+  useEffect(() => {
+    console.log(
+      "[Dispatch] technicians state updated:",
+      technicians.length,
+      technicians,
+    );
+  }, [technicians]);
+
+  // Helper to get technician name from technicians list
+  function getTechnicianInfo(techId: string | null) {
+    if (!techId) return null;
+    return technicians.find((t) => t.id === techId) || null;
+  }
+
   async function handleAssignTechnician(jobId: string, techId: string) {
+    console.log("[Dispatch] handleAssignTechnician:", { jobId, techId });
     try {
+      // Only update technician_id, don't change status
+      // The 'jobs_status_check' constraint prevents 'assigned' status
+      // Existing data shows jobs with technicians have 'pending' status
+      const updatePayload = {
+        technician_id: techId === "unassigned" ? null : techId,
+      };
+      console.log("[Dispatch] Update payload:", updatePayload);
+
       const { error } = await supabase
         .from("jobs")
-        .update({
-          technician_id: techId === "unassigned" ? null : techId,
-          status: techId !== "unassigned" ? "assigned" : "pending",
-        })
+        .update(updatePayload)
         .eq("id", jobId);
 
-      if (error) throw error;
-      fetchJobs(); // Refresh immediately (realtime should also catch it)
-    } catch (error) {
-      console.error("Error assigning technician:", error);
+      if (error) {
+        console.error("[Dispatch] Supabase error details:", {
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
+        });
+        throw error;
+      }
+      console.log("[Dispatch] Technician assignment successful");
+      fetchJobs();
+    } catch (error: any) {
+      console.error("[Dispatch] Error assigning technician:", error);
+      alert(
+        `Assignment failed: ${error?.details || error?.message || "Check constraint violation"}`,
+      );
     }
   }
 
@@ -283,24 +334,25 @@ export default function Dispatch() {
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <button className="flex items-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-700/50 p-1 rounded-lg transition-colors text-left group/tech">
-                            {job.technician ? (
-                              <>
-                                <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-900/30 text-slate-600 dark:text-slate-400 flex items-center justify-center text-xs font-bold">
-                                  {(
-                                    job.technician.full_name?.[0] ||
-                                    job.technician.email[0]
-                                  )?.toUpperCase()}
-                                </div>
-                                <span className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate max-w-[120px]">
-                                  {job.technician.full_name ||
-                                    job.technician.email.split("@")[0]}
+                            {(() => {
+                              const tech = getTechnicianInfo(job.technician_id);
+                              return tech ? (
+                                <>
+                                  <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-900/30 text-slate-600 dark:text-slate-400 flex items-center justify-center text-xs font-bold">
+                                    {(
+                                      tech.full_name?.[0] || tech.email[0]
+                                    )?.toUpperCase()}
+                                  </div>
+                                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate max-w-[120px]">
+                                    {tech.full_name || tech.email.split("@")[0]}
+                                  </span>
+                                </>
+                              ) : (
+                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-800 text-gray-800 dark:text-gray-300 group-hover/tech:bg-gray-200">
+                                  Unassigned
                                 </span>
-                              </>
-                            ) : (
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-800 text-gray-800 dark:text-gray-300 group-hover/tech:bg-gray-200">
-                                Unassigned
-                              </span>
-                            )}
+                              );
+                            })()}
                           </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>

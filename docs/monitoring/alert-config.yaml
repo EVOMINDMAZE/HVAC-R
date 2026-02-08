@@ -1,0 +1,415 @@
+# ThermoNeural Monitoring Alert Configuration
+# Generated: 2026-02-07
+# Purpose: Define alerting thresholds and escalation policies
+
+alerts:
+  # Critical Alerts (P0) - Immediate response required
+  - name: "High Error Rate"
+    description: "API error rate exceeds threshold"
+    severity: "critical"
+    metric: "error_rate"
+    condition: ">"
+    threshold: 5.0
+    unit: "percent"
+    duration: 5m
+    evaluation_window: 10m
+    channels:
+      - pagerduty
+      - slack-critical
+      - email-ops
+    runbook: "https://wiki.thermoneural.com/runbooks/high-error-rate"
+    tags:
+      service: "api"
+      component: "backend"
+
+  - name: "API Down"
+    description: "API server is not responding"
+    severity: "critical"
+    metric: "api_availability"
+    condition: "<"
+    threshold: 99.0
+    unit: "percent"
+    duration: 2m
+    evaluation_window: 5m
+    channels:
+      - pagerduty
+      - slack-critical
+      - twilio-sms-ops
+    runbook: "https://wiki.thermoneural.com/runbooks/api-down"
+    tags:
+      service: "api"
+      component: "server"
+
+  - name: "Database Connection Failure"
+    description: "Unable to connect to database"
+    severity: "critical"
+    metric: "db_connection_errors"
+    condition: ">"
+    threshold: 0
+    unit: "count"
+    duration: 1m
+    evaluation_window: 5m
+    channels:
+      - pagerduty
+      - slack-critical
+    runbook: "https://wiki.thermoneural.com/runbooks/db-connection"
+    tags:
+      service: "database"
+      component: "supabase"
+
+  - name: "Payment Processing Failure"
+    description: "Stripe payment processing is failing"
+    severity: "critical"
+    metric: "stripe_error_rate"
+    condition: ">"
+    threshold: 2.0
+    unit: "percent"
+    duration: 5m
+    evaluation_window: 15m
+    channels:
+      - pagerduty
+      - slack-payments
+      - email-revenue
+    runbook: "https://wiki.thermoneural.com/runbooks/payment-failure"
+    tags:
+      service: "payments"
+      component: "stripe"
+
+  # High Priority Alerts (P1) - Response within 15 minutes
+  - name: "High Latency"
+    description: "API response time exceeds threshold"
+    severity: "high"
+    metric: "p95_response_time"
+    condition: ">"
+    threshold: 2000
+    unit: "ms"
+    duration: 10m
+    evaluation_window: 30m
+    channels:
+      - slack-alerts
+      - email-ops
+    runbook: "https://wiki.thermoneural.com/runbooks/high-latency"
+    tags:
+      service: "api"
+      component: "backend"
+
+  - name: "High CPU Usage"
+    description: "Server CPU usage is high"
+    severity: "high"
+    metric: "cpu_usage"
+    condition: ">"
+    threshold: 80
+    unit: "percent"
+    duration: 15m
+    evaluation_window: 30m
+    channels:
+      - slack-alerts
+      - email-ops
+    runbook: "https://wiki.thermoneural.com/runbooks/high-cpu"
+    tags:
+      service: "infrastructure"
+      component: "server"
+
+  - name: "Memory Pressure"
+    description: "Server memory usage is high"
+    severity: "high"
+    metric: "memory_usage"
+    condition: ">"
+    threshold: 85
+    unit: "percent"
+    duration: 10m
+    evaluation_window: 20m
+    channels:
+      - slack-alerts
+      - email-ops
+    runbook: "https://wiki.thermoneural.com/runbooks/memory-pressure"
+    tags:
+      service: "infrastructure"
+      component: "server"
+
+  - name: "Authentication Failures"
+    description: "High rate of authentication failures"
+    severity: "high"
+    metric: "auth_failure_rate"
+    condition: ">"
+    threshold: 10.0
+    unit: "percent"
+    duration: 5m
+    evaluation_window: 15m
+    channels:
+      - slack-alerts
+      - email-security
+    runbook: "https://wiki.thermoneural.com/runbooks/auth-failures"
+    tags:
+      service: "auth"
+      component: "supabase"
+
+  # Medium Priority Alerts (P2) - Response within 1 hour
+  - name: "Elevated Error Rate"
+    description: "Error rate is elevated but below critical"
+    severity: "medium"
+    metric: "error_rate"
+    condition: ">"
+    threshold: 1.0
+    unit: "percent"
+    duration: 15m
+    evaluation_window: 1h
+    channels:
+      - slack-alerts
+    runbook: "https://wiki.thermoneural.com/runbooks/elevated-errors"
+    tags:
+      service: "api"
+      component: "backend"
+
+  - name: "Slow Database Queries"
+    description: "Database query execution time is elevated"
+    severity: "medium"
+    metric: "db_query_time_p95"
+    condition: ">"
+    threshold: 500
+    unit: "ms"
+    duration: 15m
+    evaluation_window: 1h
+    channels:
+      - slack-alerts
+    runbook: "https://wiki.thermoneural.com/runbooks/slow-queries"
+    tags:
+      service: "database"
+      component: "supabase"
+
+  - name: "Disk Space Warning"
+    description: "Disk space usage is approaching limit"
+    severity: "medium"
+    metric: "disk_usage"
+    condition: ">"
+    threshold: 80
+    unit: "percent"
+    duration: 1h
+    evaluation_window: 24h
+    channels:
+      - slack-alerts
+      - email-ops
+    runbook: "https://wiki.thermoneural.com/runbooks/disk-space"
+    tags:
+      service: "infrastructure"
+      component: "storage"
+
+  - name: "Rate Limit Approaching"
+    description: "API rate limit usage is high"
+    severity: "medium"
+    metric: "rate_limit_usage"
+    condition: ">"
+    threshold: 80
+    unit: "percent"
+    duration: 5m
+    evaluation_window: 1h
+    channels:
+      - slack-alerts
+    runbook: "https://wiki.thermoneural.com/runbooks/rate-limit"
+    tags:
+      service: "api"
+      component: "rate-limiter"
+
+  # Low Priority Alerts (P3) - Response within 24 hours
+  - name: "Deprecation Warning"
+    description: "API endpoint is approaching deprecation"
+    severity: "low"
+    metric: "deprecated_endpoint_usage"
+    condition: ">"
+    threshold: 0
+    unit: "count"
+    duration: 24h
+    evaluation_window: 7d
+    channels:
+      - slack-dev
+    runbook: "https://wiki.thermoneural.com/runbooks/deprecation"
+    tags:
+      service: "api"
+      component: "deprecation"
+
+  - name: "Feature Usage Spike"
+    description: "Unusual spike in feature usage"
+    severity: "low"
+    metric: "feature_usage_rate"
+    condition: ">"
+    threshold: 200
+    unit: "percent"
+    duration: 1h
+    evaluation_window: 24h
+    channels:
+      - slack-product
+    runbook: "https://wiki.thermoneural.com/runbooks/usage-spike"
+    tags:
+      service: "analytics"
+      component: "usage"
+
+  - name: "Test Coverage Drop"
+    description: "Code test coverage has decreased"
+    severity: "low"
+    metric: "test_coverage"
+    condition: "<"
+    threshold: 65
+    unit: "percent"
+    duration: 24h
+    evaluation_window: 7d
+    channels:
+      - slack-dev
+    runbook: "https://wiki.thermoneural.com/runbooks/coverage-drop"
+    tags:
+      service: "ci-cd"
+      component: "testing"
+
+# Escalation Policies
+escalation_policies:
+  - name: "Critical Alert Escalation"
+    description: "Escalation path for critical alerts"
+    steps:
+      - delay: 5m
+        channels: [slack-critical]
+      - delay: 10m
+        channels: [pagerduty]
+      - delay: 15m
+        channels: [twilio-sms-ops, email-ops]
+      - delay: 30m
+        channels: [cto-phone]
+
+  - name: "High Priority Escalation"
+    description: "Escalation path for high priority alerts"
+    steps:
+      - delay: 15m
+        channels: [slack-alerts]
+      - delay: 30m
+        channels: [email-ops]
+      - delay: 1h
+        channels: [pagerduty]
+
+  - name: "Standard Escalation"
+    description: "Escalation path for standard alerts"
+    steps:
+      - delay: 1h
+        channels: [slack-alerts]
+      - delay: 4h
+        channels: [email-ops]
+      - delay: 24h
+        channels: [slack-dev]
+
+# Notification Channels
+channels:
+  - name: "slack-critical"
+    type: "slack"
+    webhook: "${SLACK_CRITICAL_WEBHOOK}"
+    channel: "#alerts-critical"
+    mention_users: ["@devops-oncall", "@engineering-lead"]
+
+  - name: "slack-alerts"
+    type: "slack"
+    webhook: "${SLACK_ALERTS_WEBHOOK}"
+    channel: "#alerts"
+    mention_users: []
+
+  - name: "slack-payments"
+    type: "slack"
+    webhook: "${SLACK_PAYMENTS_WEBHOOK}"
+    channel: "#payments-team"
+    mention_users: []
+
+  - name: "slack-dev"
+    type: "slack"
+    webhook: "${SLACK_DEV_WEBHOOK}"
+    channel: "#dev-team"
+    mention_users: []
+
+  - name: "slack-product"
+    type: "slack"
+    webhook: "${SLACK_PRODUCT_WEBHOOK}"
+    channel: "#product"
+    mention_users: []
+
+  - name: "pagerduty"
+    type: "pagerduty"
+    service_key: "${PAGERDUTY_SERVICE_KEY}"
+    severity_mapping:
+      critical: "critical"
+      high: "high"
+      medium: "low"
+      low: "info"
+
+  - name: "email-ops"
+    type: "email"
+    to: ["ops-team@thermoneural.com"]
+    from: "alerts@thermoneural.com"
+
+  - name: "email-security"
+    type: "email"
+    to: ["security-team@thermoneural.com"]
+    from: "alerts@thermoneural.com"
+
+  - name: "email-revenue"
+    type: "email"
+    to: ["revenue-team@thermoneural.com"]
+    from: "alerts@thermoneural.com"
+
+  - name: "twilio-sms-ops"
+    type: "twilio"
+    to: ["+1234567890", "+0987654321"]
+    from: "+15551234567"
+
+# Maintenance Windows
+maintenance_windows:
+  - name: "Weekly Deployment"
+    description: "Scheduled deployment window"
+    schedule: "0 2 * * 0"  # Sundays at 2 AM UTC
+    duration: 2h
+    affected_services: ["api", "frontend"]
+    auto_close: true
+
+  - name: "Database Maintenance"
+    description: "Scheduled database maintenance"
+    schedule: "0 3 * * 6"  # Saturdays at 3 AM UTC
+    duration: 4h
+    affected_services: ["database"]
+    auto_close: true
+
+# SLO Definitions
+service_level_objectives:
+  - name: "API Availability"
+    description: "API endpoints are available"
+    metric: "api_availability"
+    target: 99.9
+    window: 30d
+    tags: [service: "api"]
+
+  - name: "API Latency P95"
+    description: "95th percentile response time"
+    metric: "p95_response_time"
+    target: "< 500"
+    window: 7d
+    tags: [service: "api"]
+
+  - name: "API Latency P99"
+    description: "99th percentile response time"
+    metric: "p99_response_time"
+    target: "< 2000"
+    window: 7d
+    tags: [service: "api"]
+
+  - name: "Error Rate"
+    description: "Percentage of failed requests"
+    metric: "error_rate"
+    target: "< 0.1"
+    window: 1d
+    tags: [service: "api"]
+
+  - name: "Payment Success Rate"
+    description: "Percentage of successful payments"
+    metric: "payment_success_rate"
+    target: "> 99.5"
+    window: 1d
+    tags: [service: "payments"]
+
+  - name: "Database Query Time"
+    description: "Average database query execution time"
+    metric: "db_query_time_avg"
+    target: "< 100"
+    window: 1d
+    tags: [service: "database"]

@@ -1,0 +1,36 @@
+---
+name: Mobile App Remediation Plan (iOS & Android)
+description: The primary goal is to resolve the "Dynamic Island" and Notch obstruction issues across ALL views, not just the landing page.
+version: 1.0
+---
+
+# Mobile App Remediation Plan (iOS & Android)
+
+## 🚨 Critical Priority: Layout & Safe Area
+The primary goal is to resolve the "Dynamic Island" and Notch obstruction issues across **ALL** views, not just the landing page.
+
+- [x] **Global Application Wrapper Fix**
+  - Implement a `pt-[env(safe-area-inset-top)]` redundancy at the `App.tsx` or `Layout.tsx` level to force content down globally on native devices.
+  - Ensure `viewport-fit=cover` is working (verified).
+  - **Task**: Modify `client/index.css` or `Layout.tsx` to handle `capacitor-platform-ios` specific classes. (DONE: Added global CSS rule)
+
+- [x] **Technician & Dashboard Headers**
+  - The "My Jobs / Select Client" header (seen in screenshots) is currently crashing into the notch.
+  - **Task**: Locate the component (likely `JobBoard.tsx`, `TechDashboard.tsx`, or a generic `PageHeader` component) and apply the same `isNative` padding logic used in the main Header.
+  - **Fix**: Add `pt-16` or `pt-safe-offset` to these internal headers. (DONE: JobBoard.tsx updated with 60px padding)
+
+- [ ] **Authentication Screens (Login/Signup)**
+  - Ensure the "Welcome Back" container starts *below* the header/notch area.
+  - **Task**: Check `SignIn.tsx` and `SignUp.tsx` specific layouts.
+
+## 📱 Mobile UX Polish
+- [ ] **Touch Targets**: Ensure all buttons (especially "Back" arrows and Menu icons) are at least 44x44px.
+- [ ] **Dual-Row Header Refinement**: Verify the new "Logo Top / Actions Bottom" layout feels natural and doesn't consume too much vertical space on smaller screens.
+- [x] **Input/Select Zoom**: Updated `Select` and `Textarea` components to use `text-base` (16px) on mobile to prevent iOS auto-zoom on focus.
+- [ ] **Keyboard Avoidance**: Ensure input fields (email/password) scroll into view when the keyboard opens (Capacitor Keyboard plugin config).
+
+## 🧪 Testing Checklist
+- [ ] **Landing Page**: Verify Logo & Menu clear the island.
+- [ ] **Auth Pages**: Verify "Sign In" title is not obscured.
+- [ ] **Technician View**: Verify "My Jobs" header clears the island.
+- [ ] **Client View**: Verify "Dashboard" header clears the island.

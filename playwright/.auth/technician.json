@@ -1,0 +1,14 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:8081",
+      "localStorage": [
+        {
+          "name": "sb-localhost-auth-token",
+          "value": "{\"access_token\":\"eyJhbGciOiJFUzI1NiIsImtpZCI6ImI4MTI2OWYxLTIxZDgtNGYyZS1iNzE5LWMyMjQwYTg0MGQ5MCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjU0MzIxL2F1dGgvdjEiLCJzdWIiOiIxNzNlNjNmZi0xYWYzLTRiODctYmM4ZC04OTdkMzNmNjU1ZDAiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzcwNDI1OTcwLCJpYXQiOjE3NzA0MjIzNzAsImVtYWlsIjoidGVjaEB0ZXN0LmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZW1haWwiLCJwcm92aWRlcnMiOlsiZW1haWwiXX0sInVzZXJfbWV0YWRhdGEiOnsiYWN0aXZlX2NvbXBhbnlfaWQiOiJmZWFhMGUzMC0yYTkwLTQwNDktOTdlYy1lY2E3ZTQ1MTI5OGEiLCJhY3RpdmVfcm9sZSI6InRlY2huaWNpYW4iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6IlRFQ0hOSUNJQU4ifSwicm9sZSI6ImF1dGhlbnRpY2F0ZWQiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTc3MDQyMjM3MH1dLCJzZXNzaW9uX2lkIjoiN2VkNjMzZmMtN2RjMS00NTE0LWFhMzktYWU4OGEwMDMyYWJmIiwiaXNfYW5vbnltb3VzIjpmYWxzZX0.SXhI38BbghvWR5BgooxtfWtO9eToGyH98S1XHpSfNEGertF7BdFQf6hYQVXZRIZWBs50XgPWM8p5aiZR1fF4Ig\",\"token_type\":\"bearer\",\"expires_in\":3600,\"expires_at\":1770425970,\"refresh_token\":\"ythjlt7nhpql\",\"user\":{\"id\":\"173e63ff-1af3-4b87-bc8d-897d33f655d0\",\"aud\":\"authenticated\",\"role\":\"authenticated\",\"email\":\"tech@test.com\",\"email_confirmed_at\":\"2026-02-06T15:03:11.496844Z\",\"phone\":\"\",\"confirmed_at\":\"2026-02-06T15:03:11.496844Z\",\"last_sign_in_at\":\"2026-02-06T23:59:29.995024463Z\",\"app_metadata\":{\"provider\":\"email\",\"providers\":[\"email\"]},\"user_metadata\":{\"active_company_id\":\"feaa0e30-2a90-4049-97ec-eca7e451298a\",\"active_role\":\"technician\",\"email_verified\":true,\"name\":\"TECHNICIAN\"},\"identities\":[{\"identity_id\":\"19034ffe-6404-4c0f-8ec4-f0982736bf8f\",\"id\":\"173e63ff-1af3-4b87-bc8d-897d33f655d0\",\"user_id\":\"173e63ff-1af3-4b87-bc8d-897d33f655d0\",\"identity_data\":{\"email\":\"tech@test.com\",\"email_verified\":false,\"phone_verified\":false,\"sub\":\"173e63ff-1af3-4b87-bc8d-897d33f655d0\"},\"provider\":\"email\",\"last_sign_in_at\":\"2026-02-06T15:03:11.494953Z\",\"created_at\":\"2026-02-06T15:03:11.494971Z\",\"updated_at\":\"2026-02-06T15:03:11.494971Z\",\"email\":\"tech@test.com\"}],\"created_at\":\"2026-02-06T15:03:11.493585Z\",\"updated_at\":\"2026-02-06T23:59:30.0166Z\",\"is_anonymous\":false},\"weak_password\":null}"
+        }
+      ]
+    }
+  ]
+}

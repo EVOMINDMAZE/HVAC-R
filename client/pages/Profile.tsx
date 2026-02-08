@@ -678,21 +678,21 @@ export function Profile() {
                             <p className="text-muted-foreground">
                               Status:{" "}
                               <span className="capitalize">
-                                {subscription.subscription.status}
+                                {subscription.subscription!.status}
                               </span>
                             </p>
                             <p className="text-muted-foreground">
-                              ${subscription.subscription.amount}/
-                              {subscription.subscription.interval}
+                              ${subscription.subscription!.amount}/
+                              {subscription.subscription!.interval}
                             </p>
                             <p className="text-muted-foreground">
                               Next billing:{" "}
                               {new Date(
-                                subscription.subscription.current_period_end *
+                                subscription.subscription!.current_period_end *
                                   1000,
                               ).toLocaleDateString()}
                             </p>
-                            {subscription.subscription.cancel_at_period_end && (
+                            {subscription.subscription!.cancel_at_period_end && (
                               <p className="text-destructive font-semibold">
                                 Subscription will cancel at the end of current
                                 period

@@ -5,7 +5,7 @@ const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
 
 // Target Email (Verified Domain)
-const TARGET_EMAIL = "hanniz.riadus@outlook.com";
+const TARGET_EMAIL = "test@example.com";
 
 // Load .env
 const envPath = path.resolve(__dirname, '../.env');

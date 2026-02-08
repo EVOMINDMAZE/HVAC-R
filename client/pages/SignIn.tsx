@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
@@ -37,6 +37,8 @@ export function SignIn() {
   const { addToast } = useToast();
   const navigate = useNavigate();
   const isNative = Capacitor.isNativePlatform();
+  const [searchParams] = useSearchParams();
+  const inviteCode = searchParams.get("code");
 
   // Check biometric availability on mount
   useEffect(() => {
@@ -44,6 +46,16 @@ export function SignIn() {
       checkBiometricAvailability().then(setBiometricStatus);
     }
   }, [isNative]);
+
+  useEffect(() => {
+    if (inviteCode) {
+      addToast({
+        type: "info",
+        title: "Join Invitation",
+        description: "Sign in to accept your invitation.",
+      });
+    }
+  }, [inviteCode, addToast]);
 
   const handleGoogleSignIn = async () => {
     try {
@@ -108,6 +120,12 @@ export function SignIn() {
           title: "Welcome back!",
           description: "You have been signed in successfully",
         });
+        
+        if (inviteCode) {
+          navigate(`/join-company?code=${inviteCode}`);
+          return;
+        }
+
         // Navigate based on role returned from signIn
         console.log("[SignIn] Login successful, role:", userRole);
         if (userRole === "client") {

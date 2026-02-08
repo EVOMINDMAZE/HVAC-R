@@ -1,62 +1,75 @@
+---
+name: Gap Remediation Plan 🛠️
+description: This plan addresses the critical capability gaps identified in Phase 7.4 of the Master Execution Plan. These features are required for end-to-end b...
+version: 1.0
+---
+
 # Gap Remediation Plan 🛠️
 
 This plan addresses the critical capability gaps identified in Phase 7.4 of the Master Execution Plan. These features are required for end-to-end business functionality.
 
 ## 1. Upgrade Admin Dispatch (`Jobs.tsx`)
+
 **Goal:** Enable business owners to assign a specific technician to a job during creation.
 **Context:** Currently, `creates job` defaults to the current user or requires manual DB entry. We need a UI to select a tech.
 
-### Steps:
+### Steps
+
 - [x] **1.1. Fetch Technicians**
-    - [x] Create a helper to fetch users where `role = 'technician'`.
-    - [x] Update `useSupabaseAuth` or local fetch in `Jobs.tsx` to get this list.
+  - [x] Create a helper to fetch users where `role = 'technician'`.
+  - [x] Update `useSupabaseAuth` or local fetch in `Jobs.tsx` to get this list.
 - [x] **1.2. Update "New Job" Dialog**
-    - [x] Add a `Select` dropdown for "Assign Technician".
-    - [x] Map selection to `technician_id` state.
+  - [x] Add a `Select` dropdown for "Assign Technician".
+  - [x] Map selection to `technician_id` state.
 - [x] **1.3. Modify Insert Logic**
-    - [x] Update the `supabase.from('jobs').insert(...)` payload to include `technician_id`.
-    - [x] Set initial status to `assigned` if a tech is selected, matches `pending` if not.
+  - [x] Update the `supabase.from('jobs').insert(...)` payload to include `technician_id`.
+  - [x] Set initial status to `assigned` if a tech is selected, matches `pending` if not.
 - [x] **1.4. Update RLS (Double Check)**
-    - [x] Ensure Admins can `INSERT` jobs with `technician_id` (Verified: standard RLS allows this).
+  - [x] Ensure Admins can `INSERT` jobs with `technician_id` (Verified: standard RLS allows this).
 
 ## 2. Build Triage Command Center (`TriageDashboard.tsx`)
+
 **Goal:** Provide a dashboard to view, analyze, and convert incoming homeowner requests.
 **Context:** Homeowners submit forms via `/triage`, but data sits unseen in `triage_submissions`.
 
-### Steps:
+### Steps
+
 - [x] **2.1. Create Dashboard Page**
-    - [x] Create `client/pages/admin/TriageDashboard.tsx`.
-    - [x] Add to Sidebar (Admin Only).
+  - [x] Create `client/pages/admin/TriageDashboard.tsx`.
+  - [x] Add to Sidebar (Admin Only).
 - [x] **2.2. Fetch Submissions**
-    - [x] Query `triage_submissions` ordered by `created_at` desc.
-    - [x] Display Card Layout: "New", "Analyzed", "Converted".
+  - [x] Query `triage_submissions` ordered by `created_at` desc.
+  - [x] Display Card Layout: "New", "Analyzed", "Converted".
 - [x] **2.3. "Convert to Job" Workflow**
-    - [x] Add "Convert" button on a submission.
-    - [x] Action:
-        1.  Create `client` record (if not exists) using Name/Phone.
-        2.  Create `job` record linked to that client.
-        3.  Update `triage_submission` status to `converted`.
-        4.  Navigate to Job Board.
+  - [x] Add "Convert" button on a submission.
+  - [x] Action:
+        1. Create `client` record (if not exists) using Name/Phone.
+        2. Create `job` record linked to that client.
+        3. Update `triage_submission` status to `converted`.
+        4. Navigate to Job Board.
 - [x] **2.4. Display AI Analysis**
-    - [x] Show the `ai_analysis` JSON (Problem summary, urgency) if available from the Edge Function.
+  - [x] Show the `ai_analysis` JSON (Problem summary, urgency) if available from the Edge Function.
 
 ## Execution Order
-1.  **Admin Dispatch** (Quick win, unblocks manual testing).
-2.  **Triage Dashboard** (Larger feature, completes the "Blue Ocean" lead gen flow).
+
+1. **Admin Dispatch** (Quick win, unblocks manual testing).
+2. **Triage Dashboard** (Larger feature, completes the "Blue Ocean" lead gen flow).
 
 ## 3. Warranty & Asset Persistence (`WarrantyScanner.tsx`)
+
 **Goal:** Save the scanned warranty data (Serial, Model, Manufacturer, Photo) to the client's asset profile in Supabase.
 **Context:** Currently, the scanner only performs a Google lookup. We need to "Save to Asset".
 
-### Steps:
+### Steps
+
 - [x] **3.1. Client Selection**
-    - [x] Add a dropdown to select which `Client` this asset belongs to (or "Quick Add Client").
+  - [x] Add a dropdown to select which `Client` this asset belongs to (or "Quick Add Client").
 - [x] **3.2. Database Schema Check**
-    - [x] Ensure `assets` table has fields for `serial_number`, `model_number`, `manufacturer`, `warranty_status`, `photo_url`.
+  - [x] Ensure `assets` table has fields for `serial_number`, `model_number`, `manufacturer`, `warranty_status`, `photo_url`.
 - [x] **3.3. "Save Asset" Logic**
-    - [x] Upload the captured image to Supabase Storage (`asset-photos`).
-    - [x] Insert a new record into `assets` linked to the selected client.
-    - [x] Toast success.
+  - [x] Upload the captured image to Supabase Storage (`asset-photos`).
+  - [x] Insert a new record into `assets` linked to the selected client.
+  - [x] Toast success.
 
 ---
 **Status Tracking:**

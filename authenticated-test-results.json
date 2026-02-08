@@ -1,0 +1,1931 @@
+{
+  "session": {
+    "startTime": "2026-02-06T01:05:23.784Z",
+    "url": "http://localhost:8080"
+  },
+  "consoleMessages": [
+    {
+      "timestamp": "2026-02-06T01:05:13.869Z",
+      "type": "debug",
+      "text": "[vite] connecting...",
+      "location": {
+        "url": "http://localhost:8080/@vite/client"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.096Z",
+      "type": "debug",
+      "text": "[vite] connected.",
+      "location": {
+        "url": "http://localhost:8080/@vite/client"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.203Z",
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold",
+      "location": {
+        "url": "http://localhost:8080/node_modules/.vite/deps/chunk-HEXDZATI.js?v=cd75f5df"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.231Z",
+      "type": "log",
+      "text": "🛡️ Global error handler and JSON.parse monitor initialized",
+      "location": {
+        "url": "http://localhost:8080/client/utils/errorHandler.ts"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.331Z",
+      "type": "warning",
+      "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.",
+      "location": {
+        "url": "http://localhost:8080/node_modules/.vite/deps/react-router-dom.js?v=cd75f5df"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.333Z",
+      "type": "warning",
+      "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.",
+      "location": {
+        "url": "http://localhost:8080/node_modules/.vite/deps/react-router-dom.js?v=cd75f5df"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.333Z",
+      "type": "log",
+      "text": "[useSupabaseAuth] useEffect triggered",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useSupabaseAuth.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.335Z",
+      "type": "log",
+      "text": "[useSupabaseAuth] useEffect triggered",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useSupabaseAuth.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.465Z",
+      "type": "verbose",
+      "text": "[DOM] Input elements should have autocomplete attributes (suggested: \"current-password\"): (More info: https://goo.gl/9p2vKq) %o",
+      "location": {
+        "url": "http://localhost:8080/signin"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.626Z",
+      "type": "log",
+      "text": "[useSupabaseAuth] Fetching user role data for: e74f92ab-9c58-45d7-9a0c-4adbe6460f65",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useSupabaseAuth.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.735Z",
+      "type": "log",
+      "text": "[ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}",
+      "location": {
+        "url": "http://localhost:8080/client/App.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.736Z",
+      "type": "log",
+      "text": "[ProtectedRouteDebug] Access Granted.",
+      "location": {
+        "url": "http://localhost:8080/client/App.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.736Z",
+      "type": "log",
+      "text": "[ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}",
+      "location": {
+        "url": "http://localhost:8080/client/App.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.736Z",
+      "type": "log",
+      "text": "[ProtectedRouteDebug] Access Granted.",
+      "location": {
+        "url": "http://localhost:8080/client/App.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.736Z",
+      "type": "log",
+      "text": "[useAppNavigation] role: null isAuthenticated: true isLoading: false",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useAppNavigation.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.736Z",
+      "type": "log",
+      "text": "[useAppNavigation] role: null isAuthenticated: true isLoading: false",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useAppNavigation.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.736Z",
+      "type": "log",
+      "text": "[useAppNavigation] role: null isAuthenticated: true isLoading: false",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useAppNavigation.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.736Z",
+      "type": "log",
+      "text": "Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]",
+      "location": {
+        "url": "http://localhost:8080/client/components/Sidebar.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.737Z",
+      "type": "log",
+      "text": "[useAppNavigation] role: null isAuthenticated: true isLoading: false",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useAppNavigation.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.737Z",
+      "type": "log",
+      "text": "Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]",
+      "location": {
+        "url": "http://localhost:8080/client/components/Sidebar.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.803Z",
+      "type": "log",
+      "text": "[ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}",
+      "location": {
+        "url": "http://localhost:8080/client/App.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.803Z",
+      "type": "log",
+      "text": "[ProtectedRouteDebug] Access Granted.",
+      "location": {
+        "url": "http://localhost:8080/client/App.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.804Z",
+      "type": "log",
+      "text": "[ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: null, bypass: false}",
+      "location": {
+        "url": "http://localhost:8080/client/App.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.804Z",
+      "type": "log",
+      "text": "[ProtectedRouteDebug] Access Granted.",
+      "location": {
+        "url": "http://localhost:8080/client/App.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.804Z",
+      "type": "log",
+      "text": "[useAppNavigation] role: null isAuthenticated: true isLoading: false",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useAppNavigation.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.804Z",
+      "type": "log",
+      "text": "[useAppNavigation] role: null isAuthenticated: true isLoading: false",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useAppNavigation.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.805Z",
+      "type": "log",
+      "text": "[useAppNavigation] role: null isAuthenticated: true isLoading: false",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useAppNavigation.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.805Z",
+      "type": "log",
+      "text": "Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]",
+      "location": {
+        "url": "http://localhost:8080/client/components/Sidebar.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.805Z",
+      "type": "log",
+      "text": "[useAppNavigation] role: null isAuthenticated: true isLoading: false",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useAppNavigation.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.806Z",
+      "type": "log",
+      "text": "Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]",
+      "location": {
+        "url": "http://localhost:8080/client/components/Sidebar.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.808Z",
+      "type": "log",
+      "text": "[useDashboardStats] hook called",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.808Z",
+      "type": "log",
+      "text": "[useDashboardStats] computing stats {calculationsCount: 0, subscription: undefined}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.820Z",
+      "type": "log",
+      "text": "[useDashboardStats] isLoading: false {calculationsLoading: false, subscriptionLoading: false}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.820Z",
+      "type": "log",
+      "text": "[Dashboard] Debug: {user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65, authLoading: false, dashboardLoading: false, stats: Object, hasUser: true}",
+      "location": {
+        "url": "http://localhost:8080/client/pages/Dashboard.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.821Z",
+      "type": "log",
+      "text": "[useDashboardStats] hook called",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.821Z",
+      "type": "log",
+      "text": "[useDashboardStats] computing stats {calculationsCount: 0, subscription: undefined}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.821Z",
+      "type": "log",
+      "text": "[useDashboardStats] isLoading: false {calculationsLoading: false, subscriptionLoading: false}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.821Z",
+      "type": "log",
+      "text": "[Dashboard] Debug: {user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65, authLoading: false, dashboardLoading: false, stats: Object, hasUser: true}",
+      "location": {
+        "url": "http://localhost:8080/client/pages/Dashboard.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.874Z",
+      "type": "log",
+      "text": "[useDashboardStats] hook called",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.874Z",
+      "type": "log",
+      "text": "[useDashboardStats] computing stats {calculationsCount: 0, subscription: free}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.875Z",
+      "type": "log",
+      "text": "[useDashboardStats] isLoading: true {calculationsLoading: true, subscriptionLoading: false}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.875Z",
+      "type": "log",
+      "text": "[Dashboard] Debug: {user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65, authLoading: false, dashboardLoading: true, stats: Object, hasUser: true}",
+      "location": {
+        "url": "http://localhost:8080/client/pages/Dashboard.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.875Z",
+      "type": "log",
+      "text": "[useDashboardStats] hook called",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.875Z",
+      "type": "log",
+      "text": "[useDashboardStats] computing stats {calculationsCount: 0, subscription: free}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.875Z",
+      "type": "log",
+      "text": "[useDashboardStats] isLoading: true {calculationsLoading: true, subscriptionLoading: false}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.875Z",
+      "type": "log",
+      "text": "[Dashboard] Debug: {user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65, authLoading: false, dashboardLoading: true, stats: Object, hasUser: true}",
+      "location": {
+        "url": "http://localhost:8080/client/pages/Dashboard.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.983Z",
+      "type": "log",
+      "text": "[useSupabaseAuth] Role found: admin",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useSupabaseAuth.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.983Z",
+      "type": "log",
+      "text": "[useSupabaseAuth] Fetching companies after sign in...",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useSupabaseAuth.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.984Z",
+      "type": "log",
+      "text": "[useSupabaseAuth] Companies fetched after sign in: 0",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useSupabaseAuth.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.984Z",
+      "type": "log",
+      "text": "[useSupabaseAuth] Fetching user role data for: e74f92ab-9c58-45d7-9a0c-4adbe6460f65",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useSupabaseAuth.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.984Z",
+      "type": "log",
+      "text": "[ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: admin, bypass: false}",
+      "location": {
+        "url": "http://localhost:8080/client/App.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.984Z",
+      "type": "log",
+      "text": "[ProtectedRouteDebug] Access Granted.",
+      "location": {
+        "url": "http://localhost:8080/client/App.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.984Z",
+      "type": "log",
+      "text": "[ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: admin, bypass: false}",
+      "location": {
+        "url": "http://localhost:8080/client/App.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.984Z",
+      "type": "log",
+      "text": "[ProtectedRouteDebug] Access Granted.",
+      "location": {
+        "url": "http://localhost:8080/client/App.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.984Z",
+      "type": "log",
+      "text": "[useAppNavigation] role: admin isAuthenticated: true isLoading: false",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useAppNavigation.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.985Z",
+      "type": "log",
+      "text": "[useAppNavigation] role: admin isAuthenticated: true isLoading: false",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useAppNavigation.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.985Z",
+      "type": "log",
+      "text": "[useAppNavigation] role: admin isAuthenticated: true isLoading: false",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useAppNavigation.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.985Z",
+      "type": "log",
+      "text": "Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]",
+      "location": {
+        "url": "http://localhost:8080/client/components/Sidebar.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.985Z",
+      "type": "log",
+      "text": "[useAppNavigation] role: admin isAuthenticated: true isLoading: false",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useAppNavigation.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.985Z",
+      "type": "log",
+      "text": "Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]",
+      "location": {
+        "url": "http://localhost:8080/client/components/Sidebar.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.985Z",
+      "type": "log",
+      "text": "[useDashboardStats] hook called",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.985Z",
+      "type": "log",
+      "text": "[useDashboardStats] isLoading: true {calculationsLoading: true, subscriptionLoading: false}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.985Z",
+      "type": "log",
+      "text": "[Dashboard] Debug: {user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65, authLoading: false, dashboardLoading: true, stats: Object, hasUser: true}",
+      "location": {
+        "url": "http://localhost:8080/client/pages/Dashboard.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.985Z",
+      "type": "log",
+      "text": "[useDashboardStats] hook called",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.985Z",
+      "type": "log",
+      "text": "[useDashboardStats] isLoading: true {calculationsLoading: true, subscriptionLoading: false}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.985Z",
+      "type": "log",
+      "text": "[Dashboard] Debug: {user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65, authLoading: false, dashboardLoading: true, stats: Object, hasUser: true}",
+      "location": {
+        "url": "http://localhost:8080/client/pages/Dashboard.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.203Z",
+      "type": "log",
+      "text": "[useSupabaseAuth] Role found: admin",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useSupabaseAuth.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.203Z",
+      "type": "log",
+      "text": "[SignIn] Login successful, role: admin",
+      "location": {
+        "url": "http://localhost:8080/client/pages/SignIn.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.255Z",
+      "type": "log",
+      "text": "[ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: admin, bypass: false}",
+      "location": {
+        "url": "http://localhost:8080/client/App.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.255Z",
+      "type": "log",
+      "text": "[ProtectedRouteDebug] Access Granted.",
+      "location": {
+        "url": "http://localhost:8080/client/App.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.255Z",
+      "type": "log",
+      "text": "[ProtectedRouteDebug] Check: {path: /dashboard, isAuthenticated: true, isLoading: false, role: admin, bypass: false}",
+      "location": {
+        "url": "http://localhost:8080/client/App.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.255Z",
+      "type": "log",
+      "text": "[ProtectedRouteDebug] Access Granted.",
+      "location": {
+        "url": "http://localhost:8080/client/App.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.255Z",
+      "type": "log",
+      "text": "[useAppNavigation] role: admin isAuthenticated: true isLoading: false",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useAppNavigation.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.255Z",
+      "type": "log",
+      "text": "[useAppNavigation] role: admin isAuthenticated: true isLoading: false",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useAppNavigation.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.255Z",
+      "type": "log",
+      "text": "[useAppNavigation] role: admin isAuthenticated: true isLoading: false",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useAppNavigation.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.255Z",
+      "type": "log",
+      "text": "Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]",
+      "location": {
+        "url": "http://localhost:8080/client/components/Sidebar.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.255Z",
+      "type": "log",
+      "text": "[useAppNavigation] role: admin isAuthenticated: true isLoading: false",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useAppNavigation.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.255Z",
+      "type": "log",
+      "text": "Rendering Office Items: [Clients, Jobs, History, Company Settings, Team]",
+      "location": {
+        "url": "http://localhost:8080/client/components/Sidebar.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.255Z",
+      "type": "log",
+      "text": "[useDashboardStats] hook called",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.255Z",
+      "type": "log",
+      "text": "[useDashboardStats] isLoading: true {calculationsLoading: true, subscriptionLoading: false}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.255Z",
+      "type": "log",
+      "text": "[Dashboard] Debug: {user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65, authLoading: false, dashboardLoading: true, stats: Object, hasUser: true}",
+      "location": {
+        "url": "http://localhost:8080/client/pages/Dashboard.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.255Z",
+      "type": "log",
+      "text": "[useDashboardStats] hook called",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.255Z",
+      "type": "log",
+      "text": "[useDashboardStats] isLoading: true {calculationsLoading: true, subscriptionLoading: false}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.255Z",
+      "type": "log",
+      "text": "[Dashboard] Debug: {user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65, authLoading: false, dashboardLoading: true, stats: Object, hasUser: true}",
+      "location": {
+        "url": "http://localhost:8080/client/pages/Dashboard.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.356Z",
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 ()",
+      "location": {
+        "url": "https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/triage_uploads?select=*"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.357Z",
+      "type": "error",
+      "text": "🚨 JSON.parse FAILED: {error: Unexpected end of JSON input, source: Unknown, textPreview: , textLength: 0, isHTML: false}",
+      "location": {
+        "url": "http://localhost:8080/client/utils/errorHandler.ts"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.376Z",
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 ()",
+      "location": {
+        "url": "https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/triage_uploads?select=*"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.376Z",
+      "type": "error",
+      "text": "🚨 JSON.parse FAILED: {error: Unexpected end of JSON input, source: Unknown, textPreview: , textLength: 0, isHTML: false}",
+      "location": {
+        "url": "http://localhost:8080/client/utils/errorHandler.ts"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.508Z",
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 400 ()",
+      "location": {
+        "url": "https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/jobs?select=*"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.508Z",
+      "type": "error",
+      "text": "🚨 JSON.parse FAILED: {error: Unexpected end of JSON input, source: Unknown, textPreview: , textLength: 0, isHTML: false}",
+      "location": {
+        "url": "http://localhost:8080/client/utils/errorHandler.ts"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.527Z",
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 400 ()",
+      "location": {
+        "url": "https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/jobs?select=*"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.529Z",
+      "type": "error",
+      "text": "🚨 JSON.parse FAILED: {error: Unexpected end of JSON input, source: Unknown, textPreview: , textLength: 0, isHTML: false}",
+      "location": {
+        "url": "http://localhost:8080/client/utils/errorHandler.ts"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.734Z",
+      "type": "log",
+      "text": "[useDashboardStats] hook called",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.735Z",
+      "type": "log",
+      "text": "[useDashboardStats] computing stats {calculationsCount: 22, subscription: free}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.735Z",
+      "type": "log",
+      "text": "[useDashboardStats] isLoading: false {calculationsLoading: false, subscriptionLoading: false}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.735Z",
+      "type": "log",
+      "text": "[Dashboard] Debug: {user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65, authLoading: false, dashboardLoading: false, stats: Object, hasUser: true}",
+      "location": {
+        "url": "http://localhost:8080/client/pages/Dashboard.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.735Z",
+      "type": "log",
+      "text": "[useDashboardStats] hook called",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.735Z",
+      "type": "log",
+      "text": "[useDashboardStats] computing stats {calculationsCount: 22, subscription: free}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.735Z",
+      "type": "log",
+      "text": "[useDashboardStats] isLoading: false {calculationsLoading: false, subscriptionLoading: false}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.735Z",
+      "type": "log",
+      "text": "[Dashboard] Debug: {user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65, authLoading: false, dashboardLoading: false, stats: Object, hasUser: true}",
+      "location": {
+        "url": "http://localhost:8080/client/pages/Dashboard.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:17.005Z",
+      "type": "log",
+      "text": "[useDashboardStats] hook called",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:17.005Z",
+      "type": "log",
+      "text": "[useDashboardStats] computing stats {calculationsCount: 22, subscription: free}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:17.005Z",
+      "type": "log",
+      "text": "[useDashboardStats] isLoading: false {calculationsLoading: false, subscriptionLoading: false}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:17.005Z",
+      "type": "log",
+      "text": "[Dashboard] Debug: {user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65, authLoading: false, dashboardLoading: false, stats: Object, hasUser: true}",
+      "location": {
+        "url": "http://localhost:8080/client/pages/Dashboard.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:17.005Z",
+      "type": "log",
+      "text": "[useDashboardStats] hook called",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:17.005Z",
+      "type": "log",
+      "text": "[useDashboardStats] computing stats {calculationsCount: 22, subscription: free}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:17.005Z",
+      "type": "log",
+      "text": "[useDashboardStats] isLoading: false {calculationsLoading: false, subscriptionLoading: false}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:17.005Z",
+      "type": "log",
+      "text": "[Dashboard] Debug: {user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65, authLoading: false, dashboardLoading: false, stats: Object, hasUser: true}",
+      "location": {
+        "url": "http://localhost:8080/client/pages/Dashboard.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:21.203Z",
+      "type": "log",
+      "text": "[useAppNavigation] role: admin isAuthenticated: true isLoading: false",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useAppNavigation.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:21.203Z",
+      "type": "log",
+      "text": "[useAppNavigation] role: admin isAuthenticated: true isLoading: false",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useAppNavigation.tsx?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:21.204Z",
+      "type": "log",
+      "text": "[useDashboardStats] hook called",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:21.205Z",
+      "type": "log",
+      "text": "[useDashboardStats] isLoading: false {calculationsLoading: false, subscriptionLoading: false}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:21.205Z",
+      "type": "log",
+      "text": "[Dashboard] Debug: {user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65, authLoading: false, dashboardLoading: false, stats: Object, hasUser: true}",
+      "location": {
+        "url": "http://localhost:8080/client/pages/Dashboard.tsx?t=1770339890783"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:21.205Z",
+      "type": "log",
+      "text": "[useDashboardStats] hook called",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:21.205Z",
+      "type": "log",
+      "text": "[useDashboardStats] isLoading: false {calculationsLoading: false, subscriptionLoading: false}",
+      "location": {
+        "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797"
+      }
+    },
+    {
+      "timestamp": "2026-02-06T01:05:21.205Z",
+      "type": "log",
+      "text": "[Dashboard] Debug: {user: e74f92ab-9c58-45d7-9a0c-4adbe6460f65, authLoading: false, dashboardLoading: false, stats: Object, hasUser: true}",
+      "location": {
+        "url": "http://localhost:8080/client/pages/Dashboard.tsx?t=1770339890783"
+      }
+    }
+  ],
+  "networkRequests": [
+    {
+      "timestamp": "2026-02-06T01:05:13.712Z",
+      "url": "http://localhost:8080/signin",
+      "method": "GET",
+      "status": 200,
+      "type": "document"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:13.813Z",
+      "url": "http://localhost:8080/@vite/client",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:13.821Z",
+      "url": "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+      "method": "GET",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:13.821Z",
+      "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap",
+      "method": "GET",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:13.862Z",
+      "url": "http://localhost:8080/node_modules/vite/dist/client/env.mjs",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:13.862Z",
+      "url": "http://localhost:8080/client/main.tsx?t=1770339890783",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:13.862Z",
+      "url": "http://localhost:8080/@react-refresh",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.054Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/react-dom_client.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.054Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/react.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.055Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.059Z",
+      "url": "http://localhost:8080/client/utils/errorHandler.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.059Z",
+      "url": "http://localhost:8080/client/App.tsx?t=1770339890783",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.076Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-K7ZT2U4U.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.076Z",
+      "url": "http://localhost:8080/client/global.css?t=1770339890783",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.082Z",
+      "url": "http://localhost:8080/client/hooks/useSupabaseAuth.tsx?t=1770337241797",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.087Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-UN725CXD.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.090Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/react-helmet-async.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.090Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/react-router-dom.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.090Z",
+      "url": "http://localhost:8080/client/components/theme-provider.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.090Z",
+      "url": "http://localhost:8080/client/utils/authErrorHandler.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.090Z",
+      "url": "http://localhost:8080/client/context/JobContext.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.090Z",
+      "url": "http://localhost:8080/client/pages/Landing.tsx?t=1770337241797",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.090Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-HEXDZATI.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.094Z",
+      "url": "http://localhost:8080/client/hooks/useToast.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.095Z",
+      "url": "http://localhost:8080/client/components/SupportBar.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.095Z",
+      "url": "http://localhost:8080/client/pages/SignUp.tsx?t=1770337241797",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.095Z",
+      "url": "http://localhost:8080/client/pages/NotFound.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.095Z",
+      "url": "http://localhost:8080/client/pages/tech/JobBoard.tsx?t=1770337241797",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.095Z",
+      "url": "http://localhost:8080/client/components/ErrorModal.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.096Z",
+      "url": "http://localhost:8080/client/pages/SignIn.tsx?t=1770337241797",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.096Z",
+      "url": "http://localhost:8080/client/components/Layout.tsx?t=1770337241797",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.096Z",
+      "url": "http://localhost:8080/client/components/ui/toaster.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.096Z",
+      "url": "http://localhost:8080/client/components/SubscriptionGuard.tsx?t=1770337241797",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.102Z",
+      "url": "http://localhost:8080/client/lib/supabase.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.102Z",
+      "url": "http://localhost:8080/client/components/ui/button.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.102Z",
+      "url": "http://localhost:8080/client/components/Footer.tsx?t=1770337241797",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.105Z",
+      "url": "http://localhost:8080/client/components/Header.tsx?t=1770337241797",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.105Z",
+      "url": "http://localhost:8080/client/components/ui/badge.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.106Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/@capacitor_core.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.106Z",
+      "url": "http://localhost:8080/client/components/ui/card.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.107Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/framer-motion.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.123Z",
+      "url": "http://localhost:8080/client/components/ui/accordion.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.123Z",
+      "url": "http://localhost:8080/client/components/SEO.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.128Z",
+      "url": "http://localhost:8080/client/components/ui/label.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.133Z",
+      "url": "http://localhost:8080/client/components/PageContainer.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.133Z",
+      "url": "http://localhost:8080/client/components/ui/input.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.136Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/date-fns.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.137Z",
+      "url": "http://localhost:8080/client/components/Sidebar.tsx?t=1770337241797",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.137Z",
+      "url": "http://localhost:8080/client/components/QuickSearch.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.137Z",
+      "url": "http://localhost:8080/client/hooks/use-toast.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.137Z",
+      "url": "http://localhost:8080/client/lib/biometricAuth.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.137Z",
+      "url": "http://localhost:8080/client/components/ui/dialog.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.137Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/lucide-react.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.146Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/@radix-ui_react-slot.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.146Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/class-variance-authority.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.147Z",
+      "url": "http://localhost:8080/client/lib/utils.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.147Z",
+      "url": "http://localhost:8080/client/components/mode-toggle.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.149Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/@supabase_supabase-js.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.149Z",
+      "url": "http://localhost:8080/client/components/ui/toast.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.152Z",
+      "url": "http://localhost:8080/client/components/JobSelector.tsx?t=1770337241797",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.152Z",
+      "url": "http://localhost:8080/client/hooks/useAppNavigation.tsx?t=1770337241797",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.157Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/@radix-ui_react-label.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.157Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-S66HWGJ3.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.157Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-DYYYOWMI.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.158Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/@radix-ui_react-accordion.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.158Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-RRTSLD7Z.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.158Z",
+      "url": "http://localhost:8080/client/components/ui/dropdown-menu.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.160Z",
+      "url": "http://localhost:8080/client/components/CompanySwitcher.tsx?t=1770337241797",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.161Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/@capgo_capacitor-native-biometric.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.165Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-U7P2NEEE.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.165Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-FNDU6FWN.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.166Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/clsx.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.166Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.166Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-QGEQHYSX.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.166Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/tailwind-merge.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.166Z",
+      "url": "http://localhost:8080/client/components/ui/select.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.166Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/@radix-ui_react-toast.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.175Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-O4UO6HWS.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.175Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-WJXUL7D2.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.175Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-OOYLVKHQ.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.175Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-U4CRTCVD.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.175Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-6YMTNXMK.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.175Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-7GGHC7Z4.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.175Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-SVYMU4Q5.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.177Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/@radix-ui_react-dropdown-menu.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.177Z",
+      "url": "http://localhost:8080/client/components/ui/command.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.177Z",
+      "url": "http://localhost:8080/client/components/ui/popover.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.177Z",
+      "url": "http://localhost:8080/client/components/ui/avatar.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.177Z",
+      "url": "http://localhost:8080/client/components/ui/use-toast.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.177Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-BSHMABFB.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.177Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-ZGME6STA.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.177Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-4GOEWUY3.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.177Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-RG7VBZDI.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.177Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-WASHCNNG.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.177Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-5M7OXISZ.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.185Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-MBH267NK.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.185Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/@radix-ui_react-select.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.185Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-ZCEEIE54.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.186Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/cmdk.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.186Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/@radix-ui_react-popover.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.186Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/@radix-ui_react-avatar.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.186Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-6ZMM2PAV.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.186Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-QIE4BTPW.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.186Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-2COD65RR.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.355Z",
+      "url": "http://localhost:8080/logo-stacked.png",
+      "method": "GET",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:14.411Z",
+      "url": "https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2",
+      "method": "GET",
+      "status": 200,
+      "type": "font"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.625Z",
+      "url": "https://rxqflxmzsqhqrzffcsej.supabase.co/auth/v1/token?grant_type=password",
+      "method": "POST",
+      "status": 200,
+      "type": "fetch"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.737Z",
+      "url": "http://localhost:8080/logo-landscape.png",
+      "method": "GET",
+      "status": 200,
+      "type": "image"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.739Z",
+      "url": "http://localhost:8080/client/pages/Dashboard.tsx?t=1770339890783",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.739Z",
+      "url": "http://localhost:8080/client/hooks/useSupabaseCalculations.tsx?t=1770337241797",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.739Z",
+      "url": "http://localhost:8080/client/hooks/useDashboardStats.ts?t=1770337241797",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.739Z",
+      "url": "http://localhost:8080/client/components/SystemStatus.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.739Z",
+      "url": "http://localhost:8080/client/components/OnboardingGuide.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.739Z",
+      "url": "http://localhost:8080/client/components/ui/progress.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.740Z",
+      "url": "http://localhost:8080/client/components/OwnerDashboard/RiskShield.tsx?t=1770337241797",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.752Z",
+      "url": "http://localhost:8080/client/lib/errorUtils.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.753Z",
+      "url": "http://localhost:8080/client/hooks/useStripe.tsx?t=1770337241797",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.753Z",
+      "url": "http://localhost:8080/client/hooks/useRevenueAnalytics.ts?t=1770339890783",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.754Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/@radix-ui_react-progress.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.754Z",
+      "url": "http://localhost:8080/client/utils/pdfGenerator.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.771Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/recharts.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.772Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-LW2AQFPF.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.772Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-R2NCF2XW.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.775Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/pdf-lib.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.777Z",
+      "url": "http://localhost:8080/node_modules/.vite/deps/chunk-P4FHLLD7.js?v=cd75f5df",
+      "method": "GET",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:15.983Z",
+      "url": "https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1",
+      "method": "GET",
+      "status": 200,
+      "type": "fetch"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.036Z",
+      "url": "https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/calculations?select=*&calculation_type=eq.project&order=created_at.desc",
+      "method": "GET",
+      "status": 200,
+      "type": "fetch"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.112Z",
+      "url": "https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/calculations?select=*&calculation_type=eq.project&order=created_at.desc",
+      "method": "GET",
+      "status": 200,
+      "type": "fetch"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.188Z",
+      "url": "https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/invoices?select=total_amount&status=eq.unpaid",
+      "method": "GET",
+      "status": 200,
+      "type": "fetch"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.203Z",
+      "url": "https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/user_roles?select=role%2Ccompany_id&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&limit=1",
+      "method": "GET",
+      "status": 200,
+      "type": "fetch"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.268Z",
+      "url": "https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/calculations?select=*&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&order=created_at.desc",
+      "method": "GET",
+      "status": 200,
+      "type": "fetch"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.269Z",
+      "url": "https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/invoices?select=total_amount&status=eq.unpaid",
+      "method": "GET",
+      "status": 200,
+      "type": "fetch"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.356Z",
+      "url": "https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/triage_uploads?select=*",
+      "method": "HEAD",
+      "status": 404,
+      "type": "fetch"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.376Z",
+      "url": "https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/triage_uploads?select=*",
+      "method": "HEAD",
+      "status": 404,
+      "type": "fetch"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.507Z",
+      "url": "https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/jobs?select=*",
+      "method": "HEAD",
+      "status": 400,
+      "type": "fetch"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.527Z",
+      "url": "https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/jobs?select=*",
+      "method": "HEAD",
+      "status": 400,
+      "type": "fetch"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.529Z",
+      "url": "https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/calculations?select=*&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&order=created_at.desc",
+      "method": "GET",
+      "status": 200,
+      "type": "fetch"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.711Z",
+      "url": "https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/calculations?select=*&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&order=created_at.desc",
+      "method": "GET",
+      "status": 200,
+      "type": "fetch"
+    },
+    {
+      "timestamp": "2026-02-06T01:05:16.936Z",
+      "url": "https://rxqflxmzsqhqrzffcsej.supabase.co/rest/v1/calculations?select=*&user_id=eq.e74f92ab-9c58-45d7-9a0c-4adbe6460f65&order=created_at.desc",
+      "method": "GET",
+      "status": 200,
+      "type": "fetch"
+    }
+  ],
+  "errors": [
+    "Failed to load resource: the server responded with a status of 404 ()",
+    "🚨 JSON.parse FAILED: {error: Unexpected end of JSON input, source: Unknown, textPreview: , textLength: 0, isHTML: false}",
+    "Failed to load resource: the server responded with a status of 404 ()",
+    "🚨 JSON.parse FAILED: {error: Unexpected end of JSON input, source: Unknown, textPreview: , textLength: 0, isHTML: false}",
+    "Failed to load resource: the server responded with a status of 400 ()",
+    "🚨 JSON.parse FAILED: {error: Unexpected end of JSON input, source: Unknown, textPreview: , textLength: 0, isHTML: false}",
+    "Failed to load resource: the server responded with a status of 400 ()",
+    "🚨 JSON.parse FAILED: {error: Unexpected end of JSON input, source: Unknown, textPreview: , textLength: 0, isHTML: false}"
+  ],
+  "warnings": [
+    "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.",
+    "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+  ],
+  "testResults": {
+    "loginSuccess": true,
+    "dashboardLoadSuccess": true,
+    "companySwitcherVisible": false,
+    "companiesCount": 0
+  }
+}

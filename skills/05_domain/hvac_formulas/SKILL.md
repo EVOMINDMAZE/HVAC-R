@@ -12,11 +12,13 @@ This skill contains the authoritative formulas used in the application. Refer to
 Used for charging fixed orifice systems (pistons/capillary tubes).
 
 **Formula:**
+
 ```javascript
 Target SH = ((3 * IndoorWB) - 80 - OutdoorDB) / 2
 ```
 
 **Constraints:**
+
 - Indoor Wet Bulb (WB) must be between 32°F and 100°F.
 - Outdoor Dry Bulb (DB) must be between 0°F and 130°F.
 - Results are typically valid within ±5°F.
@@ -28,6 +30,7 @@ Target SH = ((3 * IndoorWB) - 80 - OutdoorDB) / 2
 Calculates the density of air at altitude to determine system capacity loss (derating).
 
 **Key Constants:**
+
 - Sea Level Pressure ($P_0$): 101325 Pa
 - Sea Level Temp ($T_0$): 288.15 K
 - Lapse Rate ($L$): 0.0065 K/m
@@ -35,16 +38,17 @@ Calculates the density of air at altitude to determine system capacity loss (der
 - Molar Mass ($M$): 0.0289644 kg/mol
 
 **Steps:**
-1.  **Pressure at Altitude (Barometric Formula):**
+
+1. **Pressure at Altitude (Barometric Formula):**
     $$ P = P_0 \cdot (1 - \frac{L \cdot h}{T_0}) ^ \frac{g \cdot M}{R \cdot L} $$
 
-2.  **Saturation Vapor Pressure ($E_s$) (Magnus Formula):**
+2. **Saturation Vapor Pressure ($E_s$) (Magnus Formula):**
     $$ E_s = 6.112 \cdot e^{\frac{17.67 \cdot T_c}{T_c + 243.5}} \text{ (hPa)} $$
 
-3.  **Density ($\rho$):**
+3. **Density ($\rho$):**
     Derived effectively using Partial Pressure of Dry Air ($P_d$) and Vapor ($P_v$).
 
-4.  **Derating Impact:**
+4. **Derating Impact:**
     $$ \text{Impact \%} = (1 - \frac{\rho_{actual}}{1.225}) \cdot 100 $$
     (Where 1.225 kg/m³ is standard sea-level density).
 
@@ -55,15 +59,17 @@ Calculated using the Magnus formula inversion involving Natural Log of Vapor Pre
 
 **Wet Bulb ($T_{wb}$):**
 Uses the "Stull" formula (arctangent approximation) as it is computationally efficient for code:
+
 ```javascript
 Tw = T * atan(0.151977 * sqrt(RH + 8.313659)) + ...
 ```
 
 ## 4. A2L Safety (IEC 60335-2-40)
 
-For calculating max charge of mildy flammable refrigerants (e.g., R32, R454B).
+For calculating max charge of mildly flammable refrigerants (e.g., R32, R454B).
 
 **Primary Variables:**
+
 - $LFL$: Lower Flammability Limit (kg/m³)
 - $h_{inst}$: Installation height (m) (Floor=0.6, Wall=1.8, Ceiling=2.2)
 - $A$: Room Area (m²)

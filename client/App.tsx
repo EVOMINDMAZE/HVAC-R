@@ -10,6 +10,7 @@ import { useEffect, Suspense, lazy } from "react";
 import { SupabaseAuthProvider, useAuth } from "@/hooks/useSupabaseAuth";
 import { ToastProvider, useToast } from "@/hooks/useToast";
 import { ThemeProvider } from "@/components/theme-provider";
+import { DevModeBanner } from "@/components/DevModeBanner";
 import "@/utils/authErrorHandler"; // Import to setup global error handling
 import { JobProvider } from "@/context/JobContext";
 // Critical path - keep static
@@ -133,23 +134,46 @@ const PatternInsights = lazy(() =>
     default: m.PatternInsights,
   })),
 );
+const SelectCompany = lazy(() => import("@/pages/SelectCompany"));
+const InviteLink = lazy(() => import("@/pages/InviteLink"));
+const CreateCompany = lazy(() => import("@/pages/CreateCompany"));
+const InviteTeam = lazy(() => import("@/pages/InviteTeam"));
 import { ErrorModal } from "@/components/ErrorModal";
 import { SupportBar } from "@/components/SupportBar";
 import { Layout } from "@/components/Layout";
 import { Toaster } from "@/components/ui/toaster";
 import { SubscriptionGuard } from "@/components/SubscriptionGuard";
 
-function shouldBypassAuth() {
+export function shouldBypassAuth() {
+  // Disable authentication bypass in production for security
+  if (import.meta.env.PROD) {
+    return false;
+  }
+
   try {
     if (typeof window === "undefined") return false;
+    
     const params = new URLSearchParams(window.location.search);
-    if (params.get("bypassAuth") === "1") return true;
-    if (localStorage && localStorage.getItem("DEBUG_BYPASS") === "1")
+    if (params.get("bypassAuth") === "1") {
+      console.warn("[DEV MODE] Authentication bypass enabled via URL parameter (?bypassAuth=1)");
       return true;
+    }
+    
+    if (localStorage && localStorage.getItem("DEBUG_BYPASS") === "1") {
+      console.warn("[DEV MODE] Authentication bypass enabled via localStorage (DEBUG_BYPASS=1)");
+      return true;
+    }
   } catch (e) {
-    // ignore
+    // ignore errors in SSR or when localStorage is blocked
   }
+  
   return false;
+}
+
+// PatternInsights Wrapper Component
+function PatternInsightsWrapper() {
+  const { companyId: userCompanyId } = useAuth();
+  return <PatternInsights companyId={userCompanyId || ""} />;
 }
 
 // Protected Route Component
@@ -159,6 +183,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     isLoading,
     role,
     companyId: userCompanyId,
+    needsCompanySelection,
   } = useAuth();
   const bypass = shouldBypassAuth();
   const location = useLocation();
@@ -169,6 +194,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     isLoading,
     role,
     bypass,
+    needsCompanySelection,
   });
 
   if (isLoading && !bypass) {
@@ -188,6 +214,22 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
       "[ProtectedRouteDebug] Not authenticated. Redirecting to /signin",
     );
     return <Navigate to="/signin" replace />;
+  }
+
+  // Multi-Company Selection Logic
+  if (
+    isAuthenticated &&
+    needsCompanySelection &&
+    location.pathname !== "/select-company" &&
+    location.pathname !== "/join-company" &&
+    location.pathname !== "/create-company" &&
+    !location.pathname.startsWith("/callback") &&
+    !location.pathname.startsWith("/invite/")
+  ) {
+    console.log(
+      "[ProtectedRouteDebug] Needs company selection. Redirecting to /select-company",
+    );
+    return <Navigate to="/select-company" replace />;
   }
 
   // RBAC Redirection Logic
@@ -295,9 +337,11 @@ import { AnimatePresence, motion } from "framer-motion";
 
 function AppRoutes() {
   const location = useLocation();
+  const bypass = shouldBypassAuth();
 
   return (
     <AnimatePresence mode="wait">
+      {bypass && <DevModeBanner isActive={bypass} />}
       <Suspense
         fallback={
           <div className="min-h-screen bg-background flex items-center justify-center">
@@ -602,8 +646,49 @@ function AppRoutes() {
             path="/ai/pattern-insights"
             element={
               <ProtectedRoute>
-                <PatternInsights companyId={userCompanyId || ""} />{" "}
-                {/* TODO: Get from user context */}
+                <PatternInsightsWrapper />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Multi-Company Routes */}
+          <Route
+            path="/select-company"
+            element={
+              <ProtectedRoute>
+                <SelectCompany />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/join-company"
+            element={
+              <ProtectedRoute>
+                <InviteLink />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/invite/:slug"
+            element={
+              <ProtectedRoute>
+                <InviteLink />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create-company"
+            element={
+              <ProtectedRoute>
+                <CreateCompany />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/invite-team"
+            element={
+              <ProtectedRoute>
+                <InviteTeam />
               </ProtectedRoute>
             }
           />

@@ -1,3 +1,9 @@
+---
+name: Revenue Expansion Strategy: The "Trident" Model 🔱
+description: This document outlines the strategy for integrating three high-value revenue streams: Hardware (Dongles), Fintech (Lending), and Enterprise (Fleets).
+version: 1.0
+---
+
 # Revenue Expansion Strategy: The "Trident" Model 🔱
 
 This document outlines the strategy for integrating three high-value revenue streams: **Hardware (Dongles)**, **Fintech (Lending)**, and **Enterprise (Fleets)**.
@@ -32,10 +38,10 @@ We will not build these as separate silos. They will be integrated as **force mu
   - **The Trigger**: Inside the **Invoice Generator** (existing feature).
   - **The UI**: A toggle: _"Enable Monthly Payments for Customer?"_
   - **The Flow**:
-    1.  Tech quotes $12,000 for a new system.
-    2.  App displays: _"Or $199/mo via Wisetack"_.
-    3.  Customer clicks link, gets approved in 30s.
-    4.  We get a **1% referral fee** ($120) instantly.
+    1. Tech quotes $12,000 for a new system.
+    2. App displays: _"Or $199/mo via Wisetack"_.
+    3. Customer clicks link, gets approved in 30s.
+    4. We get a **1% referral fee** ($120) instantly.
 - **Partner**: Wisetack or Stripe Capital (Integrated via API).
 
 ### C. Enterprise: "Fleet Command" 🏢

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { supabase } from "@/lib/supabase";
+import { apiClient } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Map, Users, Wrench, AlertTriangle, Truck, Calendar } from "lucide-react";
@@ -33,25 +33,16 @@ export default function FleetDashboard() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // In a real implementation, we would fetch from 'user_roles' (techs) and 'jobs'
-        // For now, we'll simulate some fleet data
         const fetchFleetData = async () => {
             try {
-                // Placeholder for Supabase query
-                // const { data: techData } = await supabase...
+                const { success, data, error } = await apiClient.getFleetStatus();
 
-                // Mock Data for "Enterprise" View
-                setTechs([
-                    { id: '1', name: 'Mike Anderson', status: 'working', current_job: 'Compressor Repair', last_seen: '2 mins ago' },
-                    { id: '2', name: 'Sarah Connor', status: 'en-route', current_job: 'Routine Maintenance', last_seen: '5 mins ago' },
-                    { id: '3', name: 'Davos Seaworth', status: 'idle', last_seen: '1 hour ago' },
-                ]);
-
-                setJobs([
-                    { id: '101', title: 'Walk-in Freezer Down', client: 'Burger King #42', status: 'urgent', tech_assigned: 'Mike Anderson' },
-                    { id: '102', title: 'Q1 Maintenance', client: 'Whole Foods Market', status: 'scheduled', tech_assigned: 'Sarah Connor' },
-                    { id: '103', title: 'AC leaking water', client: 'Residential - 123 Maple', status: 'pending' },
-                ]);
+                if (success && data) {
+                    setTechs(data.techs);
+                    setJobs(data.jobs);
+                } else {
+                    console.error("Failed to fetch fleet data:", error);
+                }
             } catch (e) {
                 console.error("Error fetching fleet data", e);
             } finally {
@@ -59,7 +50,9 @@ export default function FleetDashboard() {
             }
         };
 
-        fetchFleetData();
+        if (user) {
+            fetchFleetData();
+        }
     }, [user]);
 
     if (loading) return <div className="p-8">Loading Fleet Command...</div>;

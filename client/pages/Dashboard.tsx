@@ -679,8 +679,37 @@ function AnalyticsCharts() {
 }
 
 export function Dashboard() {
-  const { user } = useSupabaseAuth();
+  const { user, isLoading: authLoading } = useSupabaseAuth();
   const { stats, isLoading, refreshStats } = useDashboardStats();
+
+  console.log("[Dashboard] Debug:", {
+    user: user?.id,
+    authLoading,
+    dashboardLoading: isLoading,
+    stats,
+    hasUser: !!user,
+    hasStats: !!stats,
+  });
+
+  if (authLoading) {
+    return (
+      <PageContainer variant="standard" className="space-y-8">
+        <div className="flex items-center justify-center h-64">
+          <p>Loading authentication...</p>
+        </div>
+      </PageContainer>
+    );
+  }
+
+  if (!user) {
+    return (
+      <PageContainer variant="standard" className="space-y-8">
+        <div className="flex items-center justify-center h-64">
+          <p>Please log in to view dashboard.</p>
+        </div>
+      </PageContainer>
+    );
+  }
 
   return (
     <PageContainer variant="standard" className="space-y-8">

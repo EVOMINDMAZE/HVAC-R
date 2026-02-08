@@ -18,10 +18,10 @@ This skill defines the core product offering. The "App" is just one tool in the 
 - **Primary Product**: Monthly Subscription to the **Community**.
 - **Price**: ~$199/month (Platform: Skool).
 - **Included Assets**:
-  1.  **Community Access**: Discussion, learning, networking.
-  2.  **HVAC-R Pro App**: White-labeled usage for the Member to run their business.
+  1. **Community Access**: Discussion, learning, networking.
+  2. **HVAC-R Pro App**: White-labeled usage for the Member to run their business.
       - _Includes_: Professional Reporting (PDF Export), Saved History, and Advanced Calculations.
-  3.  **Automation Engine**: Zero-setup, serverless automations that handle "Busy Work" instantly.
+  3. **Automation Engine**: Zero-setup, serverless automations that handle "Busy Work" instantly.
       - **Review Hunter**: Automatically requests reviews after jobs.
       - **Invoice Chaser**: Automatically follows up on overdue payments.
 

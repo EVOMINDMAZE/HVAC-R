@@ -1,0 +1,79 @@
+# ============================================
+# Render Blueprint Configuration
+# ThermoNeural Calculation Service
+# ============================================
+#
+# Deploy via: Render Dashboard > Blueprints > New Blueprint
+# Or auto-deploy when connected to GitHub
+
+services:
+  - name: hvacr-server
+    type: web
+    runtime: node
+    region: oregon
+    plan: standard
+
+    # Build Configuration
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+
+    # Node.js Version
+    nodeVersion: 20
+
+    # Environment Variables
+    # Note: Sensitive values should be set manually in Render Dashboard
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_SUPABASE_URL
+        sync: false # Set manually in dashboard
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false # Set manually in dashboard
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false # Set manually in dashboard
+
+    # Health Check Configuration
+    healthCheckPath: /
+
+    # Auto-scaling Configuration
+    scaling:
+      minInstances: 1
+      maxInstances: 3
+      targetMemoryPercent: 80
+      targetCPUPercent: 70
+
+    # Pull Request Previews (optional)
+    # pullRequestPreviewsEnabled: true
+
+    # Headers (optional - for CORS)
+    headers:
+      - path: /*
+        name: Access-Control-Allow-Origin
+        value: "*"
+
+# ============================================
+# Notes:
+# ============================================
+#
+# 1. Secrets Management:
+#    Do NOT commit real secrets to this file.
+#    Set them manually in Render Dashboard > Service > Environment.
+#
+# 2. Deploy Hook:
+#    Get your deploy hook URL from:
+#    Render Dashboard > Service > Settings > Deploy Hook
+#
+# 3. Logs:
+#    View logs at: Render Dashboard > Service > Logs
+#
+# 4. Scaling:
+#    - minInstances: 1 keeps service always-on (no cold starts)
+#    - maxInstances: 3 handles traffic spikes
+#    - Adjust based on your traffic patterns
+#
+# 5. Region:
+#    Choose region closest to your users:
+#    - oregon (US West)
+#    - ohio (US East)
+#    - frankfurt (EU)
+#    - singapore (Asia)

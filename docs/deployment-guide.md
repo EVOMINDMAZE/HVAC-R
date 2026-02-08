@@ -6,7 +6,24 @@
 
 ✅ **Migration SQL Validated** - Schema is syntactically correct  
 ✅ **Projects Identified** - Multiple Supabase projects available  
-⚠️ **Access Limited** - Account lacks deployment privileges
+⚠️ **Access Limited** - Account lacks deployment privileges  
+✅ **Consolidated Baseline Created** - 100+ migrations squashed into single baseline
+
+### Consolidated Baseline Migration
+
+To simplify deployments and reduce technical debt, we have consolidated 100+ incremental migration files into a single baseline schema:
+
+- **Baseline file**: `supabase/migrations/0001_initial_schema.sql`
+- **Archived migrations**: `supabase/migrations_archive/` (kept for reference)
+- **Idempotent design**: Uses `IF NOT EXISTS` and `CREATE OR REPLACE` for safe re-runs
+- **Excludes Supabase-managed schemas**: `auth` and `storage` schemas are excluded to prevent conflicts
+
+**Benefits**:
+
+- Faster deployments (single file execution)
+- Cleaner schema history
+- Easier maintenance and troubleshooting
+- Safe for new environments and production deploys
 
 ### Immediate Actions Required
 
@@ -22,7 +39,10 @@
    supabase db push
    ```
 
+   The `supabase db push` command will automatically use the consolidated baseline migration.
+
 3. **Project Status Check**
+
    ```bash
    # Verify linked project
    supabase status
@@ -47,6 +67,8 @@
 - RLS policies properly structured
 - Database functions correctly defined
 - Trigger syntax validated
+- Consolidated baseline idempotency verified
+- Schema excludes Supabase-managed tables to prevent conflicts
 
 ## Production Readiness Checklist
 

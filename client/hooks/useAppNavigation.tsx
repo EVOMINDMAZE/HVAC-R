@@ -48,14 +48,36 @@ export const CALCULATOR_DETAILS: Record<string, { desc: string }> = {
 
 export function useAppNavigation() {
   const navigate = useNavigate();
-  const { role } = useAuth();
+  const { role, isAuthenticated, isLoading } = useAuth();
 
-  // Role-Based Operational Modes
-  const isAdmin = role === "admin";
+  console.log(
+    "[useAppNavigation] role:",
+    role,
+    "isAuthenticated:",
+    isAuthenticated,
+    "isLoading:",
+    isLoading,
+  );
+
+  // If still loading auth, return default navigation
+  if (isLoading) {
+    return {
+      isAdmin: false,
+      mainLinks: [{ to: "/dashboard", label: "Dashboard", icon: LayoutGrid }],
+      toolbox: { items: [], visible: false },
+      calculators: { items: [], visible: false },
+      office: { items: [], visible: false },
+      resources: { groups: [], visible: true },
+    };
+  }
+
+  // Role-Based Operational Modes - default to owner/admin if role is null but user is authenticated
+  const effectiveRole = role || "admin"; // Default to admin for authenticated users without role
+  const isAdmin = effectiveRole === "admin";
   const isOwner = isAdmin; // Clean up legacy student role
-  const isManager = role === "manager";
-  const isTech = role === "technician" || role === "tech"; // Handle both variations just in case
-  const isClient = role === "client";
+  const isManager = effectiveRole === "manager";
+  const isTech = effectiveRole === "technician" || effectiveRole === "tech"; // Handle both variations just in case
+  const isClient = effectiveRole === "client";
 
   // Visibility Flags
   const showDispatch = isOwner || isManager; // Managers can dispatch

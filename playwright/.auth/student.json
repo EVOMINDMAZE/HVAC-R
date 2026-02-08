@@ -1,0 +1,14 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:8081",
+      "localStorage": [
+        {
+          "name": "sb-localhost-auth-token",
+          "value": "{\"access_token\":\"eyJhbGciOiJFUzI1NiIsImtpZCI6ImI4MTI2OWYxLTIxZDgtNGYyZS1iNzE5LWMyMjQwYTg0MGQ5MCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjU0MzIxL2F1dGgvdjEiLCJzdWIiOiI2ZTIyZjBmMy04NGZiLTRmNDQtOWRjMi00MDdhNmQ3NDI0YmYiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzcwNDI1OTcyLCJpYXQiOjE3NzA0MjIzNzIsImVtYWlsIjoic3R1ZGVudEB0ZXN0LmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZW1haWwiLCJwcm92aWRlcnMiOlsiZW1haWwiXX0sInVzZXJfbWV0YWRhdGEiOnsiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJTVFVERU5UIn0sInJvbGUiOiJhdXRoZW50aWNhdGVkIiwiYWFsIjoiYWFsMSIsImFtciI6W3sibWV0aG9kIjoicGFzc3dvcmQiLCJ0aW1lc3RhbXAiOjE3NzA0MjIzNzJ9XSwic2Vzc2lvbl9pZCI6ImE4NjA4MGJlLTcyNmYtNGEzMi1hZmI5LWFiNGIxM2U1ZTZjMyIsImlzX2Fub255bW91cyI6ZmFsc2V9.Y6FEBKfLJ8ZZxZMrtDRakKH9zaqmTt1PABbqoXyasFopmMnJBy3Hyy35QD-92MY--wNTZEkpJaeOja6nFITzqg\",\"token_type\":\"bearer\",\"expires_in\":3600,\"expires_at\":1770425972,\"refresh_token\":\"xh2n5es4pmme\",\"user\":{\"id\":\"6e22f0f3-84fb-4f44-9dc2-407a6d7424bf\",\"aud\":\"authenticated\",\"role\":\"authenticated\",\"email\":\"student@test.com\",\"email_confirmed_at\":\"2026-02-06T15:03:11.404196Z\",\"phone\":\"\",\"confirmed_at\":\"2026-02-06T15:03:11.404196Z\",\"last_sign_in_at\":\"2026-02-06T23:59:32.334710172Z\",\"app_metadata\":{\"provider\":\"email\",\"providers\":[\"email\"]},\"user_metadata\":{\"email_verified\":true,\"name\":\"STUDENT\"},\"identities\":[{\"identity_id\":\"d6c7e411-f18a-4964-bedb-411d5592336b\",\"id\":\"6e22f0f3-84fb-4f44-9dc2-407a6d7424bf\",\"user_id\":\"6e22f0f3-84fb-4f44-9dc2-407a6d7424bf\",\"identity_data\":{\"email\":\"student@test.com\",\"email_verified\":false,\"phone_verified\":false,\"sub\":\"6e22f0f3-84fb-4f44-9dc2-407a6d7424bf\"},\"provider\":\"email\",\"last_sign_in_at\":\"2026-02-06T15:03:11.401491Z\",\"created_at\":\"2026-02-06T15:03:11.401518Z\",\"updated_at\":\"2026-02-06T15:03:11.401518Z\",\"email\":\"student@test.com\"}],\"created_at\":\"2026-02-06T15:03:11.397515Z\",\"updated_at\":\"2026-02-06T23:59:32.341449Z\",\"is_anonymous\":false},\"weak_password\":null}"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+---
+## Logstash Configuration
+
+http.host: "0.0.0.0"
+http.port: 9600
+
+## Pipeline Configuration
+pipeline.id: main
+pipeline.workers: 2
+pipeline.batch.size: 125
+pipeline.batch.delay: 5
+
+## JVM Configuration
+xpack.monitoring.enabled: true
+xpack.monitoring.elasticsearch.hosts: ["http://elasticsearch:9200"]
+
+## Logging Configuration
+log.level: info
+log.format: json
+
+## Dead Letter Queue (optional)
+# dead_letter_queue.enable: true
+# path.dead_letter_queue: /usr/share/logstash/data/dead_letter_queue

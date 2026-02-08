@@ -1,3 +1,9 @@
+---
+name: Stripe Upgrade Fix
+description: When users tried to upgrade their plan, nothing happened because:
+version: 1.0
+---
+
 # Stripe Upgrade Fix
 
 ## 🐛 Problem

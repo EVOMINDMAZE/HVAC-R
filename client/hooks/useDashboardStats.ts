@@ -3,95 +3,104 @@ import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { useSubscription } from "@/hooks/useStripe";
 
 export interface DashboardStats {
-    totalCalculations: number;
-    monthlyCalculations: number;
-    plan: string;
-    planDisplayName: string;
-    isUnlimited: boolean;
-    remaining: number;
-    remainingText: string;
-    monthlyLimit: number;
-    usagePercentage: number;
-    isNearLimit: boolean;
-    isAtLimit: boolean;
-    remainingValue: number;
-    billingCycleResetLabel: string;
+  totalCalculations: number;
+  monthlyCalculations: number;
+  plan: string;
+  planDisplayName: string;
+  isUnlimited: boolean;
+  remaining: number;
+  remainingText: string;
+  monthlyLimit: number;
+  usagePercentage: number;
+  isNearLimit: boolean;
+  isAtLimit: boolean;
+  remainingValue: number;
+  billingCycleResetLabel: string;
 }
 
 export function useDashboardStats() {
-    const {
-        calculations,
-        isLoading: calculationsLoading,
-        refetch: refetchCalculations,
-    } = useSupabaseCalculations();
-    const {
-        subscription,
-        loading: subscriptionLoading,
-        refetch: refetchSubscription,
-    } = useSubscription();
+  console.log("[useDashboardStats] hook called");
+  const {
+    calculations,
+    isLoading: calculationsLoading,
+    refetch: refetchCalculations,
+  } = useSupabaseCalculations();
+  const {
+    subscription,
+    loading: subscriptionLoading,
+    refetch: refetchSubscription,
+  } = useSubscription();
 
-    const stats = useMemo<DashboardStats>(() => {
-        const totalCalculations = calculations.length;
-        const now = new Date();
-        const currentMonth = now.getMonth();
-        const currentYear = now.getFullYear();
-        const monthlyCalculations = calculations.filter((calc: any) => {
-            const calcDate = new Date(calc.created_at);
-            return (
-                calcDate.getMonth() === currentMonth &&
-                calcDate.getFullYear() === currentYear
-            );
-        }).length;
+  const stats = useMemo<DashboardStats>(() => {
+    console.log("[useDashboardStats] computing stats", {
+      calculationsCount: calculations.length,
+      subscription: subscription?.plan,
+    });
+    const totalCalculations = calculations.length;
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    const monthlyCalculations = calculations.filter((calc: any) => {
+      const calcDate = new Date(calc.created_at);
+      return (
+        calcDate.getMonth() === currentMonth &&
+        calcDate.getFullYear() === currentYear
+      );
+    }).length;
 
-        const plan = subscription?.plan || "free";
-        const planDisplayName =
-            plan.charAt(0).toUpperCase() + plan.slice(1).replace("_", " ");
-        const isUnlimited = plan !== "free";
-        const monthlyLimit = isUnlimited ? monthlyCalculations || 0 : 10;
-        const remaining = isUnlimited
-            ? -1
-            : Math.max(0, monthlyLimit - monthlyCalculations);
-        const remainingText = remaining === -1 ? "Unlimited" : remaining.toString();
-        const usagePercentage = isUnlimited
-            ? 0
-            : Math.min((monthlyCalculations / monthlyLimit) * 100, 100);
-        const isNearLimit = !isUnlimited && usagePercentage > 70;
-        const isAtLimit = !isUnlimited && monthlyCalculations >= monthlyLimit;
-        const billingCycleReset = new Date(currentYear, currentMonth + 1, 1);
-        const billingCycleResetLabel = billingCycleReset.toLocaleDateString(
-            undefined,
-            {
-                month: "long",
-                day: "numeric",
-            },
-        );
+    const plan = subscription?.plan || "free";
+    const planDisplayName =
+      plan.charAt(0).toUpperCase() + plan.slice(1).replace("_", " ");
+    const isUnlimited = plan !== "free";
+    const monthlyLimit = isUnlimited ? monthlyCalculations || 0 : 10;
+    const remaining = isUnlimited
+      ? -1
+      : Math.max(0, monthlyLimit - monthlyCalculations);
+    const remainingText = remaining === -1 ? "Unlimited" : remaining.toString();
+    const usagePercentage = isUnlimited
+      ? 0
+      : Math.min((monthlyCalculations / monthlyLimit) * 100, 100);
+    const isNearLimit = !isUnlimited && usagePercentage > 70;
+    const isAtLimit = !isUnlimited && monthlyCalculations >= monthlyLimit;
+    const billingCycleReset = new Date(currentYear, currentMonth + 1, 1);
+    const billingCycleResetLabel = billingCycleReset.toLocaleDateString(
+      undefined,
+      {
+        month: "long",
+        day: "numeric",
+      },
+    );
 
-        return {
-            totalCalculations,
-            monthlyCalculations,
-            plan,
-            planDisplayName,
-            isUnlimited,
-            remaining,
-            remainingText,
-            monthlyLimit,
-            usagePercentage,
-            isNearLimit,
-            isAtLimit,
-            remainingValue: remaining,
-            billingCycleResetLabel,
-        };
-    }, [calculations, subscription]);
-
-    const isLoading = calculationsLoading || subscriptionLoading;
-
-    const refreshStats = async () => {
-        try {
-            await Promise.all([refetchCalculations(), refetchSubscription?.()]);
-        } catch (e) {
-            // silent
-        }
+    return {
+      totalCalculations,
+      monthlyCalculations,
+      plan,
+      planDisplayName,
+      isUnlimited,
+      remaining,
+      remainingText,
+      monthlyLimit,
+      usagePercentage,
+      isNearLimit,
+      isAtLimit,
+      remainingValue: remaining,
+      billingCycleResetLabel,
     };
+  }, [calculations, subscription]);
 
-    return { stats, isLoading, refreshStats };
+  const isLoading = calculationsLoading || subscriptionLoading;
+  console.log("[useDashboardStats] isLoading:", isLoading, {
+    calculationsLoading,
+    subscriptionLoading,
+  });
+
+  const refreshStats = async () => {
+    try {
+      await Promise.all([refetchCalculations(), refetchSubscription?.()]);
+    } catch (e) {
+      // silent
+    }
+  };
+
+  return { stats, isLoading, refreshStats };
 }

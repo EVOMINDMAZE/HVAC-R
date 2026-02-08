@@ -18,10 +18,24 @@ export const authenticateSupabaseToken: RequestHandler = async (
       });
     }
 
-    // Decode the Supabase JWT token without verification for now
-    // In production, you should verify the JWT signature using Supabase JWT secret
-    const decoded = jwt.decode(token) as any;
-    console.log("Decoded token:", decoded ? "valid" : "invalid");
+    // Verify JWT signature using JWT_SECRET or SUPABASE_JWT_SECRET environment variable
+    const jwtSecret = process.env.JWT_SECRET || process.env.SUPABASE_JWT_SECRET;
+    
+    if (!jwtSecret || jwtSecret === "your_super_secret_jwt_key_change_in_production") {
+      console.warn("WARNING: Using default JWT_SECRET. Set a strong secret in production.");
+      // In development with default secret, we still verify but with warning
+    }
+
+    let decoded: any;
+    try {
+      // Always verify JWT signature - no decode-only fallback for security
+      decoded = jwt.verify(token, jwtSecret || "fallback-secret-change-in-production");
+    } catch (verifyError: any) {
+      console.log("JWT verification failed:", verifyError.message);
+      return res.status(401).json({
+        error: "Invalid token signature",
+      });
+    }
 
     if (!decoded || !decoded.sub) {
       console.log("Invalid token structure");

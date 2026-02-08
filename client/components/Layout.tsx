@@ -3,12 +3,21 @@ import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
 import { QuickSearch } from "@/components/QuickSearch";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { ConsentBanner } from "@/components/ConsentBanner";
 
 import { Outlet } from "react-router-dom";
 
 export function Layout({ children }: { children?: React.ReactNode }) {
   const { isAuthenticated } = useSupabaseAuth();
   const [searchOpen, setSearchOpen] = useState(false);
+  const [showConsentBanner, setShowConsentBanner] = useState(false);
+
+  useEffect(() => {
+    const consentGiven = localStorage.getItem('consent_given');
+    if (consentGiven !== 'true') {
+      setShowConsentBanner(true);
+    }
+  }, []);
 
   const onKeyDown = useCallback((e: KeyboardEvent) => {
     const isK = e.key.toLowerCase() === 'k';
@@ -32,6 +41,12 @@ export function Layout({ children }: { children?: React.ReactNode }) {
         {children || <Outlet />}
       </main>
       <QuickSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
+      <ConsentBanner 
+        visible={showConsentBanner} 
+        onDismiss={() => setShowConsentBanner(false)}
+        onConsentGranted={() => setShowConsentBanner(false)}
+        onConsentDeclined={() => setShowConsentBanner(false)}
+      />
     </div>
   );
 }

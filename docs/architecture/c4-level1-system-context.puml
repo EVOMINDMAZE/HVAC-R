@@ -1,0 +1,40 @@
+@startuml ThermoNeural_System_Context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title System Context Diagram - ThermoNeural HVAC-R Platform
+
+Person(technician, "HVAC Technician", "Performs calculations, manages jobs, tracks assets")
+Person(manager, "Business Manager", "Manages team, reviews reports, handles billing")
+Person(client, "Client/Homeowner", "Views job status, receives reports")
+Person(student, "Vocational Student", "Learns HVAC concepts, practices calculations")
+
+System(thermoneural, "ThermoNeural Platform", "HVAC-R intelligence platform with physics calculations, business operations, AI diagnostics, and GDPR/CCPA-compliant privacy controls")
+
+System_Ext(stripe, "Stripe", "Payment processing and subscription management")
+System_Ext(supabase, "Supabase", "PostgreSQL database, authentication, storage")
+System_Ext(resend, "Resend", "Transactional email delivery")
+System_Ext(telnyx, "Telnyx", "SMS notifications")
+System_Ext(openmeteo, "Open-Meteo", "Weather data for calculations")
+System_Ext(ai_providers, "AI Providers", "Grok, DeepSeek for diagnostics")
+System_Ext(iot_providers, "IoT Providers", "Honeywell, Nest, Sensibo thermostats")
+System_Ext(compliance, "GDPR/CCPA Regulations", "Data protection and privacy regulations")
+
+Rel(technician, thermoneural, "Uses", "HTTPS")
+Rel(manager, thermoneural, "Manages", "HTTPS")
+Rel(client, thermoneural, "Views", "HTTPS")
+Rel(student, thermoneural, "Learns", "HTTPS")
+
+Rel(thermoneural, stripe, "Processes payments", "HTTPS/API")
+Rel(thermoneural, supabase, "Stores data, authenticates", "HTTPS/API")
+Rel(thermoneural, resend, "Sends emails", "HTTPS/API")
+Rel(thermoneural, telnyx, "Sends SMS", "HTTPS/API")
+Rel(thermoneural, openmeteo, "Fetches weather", "HTTPS/API")
+Rel(thermoneural, ai_providers, "AI diagnostics", "HTTPS/API")
+Rel(thermoneural, iot_providers, "Reads telemetry", "HTTPS/API/OAuth")
+Rel(thermoneural, compliance, "Complies with", "Legal")
+
+SHOW_LEGEND()
+
+@enduml

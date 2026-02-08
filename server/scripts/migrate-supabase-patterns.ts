@@ -111,6 +111,21 @@ class SupabasePatternMigration {
     }
   }
 
+  private async getUserCompanyId(userId: string): Promise<string | undefined> {
+    const { data, error } = await supabase
+      .from("companies")
+      .select("id")
+      .eq("user_id", userId)
+      .limit(1);
+    
+    if (error) {
+      console.warn(`Failed to get company for user ${userId}:`, error);
+      return undefined;
+    }
+    
+    return data?.[0]?.id;
+  }
+
   private async processSingleCalculation(
     calculation: HistoricalCalculation,
   ): Promise<void> {
@@ -131,8 +146,8 @@ class SupabasePatternMigration {
         session.symptoms,
         session.diagnosis,
         session.outcome,
-        session.equipment_model,
         companyId,
+        session.equipment_model,
       );
     }
 
@@ -324,8 +339,8 @@ class SupabasePatternMigration {
     symptoms: string[],
     diagnosis: string,
     outcome: string,
-    equipmentModel?: string,
     companyId: string,
+    equipmentModel?: string,
   ): Promise<string> {
     try {
       const patternData = {

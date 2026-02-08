@@ -1,0 +1,1818 @@
+openapi: 3.0.3
+info:
+  title: ThermoNeural HVAC-R API
+  description: |
+    Comprehensive API for the ThermoNeural HVAC-R intelligence platform.
+    
+    ## Features
+    - **Physics Calculations**: Thermodynamic calculations for HVAC-R systems
+    - **Business Operations**: Job management, invoicing, team coordination
+    - **AI Diagnostics**: Pattern recognition and troubleshooting assistance
+    - **Multi-tenant**: Company isolation with RBAC (6-tier role system)
+    
+    ## Authentication
+    All protected endpoints require a JWT Bearer token in the Authorization header:
+    ```
+    Authorization: Bearer <jwt_token>
+    ```
+    
+    Obtain tokens via `/api/auth/signin` or Supabase Auth.
+    
+    ## Rate Limiting
+    - Public endpoints: 100 requests/minute
+    - Authenticated endpoints: 1000 requests/minute
+    - Bulk operations: 100 requests/minute
+    
+  version: 2.0.0
+  contact:
+    name: ThermoNeural Support
+    email: api-support@thermoneural.com
+  license:
+    name: Proprietary
+    url: https://thermoneural.com/terms
+
+servers:
+  - url: https://api.thermoneural.com
+    description: Production server
+  - url: https://api-staging.thermoneural.com
+    description: Staging server
+  - url: http://localhost:3001
+    description: Local development
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: Authentication
+    description: User registration, login, and session management
+  - name: Calculations
+    description: Physics calculations and user calculation history
+  - name: Team Management
+    description: Team member invitations and role management
+  - name: Fleet Management
+    description: Vehicle and equipment tracking
+  - name: Subscriptions
+    description: Subscription plans and billing management
+  - name: Engineering
+    description: Advanced thermodynamic calculations
+  - name: Storage
+    description: File uploads and asset management
+  - name: Diagnostics
+    description: System health checks and connectivity tests
+  - name: AI Patterns
+    description: Pattern recognition and troubleshooting AI
+  - name: Reports
+    description: PDF report generation
+
+paths:
+  # Authentication Endpoints
+  /api/auth/signup:
+    post:
+      summary: User Registration
+      description: Register a new user account with company association
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupRequest'
+            examples:
+              newUser:
+                summary: New user registration
+                value:
+                  email: "tech@hvaccompany.com"
+                  password: "SecurePass123!"
+                  full_name: "John Technician"
+                  company_name: "Cool Air HVAC"
+                  role: "technician"
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+              example:
+                user:
+                  id: "550e8400-e29b-41d4-a716-446655440000"
+                  email: "tech@hvaccompany.com"
+                  full_name: "John Technician"
+                  role: "technician"
+                  company_id: "550e8400-e29b-41d4-a716-446655440001"
+                session:
+                  access_token: "eyJhbGciOiJIUzI1NiIs..."
+                  refresh_token: "eyJhbGciOiJIUzI1NiIs..."
+                  expires_at: "2026-02-07T12:00:00Z"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /api/auth/signin:
+    post:
+      summary: User Login
+      description: Authenticate user and receive access token
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SigninRequest'
+            examples:
+              login:
+                summary: User login
+                value:
+                  email: "tech@hvaccompany.com"
+                  password: "SecurePass123!"
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/auth/signout:
+    post:
+      summary: User Logout
+      description: Invalidate current session and sign out user
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: Signout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Signed out successfully"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/auth/me:
+    get:
+      summary: Get Current User
+      description: Retrieve current authenticated user profile
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: User profile retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                id: "550e8400-e29b-41d4-a716-446655440000"
+                email: "tech@hvaccompany.com"
+                full_name: "John Technician"
+                role: "technician"
+                company_id: "550e8400-e29b-41d4-a716-446655440001"
+                company:
+                  id: "550e8400-e29b-41d4-a716-446655440001"
+                  name: "Cool Air HVAC"
+                  logo_url: "https://cdn.thermoneural.com/logos/coolair.png"
+                created_at: "2026-01-15T10:30:00Z"
+                last_sign_in: "2026-02-07T08:15:00Z"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Calculations Endpoints
+  /api/calculations:
+    get:
+      summary: List User Calculations
+      description: Retrieve paginated list of user's saved calculations
+      tags:
+        - Calculations
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: Page number
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+          description: Items per page
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [standard, cascade, psychrometric, a2l, superheat, subcooling]
+          description: Filter by calculation type
+      responses:
+        '200':
+          description: List of calculations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalculationListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      summary: Save Calculation
+      description: Save a new calculation with inputs and results
+      tags:
+        - Calculations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalculationRequest'
+            examples:
+              superheatCalc:
+                summary: Superheat calculation
+                value:
+                  type: "superheat"
+                  name: "AC Unit 5 - Superheat Check"
+                  inputs:
+                    refrigerant: "R410A"
+                    suction_pressure: 145
+                    suction_temp: 55
+                    outdoor_temp: 85
+                  results:
+                    superheat: 15.2
+                    target_superheat: 12.0
+                    status: "normal"
+                  asset_id: "550e8400-e29b-41d4-a716-446655440002"
+                  job_id: "550e8400-e29b-41d4-a716-446655440003"
+      responses:
+        '201':
+          description: Calculation saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Calculation'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/calculations/{id}:
+    get:
+      summary: Get Specific Calculation
+      description: Retrieve a single calculation by ID
+      tags:
+        - Calculations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Calculation ID
+      responses:
+        '200':
+          description: Calculation retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Calculation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      summary: Update Calculation
+      description: Update an existing calculation
+      tags:
+        - Calculations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalculationRequest'
+      responses:
+        '200':
+          description: Calculation updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Calculation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      summary: Delete Calculation
+      description: Permanently delete a calculation
+      tags:
+        - Calculations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Calculation deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/user/stats:
+    get:
+      summary: Get User Statistics
+      description: Retrieve usage statistics for the current user
+      tags:
+        - Calculations
+      responses:
+        '200':
+          description: User statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserStats'
+              example:
+                total_calculations: 156
+                calculations_by_type:
+                  superheat: 45
+                  subcooling: 38
+                  psychrometric: 23
+                  standard: 50
+                last_calculation_at: "2026-02-06T14:30:00Z"
+                favorite_refrigerants: ["R410A", "R22", "R134a"]
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Team Management Endpoints
+  /api/team:
+    get:
+      summary: Get Team Members
+      description: List all team members in the current user's company
+      tags:
+        - Team Management
+      responses:
+        '200':
+          description: Team members list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  members:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TeamMember'
+                  total:
+                    type: integer
+                    example: 8
+                  seats_used:
+                    type: integer
+                    example: 8
+                  seats_total:
+                    type: integer
+                    example: 10
+              example:
+                members:
+                  - id: "550e8400-e29b-41d4-a716-446655440000"
+                    email: "owner@hvaccompany.com"
+                    full_name: "Jane Owner"
+                    role: "owner"
+                    status: "active"
+                    joined_at: "2026-01-01T00:00:00Z"
+                  - id: "550e8400-e29b-41d4-a716-446655440001"
+                    email: "tech@hvaccompany.com"
+                    full_name: "John Technician"
+                    role: "technician"
+                    status: "active"
+                    joined_at: "2026-01-15T10:30:00Z"
+                total: 2
+                seats_used: 2
+                seats_total: 5
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /api/team/invite:
+    post:
+      summary: Invite Team Member
+      description: Send invitation to join the company team
+      tags:
+        - Team Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamInviteRequest'
+            examples:
+              invite:
+                summary: Invite technician
+                value:
+                  email: "newtech@hvaccompany.com"
+                  role: "technician"
+                  full_name: "New Technician"
+      responses:
+        '201':
+          description: Invitation sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  invite_code:
+                    type: string
+                    example: "COOLAIR-2026-X7K9M"
+                  message:
+                    type: string
+                    example: "Invitation sent to newtech@hvaccompany.com"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: User already in team or invitation pending
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/team/role:
+    put:
+      summary: Update Team Member Role
+      description: Change the role of a team member
+      tags:
+        - Team Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - role
+              properties:
+                user_id:
+                  type: string
+                  format: uuid
+                  description: User ID to update
+                role:
+                  type: string
+                  enum: [admin, manager, technician, client, student]
+                  description: New role assignment
+            examples:
+              promote:
+                summary: Promote to manager
+                value:
+                  user_id: "550e8400-e29b-41d4-a716-446655440001"
+                  role: "manager"
+      responses:
+        '200':
+          description: Role updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  user:
+                    $ref: '#/components/schemas/TeamMember'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /api/team/member:
+    delete:
+      summary: Remove Team Member
+      description: Remove a member from the team
+      tags:
+        - Team Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+              properties:
+                user_id:
+                  type: string
+                  format: uuid
+      responses:
+        '204':
+          description: Member removed
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  # Fleet Management
+  /api/fleet/status:
+    get:
+      summary: Get Fleet Status
+      description: Retrieve current status of all fleet vehicles
+      tags:
+        - Fleet Management
+      responses:
+        '200':
+          description: Fleet status retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  vehicles:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        status:
+                          type: string
+                          enum: [available, in_use, maintenance, offline]
+                        current_tech:
+                          type: string
+                          nullable: true
+                        location:
+                          type: object
+                          properties:
+                            lat:
+                              type: number
+                            lng:
+                              type: number
+                        last_updated:
+                          type: string
+                          format: date-time
+                  summary:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      available:
+                        type: integer
+                      in_use:
+                        type: integer
+                      maintenance:
+                        type: integer
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Subscriptions
+  /api/subscriptions/plans:
+    get:
+      summary: Get Subscription Plans
+      description: List all available subscription plans
+      tags:
+        - Subscriptions
+      security: []
+      responses:
+        '200':
+          description: Subscription plans
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  plans:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SubscriptionPlan'
+              example:
+                plans:
+                  - id: "starter"
+                    name: "Starter"
+                    description: "Perfect for individual technicians"
+                    price_monthly: 29
+                    price_yearly: 290
+                    features:
+                      - "Unlimited calculations"
+                      - "Basic reporting"
+                      - "Email support"
+                    limits:
+                      team_members: 1
+                      calculations_per_day: 100
+                  - id: "professional"
+                    name: "Professional"
+                    description: "For growing HVAC businesses"
+                    price_monthly: 99
+                    price_yearly: 990
+                    features:
+                      - "Everything in Starter"
+                      - "Team collaboration"
+                      - "Advanced analytics"
+                      - "Priority support"
+                    limits:
+                      team_members: 10
+                      calculations_per_day: 1000
+
+  /api/subscriptions/current:
+    get:
+      summary: Get Current Subscription
+      description: Get the current user's subscription details
+      tags:
+        - Subscriptions
+      responses:
+        '200':
+          description: Current subscription
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/subscriptions/update:
+    post:
+      summary: Update Subscription
+      description: Change subscription plan
+      tags:
+        - Subscriptions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - plan_id
+              properties:
+                plan_id:
+                  type: string
+                billing_cycle:
+                  type: string
+                  enum: [monthly, yearly]
+                  default: monthly
+      responses:
+        '200':
+          description: Subscription updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  subscription:
+                    $ref: '#/components/schemas/Subscription'
+                  client_secret:
+                    type: string
+                    description: Stripe client secret for payment confirmation
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/subscriptions/cancel:
+    post:
+      summary: Cancel Subscription
+      description: Cancel the current subscription
+      tags:
+        - Subscriptions
+      responses:
+        '200':
+          description: Subscription cancelled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Subscription will cancel at end of billing period"
+                  cancel_at:
+                    type: string
+                    format: date-time
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/subscriptions/payment-intent:
+    post:
+      summary: Create Payment Intent
+      description: Create a Stripe payment intent for subscription
+      tags:
+        - Subscriptions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - plan_id
+              properties:
+                plan_id:
+                  type: string
+                billing_cycle:
+                  type: string
+                  enum: [monthly, yearly]
+      responses:
+        '200':
+          description: Payment intent created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  client_secret:
+                    type: string
+                  payment_intent_id:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Engineering Calculations
+  /api/calculate-airflow:
+    post:
+      summary: Calculate Airflow
+      description: Calculate CFM and airflow requirements
+      tags:
+        - Engineering
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AirflowCalculationRequest'
+      responses:
+        '200':
+          description: Calculation results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cfm:
+                    type: number
+                  velocity:
+                    type: number
+                  duct_size_recommended:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/calculate-deltat:
+    post:
+      summary: Calculate Delta T
+      description: Calculate temperature differential
+      tags:
+        - Engineering
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                return_temp:
+                  type: number
+                supply_temp:
+                  type: number
+      responses:
+        '200':
+          description: Delta T results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  delta_t:
+                    type: number
+                  status:
+                    type: string
+                    enum: [normal, high, low]
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/calculate-standard:
+    post:
+      summary: Standard Vapor Compression Cycle
+      description: Calculate standard refrigeration cycle parameters
+      tags:
+        - Engineering
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refrigerant:
+                  type: string
+                suction_pressure:
+                  type: number
+                discharge_pressure:
+                  type: number
+                suction_temp:
+                  type: number
+                discharge_temp:
+                  type: number
+      responses:
+        '200':
+          description: Cycle calculation results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  superheat:
+                    type: number
+                  subcooling:
+                    type: number
+                  compression_ratio:
+                    type: number
+                  efficiency:
+                    type: number
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/calculate-cascade:
+    post:
+      summary: Cascade Cycle Analysis
+      description: Calculate ultra-low temperature cascade system
+      tags:
+        - Engineering
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                high_stage:
+                  type: object
+                  properties:
+                    refrigerant:
+                      type: string
+                    evaporating_temp:
+                      type: number
+                low_stage:
+                  type: object
+                  properties:
+                    refrigerant:
+                      type: string
+                    evaporating_temp:
+                      type: number
+      responses:
+        '200':
+          description: Cascade analysis results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cascade_efficiency:
+                    type: number
+                  intermediate_temp:
+                    type: number
+                  total_power:
+                    type: number
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/compare-refrigerants:
+    post:
+      summary: Compare Refrigerants
+      description: Side-by-side refrigerant comparison
+      tags:
+        - Engineering
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refrigerants:
+                  type: array
+                  items:
+                    type: string
+                  minItems: 2
+                  maxItems: 4
+                operating_conditions:
+                  type: object
+                  properties:
+                    evaporating_temp:
+                      type: number
+                    condensing_temp:
+                      type: number
+      responses:
+        '200':
+          description: Comparison results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comparisons:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        refrigerant:
+                          type: string
+                        capacity:
+                          type: number
+                        efficiency:
+                          type: number
+                        pressure_ratio:
+                          type: number
+                        glide:
+                          type: number
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Storage
+  /api/storage/upload:
+    post:
+      summary: Upload File
+      description: Upload avatar or image file
+      tags:
+        - Storage
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: File to upload (max 5MB, images only)
+                type:
+                  type: string
+                  enum: [avatar, asset_photo, document]
+                  description: Type of upload
+      responses:
+        '200':
+          description: File uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: uri
+                  path:
+                    type: string
+                  size:
+                    type: integer
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '413':
+          description: File too large
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Diagnostics
+  /api/diagnostics/supabase:
+    get:
+      summary: Test Supabase Connectivity
+      description: Health check for Supabase connection
+      tags:
+        - Diagnostics
+      security: []
+      responses:
+        '200':
+          description: Connection healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "healthy"
+                  latency_ms:
+                    type: number
+                    example: 45
+                  timestamp:
+                    type: string
+                    format: date-time
+        '503':
+          description: Connection unhealthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "unhealthy"
+                  error:
+                    type: string
+
+  # AI Pattern Recognition
+  /api/ai/patterns/analyze:
+    post:
+      summary: Analyze Patterns
+      description: Analyze symptoms and suggest solutions based on patterns
+      tags:
+        - AI Patterns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                symptoms:
+                  type: array
+                  items:
+                    type: string
+                equipment_type:
+                  type: string
+                refrigerant:
+                  type: string
+      responses:
+        '200':
+          description: Pattern analysis results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  patterns:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        pattern_id:
+                          type: string
+                        confidence:
+                          type: number
+                        suggested_solutions:
+                          type: array
+                          items:
+                            type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/ai/patterns/related:
+    post:
+      summary: Get Related Patterns
+      description: Find patterns related to a specific symptom or condition
+      tags:
+        - AI Patterns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pattern_id:
+                  type: string
+                limit:
+                  type: integer
+                  default: 5
+      responses:
+        '200':
+          description: Related patterns
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  related_patterns:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        pattern_id:
+                          type: string
+                        similarity_score:
+                          type: number
+                        description:
+                          type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/ai/patterns/symptom-outcome:
+    post:
+      summary: Create Symptom-Outcome Pattern
+      description: Create a new pattern linking symptoms to outcomes
+      tags:
+        - AI Patterns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                symptoms:
+                  type: array
+                  items:
+                    type: string
+                outcome:
+                  type: string
+                solution:
+                  type: string
+                equipment_type:
+                  type: string
+      responses:
+        '201':
+          description: Pattern created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pattern_id:
+                    type: string
+                  status:
+                    type: string
+                    example: "created"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/ai/patterns/measurement-anomaly:
+    post:
+      summary: Create Measurement Anomaly Pattern
+      description: Create a pattern for measurement-based anomalies
+      tags:
+        - AI Patterns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                measurement_type:
+                  type: string
+                normal_range:
+                  type: object
+                  properties:
+                    min:
+                      type: number
+                    max:
+                      type: number
+                anomaly_condition:
+                  type: string
+                possible_causes:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '201':
+          description: Pattern created
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/ai/patterns/{patternId}/feedback:
+    put:
+      summary: Update Pattern Feedback
+      description: Provide feedback on pattern accuracy
+      tags:
+        - AI Patterns
+      parameters:
+        - name: patternId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                helpful:
+                  type: boolean
+                notes:
+                  type: string
+      responses:
+        '200':
+          description: Feedback recorded
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/ai/patterns/{companyId}/{type}:
+    get:
+      summary: Get Patterns by Type
+      description: Retrieve patterns filtered by company and type
+      tags:
+        - AI Patterns
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [symptom_outcome, measurement_anomaly]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Patterns list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  patterns:
+                    type: array
+                    items:
+                      type: object
+                  total:
+                    type: integer
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/ai/enhanced-troubleshoot:
+    post:
+      summary: Enhanced Troubleshooting
+      description: AI-powered troubleshooting with LLM assistance
+      tags:
+        - AI Patterns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                problem_description:
+                  type: string
+                equipment_details:
+                  type: object
+                measurements:
+                  type: object
+      responses:
+        '200':
+          description: Troubleshooting guidance
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  analysis:
+                    type: string
+                  possible_causes:
+                    type: array
+                    items:
+                      type: string
+                  recommended_actions:
+                    type: array
+                    items:
+                      type: string
+                  safety_warnings:
+                    type: array
+                    items:
+                      type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Reports
+  /api/reports/generate:
+    post:
+      summary: Generate PDF Report
+      description: Generate professional PDF report for calculations or jobs
+      tags:
+        - Reports
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                report_type:
+                  type: string
+                  enum: [calculation_summary, job_report, client_report]
+                entity_id:
+                  type: string
+                  description: ID of calculation or job to include
+                template:
+                  type: string
+                  description: Report template to use
+      responses:
+        '200':
+          description: Report generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  download_url:
+                    type: string
+                    format: uri
+                  report_id:
+                    type: string
+                  expires_at:
+                    type: string
+                    format: date-time
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Health Check
+  /api/health:
+    get:
+      summary: System Health Check
+      description: Overall system health status
+      tags:
+        - Diagnostics
+      security: []
+      responses:
+        '200':
+          description: System healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "healthy"
+                  version:
+                    type: string
+                    example: "2.0.0"
+                  timestamp:
+                    type: string
+                    format: date-time
+                  services:
+                    type: object
+                    properties:
+                      database:
+                        type: string
+                        example: "connected"
+                      storage:
+                        type: string
+                        example: "connected"
+                      ai_gateway:
+                        type: string
+                        example: "connected"
+        '503':
+          description: System unhealthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "unhealthy"
+                  failing_services:
+                    type: array
+                    items:
+                      type: string
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from authentication endpoints
+
+  schemas:
+    # Request Schemas
+    SignupRequest:
+      type: object
+      required:
+        - email
+        - password
+        - full_name
+        - company_name
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        full_name:
+          type: string
+        company_name:
+          type: string
+        role:
+          type: string
+          enum: [owner, admin, manager, technician, client, student]
+          default: technician
+
+    SigninRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        session:
+          type: object
+          properties:
+            access_token:
+              type: string
+            refresh_token:
+              type: string
+            expires_at:
+              type: string
+              format: date-time
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        full_name:
+          type: string
+        role:
+          type: string
+          enum: [owner, admin, manager, technician, client, student]
+        company_id:
+          type: string
+          format: uuid
+        company:
+          $ref: '#/components/schemas/Company'
+        created_at:
+          type: string
+          format: date-time
+        last_sign_in:
+          type: string
+          format: date-time
+
+    Company:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        logo_url:
+          type: string
+          format: uri
+        primary_color:
+          type: string
+        subscription_tier:
+          type: string
+
+    TeamMember:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        full_name:
+          type: string
+        role:
+          type: string
+        status:
+          type: string
+          enum: [active, pending, inactive]
+        joined_at:
+          type: string
+          format: date-time
+
+    TeamInviteRequest:
+      type: object
+      required:
+        - email
+        - role
+      properties:
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [admin, manager, technician, client, student]
+        full_name:
+          type: string
+
+    CalculationRequest:
+      type: object
+      required:
+        - type
+        - inputs
+      properties:
+        type:
+          type: string
+          enum: [standard, cascade, psychrometric, a2l, superheat, subcooling]
+        name:
+          type: string
+        inputs:
+          type: object
+        results:
+          type: object
+        asset_id:
+          type: string
+        job_id:
+          type: string
+
+    Calculation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        name:
+          type: string
+        inputs:
+          type: object
+        results:
+          type: object
+        user_id:
+          type: string
+        company_id:
+          type: string
+        asset_id:
+          type: string
+        job_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CalculationListResponse:
+      type: object
+      properties:
+        calculations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Calculation'
+        pagination:
+          type: object
+          properties:
+            page:
+              type: integer
+            limit:
+              type: integer
+            total:
+              type: integer
+            total_pages:
+              type: integer
+
+    UserStats:
+      type: object
+      properties:
+        total_calculations:
+          type: integer
+        calculations_by_type:
+          type: object
+          additionalProperties:
+            type: integer
+        last_calculation_at:
+          type: string
+          format: date-time
+        favorite_refrigerants:
+          type: array
+          items:
+            type: string
+
+    SubscriptionPlan:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        price_monthly:
+          type: number
+        price_yearly:
+          type: number
+        features:
+          type: array
+          items:
+            type: string
+        limits:
+          type: object
+          properties:
+            team_members:
+              type: integer
+            calculations_per_day:
+              type: integer
+
+    Subscription:
+      type: object
+      properties:
+        id:
+          type: string
+        plan_id:
+          type: string
+        status:
+          type: string
+          enum: [active, cancelled, past_due, trialing]
+        current_period_start:
+          type: string
+          format: date-time
+        current_period_end:
+          type: string
+          format: date-time
+        cancel_at_period_end:
+          type: boolean
+        payment_method:
+          type: object
+          properties:
+            brand:
+              type: string
+            last4:
+              type: string
+            exp_month:
+              type: integer
+            exp_year:
+              type: integer
+
+    AirflowCalculationRequest:
+      type: object
+      properties:
+        room_dimensions:
+          type: object
+          properties:
+            length:
+              type: number
+            width:
+              type: number
+            height:
+              type: number
+        air_changes_per_hour:
+          type: number
+        duct_type:
+          type: string
+          enum: [round, rectangular]
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        code:
+          type: string
+        details:
+          type: object
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Bad Request"
+            message: "Invalid input parameters"
+            code: "INVALID_INPUT"
+
+    Unauthorized:
+      description: Authentication required or invalid credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Unauthorized"
+            message: "Invalid or expired token"
+            code: "AUTH_REQUIRED"
+
+    Forbidden:
+      description: Insufficient permissions for this operation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Forbidden"
+            message: "Insufficient permissions to perform this action"
+            code: "INSUFFICIENT_PERMISSIONS"
+
+    NotFound:
+      description: Requested resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Not Found"
+            message: "Resource not found"
+            code: "RESOURCE_NOT_FOUND"
+
+    Conflict:
+      description: Resource conflict (e.g., duplicate email)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Conflict"
+            message: "Email already registered"
+            code: "DUPLICATE_RESOURCE"
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Internal Server Error"
+            message: "An unexpected error occurred"
+            code: "INTERNAL_ERROR"

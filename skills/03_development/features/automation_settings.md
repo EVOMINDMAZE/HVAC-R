@@ -1,6 +1,13 @@
+---
+name: Client Notification Preferences - Feature Documentation
+description: The Client Notification Preferences feature allows individual clients to control their communication settings. Administrators can also view and mod...
+version: 1.0
+---
+
 # Client Notification Preferences - Feature Documentation
 
-> **Components**: 
+> **Components**:
+>
 > - `client/src/components/dashboard/ClientNotificationSettings.tsx` (Client Portal)
 > - `client/src/pages/ClientDetail.tsx` (Admin Settings Tab)
 > - `client/src/components/invoices/InvoiceList.tsx` (Invoice Management)
@@ -15,10 +22,12 @@ The Client Notification Preferences feature allows individual clients to control
 ## Data Model
 
 ### Database Schema
+
 **Table**: `clients`  
 **Column**: `notification_preferences` (JSONB)
 
 **Structure:**
+
 ```json
 {
   "sms_enabled": true,
@@ -27,6 +36,7 @@ The Client Notification Preferences feature allows individual clients to control
 ```
 
 **Field Descriptions:**
+
 - `sms_enabled`: Toggle for receiving SMS notifications (Invites, Alerts, Reviews).
 - `email_enabled`: Toggle for receiving Email notifications (Invites, Alerts, Reviews).
 
@@ -35,10 +45,13 @@ The Client Notification Preferences feature allows individual clients to control
 ## UI Components
 
 ### 1. Client Portal (`ClientNotificationSettings.tsx`)
+
 Located in the "Settings" tab of the Client Dashboard. Allows clients to self-manage their opt-in status.
 
 ### 2. Admin Panel (`ClientDetail.tsx`)
+
 Located in the "Settings" tab of the Client Detail page.
+
 - **Preference Toggles**: Admin can see and change client settings.
 - **Bypass Preferences**: A "Force Send" toggle that overrides client opt-outs for manual or critical triggers.
 - **Manual Actions**: Buttons to send Portal Links or Review Requests immediately.
@@ -48,6 +61,7 @@ Located in the "Settings" tab of the Client Detail page.
 ## Backend Enforcement
 
 ### Enforcement Flow
+
 Edge Functions fetch the client's preferences and check them before dispatching:
 
 ```typescript
@@ -66,6 +80,7 @@ const canSendEmail = force_send || (prefs?.email_enabled !== false);
 ```
 
 ### Affected Functions
+
 - **webhook-dispatcher**: Enforces logic for automated invites and alerts.
 - **review-hunter**: Enforces logic for review requests.
 - **invoice-chaser**: Enforces logic for automated debt collection and reminders.
@@ -75,7 +90,9 @@ const canSendEmail = force_send || (prefs?.email_enabled !== false);
 ## Testing
 
 ### Automated Verification
+
 Test scripts simulate workflow requests with various preference states:
+
 1. **Client Opted-In**: Notification sent normally.
 2. **Client Opted-Out**: Notification skipped (logged as `Skipped (Client Opted Out)`).
 3. **Admin Override (`force_send: true`)**: Notification sent despite opt-out.

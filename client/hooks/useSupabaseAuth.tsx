@@ -1,45 +1,339 @@
-import { useEffect, useState, createContext, useContext } from 'react';
-import { supabase } from '../lib/supabase';
-import { Session, User } from '@supabase/supabase-js';
+import {
+  useEffect,
+  useState,
+  createContext,
+  useContext,
+  useCallback,
+  useRef,
+  useDebugValue,
+} from "react";
+import { supabase } from "../lib/supabase";
+import { Session, User } from "@supabase/supabase-js";
+import { isTokenError, AuthErrorHandler } from "../utils/authErrorHandler";
 
-export type UserRole = 'admin' | 'client' | 'tech' | 'manager' | 'student' | 'technician';
+const COMPANIES_CACHE_TTL = 60 * 1000; // 1 minute
 
-interface AuthContextType {
-  session: Session | null;
-  user: User | null;
-  role: UserRole | null;
-  companyId: string | null;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-  signIn: (email: string, password: string) => Promise<{ user: User | null, error: any, role: UserRole | null }>;
-  signUp: (email: string, password: string) => Promise<{ user: User | null, error: any }>;
-  signOut: () => Promise<{ error: any }>;
-  signInWithGoogle: () => Promise<{ error: any }>;
-  updateUser: (attributes: any) => Promise<{ data: { user: User | null }, error: any }>;
+export type UserRole =
+  | "admin"
+  | "client"
+  | "tech"
+  | "manager"
+  | "student"
+  | "technician"
+  | "owner";
+
+export interface UserCompany {
+  company_id: string;
+  company_name: string;
+  role: UserRole;
+  is_owner: boolean;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export interface ActiveCompanyContext {
+  company_id: string;
+  company_name: string;
+  role: UserRole;
+}
 
-export const SupabaseAuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const auth = useSupabaseAuth();
-  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
-};
+interface MultiCompanyAuthContextType {
+  session: Session | null;
+  user: User | null;
+  isLoading: boolean;
+  isRefreshing: boolean;
+  isAuthenticated: boolean;
+  role: UserRole | null;
+  companyId: string | null;
+  companies: UserCompany[];
+  activeCompany: ActiveCompanyContext | null;
+  needsCompanySelection: boolean;
+  signIn: (
+    email: string,
+    password: string,
+  ) => Promise<{ user: User | null; error: any; role: UserRole | null }>;
+  signUp: (
+    email: string,
+    password: string,
+  ) => Promise<{ user: User | null; error: any }>;
+  signOut: () => Promise<{ error: any }>;
+  signInWithGoogle: () => Promise<{ error: any }>;
+  updateUser: (
+    attributes: any,
+  ) => Promise<{ data: { user: User | null }; error: any }>;
+  switchCompany: (
+    companyId: string,
+  ) => Promise<{ success: boolean; error?: string }>;
+  getAllCompanies: () => Promise<UserCompany[]>;
+  refreshCompanies: () => Promise<void>;
+}
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
+const MultiCompanyAuthContext = createContext<
+  MultiCompanyAuthContextType | undefined
+>(undefined);
+
+export const useMultiCompanyAuth = () => {
+  const context = useContext(MultiCompanyAuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within a SupabaseAuthProvider');
+    throw new Error(
+      "useMultiCompanyAuth must be used within a SupabaseAuthProvider",
+    );
   }
   return context;
 };
 
-// Maintain useSupabaseAuth as the primary hook for backward compatibility and internal use
+export const useAuth = () => {
+  const context = useContext(MultiCompanyAuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within a SupabaseAuthProvider");
+  }
+  return {
+    session: context.session,
+    user: context.user,
+    role: context.role,
+    companyId: context.companyId,
+    isLoading: context.isLoading,
+    isRefreshing: context.isRefreshing,
+    isAuthenticated: context.isAuthenticated,
+    needsCompanySelection: context.needsCompanySelection,
+    companies: context.companies,
+    activeCompany: context.activeCompany,
+    signIn: context.signIn,
+    signUp: context.signUp,
+    signOut: context.signOut,
+    signInWithGoogle: context.signInWithGoogle,
+    updateUser: context.updateUser,
+  };
+};
+
 export const useSupabaseAuth = () => {
+  return useContext(MultiCompanyAuthContext) as MultiCompanyAuthContextType;
+};
+
+export const SupabaseAuthProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [role, setRole] = useState<UserRole | null>(null);
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [companies, setCompanies] = useState<UserCompany[]>([]);
+  const [activeCompany, setActiveCompanyState] =
+    useState<ActiveCompanyContext | null>(null);
+  const [needsCompanySelection, setNeedsCompanySelection] = useState(false);
+  const [hasManuallySelected, setHasManuallySelected] = useState(false);
+
+  // Mutex to prevent concurrent refreshCompanies calls
+  const refreshLock = useRef(false);
+
+  const fetchCompanies = useCallback(async (currentUser?: User | null): Promise<UserCompany[]> => {
+    const u = currentUser || user;
+    if (!u) {
+      console.log("[useSupabaseAuth] No user for fetchCompanies, returning empty");
+      return [];
+    }
+    
+    // Check cache first
+    const cacheKey = `companies_cache_${u.id}`;
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        const now = Date.now();
+        if (now - timestamp < COMPANIES_CACHE_TTL) {
+          console.log("[useSupabaseAuth] Returning cached companies for user:", u.id);
+          return data;
+        }
+        console.log("[useSupabaseAuth] Cache expired for user:", u.id);
+      }
+    } catch (e) {
+      // Ignore cache errors
+      console.log("[useSupabaseAuth] Cache read error:", e);
+    }
+
+    try {
+      console.log("[useSupabaseAuth] Fetching companies via RPC v2 for user:", u.id);
+
+      // Add timeout to prevent infinite loading
+      const rpcPromise = supabase.rpc("get_user_companies_v2");
+      const timeoutPromise = new Promise<{ data: null; error: any }>((_, reject) =>
+        setTimeout(() => reject(new Error("RPC timeout")), 10000)
+      );
+
+      const { data: companies, error } = await Promise.race([
+        rpcPromise,
+        timeoutPromise,
+      ]) as any;
+
+      if (error) {
+        console.error(
+          "[useSupabaseAuth] Error fetching companies via RPC v2:",
+          JSON.stringify(error),
+        );
+        
+        if (isTokenError(error)) {
+          console.error("[useSupabaseAuth] Token error detected in fetchCompanies. Triggering auth error handler.");
+          await AuthErrorHandler.handleAuthError(error);
+        }
+        
+        return [];
+      }
+
+      console.log("[useSupabaseAuth] Companies fetched via RPC v2 result:", companies);
+      
+      // Map the results from get_user_companies_v2
+      const mapped = (companies || []).map((c: any) => ({
+        company_id: c.company_id,
+        company_name: c.company_name,
+        role: c.role,
+        is_owner: c.is_owner
+      })) as UserCompany[];
+
+      // Store in cache
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify({
+          data: mapped,
+          timestamp: Date.now()
+        }));
+      } catch (e) {
+        console.log("[useSupabaseAuth] Cache write error:", e);
+      }
+
+      return mapped;
+    } catch (err: any) {
+      console.error("[useSupabaseAuth] Fetch exception:", err);
+      
+      if (isTokenError(err)) {
+        console.error("[useSupabaseAuth] Token error detected in catch block. Triggering auth error handler.");
+        await AuthErrorHandler.handleAuthError(err);
+      }
+      
+      return [];
+    }
+  }, [user]);
+
+  const updateActiveCompany = useCallback(
+    async (
+      companyList: UserCompany[],
+      metadataCompanyId?: string | null,
+      manuallySelected = false,
+    ) => {
+      console.log("[useSupabaseAuth] updateActiveCompany", { 
+        count: companyList.length, 
+        metadataId: metadataCompanyId 
+      });
+
+      if (companyList.length === 0) {
+        setActiveCompanyState(null);
+        setRole(null);
+        setCompanyId(null);
+        setNeedsCompanySelection(true);
+        return;
+      }
+
+      // Explicitly prioritize:
+      // 1. Manually selected ID (metadata)
+      // 2. The first company in the list
+      const activeId = metadataCompanyId || companyList[0]?.company_id;
+      const active = companyList.find((c) => c.company_id === activeId) || companyList[0];
+
+      console.log("[useSupabaseAuth] Setting active company:", active.company_name, "role:", active.role);
+      
+      setActiveCompanyState({
+        company_id: active.company_id,
+        company_name: active.company_name,
+        role: active.role,
+      });
+      setRole(active.role);
+      setCompanyId(active.company_id);
+      
+      // Only require selection if there are MULTIPLE companies AND we haven't manually selected one yet
+      setNeedsCompanySelection(companyList.length > 1 && !manuallySelected);
+    },
+    [],
+  );
+
+  const refreshCompanies = useCallback(
+    async (manuallySelected = false, currentUser?: User | null) => {
+      const u = currentUser || user;
+      if (!u) {
+        console.log("[useSupabaseAuth] refreshCompanies: no user, skipping");
+        return;
+      }
+
+      // Prevent concurrent refresh calls
+      if (refreshLock.current) {
+        console.log("[useSupabaseAuth] refreshCompanies: already in progress, skipping");
+        return;
+      }
+
+      const startTime = Date.now();
+      console.group(`[useSupabaseAuth] refreshCompanies starting at ${new Date(startTime).toISOString()}`);
+      console.log("[useSupabaseAuth] refreshCompanies args:", { manuallySelected, userId: u.id });
+      
+      refreshLock.current = true;
+      setIsRefreshing(true);
+      
+      try {
+        const companyList = await fetchCompanies(u);
+        console.log("[useSupabaseAuth] refreshCompanies fetched:", companyList.length, "companies");
+        
+        setCompanies(companyList);
+        
+        await updateActiveCompany(
+          companyList,
+          u.user_metadata?.active_company_id,
+          manuallySelected,
+        );
+        
+        const endTime = Date.now();
+        console.log(`[useSupabaseAuth] refreshCompanies completed in ${endTime - startTime}ms`);
+      } catch (error) {
+        console.error("[useSupabaseAuth] refreshCompanies error:", error);
+        // Don't rethrow - component should handle gracefully
+      } finally {
+        refreshLock.current = false;
+        setIsRefreshing(false);
+        console.groupEnd();
+      }
+    },
+    [user, fetchCompanies, updateActiveCompany],
+  );
+
+  const switchCompany = useCallback(
+    async (
+      companyId: string,
+    ): Promise<{ success: boolean; error?: string }> => {
+      if (!user) {
+        return { success: false, error: "Not authenticated" };
+      }
+
+      try {
+        const { data, error } = await supabase.rpc("switch_company_context", {
+          p_company_id: companyId,
+        });
+
+        if (error) {
+          console.error("[MultiCompany] Switch error:", error);
+          return { success: false, error: error.message };
+        }
+
+        setHasManuallySelected(true);
+        await refreshCompanies(true);
+        return { success: true };
+      } catch (err: any) {
+        console.error("[MultiCompany] Switch exception:", err);
+        return { success: false, error: err.message };
+      }
+    },
+    [user, refreshCompanies],
+  );
+
+  const getAllCompanies = useCallback(async (): Promise<UserCompany[]> => {
+    return fetchCompanies();
+  }, [fetchCompanies]);
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -49,16 +343,17 @@ export const useSupabaseAuth = () => {
       });
 
       if (error) {
-        console.error('[AuthDebug] SignIn Error:', error);
         return { user: null, error, role: null };
       }
 
       if (data.user) {
-        const { role } = await fetchUserRoleData(data.user);
-        return { user: data.user, error: null, role };
+        // We can't immediately get the role because we need to fetch companies.
+        // We'll let the session listener handle state updates, but we'll try to return the role if possible.
+        // For now, return null role and let navigation happen via useEffect or default.
+        return { user: data.user, error: null, role: null };
       }
 
-      return { user: null, error: new Error('User not found'), role: null };
+      return { user: null, error: new Error("User not found"), role: null };
     } catch (err) {
       return { user: null, error: err, role: null };
     }
@@ -77,21 +372,68 @@ export const useSupabaseAuth = () => {
   };
 
   const signOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      return { error };
-    } catch (err) {
-      return { error: err };
+    console.log("[useSupabaseAuth] signOut called");
+    const maxRetries = 2;
+    const baseDelay = 1000;
+    
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(`[useSupabaseAuth] Sign out attempt ${attempt + 1}/${maxRetries + 1}`);
+        const { error } = await supabase.auth.signOut();
+        
+        if (error) {
+          throw error;
+        }
+        
+        console.log("[useSupabaseAuth] Sign out successful");
+        // Always clear local state regardless of API success/failure
+        setCompanies([]);
+        setActiveCompanyState(null);
+        setRole(null);
+        setCompanyId(null);
+        setNeedsCompanySelection(false);
+        setSession(null);
+        setUser(null);
+        
+        return { error: null };
+      } catch (err: any) {
+        console.error(`[useSupabaseAuth] Sign out attempt ${attempt + 1} failed:`, err);
+        
+        if (attempt === maxRetries) {
+          // Final attempt failed, still clear local state for security
+          console.log("[useSupabaseAuth] All sign out attempts failed, clearing local state anyway");
+          setCompanies([]);
+          setActiveCompanyState(null);
+          setRole(null);
+          setCompanyId(null);
+          setNeedsCompanySelection(false);
+          setSession(null);
+          setUser(null);
+          
+          return { error: err };
+        }
+        
+        // Wait with exponential backoff before retrying
+        const delay = baseDelay * Math.pow(2, attempt);
+        console.log(`[useSupabaseAuth] Waiting ${delay}ms before retry...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
     }
+    
+    // Should never reach here due to loop returns
+    return { error: new Error("Sign out failed after all retries") };
   };
 
   const signInWithGoogle = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
         options: {
-          redirectTo: window.location.origin
-        }
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
+        },
       });
       return { error };
     } catch (err) {
@@ -108,146 +450,87 @@ export const useSupabaseAuth = () => {
     }
   };
 
-  const fetchUserRoleData = async (currentUser: User) => {
-    console.log('[fetchUserRoleData] Starting for user:', currentUser.id);
-    if (!currentUser) return { role: null, companyId: null };
-
-    // Helper for timeout
-    const withTimeout = (promise: Promise<any>, timeoutMs: number = 10000) => {
-      return Promise.race([
-        promise,
-        new Error('Timeout after ' + timeoutMs + 'ms')
-      ]);
-    };
-
-    try {
-      console.log('[fetchUserRoleData] Querying user_roles...');
-      const rolePromise = supabase
-        .from('user_roles')
-        .select('role, company_id')
-        .eq('user_id', currentUser.id)
-        .limit(1);
-
-      const result = await Promise.race([
-        rolePromise,
-        new Promise((_, reject) => setTimeout(() => reject(new Error('DB Timeout')), 10000))
-      ]) as any;
-
-      const { data: roleData, error: tableError } = result;
-
-      if (tableError) console.log('[fetchUserRoleData] user_roles error:', tableError.message);
-
-      if (roleData && roleData.length > 0) {
-        console.log('[fetchUserRoleData] Found role in user_roles:', roleData[0].role);
-        return { role: roleData[0].role as UserRole, companyId: roleData[0].company_id };
-      }
-
-      console.log('[fetchUserRoleData] Falling back to companies...');
-      const companyPromise = supabase
-        .from('companies')
-        .select('id')
-        .eq('user_id', currentUser.id)
-        .limit(1);
-
-      const compResult = await Promise.race([
-        companyPromise,
-        new Promise((_, reject) => setTimeout(() => reject(new Error('DB Timeout')), 10000))
-      ]) as any;
-
-      const { data: companyData, error: companyError } = compResult;
-
-      if (companyError) console.log('[fetchUserRoleData] companies error:', companyError.message);
-
-      if (companyData && companyData.length > 0) {
-        console.log('[fetchUserRoleData] Found ownership in companies:', companyData[0].id);
-        return { role: 'admin' as UserRole, companyId: companyData[0].id };
-      }
-    } catch (err) {
-      console.error('[fetchUserRoleData] Table fetch catch error:', err);
-    }
-
-    console.log('[fetchUserRoleData] No role found, returning null');
-    return { role: null, companyId: null };
-  };
-
   useEffect(() => {
-    const initializeSession = async () => {
+    const checkSession = async () => {
+      const startTime = Date.now();
+      console.group(`[useSupabaseAuth] useEffect triggered - checkSession starting at ${new Date(startTime).toISOString()}`);
+      
+      // Set a safety timeout to ensure isLoading never stays true forever
+      const loadingTimeoutId = setTimeout(() => {
+        console.warn("[useSupabaseAuth] Loading timeout reached after 15 seconds, forcing isLoading to false");
+        setIsLoading(false);
+      }, 15000);
 
       try {
-
-        const { data: { session }, error } = await supabase.auth.getSession();
-
-
-        if (error) throw error;
-
-        if (session) {
-          setSession(session);
-          setUser(session.user);
-          const { role, companyId } = await fetchUserRoleData(session.user);
-          setRole(role);
-          setCompanyId(companyId);
-        } else {
-
+        const {
+          data: { session },
+          error: sessionError
+        } = await supabase.auth.getSession();
+        
+        if (sessionError) {
+          console.error("[useSupabaseAuth] getSession error:", sessionError);
         }
-        /* else if (process.env.NODE_ENV === 'test' || window.location.hostname === 'localhost') {
-          // This block was for local testing/development to bypass Supabase auth
-          // when running in test environments or on localhost without a real session.
-          // It would set a fake session and user for 'admin@admin.com'.
-          // This has been commented out to ensure real authentication is always used.
-          // console.log('[useSupabaseAuth] Faking session for local/test environment');
-          // const fakeUser: User = {
-          //   id: 'fake-admin-id',
-          //   aud: 'authenticated',
-          //   role: 'authenticated',
-          //   email: 'admin@admin.com',
-          //   email_confirmed_at: new Date().toISOString(),
-          //   phone: '',
-          //   confirmed_at: new Date().toISOString(),
-          //   last_sign_in_at: new Date().toISOString(),
-          //   app_metadata: { provider: 'email', providers: ['email'] },
-          //   user_metadata: {},
-          //   created_at: new Date().toISOString(),
-          //   updated_at: new Date().toISOString(),
-          // };
-          // const fakeSession: Session = {
-          //   access_token: 'fake-access-token',
-          //   token_type: 'Bearer',
-          //   expires_in: 3600,
-          //   expires_at: Math.floor(Date.now() / 1000) + 3600,
-          //   refresh_token: 'fake-refresh-token',
-          //   user: fakeUser,
-          // };
-          // setSession(fakeSession);
-          // setUser(fakeUser);
-          // setRole('admin');
-          // setCompanyId('087da65b-4ea6-4d93-ba07-03ba6f88a7de');
-        } */
-      } catch (err) {
-        console.error('[useSupabaseAuth] Initialization error:', err);
-      } finally {
+        
+        console.log("[useSupabaseAuth] session found:", !!session, "user ID:", session?.user?.id);
+        setSession(session);
+        setUser(session?.user ?? null);
 
-        setIsLoading(false);
+        if (session?.user) {
+          console.log("[useSupabaseAuth] fetching roles and companies...");
+          // Use refreshCompanies instead of direct query
+          await refreshCompanies(false, session.user);
+          console.log("[useSupabaseAuth] roles and companies fetched.");
+        }
+      } catch (err) {
+        console.error("[useSupabaseAuth] checkSession exception:", err);
+      } finally {
+        // Clear the safety timeout since we're done
+        clearTimeout(loadingTimeoutId);
+        
+        // Use setTimeout to ensure React batch updates don't block UI thread
+        setTimeout(() => {
+          console.log("[useSupabaseAuth] setIsLoading(false) via setTimeout");
+          setIsLoading(false);
+          console.log("[useSupabaseAuth] isLoading after set:", false);
+        }, 0);
+        
+        const endTime = Date.now();
+        console.log(`[useSupabaseAuth] checkSession completed in ${endTime - startTime}ms`);
+        console.groupEnd();
       }
     };
 
-    initializeSession();
+    checkSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('[AuthDebug] Auth State Change:', event, session?.user?.email);
+    if (!supabase) {
+      return;
+    }
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      const eventTime = Date.now();
+      console.group(`[useSupabaseAuth] Auth state change at ${new Date(eventTime).toISOString()}:`, event, session?.user?.id);
+      
       setSession(session);
       setUser(session?.user ?? null);
 
       if (session?.user) {
-        fetchUserRoleData(session.user).then(({ role, companyId }) => {
-          setRole(role);
-          setCompanyId(companyId);
-          setIsLoading(false);
-        });
+        if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+          console.log("[useSupabaseAuth] Fetching companies after sign in...");
+          await refreshCompanies(false, session.user);
+          console.log("[useSupabaseAuth] Companies refreshed after sign in.");
+        }
       } else {
+        console.log("[useSupabaseAuth] No session, clearing state");
         setRole(null);
         setCompanyId(null);
-        setIsLoading(false);
+        setCompanies([]);
+        setActiveCompanyState(null);
+        setNeedsCompanySelection(false);
       }
+      
+      console.groupEnd();
     });
 
     return () => {
@@ -255,17 +538,41 @@ export const useSupabaseAuth = () => {
     };
   }, []);
 
-  return {
+  const value: MultiCompanyAuthContextType = {
     session,
     user,
     role,
     companyId,
     isLoading,
+    isRefreshing,
     isAuthenticated: !!session,
+    companies,
+    activeCompany,
+    needsCompanySelection,
     signIn,
     signUp,
     signOut,
     signInWithGoogle,
-    updateUser
+    updateUser,
+    switchCompany,
+    getAllCompanies,
+    refreshCompanies,
   };
+
+  // Debug value for React DevTools
+  useDebugValue({ 
+    isLoading, 
+    isAuthenticated: !!session, 
+    user: user?.email, 
+    role, 
+    companyId,
+    companiesCount: companies.length,
+    needsCompanySelection 
+  });
+
+  return (
+    <MultiCompanyAuthContext.Provider value={value}>
+      {children}
+    </MultiCompanyAuthContext.Provider>
+  );
 };

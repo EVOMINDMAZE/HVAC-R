@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,18 @@ export function SignUp() {
   const { signUp, signInWithGoogle } = useSupabaseAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const inviteCode = searchParams.get("code");
+
+  useEffect(() => {
+    if (inviteCode) {
+      addToast({
+        type: "info",
+        title: "Join Invitation",
+        description: "Create an account to join the organization.",
+      });
+    }
+  }, [inviteCode, addToast]);
 
   const handleGoogleSignIn = async () => {
     try {
@@ -94,7 +106,12 @@ export function SignUp() {
           title: "Welcome to ThermoNeural!",
           description: "Please check your email to confirm your account",
         });
-        navigate("/dashboard");
+        
+        if (inviteCode) {
+          navigate(`/join-company?code=${inviteCode}`);
+        } else {
+          navigate("/dashboard");
+        }
       }
     } catch (err: any) {
       const errorMsg = err.message || "Registration failed. Please try again.";
