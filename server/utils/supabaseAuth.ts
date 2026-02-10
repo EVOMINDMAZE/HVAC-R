@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import jwt from "jsonwebtoken";
+import { getSupabaseClient } from "./supabase.ts";
 
 // Supabase JWT verification middleware
 export const authenticateSupabaseToken: RequestHandler = async (
@@ -18,28 +18,38 @@ export const authenticateSupabaseToken: RequestHandler = async (
       });
     }
 
-    // Decode the Supabase JWT token without verification for now
-    // In production, you should verify the JWT signature using Supabase JWT secret
-    const decoded = jwt.decode(token) as any;
-    console.log("Decoded token:", decoded ? "valid" : "invalid");
+    // Verify the JWT signature using Supabase client
+    const supabase = getSupabaseClient(token);
 
-    if (!decoded || !decoded.sub) {
-      console.log("Invalid token structure");
+    if (!supabase) {
+      console.error("Failed to initialize Supabase client (missing env vars?)");
+      return res.status(500).json({ error: "Internal configuration error" });
+    }
+
+    const {
+      data: { user: supabaseUser },
+      error,
+    } = await supabase.auth.getUser();
+
+    if (error || !supabaseUser) {
+      console.log("Invalid token or user not found:", error?.message);
       return res.status(401).json({
         error: "Invalid token",
       });
     }
 
-    // Create a user object from the Supabase token
+    // Create a user object from the Supabase user
     const user = {
-      id: decoded.sub,
-      email: decoded.email,
-      stripe_customer_id: decoded.user_metadata?.stripe_customer_id || null,
+      id: supabaseUser.id,
+      email: supabaseUser.email,
+      stripe_customer_id:
+        supabaseUser.user_metadata?.stripe_customer_id || null,
       stripe_subscription_id:
-        decoded.user_metadata?.stripe_subscription_id || null,
-      subscription_plan: decoded.user_metadata?.subscription_plan || "free",
+        supabaseUser.user_metadata?.stripe_subscription_id || null,
+      subscription_plan:
+        supabaseUser.user_metadata?.subscription_plan || "free",
       subscription_status:
-        decoded.user_metadata?.subscription_status || "active",
+        supabaseUser.user_metadata?.subscription_status || "active",
     };
 
     // Add user to request object
