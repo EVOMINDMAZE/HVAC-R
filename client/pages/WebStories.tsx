@@ -19,14 +19,14 @@ export function WebStories() {
   );
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-slate-950 text-foreground selection:bg-cyan-500/30">
       <Header variant="landing" />
 
       <main className="flex-grow pt-24 px-4 pb-20 relative overflow-hidden">
         {/* Ambient Background */}
-        <div className="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-b from-purple-500/5 to-transparent dark:from-purple-900/20 dark:to-transparent pointer-events-none -z-10" />
-        <div className="absolute top-[20%] right-[-10%] w-[400px] h-[400px] bg-pink-500/10 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-[20%] left-[-10%] w-[400px] h-[400px] bg-orange-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-b from-cyan-500/5 to-transparent dark:from-cyan-900/20 dark:to-transparent pointer-events-none -z-10" />
+        <div className="absolute top-[20%] right-[-10%] w-[400px] h-[400px] bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-[20%] left-[-10%] w-[400px] h-[400px] bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="max-w-[1600px] mx-auto">
           {/* Header Section */}
@@ -39,15 +39,15 @@ export function WebStories() {
               <div className="flex items-center gap-2 mb-4">
                 <Badge
                   variant="outline"
-                  className="border-pink-200 bg-pink-50 text-pink-700 dark:border-pink-800 dark:bg-pink-900/30 dark:text-pink-300"
+                  className="border-cyan-200 bg-cyan-50 text-cyan-700 dark:border-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300"
                 >
                   <Sparkles className="h-3 w-3 mr-1" />
                   Visual Learning
                 </Badge>
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+              <h1 className="text-4xl md:text-5xl font-bold font-mono tracking-tight mb-4">
                 HVAC
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-violet-600">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-slate-600">
                   Stories
                 </span>
               </h1>
@@ -92,7 +92,7 @@ export function WebStories() {
                   transition={{ delay: index * 0.1 }}
                   whileHover={{ y: -8, transition: { duration: 0.2 } }}
                   onClick={() => setSelectedStory(story)}
-                  className="group cursor-pointer relative aspect-[9/16] rounded-2xl overflow-hidden shadow-md hover:shadow-xl hover:shadow-pink-500/20 transition-all border border-border/50 bg-black"
+                  className="group cursor-pointer relative aspect-[9/16] rounded-2xl overflow-hidden shadow-md hover:shadow-xl hover:shadow-cyan-500/20 transition-all border border-border/50 bg-black"
                 >
                   {/* Poster Image */}
                   <img
@@ -112,7 +112,7 @@ export function WebStories() {
                   {/* Content */}
                   <div className="absolute bottom-0 left-0 right-0 p-5">
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-orange-400 to-pink-600 p-[2px]">
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-cyan-400 to-slate-600 p-[2px]">
                         <div className="w-full h-full rounded-full bg-black overflow-hidden relative">
                           {/* Placeholder avatar or author's */}
                           <img
@@ -133,7 +133,7 @@ export function WebStories() {
                   </div>
 
                   {/* Selection Ring on Hover */}
-                  <div className="absolute inset-0 border-2 border-pink-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                  <div className="absolute inset-0 border-2 border-cyan-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
                 </motion.div>
               ))}
             </div>

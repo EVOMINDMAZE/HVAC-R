@@ -164,7 +164,7 @@ export function StripeDebug() {
           </div>
 
           {loading && (
-            <div className="text-orange-600">Processing checkout...</div>
+            <div className="text-cyan-600">Processing checkout...</div>
           )}
           {error && <div className="text-red-600">Error: {error}</div>}
 

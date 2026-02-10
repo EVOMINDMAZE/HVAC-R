@@ -486,7 +486,7 @@ export function ClientDetail() {
       toast({
         title: forceSend ? "Force Notification Queued" : "Notification Queued",
         description: `Sent ${workflowType.replace("_", " ")} trigger to queue.`,
-        className: "bg-orange-600 text-white border-none",
+        className: "bg-cyan-600 text-white border-none",
       });
     } catch (err: any) {
       toast({
@@ -530,9 +530,9 @@ export function ClientDetail() {
   const getAssetIcon = (type: string) => {
     switch (type) {
       case "Freezer":
-        return <Snowflake className="h-5 w-5 text-orange-600" />;
+        return <Snowflake className="h-5 w-5 text-cyan-600" />;
       case "Chiller":
-        return <Snowflake className="h-5 w-5 text-orange-500" />;
+        return <Snowflake className="h-5 w-5 text-cyan-500" />;
       case "HVAC":
         return <Fan className="h-5 w-5 text-slate-500" />;
       case "Sensor":
@@ -563,7 +563,7 @@ export function ClientDetail() {
       <div className="space-y-8">
         <Button
           variant="ghost"
-          className="mb-2 pl-0 hover:bg-transparent hover:text-orange-600 dark:hover:text-orange-400"
+          className="mb-2 pl-0 hover:bg-transparent hover:text-cyan-600 dark:hover:text-cyan-400"
           onClick={() => navigate("/dashboard/clients")}
         >
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Clients
@@ -572,7 +572,7 @@ export function ClientDetail() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-600 to-slate-700 p-8 shadow-xl shadow-slate-900/20 text-white"
+          className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cyan-600 to-slate-700 p-8 shadow-xl shadow-slate-900/20 text-white"
         >
           <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="flex items-center gap-6">
@@ -584,7 +584,7 @@ export function ClientDetail() {
                   {client.name}
                 </h1>
                 <div className="flex flex-wrap items-center gap-4 mt-2 text-slate-100">
-                  <span className="flex items-center gap-1.5 bg-orange-500/30 px-3 py-1 rounded-full text-sm backdrop-blur-sm border border-orange-400/30">
+                  <span className="flex items-center gap-1.5 bg-cyan-500/30 px-3 py-1 rounded-full text-sm backdrop-blur-sm border border-cyan-400/30">
                     {client.contact_name}
                   </span>
                   <span className="flex items-center gap-1.5 text-sm opacity-80">
@@ -624,7 +624,7 @@ export function ClientDetail() {
 
               <Dialog open={isAssetOpen} onOpenChange={setIsAssetOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-white text-orange-700 hover:bg-orange-50 hover:text-orange-800 shadow-lg border-0 font-semibold transition-all hover:scale-105 active:scale-95">
+                  <Button className="bg-white text-cyan-700 hover:bg-cyan-50 hover:text-cyan-800 shadow-lg border-0 font-semibold transition-all hover:scale-105 active:scale-95">
                     <Plus className="h-4 w-4 mr-2" />
                     Add Asset
                   </Button>
@@ -703,7 +703,7 @@ export function ClientDetail() {
             </div>
           </div>
 
-          <div className="absolute -top-20 -right-20 w-80 h-80 bg-orange-500/30 rounded-full blur-3xl" />
+          <div className="absolute -top-20 -right-20 w-80 h-80 bg-cyan-500/30 rounded-full blur-3xl" />
           <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-slate-500/30 rounded-full blur-3xl" />
 
           {client && (
@@ -908,11 +908,11 @@ export function ClientDetail() {
                     <motion.div key={asset.id} variants={item}>
                       <Card
                         data-testid="asset-card"
-                        className="h-full border-slate-200/60 dark:border-slate-800 bg-card hover:shadow-xl hover:shadow-slate-900/5 hover:border-orange-200 dark:hover:border-orange-800 transition-all duration-300 group"
+                        className="h-full border-slate-200/60 dark:border-slate-800 bg-card hover:shadow-xl hover:shadow-slate-900/5 hover:border-cyan-200 dark:hover:border-cyan-800 transition-all duration-300 group"
                       >
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
                           <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center border border-slate-100 dark:border-slate-700 group-hover:bg-orange-50 dark:group-hover:bg-orange-900/20 transition-colors">
+                            <div className="h-10 w-10 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center border border-slate-100 dark:border-slate-700 group-hover:bg-cyan-50 dark:group-hover:bg-cyan-900/20 transition-colors">
                               {getAssetIcon(asset.type)}
                             </div>
                             <div className="overflow-hidden">
@@ -976,7 +976,7 @@ export function ClientDetail() {
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className="h-8 text-xs text-orange-600 hover:text-orange-700 hover:bg-orange-50"
+                                  className="h-8 text-xs text-cyan-600 hover:text-cyan-700 hover:bg-cyan-50"
                                 >
                                   Simulate Data
                                 </Button>
@@ -1205,7 +1205,7 @@ export function ClientDetail() {
                 <Button
                   variant="link"
                   onClick={() => setIsRuleOpen(true)}
-                  className="mt-2 text-orange-600"
+                  className="mt-2 text-cyan-600"
                 >
                   Create your first rule
                 </Button>
@@ -1225,7 +1225,7 @@ export function ClientDetail() {
                   >
                     <div className="flex items-center gap-4">
                       <div
-                        className={`p-3 rounded-full ${rule.trigger_type.includes("high") ? "bg-red-100 text-red-600" : "bg-orange-100 text-orange-600"}`}
+                        className={`p-3 rounded-full ${rule.trigger_type.includes("high") ? "bg-red-100 text-red-600" : "bg-cyan-100 text-cyan-600"}`}
                       >
                         {rule.trigger_type.includes("high") ? (
                           <Thermometer className="h-5 w-5" />
@@ -1291,7 +1291,7 @@ export function ClientDetail() {
               className="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm"
             >
               <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <Bell className="h-5 w-5 text-orange-600" />
+                <Bell className="h-5 w-5 text-cyan-600" />
                 Notification Preferences
               </h2>
               <p className="text-sm text-slate-500 mt-1">
@@ -1345,7 +1345,7 @@ export function ClientDetail() {
 
                 <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
                   <Button
-                    className="w-full bg-orange-600 hover:bg-orange-700 text-white"
+                    className="w-full bg-cyan-600 hover:bg-cyan-700 text-white"
                     onClick={handleUpdateNotificationPrefs}
                     disabled={isSavingPrefs}
                   >
@@ -1354,30 +1354,30 @@ export function ClientDetail() {
                 </div>
               </div>
 
-              <div className="mt-8 p-4 rounded-lg bg-orange-50 dark:bg-orange-900/20 border border-orange-100 dark:border-orange-800/30">
-                <h4 className="text-sm font-semibold text-orange-900 dark:text-slate-100 flex items-center gap-2">
+              <div className="mt-8 p-4 rounded-lg bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-100 dark:border-cyan-800/30">
+                <h4 className="text-sm font-semibold text-cyan-900 dark:text-slate-100 flex items-center gap-2">
                   <Zap className="h-4 w-4" />
                   Owner Override & Manual Actions
                 </h4>
-                <p className="text-xs text-orange-700 dark:text-orange-300 mt-1">
+                <p className="text-xs text-cyan-700 dark:text-cyan-300 mt-1">
                   These settings respect client privacy records. As an
                   administrator, you can override these preferences for critical
                   alerts or manual triggers.
                 </p>
 
-                <div className="mt-4 flex items-center justify-between p-3 rounded-md bg-white/50 dark:bg-slate-900/50 border border-orange-200 dark:border-orange-900/30">
+                <div className="mt-4 flex items-center justify-between p-3 rounded-md bg-white/50 dark:bg-slate-900/50 border border-cyan-200 dark:border-cyan-900/30">
                   <div className="space-y-0.5">
                     <Label className="text-sm font-medium">
                       Bypass Preferences
                     </Label>
-                    <p className="text-[10px] text-orange-600 dark:text-orange-400">
+                    <p className="text-[10px] text-cyan-600 dark:text-cyan-400">
                       Force send notifications even if opted out.
                     </p>
                   </div>
                   <Switch
                     checked={forceSend}
                     onCheckedChange={setForceSend}
-                    className="data-[state=checked]:bg-orange-600"
+                    className="data-[state=checked]:bg-cyan-600"
                   />
                 </div>
 
@@ -1385,7 +1385,7 @@ export function ClientDetail() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="text-xs h-9 bg-white dark:bg-slate-900 hover:bg-slate-50 border-orange-200"
+                    className="text-xs h-9 bg-white dark:bg-slate-900 hover:bg-slate-50 border-cyan-200"
                     onClick={() => handleManualSend("client_invite")}
                     disabled={isSendingManual}
                   >
@@ -1395,7 +1395,7 @@ export function ClientDetail() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="text-xs h-9 bg-white dark:bg-slate-900 hover:bg-slate-50 border-orange-200"
+                    className="text-xs h-9 bg-white dark:bg-slate-900 hover:bg-slate-50 border-cyan-200"
                     onClick={() => handleManualSend("review_hunter")}
                     disabled={isSendingManual}
                   >
@@ -1502,9 +1502,9 @@ export function ClientDetail() {
                         setInviteEmail(client?.contact_email || "");
                         setSmartStep(3);
                       }}
-                      className="cursor-pointer p-6 rounded-xl border border-slate-200 hover:border-orange-600 hover:shadow-md transition-all text-center space-y-3"
+                      className="cursor-pointer p-6 rounded-xl border border-slate-200 hover:border-cyan-600 hover:shadow-md transition-all text-center space-y-3"
                     >
-                      <div className="mx-auto w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-orange-600">
+                      <div className="mx-auto w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center text-cyan-600">
                         <LinkIcon className="w-6 h-6" />
                       </div>
                       <h4 className="font-bold">Invite Client</h4>
@@ -1527,13 +1527,13 @@ export function ClientDetail() {
                   </Button>
 
                   <div className="space-y-4">
-                    <div className="bg-orange-50 p-4 rounded-lg flex items-start gap-3">
-                      <Mail className="w-5 h-5 text-orange-600 mt-1" />
+                    <div className="bg-cyan-50 p-4 rounded-lg flex items-start gap-3">
+                      <Mail className="w-5 h-5 text-cyan-600 mt-1" />
                       <div>
-                        <h4 className="font-semibold text-orange-900">
+                        <h4 className="font-semibold text-cyan-900">
                           Send Invitation
                         </h4>
-                        <p className="text-sm text-orange-700">
+                        <p className="text-sm text-cyan-700">
                           We will email a secure link to the client to authorize{" "}
                           {smartProvider}.
                         </p>
@@ -1558,7 +1558,7 @@ export function ClientDetail() {
                           inviteEmail || client?.contact_email,
                         );
                       }}
-                      className="w-full bg-orange-600 hover:bg-orange-700 text-white"
+                      className="w-full bg-cyan-600 hover:bg-cyan-700 text-white"
                     >
                       Send Invite
                     </Button>

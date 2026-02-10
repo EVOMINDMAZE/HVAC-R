@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/useToast";
 import { useFileUpload } from "@/hooks/useFileUpload";
 import { useSubscription, useCustomerPortal } from "@/hooks/useStripe";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GlassCard, GlassCardContent } from "@/components/ui/glass-card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -328,16 +328,25 @@ export function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-slate-950 overflow-hidden relative">
+      {/* Futuristic Security Grid */}
+      <div className="absolute inset-0 z-0 bg-slate-950">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-[120px]" />
+      </div>
+
       {/* Header */}
-      <div className="bg-background shadow-sm border-b border-border">
+      <div className="relative z-10 bg-slate-900/50 backdrop-blur-md border-b border-cyan-500/20 shadow-lg">
         <div className="max-w-[1600px] mx-auto px-4 py-6">
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" onClick={() => navigate("/dashboard")}>
+            <Button variant="outline" className="border-cyan-500/30 text-cyan-300 hover:bg-cyan-950/30" onClick={() => navigate("/dashboard")}>
               ← Back to Dashboard
             </Button>
-            <h1 className="text-3xl font-bold text-foreground">
-              Account Settings
+            <h1 className="text-3xl font-bold font-mono tracking-tight">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-cyan-300 to-cyan-500">
+                SYSTEM PROFILE CONFIGURATION
+              </span>
             </h1>
           </div>
         </div>
@@ -350,34 +359,34 @@ export function Profile() {
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-4 mb-8 bg-muted border border-border">
+            <TabsList className="grid w-full grid-cols-4 mb-8 bg-slate-900/50 backdrop-blur-md border border-cyan-500/20 rounded-lg">
               <TabsTrigger
                 value="profile"
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-300 data-[state=active]:border-cyan-500/50 border border-transparent font-mono tracking-wider"
               >
                 Profile
               </TabsTrigger>
               <TabsTrigger
                 value="security"
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-300 data-[state=active]:border-cyan-500/50 border border-transparent font-mono tracking-wider"
               >
                 Security
               </TabsTrigger>
               <TabsTrigger
                 value="billing"
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-300 data-[state=active]:border-cyan-500/50 border border-transparent font-mono tracking-wider"
               >
                 Billing
               </TabsTrigger>
               <TabsTrigger
                 value="preferences"
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-300 data-[state=active]:border-cyan-500/50 border border-transparent font-mono tracking-wider"
               >
                 Preferences
               </TabsTrigger>
               <TabsTrigger
                 value="company"
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                className="data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-300 data-[state=active]:border-cyan-500/50 border border-transparent font-mono tracking-wider"
               >
                 Company
               </TabsTrigger>
@@ -385,11 +394,16 @@ export function Profile() {
 
             {/* Profile Tab */}
             <TabsContent value="profile" className="space-y-6">
-              <Card className="bg-card shadow-lg border-border">
-                <CardHeader className="bg-gradient-to-r from-orange-600 to-orange-700 dark:from-orange-900 dark:to-orange-800 text-white">
-                  <CardTitle>Profile Information</CardTitle>
-                </CardHeader>
-                <CardContent className="p-6">
+              <GlassCard variant="command" className="rounded-xl p-1 border border-cyan-500/20" glow={true}>
+                <div className="p-6 border-b border-cyan-500/20">
+                  <h2 className="text-2xl font-bold font-mono tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-cyan-300 to-cyan-500">
+                    Profile Information
+                  </h2>
+                  <p className="text-cyan-300/80 text-sm font-mono mt-1">
+                    Configure your personal details and account settings
+                  </p>
+                </div>
+                <GlassCardContent className="p-6">
                   {/* Avatar Section */}
                   <div className="flex items-center space-x-6 mb-8">
                     <div className="relative">
@@ -398,7 +412,7 @@ export function Profile() {
                           src={user.avatar}
                           alt={`${user.firstName} ${user.lastName}`}
                         />
-                        <AvatarFallback className="text-xl bg-orange-100 text-orange-600 dark:bg-orange-900 dark:text-orange-300">
+                        <AvatarFallback className="text-xl bg-cyan-950 text-cyan-300">
                           {user.firstName.charAt(0)}
                           {user.lastName.charAt(0)}
                         </AvatarFallback>
@@ -431,8 +445,8 @@ export function Profile() {
                       <h3 className="text-xl font-semibold text-foreground">
                         {user.firstName} {user.lastName}
                       </h3>
-                      <p className="text-muted-foreground">{user.role}</p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-cyan-300/80">{user.role}</p>
+                      <p className="text-sm text-cyan-300/80">
                         Member since{" "}
                         {new Date(user.joinedDate).toLocaleDateString()}
                       </p>
@@ -442,7 +456,7 @@ export function Profile() {
                           size="sm"
                           onClick={handleAvatarRemove}
                           disabled={uploading}
-                          className="mt-2 text-destructive border-destructive/20 hover:bg-destructive/10"
+                          className="mt-2 text-red-400 border-red-500/30 hover:bg-red-950/30 font-mono"
                         >
                           Remove Photo
                         </Button>
@@ -462,7 +476,7 @@ export function Profile() {
                           onChange={(e) =>
                             handleInputChange("firstName", e.target.value)
                           }
-                          className="pl-10 border-input focus:border-orange-500"
+                          className="pl-10 border border-cyan-500/30 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-500/50 focus:border-cyan-500"
                         />
                       </div>
                     </div>
@@ -475,7 +489,7 @@ export function Profile() {
                         onChange={(e) =>
                           handleInputChange("lastName", e.target.value)
                         }
-                        className="border-input focus:border-orange-500"
+                        className="border border-cyan-500/30 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-500/50 font-mono text-cyan-100 placeholder:text-cyan-500/50"
                       />
                     </div>
 
@@ -490,7 +504,7 @@ export function Profile() {
                           onChange={(e) =>
                             handleInputChange("email", e.target.value)
                           }
-                          className="pl-10 border-input focus:border-orange-500"
+                          className="pl-10 border border-cyan-500/30 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-500/50 font-mono text-cyan-100 placeholder:text-cyan-500/50"
                         />
                       </div>
                     </div>
@@ -505,7 +519,7 @@ export function Profile() {
                           onChange={(e) =>
                             handleInputChange("phone", e.target.value)
                           }
-                          className="pl-10 border-input focus:border-orange-500"
+                          className="pl-10 border border-cyan-500/30 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-500/50 font-mono text-cyan-100 placeholder:text-cyan-500/50"
                         />
                       </div>
                     </div>
@@ -520,7 +534,7 @@ export function Profile() {
                           onChange={(e) =>
                             handleInputChange("company", e.target.value)
                           }
-                          className="pl-10 border-input focus:border-orange-500"
+                          className="pl-10 border border-cyan-500/30 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-500/50 font-mono text-cyan-100 placeholder:text-cyan-500/50"
                         />
                       </div>
                     </div>
@@ -535,36 +549,41 @@ export function Profile() {
                           onChange={(e) =>
                             handleInputChange("location", e.target.value)
                           }
-                          className="pl-10 border-input focus:border-orange-500"
+                          className="pl-10 border border-cyan-500/30 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-500/50 font-mono text-cyan-100 placeholder:text-cyan-500/50"
                         />
                       </div>
                     </div>
                   </div>
 
                   <div className="mt-8 flex justify-end space-x-4">
-                    <Button variant="outline">Cancel</Button>
+                    <Button variant="outline" className="border-cyan-500/30 text-cyan-300 hover:border-cyan-400 hover:bg-cyan-950/30 font-mono">Cancel</Button>
                     <Button
                       onClick={handleSave}
+                      variant="neonHighlight"
+                      size="lg"
+                      className="font-mono tracking-wider"
                       disabled={loading}
-                      className="bg-primary hover:bg-primary/90 text-primary-foreground"
                     >
                       {loading ? "Saving..." : "Save Changes"}
                     </Button>
                   </div>
-                </CardContent>
-              </Card>
+                </GlassCardContent>
+              </GlassCard>
             </TabsContent>
 
             {/* Security Tab */}
             <TabsContent value="security" className="space-y-6">
-              <Card className="bg-card shadow-lg border-border">
-                <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-900 dark:to-emerald-900 text-white">
-                  <CardTitle className="flex items-center">
-                    <Shield className="h-5 w-5 mr-2" />
+              <GlassCard variant="command" className="rounded-xl p-1 border border-cyan-500/20" glow={true}>
+                <div className="p-6 border-b border-cyan-500/20">
+                  <h2 className="text-2xl font-bold font-mono tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-cyan-300 to-cyan-500">
+                    <Shield className="h-5 w-5 mr-2 inline-block" />
                     Security Settings
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-6 space-y-6">
+                  </h2>
+                  <p className="text-cyan-300/80 text-sm font-mono mt-1">
+                    Configure authentication and access controls
+                  </p>
+                </div>
+                <GlassCardContent className="p-6 space-y-6">
                   <form onSubmit={handlePasswordChange} className="space-y-4">
                     <h3 className="text-lg font-semibold">Change Password</h3>
                     <div className="grid gap-4">
@@ -582,7 +601,7 @@ export function Profile() {
                               currentPassword: e.target.value,
                             }))
                           }
-                          className="border-input focus:border-orange-500"
+                          className="border border-cyan-500/30 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-500/50 font-mono text-cyan-100 placeholder:text-cyan-500/50"
                           required
                         />
                       </div>
@@ -598,7 +617,7 @@ export function Profile() {
                               newPassword: e.target.value,
                             }))
                           }
-                          className="border-input focus:border-orange-500"
+                          className="border border-cyan-500/30 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-500/50 font-mono text-cyan-100 placeholder:text-cyan-500/50"
                           minLength={6}
                           required
                         />
@@ -617,7 +636,7 @@ export function Profile() {
                               confirmNewPassword: e.target.value,
                             }))
                           }
-                          className="border-input focus:border-orange-500"
+                          className="border border-cyan-500/30 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-500/50 font-mono text-cyan-100 placeholder:text-cyan-500/50"
                           minLength={6}
                           required
                         />
@@ -625,7 +644,9 @@ export function Profile() {
                     </div>
                     <Button
                       type="submit"
-                      className="bg-green-600 hover:bg-green-700"
+                      variant="neonHighlight"
+                      size="lg"
+                      className="font-mono tracking-wider"
                       disabled={passwordLoading}
                     >
                       {passwordLoading ? "Updating..." : "Update Password"}
@@ -640,36 +661,39 @@ export function Profile() {
                       Add an extra layer of security to your account by enabling
                       two-factor authentication.
                     </p>
-                    <Button variant="outline">
+                    <Button variant="outline" className="border-cyan-500/30 text-cyan-300 hover:border-cyan-400 hover:bg-cyan-950/30 font-mono">
                       <Key className="h-4 w-4 mr-2" />
                       Enable 2FA
                     </Button>
                   </div>
-                </CardContent>
-              </Card>
+                </GlassCardContent>
+              </GlassCard>
             </TabsContent>
 
             {/* Billing Tab */}
             <TabsContent value="billing" className="space-y-6">
-              <Card className="bg-card shadow-lg border-border">
-                <CardHeader className="bg-gradient-to-r from-slate-600 to-slate-700 dark:from-slate-800 dark:to-slate-900 text-white">
-                  <CardTitle className="flex items-center">
-                    <CreditCard className="h-5 w-5 mr-2" />
+              <GlassCard variant="command" className="rounded-xl p-1 border border-cyan-500/20" glow={true}>
+                <div className="p-6 border-b border-cyan-500/20">
+                  <h2 className="text-2xl font-bold font-mono tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-cyan-300 to-cyan-500">
+                    <CreditCard className="h-5 w-5 mr-2 inline-block" />
                     Billing & Usage
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-6">
+                  </h2>
+                  <p className="text-cyan-300/80 text-sm font-mono mt-1">
+                    Manage subscription, usage, and payment settings
+                  </p>
+                </div>
+                <GlassCardContent className="p-6">
                   {subscriptionLoading ? (
                     <div className="text-center py-8">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600 mx-auto"></div>
-                      <p className="text-muted-foreground mt-2">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500 mx-auto"></div>
+                      <p className="text-cyan-300/80 mt-2">
                         Loading subscription details...
                       </p>
                     </div>
                   ) : (
                     <div className="space-y-6">
                       {/* Current Plan */}
-                      <div className="bg-primary/5 dark:bg-primary/20 p-6 rounded-lg">
+                      <div className="bg-cyan-950/30 border border-cyan-500/20 p-6 rounded-lg">
                         <h3 className="text-lg font-semibold text-foreground mb-2">
                           Current Plan: {subscription?.plan || "Free"}
                         </h3>
@@ -693,7 +717,7 @@ export function Profile() {
                               ).toLocaleDateString()}
                             </p>
                             {subscription.subscription!.cancel_at_period_end && (
-                              <p className="text-destructive font-semibold">
+                              <p className="text-red-400 font-semibold">
                                 Subscription will cancel at the end of current
                                 period
                               </p>
@@ -712,8 +736,10 @@ export function Profile() {
                         {subscription?.subscription ? (
                           <Button
                             onClick={openCustomerPortal}
+                            variant="neonHighlight"
+                            size="lg"
+                            className="justify-start font-mono tracking-wider"
                             disabled={portalLoading}
-                            className="justify-start bg-primary hover:bg-primary/90 text-primary-foreground"
                           >
                             <CreditCard className="h-4 w-4 mr-2" />
                             {portalLoading
@@ -723,47 +749,52 @@ export function Profile() {
                         ) : (
                           <Button
                             onClick={() => navigate("/pricing")}
-                            className="justify-start bg-primary hover:bg-primary/90 text-primary-foreground"
+                            variant="neonHighlight"
+                            size="lg"
+                            className="justify-start font-mono tracking-wider"
                           >
                             <CreditCard className="h-4 w-4 mr-2" />
                             Upgrade Plan
                           </Button>
                         )}
-                        <Button variant="outline" className="justify-start">
+                        <Button variant="outline" className="justify-start border-cyan-500/30 text-cyan-300 hover:border-cyan-400 hover:bg-cyan-950/30 font-mono">
                           <Calendar className="h-4 w-4 mr-2" />
                           View Billing History
                         </Button>
                       </div>
 
                       <div className="border-t pt-6">
-                        <h4 className="font-semibold text-destructive mb-2">
+                        <h4 className="font-semibold text-red-400 mb-2">
                           Danger Zone
                         </h4>
                         <p className="text-muted-foreground mb-4">
                           Once you delete your account, there is no going back.
                           Please be certain.
                         </p>
-                        <Button variant="destructive">
+                        <Button variant="destructive" className="font-mono tracking-wider">
                           <Trash2 className="h-4 w-4 mr-2" />
                           Delete Account
                         </Button>
                       </div>
                     </div>
                   )}
-                </CardContent>
-              </Card>
+                </GlassCardContent>
+              </GlassCard>
             </TabsContent>
 
             {/* Preferences Tab */}
             <TabsContent value="preferences" className="space-y-6">
-              <Card className="bg-card shadow-lg border-border">
-                <CardHeader className="bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-900 dark:to-red-900 text-white">
-                  <CardTitle className="flex items-center">
-                    <Bell className="h-5 w-5 mr-2" />
+              <GlassCard variant="command" className="rounded-xl p-1 border border-cyan-500/20" glow={true}>
+                <div className="p-6 border-b border-cyan-500/20">
+                  <h2 className="text-2xl font-bold font-mono tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-cyan-300 to-cyan-500">
+                    <Bell className="h-5 w-5 mr-2 inline-block" />
                     Preferences
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-6 space-y-6">
+                  </h2>
+                  <p className="text-cyan-300/80 text-sm font-mono mt-1">
+                    Configure notification and system preferences
+                  </p>
+                </div>
+                <GlassCardContent className="p-6 space-y-6">
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold">Notifications</h3>
                     <div className="space-y-4">
@@ -783,7 +814,7 @@ export function Profile() {
                               },
                             }))
                           }
-                          className="rounded border-input text-primary focus:ring-ring"
+                          className="rounded border-cyan-500/30 text-cyan-400 focus:ring-cyan-500/50"
                         />
                       </div>
                       <div className="flex items-center justify-between">
@@ -802,7 +833,7 @@ export function Profile() {
                               },
                             }))
                           }
-                          className="rounded border-input text-primary focus:ring-ring"
+                          className="rounded border-cyan-500/30 text-cyan-400 focus:ring-cyan-500/50"
                         />
                       </div>
                       <div className="flex items-center justify-between">
@@ -821,7 +852,7 @@ export function Profile() {
                               },
                             }))
                           }
-                          className="rounded border-input text-primary focus:ring-ring"
+                          className="rounded border-cyan-500/30 text-cyan-400 focus:ring-cyan-500/50"
                         />
                       </div>
                       <div className="flex items-center justify-between">
@@ -838,7 +869,7 @@ export function Profile() {
                               },
                             }))
                           }
-                          className="rounded border-input text-primary focus:ring-ring"
+                          className="rounded border-cyan-500/30 text-cyan-400 focus:ring-cyan-500/50"
                         />
                       </div>
                     </div>
@@ -865,7 +896,7 @@ export function Profile() {
                             }))
                           }
                         >
-                          <SelectTrigger className="border-input focus:ring-ring">
+                          <SelectTrigger className="border border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-500/50 font-mono">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -896,7 +927,7 @@ export function Profile() {
                             }))
                           }
                         >
-                          <SelectTrigger className="border-input focus:ring-ring">
+                          <SelectTrigger className="border border-cyan-500/30 focus:border-cyan-400 focus:ring-cyan-500/50 font-mono">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -913,6 +944,7 @@ export function Profile() {
                   <div className="flex justify-end space-x-4">
                     <Button
                       variant="outline"
+                      className="border-cyan-500/30 text-cyan-300 hover:border-cyan-400 hover:bg-cyan-950/30 font-mono"
                       onClick={() => {
                         setPreferences({
                           notifications: {
@@ -931,15 +963,17 @@ export function Profile() {
                       Reset to Defaults
                     </Button>
                     <Button
-                      className="bg-orange-600 hover:bg-orange-700 text-white"
+                      variant="neonHighlight"
+                      size="lg"
+                      className="font-mono tracking-wider"
                       onClick={handlePreferencesSave}
                       disabled={preferencesLoading}
                     >
                       {preferencesLoading ? "Saving..." : "Save Preferences"}
                     </Button>
                   </div>
-                </CardContent>
-              </Card>
+                </GlassCardContent>
+              </GlassCard>
             </TabsContent>
 
             {/* Company Tab */}

@@ -31,7 +31,7 @@ export function BlogPost() {
     }
 
     return (
-        <div className="min-h-screen pt-24 pb-20 bg-background">
+        <div className="min-h-screen pt-24 pb-20 bg-slate-950">
             {/* Hero Section */}
             <div className="relative w-full h-[400px] md:h-[500px] mb-12">
                 <div className="absolute inset-0 bg-black/50 z-10" />

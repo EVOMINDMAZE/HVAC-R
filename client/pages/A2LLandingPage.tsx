@@ -18,13 +18,13 @@ export function A2LLandingPage() {
       <section className="relative pt-20 pb-32 overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 text-sm font-medium mb-6">
               <Zap className="w-4 h-4" />
               <span>Updated for IEC 60335-2-40 (2024 Standards)</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-bold text-slate-900 dark:text-white mb-6 leading-tight">
               A2L Refrigerant <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-600">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-red-600">
                 Charge Limit Calculator
               </span>
             </h1>
@@ -37,7 +37,7 @@ export function A2LLandingPage() {
           <div className="max-w-5xl mx-auto">
             {/* The Calculator Widget - Highlighted */}
             <div className="relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-orange-500 to-rose-500 rounded-2xl blur opacity-20 dark:opacity-40"></div>
+              <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-rose-500 rounded-2xl blur opacity-20 dark:opacity-40"></div>
               <div className="relative">
                 <A2LCalculator saveCalculation={() => {}} />
               </div>
@@ -47,8 +47,8 @@ export function A2LLandingPage() {
 
         {/* Background Decorative */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-0 pointer-events-none">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-orange-200/20 blur-3xl"></div>
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-orange-200/20 blur-3xl"></div>
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-cyan-200/20 blur-3xl"></div>
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-cyan-200/20 blur-3xl"></div>
         </div>
       </section>
 

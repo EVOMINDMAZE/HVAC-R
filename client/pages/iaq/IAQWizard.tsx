@@ -199,11 +199,11 @@ export default function IAQWizard() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center p-4">
       {/* Background elements */}
-      <div className="absolute top-0 inset-x-0 h-64 bg-gradient-to-b from-orange-600/10 to-transparent pointer-events-none" />
+      <div className="absolute top-0 inset-x-0 h-64 bg-gradient-to-b from-cyan-600/10 to-transparent pointer-events-none" />
 
       <div className="w-full max-w-2xl z-10">
         <div className="text-center mb-8">
-          <div className="inline-flex p-3 bg-orange-100 dark:bg-orange-900/30 rounded-2xl mb-4 text-orange-600 dark:text-orange-400">
+          <div className="inline-flex p-3 bg-cyan-100 dark:bg-cyan-900/30 rounded-2xl mb-4 text-cyan-600 dark:text-cyan-400">
             <Wind className="h-8 w-8" />
           </div>
           <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">
@@ -250,7 +250,7 @@ export default function IAQWizard() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-xl border border-orange-100 dark:border-orange-800 text-sm text-orange-700 dark:text-orange-300 flex gap-3">
+                  <div className="bg-cyan-50 dark:bg-cyan-900/20 p-4 rounded-xl border border-cyan-100 dark:border-cyan-800 text-sm text-cyan-700 dark:text-cyan-300 flex gap-3">
                     <Info className="h-5 w-5 shrink-0" />
                     <p>
                       This audit will generate a professional PDF report that
@@ -284,7 +284,7 @@ export default function IAQWizard() {
                     Environmental Entry
                     <Badge
                       variant="outline"
-                      className="text-orange-600 border-orange-200 uppercase"
+                      className="text-cyan-600 border-cyan-200 uppercase"
                     >
                       Step 2/4
                     </Badge>
@@ -298,7 +298,7 @@ export default function IAQWizard() {
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
                       <Label className="flex items-center gap-2">
-                        <Thermometer className="h-4 w-4 text-orange-500" />{" "}
+                        <Thermometer className="h-4 w-4 text-cyan-500" />{" "}
                         Temperature (°F)
                       </Label>
                       <span className="text-2xl font-black text-slate-800 dark:text-slate-100">
@@ -320,7 +320,7 @@ export default function IAQWizard() {
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
                       <Label className="flex items-center gap-2">
-                        <Droplets className="h-4 w-4 text-orange-500" />{" "}
+                        <Droplets className="h-4 w-4 text-cyan-500" />{" "}
                         Humidity (%)
                       </Label>
                       <span className="text-2xl font-black text-slate-800 dark:text-slate-100">
@@ -421,7 +421,7 @@ export default function IAQWizard() {
                       id: "filter_dirty",
                       label: "Clogged / Dirty Filter",
                       icon: (
-                        <AlertTriangle className="text-orange-500 h-4 w-4" />
+                        <AlertTriangle className="text-cyan-500 h-4 w-4" />
                       ),
                     },
                     {
@@ -432,7 +432,7 @@ export default function IAQWizard() {
                     {
                       id: "pet_odors",
                       label: "Noticeable Pet/Smoke Odors",
-                      icon: <Meh className="text-orange-400 h-4 w-4" />,
+                      icon: <Meh className="text-cyan-400 h-4 w-4" />,
                     },
                     {
                       id: "coil_rust",
@@ -454,7 +454,7 @@ export default function IAQWizard() {
                           },
                         })
                       }
-                      className={`p-4 rounded-xl border-2 transition-all cursor-pointer flex justify-between items-center ${formData.checklist[item.id as keyof typeof formData.checklist] ? "bg-red-50 border-red-500 dark:bg-red-900/10" : "bg-white border-slate-100 hover:border-orange-300 dark:bg-slate-950 dark:border-slate-800"}`}
+                      className={`p-4 rounded-xl border-2 transition-all cursor-pointer flex justify-between items-center ${formData.checklist[item.id as keyof typeof formData.checklist] ? "bg-red-50 border-red-500 dark:bg-red-900/10" : "bg-white border-slate-100 hover:border-cyan-300 dark:bg-slate-950 dark:border-slate-800"}`}
                     >
                       <div className="flex items-center gap-3">
                         {item.icon}
@@ -477,7 +477,7 @@ export default function IAQWizard() {
                     <ChevronLeft className="mr-2 h-4 w-4" /> Back
                   </Button>
                   <Button
-                    className="flex-1 h-12 text-lg font-bold bg-orange-600 hover:bg-orange-700"
+                    className="flex-1 h-12 text-lg font-bold bg-cyan-600 hover:bg-cyan-700"
                     onClick={nextStep}
                   >
                     View Scoring <ShieldCheck className="ml-2 h-5 w-5" />
@@ -493,8 +493,8 @@ export default function IAQWizard() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
             >
-              <Card className="border-none shadow-2xl ring-2 ring-orange-500/20 bg-white dark:bg-slate-950 overflow-hidden">
-                <div className="bg-gradient-to-r from-orange-600 to-indigo-700 p-8 text-white text-center">
+              <Card className="border-none shadow-2xl ring-2 ring-cyan-500/20 bg-white dark:bg-slate-950 overflow-hidden">
+                <div className="bg-gradient-to-r from-cyan-600 to-indigo-700 p-8 text-white text-center">
                   <h3 className="text-lg font-bold opacity-80 uppercase tracking-widest mb-2">
                     Final Indoor Health Score
                   </h3>
@@ -522,12 +522,12 @@ export default function IAQWizard() {
                       {
                         label: "Comfort",
                         score: scores.comfort,
-                        color: "bg-orange-500",
+                        color: "bg-cyan-500",
                       },
                       {
                         label: "Unit Health",
                         score: scores.unit_health,
-                        color: "bg-orange-500",
+                        color: "bg-cyan-500",
                       },
                     ].map((stat, i) => (
                       <div

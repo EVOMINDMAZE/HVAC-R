@@ -1,3 +1,9 @@
+# Robots.txt for ThermoNeural
+# Generated: 2026-02-09
+
+Sitemap: https://thermoneural.com/sitemap.xml
+
+# Allow all major search engine bots
 User-agent: Googlebot
 Allow: /
 
@@ -10,5 +16,16 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
+# Allow all other bots
 User-agent: *
 Allow: /
+
+# Disallow crawling of sensitive areas
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /profile/
+Disallow: /settings/
+Disallow: /api/
+Disallow: /*?*  # Avoid duplicate content from query parameters
+
+# Crawl-delay: 1  # Optional: rate limiting for aggressive bots

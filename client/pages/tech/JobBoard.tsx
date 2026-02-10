@@ -83,7 +83,7 @@ export default function JobBoard() {
     <PageContainer variant="standard" className="pb-24">
       <div className="flex flex-col gap-1 mb-6">
         <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-          <Briefcase className="h-8 w-8 text-orange-600" />
+          <Briefcase className="h-8 w-8 text-cyan-600" />
           My Jobs
         </h1>
         <p className="text-slate-500 dark:text-slate-400 font-medium">
@@ -95,7 +95,7 @@ export default function JobBoard() {
       <div className="space-y-4">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 opacity-50">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-orange-600 mb-4"></div>
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-cyan-600 mb-4"></div>
             <p className="text-sm font-medium">Loading your schedule...</p>
           </div>
         ) : sortedJobs.length === 0 ? (
@@ -118,12 +118,12 @@ export default function JobBoard() {
             <div
               key={job.id}
               onClick={() => navigate(`/tech/jobs/${job.id}`)}
-              className="group bg-white dark:bg-slate-950 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md hover:border-orange-500/30 active:scale-[0.99] transition-all cursor-pointer relative overflow-hidden"
+              className="group bg-white dark:bg-slate-950 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md hover:border-cyan-500/30 active:scale-[0.99] transition-all cursor-pointer relative overflow-hidden"
             >
               {/* Status Stripe */}
               <div
                 className={`absolute left-0 top-0 bottom-0 w-1.5 
-                                ${job.status === "en_route" ? "bg-orange-500" : ""}
+                                ${job.status === "en_route" ? "bg-cyan-500" : ""}
                                 ${job.status === "on_site" ? "bg-amber-500" : ""}
                                 ${job.status === "pending" || job.status === "assigned" ? "bg-slate-300 dark:bg-slate-700" : ""}
                             `}
@@ -137,7 +137,7 @@ export default function JobBoard() {
                       : "secondary"
                   }
                   className={`
-                                    ${job.status === "en_route" ? "bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-900/50 dark:text-orange-300" : ""}
+                                    ${job.status === "en_route" ? "bg-cyan-100 text-cyan-700 hover:bg-cyan-200 dark:bg-cyan-900/50 dark:text-cyan-300" : ""}
                                     ${job.status === "on_site" ? "bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-900/50 dark:text-amber-300" : ""}
                                     capitalize
                                 `}
@@ -154,7 +154,7 @@ export default function JobBoard() {
                   {job.client?.name || job.client_name || "Unknown Client"}
                 </h3>
                 {job.title && (
-                  <p className="text-sm font-medium text-orange-600 dark:text-orange-400 mb-3">
+                  <p className="text-sm font-medium text-cyan-600 dark:text-cyan-400 mb-3">
                     {job.title}
                   </p>
                 )}
@@ -168,7 +168,7 @@ export default function JobBoard() {
                   </div>
                   {job.asset && (
                     <div className="flex items-center gap-2.5">
-                      <AlertCircle className="w-4 h-4 text-orange-400 shrink-0" />
+                      <AlertCircle className="w-4 h-4 text-cyan-400 shrink-0" />
                       <span>
                         {job.asset.name}{" "}
                         <span className="text-xs opacity-70">
@@ -189,7 +189,7 @@ export default function JobBoard() {
                   </div>
                 </div>
 
-                <div className="mt-5 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-orange-600 dark:text-orange-400 font-bold text-sm group-hover:translate-x-1 transition-transform origin-left">
+                <div className="mt-5 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-cyan-600 dark:text-cyan-400 font-bold text-sm group-hover:translate-x-1 transition-transform origin-left">
                   <span>View Details</span>
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </div>

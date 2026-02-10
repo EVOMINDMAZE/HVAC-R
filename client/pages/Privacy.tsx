@@ -6,22 +6,22 @@ import { Badge } from "@/components/ui/badge";
 
 export function Privacy() {
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-orange-500/30">
+    <div className="min-h-screen bg-slate-950 text-foreground selection:bg-cyan-500/30">
       <Header variant="landing" />
 
       {/* Background Elements */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-orange-500/5 blur-[100px]" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-cyan-500/5 blur-[100px]" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-purple-500/5 blur-[100px]" />
       </div>
 
       <main className="relative z-10 pt-24 pb-20 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <Badge variant="outline" className="mb-4">
+            <Badge variant="outline" className="mb-4 border-cyan-200 bg-cyan-50 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300 dark:border-cyan-800 backdrop-blur-sm">
               Legal
             </Badge>
-            <h1 className="text-4xl font-bold tracking-tight mb-4">
+            <h1 className="text-4xl font-bold font-mono tracking-tight mb-4">
               Privacy Policy
             </h1>
             <p className="text-muted-foreground">Last updated: February 2026</p>
@@ -31,7 +31,7 @@ export function Privacy() {
             <CardContent className="p-8 md:p-12 space-y-8">
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">
-                  <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
+                  <span className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
                     1
                   </span>
                   Introduction
@@ -46,7 +46,7 @@ export function Privacy() {
 
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">
-                  <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
+                  <span className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
                     2
                   </span>
                   Information We Collect
@@ -90,7 +90,7 @@ export function Privacy() {
 
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">
-                  <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
+                  <span className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
                     3
                   </span>
                   How We Use Your Information
@@ -111,7 +111,7 @@ export function Privacy() {
 
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">
-                  <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
+                  <span className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
                     4
                   </span>
                   Information Sharing
@@ -135,7 +135,7 @@ export function Privacy() {
 
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">
-                  <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
+                  <span className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
                     5
                   </span>
                   Data Security
@@ -147,7 +147,7 @@ export function Privacy() {
 
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">
-                  <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
+                  <span className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
                     6
                   </span>
                   Cookies and Tracking
@@ -159,7 +159,7 @@ export function Privacy() {
 
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">
-                  <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
+                  <span className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
                     7
                   </span>
                   Your Rights (GDPR/CCPA)
@@ -176,7 +176,7 @@ export function Privacy() {
                   <li><strong>Portability</strong> – Receive your data in a structured, machine‑readable format</li>
                   <li><strong>Withdraw consent</strong> – Revoke previously given consent at any time</li>
                 </ul>
-                <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="mt-6 p-4 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg border border-cyan-200 dark:border-cyan-800">
                   <h3 className="font-semibold text-foreground mb-2">Exercising Your Rights</h3>
                   <p className="text-muted-foreground mb-3">
                     To submit a Data Subject Request (DSR), please email us at support@thermoneural.com with the subject line "Data Subject Request". We will respond within 30 days as required by law.
@@ -192,7 +192,7 @@ export function Privacy() {
 
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">
-                  <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
+                  <span className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
                     8
                   </span>
                   Data Retention
@@ -210,7 +210,7 @@ export function Privacy() {
 
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">
-                  <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
+                  <span className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
                     9
                   </span>
                   International Transfers
@@ -222,7 +222,7 @@ export function Privacy() {
 
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">
-                  <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
+                  <span className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
                     10
                   </span>
                   Children's Privacy
@@ -234,7 +234,7 @@ export function Privacy() {
 
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">
-                  <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
+                  <span className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
                     11
                   </span>
                   Changes to This Policy
@@ -246,7 +246,7 @@ export function Privacy() {
 
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">
-                  <span className="bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
+                  <span className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
                     12
                   </span>
                   Contact Us

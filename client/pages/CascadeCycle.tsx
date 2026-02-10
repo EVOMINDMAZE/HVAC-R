@@ -611,12 +611,12 @@ export function CascadeCycleContent() {
     formData.cascadeHeatExchangerDT > RECOMMENDED_GUIDANCE.cascadeDeltaT.max;
 
   return (
-    <div className="min-h-screen bg-background text-foreground animate-in fade-in duration-500 pb-20">
+    <div className="min-h-screen bg-slate-950 text-foreground animate-in fade-in duration-500 pb-20 selection:bg-cyan-500/30">
       <div className="container mx-auto px-4 py-8 max-w-[1600px]">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-slate-600 to-orange-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold font-mono tracking-tight bg-gradient-to-r from-cyan-600 to-slate-600 bg-clip-text text-transparent">
               Enhanced Cascade System
             </h1>
             <p className="text-muted-foreground mt-1 text-lg">
@@ -775,8 +775,8 @@ export function CascadeCycleContent() {
                 </div>
 
                 {/* HIGH STAGE */}
-                <div className="space-y-4 border rounded-lg p-4 bg-orange-50/20 dark:bg-orange-900/10 border-orange-100 dark:border-orange-800/30">
-                  <div className="flex items-center gap-2 text-orange-700 dark:text-orange-400 font-semibold mb-2">
+                <div className="space-y-4 border rounded-lg p-4 bg-cyan-50/20 dark:bg-cyan-900/10 border-cyan-100 dark:border-cyan-800/30">
+                  <div className="flex items-center gap-2 text-cyan-700 dark:text-cyan-400 font-semibold mb-2">
                     <Zap className="w-4 h-4" /> High Temperature Cycle
                   </div>
 
@@ -866,7 +866,7 @@ export function CascadeCycleContent() {
 
                 <div className="pt-2 gap-2 flex flex-col">
                   <Button
-                    className="w-full h-12 text-lg font-semibold shadow-lg shadow-slate-500/10 hover:shadow-slate-500/20 bg-gradient-to-r from-slate-600 to-orange-600 hover:from-slate-700 hover:to-orange-700"
+                    className="w-full h-12 text-lg font-semibold shadow-lg shadow-slate-500/10 hover:shadow-slate-500/20 bg-gradient-to-r from-cyan-600 to-slate-600 hover:from-cyan-700 hover:to-slate-700"
                     onClick={handleCalculate}
                     disabled={
                       loading ||
@@ -909,10 +909,10 @@ export function CascadeCycleContent() {
           <div className="xl:col-span-8 space-y-6">
             {!result ? (
               <div className="min-h-[600px] flex flex-col items-center justify-center border-4 border-dashed rounded-xl bg-muted/20 text-muted-foreground p-8 text-center animate-in fade-in zoom-in-95 duration-500">
-                <div className="p-6 bg-background rounded-full shadow-lg mb-6">
+                <div className="p-6 bg-slate-950 rounded-full shadow-lg mb-6">
                   <Activity className="h-12 w-12 text-slate-500" />
                 </div>
-                <h3 className="text-2xl font-bold mb-2">Ready to Simulate</h3>
+                <h3 className="text-2xl font-bold font-mono mb-2">Ready to Simulate</h3>
                 <p className="max-w-md">
                   Configure the Low and High temperature cycles to analyze the
                   performance of the complete cascade refrigeration system.
@@ -932,7 +932,7 @@ export function CascadeCycleContent() {
                       </span>
                     </CardContent>
                   </Card>
-                  <Card className="bg-gradient-to-br from-slate-50 to-orange-100 dark:from-slate-950/30 dark:to-orange-900/10 border-slate-200 dark:border-slate-800">
+                  <Card className="bg-gradient-to-br from-slate-50 to-cyan-100 dark:from-slate-950/30 dark:to-cyan-900/10 border-slate-200 dark:border-slate-800">
                     <CardContent className="p-6 flex flex-col items-center justify-center text-center">
                       <span className="text-sm font-medium text-slate-700 dark:text-slate-400 uppercase tracking-wider">
                         Efficiency
@@ -1051,15 +1051,15 @@ export function CascadeCycleContent() {
                       </Card>
 
                       {/* HT Result Card */}
-                      <Card className="border-l-4 border-l-orange-500 overflow-hidden dark:bg-slate-900/40">
-                        <div className="bg-orange-500/10 p-4 border-b border-orange-100 dark:border-orange-800/20 flex justify-between items-center">
-                          <h3 className="font-bold text-orange-700 dark:text-orange-400 flex items-center gap-2">
+                      <Card className="border-l-4 border-l-cyan-500 overflow-hidden dark:bg-slate-900/40">
+                        <div className="bg-cyan-500/10 p-4 border-b border-cyan-100 dark:border-cyan-800/20 flex justify-between items-center">
+                          <h3 className="font-bold text-cyan-700 dark:text-cyan-400 flex items-center gap-2">
                             <Zap className="w-4 h-4" /> High Temp Cycle (
                             {result.ht_cycle_performance?.refrigerant})
                           </h3>
                           <Badge
                             variant="outline"
-                            className="border-orange-200 text-orange-700"
+                            className="border-cyan-200 text-cyan-700"
                           >
                             Evap: {formData.htCycle.evaporatorTemp}°C
                           </Badge>
@@ -1146,7 +1146,7 @@ export function CascadeCycleContent() {
                             onClick={() => setSelectedVisualizationCycle("ht")}
                             className={
                               selectedVisualizationCycle === "ht"
-                                ? "bg-orange-600 hover:bg-orange-700"
+                                ? "bg-cyan-600 hover:bg-cyan-700"
                                 : ""
                             }
                           >

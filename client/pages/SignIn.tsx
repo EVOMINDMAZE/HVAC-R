@@ -3,13 +3,8 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { GlassCard, GlassCardContent } from "@/components/ui/glass-card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Fingerprint } from "lucide-react";
@@ -197,11 +192,12 @@ export function SignIn() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4 selection:bg-orange-500/30 overflow-hidden relative">
-      {/* Dynamic Background */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-orange-500/10 rounded-full blur-[100px] animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-amber-500/10 rounded-full blur-[100px] animate-pulse delay-1000" />
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 overflow-hidden relative">
+      {/* Futuristic Security Grid */}
+      <div className="absolute inset-0 z-0 bg-background">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--foreground)/0.02)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground)/0.02)_1px,transparent_1px)] bg-[size:40px_40px]" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-highlight/5 rounded-full blur-[120px]" />
       </div>
 
       <motion.div
@@ -218,24 +214,34 @@ export function SignIn() {
             <img
               src="/logo-stacked.png"
               alt="ThermoNeural"
-              className="h-20 mx-auto w-auto object-contain dark:invert mix-blend-multiply dark:mix-blend-screen"
+              className="h-20 mx-auto w-auto object-contain mix-blend-multiply dark:mix-blend-screen"
             />
           </Link>
         </div>
 
-        <Card className="bg-card/60 backdrop-blur-xl border-border shadow-2xl overflow-hidden">
-          <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-slate-600 via-orange-500 to-amber-500" />
+        <GlassCard variant="command" className="rounded-2xl p-1 border border-primary/20 max-w-md w-full" glow={true}>
 
-          <CardHeader className="text-center pb-2 pt-8">
-            <CardTitle className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/80">
-              Welcome Back
-            </CardTitle>
-            <CardDescription className="text-muted-foreground/80">
-              Sign in to access your HVAC&R tools
-            </CardDescription>
-          </CardHeader>
+          <div className="p-8 border-b border-primary/20">
+            <div className="flex items-center justify-center mb-4">
+              <Badge
+                variant="outline"
+                className="px-4 py-1.5 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px] sm:text-xs"
+              >
+                <Lock className="w-3 h-3 mr-2" />
+                SECURE ACCESS PROTOCOL
+              </Badge>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-3 tracking-tight font-mono">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/80 to-primary">
+                SYSTEM AUTHENTICATION
+              </span>
+            </h2>
+            <p className="text-center text-muted-foreground text-sm">
+              Verify identity to access thermal analysis command interface.
+            </p>
+          </div>
 
-          <CardContent className="space-y-6 p-8">
+          <GlassCardContent className="p-8 space-y-8">
             {/* Face ID / Touch ID Button (Native Only, when available) */}
             {isNative &&
               biometricStatus?.isAvailable &&
@@ -244,7 +250,9 @@ export function SignIn() {
                   <Button
                     type="button"
                     onClick={handleBiometricSignIn}
-                    className="w-full h-12 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:scale-[1.02] flex items-center justify-center gap-2"
+                    variant="neonSuccess"
+                    size="lg"
+                    className="w-full font-mono tracking-wider"
                     disabled={biometricLoading || loading}
                   >
                     <Fingerprint className="h-5 w-5" />
@@ -252,10 +260,10 @@ export function SignIn() {
                   </Button>
                   <div className="relative my-4">
                     <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t border-border" />
+                      <span className="w-full border-t border-primary/20" />
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-card px-2 text-muted-foreground font-medium tracking-wider">
+                      <span className="bg-background px-2 text-muted-foreground font-mono tracking-widest">
                         Or
                       </span>
                     </div>
@@ -264,16 +272,16 @@ export function SignIn() {
               )}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email" className="font-mono text-xs tracking-widest uppercase text-muted-foreground">Email Address</Label>
                 <div className="relative group">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground group-focus-within:text-orange-500 transition-colors" />
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                   <Input
                     id="email"
                     type="email"
                     placeholder="name@example.com"
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
-                    className="pl-10 h-11 bg-background/50 border-input focus:border-orange-500 transition-all"
+                    className="pl-10 h-11 bg-background/50 border border-primary/30 focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all font-mono text-foreground placeholder:text-muted-foreground"
                     required
                   />
                 </div>
@@ -281,16 +289,16 @@ export function SignIn() {
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password" className="font-mono text-xs tracking-widest uppercase text-muted-foreground">Password</Label>
                   <Link
                     to="/forgot-password"
-                    className="text-xs text-orange-500 hover:text-orange-600 dark:text-orange-400 hover:underline"
+                    className="text-xs text-primary hover:text-primary/80 underline underline-offset-2 font-mono"
                   >
                     Forgot password?
                   </Link>
                 </div>
                 <div className="relative group">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground group-focus-within:text-orange-500 transition-colors" />
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
@@ -299,13 +307,13 @@ export function SignIn() {
                     onChange={(e) =>
                       handleInputChange("password", e.target.value)
                     }
-                    className="pl-10 pr-10 h-11 bg-background/50 border-input focus:border-orange-500 transition-all"
+                    className="pl-10 pr-10 h-11 bg-background/50 border border-primary/30 focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all font-mono text-foreground placeholder:text-muted-foreground"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3.5 text-muted-foreground hover:text-foreground transition-colors"
+                    className="absolute right-3 top-3.5 text-muted-foreground hover:text-primary transition-colors"
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -320,7 +328,7 @@ export function SignIn() {
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
-                  className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm"
+                  className="p-3 rounded-lg bg-destructive/10 border border-destructive/30 text-destructive text-sm font-mono"
                 >
                   {error}
                 </motion.div>
@@ -328,7 +336,9 @@ export function SignIn() {
 
               <Button
                 type="submit"
-                className="w-full h-11 bg-gradient-to-r from-slate-700 to-orange-600 hover:from-slate-800 hover:to-orange-700 text-white shadow-lg shadow-orange-500/20 transition-all duration-300 hover:scale-[1.02]"
+                variant="neonHighlight"
+                size="lg"
+                className="w-full font-mono tracking-wider"
                 disabled={loading}
               >
                 {loading ? "Signing in..." : "Sign In"}{" "}
@@ -338,10 +348,10 @@ export function SignIn() {
 
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-border" />
+                <span className="w-full border-t border-primary/20" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground font-medium tracking-wider">
+                <span className="bg-background px-2 text-muted-foreground font-mono tracking-widest">
                   Or continue with
                 </span>
               </div>
@@ -350,7 +360,7 @@ export function SignIn() {
             <Button
               onClick={handleGoogleSignIn}
               variant="outline"
-              className="w-full h-11 border-input hover:bg-muted font-medium transition-colors"
+              className="w-full h-11 border-primary/30 hover:border-primary hover:bg-primary/10 font-mono tracking-wider transition-colors"
               disabled={loading}
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
@@ -380,13 +390,13 @@ export function SignIn() {
               </span>
               <Link
                 to="/signup"
-                className="text-orange-600 dark:text-orange-400 font-semibold hover:underline hover:text-orange-700 dark:hover:text-orange-300 transition-colors"
+                className="text-primary font-semibold hover:underline hover:text-primary/80 transition-colors font-mono"
               >
                 Create account
               </Link>
             </div>
-          </CardContent>
-        </Card>
+          </GlassCardContent>
+        </GlassCard>
       </motion.div>
     </div>
   );

@@ -80,17 +80,17 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
 
     return (
       <div
-        className={`bg-background/90 backdrop-blur-sm shadow-sm transition-colors z-50 relative ${isNative ? "pt-safe-hard" : ""}`}
+        className={`bg-background/80 backdrop-blur-md shadow-lg border-b border-border transition-colors z-50 relative ${isNative ? "pt-safe-hard" : ""}`}
         style={{
           paddingTop: isNative ? "60px" : undefined,
         }}
       >
-        <div className="max-w-[1600px] mx-auto px-4 py-4">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div
             className={`${isNative ? "flex flex-col gap-4" : "flex items-center justify-between gap-4"}`}
           >
             <div
-              className={`${isNative ? "w-full flex justify-center border-b border-border/10 pb-4" : "flex items-center gap-4 min-w-0"}`}
+              className={`${isNative ? "w-full flex justify-center border-b border-cyan-500/10 pb-4" : "flex items-center gap-4 min-w-0"}`}
             >
               {!isNative && showBackButton && (
                 <Button
@@ -108,11 +108,14 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 to="/dashboard"
                 className="flex items-center gap-3 hover:opacity-90 transition-opacity py-1 shrink-0"
               >
-                <img
-                  src="/logo-landscape.png"
-                  alt="ThermoNeural"
-                  className={`${isNative ? "h-12 w-auto" : "h-10 md:h-12 w-auto"} object-contain mix-blend-multiply dark:mix-blend-screen dark:invert`}
-                />
+                <picture>
+                  <source srcSet="/logo-landscape.webp" type="image/webp" />
+                  <img
+                    src="/logo-landscape.png"
+                    alt="ThermoNeural"
+                    className={`${isNative ? "h-10 sm:h-12" : "h-9 sm:h-10 md:h-12 lg:h-14"} w-auto object-contain mix-blend-multiply dark:mix-blend-screen dark:invert transition-all`}
+                  />
+                </picture>
               </Link>
 
               <div className="hidden md:flex items-center gap-2 ml-4">
@@ -125,9 +128,9 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 <div className="relative">
                   <input
                     placeholder="Search calculations, projects or tools..."
-                    className="w-48 md:w-96 rounded-md border border-input bg-background px-4 py-2 text-sm focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-900 transition-colors"
+                    className="w-48 md:w-96 rounded-md border border-primary/30 bg-secondary/50 px-4 py-2 text-sm focus:ring-2 focus:ring-primary/50 transition-colors font-mono placeholder:text-muted-foreground"
                   />
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                     ⌘K
                   </div>
                 </div>
@@ -203,7 +206,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                       aria-haspopup="menu"
                       aria-expanded={isAvatarOpen}
                       onClick={() => setIsAvatarOpen((s) => !s)}
-                      className="h-9 w-9 rounded-full bg-secondary flex items-center justify-center text-foreground font-semibold overflow-hidden focus:outline-none focus:ring-2 focus:ring-slate-200 transition-colors"
+                      className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold overflow-hidden focus:outline-none focus:ring-2 focus:ring-primary/50 transition-colors"
                       aria-label="Account menu"
                     >
                       {avatarUrl ? (
@@ -222,7 +225,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                     {isAvatarOpen && (
                       <div
                         role="menu"
-                        className="absolute right-0 mt-2 w-40 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-md shadow-lg z-[9999] transition-colors"
+                        className="absolute right-0 mt-2 w-40 bg-popover/95 backdrop-blur-xl border border-primary/20 rounded-md shadow-lg z-[9999] transition-colors"
                       >
                         <nav className="flex flex-col p-2">
                           <Link
@@ -230,7 +233,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                             onClick={() => setIsAvatarOpen(false)}
                             role="menuitem"
                             tabIndex={0}
-                            className="px-3 py-2 text-sm text-foreground hover:bg-slate-50 dark:hover:bg-slate-800 rounded transition-colors"
+                            className="px-3 py-2 text-sm text-foreground hover:bg-primary/10 hover:text-primary rounded transition-colors"
                           >
                             Profile
                           </Link>
@@ -239,7 +242,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                             onClick={() => setIsAvatarOpen(false)}
                             role="menuitem"
                             tabIndex={0}
-                            className="px-3 py-2 text-sm text-foreground hover:bg-slate-50 dark:hover:bg-slate-800 rounded transition-colors"
+                            className="px-3 py-2 text-sm text-foreground hover:bg-primary/10 hover:text-primary rounded transition-colors"
                           >
                             Settings
                           </Link>
@@ -249,7 +252,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                               handleSignOut();
                             }}
                             role="menuitem"
-                            className="flex items-center gap-2 text-left px-3 py-2 text-sm text-destructive hover:bg-slate-50 dark:hover:bg-slate-800 rounded transition-colors w-full"
+                            className="flex items-center gap-2 text-left px-3 py-2 text-sm text-destructive hover:bg-destructive/10 rounded transition-colors w-full"
                           >
                             <LogOut className="w-4 h-4" />
                             Sign Out
@@ -267,10 +270,10 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
 
           {/* Mobile Navigation */}
           {isMobileMenuOpen && (
-            <div className="md:hidden mt-4 pt-4 border-t border-gray-100 dark:border-slate-800 animate-in slide-in-from-top-2">
+            <div className="md:hidden mt-4 pt-4 border-t border-border animate-in fade-in slide-in-from-top-2 duration-200">
               <nav className="flex flex-col space-y-1">
                 {/* 0. Mobile Only Controls */}
-                <div className="flex flex-col gap-3 mb-4 pb-4 border-b border-gray-100 dark:border-slate-800">
+                <div className="flex flex-col gap-3 mb-4 pb-4 border-b border-border">
                   <div className="w-full">
                     <JobSelector />
                   </div>
@@ -284,7 +287,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                   <Link
                     key={item.to}
                     to={item.to}
-                    className="flex items-center gap-2 text-slate-700 hover:text-orange-600 dark:text-slate-300 dark:hover:text-orange-400 font-medium px-2 py-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                    className="flex items-center gap-2 text-foreground hover:text-primary font-medium px-2 py-2 rounded-md hover:bg-secondary transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     <item.icon className="h-5 w-5" />
@@ -292,12 +295,12 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                   </Link>
                 ))}
 
-                <div className="my-2 border-t border-slate-100 dark:border-slate-800" />
+                <div className="my-2 border-t border-border" />
 
                 {/* 2. Toolbox */}
                 {toolbox.visible && (
                   <div className="px-2 py-2">
-                    <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                    <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                       Toolbox
                     </h4>
                     <div className="grid grid-cols-2 gap-2">
@@ -306,12 +309,12 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                           key={item.to}
                           to={item.to}
                           onClick={() => setIsMobileMenuOpen(false)}
-                          className="flex flex-col items-center justify-center gap-1 p-2 rounded bg-slate-50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 border border-slate-100 dark:border-slate-800 hover:border-orange-200 dark:hover:border-orange-800 transition-all text-center"
+                          className="flex flex-col items-center justify-center gap-1 p-2 rounded bg-secondary/50 hover:bg-secondary border border-border hover:border-primary/50 transition-all text-center"
                         >
-                          <div className="p-1 rounded-full bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400">
+                          <div className="p-1 rounded-full bg-primary/10 text-primary">
                             <item.icon className="h-4 w-4" />
                           </div>
-                          <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                          <span className="text-xs font-medium text-foreground">
                             {item.label}
                           </span>
                         </Link>
@@ -329,12 +332,12 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                           key={item.to}
                           to={item.to}
                           onClick={() => setIsMobileMenuOpen(false)}
-                          className="flex items-center gap-3 px-2 py-2 text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md"
+                          className="flex items-center gap-3 px-2 py-2 text-sm text-muted-foreground hover:text-primary hover:bg-secondary rounded-md"
                         >
                           <item.icon className="h-4 w-4" />
                           <span>{item.label}</span>
                           {item.badge && (
-                            <span className="ml-auto bg-orange-100 text-orange-600 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                            <span className="ml-auto bg-primary/10 text-primary text-[10px] font-bold px-1.5 py-0.5 rounded-full">
                               {item.badge}
                             </span>
                           )}
@@ -344,7 +347,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                   </div>
                 )}
 
-                <div className="pt-3 border-t border-gray-100 dark:border-slate-800">
+                <div className="pt-3 border-t border-border">
                   <Button
                     variant="outline"
                     size="sm"
@@ -387,10 +390,10 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
         height: isNative ? "auto" : undefined,
       }}
     >
-      <div className="max-w-[1600px] mx-auto px-4 pb-2">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pb-2">
         {/* Top Row: Logo, Dark Mode, Menu */}
         <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1 sm:space-x-2">
             {showBackButton && (
               <Button
                 variant="ghost"
@@ -404,53 +407,58 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
             )}
 
             <Link to="/" className="flex items-center space-x-2 py-1">
-              <img
-                src="/logo-landscape.png"
-                alt="ThermoNeural Logo"
-                className={`${isNative ? "h-9" : "h-12 md:h-14"} w-auto object-contain mix-blend-multiply dark:mix-blend-screen dark:invert scale-[1.25] origin-left transition-all`}
-              />
+              <picture>
+                <source srcSet="/logo-landscape.webp" type="image/webp" />
+                <img
+                  src="/logo-landscape.png"
+                  alt="ThermoNeural Logo"
+                  className={`${isNative ? "h-9 sm:h-10" : "h-10 sm:h-12 md:h-14 lg:h-16"} w-auto object-contain mix-blend-multiply dark:mix-blend-screen dark:invert origin-left transition-all`}
+                />
+              </picture>
             </Link>
           </div>
 
           {/* Web Desktop Nav - Hidden on Native Mobile */}
           {!isNative && !isAuthenticated && (
-            <nav className="hidden md:flex items-center space-x-8">
+            <nav className="hidden md:flex items-center space-x-4 lg:space-x-8">
               <Link
                 to="/features"
-                className="text-muted-foreground hover:text-orange-600 font-medium transition-colors font-display"
+                className="text-muted-foreground hover:text-primary font-medium transition-colors font-display"
               >
                 Features
               </Link>
               <Link
                 to="/pricing"
-                className="text-muted-foreground hover:text-orange-600 font-medium transition-colors font-display"
+                className="text-muted-foreground hover:text-primary font-medium transition-colors font-display"
               >
                 Pricing
               </Link>
               <Link
                 to="/about"
-                className="text-muted-foreground hover:text-orange-600 font-medium transition-colors font-display"
+                className="text-muted-foreground hover:text-primary font-medium transition-colors font-display"
               >
                 About
               </Link>
-              <div className="w-px h-6 bg-slate-200 dark:bg-slate-800"></div>
+              <div className="w-px h-6 bg-border"></div>
               <Link
                 to="/help-center"
-                className="text-muted-foreground hover:text-orange-600 font-medium text-sm transition-colors font-display"
+                className="text-muted-foreground hover:text-primary font-medium text-sm transition-colors font-display"
               >
                 Help
               </Link>
               <Link
                 to="/contact"
-                className="text-muted-foreground hover:text-orange-600 font-medium text-sm transition-colors font-display"
+                className="text-muted-foreground hover:text-primary font-medium text-sm transition-colors font-display"
               >
                 Support
               </Link>
             </nav>
           )}
 
-          <div className="flex items-center space-x-4">
-            <ModeToggle />
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <div className="flex items-center h-10">
+              <ModeToggle />
+            </div>
 
             {/* Authenticated State */}
             {isAuthenticated ? (
@@ -463,7 +471,9 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                   className={isNative ? "hidden" : "hidden md:block"}
                 >
                   <Button 
-                    className="bg-orange-600 hover:bg-orange-700 text-white font-semibold shadow-md shadow-orange-500/20 transition-all hover:scale-105"
+                    variant="neonHighlight"
+                    size="lg"
+                    className="font-mono tracking-wider"
                     disabled={isRefreshing}
                   >
                     {isRefreshing ? (
@@ -496,20 +506,20 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               // Unauthenticated State
               <>
                 <div
-                  className={isNative ? "hidden" : "flex items-center gap-2"}
+                  className={isNative ? "hidden" : "flex items-center gap-4 md:gap-4"}
                 >
                   <Link to="/signin">
                     <Button
                       variant="ghost"
-                      className="text-muted-foreground hover:text-foreground"
+                      className="text-muted-foreground hover:text-foreground px-3"
                     >
                       Sign In
                     </Button>
                   </Link>
                   <Link to="/signup">
-                    <Button className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-6 shadow-md shadow-orange-500/20 transition-all hover:scale-105">
-                      Start Free Trial
-                    </Button>
+                    <Button variant="neonHighlight" size="lg" className="font-mono tracking-wider text-foreground">
+                    Start Free Trial
+                  </Button>
                   </Link>
                 </div>
 
@@ -532,17 +542,17 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
 
         {/* Native Mobile ONLY: Second Row for Auth Actions */}
         {isNative && !isAuthenticated && !isMobileMenuOpen && (
-          <div className="mt-4 flex gap-3 px-1 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="mt-4 flex gap-3 px-1 animate-in fade-in slide-in-from-top-2 duration-200">
             <Link to="/signin" className="flex-1">
               <Button
                 variant="outline"
-                className="w-full h-10 text-sm font-semibold border-slate-300 dark:border-slate-700"
+                className="w-full h-10 text-sm font-semibold border-border"
               >
                 Sign In
               </Button>
             </Link>
             <Link to="/signup" className="flex-1">
-              <Button className="w-full h-10 bg-orange-600 hover:bg-orange-700 text-white text-sm font-semibold shadow-sm">
+              <Button variant="neonHighlight" className="w-full h-10 text-sm font-semibold shadow-sm font-mono tracking-wider text-foreground">
                 Start Free Trial
               </Button>
             </Link>
@@ -551,9 +561,9 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
 
         {/* Native Mobile ONLY: Authenticated Dashboard Link */}
         {isNative && isAuthenticated && !isMobileMenuOpen && (
-          <div className="mt-4 px-1 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="mt-4 px-1 animate-in fade-in slide-in-from-top-2 duration-200">
             <Link to={companies.length > 0 ? "/dashboard" : "/join-company"}>
-              <Button className="w-full h-10 bg-orange-600 hover:bg-orange-700 text-white font-semibold shadow-sm">
+              <Button variant="neonHighlight" className="w-full h-10 font-semibold shadow-sm font-mono tracking-wider">
                 {companies.length > 0 ? "Go to Dashboard" : "Join Organization"}
               </Button>
             </Link>
@@ -562,7 +572,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
 
         {/* Mobile Menu Dropdown (Shared Logic) */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-4 pt-4 border-t border-gray-200 dark:border-slate-800 animate-in slide-in-from-top-2">
+          <div className="md:hidden mt-4 pt-4 border-t border-border animate-in fade-in slide-in-from-top-2 duration-200">
             {isAuthenticated ? (
               <nav className="flex flex-col space-y-1">
                 {/* 1. Main Links */}
@@ -649,28 +659,28 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 <Link
                   to="/features"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="px-2 py-1 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md"
+                  className="px-2 py-1 font-medium hover:bg-secondary rounded-md text-foreground"
                 >
                   Features
                 </Link>
                 <Link
                   to="/pricing"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="px-2 py-1 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md"
+                  className="px-2 py-1 font-medium hover:bg-secondary rounded-md text-foreground"
                 >
                   Pricing
                 </Link>
                 <Link
                   to="/about"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="px-2 py-1 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md"
+                  className="px-2 py-1 font-medium hover:bg-secondary rounded-md text-foreground"
                 >
                   About
                 </Link>
                 <Link
                   to="/contact"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="px-2 py-1 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md"
+                  className="px-2 py-1 font-medium hover:bg-secondary rounded-md text-foreground"
                 >
                   Contact
                 </Link>

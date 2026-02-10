@@ -124,7 +124,7 @@ export function IntegrationLanding() {
   if (isFetching) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-600"></div>
       </div>
     );
   }
@@ -145,7 +145,7 @@ export function IntegrationLanding() {
   return (
     <div className="min-h-screen w-full bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4 relative overflow-hidden">
       {/* Background Decorations */}
-      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-orange-100/50 to-transparent dark:from-orange-900/20 pointer-events-none" />
+      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-cyan-100/50 to-transparent dark:from-cyan-900/20 pointer-events-none" />
       <div className="absolute -top-20 -right-20 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl" />
 
       <motion.div
@@ -155,7 +155,7 @@ export function IntegrationLanding() {
         className="w-full max-w-md relative z-10"
       >
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-orange-600 to-indigo-600 bg-clip-text text-transparent">
+          <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-cyan-600 to-indigo-600 bg-clip-text text-transparent">
             ThermoNeural
           </h1>
           <p className="text-slate-500 text-sm mt-1">
@@ -166,7 +166,7 @@ export function IntegrationLanding() {
         {!isConnected ? (
           <Card className="border-slate-200 dark:border-slate-800 shadow-xl backdrop-blur-sm bg-white/80 dark:bg-slate-900/80">
             <CardHeader className="text-center pb-2">
-              <div className="mx-auto w-16 h-16 bg-orange-50 dark:bg-orange-900/20 rounded-2xl flex items-center justify-center mb-4 text-orange-600">
+              <div className="mx-auto w-16 h-16 bg-cyan-50 dark:bg-cyan-900/20 rounded-2xl flex items-center justify-center mb-4 text-cyan-600">
                 <Globe className="w-8 h-8" />
               </div>
               <CardTitle className="text-xl">Connect {provider}</CardTitle>
@@ -197,7 +197,7 @@ export function IntegrationLanding() {
             </CardContent>
             <CardFooter>
               <Button
-                className="w-full bg-orange-600 hover:bg-orange-700 h-11 text-base shadow-lg shadow-orange-500/20"
+                className="w-full bg-cyan-600 hover:bg-cyan-700 h-11 text-base shadow-lg shadow-cyan-500/20"
                 onClick={handleConnect}
                 disabled={isLoading}
               >

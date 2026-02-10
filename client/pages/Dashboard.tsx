@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { useDashboardStats, DashboardStats } from "@/hooks/useDashboardStats";
@@ -9,6 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { GlassCard } from "@/components/ui/glass-card";
+import { DataPanel } from "@/components/ui/data-panel";
+import { DashboardGrid, DashboardGridItem } from "@/components/ui/dashboard-grid";
 import {
   Calculator,
   History as HistoryIcon,
@@ -40,6 +44,20 @@ import {
   Cell,
 } from "recharts";
 
+const fadeInUp = {
+  initial: { opacity: 0, y: 30 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+};
+
+const staggerContainer = {
+  animate: {
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
+
 interface QuickStatsProps {
   stats: DashboardStats;
   user: any;
@@ -58,49 +76,105 @@ function formatNumber(n: number) {
 
 function UsageProgressCard({ stats, onUpgrade }: UsageProgressCardProps) {
   const roundedUsage = Math.round(stats.usagePercentage);
+  const usageColor = stats.usagePercentage >= 90 ? "red" : stats.usagePercentage >= 70 ? "amber" : "cyan";
+  
+  const colorClasses = {
+    red: {
+      border: "border-destructive/50",
+      bg: "bg-destructive/10",
+      text: "text-destructive",
+      gradientFrom: "from-destructive",
+      gradientTo: "to-destructive/80",
+    },
+    amber: {
+      border: "border-warning/50",
+      bg: "bg-warning/10",
+      text: "text-warning",
+      gradientFrom: "from-warning",
+      gradientTo: "to-warning/80",
+    },
+    cyan: {
+      border: "border-primary/50",
+      bg: "bg-primary/10",
+      text: "text-primary",
+      gradientFrom: "from-primary",
+      gradientTo: "to-primary/80",
+    },
+  };
+  
+  const color = colorClasses[usageColor];
 
   return (
-    <Card className="glass-card border-primary/20 hover-lift animate-fade-in">
-      <CardContent className="space-y-4 p-5">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-primary">
-              Free plan usage
-            </p>
-            <h3 className="mt-1 text-lg font-semibold text-foreground">
-              {stats.monthlyCalculations} of {stats.monthlyLimit} calculations
-              used
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              Resets on {stats.billingCycleResetLabel}
-            </p>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+    >
+      <GlassCard variant="data" className="rounded-2xl p-1 border border-primary/20" glow={true}>
+        <div className="p-6 space-y-6">
+          {/* Header */}
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <Badge
+                variant="outline"
+                className="px-3 py-1 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px]"
+              >
+                <Zap className="w-3 h-3 mr-2" />
+                SYSTEM USAGE
+              </Badge>
+              <h3 className="mt-3 text-xl font-bold text-primary font-mono">
+                {stats.monthlyCalculations}/{stats.monthlyLimit} CALCULATIONS DEPLOYED
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                RESET PROTOCOL: {stats.billingCycleResetLabel}
+              </p>
+            </div>
+            <Badge
+              variant="outline"
+              className={`px-4 py-1.5 rounded-full ${color.border} ${color.bg} ${color.text} backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-xs`}
+            >
+              {roundedUsage}% UTILIZED
+            </Badge>
           </div>
-          <Badge className="glass border-primary/20 text-primary">
-            {roundedUsage}% used
-          </Badge>
-        </div>
 
-        <Progress
-          value={stats.usagePercentage}
-          aria-label="Monthly calculation usage"
-          className="h-2 bg-muted"
-        />
+          {/* Progress Bar */}
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs font-mono">
+              <span className="text-muted-foreground">0%</span>
+              <span className="text-muted-foreground">100%</span>
+            </div>
+            <div className="h-3 rounded-full bg-secondary overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${stats.usagePercentage}%` }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                className={`h-full rounded-full bg-gradient-to-r ${color.gradientFrom} ${color.gradientTo}`}
+              />
+            </div>
+            <div className="flex justify-center">
+              <div className="text-xs font-mono text-muted-foreground">
+                SYSTEM CAPACITY: {stats.usagePercentage.toFixed(1)}% LOAD
+              </div>
+            </div>
+          </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-muted-foreground">
-          <span>
-            {stats.remaining} calculation{stats.remaining === 1 ? "" : "s"}{" "}
-            remaining this month
-          </span>
-          <Button
-            size="sm"
-            onClick={onUpgrade}
-            className="glass hover:bg-primary/20 text-primary border-primary/20"
-          >
-            Upgrade plan
-          </Button>
+          {/* Footer */}
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-primary/20">
+            <div className="text-sm font-mono text-primary">
+              <span className="text-muted-foreground">RESERVE:</span> {stats.remaining} CALCULATION{stats.remaining === 1 ? "" : "S"}
+            </div>
+            <Button
+              variant="neon"
+              size="sm"
+              className="font-mono tracking-wider"
+              onClick={onUpgrade}
+            >
+              UPGRADE TO UNLIMITED
+            </Button>
+          </div>
         </div>
-      </CardContent>
-    </Card>
+      </GlassCard>
+    </motion.div>
   );
 }
 
@@ -117,74 +191,103 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between animate-fade-in">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight text-foreground">
-            Welcome back{firstName ? `, ${firstName}` : ""}{" "}
-            <span className="inline-block animate-bounce">👋</span>
-          </h2>
-          <p className="mt-2 text-lg text-muted-foreground">
-            Your workspace is ready. Here's what's happening today.
-          </p>
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            <OnboardingGuide userName={firstName} />
-            {!stats.isUnlimited && (
-              <Badge variant="outline" className="glass text-primary px-3 py-1">
-                {stats.remaining} calculation{stats.remaining === 1 ? "" : "s"}{" "}
-                left this month
+      {/* Command Center Header */}
+      <motion.div
+        initial="initial"
+        animate="animate"
+        variants={staggerContainer}
+        className="glass-panel rounded-2xl p-6 border border-primary/20 mb-8"
+      >
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+          <div className="flex-1">
+            <motion.div variants={fadeInUp} className="flex items-center gap-4 mb-4">
+              <Badge
+                variant="outline"
+                className="px-4 py-1.5 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px] sm:text-xs"
+              >
+                <Sparkles className="w-3 h-3 mr-2" />
+                COMMAND INTERFACE
               </Badge>
-            )}
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3">
-          <Button
-            className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300 transform hover:-translate-y-0.5 rounded-full px-6"
-            onClick={() => navigate("/tools/standard-cycle")}
-          >
-            <Calculator className="h-4 w-4 mr-2" />
-            New Calculation
-          </Button>
-
-          <Button
-            variant="outline"
-            className="glass hover-lift hidden sm:inline-flex items-center"
-            onClick={onRefresh}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
-            ) : (
-              <RefreshCw className="h-4 w-4 mr-2" />
-            )}
-            Refresh
-          </Button>
-        </div>
-      </div>
-
-      {stats.isNearLimit && (
-        <Card
-          className={`glass-card border-l-4 ${
-            stats.isAtLimit
-              ? "border-l-destructive bg-destructive/5"
-              : "border-l-amber-500 bg-amber-50/50 dark:bg-amber-950/20"
-          } animate-slide-up`}
-        >
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center space-x-3">
-                <div
-                  className={`p-2 rounded-full ${stats.isAtLimit ? "bg-red-100 text-red-600 dark:bg-red-900/20 dark:text-red-400" : "bg-amber-100 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400"}`}
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <div className="text-xs text-muted-foreground font-mono">SYSTEM ONLINE</div>
+              </div>
+            </motion.div>
+            
+            <motion.h2 variants={fadeInUp} className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight font-mono">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/80 to-primary">
+                OPERATOR: {firstName ? firstName.toUpperCase() : "SYSTEM"}
+              </span>
+            </motion.h2>
+            
+            <motion.p variants={fadeInUp} className="text-lg sm:text-xl text-muted-foreground mt-4 max-w-2xl leading-relaxed font-light">
+              Mission control dashboard for thermal analysis operations. Real-time metrics and system status displayed below.
+            </motion.p>
+            
+            <motion.div variants={fadeInUp} className="mt-6 flex flex-wrap items-center gap-4">
+              <OnboardingGuide userName={firstName} />
+              {!stats.isUnlimited && (
+                <Badge
+                  variant="outline"
+                  className="px-4 py-1.5 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px] sm:text-xs"
                 >
-                  <Sparkles className="h-5 w-5" />
+                  {stats.remaining} CALCULATION{stats.remaining === 1 ? "" : "S"} REMAINING
+                </Badge>
+              )}
+            </motion.div>
+          </div>
+          
+          <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row lg:flex-col gap-3">
+            <Button
+              variant="neon"
+              size="lg"
+              className="font-mono tracking-wider h-12 px-6"
+              onClick={() => navigate("/tools/standard-cycle")}
+            >
+              <Calculator className="h-4 w-4 mr-3" />
+              INITIATE CALCULATION
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="lg"
+              className="font-mono tracking-wider h-12 px-6 border-primary/30 text-primary hover:bg-primary/10 hover:border-primary/50"
+              onClick={onRefresh}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-3" />
+              ) : (
+                <RefreshCw className="h-4 w-4 mr-3" />
+              )}
+              REFRESH DATA
+            </Button>
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* System Alert */}
+      {stats.isNearLimit && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <GlassCard
+            variant="command"
+            className={`rounded-2xl p-1 border ${stats.isAtLimit ? "border-destructive/30" : "border-warning/30"}`}
+            glow={true}
+          >
+            <div className="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-start gap-4">
+                <div className={`p-3 rounded-full ${stats.isAtLimit ? "bg-destructive/20" : "bg-warning/20"} border ${stats.isAtLimit ? "border-destructive/30" : "border-warning/30"}`}>
+                  <Sparkles className={`h-5 w-5 ${stats.isAtLimit ? "text-destructive" : "text-warning"}`} />
                 </div>
                 <div>
-                  <p className="font-semibold text-foreground">
-                    {stats.isAtLimit
-                      ? "Monthly Limit Reached"
-                      : "Approaching Monthly Limit"}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
+                  <h3 className={`text-lg font-bold font-mono ${stats.isAtLimit ? "text-destructive" : "text-warning"}`}>
+                    {stats.isAtLimit ? "SYSTEM LIMIT REACHED" : "APPROACHING SYSTEM LIMIT"}
+                  </h3>
+                  <p className="text-muted-foreground mt-1 text-sm">
                     {stats.isAtLimit
                       ? "Upgrade to Pro for unlimited calculations."
                       : `You've used ${stats.monthlyCalculations}/${stats.monthlyLimit} calculations.`}
@@ -192,90 +295,111 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
                 </div>
               </div>
               <Button
-                size="sm"
-                className={
-                  stats.isAtLimit
-                    ? "bg-destructive text-white hover:bg-destructive/90"
-                    : "bg-amber-500 text-white hover:bg-amber-600"
-                }
+                variant={stats.isAtLimit ? "neonDestructive" : "neonWarning"}
+                size="lg"
+                className="font-mono tracking-wider px-6"
                 onClick={handleUpgrade}
               >
-                Upgrade
+                {stats.isAtLimit ? "IMMEDIATE UPGRADE" : "UPGRADE SYSTEM"}
               </Button>
             </div>
-          </CardContent>
-        </Card>
+          </GlassCard>
+        </motion.div>
       )}
 
       {!stats.isUnlimited && (
         <UsageProgressCard stats={stats} onUpgrade={handleUpgrade} />
       )}
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
-        <StatsCard
-          title="Total Calculations"
-          value={formatNumber(stats.totalCalculations)}
-          subtitle="All time"
-          icon={Calculator}
-          gradient="from-orange-500 to-slate-600"
-          delay={0}
-        />
-        <StatsCard
-          title="This Month"
-          value={`${formatNumber(stats.monthlyCalculations)}${!stats.isUnlimited ? `/${stats.monthlyLimit}` : ""}`}
-          subtitle={
-            !stats.isUnlimited
-              ? `${Math.round(stats.usagePercentage)}% used`
-              : "Unlimited"
-          }
-          icon={FileText}
-          gradient="from-slate-500 to-slate-600"
-          delay={100}
-        />
-        <StatsCard
-          title="Remaining"
-          value={stats.remainingText}
-          subtitle="This month"
-          icon={TrendingUp}
-          gradient={
-            stats.remainingValue <= 2
-              ? "from-red-500 to-rose-600"
-              : "from-emerald-500 to-teal-600"
-          }
-          delay={200}
-        />
-        <Card
-          className="glass-card hover-lift cursor-pointer group relative overflow-hidden"
-          onClick={handleUpgrade}
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-400/20 to-orange-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <CardContent className="p-6 relative z-10">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  Current Plan
-                </p>
-                <p className="mt-2 text-2xl font-bold text-foreground">
-                  {stats.planDisplayName}
-                </p>
-                <p className="mt-1 text-xs text-primary flex items-center">
-                  {stats.plan === "free"
-                    ? "Upgrade to Pro"
-                    : "Manage Subscription"}
-                  <ArrowRight className="h-3 w-3 ml-1 group-hover:translate-x-1 transition-transform" />
-                </p>
-              </div>
-              <div className="p-3 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-lg">
-                {stats.plan === "free" ? (
-                  <BarChart3 className="h-6 w-6" />
-                ) : (
-                  <Crown className="h-6 w-6" />
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Mission Critical Metrics */}
+      <motion.div
+        initial="initial"
+        animate="animate"
+        variants={staggerContainer}
+        className="space-y-6"
+      >
+        <DashboardGrid columns={{ sm: 1, md: 2, lg: 4 }} gap="lg">
+          <DashboardGridItem span={{ sm: 1, md: 1, lg: 1 }}>
+            <motion.div variants={fadeInUp}>
+              <DataPanel
+                title="TOTAL CALCULATIONS"
+                value={formatNumber(stats.totalCalculations)}
+                subtitle="ALL TIME DEPLOYMENTS"
+                variant="highlight"
+                compact
+              />
+            </motion.div>
+          </DashboardGridItem>
+          
+          <DashboardGridItem span={{ sm: 1, md: 1, lg: 1 }}>
+            <motion.div variants={fadeInUp}>
+              <DataPanel
+                title="THIS MONTH"
+                value={`${formatNumber(stats.monthlyCalculations)}${!stats.isUnlimited ? `/${stats.monthlyLimit}` : ""}`}
+                subtitle={
+                  !stats.isUnlimited
+                    ? `${Math.round(stats.usagePercentage)}% UTILIZED`
+                    : "UNLIMITED OPERATIONS"
+                }
+                variant={!stats.isUnlimited && stats.usagePercentage >= 70 ? "warning" : "success"}
+                compact
+              />
+            </motion.div>
+          </DashboardGridItem>
+          
+          <DashboardGridItem span={{ sm: 1, md: 1, lg: 1 }}>
+            <motion.div variants={fadeInUp}>
+              <DataPanel
+                title="SYSTEM RESERVE"
+                value={stats.remainingText}
+                subtitle="REMAINING CAPACITY"
+                variant={stats.remainingValue <= 2 ? "destructive" : "success"}
+                compact
+              />
+            </motion.div>
+          </DashboardGridItem>
+          
+          <DashboardGridItem span={{ sm: 1, md: 1, lg: 1 }}>
+            <motion.div variants={fadeInUp}>
+              <GlassCard
+                variant="command"
+                className="rounded-2xl p-1 border border-primary/20 cursor-pointer group relative overflow-hidden hover:glow-primary transition-all"
+                onClick={handleUpgrade}
+                glow={true}
+              >
+                <div className="p-5">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Badge
+                        variant="outline"
+                        className="px-3 py-1 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px]"
+                      >
+                        SYSTEM PLAN
+                      </Badge>
+                      <p className="mt-3 text-xl font-bold text-primary font-mono">
+                        {stats.planDisplayName}
+                      </p>
+                      <p className="mt-1 text-xs text-primary flex items-center font-mono">
+                        {stats.plan === "free"
+                          ? "UPGRADE TO PRO COMMAND"
+                          : "MANAGE SUBSCRIPTION"}
+                        <ArrowRight className="h-3 w-3 ml-1 group-hover:translate-x-1 transition-transform" />
+                      </p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-lg">
+                      {stats.plan === "free" ? (
+                        <BarChart3 className="h-6 w-6" />
+                      ) : (
+                        <Crown className="h-6 w-6" />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </GlassCard>
+            </motion.div>
+          </DashboardGridItem>
+        </DashboardGrid>
+      </motion.div>
     </div>
   );
 }
@@ -324,82 +448,108 @@ function RecentCalculations({ isLoading }: any) {
   const recentCalculations = calculations.slice(0, 5);
 
   return (
-    <Card
-      className="glass-card h-full flex flex-col animate-slide-up"
-      style={{ animationDelay: "300ms" }}
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay: 0.2 }}
     >
-      <CardHeader className="border-b border-border pb-4">
-        <CardTitle className="flex items-center text-lg font-semibold text-foreground">
-          <HistoryIcon className="h-5 w-5 mr-2 text-primary" />
-          Recent Activity
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-0 flex-1">
-        {isLoading ? (
-          <div className="p-6 space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="animate-pulse flex items-center gap-4">
-                <div className="w-10 h-10 bg-muted rounded-lg" />
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-muted rounded w-3/4" />
-                  <div className="h-3 bg-muted rounded w-1/2" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : recentCalculations.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 text-center p-6">
-            <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mb-4">
-              <Calculator className="h-8 w-8 text-muted-foreground" />
+      <GlassCard variant="data" className="rounded-2xl p-1 border border-primary/20 h-full flex flex-col" glow={true}>
+        <div className="p-5 border-b border-primary/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Badge
+                variant="outline"
+                className="px-3 py-1 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px]"
+              >
+                <HistoryIcon className="w-3 h-3 mr-2" />
+                RECENT ACTIVITY
+              </Badge>
+              <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
             </div>
-            <h3 className="text-lg font-medium text-foreground mb-2">
-              No calculations yet
-            </h3>
-            <p className="text-sm text-muted-foreground mb-6 max-w-xs">
-              Start your first calculation to see it appear here.
-            </p>
             <Button
-              onClick={() => navigate("/tools/standard-cycle")}
-              className="glass text-primary hover:bg-primary/10"
+              variant="outline"
+              size="sm"
+              className="font-mono tracking-wider border-primary/30 text-primary hover:bg-primary/10"
+              onClick={() => navigate("/calculations")}
             >
-              Start Calculation
+              VIEW ALL
             </Button>
           </div>
-        ) : (
-          <div className="divide-y divide-border">
-            {recentCalculations.map((calc: any) => (
-              <div
-                key={calc.id}
-                className="group flex items-center justify-between p-4 hover:bg-muted/50 transition-colors cursor-pointer"
-                onClick={() => navigate(`/calculations/${calc.id}`)}
-              >
-                <div className="flex items-center gap-4 min-w-0">
-                  <div className="w-10 h-10 rounded-lg bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-orange-600 dark:text-orange-400 group-hover:scale-110 transition-transform">
-                    <Calculator className="h-5 w-5" />
-                  </div>
-                  <div className="min-w-0">
-                    <h4 className="font-medium text-foreground truncate">
-                      {calc.name || calc.calculation_type}
-                    </h4>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                      <Clock className="h-3 w-3" />
-                      <span>
-                        {new Date(calc.created_at).toLocaleDateString()}
-                      </span>
-                      <span className="w-1 h-1 bg-muted-foreground rounded-full" />
-                      <span className="uppercase tracking-wider font-medium text-[10px]">
-                        {calc.calculation_type}
-                      </span>
-                    </div>
+        </div>
+        
+        <div className="flex-1 p-5">
+          {isLoading ? (
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="animate-pulse flex items-center gap-4">
+                  <div className="w-12 h-12 bg-secondary rounded-xl" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-secondary rounded w-3/4" />
+                    <div className="h-3 bg-secondary rounded w-1/2" />
                   </div>
                 </div>
-                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+              ))}
+            </div>
+          ) : recentCalculations.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-64 text-center p-6">
+              <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6 border border-primary/20">
+                <Calculator className="h-10 w-10 text-primary" />
               </div>
-            ))}
-          </div>
-        )}
-      </CardContent>
-    </Card>
+              <h3 className="text-xl font-bold text-primary font-mono mb-3">
+                NO CALCULATIONS DETECTED
+              </h3>
+              <p className="text-muted-foreground mb-8 max-w-sm">
+                Initiate your first thermal analysis to populate the activity log.
+              </p>
+              <Button
+                variant="neon"
+                className="font-mono tracking-wider"
+                onClick={() => navigate("/tools/standard-cycle")}
+              >
+                INITIATE CALCULATION
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {recentCalculations.map((calc: any) => (
+                <motion.div
+                  key={calc.id}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="group flex items-center justify-between p-4 rounded-xl border border-primary/10 hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer"
+                  onClick={() => navigate(`/calculations/${calc.id}`)}
+                >
+                  <div className="flex items-center gap-4 min-w-0">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform border border-primary/20">
+                      <Calculator className="h-6 w-6" />
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="font-bold text-primary truncate font-mono text-sm">
+                        {calc.name || calc.calculation_type}
+                      </h4>
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground mt-2 font-mono">
+                        <div className="flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          <span>{new Date(calc.created_at).toLocaleDateString()}</span>
+                        </div>
+                        <div className="w-1 h-1 bg-secondary rounded-full" />
+                        <Badge
+                          variant="outline"
+                          className="px-2 py-0.5 rounded-full border-primary/30 bg-primary/5 text-primary text-[10px] font-mono uppercase tracking-wider"
+                        >
+                          {calc.calculation_type}
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                  <ArrowRight className="h-5 w-5 text-primary/50 group-hover:text-primary group-hover:translate-x-2 transition-all" />
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+      </GlassCard>
+    </motion.div>
   );
 }
 
@@ -408,74 +558,94 @@ function QuickActions() {
 
   const actions = [
     {
-      label: "Standard Cycle",
+      label: "STANDARD CYCLE",
       icon: Calculator,
       path: "/tools/standard-cycle",
-      color: "text-orange-600 dark:text-orange-400",
-      bg: "bg-orange-50 dark:bg-orange-900/20",
+      color: "text-cyan-400",
+      bg: "bg-cyan-500/10",
+      border: "border-cyan-500/30",
     },
     {
-      label: "Compare Refrigerants",
+      label: "COMPARE REFRIGERANTS",
       icon: TrendingUp,
       path: "/tools/refrigerant-comparison",
-      color: "text-emerald-600 dark:text-emerald-400",
-      bg: "bg-emerald-50 dark:bg-emerald-900/20",
+      color: "text-emerald-400",
+      bg: "bg-emerald-500/10",
+      border: "border-emerald-500/30",
     },
     {
-      label: "Cascade Analysis",
+      label: "CASCADE ANALYSIS",
       icon: BarChart3,
       path: "/tools/cascade-cycle",
-      color: "text-slate-600 dark:text-slate-400",
-      bg: "bg-slate-50 dark:bg-slate-900/20",
+      color: "text-purple-400",
+      bg: "bg-purple-500/10",
+      border: "border-purple-500/30",
     },
     {
-      label: "Reports & PDF",
+      label: "REPORTS & PDF",
       icon: FileText,
       path: "/tools/advanced-reporting",
-      color: "text-amber-600 dark:text-amber-400",
-      bg: "bg-amber-50 dark:bg-amber-900/20",
+      color: "text-amber-400",
+      bg: "bg-amber-500/10",
+      border: "border-amber-500/30",
     },
     {
-      label: "My Projects",
+      label: "MY PROJECTS",
       icon: Layers,
       path: "/dashboard/projects",
-      color: "text-slate-600 dark:text-slate-400",
-      bg: "bg-slate-50 dark:bg-slate-900/20",
+      color: "text-slate-400",
+      bg: "bg-slate-500/10",
+      border: "border-slate-500/30",
     },
   ];
 
   return (
-    <Card
-      className="glass-card animate-slide-up"
-      style={{ animationDelay: "400ms" }}
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay: 0.3 }}
     >
-      <CardHeader className="border-b border-border pb-4">
-        <CardTitle className="flex items-center text-lg font-semibold text-foreground">
-          <Zap className="h-5 w-5 mr-2 text-amber-500" />
-          Quick Actions
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-4 grid grid-cols-1 gap-3">
-        {actions.map((action) => (
-          <Button
-            key={action.path}
-            variant="ghost"
-            className="w-full justify-start h-auto py-3 px-4 hover:bg-muted/50 border border-transparent hover:border-border transition-all group"
-            onClick={() => navigate(action.path)}
-          >
-            <div
-              className={`p-2 rounded-lg ${action.bg} ${action.color} mr-3 group-hover:scale-110 transition-transform`}
+      <GlassCard variant="command" className="rounded-2xl p-1 border border-cyan-500/20" glow={true}>
+        <div className="p-5 border-b border-cyan-500/20">
+          <div className="flex items-center gap-3">
+            <Badge
+              variant="outline"
+              className="px-3 py-1 rounded-full border-cyan-500/50 bg-cyan-500/10 text-cyan-400 backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px]"
             >
-              <action.icon className="h-4 w-4" />
-            </div>
-            <span className="font-medium text-muted-foreground group-hover:text-foreground">
-              {action.label}
-            </span>
-            <ArrowRight className="ml-auto h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-all" />
-          </Button>
-        ))}
-      </CardContent>
-    </Card>
+              <Zap className="w-3 h-3 mr-2" />
+              QUICK ACTIONS
+            </Badge>
+            <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
+          </div>
+          <p className="text-slate-300 text-sm mt-2">
+            Rapid deployment of thermal analysis tools.
+          </p>
+        </div>
+        
+        <div className="p-5 space-y-3">
+          {actions.map((action) => (
+            <motion.button
+              key={action.path}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              whileHover={{ scale: 1.02, x: 5 }}
+              className="w-full flex items-center justify-between p-4 rounded-xl border border-cyan-500/10 hover:border-cyan-500/30 hover:bg-cyan-500/5 transition-all group"
+              onClick={() => navigate(action.path)}
+            >
+              <div className="flex items-center gap-4">
+                <div className={`p-3 rounded-xl ${action.bg} ${action.border} ${action.color} group-hover:scale-110 transition-transform`}>
+                  <action.icon className="h-5 w-5" />
+                </div>
+                <span className="font-bold text-cyan-300 font-mono text-sm tracking-wide">
+                  {action.label}
+                </span>
+              </div>
+              <ArrowRight className="h-5 w-5 text-cyan-500/50 group-hover:text-cyan-400 group-hover:translate-x-2 transition-all" />
+            </motion.button>
+          ))}
+        </div>
+      </GlassCard>
+    </motion.div>
   );
 }
 
@@ -521,7 +691,7 @@ function ValueProposition() {
         </div>
 
         <Button
-          className="w-full bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-bold shadow-lg shadow-orange-500/25 border-0"
+          className="w-full bg-gradient-to-r from-amber-400 to-cyan-500 hover:from-amber-500 hover:to-cyan-600 text-white font-bold shadow-lg shadow-cyan-500/25 border-0"
           onClick={() => navigate("/pricing")}
         >
           Upgrade Now
@@ -536,38 +706,45 @@ function AnalyticsCharts() {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-pulse">
-        <div className="h-64 bg-muted/50 rounded-xl" />
-        <div className="h-64 bg-muted/50 rounded-xl" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <GlassCard variant="data" className="rounded-2xl p-1 border border-cyan-500/20 h-64 animate-pulse" />
+        <GlassCard variant="data" className="rounded-2xl p-1 border border-cyan-500/20 h-64 animate-pulse" />
       </div>
     );
   }
 
   const revenueData = [
-    { name: "Collected", value: 0, color: "#10b981" }, // Placeholder for now
-    { name: "At Risk", value: revenueStats.revenueAtRisk, color: "#f59e0b" },
+    { name: "COLLECTED", value: 0, color: "#06b6d4" }, // cyan-500
+    { name: "AT RISK", value: revenueStats.revenueAtRisk, color: "#f97316" }, // cyan-500
   ];
 
   const pipelineData = [
-    { name: "Leads", value: pipelineStats.activeLeads, color: "#f97316" }, // orange-500
-    { name: "Jobs", value: pipelineStats.convertedLeads, color: "#475569" }, // slate-600
+    { name: "LEADS", value: pipelineStats.activeLeads, color: "#8b5cf6" }, // purple-500
+    { name: "JOBS", value: pipelineStats.convertedLeads, color: "#10b981" }, // emerald-500
   ];
 
   return (
-    <div
-      className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up"
-      style={{ animationDelay: "200ms" }}
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      className="grid grid-cols-1 md:grid-cols-2 gap-8"
     >
       {/* Revenue at Risk Chart */}
-      <Card className="glass-card">
-        <CardHeader>
-          <CardTitle className="flex items-center text-lg">
-            <Target className="h-5 w-5 mr-2 text-amber-500" />
-            Revenue Health
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[200px] w-full">
+      <GlassCard variant="data" className="rounded-2xl p-1 border border-cyan-500/20" glow={true}>
+        <div className="p-5">
+          <div className="flex items-center justify-between mb-6">
+            <Badge
+              variant="outline"
+              className="px-3 py-1 rounded-full border-cyan-500/50 bg-cyan-500/10 text-cyan-400 backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px]"
+            >
+              <Target className="w-3 h-3 mr-2" />
+              REVENUE HEALTH
+            </Badge>
+            <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
+          </div>
+          
+          <div className="h-[180px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={revenueData}
@@ -578,18 +755,20 @@ function AnalyticsCharts() {
                 <YAxis
                   dataKey="name"
                   type="category"
-                  tick={{ fill: "currentColor", fontSize: 12 }}
-                  width={60}
+                  tick={{ fill: "#94a3b8", fontSize: 11, fontWeight: "bold" }}
+                  width={80}
                   axisLine={false}
                   tickLine={false}
                 />
                 <RechartsTooltip
                   cursor={{ fill: "transparent" }}
                   contentStyle={{
-                    backgroundColor: "rgba(0,0,0,0.8)",
-                    border: "none",
+                    backgroundColor: "rgba(15, 23, 42, 0.95)",
+                    border: "1px solid rgba(6, 182, 212, 0.5)",
                     borderRadius: "8px",
-                    color: "#fff",
+                    color: "#e2e8f0",
+                    fontSize: "12px",
+                    fontFamily: "monospace",
                   }}
                 />
                 <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={32}>
@@ -600,33 +779,39 @@ function AnalyticsCharts() {
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <div className="mt-4 flex justify-between items-center px-2">
+          
+          <div className="mt-6 grid grid-cols-2 gap-4 pt-4 border-t border-cyan-500/20">
             <div>
-              <p className="text-sm text-muted-foreground">Unpaid Invoices</p>
-              <p className="text-2xl font-bold text-amber-500">
+              <p className="text-xs text-slate-400 font-mono uppercase tracking-wider">UNPAID INVOICES</p>
+              <p className="text-2xl font-bold text-cyan-300 font-mono mt-1">
                 ${formatNumber(revenueStats.revenueAtRisk)}
               </p>
             </div>
             <div className="text-right">
-              <p className="text-sm text-muted-foreground">Invoice Count</p>
-              <p className="text-xl font-semibold text-foreground">
+              <p className="text-xs text-slate-400 font-mono uppercase tracking-wider">INVOICE COUNT</p>
+              <p className="text-2xl font-bold text-cyan-300 font-mono mt-1">
                 {revenueStats.unpaidCount}
               </p>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </GlassCard>
 
       {/* Lead Pipeline Chart */}
-      <Card className="glass-card">
-        <CardHeader>
-          <CardTitle className="flex items-center text-lg">
-            <TrendingUp className="h-5 w-5 mr-2 text-slate-500" />
-            Lead Pipeline
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[200px] w-full">
+      <GlassCard variant="data" className="rounded-2xl p-1 border border-cyan-500/20" glow={true}>
+        <div className="p-5">
+          <div className="flex items-center justify-between mb-6">
+            <Badge
+              variant="outline"
+              className="px-3 py-1 rounded-full border-purple-500/50 bg-purple-500/10 text-purple-400 backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px]"
+            >
+              <TrendingUp className="w-3 h-3 mr-2" />
+              LEAD PIPELINE
+            </Badge>
+            <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
+          </div>
+          
+          <div className="h-[180px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={pipelineData}
@@ -634,18 +819,20 @@ function AnalyticsCharts() {
               >
                 <XAxis
                   dataKey="name"
-                  tick={{ fill: "currentColor" }}
+                  tick={{ fill: "#94a3b8", fontSize: 11, fontWeight: "bold" }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <YAxis hide />
                 <RechartsTooltip
-                  cursor={{ fill: "rgba(255,255,255,0.1)" }}
+                  cursor={{ fill: "rgba(139, 92, 246, 0.1)" }}
                   contentStyle={{
-                    backgroundColor: "rgba(0,0,0,0.8)",
-                    border: "none",
+                    backgroundColor: "rgba(15, 23, 42, 0.95)",
+                    border: "1px solid rgba(139, 92, 246, 0.5)",
                     borderRadius: "8px",
-                    color: "#fff",
+                    color: "#e2e8f0",
+                    fontSize: "12px",
+                    fontFamily: "monospace",
                   }}
                 />
                 <Bar dataKey="value" radius={[4, 4, 0, 0]} barSize={48}>
@@ -656,25 +843,24 @@ function AnalyticsCharts() {
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <div className="mt-4 flex justify-between items-center px-2">
+          
+          <div className="mt-6 grid grid-cols-2 gap-4 pt-4 border-t border-cyan-500/20">
             <div>
-              <p className="text-sm text-muted-foreground">
-                Conversion Probability
-              </p>
-              <p className="text-2xl font-bold text-slate-500">
+              <p className="text-xs text-slate-400 font-mono uppercase tracking-wider">CONVERSION RATE</p>
+              <p className="text-2xl font-bold text-purple-300 font-mono mt-1">
                 {pipelineStats.conversionRate}%
               </p>
             </div>
             <div className="text-right">
-              <p className="text-sm text-muted-foreground">Active Leads</p>
-              <p className="text-xl font-semibold text-foreground">
+              <p className="text-xs text-slate-400 font-mono uppercase tracking-wider">ACTIVE LEADS</p>
+              <p className="text-2xl font-bold text-purple-300 font-mono mt-1">
                 {pipelineStats.activeLeads}
               </p>
             </div>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </GlassCard>
+    </motion.div>
   );
 }
 

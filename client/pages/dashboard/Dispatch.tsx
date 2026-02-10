@@ -186,7 +186,7 @@ export default function Dispatch() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-slate-500 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-slate-500 bg-clip-text text-transparent">
             Dispatch Center 🚁
           </h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1">
@@ -195,7 +195,7 @@ export default function Dispatch() {
         </div>
         <button
           onClick={() => setShowCreateDialog(true)}
-          className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-lg shadow-orange-200 transition-all hover:scale-105 active:scale-95"
+          className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-lg shadow-cyan-200 transition-all hover:scale-105 active:scale-95"
         >
           <Plus className="w-5 h-5" />
           New Job
@@ -211,18 +211,18 @@ export default function Dispatch() {
             placeholder="Search tickets, clients, or status..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all text-slate-900 dark:text-white"
+            className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none transition-all text-slate-900 dark:text-white"
           />
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className={`flex items-center gap-2 px-4 py-3 bg-white dark:bg-slate-900 border rounded-xl shadow-sm font-medium transition-colors ${statusFilter !== "all" ? "border-orange-200 text-orange-700 bg-orange-50" : "border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"}`}
+              className={`flex items-center gap-2 px-4 py-3 bg-white dark:bg-slate-900 border rounded-xl shadow-sm font-medium transition-colors ${statusFilter !== "all" ? "border-cyan-200 text-cyan-700 bg-cyan-50" : "border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"}`}
             >
               <Filter className="w-5 h-5" />
               Filter
               {statusFilter !== "all" && (
-                <span className="ml-1 text-xs bg-orange-200 text-orange-800 px-1.5 py-0.5 rounded-full capitalize">
+                <span className="ml-1 text-xs bg-cyan-200 text-cyan-800 px-1.5 py-0.5 rounded-full capitalize">
                   {statusFilter.replace("_", " ")}
                 </span>
               )}
@@ -255,7 +255,7 @@ export default function Dispatch() {
         </DropdownMenu>
         <button
           onClick={() => setShowMapView(!showMapView)}
-          className={`flex items-center gap-2 px-4 py-3 border rounded-xl shadow-sm font-medium transition-colors ${showMapView ? "bg-orange-50 border-orange-200 text-orange-700" : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"}`}
+          className={`flex items-center gap-2 px-4 py-3 border rounded-xl shadow-sm font-medium transition-colors ${showMapView ? "bg-cyan-50 border-cyan-200 text-cyan-700" : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"}`}
         >
           {showMapView ? (
             <>
@@ -290,7 +290,7 @@ export default function Dispatch() {
             </div>
           ) : filteredJobs.length === 0 ? (
             <div className="p-12 text-center">
-              <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mx-auto text-orange-500 mb-4">
+              <div className="w-16 h-16 bg-cyan-50 rounded-full flex items-center justify-center mx-auto text-cyan-500 mb-4">
                 <Calendar className="w-8 h-8" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
@@ -306,7 +306,7 @@ export default function Dispatch() {
                   <div className="hidden md:grid grid-cols-12 p-4 items-center hover:bg-gray-50/50 dark:hover:bg-slate-800/50 transition-colors group">
                     <div className="col-span-3 pr-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 shrink-0">
+                        <div className="w-10 h-10 rounded-lg bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center text-cyan-600 dark:text-cyan-400 shrink-0">
                           <Building2 className="w-5 h-5" />
                         </div>
                         <div>
@@ -387,7 +387,7 @@ export default function Dispatch() {
                           job.status === "pending"
                             ? "bg-yellow-50 text-yellow-700 border-yellow-200"
                             : job.status === "en_route"
-                              ? "bg-orange-50 text-orange-700 border-orange-200"
+                              ? "bg-cyan-50 text-cyan-700 border-cyan-200"
                               : job.status === "on_site"
                                 ? "bg-slate-50 text-slate-700 border-slate-200"
                                 : job.status === "completed"
@@ -400,7 +400,7 @@ export default function Dispatch() {
                             job.status === "pending"
                               ? "bg-yellow-500"
                               : job.status === "en_route"
-                                ? "bg-orange-500"
+                                ? "bg-cyan-500"
                                 : job.status === "on_site"
                                   ? "bg-slate-500"
                                   : job.status === "completed"
@@ -415,7 +415,7 @@ export default function Dispatch() {
                     <div className="col-span-2 text-right">
                       <Link
                         to={`/dashboard/jobs/${job.id}`}
-                        className="text-orange-500 hover:text-orange-700 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="text-cyan-500 hover:text-cyan-700 font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity"
                       >
                         View Details
                       </Link>
@@ -426,7 +426,7 @@ export default function Dispatch() {
                   <div className="md:hidden p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-orange-600 dark:text-orange-400 shrink-0">
+                        <div className="w-10 h-10 rounded-lg bg-cyan-50 dark:bg-cyan-900/20 flex items-center justify-center text-cyan-600 dark:text-cyan-400 shrink-0">
                           <Building2 className="w-5 h-5" />
                         </div>
                         <div>
@@ -446,7 +446,7 @@ export default function Dispatch() {
                           job.status === "pending"
                             ? "bg-yellow-50 text-yellow-700 border-yellow-200"
                             : job.status === "en_route"
-                              ? "bg-orange-50 text-orange-700 border-orange-200"
+                              ? "bg-cyan-50 text-cyan-700 border-cyan-200"
                               : job.status === "on_site"
                                 ? "bg-slate-50 text-slate-700 border-slate-200"
                                 : job.status === "completed"

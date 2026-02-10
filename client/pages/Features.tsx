@@ -46,7 +46,7 @@ const staggerContainer = {
 export function Features() {
   const coreFeatures = [
     {
-      icon: <Calculator className="h-8 w-8 text-orange-500" />,
+      icon: <Calculator className="h-8 w-8 text-primary" />,
       title: "Standard Cycle Analysis",
       description:
         "Complete thermodynamic analysis of vapor compression refrigeration cycles with detailed state point calculations.",
@@ -59,7 +59,7 @@ export function Features() {
       ],
     },
     {
-      icon: <TrendingUp className="h-8 w-8 text-emerald-500" />,
+      icon: <TrendingUp className="h-8 w-8 text-primary" />,
       title: "Refrigerant Comparison",
       description:
         "Side-by-side performance comparison of different refrigerants under identical operating conditions.",
@@ -72,7 +72,7 @@ export function Features() {
       ],
     },
     {
-      icon: <Layers className="h-8 w-8 text-slate-500" />,
+      icon: <Layers className="h-8 w-8 text-primary" />,
       title: "Cascade Systems",
       description:
         "Advanced analysis of two-stage cascade refrigeration systems for ultra-low temperature applications.",
@@ -88,37 +88,37 @@ export function Features() {
 
   const professionalFeatures = [
     {
-      icon: <Database className="h-6 w-6 text-orange-500" />,
+      icon: <Database className="h-6 w-6 text-primary" />,
       title: "Calculation History",
       description:
         "Comprehensive database of all your calculations with powerful search and organization tools.",
     },
     {
-      icon: <Download className="h-6 w-6 text-green-500" />,
+      icon: <Download className="h-6 w-6 text-primary" />,
       title: "Export Capabilities",
       description:
         "Export results to PDF, Excel, or JSON formats for reporting and further analysis.",
     },
     {
-      icon: <Shield className="h-6 w-6 text-red-500" />,
+      icon: <Shield className="h-6 w-6 text-primary" />,
       title: "Data Security",
       description:
         "Enterprise-grade security with encrypted data storage and backup.",
     },
     {
-      icon: <Zap className="h-6 w-6 text-amber-500" />,
+      icon: <Zap className="h-6 w-6 text-primary" />,
       title: "High-Speed Calculations",
       description:
         "Optimized algorithms providing instant results even for complex multi-variable analyses.",
     },
     {
-      icon: <Users className="h-6 w-6 text-slate-500" />,
+      icon: <Users className="h-6 w-6 text-primary" />,
       title: "Team Collaboration",
       description:
         "Share calculations and collaborate with team members on projects seamlessly.",
     },
     {
-      icon: <Clock className="h-6 w-6 text-slate-500" />,
+      icon: <Clock className="h-6 w-6 text-primary" />,
       title: "Project Management",
       description:
         "Organize calculations into projects and track progress over time with ease.",
@@ -128,7 +128,7 @@ export function Features() {
   const technicalSpecs = [
     {
       title: "Thermodynamics",
-      color: "text-orange-400",
+      color: "text-primary",
       items: [
         {
           icon: <Thermometer className="h-4 w-4" />,
@@ -150,7 +150,7 @@ export function Features() {
     },
     {
       title: "Reporting",
-      color: "text-emerald-400",
+      color: "text-primary",
       items: [
         {
           icon: <FileText className="h-4 w-4" />,
@@ -169,7 +169,7 @@ export function Features() {
     },
     {
       title: "Support",
-      color: "text-amber-400",
+      color: "text-primary",
       items: [
         { icon: <Mail className="h-4 w-4" />, text: "Priority Email Support" },
         { icon: <Users className="h-4 w-4" />, text: "Community Access" },
@@ -183,7 +183,7 @@ export function Features() {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-orange-500/30">
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary/30 selection:text-primary">
       <Header variant="landing" />
 
       <main className="flex-grow pt-24">
@@ -195,7 +195,7 @@ export function Features() {
         <section className="relative px-4 pb-20 pt-10 overflow-hidden">
           {/* Background Elements */}
           <div className="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-b from-slate-50/50 to-transparent dark:from-slate-900/20 dark:to-transparent pointer-events-none -z-10" />
-          <div className="absolute top-[20%] right-[-10%] w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute top-[20%] right-[-10%] w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none" />
           <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none" />
 
           <div className="max-w-[1600px] mx-auto text-center">
@@ -208,7 +208,7 @@ export function Features() {
               <motion.div variants={fadeInUp}>
                 <Badge
                   variant="outline"
-                  className="mb-6 border-orange-200 bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800 backdrop-blur-sm"
+                  className="mb-6 border-primary/30 bg-primary/10 text-primary dark:bg-primary/20 backdrop-blur-sm"
                 >
                   <Cpu className="w-3 h-3 mr-2" />
                   Powerful Calculation Engines
@@ -217,10 +217,10 @@ export function Features() {
 
               <motion.h1
                 variants={fadeInUp}
-                className="text-5xl md:text-7xl font-bold tracking-tight mb-8"
+                className="text-5xl md:text-7xl font-bold font-mono tracking-tight mb-8"
               >
                 Features designed for <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-slate-500 to-emerald-500">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/80 to-primary">
                   Modern Engineering
                 </span>
               </motion.h1>
@@ -241,7 +241,7 @@ export function Features() {
                 <Link to="/signup">
                   <Button
                     size="lg"
-                    className="h-14 px-8 text-lg rounded-full bg-orange-600 hover:bg-orange-700 shadow-xl shadow-orange-500/20"
+                    className="h-14 px-8 text-lg rounded-full font-medium text-foreground shadow-xl"
                   >
                     Start Calculating
                     <ArrowRight className="ml-2 h-5 w-5" />
@@ -253,7 +253,7 @@ export function Features() {
         </section>
 
         {/* Core Calculation Engines */}
-        <section className="py-24 px-4 bg-slate-50/50 dark:bg-slate-950/50 border-y border-slate-200 dark:border-slate-800">
+        <section className="py-24 px-4 bg-secondary/30 dark:bg-secondary/10 border-y border-border">
           <div className="max-w-[1600px] mx-auto">
             <div className="grid lg:grid-cols-3 gap-8">
               {coreFeatures.map((feature, index) => (
@@ -264,9 +264,9 @@ export function Features() {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1, duration: 0.5 }}
                 >
-                  <Card className="h-full border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group">
+                  <Card className="h-full border-border bg-card/80 dark:bg-card/50 backdrop-blur-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group">
                     <CardHeader>
-                      <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform">
+                      <div className="w-16 h-16 rounded-2xl bg-secondary dark:bg-secondary/50 border border-border flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform">
                         {feature.icon}
                       </div>
                       <CardTitle className="text-2xl mb-2">
@@ -280,8 +280,8 @@ export function Features() {
                       <ul className="space-y-4 mt-4">
                         {feature.features.map((item, idx) => (
                           <li key={idx} className="flex items-start">
-                            <CheckCircle className="h-5 w-5 text-emerald-500 mr-3 shrink-0 mt-0.5" />
-                            <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                            <CheckCircle className="h-5 w-5 text-primary mr-3 shrink-0 mt-0.5" />
+                            <span className="text-sm font-medium text-foreground">
                               {item}
                             </span>
                           </li>
@@ -316,9 +316,9 @@ export function Features() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.05 }}
-                  className="p-6 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-orange-500/50 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-all duration-300 group"
+                  className="p-6 rounded-2xl border border-border hover:border-primary/50 hover:bg-secondary/50 dark:hover:bg-secondary/20 transition-all duration-300 group"
                 >
-                  <div className="mb-4 p-3 bg-slate-100 dark:bg-slate-800 w-fit rounded-xl group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors">
+                  <div className="mb-4 p-3 bg-secondary dark:bg-secondary/50 w-fit rounded-xl group-hover:bg-primary/10 transition-colors">
                     {feature.icon}
                   </div>
                   <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
@@ -330,11 +330,11 @@ export function Features() {
         </section>
 
         {/* Technical Specs & Dark Section */}
-        <section className="py-24 px-4 bg-slate-900 text-white relative overflow-hidden">
+        <section className="py-24 px-4 bg-secondary text-foreground relative overflow-hidden">
           {/* Decorative Background */}
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-500/20 blur-[150px] rounded-full pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-slate-500/20 blur-[150px] rounded-full pointer-events-none" />
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 dark:opacity-20" />
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/10 blur-[150px] rounded-full pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-primary/5 blur-[150px] rounded-full pointer-events-none" />
 
           <div className="max-w-[1600px] mx-auto relative z-10">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -342,7 +342,7 @@ export function Features() {
                 <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
                   Technical Specifications
                 </h2>
-                <p className="text-xl text-slate-300 mb-8 leading-relaxed">
+                <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
                   Powered by industry-standard libraries including NIST Refprop
                   and validated equations of state. We ensure every calculation
                   meets rigorous engineering standards.
@@ -350,7 +350,7 @@ export function Features() {
                 <Link to="/contact">
                   <Button
                     variant="outline"
-                    className="border-white/20 text-white hover:bg-white/10 hover:text-white"
+                    className="border-primary/30 text-foreground hover:bg-primary/10"
                   >
                     Request Technical Documentation
                   </Button>
@@ -365,7 +365,7 @@ export function Features() {
                     whileInView={{ x: 0, opacity: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
-                    className="bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-colors"
+                    className="bg-card/50 backdrop-blur-md border border-border rounded-xl p-6 hover:bg-card transition-colors"
                   >
                     <h3 className={`text-lg font-bold mb-4 ${spec.color}`}>
                       {spec.title}
@@ -374,7 +374,7 @@ export function Features() {
                       {spec.items.map((item, idx) => (
                         <div
                           key={idx}
-                          className="flex items-center text-sm text-slate-200"
+                          className="flex items-center text-sm text-foreground"
                         >
                           <span className={`mr-3 ${spec.color}`}>
                             {item.icon}
@@ -404,7 +404,7 @@ export function Features() {
               <Link to="/signup">
                 <Button
                   size="lg"
-                  className="h-14 px-8 rounded-full bg-orange-600 hover:bg-orange-700 text-lg"
+                  className="h-14 px-8 rounded-full font-medium text-foreground text-lg"
                 >
                   Get Started Now
                 </Button>

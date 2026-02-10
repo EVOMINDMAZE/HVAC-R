@@ -1,0 +1,149 @@
+/* Futuristic Military-Grade AI Design Tokens
+ * ===========================================
+ * This file defines CSS custom properties (variables) for the futuristic
+ * military-grade AI interface redesign. Tokens are organized by theme
+ * (light/dark) and category (color, spacing, typography, etc.).
+ */
+
+:root {
+  /* Color Palette - Light Theme (Default) */
+  --background: 0 0% 100%; /* White background */
+  --foreground: 222 47% 4%; /* Dark slate text */
+
+  --card: 0 0% 98%; /* Off-white */
+  --card-foreground: 222 47% 4%;
+
+  --popover: 0 0% 98%;
+  --popover-foreground: 222 47% 4%;
+
+  /* Primary: Professional blue (trust, reliability) */
+  --primary: 221 83% 56%; /* Blue-600 */
+  --primary-foreground: 0 0% 100%; /* White text on blue */
+
+  /* Secondary: Neutral gray */
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222 47% 4%;
+
+  /* Muted: Subtle gray for less important text */
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 47%;
+
+  /* Accent: Brand orange (ThermoNeural identity) */
+  --accent: 20 90% 48%; /* Orange-600 */
+  --accent-foreground: 0 0% 100%; /* White text on orange */
+
+  /* Destructive: System red (errors, destructive actions) */
+  --destructive: 0 74% 50%; /* Red-600 */
+  --destructive-foreground: 0 0% 100%; /* White text on red */
+
+  /* Border, input, ring */
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 221 83% 56%; /* Blue ring matching primary */
+
+  --radius: 0.75rem;
+
+  /* Sidebar */
+  --sidebar-background: 0 0% 99%;
+  --sidebar-foreground: 222 47% 4%;
+  --sidebar-primary: 221 83% 56%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 20 90% 48%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-border: 214 32% 91%;
+  --sidebar-ring: 221 83% 56%;
+}
+
+.dark {
+  /* Color Palette - Dark Theme (Primary Interface) */
+  --background: 222 47% 4%; /* Dark slate background */
+  --foreground: 210 40% 98%; /* Near-white text */
+
+  --card: 222 47% 8%; /* Slightly lighter slate */
+  --card-foreground: 210 40% 98%;
+
+  --popover: 222 47% 8%;
+  --popover-foreground: 210 40% 98%;
+
+  /* Primary: Lighter blue for dark mode */
+  --primary: 221 83% 65%;
+  --primary-foreground: 222 47% 4%; /* Dark text on light blue */
+
+  /* Secondary: Dark slate for secondary elements */
+  --secondary: 222 47% 11%;
+  --secondary-foreground: 210 40% 98%;
+
+  /* Muted: Subtle gray for less important text */
+  --muted: 222 47% 15%;
+  --muted-foreground: 210 40% 80%;
+
+  /* Accent: Lighter orange for dark mode */
+  --accent: 20 90% 55%;
+  --accent-foreground: 222 47% 4%; /* Dark text on orange */
+
+  /* Destructive: Lighter red for dark mode */
+  --destructive: 0 74% 60%;
+  --destructive-foreground: 210 40% 98%; /* Light text on red */
+
+  /* Border, input, ring */
+  --border: 222 47% 20%;
+  --input: 222 47% 20%;
+  --ring: 221 83% 65%; /* Lighter blue ring */
+
+  --radius: 0.75rem;
+
+  /* Sidebar */
+  --sidebar-background: 222 47% 6%;
+  --sidebar-foreground: 210 40% 98%;
+  --sidebar-primary: 221 83% 65%;
+  --sidebar-primary-foreground: 222 47% 4%;
+  --sidebar-accent: 20 90% 55%;
+  --sidebar-accent-foreground: 222 47% 4%;
+  --sidebar-border: 222 47% 20%;
+  --sidebar-ring: 221 83% 65%;
+}
+
+/* Typography Tokens */
+:root {
+  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Montserrat', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* Spacing Tokens (based on Tailwind scale) */
+:root {
+  --spacing-unit: 0.25rem; /* 4px */
+  --spacing-2: 0.5rem;    /* 8px */
+  --spacing-4: 1rem;      /* 16px */
+  --spacing-6: 1.5rem;    /* 24px */
+  --spacing-8: 2rem;      /* 32px */
+  --spacing-12: 3rem;     /* 48px */
+  --spacing-16: 4rem;     /* 64px */
+  --spacing-24: 6rem;     /* 96px */
+}
+
+/* Animation Tokens */
+:root {
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Glow Effect Tokens */
+:root {
+  --glow-primary: 0 0 15px hsl(var(--primary));
+  --glow-accent: 0 0 15px hsl(var(--accent));
+  --glow-destructive: 0 0 15px hsl(var(--destructive));
+}
+
+/* Z-index Tokens */
+:root {
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal: 1040;
+  --z-popover: 1050;
+  --z-tooltip: 1060;
+  --z-toast: 1070;
+}

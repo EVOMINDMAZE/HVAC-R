@@ -185,7 +185,7 @@ export default function ActiveJob() {
   const clientAddress = job.client?.address || "Address Hidden (Restricted)";
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-slate-950">
       {/* Navbar */}
       <div className="bg-card border-b border-border px-4 py-3 flex items-center justify-between sticky top-0 z-20">
         <div className="flex items-center gap-3">
@@ -239,14 +239,14 @@ export default function ActiveJob() {
             <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
               Equipment
             </h3>
-            <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-xl border border-orange-100 dark:border-orange-800/50 border-l-4 border-l-orange-400">
-              <div className="font-bold text-orange-900 dark:text-orange-300">
+            <div className="bg-cyan-50 dark:bg-cyan-900/20 p-4 rounded-xl border border-cyan-100 dark:border-cyan-800/50 border-l-4 border-l-cyan-400">
+              <div className="font-bold text-cyan-900 dark:text-cyan-300">
                 {job.asset.name}
               </div>
-              <div className="text-sm text-orange-700 dark:text-orange-400">
+              <div className="text-sm text-cyan-700 dark:text-cyan-400">
                 {job.asset.type} • {job.asset.serial_number}
               </div>
-              <div className="text-sm mt-2 text-orange-800 dark:text-orange-300/80 italic">
+              <div className="text-sm mt-2 text-cyan-800 dark:text-cyan-300/80 italic">
                 "{job.description || "No description provided"}"
               </div>
             </div>
@@ -267,7 +267,7 @@ export default function ActiveJob() {
             <p className="text-muted-foreground">Ready to head out?</p>
           )}
           {displayStatus === "en_route" && (
-            <p className="animate-pulse text-orange-600 dark:text-orange-400 font-bold">
+            <p className="animate-pulse text-cyan-600 dark:text-cyan-400 font-bold">
               Sharing location with client...
             </p>
           )}
@@ -288,7 +288,7 @@ export default function ActiveJob() {
         {displayStatus === "assigned" && (
           <button
             onClick={() => updateStatus("en_route")}
-            className="w-full py-4 bg-orange-600 text-white rounded-xl font-bold text-lg flex items-center justify-center gap-2"
+            className="w-full py-4 bg-cyan-600 text-white rounded-xl font-bold text-lg flex items-center justify-center gap-2"
           >
             <Navigation className="w-5 h-5" />
             Start Travel (En Route)

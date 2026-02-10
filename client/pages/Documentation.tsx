@@ -34,8 +34,8 @@ const documentation: {
   {
     category: "Getting Started",
     icon: Rocket,
-    colorClass: "text-orange-600 dark:text-orange-400",
-    gradientClass: "from-orange-500/10 to-transparent",
+    colorClass: "text-cyan-600 dark:text-cyan-400",
+    gradientClass: "from-cyan-500/10 to-transparent",
     articles: [
       {
         title: "Welcome to ThermoNeural",
@@ -86,8 +86,8 @@ const documentation: {
   {
     category: "HVAC Reference",
     icon: Thermometer,
-    colorClass: "text-orange-600 dark:text-orange-400",
-    gradientClass: "from-orange-500/10 to-transparent",
+    colorClass: "text-cyan-600 dark:text-cyan-400",
+    gradientClass: "from-cyan-500/10 to-transparent",
     articles: [
       {
         title: "Refrigerant Properties",
@@ -186,12 +186,12 @@ export function Documentation() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-orange-500/30">
+    <div className="min-h-screen bg-slate-950 text-foreground selection:bg-cyan-500/30">
       <Header variant="landing" />
 
       {/* Background Elements */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-orange-500/5 blur-[100px]" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-cyan-500/5 blur-[100px]" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-slate-500/5 blur-[100px]" />
       </div>
 
@@ -206,13 +206,13 @@ export function Documentation() {
           <div className="max-w-3xl">
             <Badge
               variant="outline"
-              className="mb-6 border-orange-200 bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800 backdrop-blur-sm"
+              className="mb-6 border-cyan-200 bg-cyan-50 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300 dark:border-cyan-800 backdrop-blur-sm"
             >
               Documentation
             </Badge>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold font-mono tracking-tight mb-6">
               Engineering
-              <span className="bg-gradient-to-r from-orange-600 to-slate-600 bg-clip-text text-transparent ml-3">
+              <span className="bg-gradient-to-r from-cyan-600 to-cyan-700 bg-clip-text text-transparent ml-3">
                 Knowledge Base
               </span>
             </h1>
@@ -224,7 +224,7 @@ export function Documentation() {
         </motion.div>
 
         {/* Search and Navigation */}
-        <div className="mb-12 sticky top-20 z-20 bg-background/80 backdrop-blur-md p-4 rounded-2xl border border-border/50 shadow-sm">
+        <div className="mb-12 sticky top-20 z-20 bg-slate-950/80 backdrop-blur-md p-4 rounded-2xl border border-border/50 shadow-sm">
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
@@ -324,7 +324,7 @@ export function Documentation() {
                       className={`bg-gradient-to-r ${category.gradientClass} border-b border-border py-4`}
                     >
                       <CardTitle
-                        className={`flex items-center text-xl font-semibold ${category.colorClass}`}
+                        className={`flex items-center text-xl font-semibold font-mono ${category.colorClass}`}
                       >
                         <IconComponent className="h-6 w-6 mr-3" />
                         {category.category}
@@ -340,7 +340,7 @@ export function Documentation() {
                           >
                             <div className="relative z-10">
                               <div className="flex items-start justify-between mb-2">
-                                <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors pr-6">
+                                <h3 className="font-semibold font-mono text-foreground group-hover:text-primary transition-colors pr-6">
                                   {article.title}
                                 </h3>
                                 <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
@@ -379,7 +379,7 @@ export function Documentation() {
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             <QuickLinkCard
-              icon={<Download className="h-8 w-8 text-orange-500" />}
+              icon={<Download className="h-8 w-8 text-cyan-500" />}
               title="PDF Guides"
               description="Download comprehensive guides for offline reading and sharing with your team."
               action="Download All"

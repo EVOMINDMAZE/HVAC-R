@@ -29,6 +29,7 @@ import { Footer } from "@/components/Footer";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { PLANS, STRIPE_PRICE_IDS } from "@/lib/stripe";
+import { ROICalculator } from "@/components/ui/roi-calculator";
 
 // Initialize Stripe (Replace with your Publishable Key)
 const stripePromise = loadStripe(
@@ -131,14 +132,14 @@ export default function Pricing() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-orange-500/30">
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary/30">
       <Header variant="landing" />
 
       <main className="flex-grow pt-24 pb-20 px-4 relative overflow-hidden">
         {/* Background Elements */}
-        <div className="absolute top-0 inset-x-0 h-[600px] bg-gradient-to-b from-orange-50/50 to-transparent dark:from-orange-900/10 dark:to-transparent pointer-events-none -z-10" />
-        <div className="absolute top-[10%] right-[-10%] w-[600px] h-[600px] bg-orange-500/10 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-[10%] left-[-10%] w-[600px] h-[600px] bg-orange-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute top-0 inset-x-0 h-[600px] bg-gradient-to-b from-primary/5 to-transparent pointer-events-none -z-10" />
+        <div className="absolute top-[10%] right-[-10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-[10%] left-[-10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="max-w-[1600px] mx-auto">
           <motion.div
@@ -158,7 +159,7 @@ export default function Pricing() {
 
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
               Simple, Transparent <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-orange-700">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/80">
                 Pricing
               </span>
             </h1>
@@ -181,12 +182,34 @@ export default function Pricing() {
                   <TabsTrigger value="monthly">Monthly</TabsTrigger>
                   <TabsTrigger value="yearly">
                     Yearly{" "}
-                    <Badge className="ml-2 bg-green-600 hover:bg-green-700">
+                    <Badge className="ml-2 bg-success hover:bg-success/80 text-success-foreground">
                       Save 2 months
                     </Badge>
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
+            </div>
+
+            {/* Trust Signals */}
+            <div className="flex flex-wrap items-center justify-center gap-6 mt-6 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4 text-success" />
+                <span>30-Day Money-Back Guarantee</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <svg className="h-8 w-auto" viewBox="0 0 50 16" fill="currentColor">
+                  <text x="0" y="12" fontSize="10" fontWeight="bold">VISA</text>
+                </svg>
+                <svg className="h-6 w-auto" viewBox="0 0 40 24" fill="currentColor">
+                  <circle cx="20" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <circle cx="14" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/>
+                </svg>
+                <span className="text-xs">Secure Payment</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-primary" />
+                <span>No Credit Card Required for Trial</span>
+              </div>
             </div>
           </motion.div>
 
@@ -197,18 +220,21 @@ export default function Pricing() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <Card className="h-full relative overflow-hidden border-border bg-card/50 backdrop-blur-sm hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-300">
+              <Card className="h-full relative overflow-hidden border-border bg-card/50 backdrop-blur-sm hover:shadow-xl hover:border-primary/30 transition-all duration-300">
                 <CardHeader>
-                  <CardTitle className="text-2xl font-bold flex items-center justify-between">
+                  <CardTitle className="text-2xl font-bold font-mono flex items-center justify-between">
                     Free
                   </CardTitle>
                   <CardDescription className="text-base mt-2">
                     Essential tools for students and hobbyists.
                   </CardDescription>
+                  <div className="mt-4 inline-flex items-center px-3 py-1 rounded-full bg-secondary text-xs font-medium text-muted-foreground">
+                    Best for Students & Hobbyists
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="mb-6">
-                    <span className="text-4xl font-bold">$0</span>
+                    <span className="text-4xl font-bold font-mono">$0</span>
                     <span className="text-muted-foreground ml-2">
                       / {billingInterval === "yearly" ? "year" : "month"}
                     </span>
@@ -216,8 +242,8 @@ export default function Pricing() {
                   <div className="space-y-4">
                     {PLANS.FREE.features.map((feature, i) => (
                       <div key={i} className="flex items-center">
-                        <div className="h-5 w-5 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mr-3 shrink-0">
-                          <Check className="h-3 w-3 text-slate-600 dark:text-slate-400" />
+                        <div className="h-5 w-5 rounded-full bg-secondary flex items-center justify-center mr-3 shrink-0">
+                          <Check className="h-3 w-3 text-muted-foreground" />
                         </div>
                         <span className="text-muted-foreground">{feature}</span>
                       </div>
@@ -243,31 +269,34 @@ export default function Pricing() {
               transition={{ delay: 0.3 }}
               className="relative"
             >
-              <div className="absolute -inset-[2px] rounded-[22px] bg-gradient-to-r from-slate-600 via-orange-600 to-slate-600 opacity-75 blur-sm animate-pulse" />
-              <Card className="h-full relative overflow-hidden border-transparent bg-background/90 backdrop-blur-xl transition-all duration-300">
+              <div className="absolute -inset-[2px] rounded-[22px] bg-gradient-to-r from-primary via-primary to-primary opacity-75 blur-sm animate-pulse" />
+              <Card className="h-full relative overflow-hidden border-transparent bg-card/90 backdrop-blur-xl transition-all duration-300">
                 <div className="absolute top-0 right-0 p-4">
-                  <Badge className="bg-gradient-to-r from-slate-600 to-orange-600 border-0 text-white px-3 py-1">
+                  <Badge className="bg-gradient-to-r from-primary to-primary/80 border-0 text-primary-foreground px-3 py-1">
                     Most Popular
                   </Badge>
                 </div>
                 <CardHeader>
-                  <CardTitle className="text-2xl font-bold flex items-center gap-2">
+                  <CardTitle className="text-2xl font-bold font-mono flex items-center gap-2">
                     Pro
-                    <Zap className="h-5 w-5 text-amber-400 fill-amber-400" />
+                    <Zap className="h-5 w-5 text-warning fill-warning" />
                   </CardTitle>
                   <CardDescription className="text-base mt-2">
                     For professional engineers and serious technicians.
                   </CardDescription>
+                  <div className="mt-4 inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-xs font-medium text-primary">
+                    Best for Professional Engineers
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="mb-6">
-                    <span className="text-5xl font-bold text-foreground">
+                    <span className="text-5xl font-bold font-mono text-foreground">
                       ${getPlan("PRO").price}
                     </span>
                     <span className="text-muted-foreground ml-2">
                       / {billingInterval === "yearly" ? "year" : "month"}
                       {billingInterval === "yearly" && (
-                        <span className="ml-2 text-sm text-green-600 font-medium">
+                        <span className="ml-2 text-sm text-success font-medium">
                           (Save ${PLANS.PRO.price * 12 - PLANS.PRO_YEARLY.price})
                         </span>
                       )}
@@ -276,8 +305,8 @@ export default function Pricing() {
                   <div className="space-y-4">
                     {getPlan("PRO").features.map((feature, i) => (
                       <div key={i} className="flex items-center">
-                        <div className="h-5 w-5 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mr-3 shrink-0">
-                          <Check className="h-3 w-3 text-orange-600 dark:text-orange-400" />
+                        <div className="h-5 w-5 rounded-full bg-primary/20 flex items-center justify-center mr-3 shrink-0">
+                          <Check className="h-3 w-3 text-primary" />
                         </div>
                         <span className="font-medium text-foreground">
                           {feature}
@@ -288,7 +317,7 @@ export default function Pricing() {
                 </CardContent>
                 <CardFooter className="mt-auto pt-8">
                   <Button
-                    className="w-full h-12 text-lg bg-gradient-to-r from-slate-600 to-orange-600 hover:from-slate-700 hover:to-orange-700 text-white shadow-lg shadow-orange-500/25 border-0"
+                    className="w-full h-12 text-lg bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-lg shadow-primary/25 border-0"
                     onClick={() => handleSubscribe("pro")}
                     disabled={loading === "pro"}
                   >
@@ -309,31 +338,34 @@ export default function Pricing() {
               transition={{ delay: 0.4 }}
               className="relative"
             >
-              <div className="absolute -inset-[2px] rounded-[22px] bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 opacity-75 blur-sm" />
-              <Card className="h-full relative overflow-hidden border-transparent bg-background/90 backdrop-blur-xl transition-all duration-300">
+              <div className="absolute -inset-[2px] rounded-[22px] bg-gradient-to-r from-highlight via-highlight to-highlight opacity-75 blur-sm" />
+              <Card className="h-full relative overflow-hidden border-transparent bg-card/90 backdrop-blur-xl transition-all duration-300">
                 <div className="absolute top-0 right-0 p-4">
-                  <Badge className="bg-gradient-to-r from-indigo-600 to-purple-600 border-0 text-white px-3 py-1">
+                  <Badge className="bg-gradient-to-r from-highlight to-highlight/80 border-0 text-highlight-foreground px-3 py-1">
                     Business
                   </Badge>
                 </div>
                 <CardHeader>
-                  <CardTitle className="text-2xl font-bold flex items-center gap-2">
+                  <CardTitle className="text-2xl font-bold font-mono flex items-center gap-2">
                     Business
-                    <Building className="h-5 w-5 text-indigo-400" />
+                    <Building className="h-5 w-5 text-highlight" />
                   </CardTitle>
                   <CardDescription className="text-base mt-2">
                     Complete "Business in a Box" for HVAC business owners.
                   </CardDescription>
+                  <div className="mt-4 inline-flex items-center px-3 py-1 rounded-full bg-highlight/10 text-xs font-medium text-highlight">
+                    Best for HVAC Business Owners
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="mb-6">
-                    <span className="text-5xl font-bold text-foreground">
+                    <span className="text-5xl font-bold font-mono text-foreground">
                       ${getPlan("BUSINESS").price}
                     </span>
                     <span className="text-muted-foreground ml-2">
                       / {billingInterval === "yearly" ? "year" : "month"}
                       {billingInterval === "yearly" && (
-                        <span className="ml-2 text-sm text-green-600 font-medium">
+                        <span className="ml-2 text-sm text-success font-medium">
                           (Save ${PLANS.BUSINESS.price * 12 - PLANS.BUSINESS_YEARLY.price})
                         </span>
                       )}
@@ -352,7 +384,7 @@ export default function Pricing() {
                     ))}
                   </div>
                 </CardContent>
-                <CardFooter className="mt-auto pt-8">
+                <CardFooter className="mt-auto pt-8 flex flex-col gap-3">
                   <Button
                     className="w-full h-12 text-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg shadow-purple-500/25 border-0"
                     onClick={() => handleSubscribe("business")}
@@ -364,6 +396,17 @@ export default function Pricing() {
                       "Get Business Plan"
                     )}
                   </Button>
+                  <Link to="/contact" className="w-full">
+                    <Button
+                      variant="outline"
+                      className="w-full h-10 text-sm border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/20"
+                    >
+                      Contact Sales for Custom Pricing
+                    </Button>
+                  </Link>
+                  <p className="text-xs text-muted-foreground text-center">
+                    Teams larger than 5 users? We offer custom pricing.
+                  </p>
                 </CardFooter>
               </Card>
             </motion.div>
@@ -380,7 +423,8 @@ export default function Pricing() {
               Compare All Features
             </h2>
             <div className="rounded-xl border border-border bg-card overflow-hidden">
-              <div className="grid grid-cols-4 border-b border-border bg-muted/50">
+              {/* Desktop Table Header */}
+              <div className="hidden md:grid grid-cols-4 border-b border-border bg-muted/50">
                 <div className="p-4 font-semibold">Feature</div>
                 <div className="p-4 text-center font-semibold">Free</div>
                 <div className="p-4 text-center font-semibold">Pro</div>
@@ -390,23 +434,47 @@ export default function Pricing() {
                 { name: "Calculations per month", free: "10", pro: "Unlimited", business: "Unlimited" },
                 { name: "Calculation History", free: "Limited", pro: "Unlimited", business: "Unlimited" },
                 { name: "Advanced Analysis Tools", free: "Basic", pro: "✓ All", business: "✓ All" },
-                { name: "PDF Export & Reports", free: "✗", pro: "✓ Advanced", business: "✓ Advanced + White-label" },
-                { name: "API Access", free: "✗", pro: "✓", business: "✓" },
-                { name: "Team Collaboration", free: "✗", pro: "Basic", business: "✓ Up to 5 users" },
-                { name: "Client Portal", free: "✗", pro: "✗", business: "✓" },
-                { name: "Automation Engine", free: "✗", pro: "✗", business: "✓" },
-                { name: "Business Analytics", free: "✗", pro: "Basic", business: "✓ Advanced" },
+                { name: "PDF Export & Reports", free: "—", pro: "✓ Advanced", business: "✓ Advanced + White-label" },
+                { name: "API Access", free: "—", pro: "✓", business: "✓" },
+                { name: "Team Collaboration", free: "—", pro: "Basic", business: "✓ Up to 5 users" },
+                { name: "Client Portal", free: "—", pro: "—", business: "✓" },
+                { name: "Automation Engine", free: "—", pro: "—", business: "✓" },
+                { name: "Business Analytics", free: "—", pro: "Basic", business: "✓ Advanced" },
                 { name: "Support", free: "Email", pro: "Priority Email", business: "Dedicated + SLA" },
               ].map((row, i) => (
-                <div key={i} className={`grid grid-cols-4 ${i % 2 === 0 ? "bg-card" : "bg-muted/30"} border-b border-border last:border-b-0`}>
-                  <div className="p-4 font-medium">{row.name}</div>
-                  <div className="p-4 text-center">{row.free}</div>
-                  <div className="p-4 text-center">{row.pro}</div>
-                  <div className="p-4 text-center">{row.business}</div>
+                <div key={i} className={`${i % 2 === 0 ? "bg-card" : "bg-muted/30"} border-b border-border last:border-b-0`}>
+                  {/* Mobile Layout */}
+                  <div className="md:hidden p-4">
+                    <div className="font-medium mb-3">{row.name}</div>
+                    <div className="grid grid-cols-3 gap-2 text-sm">
+                      <div className="text-center">
+                        <div className="text-xs text-muted-foreground mb-1">Free</div>
+                        <div className="font-medium">{row.free}</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-xs text-muted-foreground mb-1">Pro</div>
+                        <div className="font-medium text-primary">{row.pro}</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-xs text-muted-foreground mb-1">Business</div>
+                        <div className="font-medium text-highlight">{row.business}</div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Desktop Layout */}
+                  <div className="hidden md:grid grid-cols-4">
+                    <div className="p-4 font-medium">{row.name}</div>
+                    <div className="p-4 text-center">{row.free}</div>
+                    <div className="p-4 text-center text-primary font-medium">{row.pro}</div>
+                    <div className="p-4 text-center text-highlight font-medium">{row.business}</div>
+                  </div>
                 </div>
               ))}
             </div>
           </motion.div>
+
+          {/* ROI Calculator */}
+          <ROICalculator />
 
           {/* FAQ Section */}
           <motion.div

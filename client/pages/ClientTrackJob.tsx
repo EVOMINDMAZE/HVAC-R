@@ -174,7 +174,7 @@ export default function ClientTrackJob() {
           </div>
           <div className="text-right">
             {/* Company Logo or Name */}
-            <div className="text-sm font-bold text-orange-600">
+            <div className="text-sm font-bold text-cyan-600">
               {job.company?.name || "HVAC Service"}
             </div>
           </div>
@@ -182,7 +182,7 @@ export default function ClientTrackJob() {
 
         {/* Tech Info */}
         <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-xl mb-4">
-          <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold">
+          <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center text-cyan-600 font-bold">
             <User className="w-6 h-6" />
           </div>
           <div className="flex-1">
@@ -197,31 +197,31 @@ export default function ClientTrackJob() {
         {/* Timeline Steps */}
         <div className="flex justify-between items-center text-xs text-gray-400 mt-2 px-2">
           <div
-            className={`flex flex-col items-center gap-1 ${["assigned", "en_route", "on_site", "completed"].includes(displayStatus) ? "text-orange-600 font-bold" : ""}`}
+            className={`flex flex-col items-center gap-1 ${["assigned", "en_route", "on_site", "completed"].includes(displayStatus) ? "text-cyan-600 font-bold" : ""}`}
           >
             <div className="w-2 h-2 rounded-full bg-current"></div>
             Confirmed
           </div>
           <div
-            className={`h-[1px] flex-1 bg-gray-200 mx-2 ${["en_route", "on_site", "completed"].includes(displayStatus) ? "bg-orange-600" : ""}`}
+            className={`h-[1px] flex-1 bg-gray-200 mx-2 ${["en_route", "on_site", "completed"].includes(displayStatus) ? "bg-cyan-600" : ""}`}
           ></div>
           <div
-            className={`flex flex-col items-center gap-1 ${["en_route", "on_site", "completed"].includes(displayStatus) ? "text-orange-600 font-bold" : ""}`}
+            className={`flex flex-col items-center gap-1 ${["en_route", "on_site", "completed"].includes(displayStatus) ? "text-cyan-600 font-bold" : ""}`}
           >
             <div className="w-2 h-2 rounded-full bg-current"></div>
             On the Way
           </div>
           <div
-            className={`h-[1px] flex-1 bg-gray-200 mx-2 ${["on_site", "completed"].includes(displayStatus) ? "bg-orange-600" : ""}`}
+            className={`h-[1px] flex-1 bg-gray-200 mx-2 ${["on_site", "completed"].includes(displayStatus) ? "bg-cyan-600" : ""}`}
           ></div>
           <div
-            className={`flex flex-col items-center gap-1 ${["on_site", "completed"].includes(displayStatus) ? "text-orange-600 font-bold" : ""}`}
+            className={`flex flex-col items-center gap-1 ${["on_site", "completed"].includes(displayStatus) ? "text-cyan-600 font-bold" : ""}`}
           >
             <div className="w-2 h-2 rounded-full bg-current"></div>
             Working
           </div>
           <div
-            className={`h-[1px] flex-1 bg-gray-200 mx-2 ${displayStatus === "completed" ? "bg-orange-600" : ""}`}
+            className={`h-[1px] flex-1 bg-gray-200 mx-2 ${displayStatus === "completed" ? "bg-cyan-600" : ""}`}
           ></div>
           <div
             className={`flex flex-col items-center gap-1 ${displayStatus === "completed" ? "text-green-600 font-bold" : ""}`}

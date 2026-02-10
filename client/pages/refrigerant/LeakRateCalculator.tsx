@@ -141,14 +141,14 @@ export default function LeakRateCalculator() {
 
   const getThresholdColor = (rate: number) => {
     if (rate > 30) return "text-red-600 dark:text-red-400";
-    if (rate > 20) return "text-orange-600 dark:text-orange-400";
+    if (rate > 20) return "text-cyan-600 dark:text-cyan-400";
     if (rate > 10) return "text-amber-600 dark:text-amber-400";
     return "text-green-600 dark:text-green-400";
   };
 
   const getThresholdBadge = (rate: number) => {
     if (rate > 30) return <Badge variant="destructive">Critical Leak</Badge>;
-    if (rate > 20) return <Badge className="bg-orange-500">High Leak</Badge>;
+    if (rate > 20) return <Badge className="bg-cyan-500">High Leak</Badge>;
     if (rate > 10) return <Badge variant="secondary">Noticeable</Badge>;
     return (
       <Badge variant="outline" className="text-green-600 border-green-200">
@@ -176,7 +176,7 @@ export default function LeakRateCalculator() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Calculator className="h-8 w-8 text-orange-600" />
+            <Calculator className="h-8 w-8 text-cyan-600" />
             EPA Leak Rate Calculator
           </h1>
           <p className="text-muted-foreground mt-1">
@@ -219,7 +219,7 @@ export default function LeakRateCalculator() {
       {selectedAssetId && selectedAsset && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Results Card */}
-          <Card className="md:col-span-2 border-l-4 border-l-orange-600">
+          <Card className="md:col-span-2 border-l-4 border-l-cyan-600">
             <CardHeader>
               <CardTitle className="text-xl flex items-center justify-between">
                 Calculation Result
@@ -275,7 +275,7 @@ export default function LeakRateCalculator() {
                       className="h-1"
                     />
                     {leakRate > 10 && (
-                      <p className="text-xs text-orange-600 flex items-center gap-1 mt-2">
+                      <p className="text-xs text-cyan-600 flex items-center gap-1 mt-2">
                         <AlertTriangle className="h-3 w-3" />
                         This exceeds the 10% threshold for comfort cooling.
                       </p>
@@ -307,7 +307,7 @@ export default function LeakRateCalculator() {
                 The **Annualizing Method** is one of two EPA-approved ways to
                 calculate leak rates.
               </p>
-              <div className="p-3 bg-background rounded border font-mono">
+              <div className="p-3 bg-slate-950 rounded border font-mono">
                 Rate = (lbs / charge) * (365 / days)
               </div>
               <p className="font-bold text-foreground">
@@ -338,11 +338,11 @@ export default function LeakRateCalculator() {
               {logs.map((log) => (
                 <div
                   key={log.id}
-                  className="flex items-center justify-between p-3 border rounded-lg bg-background hover:bg-muted/30 transition-colors"
+                  className="flex items-center justify-between p-3 border rounded-lg bg-slate-950 hover:bg-muted/30 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-full">
-                      <Database className="h-4 w-4 text-orange-600" />
+                    <div className="p-2 bg-cyan-100 dark:bg-cyan-900/30 rounded-full">
+                      <Database className="h-4 w-4 text-cyan-600" />
                     </div>
                     <div>
                       <p className="font-medium">{log.amount_lbs} lbs Added</p>

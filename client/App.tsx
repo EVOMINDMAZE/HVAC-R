@@ -139,10 +139,14 @@ const InviteLink = lazy(() => import("@/pages/InviteLink"));
 const CreateCompany = lazy(() => import("@/pages/CreateCompany"));
 const InviteTeam = lazy(() => import("@/pages/InviteTeam"));
 import { ErrorModal } from "@/components/ErrorModal";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SupportBar } from "@/components/SupportBar";
 import { Layout } from "@/components/Layout";
 import { Toaster } from "@/components/ui/toaster";
 import { SubscriptionGuard } from "@/components/SubscriptionGuard";
+import PageLoading from "@/components/ui/page-loading.tsx";
+import { MonitoringProvider } from "@/lib/monitoring";
+import { useKeyboardShortcuts, KeyboardShortcutsHelp } from "@/hooks/useKeyboardShortcuts";
 
 export function shouldBypassAuth() {
   // Disable authentication bypass in production for security
@@ -312,14 +316,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   const bypass = shouldBypassAuth();
 
   if (isLoading && !bypass) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-primary">Loading...</p>
-        </div>
-      </div>
-    );
+    return <PageLoading message="Checking authentication..." />;
   }
 
   if (isAuthenticated || bypass) {
@@ -342,13 +339,8 @@ function AppRoutes() {
   return (
     <AnimatePresence mode="wait">
       {bypass && <DevModeBanner isActive={bypass} />}
-      <Suspense
-        fallback={
-          <div className="min-h-screen bg-background flex items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          </div>
-        }
-      >
+      <ErrorBoundary fallback={<PageLoading message="Application error. Please refresh." />}>
+        <Suspense fallback={<PageLoading />}>
         <Routes location={location} key={location.pathname}>
           {/* Public Routes */}
           <Route path="/" element={<Landing />} />
@@ -697,7 +689,24 @@ function AppRoutes() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
+      </ErrorBoundary>
     </AnimatePresence>
+  );
+}
+
+function AppContent() {
+  const { enabled, setEnabled, showHelp, setShowHelp } = useKeyboardShortcuts();
+  
+  return (
+    <>
+      <AppRoutes />
+      <KeyboardShortcutsHelp 
+        show={showHelp} 
+        onClose={() => setShowHelp(false)}
+        enabled={enabled}
+        onToggle={() => setEnabled(!enabled)}
+      />
+    </>
   );
 }
 
@@ -708,7 +717,9 @@ export default function App() {
         <JobProvider>
           <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
             <BrowserRouter>
-              <AppRoutes />
+              <MonitoringProvider>
+                <AppContent />
+              </MonitoringProvider>
               <SupportBar />
               <ErrorModal />
               <Toaster />

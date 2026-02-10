@@ -135,7 +135,7 @@ export function Podcasts() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white pb-20 pt-24 px-4 md:px-8 relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-slate-950 text-white pb-20 pt-24 px-4 md:px-8 relative overflow-hidden font-sans selection:bg-cyan-500/30">
       <audio
         ref={audioRef}
         onTimeUpdate={handleTimeUpdate}
@@ -144,8 +144,8 @@ export function Podcasts() {
       />
 
       {/* Ambient Background */}
-      <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-emerald-900/10 via-orange-900/5 to-transparent pointer-events-none" />
-      <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-cyan-900/10 via-cyan-900/5 to-transparent pointer-events-none" />
+      <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-6xl mx-auto space-y-16 relative z-10">
         {/* Header & Navigation */}
@@ -166,9 +166,9 @@ export function Podcasts() {
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-6xl font-bold tracking-tight mb-3"
+              className="text-4xl md:text-6xl font-bold font-mono tracking-tight mb-3"
             >
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-500">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-slate-600">
                 Sonic HVAC
               </span>
             </motion.h1>
@@ -196,11 +196,11 @@ export function Podcasts() {
               className="bg-zinc-900/40 backdrop-blur-xl rounded-3xl p-6 md:p-10 border border-white/5 shadow-2xl relative overflow-hidden group"
             >
               {/* Glow Effect */}
-              <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-emerald-500/5 to-orange-500/5 pointer-events-none" />
+              <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-cyan-500/5 to-slate-500/5 pointer-events-none" />
 
               <div className="flex flex-col md:flex-row gap-8 items-center relative z-10">
                 {/* Album Art */}
-                <div className="w-full md:w-72 aspect-square rounded-2xl overflow-hidden shadow-2xl relative flex-shrink-0 group-hover:shadow-emerald-500/20 transition-shadow duration-500">
+                <div className="w-full md:w-72 aspect-square rounded-2xl overflow-hidden shadow-2xl relative flex-shrink-0 group-hover:shadow-cyan-500/20 transition-shadow duration-500">
                   <img
                     src={activePodcast.coverImage}
                     alt={activePodcast.title}
@@ -211,17 +211,17 @@ export function Podcasts() {
                 {/* Player Controls & Info */}
                 <div className="flex-1 space-y-6 text-center md:text-left w-full h-full flex flex-col justify-center">
                   <div className="space-y-2">
-                    <div className="flex items-center justify-center md:justify-start gap-2 text-emerald-400 text-xs font-bold uppercase tracking-widest">
+                    <div className="flex items-center justify-center md:justify-start gap-2 text-cyan-400 text-xs font-bold uppercase tracking-widest">
                       {isPlaying && (
                         <div className="flex gap-1 items-end h-3">
-                          <span className="w-1 h-3 bg-emerald-400 animate-[bounce_1s_infinite]" />
-                          <span className="w-1 h-2 bg-emerald-400 animate-[bounce_1.2s_infinite]" />
-                          <span className="w-1 h-3 bg-emerald-400 animate-[bounce_0.8s_infinite]" />
+                          <span className="w-1 h-3 bg-cyan-400 animate-[bounce_1s_infinite]" />
+                          <span className="w-1 h-2 bg-cyan-400 animate-[bounce_1.2s_infinite]" />
+                          <span className="w-1 h-3 bg-cyan-400 animate-[bounce_0.8s_infinite]" />
                         </div>
                       )}
                       {isPlaying ? "Now Playing" : "Paused"}
                     </div>
-                    <h2 className="text-3xl md:text-4xl font-bold leading-tight">
+                    <h2 className="text-3xl md:text-4xl font-bold font-mono leading-tight">
                       {activePodcast.title}
                     </h2>
                     <div
@@ -240,7 +240,7 @@ export function Podcasts() {
                       max={duration || 100}
                       value={currentTime}
                       onChange={handleSeek}
-                      className="w-full h-1.5 bg-zinc-700/50 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-emerald-500 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:opacity-0 group-hover/progress:[&::-webkit-slider-thumb]:opacity-100 transition-all [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:bg-emerald-500 [&::-moz-range-thumb]:rounded-full"
+                      className="w-full h-1.5 bg-zinc-700/50 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-cyan-500 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:opacity-0 group-hover/progress:[&::-webkit-slider-thumb]:opacity-100 transition-all [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:bg-cyan-500 [&::-moz-range-thumb]:rounded-full"
                       style={{
                         backgroundImage: `linear-gradient(to right, #10b981 ${(currentTime / duration) * 100}%, rgba(255,255,255,0.1) ${(currentTime / duration) * 100}%)`,
                       }}
@@ -273,7 +273,7 @@ export function Podcasts() {
 
                       <button
                         onClick={() => setIsPlaying(!isPlaying)}
-                        className="w-16 h-16 bg-white text-black rounded-full flex items-center justify-center hover:scale-105 transition hover:bg-emerald-50 shadow-lg shadow-white/10"
+                        className="w-16 h-16 bg-white text-black rounded-full flex items-center justify-center hover:scale-105 transition hover:bg-cyan-50 shadow-lg shadow-white/10"
                       >
                         {isPlaying ? (
                           <Pause className="fill-current w-6 h-6" />
@@ -327,8 +327,8 @@ export function Podcasts() {
 
         {/* Episodes List / Grid */}
         <div className="space-y-6">
-          <h3 className="text-2xl font-bold flex items-center gap-2">
-            <span className="w-1 h-6 bg-emerald-500 rounded-full" />
+          <h3 className="text-2xl font-bold font-mono flex items-center gap-2">
+            <span className="w-1 h-6 bg-cyan-500 rounded-full" />
             Latest Episodes
           </h3>
 
@@ -351,7 +351,7 @@ export function Podcasts() {
                   className={cn(
                     "group relative bg-zinc-900/50 hover:bg-zinc-800/50 backdrop-blur-sm rounded-2xl p-4 border border-white/5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-white/10",
                     activePodcast?.id === podcast.id
-                      ? "ring-1 ring-emerald-500/50 bg-emerald-900/10"
+                      ? "ring-1 ring-cyan-500/50 bg-cyan-900/10"
                       : "",
                   )}
                 >
@@ -371,7 +371,7 @@ export function Podcasts() {
 
                     <div className="flex-1 min-w-0 flex flex-col justify-between py-1">
                       <div>
-                        <h4 className="font-bold text-base leading-snug text-gray-100 group-hover:text-emerald-400 transition-colors line-clamp-2 mb-1">
+                        <h4 className="font-bold text-base leading-snug text-gray-100 group-hover:text-cyan-400 transition-colors line-clamp-2 mb-1">
                           {podcast.title}
                         </h4>
                         <p className="text-xs text-gray-500 flex items-center gap-1.5">

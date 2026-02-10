@@ -165,12 +165,12 @@ export function HelpCenter() {
     .filter((category) => category.questions.length > 0);
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-orange-500/30">
+    <div className="min-h-screen bg-slate-950 text-foreground selection:bg-cyan-500/30">
       <Header variant="landing" />
 
       {/* Background Elements */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-orange-500/10 blur-[100px] animate-pulse" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-cyan-500/10 blur-[100px] animate-pulse" />
         <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-slate-500/10 blur-[100px] animate-pulse delay-1000" />
         <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-slate-500/10 blur-[100px] animate-pulse delay-2000" />
       </div>
@@ -186,13 +186,13 @@ export function HelpCenter() {
           >
             <Badge
               variant="outline"
-              className="mb-6 border-orange-200 bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800 backdrop-blur-sm"
+              className="mb-6 border-cyan-200 bg-cyan-50 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300 dark:border-cyan-800 backdrop-blur-sm"
             >
               Help Center
             </Badge>
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold font-mono tracking-tight mb-6">
               How can we
-              <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent ml-3">
+              <span className="bg-gradient-to-r from-cyan-600 to-slate-600 bg-clip-text text-transparent ml-3">
                 help you?
               </span>
             </h1>
@@ -208,7 +208,7 @@ export function HelpCenter() {
                 placeholder="Search for answers, topics, or keywords..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 pr-4 py-7 text-lg border-primary/20 focus:border-orange-500 focus:ring-orange-500 rounded-2xl shadow-lg shadow-orange-500/5 bg-card/80 backdrop-blur-md"
+                className="pl-12 pr-4 py-7 text-lg border-primary/20 focus:border-cyan-500 focus:ring-cyan-500 rounded-2xl shadow-lg shadow-cyan-500/5 bg-card/80 backdrop-blur-md"
               />
             </div>
           </motion.div>
@@ -250,10 +250,10 @@ export function HelpCenter() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-orange-600 to-slate-700 text-white shadow-lg border-none">
+                <Card className="bg-gradient-to-br from-cyan-600 to-slate-700 text-white shadow-lg border-none">
                   <CardContent className="p-6">
-                    <h3 className="font-bold text-lg mb-2">Need More Help?</h3>
-                    <p className="text-orange-100 text-sm mb-4">
+                    <h3 className="font-bold font-mono text-lg mb-2">Need More Help?</h3>
+                    <p className="text-cyan-100 text-sm mb-4">
                       Our engineering support team is standing by.
                     </p>
                     <Button
@@ -365,7 +365,7 @@ export function HelpCenter() {
 
           {/* Resource Cards */}
           <div className="mt-24">
-            <h2 className="text-2xl font-bold text-center mb-12">
+            <h2 className="text-2xl font-bold font-mono text-center mb-12">
               Other Resources
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
@@ -377,7 +377,7 @@ export function HelpCenter() {
                 colorClass="green"
               />
               <ResourceCard
-                icon={<Users className="h-8 w-8 text-orange-500" />}
+                icon={<Users className="h-8 w-8 text-cyan-500" />}
                 title="Community"
                 description="Connect with other engineers, share knowledge, and get advice."
                 action="Join Community"
@@ -427,7 +427,7 @@ function ResourceCard({
 }) {
   const colorMap: Record<string, string> = {
     green: "hover:border-green-500/50 hover:shadow-green-500/20",
-    blue: "hover:border-orange-500/50 hover:shadow-orange-500/20",
+    blue: "hover:border-cyan-500/50 hover:shadow-cyan-500/20",
     amber: "hover:border-amber-500/50 hover:shadow-amber-500/20",
   };
 
@@ -441,7 +441,7 @@ function ResourceCard({
         >
           {icon}
         </div>
-        <h3 className="text-xl font-bold text-foreground mb-3">{title}</h3>
+        <h3 className="text-xl font-bold font-mono text-foreground mb-3">{title}</h3>
         <p className="text-muted-foreground mb-8 leading-relaxed max-w-xs mx-auto">
           {description}
         </p>

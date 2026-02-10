@@ -321,7 +321,7 @@ export function Clients() {
       {/* Background patterns */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
         <div className="absolute top-[10%] right-[5%] w-[500px] h-[500px] bg-slate-500/5 rounded-full blur-[100px]" />
-        <div className="absolute bottom-[10%] left-[5%] w-[400px] h-[400px] bg-orange-500/5 rounded-full blur-[80px]" />
+        <div className="absolute bottom-[10%] left-[5%] w-[400px] h-[400px] bg-cyan-500/5 rounded-full blur-[80px]" />
       </div>
 
       <PageContainer variant="standard">
@@ -331,7 +331,7 @@ export function Clients() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <div className="flex items-center gap-2 mb-2 text-orange-600 font-medium tracking-wide">
+            <div className="flex items-center gap-2 mb-2 text-cyan-600 font-medium tracking-wide">
               <Users className="w-5 h-5" />
               <span className="text-sm uppercase">Business Operations</span>
             </div>
@@ -351,7 +351,7 @@ export function Clients() {
           >
             <Button
               variant="outline"
-              className="h-12 border-orange-200 text-orange-700 hover:bg-orange-50 hover:text-orange-800 dark:border-orange-800 dark:text-orange-400 dark:hover:bg-orange-900/40 rounded-xl gap-2 shadow-sm"
+              className="h-12 border-cyan-200 text-cyan-700 hover:bg-cyan-50 hover:text-cyan-800 dark:border-cyan-800 dark:text-cyan-400 dark:hover:bg-cyan-900/40 rounded-xl gap-2 shadow-sm"
               onClick={handleExport}
             >
               <Download className="w-5 h-5" />
@@ -360,7 +360,7 @@ export function Clients() {
 
             <Button
               variant="outline"
-              className="h-12 border-orange-200 text-orange-700 hover:bg-orange-50 hover:text-orange-800 dark:border-orange-800 dark:text-orange-400 dark:hover:bg-orange-900/40 rounded-xl gap-2 shadow-sm"
+              className="h-12 border-cyan-200 text-cyan-700 hover:bg-cyan-50 hover:text-cyan-800 dark:border-cyan-800 dark:text-cyan-400 dark:hover:bg-cyan-900/40 rounded-xl gap-2 shadow-sm"
               onClick={() => setIsImportOpen(true)}
             >
               <FileSpreadsheet className="w-5 h-5" />
@@ -369,7 +369,7 @@ export function Clients() {
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button className="bg-orange-600 hover:bg-orange-700 text-white px-6 h-12 rounded-xl shadow-lg shadow-orange-500/20 transition-all flex items-center gap-2 group">
+                <Button className="bg-cyan-600 hover:bg-cyan-700 text-white px-6 h-12 rounded-xl shadow-lg shadow-cyan-500/20 transition-all flex items-center gap-2 group">
                   <UserPlus className="w-5 h-5 transition-transform group-hover:scale-110" />
                   <span>Add New Client</span>
                 </Button>
@@ -394,7 +394,7 @@ export function Clients() {
                     <Input
                       id="name"
                       placeholder="e.g. John Smith"
-                      className="rounded-xl border-gray-200 focus:ring-orange-500"
+                      className="rounded-xl border-gray-200 focus:ring-cyan-500"
                       value={newClient.name}
                       onChange={(e) =>
                         setNewClient({ ...newClient, name: e.target.value })
@@ -412,7 +412,7 @@ export function Clients() {
                       id="email"
                       type="email"
                       placeholder="john@example.com"
-                      className="rounded-xl border-gray-200 focus:ring-orange-500"
+                      className="rounded-xl border-gray-200 focus:ring-cyan-500"
                       value={newClient.email}
                       onChange={(e) =>
                         setNewClient({ ...newClient, email: e.target.value })
@@ -429,7 +429,7 @@ export function Clients() {
                     <Input
                       id="phone"
                       placeholder="(555) 000-0000"
-                      className="rounded-xl border-gray-200 focus:ring-orange-500"
+                      className="rounded-xl border-gray-200 focus:ring-cyan-500"
                       value={newClient.phone}
                       onChange={(e) =>
                         setNewClient({ ...newClient, phone: e.target.value })
@@ -446,7 +446,7 @@ export function Clients() {
                     <Input
                       id="address"
                       placeholder="Street, City, Zip"
-                      className="rounded-xl border-gray-200 focus:ring-orange-500"
+                      className="rounded-xl border-gray-200 focus:ring-cyan-500"
                       value={newClient.address}
                       onChange={(e) =>
                         setNewClient({ ...newClient, address: e.target.value })
@@ -465,7 +465,7 @@ export function Clients() {
                   <Button
                     onClick={handleCreateClient}
                     disabled={isCreating}
-                    className="bg-orange-600 hover:bg-orange-700 text-white rounded-xl px-8"
+                    className="bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl px-8"
                   >
                     {isCreating ? (
                       <div className="flex items-center gap-2">
@@ -489,7 +489,7 @@ export function Clients() {
               label: "Total Clients",
               value: clients.length,
               icon: Users,
-              color: "orange",
+              color: "cyan",
             },
             {
               label: "Active This Month",
@@ -501,7 +501,7 @@ export function Clients() {
               label: "Pending Follow-ups",
               value: "5",
               icon: Clock,
-              color: "orange",
+              color: "cyan",
             },
             {
               label: "Verified Profiles",
@@ -533,10 +533,10 @@ export function Clients() {
         {/* Search and Filters */}
         <div className="bg-card p-4 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800 mb-8 flex flex-col md:flex-row gap-4">
           <div className="relative flex-grow group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-orange-500 transition-colors" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-cyan-500 transition-colors" />
             <Input
               placeholder="Search clients by name, email, or company..."
-              className="pl-12 h-12 bg-white/80 dark:bg-slate-900/80 border-transparent focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-orange-500/20 rounded-2xl transition-all text-slate-900 dark:text-white"
+              className="pl-12 h-12 bg-white/80 dark:bg-slate-900/80 border-transparent focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-cyan-500/20 rounded-2xl transition-all text-slate-900 dark:text-white"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -580,7 +580,7 @@ export function Clients() {
                   transition={{ delay: index * 0.05 }}
                   className="group"
                 >
-                  <Card className="h-full rounded-[2rem] border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-xl hover:shadow-orange-500/5 transition-all duration-300 overflow-hidden relative group">
+                  <Card className="h-full rounded-[2rem] border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-xl hover:shadow-cyan-500/5 transition-all duration-300 overflow-hidden relative group">
                     <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity">
                       <Button
                         variant="ghost"
@@ -592,7 +592,7 @@ export function Clients() {
                     </div>
 
                     <CardHeader className="pb-4">
-                      <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-orange-500 to-slate-600 flex items-center justify-center text-white mb-6 shadow-lg shadow-orange-200">
+                      <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-cyan-500 to-slate-600 flex items-center justify-center text-white mb-6 shadow-lg shadow-cyan-200">
                         <span className="text-2xl font-bold">
                           {client.name
                             .split(" ")
@@ -600,7 +600,7 @@ export function Clients() {
                             .join("")}
                         </span>
                       </div>
-                      <CardTitle className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-orange-600 transition-colors">
+                      <CardTitle className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 transition-colors">
                         {client.name}
                       </CardTitle>
                       <CardDescription className="flex items-center gap-2">
@@ -611,14 +611,14 @@ export function Clients() {
 
                     <CardContent className="space-y-6">
                       <div className="space-y-3">
-                        <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 group-hover:bg-orange-50 dark:group-hover:bg-orange-900/20 transition-colors">
-                          <Mail className="w-4 h-4 text-orange-500" />
+                        <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 group-hover:bg-cyan-50 dark:group-hover:bg-cyan-900/20 transition-colors">
+                          <Mail className="w-4 h-4 text-cyan-500" />
                           <span className="truncate">
                             {client.contact_email || "No email"}
                           </span>
                         </div>
-                        <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 group-hover:bg-orange-50 dark:group-hover:bg-orange-900/20 transition-colors">
-                          <Phone className="w-4 h-4 text-orange-500" />
+                        <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 group-hover:bg-cyan-50 dark:group-hover:bg-cyan-900/20 transition-colors">
+                          <Phone className="w-4 h-4 text-cyan-500" />
                           <span>{client.contact_phone || "No phone"}</span>
                         </div>
                       </div>
@@ -626,7 +626,7 @@ export function Clients() {
                       <div className="pt-6 border-t border-slate-100 dark:border-slate-800">
                         <Link
                           to={`/dashboard/clients/${client.id}`}
-                          className="w-full inline-flex items-center justify-center h-12 rounded-2xl bg-slate-900 dark:bg-orange-600 text-white font-medium hover:bg-slate-800 dark:hover:bg-orange-700 transition-all gap-2 group/btn"
+                          className="w-full inline-flex items-center justify-center h-12 rounded-2xl bg-slate-900 dark:bg-cyan-600 text-white font-medium hover:bg-slate-800 dark:hover:bg-cyan-700 transition-all gap-2 group/btn"
                         >
                           View Profile
                           <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
@@ -658,7 +658,7 @@ export function Clients() {
             {!searchQuery && (
               <Button
                 onClick={() => setIsDialogOpen(true)}
-                className="bg-orange-600 hover:bg-orange-700 text-white px-8 h-12 rounded-xl"
+                className="bg-cyan-600 hover:bg-cyan-700 text-white px-8 h-12 rounded-xl"
               >
                 Add Your First Client
               </Button>

@@ -126,7 +126,7 @@ const AgentSandbox = () => {
         </Card>
       </div>
 
-      <div className="mt-8 p-4 bg-orange-50 border border-orange-200 rounded text-orange-800 text-sm">
+      <div className="mt-8 p-4 bg-cyan-50 border border-cyan-200 rounded text-cyan-800 text-sm">
         💡 <strong>Agent Insight:</strong> This sandbox allows any future agent
         to verify that the app's "Core Logic" is healthy in less than 500ms of
         page load.

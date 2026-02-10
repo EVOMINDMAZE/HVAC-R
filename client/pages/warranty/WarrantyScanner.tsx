@@ -46,7 +46,7 @@ const MANUFACTURER_PORTALS: Record<
   Carrier: {
     url: "https://www.carrier.com/residential/en/us/warranty/",
     note: "Standard Carrier Portal",
-    color: "bg-orange-600",
+    color: "bg-cyan-600",
   },
   Bryant: {
     url: "https://www.bryant.com/en/us/warranty/",
@@ -56,17 +56,17 @@ const MANUFACTURER_PORTALS: Record<
   Payne: {
     url: "https://www.payne.com/en/us/technical-support/warranty-registration/",
     note: "Uses Carrier Serial Engine",
-    color: "bg-orange-800",
+    color: "bg-cyan-800",
   },
   Trane: {
     url: "https://www.trane.com/residential/en/for-owners/warranty-registration/",
     note: "Official Trane Warranty",
-    color: "bg-orange-600",
+    color: "bg-cyan-600",
   },
   "American Standard": {
     url: "https://www.americanstandardair.com/owner-support/warranty-registration/",
     note: "Uses Trane Serial Engine",
-    color: "bg-orange-900",
+    color: "bg-cyan-900",
   },
   Goodman: {
     url: "https://www.goodmanmfg.com/product-registration",
@@ -91,7 +91,7 @@ const MANUFACTURER_PORTALS: Record<
   Daikin: {
     url: "https://daikincomfort.com/support/warranty",
     note: "Daikin Professional Lookup",
-    color: "bg-orange-400",
+    color: "bg-cyan-400",
   },
   York: {
     url: "https://www.york.com/commercial/technical-support/product-registration-and-warranty-status",
@@ -252,7 +252,7 @@ export default function WarrantyScanner() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-4xl font-black text-slate-900 dark:text-white flex items-center gap-3">
-              <ShieldCheck className="w-10 h-10 text-orange-600" />
+              <ShieldCheck className="w-10 h-10 text-cyan-600" />
               Warranty Auto-Pilot
             </h1>
             <p className="text-slate-500 font-medium">
@@ -277,10 +277,10 @@ export default function WarrantyScanner() {
                   <div className="absolute inset-0 border-[30px] border-black/20 pointer-events-none" />
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                     <div className="w-64 h-32 border-2 border-white/40 rounded-xl relative">
-                      <div className="absolute -top-1 -left-1 w-4 h-4 border-t-4 border-l-4 border-orange-500" />
-                      <div className="absolute -top-1 -right-1 w-4 h-4 border-t-4 border-r-4 border-orange-500" />
-                      <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-4 border-l-4 border-orange-500" />
-                      <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-4 border-r-4 border-orange-500" />
+                      <div className="absolute -top-1 -left-1 w-4 h-4 border-t-4 border-l-4 border-cyan-500" />
+                      <div className="absolute -top-1 -right-1 w-4 h-4 border-t-4 border-r-4 border-cyan-500" />
+                      <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-4 border-l-4 border-cyan-500" />
+                      <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-4 border-r-4 border-cyan-500" />
                     </div>
                   </div>
                   <div className="absolute bottom-8 flex justify-center w-full">
@@ -304,7 +304,7 @@ export default function WarrantyScanner() {
                       <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="absolute inset-0 bg-orange-600/40 backdrop-blur-sm flex flex-col items-center justify-center text-white"
+                        className="absolute inset-0 bg-cyan-600/40 backdrop-blur-sm flex flex-col items-center justify-center text-white"
                       >
                         <RefreshCw className="w-12 h-12 animate-spin mb-4" />
                         <p className="text-xl font-black uppercase tracking-widest">
@@ -345,7 +345,7 @@ export default function WarrantyScanner() {
             <Card className="border-none shadow-2xl rounded-3xl overflow-hidden ring-1 ring-slate-200 dark:ring-slate-800">
               <CardHeader className="pb-2">
                 <div className="flex justify-between items-center mb-2">
-                  <Badge className="bg-orange-600 text-white font-bold p-1 px-3">
+                  <Badge className="bg-cyan-600 text-white font-bold p-1 px-3">
                     Lifecycle Phase
                   </Badge>
                   {extractedData.manufacturer && (
@@ -396,7 +396,7 @@ export default function WarrantyScanner() {
                             serialNumber: e.target.value.toUpperCase(),
                           })
                         }
-                        className="h-12 text-2xl font-black bg-slate-50 dark:bg-slate-900 border-none tracking-widest text-orange-600"
+                        className="h-12 text-2xl font-black bg-slate-50 dark:bg-slate-900 border-none tracking-widest text-cyan-600"
                         placeholder="XXXXXXXX"
                       />
                       <Button
@@ -445,7 +445,7 @@ export default function WarrantyScanner() {
                 <div className="p-4 bg-slate-900 rounded-2xl space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-white">
-                      <ExternalLink className="w-4 h-4 text-orange-400" />
+                      <ExternalLink className="w-4 h-4 text-cyan-400" />
                       <span className="text-xs font-bold uppercase tracking-tight">
                         Direct Lookup Portal
                       </span>
@@ -453,7 +453,7 @@ export default function WarrantyScanner() {
                     {portalInfo ? (
                       <Badge
                         variant="outline"
-                        className="border-orange-500/50 text-orange-400"
+                        className="border-cyan-500/50 text-cyan-400"
                       >
                         Mapped: {portalInfo.note}
                       </Badge>

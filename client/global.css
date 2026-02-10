@@ -5,106 +5,156 @@
 @layer base {
 
   /**
-   * Tailwind CSS theme - ThermoNeural Vision
-   * "Notion meets Stripe" - Clean, Deep Slates, Vibrant Orange/Blue Gradients.
+   * Tailwind CSS theme - ThermoNeural Professional
+   * Modern, clean design system for HVAC industry software.
+   * Professional color palette with accessibility-first approach.
    */
   :root {
-    /* Background: Pure White / Very slight Warmth */
-    --background: 0 0% 100%;
-    /* Foreground: Deep Slate (almost black) */
-    --foreground: 222 47% 11%;
+    /* Professional Light Theme */
+    --background: 0 0% 100%; /* White background */
+    --foreground: 222 47% 4%; /* Dark slate text */
 
-    /* Card: White with border */
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    /* Card: Off-white */
+    --card: 0 0% 98%;
+    --card-foreground: 222 47% 4%;
 
-    /* Popover: White */
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    /* Popover: Off-white */
+    --popover: 0 0% 98%;
+    --popover-foreground: 222 47% 4%;
 
-    /* Primary: Deep Slate (Notion/Vercel style) */
-    --primary: 222 47% 11%;
-    --primary-foreground: 0 0% 100%;
+    /* Primary: Professional blue (trust, reliability) */
+    --primary: 221 83% 56%; /* Blue-600 */
+    --primary-foreground: 0 0% 100%; /* White text on blue */
 
-    /* Secondary: Soft Gray/Blue for subtle elements */
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222 47% 11.2%;
+    /* Secondary: Neutral gray */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 4%;
 
-    /* Muted: Text or background */
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted: Subtle gray for less important text */
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
+    /* Accent: Brand orange (ThermoNeural identity) */
+    --accent: 20 90% 48%; /* Orange-600 */
+    --accent-foreground: 0 0% 100%; /* White text on orange */
 
-    /* Accent: Brand Blue (Royal Blue) */
-    --accent: 221 83% 53%;
-    /* #2563EB */
-    --accent-foreground: 0 0% 100%;
+    /* Destructive: System red (errors, destructive actions) */
+    --destructive: 0 74% 50%; /* Red-600 */
+    --destructive-foreground: 0 0% 100%; /* White text on red */
 
-    /* Destructive: Brand Red */
-    --destructive: 0 72% 51%;
-    /* #DC2626 */
-    --destructive-foreground: 210 40% 98%;
+    /* Extended Semantic Color Palette */
+    --success: 142 76% 36%; /* Green-600 */
+    --success-foreground: 0 0% 100%; /* White text on green */
+    --warning: 38 92% 50%; /* Amber-500 */
+    --warning-foreground: 222 47% 4%; /* Dark text on amber */
+    --highlight: 172 66% 50%; /* Teal for highlights */
+    --highlight-foreground: 222 47% 4%; /* Dark text on teal */
+    --info: 217 91% 60%; /* Blue-500 */
+    --info-foreground: 0 0% 100%; /* White text on blue */
 
-    /* Border: Subtle Slate */
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221 83% 53%;
-    /* Brand Blue Ring */
+    /* Border, input, ring */
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 56%; /* Blue ring matching primary */
 
     --radius: 0.75rem;
 
+    /* Glassmorphism Effects (subtle) */
+    --glass-background: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(0, 0, 0, 0.1);
+    --glass-blur: 4px;
+
+    /* Subtle Shadow Effects */
+    --glow-primary: 0 4px 12px hsla(221, 83%, 56%, 0.15);
+    --glow-success: 0 4px 12px hsla(142, 76%, 36%, 0.15);
+    --glow-warning: 0 4px 12px hsla(38, 92%, 50%, 0.15);
+    --glow-destructive: 0 4px 12px hsla(0, 74%, 50%, 0.15);
+    --glow-highlight: 0 4px 12px hsla(172, 66%, 50%, 0.15);
+    --glow-info: 0 4px 12px hsla(217, 91%, 60%, 0.15);
+
     /* Sidebar */
     --sidebar-background: 0 0% 99%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 222 47% 11%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 210 40% 96.1%;
-    --sidebar-accent-foreground: 222 47% 11%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 25 95% 53%;
+    --sidebar-foreground: 222 47% 4%;
+    --sidebar-primary: 221 83% 56%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 20 90% 48%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 221 83% 56%;
   }
 
   .dark {
-    /* Background: Deepest Slate (Notion Dark) */
-    --background: 224 71% 4%;
-    --foreground: 210 40% 98%;
+    /* Professional Dark Theme */
+    --background: 222 47% 4%; /* Dark slate background */
+    --foreground: 210 40% 98%; /* Near-white text */
 
     /* Card: Slightly lighter slate */
-    --card: 222 47% 11%;
+    --card: 222 47% 8%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222 47% 11%;
+    /* Popover: Dark slate */
+    --popover: 222 47% 8%;
     --popover-foreground: 210 40% 98%;
 
-    /* Primary: White on Dark */
-    --primary: 210 40% 98%;
-    --primary-foreground: 222 47.4% 11.2%;
+    /* Primary: Lighter blue for dark mode */
+    --primary: 221 83% 65%;
+    --primary-foreground: 222 47% 4%; /* Dark text on light blue */
 
-    --secondary: 217.2 32.6% 17.5%;
+    /* Secondary: Dark slate for secondary elements */
+    --secondary: 222 47% 11%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    /* Muted: Subtle gray for less important text */
+    --muted: 222 47% 15%;
+    --muted-foreground: 210 40% 80%;
 
-    /* Accent: Orange */
-    --accent: 25 95% 53%;
-    --accent-foreground: 210 40% 98%;
+    /* Accent: Lighter orange for dark mode */
+    --accent: 20 90% 55%;
+    --accent-foreground: 222 47% 4%; /* Dark text on orange */
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    /* Destructive: Lighter red for dark mode */
+    --destructive: 0 74% 60%;
+    --destructive-foreground: 210 40% 98%; /* Light text on red */
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 25 95% 53%;
+    /* Extended Semantic Color Palette */
+    --success: 142 76% 45%; /* Lighter green */
+    --success-foreground: 222 47% 4%; /* Dark text on green */
+    --warning: 38 92% 60%; /* Lighter amber */
+    --warning-foreground: 222 47% 4%; /* Dark text on amber */
+    --highlight: 172 66% 60%; /* Lighter teal */
+    --highlight-foreground: 222 47% 4%; /* Dark text on teal */
+    --info: 217 91% 70%; /* Lighter blue */
+    --info-foreground: 222 47% 4%; /* Dark text on blue */
 
-    --sidebar-background: 224 71% 4%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 25 95% 53%;
+    /* Border, input, ring */
+    --border: 222 47% 20%;
+    --input: 222 47% 20%;
+    --ring: 221 83% 65%; /* Lighter blue ring */
+
+    --radius: 0.75rem;
+
+    /* Glassmorphism Effects (dark) */
+    --glass-background: rgba(5, 7, 13, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-blur: 4px;
+
+    /* Subtle Shadow Effects */
+    --glow-primary: 0 4px 12px hsla(221, 83%, 65%, 0.2);
+    --glow-success: 0 4px 12px hsla(142, 76%, 45%, 0.2);
+    --glow-warning: 0 4px 12px hsla(38, 92%, 60%, 0.2);
+    --glow-destructive: 0 4px 12px hsla(0, 74%, 60%, 0.2);
+    --glow-highlight: 0 4px 12px hsla(172, 66%, 60%, 0.2);
+    --glow-info: 0 4px 12px hsla(217, 91%, 70%, 0.2);
+
+    /* Sidebar */
+    --sidebar-background: 222 47% 6%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 221 83% 65%;
+    --sidebar-primary-foreground: 222 47% 4%;
+    --sidebar-accent: 20 90% 55%;
+    --sidebar-accent-foreground: 222 47% 4%;
+    --sidebar-border: 222 47% 20%;
+    --sidebar-ring: 221 83% 65%;
   }
 }
 
@@ -208,17 +258,129 @@
     @apply transition-all duration-300 hover:shadow-lg hover:shadow-primary/25;
   }
 
+  /* Extended Color Palette Utilities */
+  .bg-success {
+    background-color: hsl(var(--success));
+  }
+  
+  .bg-warning {
+    background-color: hsl(var(--warning));
+  }
+  
+  .bg-highlight {
+    background-color: hsl(var(--highlight));
+  }
+  
+  .bg-info {
+    background-color: hsl(var(--info));
+  }
+  
+  .text-success-foreground {
+    color: hsl(var(--success-foreground));
+  }
+  
+  .text-warning-foreground {
+    color: hsl(var(--warning-foreground));
+  }
+  
+  .text-highlight-foreground {
+    color: hsl(var(--highlight-foreground));
+  }
+  
+  .text-info-foreground {
+    color: hsl(var(--info-foreground));
+  }
+  
+  .text-success {
+    color: hsl(var(--success));
+  }
+  
+  .text-warning {
+    color: hsl(var(--warning));
+  }
+  
+  .text-highlight {
+    color: hsl(var(--highlight));
+  }
+  
+  .text-info {
+    color: hsl(var(--info));
+  }
+  
+  .border-success {
+    border-color: hsl(var(--success));
+  }
+  
+  .border-warning {
+    border-color: hsl(var(--warning));
+  }
+  
+  .border-highlight {
+    border-color: hsl(var(--highlight));
+  }
+  
+  .border-info {
+    border-color: hsl(var(--info));
+  }
+  
+  /* Subtle Shadow Effects */
+  .glow-primary {
+    box-shadow: var(--glow-primary);
+  }
+  
+  .glow-success {
+    box-shadow: var(--glow-success);
+  }
+  
+  .glow-warning {
+    box-shadow: var(--glow-warning);
+  }
+  
+  .glow-destructive {
+    box-shadow: var(--glow-destructive);
+  }
+  
+  .glow-highlight {
+    box-shadow: var(--glow-highlight);
+  }
+  
+  .glow-info {
+    box-shadow: var(--glow-info);
+  }
+  
   /* Glassmorphism */
   .glass {
-    @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-lg border border-white/20 dark:border-white/10 shadow-lg;
+    @apply bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-border/30 shadow-md;
   }
 
   .glass-dark {
-    @apply bg-slate-900/70 backdrop-blur-lg border border-white/10 shadow-lg;
+    @apply bg-slate-900/90 backdrop-blur-md border border-white/20 shadow-md;
   }
 
   .glass-card {
-    @apply bg-white/80 dark:bg-slate-800/60 backdrop-blur-md border border-white/40 dark:border-slate-700/50 shadow-xl rounded-xl;
+    @apply bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border border-border/50 shadow-lg rounded-xl;
+  }
+
+  /* Enhanced Glassmorphism using CSS Variables */
+  .glass-futuristic {
+    background: var(--glass-background);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  .glass-panel {
+    background: var(--glass-background);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .glass-command {
+    background: var(--glass-background);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   }
 
   /* Scrollbar Hide */

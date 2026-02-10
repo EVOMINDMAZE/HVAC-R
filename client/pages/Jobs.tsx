@@ -261,7 +261,7 @@ export default function Jobs() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-        return "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-200 border-orange-200 dark:border-orange-800";
+        return "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-200 border-cyan-200 dark:border-cyan-800";
       case "completed":
         return "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200 border-emerald-200 dark:border-emerald-800";
       case "pending":
@@ -328,7 +328,7 @@ export default function Jobs() {
                       onChange={(e) =>
                         setNewJob({ ...newJob, client_name: e.target.value })
                       }
-                      className="bg-background/50"
+                      className="bg-slate-950/50"
                     />
                   </div>
                   <div className="space-y-2">
@@ -340,7 +340,7 @@ export default function Jobs() {
                       onChange={(e) =>
                         setNewJob({ ...newJob, job_name: e.target.value })
                       }
-                      className="bg-background/50"
+                      className="bg-slate-950/50"
                     />
                   </div>
                 </div>
@@ -354,7 +354,7 @@ export default function Jobs() {
                         setNewJob({ ...newJob, status: val })
                       }
                     >
-                      <SelectTrigger className="bg-background/50">
+                      <SelectTrigger className="bg-slate-950/50">
                         <SelectValue placeholder="Select status" />
                       </SelectTrigger>
                       <SelectContent>
@@ -377,7 +377,7 @@ export default function Jobs() {
                         })
                       }
                     >
-                      <SelectTrigger className="bg-background/50">
+                      <SelectTrigger className="bg-slate-950/50">
                         <div className="flex items-center gap-2">
                           <HardHat className="w-4 h-4 text-muted-foreground" />
                           <SelectValue placeholder="Select Technician" />
@@ -414,7 +414,7 @@ export default function Jobs() {
                       onChange={(e) =>
                         setNewJob({ ...newJob, address: e.target.value })
                       }
-                      className="pl-10 bg-background/50"
+                      className="pl-10 bg-slate-950/50"
                     />
                   </div>
                 </div>
@@ -428,7 +428,7 @@ export default function Jobs() {
                     onChange={(e) =>
                       setNewJob({ ...newJob, notes: e.target.value })
                     }
-                    className="min-h-[100px] bg-background/50"
+                    className="min-h-[100px] bg-slate-950/50"
                   />
                 </div>
               </div>
@@ -471,14 +471,14 @@ export default function Jobs() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 placeholder="Search by job title, client name, or address..."
-                className="pl-10 bg-background/50 border-input"
+                className="pl-10 bg-slate-950/50 border-input"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             <div className="w-full sm:w-[200px]">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="bg-background/50 border-input">
+                <SelectTrigger className="bg-slate-950/50 border-input">
                   <div className="flex items-center">
                     <Filter className="w-4 h-4 mr-2 text-muted-foreground" />
                     <SelectValue placeholder="Filter by status" />

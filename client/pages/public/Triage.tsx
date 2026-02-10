@@ -139,8 +139,8 @@ export default function Triage() {
   return (
     <div className="min-h-screen relative overflow-hidden flex flex-col items-center justify-center p-4">
       {/* Animated Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-cyan-50 dark:from-slate-950 dark:via-slate-900 dark:to-orange-950 -z-20" />
-      <div className="absolute top-0 -left-10 w-96 h-96 bg-orange-400/20 rounded-full blur-[100px] -z-10 animate-pulse" />
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-cyan-50 dark:from-slate-950 dark:via-slate-900 dark:to-cyan-950 -z-20" />
+      <div className="absolute top-0 -left-10 w-96 h-96 bg-cyan-400/20 rounded-full blur-[100px] -z-10 animate-pulse" />
       <div className="absolute bottom-0 -right-10 w-96 h-96 bg-teal-400/20 rounded-full blur-[100px] -z-10 animate-pulse delay-700" />
 
       <div className="w-full max-w-lg z-10">
@@ -149,7 +149,7 @@ export default function Triage() {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="w-20 h-20 bg-gradient-to-tr from-orange-600 to-cyan-500 rounded-3xl mx-auto flex items-center justify-center shadow-xl shadow-orange-500/30 mb-6"
+            className="w-20 h-20 bg-gradient-to-tr from-cyan-600 to-cyan-500 rounded-3xl mx-auto flex items-center justify-center shadow-xl shadow-cyan-500/30 mb-6"
           >
             <Sparkles className="w-10 h-10 text-white" />
           </motion.div>
@@ -216,7 +216,7 @@ export default function Triage() {
                 </CardContent>
                 <CardFooter>
                   <Button
-                    className="w-full bg-orange-600 hover:bg-orange-700 h-12 text-lg shadow-lg shadow-orange-500/20"
+                    className="w-full bg-cyan-600 hover:bg-cyan-700 h-12 text-lg shadow-lg shadow-cyan-500/20"
                     onClick={handleNext}
                     disabled={!formData.name || !formData.phone}
                   >
@@ -265,7 +265,7 @@ export default function Triage() {
                   <Button
                     onClick={handleNext}
                     disabled={!formData.description}
-                    className="flex-1 bg-orange-600 hover:bg-orange-700 shadow-lg shadow-orange-500/20"
+                    className="flex-1 bg-cyan-600 hover:bg-cyan-700 shadow-lg shadow-cyan-500/20"
                   >
                     Continue <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
@@ -291,7 +291,7 @@ export default function Triage() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="relative group">
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-500 to-cyan-500 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500 to-cyan-500 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
                     <div className="relative bg-slate-50 dark:bg-slate-900 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-10 flex flex-col items-center justify-center text-center hover:bg-white dark:hover:bg-slate-800 transition-all cursor-pointer">
                       <input
                         type="file"
@@ -300,8 +300,8 @@ export default function Triage() {
                         className="absolute inset-0 opacity-0 cursor-pointer z-10"
                         onChange={handleFileChange}
                       />
-                      <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                        <UploadCloud className="w-8 h-8 text-orange-600 dark:text-orange-400" />
+                      <div className="w-16 h-16 bg-cyan-100 dark:bg-cyan-900/30 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <UploadCloud className="w-8 h-8 text-cyan-600 dark:text-cyan-400" />
                       </div>
                       <p className="font-semibold text-lg text-slate-700 dark:text-slate-200">
                         Tap to Upload Evidence
@@ -328,7 +328,7 @@ export default function Triage() {
                             className="flex items-center gap-2 bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-100 dark:border-slate-700 shadow-sm text-xs"
                           >
                             {f.type.startsWith("video") ? (
-                              <PlayCircle className="w-4 h-4 text-orange-500" />
+                              <PlayCircle className="w-4 h-4 text-cyan-500" />
                             ) : (
                               <ImageIcon className="w-4 h-4 text-green-500" />
                             )}
@@ -374,7 +374,7 @@ export default function Triage() {
                   <Button
                     onClick={handleSubmit}
                     disabled={files.length === 0 || loading}
-                    className="flex-1 bg-gradient-to-r from-orange-600 to-indigo-600 hover:from-orange-700 hover:to-indigo-700 text-white shadow-lg shadow-orange-500/25 h-12 text-lg font-medium"
+                    className="flex-1 bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-700 hover:to-indigo-700 text-white shadow-lg shadow-cyan-500/25 h-12 text-lg font-medium"
                   >
                     {loading ? (
                       <Loader2 className="w-5 h-5 animate-spin mr-2" />
@@ -425,7 +425,7 @@ export default function Triage() {
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-slate-500">Status</span>
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200">
                         AI Processing
                       </span>
                     </div>

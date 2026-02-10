@@ -21,8 +21,6 @@ import { SaveCalculation } from "@/components/SaveCalculation";
 import { Badge } from "@/components/ui/badge";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { useWeatherAutoFill } from "@/hooks/useWeatherAutoFill";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import { ClientReportPDF } from "@/components/reports/ClientReportPDF";
 import { FileText } from "lucide-react";
 
 interface AirDensityCalculatorProps {
@@ -45,6 +43,12 @@ export default function AirDensityCalculator({
     impact: number;
     derating: number;
   } | null>(null);
+
+  const [pdfComponents, setPdfComponents] = useState<{
+    PDFDownloadLink: React.ComponentType<any> | null;
+    ClientReportPDF: React.ComponentType<any> | null;
+  }>({ PDFDownloadLink: null, ClientReportPDF: null });
+  const [loadingPdf, setLoadingPdf] = useState(false);
 
   // Weather Intelligence
   const { location, getLocation, loading: geoLoading } = useGeolocation();
@@ -86,6 +90,25 @@ export default function AirDensityCalculator({
       }));
     }
   }, [weather, units]);
+
+  useEffect(() => {
+    if (result && !pdfComponents.PDFDownloadLink && !loadingPdf) {
+      setLoadingPdf(true);
+      Promise.all([
+        import("@react-pdf/renderer").then(module => ({ PDFDownloadLink: module.PDFDownloadLink })),
+        import("@/components/reports/ClientReportPDF").then(module => ({ ClientReportPDF: module.ClientReportPDF }))
+      ]).then(([pdfModule, reportModule]) => {
+        setPdfComponents({
+          PDFDownloadLink: pdfModule.PDFDownloadLink,
+          ClientReportPDF: reportModule.ClientReportPDF
+        });
+        setLoadingPdf(false);
+      }).catch(error => {
+        console.error("Failed to load PDF components:", error);
+        setLoadingPdf(false);
+      });
+    }
+  }, [result]);
 
   const calculate = () => {
     // Constants
@@ -377,26 +400,63 @@ export default function AirDensityCalculator({
                   }
                 />
 
-                <PDFDownloadLink
-                  document={
-                    <ClientReportPDF data={calculatePsychrometrics()} />
-                  }
-                  fileName={`ThermoNeural_Report_${new Date().toISOString().split("T")[0]}.pdf`}
-                  className="w-full"
-                >
-                  {({ loading }) => (
-                    <Button
-                      variant="default"
-                      className="w-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 mt-2"
-                      disabled={loading}
-                    >
-                      <FileText className="w-4 h-4 mr-2" />
-                      {loading
-                        ? "Preparing Report..."
-                        : "Download Client Report"}
-                    </Button>
-                  )}
-                </PDFDownloadLink>
+                {pdfComponents.PDFDownloadLink && pdfComponents.ClientReportPDF ? (
+                  <pdfComponents.PDFDownloadLink
+                    document={
+                      <pdfComponents.ClientReportPDF data={calculatePsychrometrics()} />
+                    }
+                    fileName={`ThermoNeural_Report_${new Date().toISOString().split("T")[0]}.pdf`}
+                    className="w-full"
+                  >
+                    {({ loading }) => (
+                      <Button
+                        variant="default"
+                        className="w-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 mt-2"
+                        disabled={loading}
+                      >
+                        <FileText className="w-4 h-4 mr-2" />
+                        {loading
+                          ? "Preparing Report..."
+                          : "Download Client Report"}
+                      </Button>
+                    )}
+                  </pdfComponents.PDFDownloadLink>
+                ) : loadingPdf ? (
+                  <Button
+                    variant="default"
+                    className="w-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 mt-2"
+                    disabled
+                  >
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Loading PDF Library...
+                  </Button>
+                ) : (
+                  <Button
+                    variant="default"
+                    className="w-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 mt-2"
+                    onClick={() => {
+                      if (!pdfComponents.PDFDownloadLink && !loadingPdf) {
+                        setLoadingPdf(true);
+                        Promise.all([
+                          import("@react-pdf/renderer").then(module => ({ PDFDownloadLink: module.PDFDownloadLink })),
+                          import("@/components/reports/ClientReportPDF").then(module => ({ ClientReportPDF: module.ClientReportPDF }))
+                        ]).then(([pdfModule, reportModule]) => {
+                          setPdfComponents({
+                            PDFDownloadLink: pdfModule.PDFDownloadLink,
+                            ClientReportPDF: reportModule.ClientReportPDF
+                          });
+                          setLoadingPdf(false);
+                        }).catch(error => {
+                          console.error("Failed to load PDF components:", error);
+                          setLoadingPdf(false);
+                        });
+                      }
+                    }}
+                  >
+                    <FileText className="w-4 h-4 mr-2" />
+                    Load PDF Report
+                  </Button>
+                )}
               </div>
             ) : (
               <div className="text-center text-slate-400 py-12">

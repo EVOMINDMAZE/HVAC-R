@@ -100,7 +100,7 @@ error: ${data.error}
   return (
     <div className="min-h-screen w-full bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4 relative overflow-hidden">
       {/* Background Decorations */}
-      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-orange-100/50 to-transparent dark:from-orange-900/20 pointer-events-none" />
+      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-cyan-100/50 to-transparent dark:from-cyan-900/20 pointer-events-none" />
       <div className="absolute -top-20 -right-20 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl" />
 
       <motion.div
@@ -111,7 +111,7 @@ error: ${data.error}
         <Card
           className={`shadow-xl backdrop-blur-sm bg-white/80 dark:bg-slate-900/80 border-t-4 ${
             status === "processing"
-              ? "border-orange-500"
+              ? "border-cyan-500"
               : status === "success"
                 ? "border-green-500"
                 : "border-red-500"
@@ -120,7 +120,7 @@ error: ${data.error}
           <CardHeader className="text-center">
             <div className="mx-auto mb-4">
               {status === "processing" && (
-                <Loader2 className="w-12 h-12 text-orange-600 animate-spin" />
+                <Loader2 className="w-12 h-12 text-cyan-600 animate-spin" />
               )}
               {status === "success" && (
                 <CheckCircle className="w-12 h-12 text-green-500" />
@@ -152,7 +152,7 @@ error: ${data.error}
               )}
               <button
                 onClick={() => navigate(-1)} // Go back to try again
-                className="text-orange-600 hover:underline text-sm"
+                className="text-cyan-600 hover:underline text-sm"
               >
                 Return to integration page
               </button>

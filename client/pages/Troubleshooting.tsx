@@ -790,7 +790,7 @@ export function TroubleshootingContent() {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-slate-600 dark:from-orange-400 dark:to-slate-400">
+            <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-slate-600 dark:from-cyan-400 dark:to-slate-400">
               Diagnostic Wizard
             </h1>
             <p className="text-muted-foreground mt-1">
@@ -804,7 +804,7 @@ export function TroubleshootingContent() {
             <Button
               onClick={getAiAdvice}
               disabled={aiLoading}
-              className="bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-500/20"
+              className="bg-cyan-600 hover:bg-cyan-700 text-white shadow-lg shadow-cyan-500/20"
             >
               <Bot className="mr-2 h-4 w-4" />{" "}
               {aiLoading ? "Analyzing..." : "Ask AI Expert"}
@@ -990,7 +990,7 @@ export function TroubleshootingContent() {
                                             ? "bg-primary text-primary-foreground border-primary"
                                             : i < step
                                               ? "bg-green-500 text-white border-green-500"
-                                              : "bg-background border-muted-foreground text-muted-foreground"
+                                              : "bg-slate-950 border-muted-foreground text-muted-foreground"
                                         }
                                         transition-colors duration-300
                                     `}
@@ -1012,7 +1012,7 @@ export function TroubleshootingContent() {
                       <div
                         className={`
                                     w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border
-                                    ${step >= steps.length ? "bg-primary text-primary-foreground border-primary" : "bg-background border-muted-foreground text-muted-foreground"}
+                                    ${step >= steps.length ? "bg-primary text-primary-foreground border-primary" : "bg-slate-950 border-muted-foreground text-muted-foreground"}
                                 `}
                       >
                         <FileText className="h-3 w-3" />
@@ -1138,7 +1138,7 @@ export function TroubleshootingContent() {
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <div className="bg-background/80 backdrop-blur rounded-lg p-6 border shadow-sm">
+                        <div className="bg-slate-950/80 backdrop-blur rounded-lg p-6 border shadow-sm">
                           <h3 className="font-semibold mb-4 flex items-center gap-2">
                             <Terminal className="h-4 w-4 text-muted-foreground" />
                             System Diagnosis
@@ -1206,7 +1206,7 @@ export function TroubleshootingContent() {
                     <Button
                       onClick={getAiAdvice}
                       size="lg"
-                      className="bg-orange-600 hover:bg-orange-700 text-white shadow-xl shadow-orange-500/20 h-12 px-8 text-base transition-all hover:scale-105"
+                      className="bg-cyan-600 hover:bg-cyan-700 text-white shadow-xl shadow-cyan-500/20 h-12 px-8 text-base transition-all hover:scale-105"
                     >
                       <Zap className="mr-2 h-5 w-5" /> Start Analysis
                     </Button>
@@ -1217,7 +1217,7 @@ export function TroubleshootingContent() {
                   <Card className="border-none shadow-lg bg-gradient-to-b from-white to-slate-50/50 dark:from-slate-900 dark:to-slate-900/50">
                     <CardContent className="py-20 flex flex-col items-center text-center">
                       <div className="relative mb-8">
-                        <div className="absolute inset-0 bg-orange-500 blur-xl opacity-20 animate-pulse rounded-full" />
+                        <div className="absolute inset-0 bg-cyan-500 blur-xl opacity-20 animate-pulse rounded-full" />
                         <div className="h-16 w-16 relative bg-white dark:bg-slate-800 rounded-full shadow-lg flex items-center justify-center border-2 border-slate-100 dark:border-slate-900 z-10">
                           <Bot className="h-8 w-8 text-slate-600 animate-pulse" />
                         </div>
@@ -1284,7 +1284,7 @@ export function TroubleshootingContent() {
 
 export function Troubleshooting() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-orange-50/30 dark:from-slate-950 dark:to-slate-900 pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900 pb-20">
       <PageContainer variant="standard">
         <ApiServiceStatus />
         <TroubleshootingContent />

@@ -113,7 +113,7 @@ export default function RefrigerantInventory() {
     <div className="container mx-auto max-w-4xl p-4 space-y-6 pb-24">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-cyan-500 bg-clip-text text-transparent">
             Refrigerant Bank ❄️
           </h1>
           <p className="text-muted-foreground mt-1">
@@ -151,7 +151,7 @@ export default function RefrigerantInventory() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4 flex flex-col items-center justify-center text-center">
-            <div className="text-2xl font-bold text-orange-600">
+            <div className="text-2xl font-bold text-cyan-600">
               {cylinders.filter((c) => c.status === "active").length}
             </div>
             <div className="text-xs text-muted-foreground">Active Tanks</div>
@@ -226,7 +226,7 @@ export default function RefrigerantInventory() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-orange-500">
+              <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-cyan-500">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-4">
                     <div className="space-y-1">

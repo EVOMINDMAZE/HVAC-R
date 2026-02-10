@@ -142,9 +142,9 @@ export function History() {
       case "Standard Cycle":
         return {
           icon: Calculator,
-          color: "text-orange-500",
-          bg: "bg-orange-500/10",
-          border: "border-orange-200 dark:border-orange-900",
+          color: "text-cyan-500",
+          bg: "bg-cyan-500/10",
+          border: "border-cyan-200 dark:border-cyan-900",
         };
       case "Refrigerant Comparison":
         return {
@@ -282,20 +282,20 @@ export function History() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-orange-50/30 dark:from-slate-950 dark:to-slate-900 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900 flex flex-col">
       <PageContainer variant="standard">
         {/* Header Section */}
         <div className="mb-10 animate-in fade-in slide-in-from-top-4 duration-500">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-slate-600 dark:from-orange-400 dark:to-slate-400 mb-2">
+              <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-slate-600 dark:from-cyan-400 dark:to-slate-400 mb-2">
                 History & Analysis
               </h1>
               <p className="text-muted-foreground">
@@ -321,7 +321,7 @@ export function History() {
             </Card>
             <Card className="bg-card/50 backdrop-blur-sm border-border/50">
               <CardContent className="p-4 flex flex-col justify-center items-center text-center">
-                <div className="text-3xl font-bold text-orange-500 mb-1">
+                <div className="text-3xl font-bold text-cyan-500 mb-1">
                   {stats.types["Standard Cycle"] || 0}
                 </div>
                 <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
@@ -361,11 +361,11 @@ export function History() {
                 placeholder="Search by name or tags..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9 bg-background/50 border-border/50"
+                className="pl-9 bg-slate-950/50 border-border/50"
               />
             </div>
             <Select value={filterType} onValueChange={setFilterType}>
-              <SelectTrigger className="w-[180px] bg-background/50 border-border/50">
+              <SelectTrigger className="w-[180px] bg-slate-950/50 border-border/50">
                 <Filter className="w-3 h-3 mr-2" />
                 <SelectValue placeholder="Filter Type" />
               </SelectTrigger>
@@ -382,7 +382,7 @@ export function History() {
           </div>
 
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[160px] bg-background/50 border-border/50">
+            <SelectTrigger className="w-[160px] bg-slate-950/50 border-border/50">
               <SelectValue placeholder="Sort" />
             </SelectTrigger>
             <SelectContent>
@@ -496,7 +496,7 @@ export function History() {
                       <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-3">
                         <Badge
                           variant="outline"
-                          className="font-normal bg-background/50"
+                          className="font-normal bg-slate-950/50"
                         >
                           {calc.calculation_type}
                         </Badge>

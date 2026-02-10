@@ -62,7 +62,7 @@ export default function Projects() {
       <div className="space-y-6">
         <Button
           variant="ghost"
-          className="mb-2 pl-0 hover:bg-transparent hover:text-orange-600 dark:hover:text-orange-400"
+          className="mb-2 pl-0 hover:bg-transparent hover:text-cyan-600 dark:hover:text-cyan-400"
           onClick={() => navigate("/dashboard")}
         >
           <ArrowLeft className="w-4 h-4 mr-2" /> Back
@@ -95,7 +95,7 @@ export default function Projects() {
               </div>
               <div>
                 <Label>Attach items</Label>
-                <div className="mt-2 max-h-64 overflow-auto border rounded bg-background dark:bg-slate-800 dark:border-slate-700">
+                <div className="mt-2 max-h-64 overflow-auto border rounded bg-slate-950 dark:bg-slate-800 dark:border-slate-700">
                   {attachable.map((c) => (
                     <label
                       key={c.id}

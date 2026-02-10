@@ -243,7 +243,7 @@ export default function TriageDashboard() {
         </Badge>
       );
     if (severity === "medium")
-      return <Badge className="bg-orange-500">Urgent</Badge>;
+      return <Badge className="bg-cyan-500">Urgent</Badge>;
     return <Badge variant="secondary">Routine</Badge>;
   };
 
@@ -252,7 +252,7 @@ export default function TriageDashboard() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-            <Zap className="h-8 w-8 text-orange-600" />
+            <Zap className="h-8 w-8 text-cyan-600" />
             Triage Command Center
           </h1>
           <p className="text-slate-500 dark:text-slate-400">
@@ -279,14 +279,14 @@ export default function TriageDashboard() {
         <TabsContent value={filter} className="mt-6">
           {loading ? (
             <div className="flex justify-center py-20">
-              <Loader2 className="animate-spin w-10 h-10 text-orange-600" />
+              <Loader2 className="animate-spin w-10 h-10 text-cyan-600" />
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredSubmissions.map((sub) => (
                 <Card
                   key={sub.id}
-                  className={`overflow-hidden cursor-pointer transition-all hover:ring-2 hover:ring-orange-500/50 ${sub.status === "converted" ? "bg-slate-100/50 dark:bg-slate-900/50" : "bg-white dark:bg-slate-950"}`}
+                  className={`overflow-hidden cursor-pointer transition-all hover:ring-2 hover:ring-cyan-500/50 ${sub.status === "converted" ? "bg-slate-100/50 dark:bg-slate-900/50" : "bg-white dark:bg-slate-950"}`}
                   onClick={() => setSelectedSubmission(sub)}
                 >
                   <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
@@ -302,7 +302,7 @@ export default function TriageDashboard() {
                     <CardTitle className="text-lg font-bold truncate">
                       {sub.homeowner_name}
                     </CardTitle>
-                    <CardDescription className="flex items-center gap-1 font-medium text-orange-600 dark:text-orange-400">
+                    <CardDescription className="flex items-center gap-1 font-medium text-cyan-600 dark:text-cyan-400">
                       <Phone className="w-3 h-3" /> {sub.homeowner_phone}
                     </CardDescription>
                   </CardHeader>
@@ -315,14 +315,14 @@ export default function TriageDashboard() {
                     </div>
 
                     {sub.ai_analysis?.suspected_issue && (
-                      <div className="bg-orange-50 dark:bg-orange-900/20 p-3 rounded-lg border border-orange-100 dark:border-orange-800">
+                      <div className="bg-cyan-50 dark:bg-cyan-900/20 p-3 rounded-lg border border-cyan-100 dark:border-cyan-800">
                         <div className="flex items-center gap-2 mb-1">
-                          <ShieldCheck className="w-3.5 h-3.5 text-orange-600" />
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-orange-700 dark:text-orange-400">
+                          <ShieldCheck className="w-3.5 h-3.5 text-cyan-600" />
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-700 dark:text-cyan-400">
                             AI Diagnosis
                           </span>
                         </div>
-                        <p className="text-xs font-semibold text-orange-900 dark:text-orange-200 line-clamp-2">
+                        <p className="text-xs font-semibold text-cyan-900 dark:text-cyan-200 line-clamp-2">
                           {sub.ai_analysis.suspected_issue}
                         </p>
                       </div>
@@ -346,7 +346,7 @@ export default function TriageDashboard() {
                       <Button
                         size="sm"
                         variant="ghost"
-                        className="text-orange-600 text-xs font-bold gap-1 px-0 h-auto hover:bg-transparent"
+                        className="text-cyan-600 text-xs font-bold gap-1 px-0 h-auto hover:bg-transparent"
                       >
                         Review Details <ArrowRight className="h-3 w-3" />
                       </Button>
@@ -382,7 +382,7 @@ export default function TriageDashboard() {
         <DialogContent className="max-w-4xl max-h-[90vh] p-0 overflow-hidden flex flex-col border-none shadow-2xl">
           {selectedSubmission && (
             <>
-              <div className="bg-gradient-to-r from-orange-700 to-slate-800 p-6 text-white pb-12">
+              <div className="bg-gradient-to-r from-cyan-700 to-slate-800 p-6 text-white pb-12">
                 <DialogHeader>
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-2">
@@ -450,7 +450,7 @@ export default function TriageDashboard() {
                         <Eye className="h-4 w-4" /> AI Visual Diagnostics
                       </h3>
                       <div className="grid grid-cols-1 gap-4">
-                        <Card className="bg-orange-600 text-white border-none shadow-lg">
+                        <Card className="bg-cyan-600 text-white border-none shadow-lg">
                           <CardContent className="p-6">
                             <div className="flex items-center gap-2 mb-3">
                               <div className="p-1.5 bg-white/20 rounded-md">
@@ -515,7 +515,7 @@ export default function TriageDashboard() {
                             {selectedSubmission.media_urls.map((url, i) => (
                               <div
                                 key={i}
-                                className="group relative rounded-xl overflow-hidden aspect-square border-2 border-transparent hover:border-orange-500 transition-all cursor-zoom-in"
+                                className="group relative rounded-xl overflow-hidden aspect-square border-2 border-transparent hover:border-cyan-500 transition-all cursor-zoom-in"
                               >
                                 <img
                                   src={url}
@@ -544,7 +544,7 @@ export default function TriageDashboard() {
                               .split("\n")
                               .map((note, idx) => (
                                 <div key={idx} className="flex gap-2">
-                                  <div className="min-w-[4px] h-[4px] bg-orange-500 rounded-full mt-2" />
+                                  <div className="min-w-[4px] h-[4px] bg-cyan-500 rounded-full mt-2" />
                                   <span>{note}</span>
                                 </div>
                               ))}
@@ -557,8 +557,8 @@ export default function TriageDashboard() {
                       </div>
                     </div>
 
-                    <div className="bg-white dark:bg-slate-950 p-5 rounded-xl border border-orange-100 dark:border-orange-900 shadow-sm">
-                      <h4 className="text-[10px] font-black uppercase text-orange-600 dark:text-orange-400 mb-2">
+                    <div className="bg-white dark:bg-slate-950 p-5 rounded-xl border border-cyan-100 dark:border-cyan-900 shadow-sm">
+                      <h4 className="text-[10px] font-black uppercase text-cyan-600 dark:text-cyan-400 mb-2">
                         Dispatcher Action
                       </h4>
                       <p className="text-xs text-slate-500 mb-4 font-medium italic">
@@ -566,7 +566,7 @@ export default function TriageDashboard() {
                         schedule site visit.
                       </p>
                       <Button
-                        className="w-full bg-orange-600 hover:bg-orange-700 shadow-lg shadow-orange-500/20 h-10 font-bold text-xs"
+                        className="w-full bg-cyan-600 hover:bg-cyan-700 shadow-lg shadow-cyan-500/20 h-10 font-bold text-xs"
                         onClick={() => handleConvert(selectedSubmission)}
                         disabled={
                           converting === selectedSubmission.id ||

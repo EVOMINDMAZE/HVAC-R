@@ -21,20 +21,20 @@ const staggerContainer = {
 
 export function About() {
   const stats = [
-    { label: "Verified Models", value: "NIST", color: "text-orange-500" },
-    { label: "Validations", value: "100%", color: "text-emerald-500" },
-    { label: "Global Standard", value: "SI/IP", color: "text-purple-500" },
+    { label: "Verified Models", value: "NIST", color: "text-primary" },
+    { label: "Validations", value: "100%", color: "text-success" },
+    { label: "Global Standard", value: "SI/IP", color: "text-highlight" },
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-orange-100 selection:text-orange-900">
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary/20 selection:text-primary">
       <Header variant="landing" />
 
       <main className="flex-grow pt-24 px-4 overflow-hidden relative">
         {/* Background Elements */}
-        <div className="absolute top-0 inset-x-0 h-[600px] bg-gradient-to-b from-orange-50/50 to-transparent dark:from-orange-900/10 dark:to-transparent pointer-events-none -z-10" />
-        <div className="absolute top-[10%] left-[-10%] w-[600px] h-[600px] bg-orange-500/10 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-[20%] right-[-10%] w-[500px] h-[500px] bg-red-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute top-0 inset-x-0 h-[600px] bg-gradient-to-b from-primary/5 to-transparent pointer-events-none -z-10" />
+        <div className="absolute top-[10%] left-[-10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-[20%] right-[-10%] w-[500px] h-[500px] bg-highlight/5 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="max-w-[1600px] mx-auto pb-20">
           {/* Hero Section */}
@@ -47,7 +47,7 @@ export function About() {
             <motion.div variants={fadeInUp}>
               <Badge
                 variant="outline"
-                className="mb-6 border-orange-200 bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800 backdrop-blur-sm"
+                className="mb-6 border-primary/30 bg-primary/10 text-primary backdrop-blur-sm"
               >
                 Our Mission
               </Badge>
@@ -55,10 +55,10 @@ export function About() {
 
             <motion.h1
               variants={fadeInUp}
-              className="text-4xl md:text-6xl font-bold tracking-tight mb-8"
+              className="text-4xl md:text-6xl font-bold font-mono tracking-tight mb-8"
             >
               Empowering the World's <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-red-600 to-amber-600">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/80 to-primary">
                 Thermodynamic Innovation
               </span>
             </motion.h1>
@@ -82,7 +82,7 @@ export function About() {
             {stats.map((stat, i) => (
               <div
                 key={i}
-                className="text-center p-6 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 backdrop-blur-sm shadow-sm hover:shadow-lg transition-all duration-300"
+                className="text-center p-6 rounded-2xl bg-card/50 border border-border backdrop-blur-sm shadow-sm hover:shadow-lg transition-all duration-300"
               >
                 <div
                   className={`text-4xl md:text-5xl font-bold mb-2 ${stat.color}`}
@@ -105,12 +105,12 @@ export function About() {
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
               >
-                <Card className="h-full bg-card/80 backdrop-blur-md shadow-lg border-border hover:border-orange-500/30 transition-colors duration-300">
+                <Card className="h-full bg-card/80 backdrop-blur-md shadow-lg border-border hover:border-primary/30 transition-colors duration-300">
                   <CardHeader>
-                    <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center mb-4">
-                      <Target className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+                    <div className="w-12 h-12 bg-secondary dark:bg-secondary/50 rounded-lg flex items-center justify-center mb-4">
+                      <Target className="h-6 w-6 text-primary" />
                     </div>
-                    <CardTitle className="text-2xl">Our Mission</CardTitle>
+                    <CardTitle className="text-2xl font-mono">Our Mission</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground leading-relaxed text-lg">
@@ -129,12 +129,12 @@ export function About() {
                 viewport={{ once: true }}
                 transition={{ delay: 0.3 }}
               >
-                <Card className="h-full bg-card/80 backdrop-blur-md shadow-lg border-border hover:border-red-500/30 transition-colors duration-300">
+                <Card className="h-full bg-card/80 backdrop-blur-md shadow-lg border-border hover:border-primary/30 transition-colors duration-300">
                   <CardHeader>
-                    <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center mb-4">
-                      <Heart className="h-6 w-6 text-red-600 dark:text-red-400" />
+                    <div className="w-12 h-12 bg-secondary dark:bg-secondary/50 rounded-lg flex items-center justify-center mb-4">
+                      <Heart className="h-6 w-6 text-primary" />
                     </div>
-                    <CardTitle className="text-2xl">Our Vision</CardTitle>
+                    <CardTitle className="text-2xl font-mono">Our Vision</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground leading-relaxed text-lg">
@@ -164,19 +164,19 @@ export function About() {
                   icon: Users,
                   title: "Engineering",
                   desc: "Decades of combined field experience.",
-                  color: "orange",
+                  color: "primary",
                 },
                 {
                   icon: Award,
                   title: "R&D",
                   desc: "Pushing the boundaries of thermodynamic modeling.",
-                  color: "red",
+                  color: "primary",
                 },
                 {
                   icon: Target,
                   title: "Product",
                   desc: "Building intuitive interfaces for complex problems.",
-                  color: "amber",
+                  color: "primary",
                 },
               ].map((item, index) => (
                 <motion.div
@@ -186,21 +186,21 @@ export function About() {
                   className="group relative"
                 >
                   <div
-                    className={`absolute inset-0 bg-${item.color}-500/5 rounded-2xl transform rotate-1 group-hover:rotate-2 transition-transform duration-300`}
+                    className="absolute inset-0 bg-primary/5 rounded-2xl transform rotate-1 group-hover:rotate-2 transition-transform duration-300"
                   />
                   <Card className="relative h-full bg-card border-border text-center overflow-hidden">
                     <div
-                      className={`absolute top-0 inset-x-0 h-1 bg-${item.color}-500/50`}
+                      className="absolute top-0 inset-x-0 h-1 bg-primary/50"
                     />
                     <CardContent className="p-8">
                       <div
-                        className={`w-20 h-20 bg-${item.color}-100 dark:bg-${item.color}-900/20 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300`}
+                        className="w-20 h-20 bg-secondary dark:bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300"
                       >
                         <item.icon
-                          className={`h-10 w-10 text-${item.color}-600 dark:text-${item.color}-400`}
+                          className="h-10 w-10 text-primary"
                         />
                       </div>
-                      <h3 className="text-xl font-semibold mb-3">
+                      <h3 className="text-xl font-semibold font-mono mb-3">
                         {item.title}
                       </h3>
                       <p className="text-muted-foreground leading-relaxed">
@@ -218,17 +218,17 @@ export function About() {
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="relative rounded-3xl overflow-hidden bg-slate-900 text-white p-8 md:p-16 text-center md:text-left"
+            className="relative rounded-3xl overflow-hidden bg-secondary text-foreground p-8 md:p-16 text-center md:text-left"
           >
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-orange-500/20 to-red-500/20 blur-[100px] pointer-events-none rounded-full" />
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 blur-[100px] pointer-events-none rounded-full" />
 
             <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
               <div>
-                <h2 className="text-3xl md:text-5xl font-bold mb-6">
+                <h2 className="text-3xl md:text-5xl font-bold font-mono mb-6">
                   Built on Trust & <br />
                   Precision
                 </h2>
-                <p className="text-slate-300 text-lg leading-relaxed mb-8">
+                <p className="text-muted-foreground text-lg leading-relaxed mb-8">
                   Our software isn't just a tool; it's a commitment to
                   engineering integrity. We validate every model against NIST
                   standards to ensure your calculations are field-ready.
@@ -255,12 +255,12 @@ export function About() {
                 ].map((val, i) => (
                   <div
                     key={i}
-                    className="bg-white/5 border border-white/10 p-6 rounded-xl hover:bg-white/10 transition-colors"
+                    className="bg-card/50 border border-border p-6 rounded-xl hover:bg-card transition-colors"
                   >
-                    <h4 className="text-lg font-bold text-orange-400 mb-2">
+                    <h4 className="text-lg font-bold font-mono text-primary mb-2">
                       {val.title}
                     </h4>
-                    <p className="text-sm text-slate-300">{val.desc}</p>
+                    <p className="text-sm text-muted-foreground">{val.desc}</p>
                   </div>
                 ))}
               </div>

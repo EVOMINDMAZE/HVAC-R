@@ -6,6 +6,10 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
+import { GlassCard } from "@/components/ui/glass-card";
+import { DataPanel } from "@/components/ui/data-panel";
+import { DashboardGrid, DashboardGridItem } from "@/components/ui/dashboard-grid";
+import { motion } from "framer-motion";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -48,6 +52,21 @@ import {
   getRefrigerantById,
 } from "../lib/refrigerants";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+
+// Animation Variants
+const fadeInUp = {
+  initial: { opacity: 0, y: 30 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+};
+
+const staggerContainer = {
+  animate: {
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
 
 interface StatePoint {
   temp_c?: number;
@@ -1288,64 +1307,102 @@ export function EnhancedStandardCycleContent() {
       variant="standard"
       className="animate-in fade-in duration-500 pb-20"
     >
-      {/* Header & Actions */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
-            Enhanced Standard Cycle
-          </h1>
-          <p className="text-muted-foreground mt-1 text-lg">
-            Advanced thermodynamic simulation & analysis
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            onClick={handleExportPDF}
-            disabled={!results}
-            className="gap-2"
-          >
-            <Download className="w-4 h-4" />
-            Export Report
-          </Button>
-          {results && (
-            <>
-              {matchingCalculation && (
-                <RenameCalculationDialog
-                  calculationId={matchingCalculation.id}
-                  initialName={matchingCalculation.name ?? undefined}
-                  fallbackName={defaultCalculationName}
+      {/* Command Header */}
+      <motion.div
+        initial="initial"
+        animate="animate"
+        variants={staggerContainer}
+        className="glass-panel rounded-2xl p-6 border border-cyan-500/20 mb-8"
+      >
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div className="flex-1">
+            <motion.div variants={fadeInUp} className="flex items-center gap-4 mb-4">
+              <Badge
+                variant="outline"
+                className="px-4 py-1.5 rounded-full border-cyan-500/50 bg-cyan-500/10 text-cyan-400 backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px] sm:text-xs"
+              >
+                <Calculator className="w-3 h-3 mr-2" />
+                THERMAL ANALYSIS COMMAND
+              </Badge>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <div className="text-xs text-slate-400 font-mono">SYSTEM ONLINE</div>
+              </div>
+            </motion.div>
+            
+            <motion.h1 variants={fadeInUp} className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight font-mono">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-cyan-300 to-cyan-500">
+                ENHANCED STANDARD CYCLE
+              </span>
+            </motion.h1>
+            
+            <motion.p variants={fadeInUp} className="text-lg sm:text-xl text-slate-300 mt-4 max-w-2xl leading-relaxed font-light">
+              Advanced thermodynamic simulation & analysis with AI‑powered optimization and real‑time visualization.
+            </motion.p>
+          </div>
+          
+          <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-3">
+            <Button
+              variant="neon"
+              size="lg"
+              onClick={handleExportPDF}
+              disabled={!results}
+              className="font-mono tracking-wider h-12 px-6"
+            >
+              <Download className="w-4 h-4 mr-3" />
+              EXPORT REPORT
+            </Button>
+            {results && (
+              <>
+                {matchingCalculation && (
+                  <RenameCalculationDialog
+                    calculationId={matchingCalculation.id}
+                    initialName={matchingCalculation.name ?? undefined}
+                    fallbackName={defaultCalculationName}
+                    disabled={loading}
+                  />
+                )}
+                <SaveCalculation
+                  calculationType="Standard Cycle"
+                  inputs={formData}
+                  results={results}
                   disabled={loading}
                 />
-              )}
-              <SaveCalculation
-                calculationType="Standard Cycle"
-                inputs={formData}
-                results={results}
-                disabled={loading}
-              />
-            </>
-          )}
+              </>
+            )}
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
         {/* LEFT SIDEBAR: CONFIGURATION */}
         <div className="xl:col-span-4 space-y-6 xl:sticky xl:top-24">
-          <Card className="border-t-4 border-t-orange-500 shadow-lg dark:bg-slate-900/50 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calculator className="w-5 h-5 text-orange-500" />
-                Configuration
-              </CardTitle>
-              <CardDescription>
-                Define system parameters and refrigerant
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+          <GlassCard variant="command" className="rounded-2xl p-1 border border-cyan-500/20" glow={true}>
+            <div className="p-6 border-b border-cyan-500/20">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Badge
+                    variant="outline"
+                    className="px-3 py-1 rounded-full border-cyan-500/50 bg-cyan-500/10 text-cyan-400 backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px]"
+                  >
+                    <Calculator className="w-3 h-3 mr-2" />
+                    SYSTEM CONFIGURATION
+                  </Badge>
+                  <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
+                </div>
+                <div className="text-xs text-slate-400 font-mono">PARAMETERS</div>
+              </div>
+              <p className="text-slate-300 text-sm mt-2">
+                Define system parameters and refrigerant selection for thermal analysis.
+              </p>
+            </div>
+            <motion.div variants={fadeInUp} className="p-6 space-y-8">
               {/* 1. Refrigerant */}
-              <div className="space-y-3">
-                <Label>Refrigerant</Label>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label className="font-mono text-sm text-cyan-300 uppercase tracking-wider">REFRIGERANT</Label>
+                  <div className="w-2 h-2 rounded-full bg-cyan-500/50" />
+                </div>
                 <div id="refrigerant-selector">
                   <EnhancedRefrigerantSelector
                     value={formData.refrigerant}
@@ -1367,184 +1424,278 @@ export function EnhancedStandardCycleContent() {
                 </div>
                 {/* Selected Refrigerant Specs Mini-View */}
                 {selectedRefrigerant && (
-                  <div className="text-xs text-muted-foreground flex gap-3 mt-1 px-1">
-                    <span title="Global Warming Potential">
-                      GWP: {selectedRefrigerant.gwp}
-                    </span>
-                    <span title="Safety Class">
-                      Safety: {selectedRefrigerant.safety_class}
-                    </span>
-                    <span title="Critical Temperature">
-                      T_crit:{" "}
-                      {selectedRefrigerant.limits.critical_temp_c.toFixed(1)}
-                      °C
-                    </span>
+                  <div className="text-xs font-mono text-slate-400 flex gap-4 mt-2 px-2">
+                    <div className="flex items-center gap-1">
+                      <div className="w-1 h-1 rounded-full bg-cyan-500" />
+                      <span title="Global Warming Potential">
+                        GWP: <span className="text-cyan-300">{selectedRefrigerant.gwp}</span>
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-1 h-1 rounded-full bg-emerald-500" />
+                      <span title="Safety Class">
+                        SAFETY: <span className="text-emerald-300">{selectedRefrigerant.safety_class}</span>
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-1 h-1 rounded-full bg-purple-500" />
+                      <span title="Critical Temperature">
+                        T_CRIT: <span className="text-purple-300">{selectedRefrigerant.limits.critical_temp_c.toFixed(1)}°C</span>
+                      </span>
+                    </div>
                   </div>
                 )}
               </div>
 
-              <Separator />
+              {/* Divider */}
+              <div className="h-px bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
 
               {/* 2. Temperatures */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-sky-600 dark:text-sky-400">
-                    Evaporator (°C)
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      type="number"
-                      value={formData.evap_temp_c}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "evap_temp_c",
-                          parseFloat(e.target.value),
-                        )
-                      }
-                      className="bg-background/50 border-sky-200 dark:border-sky-800 focus:border-sky-500"
-                    />
-                  </div>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label className="font-mono text-sm text-cyan-300 uppercase tracking-wider">TEMPERATURE PARAMETERS</Label>
+                  <div className="w-2 h-2 rounded-full bg-cyan-500/50" />
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-rose-600 dark:text-rose-400">
-                    Condenser (°C)
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      type="number"
-                      value={formData.cond_temp_c}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "cond_temp_c",
-                          parseFloat(e.target.value),
-                        )
-                      }
-                      className="bg-background/50 border-rose-200 dark:border-rose-800 focus:border-rose-500"
-                    />
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <Label className="font-mono text-xs text-slate-400 uppercase tracking-wider">EVAPORATOR (°C)</Label>
+                    <div className="relative">
+                      <Input
+                        type="number"
+                        value={formData.evap_temp_c}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "evap_temp_c",
+                            parseFloat(e.target.value),
+                          )
+                        }
+                        className="font-mono bg-slate-900/50 border border-cyan-500/30 focus:border-cyan-500 focus:ring-cyan-500/20 text-cyan-300 placeholder:text-slate-500"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <Label className="font-mono text-xs text-slate-400 uppercase tracking-wider">CONDENSER (°C)</Label>
+                    <div className="relative">
+                      <Input
+                        type="number"
+                        value={formData.cond_temp_c}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "cond_temp_c",
+                            parseFloat(e.target.value),
+                          )
+                        }
+                        className="font-mono bg-slate-900/50 border border-purple-500/30 focus:border-purple-500 focus:ring-purple-500/20 text-purple-300 placeholder:text-slate-500"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* 3. SH / SC */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Superheat (K)</Label>
-                  <Input
-                    type="number"
-                    value={formData.superheat_c}
-                    onChange={(e) =>
-                      handleInputChange(
-                        "superheat_c",
-                        parseFloat(e.target.value),
-                      )
-                    }
-                    min={0}
-                  />
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label className="font-mono text-sm text-cyan-300 uppercase tracking-wider">CYCLE REFINEMENT</Label>
+                  <div className="w-2 h-2 rounded-full bg-cyan-500/50" />
                 </div>
-                <div className="space-y-2">
-                  <Label>Subcooling (K)</Label>
-                  <Input
-                    type="number"
-                    value={formData.subcooling_c}
-                    onChange={(e) =>
-                      handleInputChange(
-                        "subcooling_c",
-                        parseFloat(e.target.value),
-                      )
-                    }
-                    min={0}
-                  />
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <Label className="font-mono text-xs text-slate-400 uppercase tracking-wider">SUPERHEAT (K)</Label>
+                    <Input
+                      type="number"
+                      value={formData.superheat_c}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "superheat_c",
+                          parseFloat(e.target.value),
+                        )
+                      }
+                      min={0}
+                      className="font-mono bg-slate-900/50 border border-emerald-500/30 focus:border-emerald-500 focus:ring-emerald-500/20 text-emerald-300 placeholder:text-slate-500"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <Label className="font-mono text-xs text-slate-400 uppercase tracking-wider">SUBCOOLING (K)</Label>
+                    <Input
+                      type="number"
+                      value={formData.subcooling_c}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "subcooling_c",
+                          parseFloat(e.target.value),
+                        )
+                      }
+                      min={0}
+                      className="font-mono bg-slate-900/50 border border-amber-500/30 focus:border-amber-500 focus:ring-amber-500/20 text-amber-300 placeholder:text-slate-500"
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* AI / Validation Feedback */}
               {formattedAiNotes && !error && (
-                <Alert className="bg-orange-50/50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-900">
-                  <Info className="h-4 w-4 text-orange-600 dark:text-orange-400" />
-                  <AlertDescription className="text-xs text-orange-800 dark:text-orange-300">
-                    {formattedAiNotes}
-                  </AlertDescription>
-                </Alert>
+                <GlassCard variant="default" className="rounded-xl p-1 border border-amber-500/30" glow={true}>
+                  <div className="p-4 flex items-start gap-3">
+                    <div className="p-2 rounded-full bg-amber-500/20 border border-amber-500/30">
+                      <Info className="h-4 w-4 text-amber-400" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-mono text-amber-300 uppercase tracking-wider mb-1">AI RECOMMENDATION</p>
+                      <p className="text-sm text-slate-300">{formattedAiNotes}</p>
+                    </div>
+                  </div>
+                </GlassCard>
               )}
 
               {error && (
-                <Alert variant="destructive">
-                  <AlertTitle>Input Error</AlertTitle>
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
+                <GlassCard variant="default" className="rounded-xl p-1 border border-red-500/30" glow={true}>
+                  <div className="p-4 flex items-start gap-3">
+                    <div className="p-2 rounded-full bg-red-500/20 border border-red-500/30">
+                      <Info className="h-4 w-4 text-red-400" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-mono text-red-300 uppercase tracking-wider mb-1">INPUT ERROR</p>
+                      <p className="text-sm text-slate-300">{error}</p>
+                    </div>
+                  </div>
+                </GlassCard>
               )}
 
               {validationWarnings.length > 0 && (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {validationWarnings.map((warning, i) => (
-                    <Alert key={i} className="border-amber-200 bg-amber-50">
-                      <AlertTitle className="text-amber-800 text-xs font-semibold">
-                        Warning
-                      </AlertTitle>
-                      <AlertDescription className="text-amber-700 text-xs">
-                        {warning}
-                      </AlertDescription>
-                    </Alert>
+                    <GlassCard key={i} variant="default" className="rounded-xl p-1 border border-amber-500/30" glow={true}>
+                      <div className="p-3 flex items-start gap-3">
+                        <div className="w-2 h-2 rounded-full bg-amber-500 mt-1.5 flex-shrink-0" />
+                        <div className="flex-1">
+                          <p className="text-xs font-mono text-amber-300 uppercase tracking-wider mb-1">WARNING</p>
+                          <p className="text-xs text-slate-300">{warning}</p>
+                        </div>
+                      </div>
+                    </GlassCard>
                   ))}
                 </div>
               )}
 
               {/* Main Action */}
-              <Button
-                className="w-full h-12 text-lg font-semibold shadow-xl shadow-orange-500/10 hover:shadow-orange-500/20 transition-all bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800"
-                onClick={() => handleCalculate()}
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    Simulating...
-                  </>
-                ) : (
-                  <>
-                    <Calculator className="mr-2 h-5 w-5" />
-                    Run Simulation
-                  </>
-                )}
-              </Button>
-            </CardContent>
-          </Card>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Button
+                  variant="neon"
+                  size="lg"
+                  className="w-full h-14 text-lg font-mono tracking-wider glow-primary hover:glow-primary"
+                  onClick={() => handleCalculate()}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-3 h-5 w-5 animate-spin" />
+                      SIMULATING...
+                    </>
+                  ) : (
+                    <>
+                      <Calculator className="mr-3 h-5 w-5" />
+                      EXECUTE SIMULATION
+                    </>
+                  )}
+                </Button>
+              </motion.div>
+            </motion.div>
+          </GlassCard>
 
           {/* Quick Tips / Guide */}
           {!results && (
-            <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-slate-900 dark:to-slate-800 border-none">
-              <CardContent className="pt-6">
-                <h3 className="font-semibold mb-2 flex items-center gap-2">
-                  <Info className="w-4 h-4 text-indigo-500" /> Pro Tips
-                </h3>
-                <ul className="text-sm space-y-2 text-muted-foreground list-disc pl-4">
-                  <li>
-                    Select a refrigerant first to get AI-suggested ranges.
+            <GlassCard variant="data" className="rounded-2xl p-1 border border-purple-500/20" glow={true}>
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <Badge
+                    variant="outline"
+                    className="px-3 py-1 rounded-full border-purple-500/50 bg-purple-500/10 text-purple-400 backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px]"
+                  >
+                    <Info className="w-3 h-3 mr-2" />
+                    OPERATIONAL GUIDANCE
+                  </Badge>
+                  <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
+                </div>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-purple-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <div className="w-2 h-2 rounded-full bg-purple-500" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-mono text-purple-300 uppercase tracking-wider mb-1">SELECT REFRIGERANT FIRST</p>
+                      <p className="text-xs text-slate-300">AI‑suggested temperature ranges will appear after selection.</p>
+                    </div>
                   </li>
-                  <li>
-                    Ensure Superheat is sufficient (&gt;5K) to protect the
-                    compressor.
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-cyan-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <div className="w-2 h-2 rounded-full bg-cyan-500" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-mono text-cyan-300 uppercase tracking-wider mb-1">MAINTAIN SUPERHEAT &gt;5K</p>
+                      <p className="text-xs text-slate-300">Protects compressor from liquid slugging and ensures efficiency.</p>
+                    </div>
                   </li>
-                  <li>Subcooling ensures liquid enters the expansion valve.</li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-mono text-emerald-300 uppercase tracking-wider mb-1">OPTIMIZE SUBCOOLING</p>
+                      <p className="text-xs text-slate-300">Ensures liquid enters expansion valve for stable cycle operation.</p>
+                    </div>
+                  </li>
                 </ul>
-              </CardContent>
-            </Card>
+              </div>
+            </GlassCard>
           )}
         </div>
 
         {/* RIGHT MAIN: RESULTS & VISUALIZATION */}
         <div className="xl:col-span-8 space-y-6">
           {!results && !loading ? (
-            <div className="min-h-[500px] flex flex-col items-center justify-center border-4 border-dashed rounded-xl bg-muted/20 text-muted-foreground">
-              <div className="p-6 bg-background rounded-full shadow-lg mb-6">
-                <Calculator className="h-12 w-12 text-orange-500" />
+            <GlassCard variant="command" className="rounded-2xl p-1 border border-cyan-500/20 min-h-[500px] flex flex-col items-center justify-center" glow={true}>
+              <div className="relative p-12 text-center">
+                {/* Animated Grid Background */}
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:60px_60px] opacity-30" />
+                
+                {/* Central Icon */}
+                <div className="relative z-10">
+                  <div className="w-32 h-32 rounded-full border-2 border-cyan-500/30 flex items-center justify-center mb-8 mx-auto">
+                    <div className="w-24 h-24 rounded-full border border-cyan-500/20 flex items-center justify-center">
+                      <Calculator className="h-16 w-16 text-cyan-400" />
+                    </div>
+                  </div>
+                  
+                  {/* Status Indicators */}
+                  <div className="flex justify-center gap-6 mb-8">
+                    {[
+                      { label: "SYSTEM READY", color: "bg-emerald-500" },
+                      { label: "PARAMETERS VALID", color: "bg-cyan-500" },
+                      { label: "AI OPTIMIZED", color: "bg-purple-500" },
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <div className={`w-2 h-2 rounded-full ${item.color} animate-pulse`} />
+                        <div className="text-xs text-slate-400 font-mono">{item.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <h3 className="text-3xl sm:text-4xl font-bold text-cyan-300 mb-4 font-mono tracking-tight">
+                    AWAITING SIMULATION COMMAND
+                  </h3>
+                  <p className="text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                    Configure thermal parameters on the left and execute simulation to generate comprehensive thermodynamic analysis with AI‑powered optimization.
+                  </p>
+                  
+                  {/* Animated Pulse */}
+                  <motion.div
+                    className="mt-8 w-64 h-1 mx-auto bg-gradient-to-r from-transparent via-cyan-500 to-transparent rounded-full"
+                    animate={{ opacity: [0.3, 1, 0.3] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                </div>
               </div>
-              <h3 className="text-2xl font-bold mb-2">Ready to Simulate</h3>
-              <p className="max-w-md text-center">
-                Configure your cycle parameters on the left and click "Run
-                Simulation" to generate comprehensive thermodynamic analysis.
-              </p>
-            </div>
+            </GlassCard>
           ) : results ? (
             <div className="animate-in slide-in-from-bottom-5 duration-700 space-y-6">
               {/* 1. Key Performance Indicators (Cards) */}
@@ -1559,8 +1710,8 @@ export function EnhancedStandardCycleContent() {
                     "kW",
                   )}
                   icon={<div className="text-2xl">❄️</div>}
-                  color="text-orange-600 dark:text-orange-400"
-                  bg="bg-orange-50 dark:bg-orange-900/20"
+                  color="text-cyan-600 dark:text-cyan-400"
+                  bg="bg-cyan-50 dark:bg-cyan-900/20"
                 />
                 <KPI
                   title="COP"
@@ -1604,7 +1755,7 @@ export function EnhancedStandardCycleContent() {
                 onValueChange={setActiveTab}
                 className="w-full"
               >
-                <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent gap-6">
+                <TabsList className="w-full justify-start border-b border-cyan-500/20 rounded-none h-auto p-0 bg-transparent gap-8">
                   <TabTrigger
                     value="visualization"
                     label="Visualization"
@@ -1629,24 +1780,36 @@ export function EnhancedStandardCycleContent() {
 
                 <div className="mt-6 min-h-[500px]">
                   <TabsContent value="visualization" className="m-0">
-                    <Card className="border-none shadow-none bg-transparent">
-                      <CardContent className="p-0">
+                    <GlassCard variant="data" className="rounded-2xl p-1 border border-cyan-500/20" glow={true}>
+                      <div className="p-0 rounded-xl overflow-hidden">
                         {cycleData && (
                           <CycleVisualization cycleData={cycleData} />
                         )}
-                      </CardContent>
-                    </Card>
+                      </div>
+                    </GlassCard>
                   </TabsContent>
 
                   <TabsContent value="results" className="m-0">
-                    <Card className="dark:bg-slate-900">
-                      <CardHeader>
-                        <CardTitle>Thermodynamic State Points</CardTitle>
-                        <CardDescription>
-                          Properties at each key point in the cycle
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
+                    <GlassCard variant="data" className="rounded-2xl p-1 border border-cyan-500/20" glow={true}>
+                      <div className="p-6 border-b border-cyan-500/20">
+                        <div className="flex items-center justify-between mb-4">
+                          <Badge
+                            variant="outline"
+                            className="px-3 py-1 rounded-full border-cyan-500/50 bg-cyan-500/10 text-cyan-400 backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px]"
+                          >
+                            <FileText className="w-3 h-3 mr-2" />
+                            STATE POINT ANALYSIS
+                          </Badge>
+                          <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
+                        </div>
+                        <h3 className="text-2xl font-bold text-cyan-300 font-mono">
+                          THERMODYNAMIC STATE POINTS
+                        </h3>
+                        <p className="text-slate-300 text-sm mt-2">
+                          Properties at each key point in the refrigeration cycle.
+                        </p>
+                      </div>
+                      <div className="p-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           {[1, 2, 3, 4].map((pointId) => {
                             const pt =
@@ -1663,8 +1826,7 @@ export function EnhancedStandardCycleContent() {
                             return (
                               <div
                                 key={pointId}
-                                className={`border rounded-lg p-4 border-l-4 border-l-${colors}-500 bg-background/50`}
-                              >
+                                className={`rounded-xl p-4 border border-cyan-500/20 bg-slate-900/30 backdrop-blur-sm`}>
                                 <div className="font-semibold text-lg mb-2 flex justify-between">
                                   <span>Point {pointId}</span>
                                   <Badge variant="outline">
@@ -1779,8 +1941,8 @@ export function EnhancedStandardCycleContent() {
                             </div>
                           </div>
                         </div>
-                      </CardContent>
-                    </Card>
+                      </div>
+                    </GlassCard>
                   </TabsContent>
 
                   <TabsContent value="equipment" className="m-0">
@@ -1799,7 +1961,7 @@ export function EnhancedStandardCycleContent() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center p-20 space-y-4">
-              <Loader2 className="w-12 h-12 animate-spin text-orange-500" />
+              <Loader2 className="w-12 h-12 animate-spin text-cyan-500" />
               <p className="text-lg text-muted-foreground">
                 Simulating thermodynamic cycle...
               </p>
@@ -1813,7 +1975,7 @@ export function EnhancedStandardCycleContent() {
           <Card className="max-w-2xl w-full shadow-2xl">
             <CardHeader className="border-b bg-muted/20">
               <CardTitle className="flex items-center gap-2">
-                <Info className="h-5 w-5 text-orange-600" />
+                <Info className="h-5 w-5 text-cyan-600" />
                 Welcome to HVAC-R Platform
                 <Badge variant="outline" className="ml-auto">
                   Screen {onboardingStep + 1} / 4
@@ -1824,7 +1986,7 @@ export function EnhancedStandardCycleContent() {
               {/* Reusing existing onboarding content logic here for simplicity, but wrapped nicely */}
               {onboardingStep === 0 && (
                 <div className="text-center space-y-4">
-                  <div className="mx-auto w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center text-3xl">
+                  <div className="mx-auto w-16 h-16 bg-cyan-100 rounded-full flex items-center justify-center text-3xl">
                     🚀
                   </div>
                   <h3 className="text-xl font-bold">Your New Superpower</h3>
@@ -1916,18 +2078,33 @@ function KPI({
   color: string;
   bg: string;
 }) {
+  // Map color to variant
+  const variant = color.includes('cyan') ? 'warning' : 
+                  color.includes('emerald') ? 'success' : 
+                  color.includes('cyan') ? 'highlight' : 
+                  color.includes('red') ? 'destructive' : 'info';
+  
   return (
-    <div
-      className={`p-4 rounded-xl border ${bg} transition-all hover:scale-105 duration-200`}
-    >
-      <div className={`flex items-start justify-between mb-2 ${color}`}>
-        <span className="font-medium text-sm text-foreground/80">{title}</span>
-        {icon}
+    <GlassCard variant="data" className="rounded-xl p-1 border border-cyan-500/20" glow={true}>
+      <div className="p-4">
+        <div className="flex items-start justify-between mb-3">
+          <span className="font-mono text-xs text-slate-400 uppercase tracking-wider">{title}</span>
+          <div className="p-2 rounded-lg bg-slate-900/50 border border-cyan-500/20">
+            {icon}
+          </div>
+        </div>
+        <div className={`text-3xl font-bold tracking-tight font-mono ${
+          variant === 'warning' ? 'text-amber-300' :
+          variant === 'success' ? 'text-emerald-300' :
+          variant === 'highlight' ? 'text-cyan-300' :
+          variant === 'destructive' ? 'text-red-300' :
+          'text-slate-300'
+        }`}>
+          {value}
+        </div>
+        <div className="mt-2 h-1 w-12 rounded-full bg-gradient-to-r from-cyan-500 to-transparent" />
       </div>
-      <div className={`text-2xl font-bold tracking-tight ${color}`}>
-        {value}
-      </div>
-    </div>
+    </GlassCard>
   );
 }
 
@@ -1943,10 +2120,12 @@ function TabTrigger({
   return (
     <TabsTrigger
       value={value}
-      className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4 py-2 bg-transparent text-muted-foreground hover:text-foreground transition-all"
+      className="data-[state=active]:border-b-2 data-[state=active]:border-cyan-500 data-[state=active]:text-cyan-300 data-[state=active]:font-bold rounded-none px-6 py-3 bg-transparent text-slate-400 hover:text-cyan-300 transition-all font-mono tracking-wider uppercase text-sm border-b-2 border-transparent"
     >
-      <div className="flex items-center gap-2">
-        {icon}
+      <div className="flex items-center gap-3">
+        <div className="data-[state=active]:text-cyan-400 text-slate-500">
+          {icon}
+        </div>
         {label}
       </div>
     </TabsTrigger>

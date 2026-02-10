@@ -7,7 +7,7 @@
  * @module monitoring
  */
 
-import { createContext, useContext, useEffect, useRef, useCallback } from 'react';
+import { createContext, useContext, useEffect, useRef, useCallback, ReactNode, FC } from 'react';
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
@@ -139,7 +139,7 @@ function processLogEntry(entry: LogEntry): void {
   sendToRemote(entry);
 }
 
-export function MonitoringProvider({ children }: { children: React.ReactNode }) {
+export const MonitoringProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const performanceBuffer = useRef<PerformanceMetric[]>([]);
   const errorBuffer = useRef<ErrorEvent[]>([]);
   const flushTimer = useRef<ReturnType<typeof setInterval> | null>(null);

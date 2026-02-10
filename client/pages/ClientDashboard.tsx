@@ -120,15 +120,15 @@ export function ClientDashboard() {
   }, [user]);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="max-w-[1600px] mx-auto space-y-6">
-        <header className="flex justify-between items-center bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800">
+        <header className="flex justify-between items-center bg-card p-6 rounded-xl shadow-sm border border-border">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
               Client Portal{" "}
-              <Activity className="text-orange-500 animate-pulse" />
+              <Activity className="text-primary animate-pulse" />
             </h1>
-            <p className="text-slate-500 dark:text-slate-400">
+            <p className="text-muted-foreground">
               Live Monitoring for {user?.email}
             </p>
           </div>
@@ -136,7 +136,7 @@ export function ClientDashboard() {
 
         {/* Tabs Navigation */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 bg-white dark:bg-slate-900 p-1 rounded-lg border">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 bg-card p-1 rounded-lg border">
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <Activity className="h-4 w-4" />
               Overview
@@ -151,9 +151,9 @@ export function ClientDashboard() {
           <TabsContent value="overview" className="space-y-6">
             {/* Status Overview */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <Card className="border-l-4 border-l-orange-500">
+              <Card className="border-l-4 border-l-primary">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-slate-500">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
                     Total Assets
                   </CardTitle>
                 </CardHeader>
@@ -166,10 +166,10 @@ export function ClientDashboard() {
               </Card>
 
               <Card
-                className={`border-l-4 ${alerts.length > 0 ? "border-l-red-500" : "border-l-green-500"}`}
+                className={`border-l-4 ${alerts.length > 0 ? "border-l-destructive" : "border-l-success"}`}
               >
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-slate-500">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
                     System Status
                   </CardTitle>
                 </CardHeader>
@@ -177,15 +177,15 @@ export function ClientDashboard() {
                   <div className="flex items-center gap-2">
                     {alerts.length > 0 ? (
                       <>
-                        <AlertTriangle className="h-6 w-6 text-red-500" />
-                        <div className="text-2xl font-bold text-red-600">
+                        <AlertTriangle className="h-6 w-6 text-destructive" />
+                        <div className="text-2xl font-bold text-destructive">
                           {alerts.length} Alerts
                         </div>
                       </>
                     ) : (
                       <>
-                        <CheckCircle className="h-6 w-6 text-green-500" />
-                        <div className="text-2xl font-bold text-green-600">
+                        <CheckCircle className="h-6 w-6 text-success" />
+                        <div className="text-2xl font-bold text-success">
                           Healthy
                         </div>
                       </>
@@ -238,7 +238,7 @@ export function ClientDashboard() {
             {/* Assets List */}
             <div>
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <Smartphone className="h-5 w-5 text-orange-500" />
+                <Smartphone className="h-5 w-5 text-cyan-500" />
                 My Assets
               </h2>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -262,9 +262,9 @@ export function ClientDashboard() {
                             </p>
                           </div>
                           {asset.type === "Chiller" ? (
-                            <Wind className="h-6 w-6 text-orange-500" />
+                            <Wind className="h-6 w-6 text-cyan-500" />
                           ) : (
-                            <Thermometer className="h-6 w-6 text-orange-500" />
+                            <Thermometer className="h-6 w-6 text-cyan-500" />
                           )}
                         </div>
 
@@ -274,7 +274,7 @@ export function ClientDashboard() {
                               Real-Time
                             </div>
                             <span
-                              className={`text-3xl font-bold ${latestReading > 40 ? "text-red-500" : "text-orange-600"}`}
+                              className={`text-3xl font-bold ${latestReading > 40 ? "text-red-500" : "text-cyan-600"}`}
                             >
                               {latestReading !== undefined
                                 ? `${latestReading}°`

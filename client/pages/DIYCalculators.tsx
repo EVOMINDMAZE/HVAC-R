@@ -61,17 +61,17 @@ export default function DIYCalculators() {
             <Button
               variant="ghost"
               size="sm"
-              className="-ml-3 h-8 text-xs text-slate-500 hover:text-slate-900 dark:hover:text-slate-300"
+              className="-ml-3 h-8 text-xs text-muted-foreground hover:text-foreground"
               onClick={() => navigate("/dashboard")}
             >
               <ArrowLeft className="w-4 h-4 mr-1" /> Back to Dashboard
             </Button>
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
-            <Ruler className="w-8 h-8 text-orange-600 dark:text-orange-400" />
+          <h1 className="text-3xl font-extrabold font-mono tracking-tight text-foreground flex items-center gap-3">
+            <Ruler className="w-8 h-8 text-primary" />
             HVAC Field Tools
           </h1>
-          <p className="mt-2 text-slate-500 dark:text-slate-400 max-w-2xl text-lg">
+          <p className="mt-2 text-muted-foreground max-w-2xl text-lg">
             Quick, professional-grade calculators for technicians on the job
             site.
           </p>
@@ -97,10 +97,10 @@ export default function DIYCalculators() {
         className="space-y-8"
       >
         <div className="flex justify-center md:justify-start overflow-x-auto pb-2 scrollbar-hide">
-          <TabsList className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-1 rounded-full shadow-sm h-12">
+          <TabsList className="bg-secondary border border-border p-1 rounded-full shadow-sm h-12">
             <TabsTrigger
               value="airflow"
-              className="rounded-full px-6 py-2 data-[state=active]:bg-orange-600 data-[state=active]:text-white transition-all"
+              className="rounded-full px-6 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all"
             >
               <Wind className="w-4 h-4 mr-2" />
               Airflow
@@ -114,7 +114,7 @@ export default function DIYCalculators() {
             </TabsTrigger>
             <TabsTrigger
               value="a2l"
-              className="rounded-full px-6 py-2 data-[state=active]:bg-orange-600 data-[state=active]:text-white transition-all"
+              className="rounded-full px-6 py-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all"
             >
               <ShieldAlert className="w-4 h-4 mr-2" />
               A2L Safety
@@ -267,11 +267,11 @@ function AirflowCalculator() {
 
   return (
     <Card className="border-0 shadow-lg bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
-      <CardHeader className="bg-orange-50/50 dark:bg-slate-800/50 border-b border-orange-100 dark:border-slate-700 pb-4">
+      <CardHeader className="bg-cyan-50/50 dark:bg-slate-800/50 border-b border-cyan-100 dark:border-slate-700 pb-4">
         <div className="flex items-center justify-between">
           <div className="space-y-1">
             <CardTitle className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <div className="bg-orange-100 dark:bg-orange-900/30 p-2 rounded-lg text-orange-600 dark:text-orange-400">
+              <div className="bg-cyan-100 dark:bg-cyan-900/30 p-2 rounded-lg text-cyan-600 dark:text-cyan-400">
                 <Wind className="w-5 h-5" />
               </div>
               Airflow Calculator
@@ -282,7 +282,7 @@ function AirflowCalculator() {
           </div>
           <Badge
             variant="outline"
-            className="text-orange-600 border-orange-200 bg-orange-50 hidden sm:flex"
+            className="text-cyan-600 border-cyan-200 bg-cyan-50 hidden sm:flex"
           >
             Q = 1.08 × CFM × ΔT
           </Badge>
@@ -318,7 +318,7 @@ function AirflowCalculator() {
                           sensible_heat: Number(e.target.value),
                         })
                       }
-                      className="pl-9 h-11 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 group-hover:border-orange-400 transition-colors"
+                      className="pl-9 h-11 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 group-hover:border-cyan-400 transition-colors"
                     />
                   </div>
                   <Select
@@ -358,7 +358,7 @@ function AirflowCalculator() {
                           delta_t: Number(e.target.value),
                         })
                       }
-                      className="pl-9 h-11 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 group-hover:border-orange-400 transition-colors"
+                      className="pl-9 h-11 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 group-hover:border-cyan-400 transition-colors"
                     />
                   </div>
                   <Select
@@ -380,7 +380,7 @@ function AirflowCalculator() {
               <div className="pt-4">
                 <Button
                   onClick={handleCalculate}
-                  className="w-full h-12 text-base bg-orange-600 hover:bg-orange-700 shadow-xl shadow-orange-500/20"
+                  className="w-full h-12 text-base bg-cyan-600 hover:bg-cyan-700 shadow-xl shadow-cyan-500/20"
                   disabled={loading}
                 >
                   {loading ? (
@@ -413,7 +413,7 @@ function AirflowCalculator() {
 
             {result ? (
               <div className="text-center w-full max-w-sm animate-in zoom-in-95 duration-300">
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400 mb-6 shadow-inner">
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-cyan-100 text-cyan-600 dark:bg-cyan-900/30 dark:text-cyan-400 mb-6 shadow-inner">
                   <Wind className="w-10 h-10" />
                 </div>
                 <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-2">
@@ -451,7 +451,7 @@ function AirflowCalculator() {
                     trigger={
                       <Button
                         variant="outline"
-                        className="w-full border-dashed border-slate-300 hover:border-orange-500 hover:text-orange-600 transition-all"
+                        className="w-full border-dashed border-slate-300 hover:border-cyan-500 hover:text-cyan-600 transition-all"
                       >
                         <Save className="w-4 h-4 mr-2" />
                         Save Result

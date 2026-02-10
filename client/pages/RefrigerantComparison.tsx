@@ -823,13 +823,13 @@ export function RefrigerantComparisonContent() {
   const hasSelections = selectedCount > 0;
 
   return (
-    <div className="min-h-screen bg-background text-foreground animate-in fade-in duration-500 pb-20">
+    <div className="min-h-screen bg-slate-950 text-foreground animate-in fade-in duration-500 pb-20 selection:bg-cyan-500/30">
       <div className="container mx-auto px-4 py-8 max-w-[1600px]">
 
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-green-500 to-emerald-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold font-mono tracking-tight bg-gradient-to-r from-cyan-500 to-slate-600 bg-clip-text text-transparent">
               Refrigerant Comparison
             </h1>
             <p className="text-muted-foreground mt-1 text-lg">
@@ -966,7 +966,7 @@ export function RefrigerantComparisonContent() {
                       onChange={(e) =>
                         handleInputChange("evaporatorTemp", parseFloat(e.target.value))
                       }
-                      className="bg-background/50"
+                      className="bg-slate-950/50"
                     />
                   </div>
                   <div className="space-y-2">
@@ -977,7 +977,7 @@ export function RefrigerantComparisonContent() {
                       onChange={(e) =>
                         handleInputChange("condenserTemp", parseFloat(e.target.value))
                       }
-                      className="bg-background/50"
+                      className="bg-slate-950/50"
                     />
                   </div>
                 </div>
@@ -1049,7 +1049,7 @@ export function RefrigerantComparisonContent() {
           <div className="xl:col-span-8 space-y-6">
             {!result || !result.results || result.results.length === 0 ? (
               <div className="min-h-[500px] flex flex-col items-center justify-center border-4 border-dashed rounded-xl bg-muted/20 text-muted-foreground p-8 text-center">
-                <div className="p-6 bg-background rounded-full shadow-lg mb-6">
+                <div className="p-6 bg-slate-950 rounded-full shadow-lg mb-6">
                   <BarChart3 className="h-12 w-12 text-green-500" />
                 </div>
                 <h3 className="text-2xl font-bold mb-2">Ready to Compare</h3>
@@ -1139,7 +1139,7 @@ export function RefrigerantComparisonContent() {
                                               metric.key === "cop" ? (
                                                 <>
                                                   {/* Seamless Status Badge */}
-                                                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 cursor-help transition-all hover:bg-orange-500/20 hover:scale-105">
+                                                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 cursor-help transition-all hover:bg-cyan-500/20 hover:scale-105">
                                                     <AlertTriangle className="h-3.5 w-3.5" />
                                                     <span className="text-xs font-medium">Limit Reached</span>
                                                   </div>
@@ -1150,7 +1150,7 @@ export function RefrigerantComparisonContent() {
 
                                                     <div className="bg-popover text-popover-foreground rounded-xl shadow-2xl border p-4 text-left backdrop-blur-xl bg-opacity-95">
                                                       <div className="flex gap-3">
-                                                        <div className="shrink-0 p-2 rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
+                                                        <div className="shrink-0 p-2 rounded-lg bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400">
                                                           <AlertTriangle className="h-5 w-5" />
                                                         </div>
                                                         <div className="space-y-1">

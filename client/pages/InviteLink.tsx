@@ -86,7 +86,7 @@ export default function InviteLink() {
         />
       </Helmet>
       <div className="container mx-auto px-4 py-12 max-w-md">
-        <Card className="border-t-4 border-t-orange-500">
+        <Card className="border-t-4 border-t-cyan-500">
           <CardHeader>
             <CardTitle className="text-2xl">Accept Invitation</CardTitle>
             <CardDescription>

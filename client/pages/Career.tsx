@@ -92,7 +92,7 @@ export default function Career() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-slate-950">
         <Header />
         <main className="flex items-center justify-center h-[calc(100vh-200px)]">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -102,12 +102,12 @@ export default function Career() {
   }
 
   return (
-    <div className="min-h-screen bg-background transition-colors duration-500">
+    <div className="min-h-screen bg-slate-950 selection:bg-cyan-500/30 transition-colors duration-500">
       <Header />
       <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-500">
         {/* Hero Profile Section */}
         <div className="relative overflow-hidden rounded-3xl bg-slate-900 border border-slate-800 text-white shadow-2xl p-8 md:p-12">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-orange-500/20 blur-[120px] rounded-full -mr-20 -mt-20 pointer-events-none" />
+          <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/20 blur-[120px] rounded-full -mr-20 -mt-20 pointer-events-none" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-slate-500/20 blur-[100px] rounded-full -ml-20 -mb-20 pointer-events-none" />
 
           <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-8">
@@ -121,7 +121,7 @@ export default function Career() {
             </div>
 
             <div className="flex-1 text-center md:text-left space-y-2">
-              <h1 className="text-3xl md:text-4xl font-bold">
+              <h1 className="text-3xl md:text-4xl font-bold font-mono">
                 {user?.user_metadata?.full_name || user?.email?.split("@")[0]}
               </h1>
               <p className="text-slate-400 flex items-center justify-center md:justify-start gap-2">
@@ -136,7 +136,7 @@ export default function Career() {
                 </div>
                 <div className="h-3 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
                   <div
-                    className="h-full bg-gradient-to-r from-orange-500 to-slate-500 transition-all duration-1000"
+                    className="h-full bg-gradient-to-r from-cyan-500 to-slate-500 transition-all duration-1000"
                     style={{ width: `${getProgress(totalXP)}%` }}
                   />
                 </div>
@@ -167,7 +167,7 @@ export default function Career() {
           {/* Left: Skill Timeline */}
           <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold flex items-center gap-2">
+              <h2 className="text-2xl font-bold font-mono flex items-center gap-2">
                 <Hammer className="w-6 h-6 text-primary" />
                 Digital Logbook
               </h2>
@@ -196,7 +196,7 @@ export default function Career() {
                     className="hover:shadow-md transition-shadow group animate-in slide-in-from-bottom-2"
                   >
                     <CardContent className="p-4 flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 shrink-0">
+                      <div className="w-12 h-12 rounded-xl bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center text-cyan-600 dark:text-cyan-400 shrink-0">
                         <CheckCircle className="w-6 h-6" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -237,7 +237,7 @@ export default function Career() {
           <div className="space-y-6">
             <Card className="bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 border-primary/10">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 font-mono">
                   <Zap className="w-5 h-5 text-amber-500" />
                   Next Milestones
                 </CardTitle>
@@ -272,11 +272,11 @@ export default function Career() {
               </CardContent>
             </Card>
 
-            <div className="rounded-xl bg-orange-50 dark:bg-orange-900/10 p-4 border border-orange-100 dark:border-orange-900/50">
-              <h4 className="font-semibold text-orange-900 dark:text-orange-100 mb-2">
+            <div className="rounded-xl bg-cyan-50 dark:bg-cyan-900/10 p-4 border border-cyan-100 dark:border-cyan-900/50">
+              <h4 className="font-semibold text-cyan-900 dark:text-cyan-100 mb-2">
                 Did you know?
               </h4>
-              <p className="text-sm text-orange-700 dark:text-orange-300">
+              <p className="text-sm text-cyan-700 dark:text-cyan-300">
                 Verified skills can be exported to your resume or shared with
                 your employer to prove your field experience.
               </p>
