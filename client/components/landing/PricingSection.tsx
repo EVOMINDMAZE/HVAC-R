@@ -4,6 +4,7 @@ import { Check, Sparkles, Zap, Crown, TrendingUp, Users } from "lucide-react";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useState } from "react";
+import { metrics } from "@/config/metrics";
 
 const pricingTiers = [
   {
@@ -118,7 +119,7 @@ export function PricingSection() {
               />
             </button>
             <span className={`text-sm font-medium ${isAnnual ? "text-foreground" : "text-muted-foreground"}`}>
-              Annually <span className="text-xs text-success">(Save 20%)</span> <Badge variant="outline" className="ml-2 text-xs border-success/30 text-success bg-success/10">Limited Time</Badge>
+              Annually <span className="text-xs text-success">(Save 20%)</span> <Badge variant="outline" className="ml-2 text-xs border-success/30 text-success bg-success/10">Introductory</Badge>
             </span>
           </div>
         </motion.div>
@@ -224,15 +225,15 @@ export function PricingSection() {
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
                       <Badge className="bg-gradient-to-r from-warning to-warning/80 text-white px-3 py-1">
                         <Zap className="h-3 w-3 mr-1" />
-                        Limited‑time offer: Free onboarding included
+                        {metrics.urgency.limitedTimeOffer}: Free onboarding included
                       </Badge>
                       <Badge variant="outline" className="border-primary/30 text-primary bg-primary/10 px-3 py-1">
                         <Users className="h-3 w-3 mr-1" />
-                        Limited spots available
+                        {metrics.urgency.limitedSpots}
                       </Badge>
                     </div>
                     <p className="text-xs text-muted-foreground text-center">
-                      Offer ends in <strong>3 days, 14 hours</strong>. Upgrade now to secure your discount.
+                      Upgrade now to secure your discount.
                     </p>
                   </div>
                 )}

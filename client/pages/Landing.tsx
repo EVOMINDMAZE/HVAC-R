@@ -215,7 +215,7 @@ export function Landing() {
       <main id="main-content" className="flex-grow">
         <SEO
           title="ThermoNeural | AI-Powered HVAC&R Thermodynamic Analysis Platform"
-          description="ThermoNeural: AI-powered thermodynamic analysis platform for HVAC&R engineers. Simulate refrigeration cycles, optimize system performance, and generate professional reports with 99.8% accuracy. Start your free trial today."
+          description="ThermoNeural: AI-powered thermodynamic analysis platform for HVAC&R engineers. Simulate refrigeration cycles, optimize system performance, and generate professional reports with high accuracy. Start your free trial today."
         />
         <StructuredData />
         <HeroSection />

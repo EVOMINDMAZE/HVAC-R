@@ -100,7 +100,7 @@ export function StructuredData() {
         "name": "What is ThermoNeural?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "ThermoNeural is a professional‑grade HVAC&R thermodynamic calculation platform that uses AI to simplify complex calculations, saving engineers up to 85% time while maintaining 99.8% accuracy.",
+          "text": "ThermoNeural is a professional‑grade HVAC&R thermodynamic calculation platform that uses AI to simplify complex calculations, saving engineers significant time while maintaining high accuracy.",
         },
       },
       {

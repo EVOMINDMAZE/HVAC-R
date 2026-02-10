@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Zap, Play, Clock, CheckCircle, BarChart, Building, Shield, Globe, Newspaper } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { metrics } from "@/config/metrics";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -39,7 +40,7 @@ export function HeroSection() {
             >
               <Zap className="w-3 h-3 mr-2" />
               <span className="font-medium text-xs">
-                Trusted by 1,200+ HVAC Engineers Worldwide
+                Trusted by {metrics.users.totalEngineers} HVAC Engineers Worldwide
               </span>
             </Badge>
           </motion.div>
@@ -56,7 +57,7 @@ export function HeroSection() {
             variants={fadeInUp}
             className="text-lg sm:text-xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed"
           >
-            Professional‑grade thermodynamic calculations that save engineers <strong>85% time</strong>, boost accuracy, and deliver client‑ready reports instantly.
+            Professional‑grade thermodynamic calculations that save engineers <strong>significant time</strong>, boost accuracy, and deliver client‑ready reports instantly.
           </motion.p>
 
           {/* Key Metrics */}
@@ -69,8 +70,9 @@ export function HeroSection() {
                 <Clock className="h-5 w-5 text-success" />
               </div>
               <div className="text-left">
-                <div className="text-2xl font-bold text-foreground">2.5h</div>
-                <div className="text-sm text-muted-foreground">Avg. time saved</div>
+                <div className="text-2xl font-bold text-foreground">{metrics.performance.timeSavings.value}</div>
+                <div className="text-sm text-muted-foreground">Time reduction</div>
+                <div className="text-xs text-muted-foreground/70 mt-1">{metrics.performance.timeSavings.qualifier}</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -78,8 +80,9 @@ export function HeroSection() {
                 <CheckCircle className="h-5 w-5 text-primary" />
               </div>
               <div className="text-left">
-                <div className="text-2xl font-bold text-foreground">99.8%</div>
+                <div className="text-2xl font-bold text-foreground">{metrics.performance.accuracy.value}</div>
                 <div className="text-sm text-muted-foreground">Calculation accuracy</div>
+                <div className="text-xs text-muted-foreground/70 mt-1">{metrics.performance.accuracy.qualifier}</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -87,8 +90,9 @@ export function HeroSection() {
                 <BarChart className="h-5 w-5 text-highlight" />
               </div>
               <div className="text-left">
-                <div className="text-2xl font-bold text-foreground">10k+</div>
+                <div className="text-2xl font-bold text-foreground">{metrics.performance.reportsGenerated.value}</div>
                 <div className="text-sm text-muted-foreground">Reports generated</div>
+                <div className="text-xs text-muted-foreground/70 mt-1">{metrics.performance.reportsGenerated.qualifier}</div>
               </div>
             </div>
           </motion.div>
@@ -135,11 +139,11 @@ export function HeroSection() {
           >
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
               <Zap className="h-3 w-3" />
-              Limited Time: First 100 users get 50% off first month
+              Introductory offer: Save on your first month
             </div>
             <div className="inline-flex items-center gap-2 bg-success/10 text-success px-4 py-2 rounded-full text-sm font-medium">
               <CheckCircle className="h-3 w-3" />
-              Trusted by 2,500+ HVAC engineers
+              Trusted by {metrics.users.totalEngineers} HVAC engineers
             </div>
           </motion.div>
 
@@ -155,14 +159,14 @@ export function HeroSection() {
             variants={fadeInUp}
             className="mt-12 pt-8 border-t border-border/50 w-full max-w-3xl"
           >
-            <p className="text-sm text-muted-foreground mb-6">Featured in</p>
+            <p className="text-sm text-muted-foreground mb-6">Industry Standards We Follow</p>
             <div className="grid grid-cols-3 md:grid-cols-5 gap-6">
               {[
-                { icon: Building, name: "ASHRAE", description: "HVAC&R Standards Body" },
-                { icon: Shield, name: "NIST", description: "National Institute of Standards" },
-                { icon: BarChart, name: "HVAC Insider", description: "Industry Publication" },
-                { icon: Newspaper, name: "Engineer Weekly", description: "Engineering News" },
-                { icon: Globe, name: "Refrigeration News", description: "Global Industry News" },
+                { icon: Building, ...metrics.industryStandards.ashrae },
+                { icon: Shield, ...metrics.industryStandards.nist },
+                { icon: BarChart, ...metrics.industryStandards.hvacInsider },
+                { icon: Newspaper, ...metrics.industryStandards.engineerWeekly },
+                { icon: Globe, ...metrics.industryStandards.refrigerationNews },
               ].map((logo, index) => (
                 <motion.div
                   key={index}
@@ -181,6 +185,9 @@ export function HeroSection() {
                 </motion.div>
               ))}
             </div>
+            <p className="text-xs text-muted-foreground mt-4 text-center italic">
+              Logos represent industry standards, not endorsements
+            </p>
           </motion.div>
         </motion.div>
       </div>

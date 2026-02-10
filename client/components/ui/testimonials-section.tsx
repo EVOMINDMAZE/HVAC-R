@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
 import { Quote, Star, MessageSquare, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { metrics } from "@/config/metrics";
 
 // Placeholder for future real testimonials
 // When real testimonials are collected, replace this array
-const SHOW_PLACEHOLDER_TESTIMONIALS = true; // Set to false when real testimonials are available
+const SHOW_PLACEHOLDER_TESTIMONIALS = metrics.testimonials.showPlaceholders; // Set to false when real testimonials are available
 const testimonials: Array<{
   name: string;
   title: string;
@@ -107,6 +108,15 @@ export function TestimonialsSection() {
 
         {hasTestimonials ? (
           <>
+            {/* Disclaimer for placeholder testimonials */}
+            {SHOW_PLACEHOLDER_TESTIMONIALS && (
+              <div className="mb-8 p-4 bg-warning/10 border border-warning/30 rounded-lg text-center">
+                <p className="text-sm text-warning font-medium">
+                  {metrics.testimonials.placeholderDisclaimer}
+                </p>
+              </div>
+            )}
+            
             <div className="grid md:grid-cols-3 gap-8">
               {testimonials.map((testimonial, index) => (
                 <motion.div
@@ -136,13 +146,13 @@ export function TestimonialsSection() {
                       <div>
                         <div className="font-semibold text-foreground flex items-center gap-2">
                       {testimonial.name}
-                      {testimonial.verified && (
-                        <span className="text-xs bg-success/10 text-success px-2 py-0.5 rounded-full">
+                      {testimonial.verified && !testimonial.isPlaceholder && (
+                        <span className="text-xs bg-success/10 text-success px-2 py-0.5 rounded-full border border-success/30">
                           Verified
                         </span>
                       )}
                       {testimonial.isPlaceholder && (
-                        <span className="text-xs bg-warning/10 text-warning px-2 py-0.5 rounded-full">
+                        <span className="text-xs bg-warning/20 text-warning px-2 py-0.5 rounded-full border border-warning/30 font-medium">
                           Example
                         </span>
                       )}
@@ -185,11 +195,11 @@ export function TestimonialsSection() {
                   </Button>
                   <Button variant="outline">
                     <Gift className="h-4 w-4 mr-2" />
-                    Get $50 Credit for Verified Review
+                    Get {metrics.testimonials.reviewCredit.amount} Credit for Verified Review
                   </Button>
                 </div>
                 <p className="text-xs text-muted-foreground mt-6">
-                  *Limited time offer. Credit applied to your account after review verification.
+                  *{metrics.urgency.limitedTimeOffer}. {metrics.testimonials.reviewCredit.amount} {metrics.testimonials.reviewCredit.description} applied after verification.
                 </p>
               </div>
             </motion.div>
@@ -224,11 +234,11 @@ export function TestimonialsSection() {
                 </Button>
                 <Button variant="outline">
                   <Gift className="h-4 w-4 mr-2" />
-                  Get $50 Credit for Review
+                  Get {metrics.testimonials.reviewCredit.amount} Credit for Review
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground mt-6">
-                *Limited time offer. Credit applied to your account after review verification.
+                *{metrics.urgency.limitedTimeOffer}. {metrics.testimonials.reviewCredit.amount} {metrics.testimonials.reviewCredit.description} applied after verification.
               </p>
             </div>
           </motion.div>

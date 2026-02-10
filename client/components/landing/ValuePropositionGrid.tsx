@@ -3,21 +3,22 @@ import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
+import { metrics } from "@/config/metrics";
 
 const valueProps = [
   {
     icon: Clock,
     title: "Time Savings",
-    description: "Reduce calculation time from hours to minutes with automated workflows and AI-powered insights.",
-    metric: "85%",
-    metricLabel: "Average time reduction",
+    description: "Reduce calculation time from hours to minutes with automated workflows and AI-powered insights. Based on internal testing.",
+    metric: metrics.performance.timeSavings.value,
+    metricLabel: "Time reduction",
     color: "primary",
   },
   {
     icon: CheckCircle,
     title: "Unmatched Accuracy",
-    description: "Professional-grade calculations validated against NIST Refprop with 99.8% accuracy guarantee.",
-    metric: "99.8%",
+    description: "Professional-grade calculations validated against NIST Refprop reference data. Validated against industry standards.",
+    metric: metrics.performance.accuracy.value,
     metricLabel: "Calculation accuracy",
     color: "success",
   },
@@ -25,7 +26,7 @@ const valueProps = [
     icon: FileText,
     title: "Professional Reports",
     description: "Generate client-ready reports in multiple formats with branded templates and compliance documentation.",
-    metric: "10k+",
+    metric: metrics.performance.reportsGenerated.value,
     metricLabel: "Reports generated",
     color: "highlight",
   },
@@ -155,7 +156,7 @@ export function ValuePropositionGrid() {
           className="text-center mt-16"
         >
           <p className="text-muted-foreground text-sm">
-            Join <span className="font-bold text-primary">1,200+ engineers</span> who trust ThermoNeural for their critical calculations.
+            Join <span className="font-bold text-primary">{metrics.users.totalEngineers} engineers</span> who trust ThermoNeural for their critical calculations.
           </p>
         </motion.div>
       </div>

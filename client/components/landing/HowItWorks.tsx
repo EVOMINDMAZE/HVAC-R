@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
+import { metrics } from "@/config/metrics";
 
 const steps = [
   {
@@ -173,7 +174,7 @@ export function HowItWorks() {
           <div className="mb-6">
             <Badge className="bg-gradient-to-r from-warning to-warning/80 text-white px-4 py-1 mb-4">
               <Zap className="h-3 w-3 mr-1" />
-              Limited Time: First 100 users get 50% off first month
+              Introductory offer: Save on your first month
             </Badge>
           </div>
           <motion.button

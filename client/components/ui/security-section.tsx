@@ -1,47 +1,48 @@
 import { motion } from "framer-motion";
 import { Shield, Lock, CheckCircle, FileCheck, Globe, Server, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { metrics } from "@/config/metrics";
 
 const certifications = [
   {
     icon: Clock,
-    title: "SOC 2 Type II",
-    description: "Certification audit scheduled for Q2 2025. Security controls implementation in progress.",
-    status: "In Progress",
+    title: metrics.certifications.soc2.title,
+    description: metrics.certifications.soc2.description,
+    status: "Planned",
     statusColor: "bg-warning/10 text-warning",
   },
   {
     icon: Lock,
-    title: "256-bit Encryption",
-    description: "AES-256 encryption for all data at rest and in transit.",
+    title: metrics.certifications.encryption.title,
+    description: metrics.certifications.encryption.description,
     status: "Active",
     statusColor: "bg-success/10 text-success",
   },
   {
     icon: FileCheck,
-    title: "ASHRAE Compliant",
-    description: "Our calculations follow ASHRAE standards and guidelines for HVAC&R engineering.",
+    title: metrics.certifications.ashrae.title,
+    description: metrics.certifications.ashrae.description,
     status: "Active",
     statusColor: "bg-success/10 text-success",
   },
   {
     icon: Globe,
-    title: "GDPR Ready",
-    description: "Full compliance with European data protection regulations.",
+    title: metrics.certifications.gdpr.title,
+    description: metrics.certifications.gdpr.description,
     status: "Active",
     statusColor: "bg-success/10 text-success",
   },
   {
     icon: Server,
-    title: "NIST Validated",
-    description: "Thermodynamic calculations validated against NIST Refprop reference data.",
+    title: metrics.certifications.nist.title,
+    description: metrics.certifications.nist.description,
     status: "Active",
     statusColor: "bg-success/10 text-success",
   },
   {
     icon: Clock,
-    title: "ISO 27001",
-    description: "Information security management system certification process initiated.",
+    title: metrics.certifications.iso27001.title,
+    description: metrics.certifications.iso27001.description,
     status: "In Progress",
     statusColor: "bg-warning/10 text-warning",
   },
