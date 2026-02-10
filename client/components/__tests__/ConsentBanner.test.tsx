@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { ConsentBanner, useConsent } from '../ConsentBanner';
 import { supabase } from '@/lib/supabase';
 
@@ -20,6 +21,10 @@ vi.mock('@/lib/supabase', () => {
 // Mock fetch globally
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
+
+const renderWithRouter = (ui: JSX.Element) => {
+  return render(<MemoryRouter>{ui}</MemoryRouter>);
+};
 
 describe('ConsentBanner', () => {
   beforeEach(async () => {
@@ -45,14 +50,14 @@ describe('ConsentBanner', () => {
   });
 
   it('should not render when visible is false', () => {
-    const { container } = render(
+    const { container } = renderWithRouter(
       <ConsentBanner visible={false} />
     );
     expect(container.firstChild).toBeNull();
   });
 
   it('should render when visible is true (default)', () => {
-    render(<ConsentBanner />);
+    renderWithRouter(<ConsentBanner />);
     expect(screen.getByText('Your Privacy Choices')).toBeInTheDocument();
     expect(screen.getByText(/We use cookies and similar technologies/)).toBeInTheDocument();
     expect(screen.getByText('Accept All')).toBeInTheDocument();
@@ -62,7 +67,7 @@ describe('ConsentBanner', () => {
   });
 
   it('should show details when customize button is clicked', () => {
-    render(<ConsentBanner />);
+    renderWithRouter(<ConsentBanner />);
     
     // Details should be hidden initially
     expect(screen.queryByText('Essential Cookies')).not.toBeInTheDocument();
@@ -82,7 +87,7 @@ describe('ConsentBanner', () => {
 
   it('should call onDismiss when close button is clicked', () => {
     const onDismiss = vi.fn();
-    render(<ConsentBanner onDismiss={onDismiss} />);
+    renderWithRouter(<ConsentBanner onDismiss={onDismiss} />);
     
     // Find and click the close button (X)
     const closeButton = screen.getByRole('button', { name: /close/i });
@@ -95,7 +100,7 @@ describe('ConsentBanner', () => {
     it('should store consent in localStorage and call callbacks when clicked (unauthenticated)', async () => {
       const onConsentGranted = vi.fn();
       const onDismiss = vi.fn();
-      render(<ConsentBanner onConsentGranted={onConsentGranted} onDismiss={onDismiss} />);
+      renderWithRouter(<ConsentBanner onConsentGranted={onConsentGranted} onDismiss={onDismiss} />);
       
       // Mock unauthenticated user
       const { supabase } = await import('@/lib/supabase');
@@ -128,7 +133,7 @@ describe('ConsentBanner', () => {
       vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: mockUser }, error: null } as any);
       vi.mocked(supabase.auth.getSession).mockResolvedValue({ data: { session: { access_token: 'auth-token' } }, error: null } as any);
       
-      render(<ConsentBanner />);
+      renderWithRouter(<ConsentBanner />);
       
       fireEvent.click(screen.getByText('Accept All'));
       
@@ -162,7 +167,7 @@ describe('ConsentBanner', () => {
       // Mock fetch to fail
       mockFetch.mockRejectedValue(new Error('API Error'));
       
-      render(<ConsentBanner />);
+      renderWithRouter(<ConsentBanner />);
       
       fireEvent.click(screen.getByText('Accept All'));
       
@@ -181,7 +186,7 @@ describe('ConsentBanner', () => {
     it('should store declined consent in localStorage and call callbacks', () => {
       const onConsentDeclined = vi.fn();
       const onDismiss = vi.fn();
-      render(<ConsentBanner onConsentDeclined={onConsentDeclined} onDismiss={onDismiss} />);
+      renderWithRouter(<ConsentBanner onConsentDeclined={onConsentDeclined} onDismiss={onDismiss} />);
       
       fireEvent.click(screen.getByText('Decline Non‑Essential'));
       
