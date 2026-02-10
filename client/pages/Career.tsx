@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { supabase } from "@/lib/supabase";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { PageContainer } from "@/components/PageContainer";
 import {
   Card,
   CardContent,
@@ -11,16 +13,16 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 import {
-  Award,
   Briefcase,
-  Zap,
   Star,
   Loader2,
   Trophy,
   Clock,
   Hammer,
+  CheckCircle,
+  Shield,
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -43,11 +45,12 @@ export default function Career() {
 
   useEffect(() => {
     async function fetchParams() {
-      if (!user) return;
+      if (!user) {
+        setLoading(false);
+        return;
+      }
       setLoading(true);
 
-      // In a real app we would join properly if Supabase types were fully gen'd,
-      // but for now we fetch raw and simple relations
       const { data, error } = await supabase
         .from("skill_logs")
         .select(
@@ -89,10 +92,12 @@ export default function Career() {
 
   const getLevel = (xp: number) => Math.floor(xp / 100) + 1;
   const getProgress = (xp: number) => xp % 100;
+  const displayName =
+    user?.user_metadata?.full_name || user?.email?.split("@")[0];
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950">
+      <div className="app-shell min-h-screen bg-background text-foreground">
         <Header />
         <main className="flex items-center justify-center h-[calc(100vh-200px)]">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -101,230 +106,216 @@ export default function Career() {
     );
   }
 
+  if (!user) {
+    return (
+      <div className="app-shell min-h-screen bg-background text-foreground">
+        <Header variant="landing" />
+        <main className="py-16">
+          <PageContainer>
+            <div className="mx-auto max-w-xl">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Sign in required</CardTitle>
+                  <CardDescription>
+                    Access your skills logbook and professional profile by signing
+                    in.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col sm:flex-row gap-3">
+                  <Button asChild>
+                    <Link to="/signin">Sign in</Link>
+                  </Button>
+                  <Button asChild variant="outline">
+                    <Link to="/signup">Create account</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </PageContainer>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-slate-950 selection:bg-cyan-500/30 transition-colors duration-500">
+    <div className="app-shell min-h-screen bg-background text-foreground">
       <Header />
-      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-500">
-        {/* Hero Profile Section */}
-        <div className="relative overflow-hidden rounded-3xl bg-slate-900 border border-slate-800 text-white shadow-2xl p-8 md:p-12">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/20 blur-[120px] rounded-full -mr-20 -mt-20 pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-slate-500/20 blur-[100px] rounded-full -ml-20 -mb-20 pointer-events-none" />
-
-          <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-8">
-            <div className="relative">
-              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-br from-slate-700 to-slate-800 border-4 border-slate-800 shadow-xl flex items-center justify-center">
-                <span className="text-3xl md:text-5xl">👷</span>
-              </div>
-              <div className="absolute -bottom-2 -right-2 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg border-2 border-slate-900">
-                Lvl {getLevel(totalXP)}
-              </div>
-            </div>
-
-            <div className="flex-1 text-center md:text-left space-y-2">
-              <h1 className="text-3xl md:text-4xl font-bold font-mono">
-                {user?.user_metadata?.full_name || user?.email?.split("@")[0]}
-              </h1>
-              <p className="text-slate-400 flex items-center justify-center md:justify-start gap-2">
-                <Trophy className="w-4 h-4 text-amber-400" />
-                <span>Certified HVAC Professional</span>
+      <main className="py-10">
+        <PageContainer>
+          <div className="space-y-8">
+            <div className="space-y-2">
+              <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
+                Career profile
               </p>
-
-              <div className="mt-6 max-w-lg">
-                <div className="flex justify-between text-sm mb-2 text-slate-300">
-                  <span>Level Progress</span>
-                  <span>{getProgress(totalXP)} / 100 XP</span>
-                </div>
-                <div className="h-3 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
-                  <div
-                    className="h-full bg-gradient-to-r from-cyan-500 to-slate-500 transition-all duration-1000"
-                    style={{ width: `${getProgress(totalXP)}%` }}
-                  />
-                </div>
-              </div>
+              <h1 className="text-3xl sm:text-4xl font-semibold">
+                Skills and certifications
+              </h1>
+              <p className="text-muted-foreground">
+                Track verified HVAC&R experience across projects and teams.
+              </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-                <CardContent className="p-4 flex flex-col items-center">
-                  <Star className="w-6 h-6 text-amber-400 mb-2" />
-                  <span className="text-2xl font-bold">{totalXP}</span>
-                  <span className="text-xs text-slate-400">Total XP</span>
-                </CardContent>
-              </Card>
-              <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
-                <CardContent className="p-4 flex flex-col items-center">
-                  <AwardsIcon className="w-6 h-6 text-slate-400 mb-2" />
-                  <span className="text-2xl font-bold">{logs.length}</span>
-                  <span className="text-xs text-slate-400">Skills Logged</span>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left: Skill Timeline */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold font-mono flex items-center gap-2">
-                <Hammer className="w-6 h-6 text-primary" />
-                Digital Logbook
-              </h2>
-            </div>
-
-            <div className="space-y-4">
-              {logs.length === 0 ? (
-                <Card className="bg-muted/30 border-dashed">
-                  <CardContent className="p-12 text-center space-y-4">
-                    <Briefcase className="w-12 h-12 text-muted-foreground mx-auto" />
-                    <div>
-                      <h3 className="font-semibold text-lg">
-                        No Skills Verified Yet
-                      </h3>
-                      <p className="text-muted-foreground">
-                        Perform calculations on job sites to earn XP and verify
-                        your skills.
-                      </p>
+            <Card>
+              <CardContent className="p-6 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+                <div className="space-y-4">
+                  <div className="flex flex-wrap items-center gap-4">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold">
+                      {(displayName || "U").slice(0, 2).toUpperCase()}
                     </div>
-                  </CardContent>
-                </Card>
-              ) : (
-                logs.map((log) => (
-                  <Card
-                    key={log.id}
-                    className="hover:shadow-md transition-shadow group animate-in slide-in-from-bottom-2"
-                  >
-                    <CardContent className="p-4 flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center text-cyan-600 dark:text-cyan-400 shrink-0">
-                        <CheckCircle className="w-6 h-6" />
+                    <div>
+                      <h2 className="text-xl font-semibold">{displayName}</h2>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Shield className="h-4 w-4" />
+                        HVAC&R professional profile
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex flex-wrap justify-between items-start gap-2">
-                          <h4 className="font-bold text-foreground truncate">
-                            {log.skill_type}
-                          </h4>
-                          <Badge
-                            variant="secondary"
-                            className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300"
-                          >
-                            +{log.xp_value} XP
-                          </Badge>
-                        </div>
-                        {log.projects?.name && (
-                          <p className="text-sm text-muted-foreground flex items-center gap-1.5 mt-1">
-                            <Briefcase className="w-3.5 h-3.5" />
-                            {log.projects.name}
-                          </p>
-                        )}
-                        <p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-1">
-                          <Clock className="w-3.5 h-3.5" />
-                          Verified on{" "}
-                          {format(
-                            new Date(log.verified_at),
-                            "MMM d, yyyy 'at' h:mm a",
-                          )}
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
-              )}
-            </div>
-          </div>
-
-          {/* Right: Achievements / Next Steps */}
-          <div className="space-y-6">
-            <Card className="bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 border-primary/10">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 font-mono">
-                  <Zap className="w-5 h-5 text-amber-500" />
-                  Next Milestones
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm font-medium">
-                    <span className="text-slate-600 dark:text-slate-400">
-                      Master Technician
-                    </span>
-                    <span className="text-slate-900 dark:text-white">
-                      Lvl 5
-                    </span>
+                    </div>
                   </div>
-                  <div className="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div className="bg-slate-400 h-full w-[20%]" />
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Level {getLevel(totalXP)}</span>
+                      <span>{getProgress(totalXP)} / 100 XP</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-muted">
+                      <div
+                        className="h-2 rounded-full bg-primary"
+                        style={{ width: `${getProgress(totalXP)}%` }}
+                      />
+                    </div>
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm font-medium">
-                    <span className="text-slate-600 dark:text-slate-400">
-                      Winterization Expert
-                    </span>
-                    <span className="text-slate-900 dark:text-white">
-                      0/10 Certs
-                    </span>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="rounded-xl border border-border bg-muted/30 p-4">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Star className="h-4 w-4 text-amber-500" />
+                      Total XP
+                    </div>
+                    <p className="text-2xl font-semibold mt-2">{totalXP}</p>
                   </div>
-                  <div className="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div className="bg-slate-400 h-full w-[0%]" />
+                  <div className="rounded-xl border border-border bg-muted/30 p-4">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Trophy className="h-4 w-4 text-emerald-500" />
+                      Skills logged
+                    </div>
+                    <p className="text-2xl font-semibold mt-2">{logs.length}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <div className="rounded-xl bg-cyan-50 dark:bg-cyan-900/10 p-4 border border-cyan-100 dark:border-cyan-900/50">
-              <h4 className="font-semibold text-cyan-900 dark:text-cyan-100 mb-2">
-                Did you know?
-              </h4>
-              <p className="text-sm text-cyan-700 dark:text-cyan-300">
-                Verified skills can be exported to your resume or shared with
-                your employer to prove your field experience.
-              </p>
+            <div className="grid gap-8 lg:grid-cols-[2fr_1fr]">
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-semibold flex items-center gap-2">
+                    <Hammer className="h-5 w-5 text-primary" />
+                    Skills logbook
+                  </h2>
+                </div>
+
+                <div className="space-y-4">
+                  {logs.length === 0 ? (
+                    <Card>
+                      <CardContent className="p-10 text-center space-y-3">
+                        <Briefcase className="w-10 h-10 text-muted-foreground mx-auto" />
+                        <div>
+                          <h3 className="font-semibold text-lg">
+                            No skills verified yet
+                          </h3>
+                          <p className="text-muted-foreground">
+                            Run calculations in the field tools to log verified
+                            experience.
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    logs.map((log) => (
+                      <Card key={log.id}>
+                        <CardContent className="p-4 flex items-start gap-4">
+                          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                            <CheckCircle className="w-5 h-5" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex flex-wrap justify-between items-start gap-2">
+                              <h4 className="font-semibold text-foreground truncate">
+                                {log.skill_type}
+                              </h4>
+                              <Badge variant="secondary">+{log.xp_value} XP</Badge>
+                            </div>
+                            {log.projects?.name && (
+                              <p className="text-sm text-muted-foreground flex items-center gap-1.5 mt-1">
+                                <Briefcase className="w-3.5 h-3.5" />
+                                {log.projects.name}
+                              </p>
+                            )}
+                            <p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-1">
+                              <Clock className="w-3.5 h-3.5" />
+                              Verified on{" "}
+                              {format(
+                                new Date(log.verified_at),
+                                "MMM d, yyyy 'at' h:mm a",
+                              )}
+                            </p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Trophy className="w-5 h-5 text-amber-500" />
+                      Next milestones
+                    </CardTitle>
+                    <CardDescription>
+                      Keep building verified experience for advanced roles.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm font-medium">
+                        <span className="text-muted-foreground">
+                          Master technician
+                        </span>
+                        <span>Level 5</span>
+                      </div>
+                      <div className="w-full bg-muted h-2 rounded-full overflow-hidden">
+                        <div className="bg-primary h-full w-[20%]" />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm font-medium">
+                        <span className="text-muted-foreground">
+                          Winterization expert
+                        </span>
+                        <span>0/10 certs</span>
+                      </div>
+                      <div className="w-full bg-muted h-2 rounded-full overflow-hidden">
+                        <div className="bg-primary/40 h-full w-[0%]" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="rounded-xl bg-muted/40 p-4 border border-border">
+                  <h4 className="font-semibold mb-2">Share your progress</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Export verified skills to your resume or share with supervisors
+                    to document field experience.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </PageContainer>
       </main>
       <Footer />
     </div>
-  );
-}
-
-function AwardsIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="8" r="6" />
-      <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />
-    </svg>
-  );
-}
-
-function CheckCircle(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-      <path d="m9 11 3 3L22 4" />
-    </svg>
   );
 }

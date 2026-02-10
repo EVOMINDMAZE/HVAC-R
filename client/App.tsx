@@ -356,6 +356,7 @@ function AppRoutes() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/documentation" element={<Documentation />} />
           <Route path="/help" element={<HelpCenter />} />
+          <Route path="/help-center" element={<HelpCenter />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<TermsOfService />} />
           <Route path="/connect-provider" element={<IntegrationLanding />} />

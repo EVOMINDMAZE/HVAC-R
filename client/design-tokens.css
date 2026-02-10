@@ -103,11 +103,11 @@
   --sidebar-ring: 221 83% 65%;
 }
 
-/* Typography Tokens */
+/* Typography Tokens (aligned with global.css) */
 :root {
-  --font-sans: 'Inter', sans-serif;
-  --font-display: 'Montserrat', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: "Manrope", sans-serif;
+  --font-display: "Sora", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
 }
 
 /* Spacing Tokens (based on Tailwind scale) */

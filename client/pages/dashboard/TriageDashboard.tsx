@@ -38,6 +38,8 @@ import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageContainer } from "@/components/PageContainer";
+import { AppPageHeader } from "@/components/app/AppPageHeader";
+import { AppSectionCard } from "@/components/app/AppSectionCard";
 
 interface AIAnalysis {
   equipment_details?: string;
@@ -243,26 +245,21 @@ export default function TriageDashboard() {
         </Badge>
       );
     if (severity === "medium")
-      return <Badge className="bg-cyan-500">Urgent</Badge>;
+      return <Badge className="bg-primary text-primary-foreground">Urgent</Badge>;
     return <Badge variant="secondary">Routine</Badge>;
   };
 
   return (
-    <PageContainer variant="standard" className="space-y-8 pb-20">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-            <Zap className="h-8 w-8 text-cyan-600" />
-            Triage Command Center
-          </h1>
-          <p className="text-slate-500 dark:text-slate-400">
-            AI-powered pre-dispatch diagnostics & lead conversion.
-          </p>
-        </div>
-      </div>
+    <PageContainer variant="standard" className="app-stack-24 pb-20">
+      <AppPageHeader
+        kicker="Work"
+        title="Triage Leads"
+        subtitle="Review incoming homeowner requests, validate AI diagnosis, and convert qualified leads to jobs."
+      />
 
-      <Tabs value={filter} onValueChange={setFilter} className="w-full">
-        <TabsList className="bg-white dark:bg-slate-950 border">
+      <AppSectionCard className="p-4 sm:p-6">
+        <Tabs value={filter} onValueChange={setFilter} className="w-full">
+          <TabsList className="border border-border bg-background">
           <TabsTrigger value="active">
             Active Leads (
             {
@@ -276,10 +273,10 @@ export default function TriageDashboard() {
           <TabsTrigger value="archived">Archived</TabsTrigger>
         </TabsList>
 
-        <TabsContent value={filter} className="mt-6">
+          <TabsContent value={filter} className="mt-6">
           {loading ? (
             <div className="flex justify-center py-20">
-              <Loader2 className="animate-spin w-10 h-10 text-cyan-600" />
+              <Loader2 className="h-10 w-10 animate-spin text-primary" />
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -356,14 +353,14 @@ export default function TriageDashboard() {
               ))}
 
               {filteredSubmissions.length === 0 && (
-                <div className="col-span-full flex flex-col items-center justify-center py-20 bg-white/50 dark:bg-slate-950/50 rounded-3xl border-2 border-dashed">
-                  <div className="w-16 h-16 bg-slate-100 dark:bg-slate-900 rounded-full flex items-center justify-center mb-4">
-                    <FileText className="h-8 w-8 text-slate-400" />
+                <div className="col-span-full flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-border py-20">
+                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
+                    <FileText className="h-8 w-8 text-muted-foreground" />
                   </div>
-                  <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200">
+                  <h3 className="text-lg font-bold text-foreground">
                     No {filter} leads
                   </h3>
-                  <p className="text-slate-500 text-sm">
+                  <p className="text-sm text-muted-foreground">
                     When new triage requests arrive, they'll appear here
                     instantly.
                   </p>
@@ -371,8 +368,9 @@ export default function TriageDashboard() {
               )}
             </div>
           )}
-        </TabsContent>
-      </Tabs>
+          </TabsContent>
+        </Tabs>
+      </AppSectionCard>
 
       {/* Detailed Review Modal */}
       <Dialog

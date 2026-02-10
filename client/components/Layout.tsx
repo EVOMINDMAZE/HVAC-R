@@ -10,14 +10,10 @@ import { Outlet } from "react-router-dom";
 export function Layout({ children }: { children?: React.ReactNode }) {
   const { isAuthenticated } = useSupabaseAuth();
   const [searchOpen, setSearchOpen] = useState(false);
-  const [showConsentBanner, setShowConsentBanner] = useState(false);
-
-  useEffect(() => {
-    const consentGiven = localStorage.getItem('consent_given');
-    if (consentGiven !== 'true') {
-      setShowConsentBanner(true);
-    }
-  }, []);
+  const [showConsentBanner, setShowConsentBanner] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("consent_given") !== "true";
+  });
 
   const onKeyDown = useCallback((e: KeyboardEvent) => {
     const isK = e.key.toLowerCase() === 'k';
@@ -34,7 +30,7 @@ export function Layout({ children }: { children?: React.ReactNode }) {
   }, [onKeyDown]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div className="app-shell min-h-screen bg-background text-foreground flex flex-col">
       <Header variant={isAuthenticated ? "dashboard" : "landing"} onOpenSearch={() => setSearchOpen(true)} />
       <Sidebar />
       <main className="flex-1 w-full">

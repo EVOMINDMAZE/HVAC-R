@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import {
   Plus,
@@ -47,6 +46,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 import { PageContainer } from "@/components/PageContainer";
 import { SpreadsheetImporter } from "@/components/shared/SpreadsheetImporter";
+import { AppPageHeader } from "@/components/app/AppPageHeader";
+import { AppSectionCard } from "@/components/app/AppSectionCard";
+import { AppStatCard } from "@/components/app/AppStatCard";
 
 interface Client {
   id: string;
@@ -243,7 +245,7 @@ export function Clients() {
         );
         const newCompanyPayload = {
           user_id: user.id,
-          name: `${user.email?.split("@")[0]}'s Company` || "My HVAC Company",
+          name: `${user.email?.split("@")[0] || "My HVAC"}'s Company`,
           // Removed email/phone as they don't exist in companies table
         };
         console.log("New Company Payload:", newCompanyPayload);
@@ -317,60 +319,42 @@ export function Clients() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+    <div className="app-bg min-h-screen transition-colors duration-300">
       {/* Background patterns */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
         <div className="absolute top-[10%] right-[5%] w-[500px] h-[500px] bg-slate-500/5 rounded-full blur-[100px]" />
         <div className="absolute bottom-[10%] left-[5%] w-[400px] h-[400px] bg-cyan-500/5 rounded-full blur-[80px]" />
       </div>
 
-      <PageContainer variant="standard">
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-          >
-            <div className="flex items-center gap-2 mb-2 text-cyan-600 font-medium tracking-wide">
-              <Users className="w-5 h-5" />
-              <span className="text-sm uppercase">Business Operations</span>
-            </div>
-            <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">
-              Client Management
-            </h1>
-            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl">
-              Organize your customers, track service history, and manage
-              communication in one central hub.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="flex items-center gap-4"
-          >
+      <PageContainer variant="standard" className="app-stack-24">
+        <AppPageHeader
+          kicker="Work"
+          title="Clients"
+          subtitle="Organize your customer records, communication details, and service history in one place."
+          actions={
+            <div className="flex flex-wrap items-center gap-2">
             <Button
               variant="outline"
-              className="h-12 border-cyan-200 text-cyan-700 hover:bg-cyan-50 hover:text-cyan-800 dark:border-cyan-800 dark:text-cyan-400 dark:hover:bg-cyan-900/40 rounded-xl gap-2 shadow-sm"
+              className="h-11 rounded-xl"
               onClick={handleExport}
             >
-              <Download className="w-5 h-5" />
+              <Download className="h-4 w-4" />
               <span>Export CSV</span>
             </Button>
 
             <Button
               variant="outline"
-              className="h-12 border-cyan-200 text-cyan-700 hover:bg-cyan-50 hover:text-cyan-800 dark:border-cyan-800 dark:text-cyan-400 dark:hover:bg-cyan-900/40 rounded-xl gap-2 shadow-sm"
+              className="h-11 rounded-xl"
               onClick={() => setIsImportOpen(true)}
             >
-              <FileSpreadsheet className="w-5 h-5" />
+              <FileSpreadsheet className="h-4 w-4" />
               <span>Import List</span>
             </Button>
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button className="bg-cyan-600 hover:bg-cyan-700 text-white px-6 h-12 rounded-xl shadow-lg shadow-cyan-500/20 transition-all flex items-center gap-2 group">
-                  <UserPlus className="w-5 h-5 transition-transform group-hover:scale-110" />
+                <Button className="h-11 rounded-xl">
+                  <UserPlus className="h-4 w-4" />
                   <span>Add New Client</span>
                 </Button>
               </DialogTrigger>
@@ -479,35 +463,36 @@ export function Clients() {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-          </motion.div>
-        </div>
+            </div>
+          }
+        />
 
         {/* Stats Summary */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {[
             {
               label: "Total Clients",
               value: clients.length,
               icon: Users,
-              color: "cyan",
+              tone: "default",
             },
             {
               label: "Active This Month",
               value: "12",
               icon: BarChart3,
-              color: "slate",
+              tone: "default",
             },
             {
               label: "Pending Follow-ups",
               value: "5",
               icon: Clock,
-              color: "cyan",
+              tone: "warning",
             },
             {
               label: "Verified Profiles",
               value: "98%",
               icon: ShieldCheck,
-              color: "emerald",
+              tone: "success",
             },
           ].map((stat, i) => (
             <motion.div
@@ -515,40 +500,36 @@ export function Clients() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="bg-card p-6 rounded-3xl border border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow"
             >
-              <div
-                className={`w-12 h-12 rounded-2xl bg-${stat.color}-50 flex items-center justify-center mb-4`}
-              >
-                <stat.icon className={`w-6 h-6 text-${stat.color}-500`} />
-              </div>
-              <div className="text-2xl font-bold text-slate-900 dark:text-white">
-                {stat.value}
-              </div>
-              <div className="text-sm text-slate-500">{stat.label}</div>
+              <AppStatCard
+                label={stat.label}
+                value={stat.value}
+                tone={stat.tone as "default" | "success" | "warning" | "danger"}
+                icon={<stat.icon className="h-5 w-5" />}
+              />
             </motion.div>
           ))}
         </div>
 
         {/* Search and Filters */}
-        <div className="bg-card p-4 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-800 mb-8 flex flex-col md:flex-row gap-4">
+        <AppSectionCard className="mb-2 flex flex-col gap-4 p-4 md:flex-row">
           <div className="relative flex-grow group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-cyan-500 transition-colors" />
+            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" />
             <Input
               placeholder="Search clients by name, email, or company..."
-              className="pl-12 h-12 bg-white/80 dark:bg-slate-900/80 border-transparent focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-cyan-500/20 rounded-2xl transition-all text-slate-900 dark:text-white"
+              className="h-11 rounded-2xl border-border bg-background pl-12"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
           <Button
             variant="outline"
-            className="h-12 rounded-2xl border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-800 px-6 gap-2 dark:text-slate-200"
+            className="h-11 rounded-2xl px-6 gap-2"
           >
-            <Settings className="w-5 h-5 text-gray-500" />
+            <Settings className="h-4 w-4 text-muted-foreground" />
             <span>Filter</span>
           </Button>
-        </div>
+        </AppSectionCard>
 
         {/* Content Area */}
         {isLoading ? (

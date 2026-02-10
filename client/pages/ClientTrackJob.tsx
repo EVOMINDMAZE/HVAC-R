@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import LiveMap, { TechIcon } from "@/components/job/LiveMap";
-import { Phone, MapPin, User, Clock } from "lucide-react";
+import { Phone, User } from "lucide-react";
 
 export default function ClientTrackJob() {
   const { id } = useParams();
@@ -13,25 +13,6 @@ export default function ClientTrackJob() {
   const [position, setPosition] = useState<[number, number]>([
     40.7128, -74.006,
   ]);
-
-  useEffect(() => {
-    if (id) {
-      fetchJob();
-      subscribeToJob();
-    }
-
-    // Get User's Location as fallback/start
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => setPosition([pos.coords.latitude, pos.coords.longitude]),
-        (err) => console.log("User location denied/error", err),
-      );
-    }
-
-    return () => {
-      supabase.removeAllChannels();
-    };
-  }, [id]);
 
   async function fetchJob() {
     const { data, error } = await supabase
@@ -115,18 +96,41 @@ export default function ClientTrackJob() {
       .subscribe();
   }
 
+  useEffect(() => {
+    let initialFetchTimer: ReturnType<typeof setTimeout> | undefined;
+    if (id) {
+      initialFetchTimer = setTimeout(() => {
+        void fetchJob();
+      }, 0);
+      subscribeToJob();
+    }
+
+    // Get User's Location as fallback/start
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => setPosition([pos.coords.latitude, pos.coords.longitude]),
+        (err) => console.log("User location denied/error", err),
+      );
+    }
+
+    return () => {
+      if (initialFetchTimer) clearTimeout(initialFetchTimer);
+      supabase.removeAllChannels();
+    };
+  }, [id]);
+
   if (loading)
     return (
-      <div className="p-10 text-center animate-pulse">
-        Locating Technician...
+      <div className="app-bg p-10 text-center animate-pulse">
+        Locating technician...
       </div>
     );
-  if (!job) return <div className="p-10">Job not found.</div>;
+  if (!job) return <div className="app-bg p-10">Job not found.</div>;
 
   const displayStatus = job.effectiveStatus || "pending";
 
   return (
-    <div className="flex flex-col h-screen bg-white">
+    <div className="app-bg flex h-screen flex-col">
       {/* Map Area */}
       <div className="flex-1 relative z-0">
         <LiveMap
@@ -149,19 +153,19 @@ export default function ClientTrackJob() {
         />
 
         {/* Connection Status Overlay */}
-        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-green-600 shadow-md z-[1000] flex items-center gap-2">
-          <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+        <div className="absolute right-4 top-4 z-[1000] flex items-center gap-2 rounded-full bg-card/90 px-3 py-1 text-xs font-bold text-success shadow-md backdrop-blur">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-success"></span>
           LIVE
         </div>
       </div>
 
       {/* Bottom Sheet Info */}
-      <div className="bg-white rounded-t-3xl shadow-[0_-5px_30px_rgba(0,0,0,0.1)] p-6 z-10 -mt-6 relative">
-        <div className="w-12 h-1 bg-gray-200 rounded-full mx-auto mb-6"></div>
+      <div className="relative z-10 -mt-6 rounded-t-3xl border border-border bg-card p-6 shadow-[0_-5px_30px_rgba(0,0,0,0.1)]">
+        <div className="mx-auto mb-6 h-1 w-12 rounded-full bg-border"></div>
 
         <div className="flex justify-between items-start mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-1">
+            <h2 className="mb-1 text-2xl font-bold text-foreground">
               {displayStatus === "en_route"
                 ? "Technician En Route"
                 : displayStatus === "on_site"
@@ -170,26 +174,26 @@ export default function ClientTrackJob() {
                     ? "Job Completed"
                     : "Service Scheduled"}
             </h2>
-            <p className="text-gray-500">{job.ticket_number}</p>
+            <p className="text-muted-foreground">{job.ticket_number}</p>
           </div>
           <div className="text-right">
             {/* Company Logo or Name */}
-            <div className="text-sm font-bold text-cyan-600">
+            <div className="text-sm font-bold text-primary">
               {job.company?.name || "HVAC Service"}
             </div>
           </div>
         </div>
 
         {/* Tech Info */}
-        <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-xl mb-4">
-          <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center text-cyan-600 font-bold">
+        <div className="mb-4 flex items-center gap-4 rounded-xl bg-secondary p-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 font-bold text-primary">
             <User className="w-6 h-6" />
           </div>
           <div className="flex-1">
-            <div className="font-bold text-gray-900">Your Technician</div>
-            <div className="text-sm text-gray-500">Expert HVAC Specialist</div>
+            <div className="font-bold text-foreground">Your Technician</div>
+            <div className="text-sm text-muted-foreground">HVAC Field Specialist</div>
           </div>
-          <button className="p-3 bg-green-100 text-green-700 rounded-full">
+          <button className="rounded-full bg-success/10 p-3 text-success">
             <Phone className="w-5 h-5" />
           </button>
         </div>

@@ -8,7 +8,7 @@ const certifications = [
     icon: Clock,
     title: metrics.certifications.soc2.title,
     description: metrics.certifications.soc2.description,
-    status: "Planned",
+    status: "In Progress",
     statusColor: "bg-warning/10 text-warning",
   },
   {

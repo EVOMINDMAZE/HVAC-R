@@ -41,7 +41,7 @@ describe('Privacy API Routes', () => {
         json: vi.fn(),
       } as any;
 
-      await recordConsent(req, res);
+      await recordConsent(req, res, vi.fn());
 
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
@@ -62,7 +62,7 @@ describe('Privacy API Routes', () => {
         json: vi.fn(),
       } as any;
 
-      await recordConsent(req, res);
+      await recordConsent(req, res, vi.fn());
 
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({
@@ -86,7 +86,7 @@ describe('Privacy API Routes', () => {
         json: vi.fn(),
       } as any;
 
-      await recordConsent(req, res);
+      await recordConsent(req, res, vi.fn());
 
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({
@@ -113,7 +113,7 @@ describe('Privacy API Routes', () => {
         json: vi.fn(),
       } as any;
 
-      await recordConsent(req, res);
+      await recordConsent(req, res, vi.fn());
 
       expect(supabaseAdmin.rpc).toHaveBeenCalledWith('record_consent', {
         p_user_id: 'test-user-id',
@@ -152,7 +152,7 @@ describe('Privacy API Routes', () => {
         json: vi.fn(),
       } as any;
 
-      await recordConsent(req, res);
+      await recordConsent(req, res, vi.fn());
 
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({
@@ -172,7 +172,7 @@ describe('Privacy API Routes', () => {
         json: vi.fn(),
       } as any;
 
-      await getUserConsents(req, res);
+      await getUserConsents(req, res, vi.fn());
 
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({
@@ -198,7 +198,7 @@ describe('Privacy API Routes', () => {
         json: vi.fn(),
       } as any;
 
-      await getUserConsents(req, res);
+      await getUserConsents(req, res, vi.fn());
 
       expect(supabaseAdmin.rpc).toHaveBeenCalledWith('get_user_consents', {
         p_user_id: 'test-user-id'
@@ -223,7 +223,7 @@ describe('Privacy API Routes', () => {
         json: vi.fn(),
       } as any;
 
-      await getUserConsents(req, res);
+      await getUserConsents(req, res, vi.fn());
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
@@ -243,7 +243,7 @@ describe('Privacy API Routes', () => {
         json: vi.fn(),
       } as any;
 
-      await checkConsent(req, res);
+      await checkConsent(req, res, vi.fn());
 
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
@@ -262,7 +262,7 @@ describe('Privacy API Routes', () => {
         json: vi.fn(),
       } as any;
 
-      await checkConsent(req, res);
+      await checkConsent(req, res, vi.fn());
 
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({
@@ -285,7 +285,7 @@ describe('Privacy API Routes', () => {
         json: vi.fn(),
       } as any;
 
-      await checkConsent(req, res);
+      await checkConsent(req, res, vi.fn());
 
       expect(supabaseAdmin.rpc).toHaveBeenCalledWith('has_consent', {
         p_user_id: 'test-user-id',
@@ -315,7 +315,7 @@ describe('Privacy API Routes', () => {
         json: vi.fn(),
       } as any;
 
-      await checkConsent(req, res);
+      await checkConsent(req, res, vi.fn());
 
       expect(supabaseAdmin.rpc).toHaveBeenCalledWith('has_consent', {
         p_user_id: 'test-user-id',
@@ -342,7 +342,7 @@ describe('Privacy API Routes', () => {
         json: vi.fn(),
       } as any;
 
-      await submitDataSubjectRequest(req, res);
+      await submitDataSubjectRequest(req, res, vi.fn());
 
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
@@ -361,7 +361,7 @@ describe('Privacy API Routes', () => {
         json: vi.fn(),
       } as any;
 
-      await submitDataSubjectRequest(req, res);
+      await submitDataSubjectRequest(req, res, vi.fn());
 
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({
@@ -391,7 +391,7 @@ describe('Privacy API Routes', () => {
         json: vi.fn(),
       } as any;
 
-      await submitDataSubjectRequest(req, res);
+      await submitDataSubjectRequest(req, res, vi.fn());
 
       // Should log the DSR
       expect(consoleLogSpy).toHaveBeenCalledWith('Data Subject Request received:', {
@@ -427,7 +427,7 @@ describe('Privacy API Routes', () => {
         json: vi.fn(),
       } as any;
 
-      await exportUserData(req, res);
+      await exportUserData(req, res, vi.fn());
 
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({
@@ -450,7 +450,7 @@ describe('Privacy API Routes', () => {
         json: vi.fn(),
       } as any;
 
-      await exportUserData(req, res);
+      await exportUserData(req, res, vi.fn());
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({

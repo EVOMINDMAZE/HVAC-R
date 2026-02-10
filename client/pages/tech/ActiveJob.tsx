@@ -10,6 +10,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
+import { AppSectionCard } from "@/components/app/AppSectionCard";
 
 export default function ActiveJob() {
   const { id } = useParams();
@@ -185,7 +186,7 @@ export default function ActiveJob() {
   const clientAddress = job.client?.address || "Address Hidden (Restricted)";
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="app-bg min-h-screen">
       {/* Navbar */}
       <div className="bg-card border-b border-border px-4 py-3 flex items-center justify-between sticky top-0 z-20">
         <div className="flex items-center gap-3">
@@ -207,13 +208,13 @@ export default function ActiveJob() {
         <ModeToggle />
       </div>
 
-      <div className="p-5 pb-32 space-y-6">
+      <div className="app-page pb-32 app-stack-24">
         {/* Client Info */}
         <section>
           <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
             Client
           </h3>
-          <div className="bg-muted/50 p-4 rounded-xl border border-border">
+          <AppSectionCard className="p-4">
             <div className="text-xl font-bold text-foreground mb-1">
               {clientName}
             </div>
@@ -224,13 +225,13 @@ export default function ActiveJob() {
             {job.client?.contact_phone && (
               <a
                 href={`tel:${job.client.contact_phone}`}
-                className="flex items-center gap-2 text-primary font-medium bg-primary/10 px-3 py-2 rounded-lg w-fit"
+                className="flex w-fit items-center gap-2 rounded-lg bg-primary/10 px-3 py-2 font-medium text-primary"
               >
                 <Phone className="w-4 h-4" />
                 Call Client
               </a>
             )}
-          </div>
+          </AppSectionCard>
         </section>
 
         {/* Asset Info */}
@@ -239,17 +240,17 @@ export default function ActiveJob() {
             <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
               Equipment
             </h3>
-            <div className="bg-cyan-50 dark:bg-cyan-900/20 p-4 rounded-xl border border-cyan-100 dark:border-cyan-800/50 border-l-4 border-l-cyan-400">
-              <div className="font-bold text-cyan-900 dark:text-cyan-300">
+            <AppSectionCard className="border-l-4 border-l-primary p-4">
+              <div className="font-bold text-foreground">
                 {job.asset.name}
               </div>
-              <div className="text-sm text-cyan-700 dark:text-cyan-400">
+              <div className="text-sm text-muted-foreground">
                 {job.asset.type} • {job.asset.serial_number}
               </div>
-              <div className="text-sm mt-2 text-cyan-800 dark:text-cyan-300/80 italic">
+              <div className="mt-2 text-sm italic text-muted-foreground">
                 "{job.description || "No description provided"}"
               </div>
-            </div>
+            </AppSectionCard>
           </section>
         )}
 
@@ -267,7 +268,7 @@ export default function ActiveJob() {
             <p className="text-muted-foreground">Ready to head out?</p>
           )}
           {displayStatus === "en_route" && (
-            <p className="animate-pulse text-cyan-600 dark:text-cyan-400 font-bold">
+            <p className="font-bold text-primary">
               Sharing location with client...
             </p>
           )}
@@ -279,7 +280,7 @@ export default function ActiveJob() {
         {displayStatus === "pending" && (
           <button
             onClick={() => updateStatus("assigned")}
-            className="w-full py-4 bg-black text-white rounded-xl font-bold text-lg"
+            className="w-full rounded-xl bg-primary py-4 text-lg font-bold text-primary-foreground"
           >
             Accept Assignment
           </button>
@@ -288,7 +289,7 @@ export default function ActiveJob() {
         {displayStatus === "assigned" && (
           <button
             onClick={() => updateStatus("en_route")}
-            className="w-full py-4 bg-cyan-600 text-white rounded-xl font-bold text-lg flex items-center justify-center gap-2"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 text-lg font-bold text-primary-foreground"
           >
             <Navigation className="w-5 h-5" />
             Start Travel (En Route)
@@ -298,7 +299,7 @@ export default function ActiveJob() {
         {displayStatus === "en_route" && (
           <button
             onClick={() => updateStatus("on_site")}
-            className="w-full py-4 bg-amber-500 text-white rounded-xl font-bold text-lg"
+            className="w-full rounded-xl bg-warning py-4 text-lg font-bold text-warning-foreground"
           >
             I Have Arrived
           </button>
@@ -307,7 +308,7 @@ export default function ActiveJob() {
         {displayStatus === "on_site" && (
           <button
             onClick={() => updateStatus("completed")}
-            className="w-full py-4 bg-green-600 text-white rounded-xl font-bold text-lg flex items-center justify-center gap-2"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-success py-4 text-lg font-bold text-success-foreground"
           >
             <CheckCircle className="w-5 h-5" />
             Complete Job
@@ -328,9 +329,7 @@ export default function ActiveJob() {
                 onClick={toggleSimulation}
                 className={`text-xs px-3 py-1 rounded-full border ${simulating ? "bg-red-50 text-red-600 border-red-200" : "bg-gray-50 text-gray-500 border-gray-200"}`}
               >
-                {simulating
-                  ? "🛑 Stop Simulation"
-                  : "🧪 Simulate Movement (Dev Only)"}
+                {simulating ? "Stop Simulation" : "Simulate Movement (Dev Only)"}
               </button>
             </div>
           )}

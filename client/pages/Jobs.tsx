@@ -46,6 +46,8 @@ import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { PageContainer } from "@/components/PageContainer";
+import { AppPageHeader } from "@/components/app/AppPageHeader";
+import { AppSectionCard } from "@/components/app/AppSectionCard";
 
 interface Job {
   id: string;
@@ -274,42 +276,32 @@ export default function Jobs() {
   };
 
   return (
-    <PageContainer
-      variant="standard"
-      className="animate-in fade-in duration-500"
-    >
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
-        <div>
-          <Button
-            variant="ghost"
-            className="mb-4 pl-0 hover:bg-transparent hover:text-primary transition-colors -ml-2 hidden md:inline-flex"
-            onClick={() =>
-              navigate(role === "client" ? "/portal" : "/dashboard")
-            }
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" /> Back to{" "}
-            {role === "client" ? "Portal" : "Dashboard"}
-          </Button>
-          <h1 className="text-4xl font-bold tracking-tight text-foreground">
-            {role === "client" ? "My Jobs" : "Job Management"}
-          </h1>
-          <p className="text-muted-foreground mt-2 text-lg">
-            {role === "client"
-              ? "Track the status of your service requests and active jobs."
-              : "Track, organize, and manage your HVAC service jobs efficiently."}
-          </p>
-        </div>
+    <PageContainer variant="standard" className="app-stack-24">
+      <AppPageHeader
+        kicker="Work"
+        title={role === "client" ? "My Service Jobs" : "Open Jobs"}
+        subtitle={
+          role === "client"
+            ? "Track your active requests and completed service visits."
+            : "Track, organize, and assign HVAC service jobs across your team."
+        }
+        actions={
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={() => navigate(role === "client" ? "/portal" : "/dashboard")}
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back
+            </Button>
 
-        {role !== "client" ? (
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button
-                size="lg"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5"
-              >
-                <Plus className="w-5 h-5 mr-2" /> New Job
-              </Button>
-            </DialogTrigger>
+            {role !== "client" ? (
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus className="h-4 w-4" /> Create Job
+                  </Button>
+                </DialogTrigger>
             <DialogContent className="sm:max-w-[600px] bg-card/95 backdrop-blur-md border-border">
               <DialogHeader>
                 <DialogTitle className="text-2xl">Create New Job</DialogTitle>
@@ -452,33 +444,31 @@ export default function Jobs() {
                 </Button>
               </DialogFooter>
             </DialogContent>
-          </Dialog>
-        ) : (
-          <Button
-            size="lg"
-            onClick={() => navigate("/triage")}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5"
-          >
-            <Plus className="w-5 h-5 mr-2" /> Request Service
-          </Button>
-        )}
-      </div>
+              </Dialog>
+            ) : (
+              <Button onClick={() => navigate("/triage")}>
+                <Plus className="h-4 w-4" /> Request Service
+              </Button>
+            )}
+          </div>
+        }
+      />
 
-      <Card className="bg-card/50 backdrop-blur-sm border-border shadow-sm mb-8">
+      <AppSectionCard className="mb-2">
         <CardContent className="p-4">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 placeholder="Search by job title, client name, or address..."
-                className="pl-10 bg-slate-950/50 border-input"
+                className="pl-10 bg-background border-input"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             <div className="w-full sm:w-[200px]">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="bg-slate-950/50 border-input">
+                <SelectTrigger className="bg-background border-input">
                   <div className="flex items-center">
                     <Filter className="w-4 h-4 mr-2 text-muted-foreground" />
                     <SelectValue placeholder="Filter by status" />
@@ -495,7 +485,7 @@ export default function Jobs() {
             </div>
           </div>
         </CardContent>
-      </Card>
+      </AppSectionCard>
 
       {loading ? (
         <div className="flex flex-col items-center justify-center py-24">

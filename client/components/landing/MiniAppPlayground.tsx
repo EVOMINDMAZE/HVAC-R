@@ -1012,7 +1012,7 @@ export function MiniAppPlayground() {
   }, [currentAct]);
 
   return (
-    <section className="py-16 px-4">
+    <section id="interactive-demo" className="py-16 px-4">
       <div className="max-w-5xl mx-auto">
         {/* Main Title */}
         <motion.div
@@ -1026,6 +1026,9 @@ export function MiniAppPlayground() {
           </h2>
           <p className="text-muted-foreground text-lg">
             Follow a real HVAC emergency through resolution. No credit card required.
+          </p>
+          <p className="text-xs text-muted-foreground mt-2">
+            Demo data for illustration only.
           </p>
         </motion.div>
 

@@ -148,6 +148,10 @@ export function ValuePropositionGrid() {
           })}
         </motion.div>
 
+        <div className="text-center mt-8">
+          <p className="text-xs text-muted-foreground">{metrics.meta.asOfLabel}</p>
+        </div>
+
         {/* Bottom CTA */}
         <motion.div
           initial={{ opacity: 0 }}

@@ -70,6 +70,9 @@ import {
 import { CalculationDetailsModal } from "@/components/CalculationDetailsModal";
 import { RenameCalculationDialog } from "@/components/RenameCalculationDialog";
 import { storeCalculationPreset } from "@/lib/historyPresets";
+import { AppPageHeader } from "@/components/app/AppPageHeader";
+import { AppSectionCard } from "@/components/app/AppSectionCard";
+import { AppStatCard } from "@/components/app/AppStatCard";
 
 export function History() {
   const {
@@ -282,78 +285,48 @@ export function History() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="app-bg min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-cyan-50/30 dark:from-slate-950 dark:to-slate-900 flex flex-col">
-      <PageContainer variant="standard">
-        {/* Header Section */}
-        <div className="mb-10 animate-in fade-in slide-in-from-top-4 duration-500">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-cyan-600 to-slate-600 dark:from-cyan-400 dark:to-slate-400 mb-2">
-                History & Analysis
-              </h1>
-              <p className="text-muted-foreground">
-                Manage your saved simulations and diagnostic sessions.
-              </p>
-            </div>
+    <div className="app-bg min-h-screen flex flex-col">
+      <PageContainer variant="standard" className="app-stack-24">
+        <AppPageHeader
+          kicker="Account"
+          title="Calculation History"
+          subtitle="Review, rename, and reuse your saved calculations and diagnostic sessions."
+          actions={
             <Button variant="outline" onClick={() => navigate("/")}>
               Back to Dashboard
             </Button>
-          </div>
+          }
+        />
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-              <CardContent className="p-4 flex flex-col justify-center items-center text-center">
-                <div className="text-3xl font-bold text-primary mb-1">
-                  {stats.total}
-                </div>
-                <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-                  Total Items
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-              <CardContent className="p-4 flex flex-col justify-center items-center text-center">
-                <div className="text-3xl font-bold text-cyan-500 mb-1">
-                  {stats.types["Standard Cycle"] || 0}
-                </div>
-                <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-                  Standard Cycles
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-              <CardContent className="p-4 flex flex-col justify-center items-center text-center">
-                <div className="text-3xl font-bold text-slate-500 mb-1">
-                  {stats.types["Cascade Cycle"] || 0}
-                </div>
-                <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-                  Cascade Cycles
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-card/50 backdrop-blur-sm border-border/50">
-              <CardContent className="p-4 flex flex-col justify-center items-center text-center">
-                <div className="text-3xl font-bold text-amber-500 mb-1">
-                  {stats.types["Troubleshooting"] || 0}
-                </div>
-                <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-                  Diagnostics
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <AppStatCard label="Total Items" value={stats.total} icon={<HistoryIcon className="h-5 w-5" />} />
+          <AppStatCard
+            label="Standard Cycles"
+            value={stats.types["Standard Cycle"] || 0}
+            icon={<Calculator className="h-5 w-5" />}
+          />
+          <AppStatCard
+            label="Cascade Cycles"
+            value={stats.types["Cascade Cycle"] || 0}
+            icon={<TrendingUp className="h-5 w-5" />}
+          />
+          <AppStatCard
+            label="Diagnostics"
+            value={stats.types["Troubleshooting"] || 0}
+            tone="warning"
+            icon={<BarChart3 className="h-5 w-5" />}
+          />
         </div>
 
         {/* Filters Toolbar */}
-        <div className="bg-card rounded-xl border shadow-sm p-4 mb-8 flex flex-col md:flex-row gap-4 items-center justify-between sticky top-20 z-10 backdrop-blur-xl bg-card/80">
+        <AppSectionCard className="sticky top-20 z-10 mb-2 flex flex-col items-center justify-between gap-4 border-border/80 bg-card/90 p-4 backdrop-blur-xl md:flex-row">
           <div className="flex items-center gap-2 w-full md:w-auto flex-1">
             <div className="relative flex-1 md:max-w-sm">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -361,11 +334,11 @@ export function History() {
                 placeholder="Search by name or tags..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9 bg-slate-950/50 border-border/50"
+                className="border-border/50 bg-background pl-9"
               />
             </div>
             <Select value={filterType} onValueChange={setFilterType}>
-              <SelectTrigger className="w-[180px] bg-slate-950/50 border-border/50">
+              <SelectTrigger className="w-[180px] border-border/50 bg-background">
                 <Filter className="w-3 h-3 mr-2" />
                 <SelectValue placeholder="Filter Type" />
               </SelectTrigger>
@@ -382,7 +355,7 @@ export function History() {
           </div>
 
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[160px] bg-slate-950/50 border-border/50">
+            <SelectTrigger className="w-[160px] border-border/50 bg-background">
               <SelectValue placeholder="Sort" />
             </SelectTrigger>
             <SelectContent>
@@ -391,7 +364,7 @@ export function History() {
               <SelectItem value="name">Name A-Z</SelectItem>
             </SelectContent>
           </Select>
-        </div>
+        </AppSectionCard>
 
         {/* Calculations Grid */}
         {filteredCalculations.length === 0 ? (

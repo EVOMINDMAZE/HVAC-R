@@ -17,6 +17,8 @@ import { format } from "date-fns";
 import { LineChart, Line, ResponsiveContainer, YAxis } from "recharts";
 import { ClientNotificationSettings } from "@/components/settings/ClientNotificationSettings";
 import { useNavigate } from "react-router-dom";
+import { AppPageHeader } from "@/components/app/AppPageHeader";
+import { AppSectionCard } from "@/components/app/AppSectionCard";
 
 interface Asset {
   id: string;
@@ -120,23 +122,19 @@ export function ClientDashboard() {
   }, [user]);
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-[1600px] mx-auto space-y-6">
-        <header className="flex justify-between items-center bg-card p-6 rounded-xl shadow-sm border border-border">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
-              Client Portal{" "}
-              <Activity className="text-primary animate-pulse" />
-            </h1>
-            <p className="text-muted-foreground">
-              Live Monitoring for {user?.email}
-            </p>
-          </div>
-        </header>
+    <div className="app-bg min-h-screen">
+      <div className="app-page app-stack-24">
+        <AppPageHeader
+          kicker="Client"
+          title="Client Dashboard"
+          subtitle={`Live system status and alerts for ${user?.email || "your account"}.`}
+          actions={<Activity className="h-5 w-5 text-primary" />}
+        />
 
         {/* Tabs Navigation */}
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 bg-card p-1 rounded-lg border">
+        <AppSectionCard className="p-4 sm:p-6">
+          <Tabs defaultValue="overview" className="space-y-6">
+            <TabsList className="mx-auto grid w-full max-w-md grid-cols-2 rounded-lg border bg-card p-1">
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <Activity className="h-4 w-4" />
               Overview
@@ -148,7 +146,7 @@ export function ClientDashboard() {
           </TabsList>
 
           {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
+            <TabsContent value="overview" className="space-y-6">
             {/* Status Overview */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               <Card className="border-l-4 border-l-primary">
@@ -331,13 +329,14 @@ export function ClientDashboard() {
                 </div>
               )}
             </div>
-          </TabsContent>
+            </TabsContent>
 
           {/* Settings Tab */}
-          <TabsContent value="settings" className="space-y-6">
+            <TabsContent value="settings" className="space-y-6">
             <ClientNotificationSettings />
-          </TabsContent>
-        </Tabs>
+            </TabsContent>
+          </Tabs>
+        </AppSectionCard>
       </div>
     </div>
   );

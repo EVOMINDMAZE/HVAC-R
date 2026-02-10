@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import {
   Plus,
   Search,
@@ -17,6 +16,9 @@ import { format } from "date-fns";
 import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
 import MapView from "@/components/dashboard/MapView";
 import { PageContainer } from "@/components/PageContainer";
+import { AppPageHeader } from "@/components/app/AppPageHeader";
+import { AppSectionCard } from "@/components/app/AppSectionCard";
+import { Button } from "@/components/ui/button";
 
 import {
   DropdownMenu,
@@ -182,47 +184,40 @@ export default function Dispatch() {
   });
 
   return (
-    <PageContainer variant="standard" className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-slate-500 bg-clip-text text-transparent">
-            Dispatch Center 🚁
-          </h1>
-          <p className="text-slate-500 dark:text-slate-400 mt-1">
-            Manage active service calls and technician assignments.
-          </p>
-        </div>
-        <button
-          onClick={() => setShowCreateDialog(true)}
-          className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-lg shadow-cyan-200 transition-all hover:scale-105 active:scale-95"
-        >
-          <Plus className="w-5 h-5" />
-          New Job
-        </button>
-      </div>
+    <PageContainer variant="standard" className="app-stack-24">
+      <AppPageHeader
+        kicker="Operations"
+        title="Dispatch Board"
+        subtitle="Schedule jobs, assign technicians, and monitor field status in one view."
+        actions={
+          <Button onClick={() => setShowCreateDialog(true)}>
+            <Plus className="h-4 w-4" />
+            Create Job
+          </Button>
+        }
+      />
 
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <AppSectionCard className="flex flex-col gap-4 sm:flex-row">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search tickets, clients, or status..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm focus:ring-2 focus:ring-cyan-500 focus:outline-none transition-all text-slate-900 dark:text-white"
+            className="h-11 w-full rounded-xl border border-border bg-background pl-10 pr-4 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className={`flex items-center gap-2 px-4 py-3 bg-white dark:bg-slate-900 border rounded-xl shadow-sm font-medium transition-colors ${statusFilter !== "all" ? "border-cyan-200 text-cyan-700 bg-cyan-50" : "border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"}`}
+              className={`flex h-11 items-center gap-2 rounded-xl border px-4 text-sm font-medium ${statusFilter !== "all" ? "border-primary/40 bg-primary/10 text-primary" : "border-border bg-background text-foreground hover:bg-secondary"}`}
             >
-              <Filter className="w-5 h-5" />
+              <Filter className="h-4 w-4" />
               Filter
               {statusFilter !== "all" && (
-                <span className="ml-1 text-xs bg-cyan-200 text-cyan-800 px-1.5 py-0.5 rounded-full capitalize">
+                <span className="ml-1 rounded-full bg-primary/15 px-1.5 py-0.5 text-xs capitalize text-primary">
                   {statusFilter.replace("_", " ")}
                 </span>
               )}
@@ -255,27 +250,27 @@ export default function Dispatch() {
         </DropdownMenu>
         <button
           onClick={() => setShowMapView(!showMapView)}
-          className={`flex items-center gap-2 px-4 py-3 border rounded-xl shadow-sm font-medium transition-colors ${showMapView ? "bg-cyan-50 border-cyan-200 text-cyan-700" : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"}`}
+          className={`flex h-11 items-center gap-2 rounded-xl border px-4 text-sm font-medium ${showMapView ? "border-primary/40 bg-primary/10 text-primary" : "border-border bg-background text-foreground hover:bg-secondary"}`}
         >
           {showMapView ? (
             <>
-              <LayoutGrid className="w-5 h-5" />
+              <LayoutGrid className="h-4 w-4" />
               List View
             </>
           ) : (
             <>
-              <Map className="w-5 h-5" />
+              <Map className="h-4 w-4" />
               Map View
             </>
           )}
         </button>
-      </div>
+      </AppSectionCard>
 
       {/* Jobs Table / Map View Switch */}
       {showMapView ? (
         <MapView jobs={filteredJobs} />
       ) : (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <AppSectionCard className="overflow-hidden p-0">
           <div className="hidden md:grid grid-cols-12 bg-slate-50/50 dark:bg-slate-800/50 p-4 font-semibold text-slate-500 dark:text-slate-400 text-sm border-b border-slate-200 dark:border-slate-800">
             <div className="col-span-3">Client / Asset</div>
             <div className="col-span-2">Scheduled</div>
@@ -495,7 +490,7 @@ export default function Dispatch() {
               ))}
             </div>
           )}
-        </div>
+        </AppSectionCard>
       )}
 
       <CreateJobDialog

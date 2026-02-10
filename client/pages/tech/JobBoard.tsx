@@ -23,6 +23,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useSupabaseAuth";
 import { PageContainer } from "@/components/PageContainer";
+import { AppPageHeader } from "@/components/app/AppPageHeader";
+import { AppSectionCard } from "@/components/app/AppSectionCard";
 
 export default function JobBoard() {
   const { user, session } = useAuth();
@@ -80,19 +82,14 @@ export default function JobBoard() {
   const sortedJobs = sortJobs(jobs);
 
   return (
-    <PageContainer variant="standard" className="pb-24">
-      <div className="flex flex-col gap-1 mb-6">
-        <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-          <Briefcase className="h-8 w-8 text-cyan-600" />
-          My Jobs
-        </h1>
-        <p className="text-slate-500 dark:text-slate-400 font-medium">
-          {format(new Date(), "EEEE, MMMM d")} • {sortedJobs.length} active
-          tasks
-        </p>
-      </div>
+    <PageContainer variant="standard" className="app-stack-24 pb-24">
+      <AppPageHeader
+        kicker="Field"
+        title="Field Jobs"
+        subtitle={`${format(new Date(), "EEEE, MMMM d")} • ${sortedJobs.length} active task${sortedJobs.length === 1 ? "" : "s"}`}
+      />
 
-      <div className="space-y-4">
+      <AppSectionCard className="space-y-4">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 opacity-50">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-cyan-600 mb-4"></div>
@@ -109,8 +106,8 @@ export default function JobBoard() {
             <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 mb-6">
               You're all caught up for now.
             </p>
-            <p className="text-xs font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 inline-block px-3 py-1 rounded-full">
-              Go grab a coffee ☕
+            <p className="inline-block rounded-full bg-secondary px-3 py-1 text-xs text-muted-foreground">
+              New assignments will appear automatically
             </p>
           </div>
         ) : (
@@ -197,7 +194,7 @@ export default function JobBoard() {
             </div>
           ))
         )}
-      </div>
+      </AppSectionCard>
     </PageContainer>
   );
 }

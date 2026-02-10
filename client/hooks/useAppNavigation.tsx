@@ -1,5 +1,3 @@
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useSupabaseAuth";
 import {
   LayoutGrid,
   Radio,
@@ -22,253 +20,213 @@ import {
   Wind,
   Building2,
   Brain,
+  User,
+  ShieldCheck,
 } from "lucide-react";
+import { useAuth } from "@/hooks/useSupabaseAuth";
 
-// Types
 export interface NavItem {
   to: string;
   label: string;
   icon: any;
-  badge?: number;
   desc?: string;
-  roleTag?: string; // 'O', 'T', 'C', 'O/T' for Admin visibility
 }
 
 export interface NavGroup {
+  id: string;
   label: string;
   items: NavItem[];
   visible: boolean;
 }
 
 export const CALCULATOR_DETAILS: Record<string, { desc: string }> = {
-  "/tools/standard-cycle": { desc: "Analyze thermodynamic cycles" },
-  "/tools/refrigerant-comparison": { desc: "Compare GWP & performance" },
-  "/tools/cascade-cycle": { desc: "Optimize low-temp systems" },
+  "/tools/standard-cycle": { desc: "Model baseline HVAC&R performance" },
+  "/tools/refrigerant-comparison": {
+    desc: "Compare GWP, efficiency, and cost",
+  },
+  "/tools/cascade-cycle": { desc: "Optimize low-temperature systems" },
 };
 
 export function useAppNavigation() {
-  const navigate = useNavigate();
-  const { role, isAuthenticated, isLoading } = useAuth();
+  const { role, isLoading, isAuthenticated } = useAuth();
 
-  console.log(
-    "[useAppNavigation] role:",
-    role,
-    "isAuthenticated:",
-    isAuthenticated,
-    "isLoading:",
-    isLoading,
-  );
+  const effectiveRole = role || "admin";
+  const isAdmin = effectiveRole === "admin" || effectiveRole === "owner";
+  const isManager = effectiveRole === "manager";
+  const isTech = effectiveRole === "tech" || effectiveRole === "technician";
+  const isClient = effectiveRole === "client";
 
-  // If still loading auth, return default navigation
+  const landingLinks: NavItem[] = [
+    { to: "/features", label: "Features", icon: LayoutGrid },
+    { to: "/pricing", label: "Pricing", icon: FileText },
+    { to: "/about", label: "About", icon: Info },
+    { to: "/help", label: "Help", icon: BookOpen },
+    { to: "/contact", label: "Support", icon: ExternalLink },
+  ];
+
   if (isLoading) {
     return {
       isAdmin: false,
+      isManager: false,
+      isTech: false,
+      isClient: false,
+      landingLinks,
       mainLinks: [{ to: "/dashboard", label: "Dashboard", icon: LayoutGrid }],
-      toolbox: { items: [], visible: false },
-      calculators: { items: [], visible: false },
-      office: { items: [], visible: false },
-      resources: { groups: [], visible: true },
+      groups: [] as NavGroup[],
+      resources: {
+        visible: true,
+        groups: [],
+      },
     };
   }
 
-  // Role-Based Operational Modes - default to owner/admin if role is null but user is authenticated
-  const effectiveRole = role || "admin"; // Default to admin for authenticated users without role
-  const isAdmin = effectiveRole === "admin";
-  const isOwner = isAdmin; // Clean up legacy student role
-  const isManager = effectiveRole === "manager";
-  const isTech = effectiveRole === "technician" || effectiveRole === "tech"; // Handle both variations just in case
-  const isClient = effectiveRole === "client";
+  const workItems: NavItem[] = isClient
+    ? [
+        { to: "/portal", label: "Client Home", icon: LayoutGrid },
+        { to: "/dashboard/jobs", label: "My Jobs", icon: Briefcase },
+        { to: "/triage", label: "Request Service", icon: Wrench },
+      ]
+    : [
+        { to: "/dashboard", label: "Dashboard", icon: LayoutGrid },
+        { to: "/dashboard/dispatch", label: "Dispatch", icon: Radio },
+        { to: "/dashboard/triage", label: "Triage", icon: Zap },
+        { to: "/dashboard/jobs", label: "Jobs", icon: Briefcase },
+        { to: "/dashboard/clients", label: "Clients", icon: Users },
+      ];
 
-  // Visibility Flags
-  const showDispatch = isOwner || isManager; // Managers can dispatch
-  const showOffice = isOwner || isManager; // Managers need Office access (Clients/Jobs)
-  const showToolbox = isOwner || isManager || isTech || isAdmin;
-  const showCalculators = isOwner || isManager || isTech || isAdmin;
-  const showTechWork = isTech || isAdmin || isManager; // Managers might need to see tech view? Or just Admin. keeping generic.
-  const showClientMenu = isClient || isAdmin; // Admin sees Client view too
+  const fieldItems: NavItem[] = [{ to: "/tech", label: "Field Jobs", icon: Briefcase }];
 
-  // Mock Notification State
-  const newJobsCount = 3;
-
-  // 1. MAIN LINKS (Horizontal on Desktop, Top of List on Mobile)
-  const mainLinks: NavItem[] = [];
-
-  if (!isClient && !isTech) {
-    // Techs have their own "My Jobs" board, they don't need the executive dashboard
-    mainLinks.push({ to: "/dashboard", label: "Dashboard", icon: LayoutGrid });
-  }
-
-  if (showDispatch) {
-    mainLinks.push({
-      to: "/dashboard/dispatch",
-      label: "Dispatch",
-      icon: Radio,
-      roleTag: isAdmin ? "O" : undefined,
-    });
-    mainLinks.push({
-      to: "/dashboard/triage",
-      label: "Triage",
-      icon: Zap,
-      roleTag: isAdmin ? "O" : undefined,
-    });
-  }
-
-  if (showTechWork) {
-    mainLinks.push({
-      to: "/tech",
-      label: "My Jobs",
-      icon: Briefcase,
-      badge: newJobsCount,
-      roleTag: isAdmin ? "T" : undefined,
-    });
-  }
-
-  if (showClientMenu && !isAdmin) {
-    mainLinks.push({
-      to: "/triage",
-      label: "Request Service",
-      icon: Wrench,
-      roleTag: isAdmin ? "C" : undefined,
-    });
-    mainLinks.push({
-      to: "/dashboard/jobs",
-      label: "My Jobs",
-      icon: Briefcase,
-      roleTag: isAdmin ? "C" : undefined,
-    });
-  }
-
-  // 2. TOOLBOX
-  const toolboxItems = [
-    { to: "/troubleshooting", label: "AI Troubleshooter", icon: Zap },
-    {
-      to: "/ai/pattern-insights",
-      label: "Pattern Insights",
-      icon: Brain,
-      badge: "AI",
-    },
-    { to: "/tools/iaq-wizard", label: "Indoor Health", icon: Wind },
-    { to: "/tools/refrigerant-inventory", label: "EPA Bank", icon: Archive },
+  const toolsItems: NavItem[] = [
+    { to: "/troubleshooting", label: "Diagnostics", icon: Zap },
+    { to: "/ai/pattern-insights", label: "Pattern Insights", icon: Brain },
+    { to: "/tools/iaq-wizard", label: "IAQ Wizard", icon: Wind },
     { to: "/tools/warranty-scanner", label: "Warranty Scanner", icon: Scan },
-    { to: "/diy-calculators", label: "Builder Tools", icon: Hammer },
+    { to: "/diy-calculators", label: "DIY Calculators", icon: Hammer },
   ];
 
-  // 3. CALCULATORS
-  // Just the list items, structure handled by components
-  const calculatorItems: NavItem[] = [
+  const engineeringItems: NavItem[] = [
     {
       to: "/tools/standard-cycle",
-      label: "Standard",
+      label: "Standard Cycle",
       icon: FileText,
       desc: CALCULATOR_DETAILS["/tools/standard-cycle"].desc,
     },
     {
       to: "/tools/refrigerant-comparison",
-      label: "Comparison",
+      label: "Refrigerant Comparison",
       icon: Zap,
       desc: CALCULATOR_DETAILS["/tools/refrigerant-comparison"].desc,
     },
     {
       to: "/tools/cascade-cycle",
-      label: "Cascade",
-      icon: FileText,
+      label: "Cascade Cycle",
+      icon: Cpu,
       desc: CALCULATOR_DETAILS["/tools/cascade-cycle"].desc,
     },
-    {
-      to: "/diy-calculators",
-      label: "DIY Tools",
-      icon: Cpu,
-      desc: "Simple field calculators",
-    },
   ];
 
-  // 4. OFFICE
-  const officeItems: NavItem[] = [
-    { to: "/dashboard/clients", label: "Clients", icon: Users },
-    {
-      to: "/dashboard/jobs",
-      label: "Jobs",
-      icon: Briefcase,
-      badge: newJobsCount,
-    },
+  const complianceItems: NavItem[] = [
+    { to: "/tools/refrigerant-inventory", label: "Refrigerant Inventory", icon: Archive },
+    { to: "/tools/leak-rate-calculator", label: "Leak Rate Calculator", icon: ShieldCheck },
+    { to: "/tools/refrigerant-report", label: "Compliance Report", icon: FileText },
+  ];
+
+  const accountItems: NavItem[] = [
     { to: "/history", label: "History", icon: History },
+    { to: "/profile", label: "Profile", icon: User },
+    ...(isAdmin || isManager
+      ? [
+          { to: "/settings/company", label: "Company Settings", icon: Building2 },
+          { to: "/settings/team", label: "Team", icon: Users },
+        ]
+      : []),
   ];
 
-  if (isAdmin) {
-    officeItems.push({
-      to: "/settings/company",
-      label: "Company Settings",
-      icon: Building2,
-    });
-  }
-
-  // Team Management (Admins & Managers)
-  if (isAdmin || isManager) {
-    officeItems.push({ to: "/settings/team", label: "Team", icon: Users });
-  }
-
-  // 5. RESOURCES
-  const resourcesGroups = [
+  const groups: NavGroup[] = [
     {
-      label: "Content",
-      items: [
-        {
-          to: "/blog",
-          label: "Blog",
-          icon: Newspaper,
-          desc: "Industry news & insights",
-        },
-        {
-          to: "/stories",
-          label: "Web Stories",
-          icon: PlayCircle,
-          desc: "Visual bite-sized updates",
-        },
-        {
-          to: "/podcasts",
-          label: "Podcasts",
-          icon: Headphones,
-          desc: "Audio discussions",
-        },
-      ],
+      id: "work",
+      label: "Work",
+      items: workItems,
+      visible: isAuthenticated,
     },
     {
-      label: "Support",
-      items: [
-        {
-          to: "https://www.skool.com/hvac-r-business-owner-1296",
-          label: "Community",
-          icon: Users,
-          desc: "Join other business owners",
-        },
-        {
-          to: "/documentation",
-          label: "Documentation",
-          icon: BookOpen,
-          desc: "Guides & references",
-        },
-        {
-          to: "/help",
-          label: "Help Center",
-          icon: ExternalLink,
-          desc: "FAQs & support",
-        },
-        {
-          to: "/about",
-          label: "About",
-          icon: Info,
-          desc: "About ThermoNeural",
-        },
-      ],
+      id: "field",
+      label: "Field",
+      items: fieldItems,
+      visible: !isClient && (isAdmin || isManager || isTech),
+    },
+    {
+      id: "tools",
+      label: "Tools",
+      items: toolsItems,
+      visible: !isClient,
+    },
+    {
+      id: "engineering",
+      label: "Engineering",
+      items: engineeringItems,
+      visible: !isClient,
+    },
+    {
+      id: "compliance",
+      label: "Compliance",
+      items: complianceItems,
+      visible: !isClient,
+    },
+    {
+      id: "account",
+      label: "Account",
+      items: accountItems,
+      visible: isAuthenticated,
     },
   ];
+
+  const resources = {
+    visible: true,
+    groups: [
+      {
+        label: "Content",
+        items: [
+          { to: "/blog", label: "Blog", icon: Newspaper, desc: "Industry news" },
+          { to: "/stories", label: "Web Stories", icon: PlayCircle, desc: "Quick updates" },
+          { to: "/podcasts", label: "Podcasts", icon: Headphones, desc: "Audio sessions" },
+        ],
+      },
+      {
+        label: "Support",
+        items: [
+          {
+            to: "https://www.skool.com/hvac-r-business-owner-1296",
+            label: "Community",
+            icon: Users,
+            desc: "Join business owners",
+          },
+          {
+            to: "/documentation",
+            label: "Documentation",
+            icon: BookOpen,
+            desc: "Guides and references",
+          },
+          { to: "/help", label: "Help Center", icon: ExternalLink, desc: "FAQs and support" },
+          { to: "/about", label: "About", icon: Info, desc: "About ThermoNeural" },
+        ],
+      },
+    ],
+  };
+
+  const mainLinks = groups
+    .find((g) => g.id === "work")
+    ?.items.slice(0, 3)
+    .concat(groups.find((g) => g.id === "field")?.items ?? []) ?? [];
 
   return {
-    isAdmin, // Useful for conditional rendering of badges/tags
+    isAdmin,
+    isManager,
+    isTech,
+    isClient,
+    landingLinks,
     mainLinks,
-    toolbox: { items: toolboxItems, visible: showToolbox },
-    calculators: { items: calculatorItems, visible: showCalculators },
-    office: { items: officeItems, visible: showOffice },
-    resources: { groups: resourcesGroups, visible: true },
+    groups,
+    resources,
   };
 }

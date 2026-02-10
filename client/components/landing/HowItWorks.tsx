@@ -1,9 +1,10 @@
-import { Settings, Brain, FileText, Sparkles, ArrowRight, Zap } from "lucide-react";
+import { Settings, Brain, FileText, Sparkles, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { metrics } from "@/config/metrics";
+import { Link } from "react-router-dom";
 
 const steps = [
   {
@@ -171,21 +172,17 @@ export function HowItWorks() {
           <p className="text-muted-foreground text-lg mb-6">
             Ready to experience the future of HVAC calculations?
           </p>
-          <div className="mb-6">
-            <Badge className="bg-gradient-to-r from-warning to-warning/80 text-white px-4 py-1 mb-4">
-              <Zap className="h-3 w-3 mr-1" />
-              Introductory offer: Save on your first month
-            </Badge>
-          </div>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-8 py-3 bg-gradient-to-r from-primary to-primary/80 text-white font-medium rounded-lg shadow-lg hover:shadow-primary/30 transition-all"
-          >
-            Start Your Free Trial
-          </motion.button>
+          <Link to="/signup">
+            <Button
+              size="lg"
+              className="px-8 py-3 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white font-medium rounded-lg shadow-lg"
+            >
+              Start Your Free Trial
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
           <p className="text-sm text-muted-foreground mt-4">
-            No credit card required • Get started in 2 minutes • Offer ends soon
+            No credit card required • Get started in 2 minutes • Introductory offer available
           </p>
         </motion.div>
       </div>

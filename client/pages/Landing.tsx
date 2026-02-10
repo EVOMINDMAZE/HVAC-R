@@ -1,233 +1,595 @@
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { GlassCard } from "@/components/ui/glass-card";
-import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
-import { HeroSection } from "@/components/landing/HeroSection";
-import { MiniAppPlayground } from "@/components/landing/MiniAppPlayground";
-import { ValuePropositionGrid } from "@/components/landing/ValuePropositionGrid";
-import { HowItWorks } from "@/components/landing/HowItWorks";
-import { SecuritySection } from "@/components/ui/security-section";
-import { PricingSection } from "@/components/landing/PricingSection";
-import { TestimonialsSection } from "@/components/ui/testimonials-section";
+import "@/landing.css";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import {
   ArrowRight,
-  Calculator,
-  Shield,
-  BarChart,
-  Sparkles,
+  CheckCircle,
+  ChevronDown,
+  ChevronUp,
+  Building2,
+  HardHat,
+  Rocket,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useState } from "react";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
 import { SEO } from "@/components/SEO";
 import { StructuredData } from "@/components/seo/StructuredData";
+import {
+  RolePathCards,
+  type RolePathItem,
+} from "@/components/landing/RolePathCards";
+import { HeroMedia } from "@/components/landing/HeroMedia";
+import { capabilityInventory, totalCapabilityCount } from "@/content/capabilityMap";
+import { trackMarketingEvent } from "@/lib/marketingAnalytics";
 
+const trustStrip = [
+  "Dispatch + triage in one board",
+  "EPA 608 logs ready when audits hit",
+  "Field findings become report-ready closeout",
+  "Client updates from the same job timeline",
+] as const;
 
-
-const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
-};
-
-const staggerContainer = {
-  animate: {
-    transition: {
-      staggerChildren: 0.15,
-    },
+const segmentCards: readonly RolePathItem[] = [
+  {
+    title: "Owner / Manager",
+    promise: "Control scheduling, compliance status, and team visibility from one operating system.",
+    proof: "Dispatch, triage, jobs, and client records stay aligned end to end.",
+    cta: "Book an Ops Demo",
+    link: "/contact",
+    icon: Building2,
+    eventKey: "owner_manager",
+    image: "/landing/segment-owner.png",
   },
+  {
+    title: "Technician / Lead Tech",
+    promise: "Diagnose and document in one field flow without duplicate entry.",
+    proof: "Troubleshooting, IAQ, warranty, and pattern insights stay in one handoff path.",
+    cta: "Start Engineering Free",
+    link: "/signup",
+    icon: HardHat,
+    eventKey: "technician",
+    image: "/landing/segment-technician.png",
+  },
+  {
+    title: "Entrepreneur / New Shop",
+    promise: "Start free on engineering tools and expand into full Business Ops as you grow.",
+    proof: "Day-one engineering capability with dispatch and compliance expansion ready.",
+    cta: "Start Engineering Free",
+    link: "/signup",
+    icon: Rocket,
+    eventKey: "entrepreneur",
+    image: "/landing/segment-entrepreneur.png",
+  },
+];
+
+const workflow = [
+  {
+    step: "01",
+    title: "Intake & Dispatch",
+    description:
+      "Capture requests, triage urgency, and assign work from a single board.",
+    image: "/landing/workflow-intake.png",
+    modules: [
+      { name: "Public Triage", route: "/triage" },
+      { name: "Dispatch", route: "/dashboard/dispatch" },
+      { name: "Jobs", route: "/dashboard/jobs" },
+    ],
+  },
+  {
+    step: "02",
+    title: "Diagnose & Document",
+    description:
+      "Run diagnostics and engineering checks while creating field-ready documentation.",
+    image: "/landing/workflow-diagnose.png",
+    modules: [
+      { name: "Troubleshooting", route: "/troubleshooting" },
+      { name: "Pattern Insights", route: "/ai/pattern-insights" },
+      { name: "Standard Cycle", route: "/tools/standard-cycle" },
+    ],
+  },
+  {
+    step: "03",
+    title: "Report & Follow-up",
+    description:
+      "Close with compliance exports, client-ready updates, and complete job history.",
+    image: "/landing/workflow-report.png",
+    modules: [
+      { name: "Compliance Report", route: "/tools/refrigerant-report" },
+      { name: "History", route: "/history" },
+      { name: "Client Portal", route: "/portal" },
+    ],
+  },
+] as const;
+
+const toolInventory = capabilityInventory;
+const totalToolCount = totalCapabilityCount;
+
+const pricingTracks = [
+  {
+    title: "Engineering Suite",
+    price: "From $0",
+    badge: "Start free",
+    audience: "Best for entrepreneurs and engineering-first teams.",
+    details: [
+      "Free plan for core calculations",
+      "Pro at $49/mo for advanced tools",
+      "Enterprise options for larger teams",
+    ],
+    cta: "See Engineering Pricing",
+    link: "/pricing",
+    eventKey: "engineering_suite",
+  },
+  {
+    title: "Business Ops",
+    price: "$199/mo",
+    badge: "Business in a Box",
+    audience: "Best for contractors running dispatch and compliance at scale.",
+    details: [
+      "Dispatch board + triage workflow",
+      "Jobs, clients, and records in one system",
+      "Compliance ledger + reporting exports",
+      "Automation workflows for follow-up",
+    ],
+    cta: "Book an Ops Demo",
+    link: "/contact",
+    eventKey: "business_ops",
+  },
+] as const;
+
+const motionUp = {
+  hidden: { opacity: 0, y: 18 },
+  visible: { opacity: 1, y: 0 },
 };
-
-
-
-
-
-
-
-function FAQSection() {
-  return (
-    <section className="py-32 px-4 relative overflow-hidden">
-      {/* Futuristic Background */}
-      <div className="absolute inset-0 bg-background -z-30" />
-      <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-primary/5 rounded-full blur-[120px] -z-20" />
-      <div className="absolute bottom-1/2 right-1/4 w-64 h-64 bg-highlight/5 rounded-full blur-[120px] -z-20" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--foreground)/0.02)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground)/0.02)_1px,transparent_1px)] bg-[size:40px_40px] -z-10" />
-      
-      <div className="max-w-3xl mx-auto relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <Badge
-            variant="outline"
-            className="mb-4 px-4 py-1.5 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px] sm:text-xs"
-          >
-            <Sparkles className="w-3 h-3 mr-2" />
-            SYSTEM INQUIRIES
-          </Badge>
-          <h2 className="text-4xl sm:text-6xl font-bold mb-6 tracking-tight font-mono">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/80 to-primary">
-              COMMAND PROTOCOLS
-            </span>
-          </h2>
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-light">
-            Essential operational queries for system integration and deployment.
-          </p>
-        </motion.div>
-
-        <GlassCard variant="command" className="rounded-2xl p-1 border border-primary/20" glow={true}>
-          <Accordion type="single" collapsible className="w-full">
-            {[
-              {
-                q: "IS THERMONEURAL FREE TO TRY?",
-                a: "Yes! We offer a generous free tier that lets you perform standard cycle calculations and explore the platform's capabilities.",
-              },
-              {
-                q: "CAN I EXPORT MY DATA?",
-                a: "Absolutely. Pro plans allow you to export your calculations to PDF and CSV formats for use in reports and other tools.",
-              },
-              {
-                q: "WHAT REFRIGERANTS ARE SUPPORTED?",
-                a: "We support over 50+ common refrigerants including R410A, R134a, R32, R744 (CO2), R717 (Ammonia) and many new low-GWP alternatives.",
-              },
-              {
-                q: "IS IT SUITABLE FOR STUDENTS?",
-                a: "Yes, ThermoNeural is an excellent tool for thermodynamics students to visualize cycles and verify manual calculations.",
-              },
-            ].map((faq, i) => (
-              <AccordionItem key={i} value={`item-${i}`}>
-                <AccordionTrigger className="text-left text-lg font-medium p-6 hover:bg-primary/5 hover:text-primary transition-all rounded-xl font-mono border-b border-primary/10">
-                  <div className="flex items-center">
-                    <div className="w-2 h-2 rounded-full bg-primary mr-4" />
-                    <span className="text-muted-foreground hover:text-primary">{faq.q}</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground text-base p-6 pt-2 font-light bg-card/30 rounded-b-xl">
-                  <div className="flex">
-                    <div className="w-2 h-2 rounded-full bg-primary/50 mr-4 mt-2 flex-shrink-0" />
-                    <p>{faq.a}</p>
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </GlassCard>
-      </div>
-    </section>
-  );
-}
-
-function CTASection() {
-  return (
-    <section className="py-24 px-4 relative overflow-hidden">
-      <div className="absolute inset-0 bg-background -z-30" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] -z-20" />
-
-      <div className="max-w-4xl mx-auto relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center"
-        >
-          <Badge
-            variant="outline"
-            className="mb-6 px-4 py-1.5 rounded-full border-primary/50 bg-primary/10 text-primary text-xs"
-          >
-            <Sparkles className="w-3 h-3 mr-2" />
-            Start Free Today
-          </Badge>
-
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 tracking-tight">
-            Ready to streamline your
-            <span className="text-primary"> HVAC calculations?</span>
-          </h2>
-
-          <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
-            Join thousands of engineers who save hours every week with ThermoNeural.
-            No credit card required.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/signup" className="w-full sm:w-auto">
-              <Button
-                size="lg"
-                className="w-full sm:w-auto h-14 px-8 text-lg bg-primary hover:bg-primary/90"
-              >
-                Start Free Trial
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-            <Link to="/contact" className="w-full sm:w-auto">
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full sm:w-auto h-14 px-8 text-lg"
-              >
-                Contact Sales
-              </Button>
-            </Link>
-          </div>
-
-          <div className="flex justify-center gap-6 mt-10 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-success" />
-              <span>Free 14-day trial</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-primary" />
-              <span>No credit card</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-highlight" />
-              <span>Cancel anytime</span>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
 
 export function Landing() {
+  const [isDesktop, setIsDesktop] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(min-width: 1024px)").matches;
+  });
+  const [showFullInventory, setShowFullInventory] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(min-width: 1024px)").matches;
+  });
+  const [showMobileCta, setShowMobileCta] = useState(false);
+
+  useEffect(() => {
+    trackMarketingEvent("landing_view", { section: "hero" });
+    trackMarketingEvent("landing_capability_matrix_view", {
+      section: "hero_command_center",
+    });
+
+    const desktopQuery = window.matchMedia("(min-width: 1024px)");
+    const syncLayoutMode = (matches: boolean) => {
+      setIsDesktop(matches);
+      setShowFullInventory(matches);
+    };
+
+    syncLayoutMode(desktopQuery.matches);
+
+    const handleDesktopChange = (event: MediaQueryListEvent) => {
+      syncLayoutMode(event.matches);
+    };
+
+    const handleScroll = () => {
+      const triggerPoint = window.innerHeight * 0.7;
+      setShowMobileCta(window.scrollY > triggerPoint);
+    };
+
+    let workflowTracked = false;
+    const workflowElement = document.getElementById("workflow-proof");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting || workflowTracked) return;
+
+          workflowTracked = true;
+          trackMarketingEvent("landing_workflow_view", { section: "workflow" });
+        });
+      },
+      { threshold: 0.45 },
+    );
+
+    if (workflowElement) observer.observe(workflowElement);
+
+    desktopQuery.addEventListener("change", handleDesktopChange);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      observer.disconnect();
+      desktopQuery.removeEventListener("change", handleDesktopChange);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const toggleInventory = () => {
+    if (isDesktop) return;
+
+    const expanded = !showFullInventory;
+    setShowFullInventory(expanded);
+    trackMarketingEvent("landing_inventory_toggle", {
+      section: "tool_inventory",
+      segment: expanded ? "expanded" : "condensed",
+    });
+  };
+
+  const handleJumpToInventory = () => {
+    trackMarketingEvent("landing_view_all_tools_click", {
+      section: "hero_command_center",
+      destination: "#tool-inventory",
+    });
+  };
+
   return (
-    <div className="min-h-screen w-full bg-background text-foreground selection:bg-primary/20 selection:text-primary flex flex-col">
-      {/* Skip to main content link for accessibility */}
+    <div className="app-shell landing-page min-h-screen bg-background text-foreground selection:bg-primary/10 selection:text-primary">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg"
       >
         Skip to main content
       </a>
+
       <Header variant="landing" />
 
-      <main id="main-content" className="flex-grow">
+      <main id="main-content">
         <SEO
-          title="ThermoNeural | AI-Powered HVAC&R Thermodynamic Analysis Platform"
-          description="ThermoNeural: AI-powered thermodynamic analysis platform for HVAC&R engineers. Simulate refrigeration cycles, optimize system performance, and generate professional reports with high accuracy. Start your free trial today."
+          title="ThermoNeural | HVAC&R Operations + Engineering"
+          description="Run dispatch, compliance, and engineering analysis in one HVAC&R system built for contractors, owners, and growing service businesses."
         />
         <StructuredData />
-        <HeroSection />
-        <MiniAppPlayground />
-        <ValuePropositionGrid />
-        <HowItWorks />
-        <SecuritySection />
-        <PricingSection />
-        <FAQSection />
-        <TestimonialsSection />
-        <CTASection />
+
+        <section className="landing-section landing-hero relative overflow-hidden px-4">
+          <div className="landing-hero-gradient" aria-hidden="true" />
+
+          <motion.div
+            variants={motionUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ duration: 0.45, ease: "easeOut" }}
+            className="relative mx-auto grid max-w-6xl items-start gap-5 lg:grid-cols-[1fr_1.02fr]"
+          >
+            <div className="max-w-xl">
+              <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                <span className="landing-kicker text-primary">Business in a Box for HVAC&R Operators</span>
+              </div>
+
+              <h1 className="landing-heading landing-hero-title mt-5 text-4xl font-semibold md:text-[2.95rem] md:leading-[1.01] lg:text-[3.2rem] lg:leading-[0.99]">
+                Run HVAC jobs, compliance, and engineering from one system.
+              </h1>
+
+              <p className="mt-5 max-w-xl text-lg text-muted-foreground">
+                For contractors and owners who need dispatch control, audit-ready records, and cleaner closeout across every job.
+              </p>
+
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  to="/signup"
+                  onClick={() =>
+                    trackMarketingEvent("landing_hero_primary_click", {
+                      section: "hero",
+                      destination: "/signup",
+                    })
+                  }
+                >
+                  <Button size="lg" className="h-12 px-6">
+                    Start Engineering Free
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+
+                <Link
+                  to="/contact"
+                  onClick={() =>
+                    trackMarketingEvent("landing_hero_secondary_click", {
+                      section: "hero",
+                      destination: "/contact",
+                    })
+                  }
+                >
+                  <Button size="lg" variant="outline" className="h-12 px-6">
+                    Book an Ops Demo
+                  </Button>
+                </Link>
+              </div>
+
+              <p className="mt-3 text-xs text-muted-foreground">
+                New shop or engineering-first team? <span className="font-semibold text-foreground/85">Start free.</span> Running multi-crew operations? <span className="font-semibold text-foreground/85">Book a demo.</span>
+              </p>
+
+              <p className="mt-5 text-sm text-muted-foreground">
+                Dispatch control • Audit-ready records • Report-ready closeout
+              </p>
+            </div>
+
+            <HeroMedia
+              totalTools={totalToolCount}
+              categories={toolInventory}
+              onViewAllTools={handleJumpToInventory}
+            />
+          </motion.div>
+        </section>
+
+        <section className="landing-section px-4 pt-0">
+          <motion.div
+            variants={motionUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.34, ease: "easeOut" }}
+            className="mx-auto grid max-w-6xl gap-3 text-sm md:grid-cols-3 lg:grid-cols-5"
+          >
+            {trustStrip.map((item) => (
+              <div key={item} className="landing-chip rounded-xl px-4 py-2.5 text-center">
+                {item}
+              </div>
+            ))}
+          </motion.div>
+        </section>
+
+        <section className="landing-section px-4 bg-secondary/30">
+          <div className="mx-auto max-w-6xl">
+            <div className="max-w-2xl">
+              <p className="landing-kicker text-primary">Pick Your Path</p>
+              <h2 className="landing-heading mt-3 text-3xl font-semibold md:text-4xl">
+                Choose the operating track that matches your team stage.
+              </h2>
+            </div>
+
+            <RolePathCards
+              segments={segmentCards}
+              onTrack={(segment, destination) =>
+                trackMarketingEvent("landing_segment_path_click", {
+                  section: "pick_path",
+                  segment,
+                  destination,
+                })
+              }
+            />
+          </div>
+        </section>
+
+        <section id="tool-inventory" className="landing-section px-4 bg-secondary/30">
+          <div className="mx-auto max-w-6xl">
+            <div className="max-w-2xl">
+              <p className="landing-kicker text-primary">What&apos;s Inside</p>
+              <h2 className="landing-heading mt-3 text-3xl font-semibold md:text-4xl">
+                Route-backed modules, grouped by real service workflows.
+              </h2>
+            </div>
+
+            <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {toolInventory.map((group) => {
+                const visibleItems = showFullInventory
+                  ? group.tools
+                  : group.tools.slice(0, group.previewCount);
+
+                return (
+                  <div key={group.title} className="landing-surface rounded-2xl p-6">
+                    <h3 className="text-lg font-semibold">{group.title}</h3>
+                    <p className="mt-1 text-xs text-muted-foreground">{group.outcomeLine}</p>
+                    <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+                      {visibleItems.map((item) => (
+                        <li key={item.route} className="flex items-start gap-2">
+                          <CheckCircle className="mt-0.5 h-4 w-4 text-success" />
+                          <span>{item.name}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    {!showFullInventory && group.tools.length > group.previewCount && (
+                      <p className="mt-3 text-xs text-muted-foreground">
+                        +{group.tools.length - group.previewCount} more in this group
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {!isDesktop && (
+              <div className="mt-8 flex justify-center">
+                <Button
+                  variant="outline"
+                  onClick={toggleInventory}
+                  aria-expanded={showFullInventory}
+                  className="min-w-52"
+                >
+                  {showFullInventory ? (
+                    <>
+                      Show Condensed Inventory
+                      <ChevronUp className="ml-2 h-4 w-4" />
+                    </>
+                  ) : (
+                    <>
+                      View Full Inventory
+                      <ChevronDown className="ml-2 h-4 w-4" />
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section id="workflow-proof" className="landing-section px-4">
+          <div className="mx-auto max-w-6xl">
+            <div className="max-w-2xl">
+              <p className="landing-kicker text-primary">Workflow Proof</p>
+              <h2 className="landing-heading mt-3 text-3xl font-semibold md:text-4xl">
+                Intake, diagnose, report. One continuous HVAC&R workflow.
+              </h2>
+            </div>
+
+            <div className="mt-10 grid gap-5 md:grid-cols-3">
+              {workflow.map((item) => (
+                <motion.div
+                  key={item.step}
+                  variants={motionUp}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.25 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="landing-surface rounded-2xl p-5"
+                >
+                  <div className="landing-workflow-media-wrap">
+                    <img
+                      src={item.image}
+                      alt={`${item.title} module preview`}
+                      className="landing-workflow-media"
+                      loading="lazy"
+                    />
+                  </div>
+                  <span className="mt-4 inline-block text-xs font-semibold text-primary">{item.step}</span>
+                  <h3 className="mt-2 text-lg font-semibold">{item.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{item.description}</p>
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {item.modules.map((module) => (
+                      <span key={module.route} className="landing-module-tag">
+                        {module.name}
+                      </span>
+                    ))}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="pricing-decision" className="landing-section landing-pricing-section px-4">
+          <div className="landing-pricing-texture" aria-hidden="true" />
+
+          <div className="relative mx-auto max-w-6xl">
+            <div className="max-w-2xl">
+              <p className="landing-kicker text-primary">Pricing Decision</p>
+              <h2 className="landing-heading mt-3 text-3xl font-semibold md:text-4xl">
+                Start with engineering now. Add Business Ops when dispatch and compliance scale.
+              </h2>
+            </div>
+
+            <div className="mt-10 grid gap-5 md:grid-cols-2">
+              {pricingTracks.map((track) => (
+                <div key={track.title} className="landing-pricing-card rounded-2xl p-6">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">{track.title}</h3>
+                    <span className="rounded-full bg-primary/10 px-3 py-1 text-xs text-primary">
+                      {track.badge}
+                    </span>
+                  </div>
+
+                  <p className="mt-3 text-3xl font-semibold">{track.price}</p>
+                  <p className="mt-2 text-sm text-muted-foreground">{track.audience}</p>
+
+                  <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+                    {track.details.map((detail) => (
+                      <li key={detail} className="flex items-start gap-2">
+                        <CheckCircle className="mt-0.5 h-4 w-4 text-success" />
+                        <span>{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-6">
+                    <Link
+                      to={track.link}
+                      onClick={() =>
+                        trackMarketingEvent("landing_pricing_cta_click", {
+                          section: "pricing",
+                          segment: track.eventKey,
+                          destination: track.link,
+                        })
+                      }
+                    >
+                      <Button variant={track.title === "Business Ops" ? "default" : "outline"} className="w-full">
+                        {track.cta}
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="landing-section px-4 pt-0">
+          <div className="mx-auto max-w-6xl rounded-3xl border border-border/60 bg-gradient-to-br from-primary/5 via-background to-background p-10 md:p-14">
+            <div className="max-w-3xl">
+              <p className="landing-kicker text-primary">Final CTA</p>
+              <h2 className="landing-heading mt-3 text-3xl font-semibold md:text-4xl">
+                Start free now. Add Business Ops when your team is ready.
+              </h2>
+
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+                <Link
+                  to="/signup"
+                  onClick={() =>
+                    trackMarketingEvent("landing_hero_primary_click", {
+                      section: "final_cta",
+                      destination: "/signup",
+                    })
+                  }
+                >
+                  <Button size="lg" className="h-12 px-6">
+                    Start Engineering Free
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+
+                <Link
+                  to="/contact"
+                  onClick={() =>
+                    trackMarketingEvent("landing_hero_secondary_click", {
+                      section: "final_cta",
+                      destination: "/contact",
+                    })
+                  }
+                >
+                  <Button size="lg" variant="outline" className="h-12 px-6">
+                    Book an Ops Demo
+                  </Button>
+                </Link>
+              </div>
+
+              <p className="mt-6 text-sm text-muted-foreground">
+                Built for contractors, managers, and teams scaling HVAC&R operations.
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
+
+      <div className={`landing-mobile-cta ${showMobileCta ? "is-visible" : ""}`}>
+        <div className="landing-mobile-cta-inner">
+          <Link
+            to="/signup"
+            className="flex-1"
+            onClick={() =>
+              trackMarketingEvent("landing_hero_primary_click", {
+                section: "mobile_sticky",
+                destination: "/signup",
+              })
+            }
+          >
+            <Button className="h-11 w-full">Start Engineering Free</Button>
+          </Link>
+
+          <Link
+            to="/contact"
+            onClick={() =>
+              trackMarketingEvent("landing_hero_secondary_click", {
+                section: "mobile_sticky",
+                destination: "/contact",
+              })
+            }
+          >
+            <Button variant="outline" className="h-11 px-4">
+              Book Demo
+            </Button>
+          </Link>
+        </div>
+      </div>
 
       <Footer />
     </div>

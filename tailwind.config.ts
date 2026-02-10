@@ -17,8 +17,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Inter", "sans-serif"],
-        display: ["Montserrat", "sans-serif"],
+        sans: ["Manrope", "sans-serif"],
+        display: ["Sora", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
       },
       colors: {

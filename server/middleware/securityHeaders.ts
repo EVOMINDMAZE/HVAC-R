@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 interface SecurityHeadersConfig {
-  contentSecurityPolicy?: {
+  contentSecurityPolicy?: false | {
     directives?: {
       defaultSrc?: string[];
       scriptSrc?: string[];
@@ -22,8 +22,12 @@ interface SecurityHeadersConfig {
     reportOnly?: boolean;
   };
   crossOriginEmbedderPolicy?: boolean;
-  crossOriginOpenerPolicy?: boolean;
-  crossOriginResourcePolicy?: boolean;
+  crossOriginOpenerPolicy?:
+    | 'same-origin'
+    | 'same-origin-allow-popups'
+    | 'unsafe-none'
+    | string;
+  crossOriginResourcePolicy?: 'same-origin' | 'same-site' | 'cross-origin' | string;
   originAgentCluster?: boolean;
   referrerPolicy?: string;
   strictTransportSecurity?: {
@@ -32,7 +36,7 @@ interface SecurityHeadersConfig {
     preload?: boolean;
   };
   xContentTypeOptions?: boolean;
-  xDNSPrefetchControl?: boolean;
+  xDNSPrefetchControl?: boolean | { allow: boolean };
   xFrameOptions?: {
     action: 'DENY' | 'SAMEORIGIN' | string;
     allowFrom?: string;
@@ -175,8 +179,12 @@ export function securityHeaders(config: SecurityHeadersConfig = defaultConfig) {
       res.setHeader('X-Content-Type-Options', 'nosniff');
     }
 
-    if (config.xDNSPrefetchControl) {
-      res.setHeader('X-DNSPrefetch-Control', config.xDNSPrefetchControl.allow ? 'on' : 'off');
+    if (config.xDNSPrefetchControl !== undefined) {
+      const allow =
+        typeof config.xDNSPrefetchControl === 'object'
+          ? config.xDNSPrefetchControl.allow
+          : Boolean(config.xDNSPrefetchControl);
+      res.setHeader('X-DNSPrefetch-Control', allow ? 'on' : 'off');
     }
 
     if (config.xFrameOptions) {
@@ -212,12 +220,12 @@ export function securityHeaders(config: SecurityHeadersConfig = defaultConfig) {
 }
 
 function buildContentSecurityPolicy(config: SecurityHeadersConfig['contentSecurityPolicy']): string {
-  if (!config || !config.directives) {
+  if (!config || typeof config !== 'object' || !config.directives) {
     return '';
   }
 
   const directives: string[] = [];
-  const { directives: d, reportUri, reportOnly } = config;
+  const { directives: d, reportUri } = config;
 
   for (const [key, value] of Object.entries(d)) {
     if (value === undefined || value === null) continue;
@@ -240,12 +248,17 @@ function buildContentSecurityPolicy(config: SecurityHeadersConfig['contentSecuri
   return directives.join('; ');
 }
 
+const defaultContentSecurityPolicy =
+  typeof defaultConfig.contentSecurityPolicy === 'object'
+    ? defaultConfig.contentSecurityPolicy
+    : undefined;
+
 export const strictSecurityHeaders = securityHeaders({
   ...defaultConfig,
   contentSecurityPolicy: {
-    ...defaultConfig.contentSecurityPolicy,
+    ...defaultContentSecurityPolicy,
     directives: {
-      ...defaultConfig.contentSecurityPolicy?.directives,
+      ...defaultContentSecurityPolicy?.directives,
       scriptSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       imgSrc: ["'self'", 'data:', 'blob:'],
@@ -328,7 +341,7 @@ export const cspReportingEndpoint = (req: Request, res: Response) => {
   res.status(204).end();
 };
 
-export function getSecurityHeaders(req: Request): Record<string, string> {
+export function getSecurityHeaders(_req: Request, res: Response): Record<string, string> {
   const headers: Record<string, string> = {};
   
   const headerNames = [
@@ -356,7 +369,7 @@ export function getSecurityHeaders(req: Request): Record<string, string> {
 }
 
 export function reportSecurityHeaders(req: Request, res: Response, next: NextFunction) {
-  const headers = getSecurityHeaders(req);
+  const headers = getSecurityHeaders(req, res);
   
   if (process.env.NODE_ENV === 'development') {
     console.log('[Security Headers]', headers);

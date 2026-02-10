@@ -1,10 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Check, Sparkles, Zap, Crown, TrendingUp, Users } from "lucide-react";
+import { Check, Sparkles, Zap, Crown, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useState } from "react";
-import { metrics } from "@/config/metrics";
+import { Link } from "react-router-dom";
 
 const pricingTiers = [
   {
@@ -20,6 +20,7 @@ const pricingTiers = [
       "PDF export (watermarked)",
     ],
     cta: "Start Free",
+    ctaLink: "/signup",
     ctaVariant: "outline" as const,
     icon: Sparkles,
     popular: false,
@@ -40,6 +41,7 @@ const pricingTiers = [
       "API access",
     ],
     cta: "Start Free Trial",
+    ctaLink: "/signup",
     ctaVariant: "default" as const,
     icon: Zap,
     popular: true,
@@ -60,6 +62,7 @@ const pricingTiers = [
       "Training & onboarding",
     ],
     cta: "Contact Sales",
+    ctaLink: "/contact",
     ctaVariant: "outline" as const,
     icon: Crown,
     popular: false,
@@ -186,13 +189,13 @@ export function PricingSection() {
                     <span className="text-5xl font-bold text-foreground">{price}</span>
                     {price !== "Custom" && (
                       <span className="text-muted-foreground">
-                        /{isAnnual ? "year" : "month"}
+                        /month{isAnnual && ", billed annually"}
                       </span>
                     )}
                   </div>
-                  {price !== "Custom" && isAnnual && (
+                  {price !== "Custom" && isAnnual && price !== "$0" && (
                     <p className="text-sm text-success mt-2">
-                      <strong>Save $120</strong> compared to monthly billing
+                      Save 20% compared to monthly billing
                     </p>
                   )}
                 </div>
@@ -208,34 +211,24 @@ export function PricingSection() {
                 </ul>
 
                 {/* CTA */}
-                <Button
-                  variant={tier.ctaVariant}
-                  className={`w-full h-12 rounded-lg font-medium text-base ${
-                    tier.popular
-                      ? "bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
-                      : ""
-                  }`}
-                >
-                  {tier.cta}
-                </Button>
+                <Link to={tier.ctaLink}>
+                  <Button
+                    variant={tier.ctaVariant}
+                    className={`w-full h-12 rounded-lg font-medium text-base ${
+                      tier.popular
+                        ? "bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+                        : ""
+                    }`}
+                  >
+                    {tier.cta}
+                  </Button>
+                </Link>
 
-                {/* Urgency Note */}
+                {/* Popular tier note */}
                 {tier.popular && (
-                  <div className="mt-6 space-y-3">
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
-                      <Badge className="bg-gradient-to-r from-warning to-warning/80 text-white px-3 py-1">
-                        <Zap className="h-3 w-3 mr-1" />
-                        {metrics.urgency.limitedTimeOffer}: Free onboarding included
-                      </Badge>
-                      <Badge variant="outline" className="border-primary/30 text-primary bg-primary/10 px-3 py-1">
-                        <Users className="h-3 w-3 mr-1" />
-                        {metrics.urgency.limitedSpots}
-                      </Badge>
-                    </div>
-                    <p className="text-xs text-muted-foreground text-center">
-                      Upgrade now to secure your discount.
-                    </p>
-                  </div>
+                  <p className="text-xs text-muted-foreground text-center mt-4">
+                    14-day free trial included
+                  </p>
                 )}
               </motion.div>
             );

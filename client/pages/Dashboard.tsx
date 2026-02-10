@@ -33,6 +33,7 @@ import {
 import { RiskShield } from "@/components/OwnerDashboard/RiskShield";
 import { SEO } from "@/components/SEO";
 import { PageContainer } from "@/components/PageContainer";
+import { AppPageHeader } from "@/components/app/AppPageHeader";
 import { useRevenueAnalytics } from "@/hooks/useRevenueAnalytics";
 import {
   BarChart,
@@ -117,29 +118,29 @@ function UsageProgressCard({ stats, onUpgrade }: UsageProgressCardProps) {
             <div>
               <Badge
                 variant="outline"
-                className="px-3 py-1 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px]"
+                className="px-3 py-1 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md tracking-widest uppercase text-[10px]"
               >
                 <Zap className="w-3 h-3 mr-2" />
-                SYSTEM USAGE
+                Usage
               </Badge>
-              <h3 className="mt-3 text-xl font-bold text-primary font-mono">
-                {stats.monthlyCalculations}/{stats.monthlyLimit} CALCULATIONS DEPLOYED
+              <h3 className="mt-3 text-xl font-bold text-primary ">
+                {stats.monthlyCalculations}/{stats.monthlyLimit} Calculations Used
               </h3>
               <p className="text-sm text-muted-foreground mt-1">
-                RESET PROTOCOL: {stats.billingCycleResetLabel}
+                Billing cycle resets: {stats.billingCycleResetLabel}
               </p>
             </div>
             <Badge
               variant="outline"
-              className={`px-4 py-1.5 rounded-full ${color.border} ${color.bg} ${color.text} backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-xs`}
+              className={`px-4 py-1.5 rounded-full ${color.border} ${color.bg} ${color.text} backdrop-blur-md tracking-widest uppercase text-xs`}
             >
-              {roundedUsage}% UTILIZED
+              {roundedUsage}% used
             </Badge>
           </div>
 
           {/* Progress Bar */}
           <div className="space-y-2">
-            <div className="flex justify-between text-xs font-mono">
+            <div className="flex justify-between text-xs ">
               <span className="text-muted-foreground">0%</span>
               <span className="text-muted-foreground">100%</span>
             </div>
@@ -152,24 +153,24 @@ function UsageProgressCard({ stats, onUpgrade }: UsageProgressCardProps) {
               />
             </div>
             <div className="flex justify-center">
-              <div className="text-xs font-mono text-muted-foreground">
-                SYSTEM CAPACITY: {stats.usagePercentage.toFixed(1)}% LOAD
+              <div className="text-xs text-muted-foreground">
+                Usage: {stats.usagePercentage.toFixed(1)}% used this month
               </div>
             </div>
           </div>
 
           {/* Footer */}
           <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-primary/20">
-            <div className="text-sm font-mono text-primary">
-              <span className="text-muted-foreground">RESERVE:</span> {stats.remaining} CALCULATION{stats.remaining === 1 ? "" : "S"}
+            <div className="text-sm text-primary">
+              <span className="text-muted-foreground">Remaining:</span> {stats.remaining} calculation{stats.remaining === 1 ? "" : "s"}
             </div>
             <Button
-              variant="neon"
+              variant="default"
               size="sm"
-              className="font-mono tracking-wider"
+              className="tracking-wider"
               onClick={onUpgrade}
             >
-              UPGRADE TO UNLIMITED
+              Upgrade Plan
             </Button>
           </div>
         </div>
@@ -203,25 +204,25 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
             <motion.div variants={fadeInUp} className="flex items-center gap-4 mb-4">
               <Badge
                 variant="outline"
-                className="px-4 py-1.5 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px] sm:text-xs"
+                className="px-4 py-1.5 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md tracking-widest uppercase text-[10px] sm:text-xs"
               >
                 <Sparkles className="w-3 h-3 mr-2" />
-                COMMAND INTERFACE
+                Daily Overview
               </Badge>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <div className="text-xs text-muted-foreground font-mono">SYSTEM ONLINE</div>
+                <div className="text-xs text-muted-foreground ">Live data</div>
               </div>
             </motion.div>
             
-            <motion.h2 variants={fadeInUp} className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight font-mono">
+            <motion.h2 variants={fadeInUp} className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight ">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/80 to-primary">
-                OPERATOR: {firstName ? firstName.toUpperCase() : "SYSTEM"}
+                Welcome, {firstName || "Team"}
               </span>
             </motion.h2>
             
             <motion.p variants={fadeInUp} className="text-lg sm:text-xl text-muted-foreground mt-4 max-w-2xl leading-relaxed font-light">
-              Mission control dashboard for thermal analysis operations. Real-time metrics and system status displayed below.
+              Track operations, monitor system health, and keep your field team moving with real-time visibility.
             </motion.p>
             
             <motion.div variants={fadeInUp} className="mt-6 flex flex-wrap items-center gap-4">
@@ -229,9 +230,9 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
               {!stats.isUnlimited && (
                 <Badge
                   variant="outline"
-                  className="px-4 py-1.5 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px] sm:text-xs"
+                  className="px-4 py-1.5 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md tracking-widest uppercase text-[10px] sm:text-xs"
                 >
-                  {stats.remaining} CALCULATION{stats.remaining === 1 ? "" : "S"} REMAINING
+                  {stats.remaining} calculation{stats.remaining === 1 ? "" : "s"} remaining
                 </Badge>
               )}
             </motion.div>
@@ -239,19 +240,19 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
           
           <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row lg:flex-col gap-3">
             <Button
-              variant="neon"
+              variant="default"
               size="lg"
-              className="font-mono tracking-wider h-12 px-6"
+              className="tracking-wider h-12 px-6"
               onClick={() => navigate("/tools/standard-cycle")}
             >
               <Calculator className="h-4 w-4 mr-3" />
-              INITIATE CALCULATION
+              Start Calculation
             </Button>
             
             <Button
               variant="outline"
               size="lg"
-              className="font-mono tracking-wider h-12 px-6 border-primary/30 text-primary hover:bg-primary/10 hover:border-primary/50"
+              className="tracking-wider h-12 px-6 border-primary/30 text-primary hover:bg-primary/10 hover:border-primary/50"
               onClick={onRefresh}
               disabled={isLoading}
             >
@@ -260,7 +261,7 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
               ) : (
                 <RefreshCw className="h-4 w-4 mr-3" />
               )}
-              REFRESH DATA
+              Refresh Data
             </Button>
           </motion.div>
         </div>
@@ -284,8 +285,8 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
                   <Sparkles className={`h-5 w-5 ${stats.isAtLimit ? "text-destructive" : "text-warning"}`} />
                 </div>
                 <div>
-                  <h3 className={`text-lg font-bold font-mono ${stats.isAtLimit ? "text-destructive" : "text-warning"}`}>
-                    {stats.isAtLimit ? "SYSTEM LIMIT REACHED" : "APPROACHING SYSTEM LIMIT"}
+                  <h3 className={`text-lg font-bold ${stats.isAtLimit ? "text-destructive" : "text-warning"}`}>
+                    {stats.isAtLimit ? "Monthly Limit Reached" : "Approaching Monthly Limit"}
                   </h3>
                   <p className="text-muted-foreground mt-1 text-sm">
                     {stats.isAtLimit
@@ -295,12 +296,12 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
                 </div>
               </div>
               <Button
-                variant={stats.isAtLimit ? "neonDestructive" : "neonWarning"}
+                variant={stats.isAtLimit ? "destructive" : "secondary"}
                 size="lg"
-                className="font-mono tracking-wider px-6"
+                className="tracking-wider px-6"
                 onClick={handleUpgrade}
               >
-                {stats.isAtLimit ? "IMMEDIATE UPGRADE" : "UPGRADE SYSTEM"}
+                {stats.isAtLimit ? "Upgrade Now" : "Upgrade Plan"}
               </Button>
             </div>
           </GlassCard>
@@ -322,9 +323,9 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
           <DashboardGridItem span={{ sm: 1, md: 1, lg: 1 }}>
             <motion.div variants={fadeInUp}>
               <DataPanel
-                title="TOTAL CALCULATIONS"
+                title="Total Calculations"
                 value={formatNumber(stats.totalCalculations)}
-                subtitle="ALL TIME DEPLOYMENTS"
+                subtitle="All-time calculations"
                 variant="highlight"
                 compact
               />
@@ -334,12 +335,12 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
           <DashboardGridItem span={{ sm: 1, md: 1, lg: 1 }}>
             <motion.div variants={fadeInUp}>
               <DataPanel
-                title="THIS MONTH"
+                title="This Month"
                 value={`${formatNumber(stats.monthlyCalculations)}${!stats.isUnlimited ? `/${stats.monthlyLimit}` : ""}`}
                 subtitle={
                   !stats.isUnlimited
-                    ? `${Math.round(stats.usagePercentage)}% UTILIZED`
-                    : "UNLIMITED OPERATIONS"
+                    ? `${Math.round(stats.usagePercentage)}% used`
+                    : "Unlimited access"
                 }
                 variant={!stats.isUnlimited && stats.usagePercentage >= 70 ? "warning" : "success"}
                 compact
@@ -350,9 +351,9 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
           <DashboardGridItem span={{ sm: 1, md: 1, lg: 1 }}>
             <motion.div variants={fadeInUp}>
               <DataPanel
-                title="SYSTEM RESERVE"
+                title="Remaining Capacity"
                 value={stats.remainingText}
-                subtitle="REMAINING CAPACITY"
+                subtitle="Remaining capacity"
                 variant={stats.remainingValue <= 2 ? "destructive" : "success"}
                 compact
               />
@@ -363,7 +364,7 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
             <motion.div variants={fadeInUp}>
               <GlassCard
                 variant="command"
-                className="rounded-2xl p-1 border border-primary/20 cursor-pointer group relative overflow-hidden hover:glow-primary transition-all"
+                className="rounded-2xl p-1 border border-primary/20 cursor-pointer group relative overflow-hidden transition-all"
                 onClick={handleUpgrade}
                 glow={true}
               >
@@ -372,17 +373,17 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
                     <div>
                       <Badge
                         variant="outline"
-                        className="px-3 py-1 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px]"
+                        className="px-3 py-1 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md tracking-widest uppercase text-[10px]"
                       >
-                        SYSTEM PLAN
+                        Current Plan
                       </Badge>
-                      <p className="mt-3 text-xl font-bold text-primary font-mono">
+                      <p className="mt-3 text-xl font-bold text-primary ">
                         {stats.planDisplayName}
                       </p>
-                      <p className="mt-1 text-xs text-primary flex items-center font-mono">
+                      <p className="mt-1 text-xs text-primary flex items-center ">
                         {stats.plan === "free"
-                          ? "UPGRADE TO PRO COMMAND"
-                          : "MANAGE SUBSCRIPTION"}
+                          ? "Upgrade to Pro"
+                          : "Manage subscription"}
                         <ArrowRight className="h-3 w-3 ml-1 group-hover:translate-x-1 transition-transform" />
                       </p>
                     </div>
@@ -459,20 +460,20 @@ function RecentCalculations({ isLoading }: any) {
             <div className="flex items-center gap-3">
               <Badge
                 variant="outline"
-                className="px-3 py-1 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px]"
+                className="px-3 py-1 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md tracking-widest uppercase text-[10px]"
               >
                 <HistoryIcon className="w-3 h-3 mr-2" />
-                RECENT ACTIVITY
+                Recent Activity
               </Badge>
               <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
             </div>
             <Button
               variant="outline"
               size="sm"
-              className="font-mono tracking-wider border-primary/30 text-primary hover:bg-primary/10"
+              className="tracking-wider border-primary/30 text-primary hover:bg-primary/10"
               onClick={() => navigate("/calculations")}
             >
-              VIEW ALL
+              View All
             </Button>
           </div>
         </div>
@@ -495,18 +496,18 @@ function RecentCalculations({ isLoading }: any) {
               <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6 border border-primary/20">
                 <Calculator className="h-10 w-10 text-primary" />
               </div>
-              <h3 className="text-xl font-bold text-primary font-mono mb-3">
-                NO CALCULATIONS DETECTED
+              <h3 className="text-xl font-bold text-primary mb-3">
+                No Calculations Yet
               </h3>
               <p className="text-muted-foreground mb-8 max-w-sm">
                 Initiate your first thermal analysis to populate the activity log.
               </p>
               <Button
-                variant="neon"
-                className="font-mono tracking-wider"
+                variant="default"
+                className="tracking-wider"
                 onClick={() => navigate("/tools/standard-cycle")}
               >
-                INITIATE CALCULATION
+                Start Calculation
               </Button>
             </div>
           ) : (
@@ -524,10 +525,10 @@ function RecentCalculations({ isLoading }: any) {
                       <Calculator className="h-6 w-6" />
                     </div>
                     <div className="min-w-0">
-                      <h4 className="font-bold text-primary truncate font-mono text-sm">
+                      <h4 className="font-bold text-primary truncate text-sm">
                         {calc.name || calc.calculation_type}
                       </h4>
-                      <div className="flex items-center gap-3 text-xs text-muted-foreground mt-2 font-mono">
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground mt-2 ">
                         <div className="flex items-center gap-1">
                           <Clock className="h-3 w-3" />
                           <span>{new Date(calc.created_at).toLocaleDateString()}</span>
@@ -535,7 +536,7 @@ function RecentCalculations({ isLoading }: any) {
                         <div className="w-1 h-1 bg-secondary rounded-full" />
                         <Badge
                           variant="outline"
-                          className="px-2 py-0.5 rounded-full border-primary/30 bg-primary/5 text-primary text-[10px] font-mono uppercase tracking-wider"
+                          className="px-2 py-0.5 rounded-full border-primary/30 bg-primary/5 text-primary text-[10px] uppercase tracking-wider"
                         >
                           {calc.calculation_type}
                         </Badge>
@@ -558,7 +559,7 @@ function QuickActions() {
 
   const actions = [
     {
-      label: "STANDARD CYCLE",
+      label: "Standard Cycle",
       icon: Calculator,
       path: "/tools/standard-cycle",
       color: "text-cyan-400",
@@ -566,7 +567,7 @@ function QuickActions() {
       border: "border-cyan-500/30",
     },
     {
-      label: "COMPARE REFRIGERANTS",
+      label: "Compare Refrigerants",
       icon: TrendingUp,
       path: "/tools/refrigerant-comparison",
       color: "text-emerald-400",
@@ -574,7 +575,7 @@ function QuickActions() {
       border: "border-emerald-500/30",
     },
     {
-      label: "CASCADE ANALYSIS",
+      label: "Cascade Analysis",
       icon: BarChart3,
       path: "/tools/cascade-cycle",
       color: "text-purple-400",
@@ -582,7 +583,7 @@ function QuickActions() {
       border: "border-purple-500/30",
     },
     {
-      label: "REPORTS & PDF",
+      label: "Reports and PDF",
       icon: FileText,
       path: "/tools/advanced-reporting",
       color: "text-amber-400",
@@ -590,7 +591,7 @@ function QuickActions() {
       border: "border-amber-500/30",
     },
     {
-      label: "MY PROJECTS",
+      label: "My Projects",
       icon: Layers,
       path: "/dashboard/projects",
       color: "text-slate-400",
@@ -610,15 +611,15 @@ function QuickActions() {
           <div className="flex items-center gap-3">
             <Badge
               variant="outline"
-              className="px-3 py-1 rounded-full border-cyan-500/50 bg-cyan-500/10 text-cyan-400 backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px]"
+              className="px-3 py-1 rounded-full border-cyan-500/50 bg-cyan-500/10 text-cyan-400 backdrop-blur-md tracking-widest uppercase text-[10px]"
             >
               <Zap className="w-3 h-3 mr-2" />
-              QUICK ACTIONS
+              Quick Actions
             </Badge>
             <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
           </div>
           <p className="text-slate-300 text-sm mt-2">
-            Rapid deployment of thermal analysis tools.
+            Open the tools your team uses most.
           </p>
         </div>
         
@@ -636,7 +637,7 @@ function QuickActions() {
                 <div className={`p-3 rounded-xl ${action.bg} ${action.border} ${action.color} group-hover:scale-110 transition-transform`}>
                   <action.icon className="h-5 w-5" />
                 </div>
-                <span className="font-bold text-cyan-300 font-mono text-sm tracking-wide">
+                <span className="font-bold text-cyan-300 text-sm tracking-wide">
                   {action.label}
                 </span>
               </div>
@@ -736,10 +737,10 @@ function AnalyticsCharts() {
           <div className="flex items-center justify-between mb-6">
             <Badge
               variant="outline"
-              className="px-3 py-1 rounded-full border-cyan-500/50 bg-cyan-500/10 text-cyan-400 backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px]"
+              className="px-3 py-1 rounded-full border-cyan-500/50 bg-cyan-500/10 text-cyan-400 backdrop-blur-md tracking-widest uppercase text-[10px]"
             >
               <Target className="w-3 h-3 mr-2" />
-              REVENUE HEALTH
+              Revenue Health
             </Badge>
             <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
           </div>
@@ -782,14 +783,14 @@ function AnalyticsCharts() {
           
           <div className="mt-6 grid grid-cols-2 gap-4 pt-4 border-t border-cyan-500/20">
             <div>
-              <p className="text-xs text-slate-400 font-mono uppercase tracking-wider">UNPAID INVOICES</p>
-              <p className="text-2xl font-bold text-cyan-300 font-mono mt-1">
+              <p className="text-xs text-slate-400 uppercase tracking-wider">Open Invoices</p>
+              <p className="text-2xl font-bold text-cyan-300 mt-1">
                 ${formatNumber(revenueStats.revenueAtRisk)}
               </p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-slate-400 font-mono uppercase tracking-wider">INVOICE COUNT</p>
-              <p className="text-2xl font-bold text-cyan-300 font-mono mt-1">
+              <p className="text-xs text-slate-400 uppercase tracking-wider">Invoice Count</p>
+              <p className="text-2xl font-bold text-cyan-300 mt-1">
                 {revenueStats.unpaidCount}
               </p>
             </div>
@@ -803,10 +804,10 @@ function AnalyticsCharts() {
           <div className="flex items-center justify-between mb-6">
             <Badge
               variant="outline"
-              className="px-3 py-1 rounded-full border-purple-500/50 bg-purple-500/10 text-purple-400 backdrop-blur-md glass-futuristic font-mono tracking-widest uppercase text-[10px]"
+              className="px-3 py-1 rounded-full border-purple-500/50 bg-purple-500/10 text-purple-400 backdrop-blur-md tracking-widest uppercase text-[10px]"
             >
               <TrendingUp className="w-3 h-3 mr-2" />
-              LEAD PIPELINE
+              Lead Pipeline
             </Badge>
             <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
           </div>
@@ -846,14 +847,14 @@ function AnalyticsCharts() {
           
           <div className="mt-6 grid grid-cols-2 gap-4 pt-4 border-t border-cyan-500/20">
             <div>
-              <p className="text-xs text-slate-400 font-mono uppercase tracking-wider">CONVERSION RATE</p>
-              <p className="text-2xl font-bold text-purple-300 font-mono mt-1">
+              <p className="text-xs text-slate-400 uppercase tracking-wider">Conversion Rate</p>
+              <p className="text-2xl font-bold text-purple-300 mt-1">
                 {pipelineStats.conversionRate}%
               </p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-slate-400 font-mono uppercase tracking-wider">ACTIVE LEADS</p>
-              <p className="text-2xl font-bold text-purple-300 font-mono mt-1">
+              <p className="text-xs text-slate-400 uppercase tracking-wider">Active Leads</p>
+              <p className="text-2xl font-bold text-purple-300 mt-1">
                 {pipelineStats.activeLeads}
               </p>
             </div>
@@ -898,10 +899,15 @@ export function Dashboard() {
   }
 
   return (
-    <PageContainer variant="standard" className="space-y-8">
+    <PageContainer variant="standard" className="app-stack-24">
       <SEO
         title="Dashboard"
         description="Manage your thermodynamic projects, view real-time system status, and access quick calculation tools."
+      />
+      <AppPageHeader
+        kicker="Work"
+        title="Operations Dashboard"
+        subtitle="Monitor daily activity, usage, and revenue health across dispatch and engineering workflows."
       />
       <SystemStatus />
 

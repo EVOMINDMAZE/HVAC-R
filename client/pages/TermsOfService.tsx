@@ -2,32 +2,27 @@ import { Link } from "react-router-dom";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { SEO } from "@/components/SEO";
 
 export function TermsOfService() {
   return (
-    <div className="min-h-screen bg-slate-950 text-foreground selection:bg-cyan-500/30">
+    <div className="app-shell min-h-screen bg-background text-foreground">
       <Header variant="landing" />
 
-      {/* Background Elements */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-cyan-500/5 blur-[100px]" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-purple-500/5 blur-[100px]" />
-      </div>
-
-      <main className="relative z-10 pt-24 pb-20 px-4">
+      <main className="pt-24 pb-20 px-4">
+        <SEO title="Terms of Service" description="ThermoNeural terms of service." />
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <Badge variant="outline" className="mb-4 border-cyan-200 bg-cyan-50 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300 dark:border-cyan-800 backdrop-blur-sm">
+            <p className="text-xs uppercase tracking-[0.2em] text-primary mb-4">
               Legal
-            </Badge>
-            <h1 className="text-4xl font-bold font-mono tracking-tight mb-4">
+            </p>
+            <h1 className="text-4xl font-semibold mb-4">
               Terms of Service
             </h1>
             <p className="text-muted-foreground">Last updated: December 2024</p>
           </div>
 
-          <Card className="bg-card/50 backdrop-blur-sm border-border shadow-sm">
+          <Card className="border-border/60 shadow-sm">
             <CardContent className="p-8 md:p-12 space-y-8">
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">

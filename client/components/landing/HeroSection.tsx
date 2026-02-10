@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Zap, Play, Clock, CheckCircle, BarChart, Building, Shield, Globe, Newspaper } from "lucide-react";
+import { ArrowRight, Zap, Play, Clock, CheckCircle, BarChart, Building, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { metrics } from "@/config/metrics";
@@ -96,6 +96,12 @@ export function HeroSection() {
               </div>
             </div>
           </motion.div>
+          <motion.p
+            variants={fadeInUp}
+            className="text-xs text-muted-foreground -mt-6 mb-10"
+          >
+            {metrics.meta.asOfLabel}
+          </motion.p>
 
           {/* CTA Buttons */}
           <motion.div
@@ -111,14 +117,14 @@ export function HeroSection() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
-            <Link to="/features" className="w-full sm:w-auto">
+            <Link to="/#interactive-demo" className="w-full sm:w-auto">
               <Button
                 size="lg"
                 variant="outline"
                 className="w-full sm:w-auto h-12 px-8 rounded-lg font-medium text-base"
               >
                 <Play className="mr-2 h-4 w-4" />
-                Watch Demo Video
+                Explore Interactive Demo
               </Button>
             </Link>
             <Link to="/pricing" className="w-full sm:w-auto">
@@ -132,15 +138,11 @@ export function HeroSection() {
             </Link>
           </motion.div>
 
-          {/* Urgency & Social Proof */}
+          {/* Social Proof */}
           <motion.div
             variants={fadeInUp}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8"
           >
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
-              <Zap className="h-3 w-3" />
-              Introductory offer: Save on your first month
-            </div>
             <div className="inline-flex items-center gap-2 bg-success/10 text-success px-4 py-2 rounded-full text-sm font-medium">
               <CheckCircle className="h-3 w-3" />
               Trusted by {metrics.users.totalEngineers} HVAC engineers
@@ -151,22 +153,19 @@ export function HeroSection() {
             variants={fadeInUp}
             className="text-sm text-muted-foreground mt-8"
           >
-            No credit card required • 14‑day free trial • Cancel anytime • SOC 2 compliant
+            No credit card required • 14‑day free trial • Cancel anytime
           </motion.p>
 
-          {/* Trusted by Logos (Placeholder) */}
+          {/* Industry Standards */}
           <motion.div
             variants={fadeInUp}
             className="mt-12 pt-8 border-t border-border/50 w-full max-w-3xl"
           >
-            <p className="text-sm text-muted-foreground mb-6">Industry Standards We Follow</p>
-            <div className="grid grid-cols-3 md:grid-cols-5 gap-6">
+            <p className="text-sm text-muted-foreground mb-6">Standards & References</p>
+            <div className="flex justify-center gap-6">
               {[
                 { icon: Building, ...metrics.industryStandards.ashrae },
                 { icon: Shield, ...metrics.industryStandards.nist },
-                { icon: BarChart, ...metrics.industryStandards.hvacInsider },
-                { icon: Newspaper, ...metrics.industryStandards.engineerWeekly },
-                { icon: Globe, ...metrics.industryStandards.refrigerationNews },
               ].map((logo, index) => (
                 <motion.div
                   key={index}
@@ -175,7 +174,7 @@ export function HeroSection() {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1, duration: 0.4 }}
                   whileHover={{ scale: 1.05 }}
-                  className="flex flex-col items-center justify-center gap-3 p-4 rounded-xl bg-card/50 hover:bg-card/80 border border-border/30 hover:border-primary/20 transition-all duration-300"
+                  className="flex flex-col items-center justify-center gap-3 p-4 rounded-xl bg-card/50 hover:bg-card/80 border border-border/30 hover:border-primary/20 transition-all duration-300 w-48"
                 >
                   <logo.icon className="h-8 w-8 text-muted-foreground" />
                   <div className="text-center">
@@ -185,8 +184,8 @@ export function HeroSection() {
                 </motion.div>
               ))}
             </div>
-            <p className="text-xs text-muted-foreground mt-4 text-center italic">
-              Logos represent industry standards, not endorsements
+            <p className="text-xs text-muted-foreground mt-4 text-center">
+              Standards referenced for calculation validation.
             </p>
           </motion.div>
         </motion.div>

@@ -1,0 +1,28 @@
+{
+  "timestamp": "2026-02-10T23:16:36.183Z",
+  "desktop": {
+    "h1": "Run HVAC jobs, compliance, and engineering from one system.",
+    "sub": "Built for contractors, owners, and growing shops that need dispatch control, audit-ready records, and cleaner closeout.",
+    "trust": "Dispatch control • Audit-ready records • Report-ready closeout",
+    "heroInteractiveTargets": 5,
+    "primaryVisibleAboveFold": true,
+    "secondaryVisibleAboveFold": true,
+    "panelRows": 5,
+    "panelToolBadges": 15,
+    "hasAudienceWordsAboveFold": true,
+    "foldWordCountApprox": 2185
+  },
+  "mobile": {
+    "h1": "Run HVAC jobs, compliance, and engineering from one system.",
+    "sub": "Built for contractors, owners, and growing shops that need dispatch control, audit-ready records, and cleaner closeout.",
+    "heroInteractiveTargets": 5,
+    "ctaStacked": false,
+    "firstPanelTopPx": 635.6875,
+    "horizontalOverflow": false
+  },
+  "computed": {
+    "desktopHeroCopyWordCount": 25,
+    "desktopTrustWordCount": 8,
+    "mobileHeroCopyWordCount": 25
+  }
+}

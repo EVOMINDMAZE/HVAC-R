@@ -222,7 +222,7 @@ export function getDatadogUserActionCount(): number {
 
 export {
   datadogRum,
-  datadogLogs,
 } from '@datadog/browser-rum';
+export { datadogLogs } from '@datadog/browser-logs';
 
 export type { RumUser, RumAction, RumResource, RumError, RumTiming } from '@datadog/browser-rum';

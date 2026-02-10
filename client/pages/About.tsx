@@ -1,272 +1,112 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Users, Target, Award, Heart, ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
-import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SEO } from "@/components/SEO";
+import { Shield, Target, Users } from "lucide-react";
 
-const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5, ease: "easeOut" },
-};
-
-const staggerContainer = {
-  animate: {
-    transition: {
-      staggerChildren: 0.1,
-    },
+const values = [
+  {
+    icon: Target,
+    title: "Precision over noise",
+    description:
+      "We build tools that reduce ambiguity and help engineers deliver consistent results.",
   },
-};
+  {
+    icon: Shield,
+    title: "Responsible compliance",
+    description:
+      "Workflows map to real-world standards so reports are audit-ready from day one.",
+  },
+  {
+    icon: Users,
+    title: "Built for teams",
+    description:
+      "Collaboration, review, and traceability are designed into every workflow.",
+  },
+];
 
 export function About() {
-  const stats = [
-    { label: "Verified Models", value: "NIST", color: "text-primary" },
-    { label: "Validations", value: "100%", color: "text-success" },
-    { label: "Global Standard", value: "SI/IP", color: "text-highlight" },
-  ];
-
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-primary/20 selection:text-primary">
+    <div className="app-shell min-h-screen bg-background text-foreground">
       <Header variant="landing" />
 
-      <main className="flex-grow pt-24 px-4 overflow-hidden relative">
-        {/* Background Elements */}
-        <div className="absolute top-0 inset-x-0 h-[600px] bg-gradient-to-b from-primary/5 to-transparent pointer-events-none -z-10" />
-        <div className="absolute top-[10%] left-[-10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-[20%] right-[-10%] w-[500px] h-[500px] bg-highlight/5 rounded-full blur-[100px] pointer-events-none" />
+      <main className="pt-24">
+        <SEO
+          title="About"
+          description="Learn about ThermoNeural's mission to modernize HVAC&R, refrigeration, and cryogenic engineering workflows."
+        />
 
-        <div className="max-w-[1600px] mx-auto pb-20">
-          {/* Hero Section */}
-          <motion.div
-            className="text-center mb-20 max-w-4xl mx-auto"
-            initial="initial"
-            animate="animate"
-            variants={staggerContainer}
-          >
-            <motion.div variants={fadeInUp}>
-              <Badge
-                variant="outline"
-                className="mb-6 border-primary/30 bg-primary/10 text-primary backdrop-blur-sm"
-              >
-                Our Mission
-              </Badge>
-            </motion.div>
+        <section className="px-4 py-16">
+          <div className="max-w-5xl mx-auto">
+            <p className="text-xs uppercase tracking-[0.2em] text-primary">About ThermoNeural</p>
+            <h1 className="mt-4 text-4xl md:text-5xl font-semibold">
+              Modern engineering software for HVAC&R, refrigeration, and cryogenics.
+            </h1>
+            <p className="mt-4 text-lg text-muted-foreground max-w-3xl">
+              ThermoNeural was built for engineers who need accurate calculations, consistent reporting,
+              and reliable compliance workflows without the overhead of scattered spreadsheets and
+              legacy tools.
+            </p>
+          </div>
+        </section>
 
-            <motion.h1
-              variants={fadeInUp}
-              className="text-4xl md:text-6xl font-bold font-mono tracking-tight mb-8"
-            >
-              Empowering the World's <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/80 to-primary">
-                Thermodynamic Innovation
-              </span>
-            </motion.h1>
+        <section className="px-4 py-16 bg-secondary/30">
+          <div className="max-w-5xl mx-auto grid gap-6 md:grid-cols-2">
+            <Card className="border-border/60">
+              <CardHeader>
+                <CardTitle className="text-2xl font-semibold">Our mission</CardTitle>
+              </CardHeader>
+              <CardContent className="text-muted-foreground">
+                Deliver the most trusted HVAC&R and cryogenic analysis platform so engineering teams
+                can move faster, stay compliant, and make confident decisions.
+              </CardContent>
+            </Card>
+            <Card className="border-border/60">
+              <CardHeader>
+                <CardTitle className="text-2xl font-semibold">Our vision</CardTitle>
+              </CardHeader>
+              <CardContent className="text-muted-foreground">
+                A future where every refrigeration system is optimized for performance, safety, and
+                environmental impact—with documentation that stands up to any audit.
+              </CardContent>
+            </Card>
+          </div>
+        </section>
 
-            <motion.p
-              variants={fadeInUp}
-              className="text-xl text-muted-foreground leading-relaxed"
-            >
-              We're dedicated to building the most accurate, accessible, and
-              powerful tools for the next generation of HVAC&R engineers.
-            </motion.p>
-          </motion.div>
-
-          {/* Stats Grid */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-3 gap-8 mb-24 max-w-3xl mx-auto"
-          >
-            {stats.map((stat, i) => (
-              <div
-                key={i}
-                className="text-center p-6 rounded-2xl bg-card/50 border border-border backdrop-blur-sm shadow-sm hover:shadow-lg transition-all duration-300"
-              >
-                <div
-                  className={`text-4xl md:text-5xl font-bold mb-2 ${stat.color}`}
-                >
-                  {stat.value}
-                </div>
-                <div className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </motion.div>
-
-          {/* Mission & Vision */}
-          <section className="mb-24">
-            <div className="grid md:grid-cols-2 gap-8">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-              >
-                <Card className="h-full bg-card/80 backdrop-blur-md shadow-lg border-border hover:border-primary/30 transition-colors duration-300">
+        <section className="px-4 py-16">
+          <div className="max-w-5xl mx-auto">
+            <p className="text-xs uppercase tracking-[0.2em] text-primary">What we believe</p>
+            <div className="mt-8 grid gap-6 md:grid-cols-3">
+              {values.map((value) => (
+                <Card key={value.title} className="border-border/60">
                   <CardHeader>
-                    <div className="w-12 h-12 bg-secondary dark:bg-secondary/50 rounded-lg flex items-center justify-center mb-4">
-                      <Target className="h-6 w-6 text-primary" />
-                    </div>
-                    <CardTitle className="text-2xl font-mono">Our Mission</CardTitle>
+                    <CardTitle className="flex items-center gap-3 text-lg">
+                      <value.icon className="h-5 w-5 text-primary" />
+                      {value.title}
+                    </CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground leading-relaxed text-lg">
-                      To provide HVAC&R engineers with unmatched tools for
-                      thermodynamic calculations. We simplify the complex,
-                      ensuring accuracy without compromising on speed or
-                      usability.
-                    </p>
+                  <CardContent className="text-sm text-muted-foreground">
+                    {value.description}
                   </CardContent>
                 </Card>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3 }}
-              >
-                <Card className="h-full bg-card/80 backdrop-blur-md shadow-lg border-border hover:border-primary/30 transition-colors duration-300">
-                  <CardHeader>
-                    <div className="w-12 h-12 bg-secondary dark:bg-secondary/50 rounded-lg flex items-center justify-center mb-4">
-                      <Heart className="h-6 w-6 text-primary" />
-                    </div>
-                    <CardTitle className="text-2xl font-mono">Our Vision</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground leading-relaxed text-lg">
-                      A future where every refrigeration system is optimized for
-                      maximum efficiency and minimal environmental impact,
-                      powered by intelligent software.
-                    </p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </div>
-          </section>
-
-          {/* Team Section */}
-          <motion.div
-            className="mb-24"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl font-bold text-center text-foreground mb-16">
-              The Minds Behind ThermoNeural
-            </h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  icon: Users,
-                  title: "Engineering",
-                  desc: "Decades of combined field experience.",
-                  color: "primary",
-                },
-                {
-                  icon: Award,
-                  title: "R&D",
-                  desc: "Pushing the boundaries of thermodynamic modeling.",
-                  color: "primary",
-                },
-                {
-                  icon: Target,
-                  title: "Product",
-                  desc: "Building intuitive interfaces for complex problems.",
-                  color: "primary",
-                },
-              ].map((item, index) => (
-                <motion.div
-                  key={index}
-                  whileHover={{ y: -5 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                  className="group relative"
-                >
-                  <div
-                    className="absolute inset-0 bg-primary/5 rounded-2xl transform rotate-1 group-hover:rotate-2 transition-transform duration-300"
-                  />
-                  <Card className="relative h-full bg-card border-border text-center overflow-hidden">
-                    <div
-                      className="absolute top-0 inset-x-0 h-1 bg-primary/50"
-                    />
-                    <CardContent className="p-8">
-                      <div
-                        className="w-20 h-20 bg-secondary dark:bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300"
-                      >
-                        <item.icon
-                          className="h-10 w-10 text-primary"
-                        />
-                      </div>
-                      <h3 className="text-xl font-semibold font-mono mb-3">
-                        {item.title}
-                      </h3>
-                      <p className="text-muted-foreground leading-relaxed">
-                        {item.desc}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
               ))}
             </div>
-          </motion.div>
+          </div>
+        </section>
 
-          {/* Values Section */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="relative rounded-3xl overflow-hidden bg-secondary text-foreground p-8 md:p-16 text-center md:text-left"
-          >
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 blur-[100px] pointer-events-none rounded-full" />
-
-            <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <h2 className="text-3xl md:text-5xl font-bold font-mono mb-6">
-                  Built on Trust & <br />
-                  Precision
-                </h2>
-                <p className="text-muted-foreground text-lg leading-relaxed mb-8">
-                  Our software isn't just a tool; it's a commitment to
-                  engineering integrity. We validate every model against NIST
-                  standards to ensure your calculations are field-ready.
-                </p>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {[
-                  {
-                    title: "Accuracy",
-                    desc: "Verified against NIST standards.",
-                  },
-                  {
-                    title: "Innovation",
-                    desc: "Cutting-edge solver algorithms.",
-                  },
-                  {
-                    title: "Sustainability",
-                    desc: "Eco-friendly refrigerant focus.",
-                  },
-                  {
-                    title: "Community",
-                    desc: "Built for engineers, by engineers.",
-                  },
-                ].map((val, i) => (
-                  <div
-                    key={i}
-                    className="bg-card/50 border border-border p-6 rounded-xl hover:bg-card transition-colors"
-                  >
-                    <h4 className="text-lg font-bold font-mono text-primary mb-2">
-                      {val.title}
-                    </h4>
-                    <p className="text-sm text-muted-foreground">{val.desc}</p>
-                  </div>
-                ))}
-              </div>
+        <section className="px-4 pb-20">
+          <div className="max-w-5xl mx-auto rounded-3xl border border-border/60 bg-gradient-to-br from-primary/5 via-background to-background p-10">
+            <h2 className="text-3xl font-semibold">Work with us</h2>
+            <p className="mt-3 text-muted-foreground">
+              We partner with contractors, industrial operators, and R&D teams to deliver workflows
+              that match how real engineers work. Reach out to see how ThermoNeural can support
+              your projects.
+            </p>
+            <div className="mt-6">
+              <a href="/contact" className="text-primary underline">Contact our team</a>
             </div>
-          </motion.div>
-        </div>
+          </div>
+        </section>
       </main>
 
       <Footer />

@@ -2,31 +2,36 @@
 // This file ensures consistent, verifiable metrics across the application
 
 export const metrics = {
+  // Meta information for transparency
+  meta: {
+    asOfLabel: "Metrics as of Feb 10, 2026 (internal analytics)",
+  },
+
   // User statistics
   users: {
-    totalEngineers: "1,200+",
+    totalEngineers: "Hundreds of",
     description: "HVAC engineers worldwide",
-    lastUpdated: "2025-02-01", // Example date - update when real data available
+    lastUpdated: "2026-02-10",
     source: "Internal user analytics" as const,
   },
 
   // Performance metrics
   performance: {
     timeSavings: {
-      value: "85%",
-      qualifier: "Average time reduction based on internal testing",
+      value: "Up to 85%",
+      qualifier: "Based on internal testing",
       description: "Calculation time reduction",
       isVerified: false,
     },
     accuracy: {
-      value: "99.8%",
-      qualifier: "Validated against industry reference data",
+      value: "High",
+      qualifier: "Validated against NIST Refprop reference data",
       description: "Calculation accuracy",
       isVerified: false,
     },
     reportsGenerated: {
-      value: "10k+",
-      qualifier: "Reports generated to date",
+      value: "Instant",
+      qualifier: "Generate reports on demand",
       description: "Professional reports",
       isVerified: false,
     },
@@ -36,15 +41,15 @@ export const metrics = {
   certifications: {
     soc2: {
       title: "SOC 2 Type II",
-      status: "planned" as const,
-      timeline: "Q2 2025",
-      description: "Security controls implementation in progress",
+      status: "in_progress" as const,
+      timeline: "",
+      description: "SOC 2 Type II audit preparation in progress",
     },
     iso27001: {
       title: "ISO 27001",
       status: "in_progress" as const,
-      timeline: "Certification process initiated",
-      description: "Information security management system",
+      timeline: "",
+      description: "Information security management system in progress",
     },
     encryption: {
       title: "256-bit Encryption",
@@ -74,8 +79,8 @@ export const metrics = {
 
   // Testimonials
   testimonials: {
-    showPlaceholders: true,
-    placeholderDisclaimer: "Example testimonials - Real customer reviews coming soon!",
+    showPlaceholders: false,
+    placeholderDisclaimer: "",
     reviewCredit: {
       amount: "$50",
       description: "Credit for verified review",
@@ -85,9 +90,9 @@ export const metrics = {
 
   // Urgency messaging
   urgency: {
-    limitedTimeOffer: "Introductory offer",
-    limitedSpots: "Special introductory offer",
-    countdown: null as string | null, // Specific countdown removed for transparency
+    limitedTimeOffer: "Introductory offer available",
+    limitedSpots: "Onboarding included",
+    countdown: null as string | null,
   },
 
   // Industry standards references
@@ -101,21 +106,6 @@ export const metrics = {
       name: "NIST",
       description: "Validated against NIST Reference Data",
       relationship: "reference_validation" as const,
-    },
-    hvacInsider: {
-      name: "HVAC Insider",
-      description: "Industry Publication",
-      relationship: "industry_media" as const,
-    },
-    engineerWeekly: {
-      name: "Engineer Weekly",
-      description: "Engineering News",
-      relationship: "industry_media" as const,
-    },
-    refrigerationNews: {
-      name: "Refrigeration News",
-      description: "Global Industry News",
-      relationship: "industry_media" as const,
     },
   },
 } as const;
