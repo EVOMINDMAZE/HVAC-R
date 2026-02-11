@@ -26,6 +26,7 @@ declare global {
   interface Window {
     dataLayer?: Array<Record<string, unknown>>;
     gtag?: (...args: unknown[]) => void;
+    __MARKETING_EVENTS__?: Array<Record<string, unknown>>;
   }
 }
 
@@ -34,6 +35,9 @@ export function trackMarketingEvent(
   payload: MarketingEventPayload = {},
 ) {
   if (typeof window === "undefined") return;
+
+  if (!window.dataLayer) window.dataLayer = [];
+  if (!window.__MARKETING_EVENTS__) window.__MARKETING_EVENTS__ = [];
 
   const device = window.innerWidth < 768 ? "mobile" : "desktop";
   const eventPayload = {
@@ -46,6 +50,7 @@ export function trackMarketingEvent(
   };
 
   window.dataLayer?.push({ event: eventName, ...eventPayload });
+  window.__MARKETING_EVENTS__?.push({ event: eventName, ...eventPayload });
 
   if (typeof window.gtag === "function") {
     window.gtag("event", eventName, eventPayload);
