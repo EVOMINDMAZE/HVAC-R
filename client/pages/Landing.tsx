@@ -25,10 +25,10 @@ import { capabilityInventory, totalCapabilityCount } from "@/content/capabilityM
 import { trackMarketingEvent } from "@/lib/marketingAnalytics";
 
 const trustStrip = [
-  "Dispatch + triage in one board",
-  "EPA 608 logs ready when audits hit",
-  "Field findings become report-ready closeout",
-  "Client updates from the same job timeline",
+  "Dispatch + triage connected to one execution board",
+  "EPA 608 log workflows built into daily operations",
+  "Leak-rate tracking with export-ready records",
+  "Client updates and closeout reports from one timeline",
 ] as const;
 
 const segmentCards: readonly RolePathItem[] = [
@@ -36,7 +36,7 @@ const segmentCards: readonly RolePathItem[] = [
     title: "Owner / Manager",
     promise: "Control scheduling, compliance status, and team visibility from one operating system.",
     proof: "Dispatch, triage, jobs, and client records stay aligned end to end.",
-    cta: "Book an Ops Demo",
+    cta: "Book Ops Demo",
     link: "/contact",
     icon: Building2,
     eventKey: "owner_manager",
@@ -46,7 +46,7 @@ const segmentCards: readonly RolePathItem[] = [
     title: "Technician / Lead Tech",
     promise: "Diagnose and document in one field flow without duplicate entry.",
     proof: "Troubleshooting, IAQ, warranty, and pattern insights stay in one handoff path.",
-    cta: "Start Engineering Free",
+    cta: "Start Free",
     link: "/signup",
     icon: HardHat,
     eventKey: "technician",
@@ -56,7 +56,7 @@ const segmentCards: readonly RolePathItem[] = [
     title: "Entrepreneur / New Shop",
     promise: "Start free on engineering tools and expand into full Business Ops as you grow.",
     proof: "Day-one engineering capability with dispatch and compliance expansion ready.",
-    cta: "Start Engineering Free",
+    cta: "Start Free",
     link: "/signup",
     icon: Rocket,
     eventKey: "entrepreneur",
@@ -116,8 +116,9 @@ const pricingTracks = [
       "Free plan for core calculations",
       "Pro at $49/mo for advanced tools",
       "Enterprise options for larger teams",
+      "Stay on this track until you need dispatch and compliance operations",
     ],
-    cta: "See Engineering Pricing",
+    cta: "Start Free",
     link: "/pricing",
     eventKey: "engineering_suite",
   },
@@ -131,8 +132,9 @@ const pricingTracks = [
       "Jobs, clients, and records in one system",
       "Compliance ledger + reporting exports",
       "Automation workflows for follow-up",
+      "Includes 5 team seats with expansion options",
     ],
-    cta: "Book an Ops Demo",
+    cta: "Book Ops Demo",
     link: "/contact",
     eventKey: "business_ops",
   },
@@ -144,14 +146,7 @@ const motionUp = {
 };
 
 export function Landing() {
-  const [isDesktop, setIsDesktop] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return window.matchMedia("(min-width: 1024px)").matches;
-  });
-  const [showFullInventory, setShowFullInventory] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return window.matchMedia("(min-width: 1024px)").matches;
-  });
+  const [showFullInventory, setShowFullInventory] = useState(false);
   const [showMobileCta, setShowMobileCta] = useState(false);
 
   useEffect(() => {
@@ -159,18 +154,6 @@ export function Landing() {
     trackMarketingEvent("landing_capability_matrix_view", {
       section: "hero_command_center",
     });
-
-    const desktopQuery = window.matchMedia("(min-width: 1024px)");
-    const syncLayoutMode = (matches: boolean) => {
-      setIsDesktop(matches);
-      setShowFullInventory(matches);
-    };
-
-    syncLayoutMode(desktopQuery.matches);
-
-    const handleDesktopChange = (event: MediaQueryListEvent) => {
-      syncLayoutMode(event.matches);
-    };
 
     const handleScroll = () => {
       const triggerPoint = window.innerHeight * 0.7;
@@ -193,20 +176,16 @@ export function Landing() {
 
     if (workflowElement) observer.observe(workflowElement);
 
-    desktopQuery.addEventListener("change", handleDesktopChange);
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
 
     return () => {
       observer.disconnect();
-      desktopQuery.removeEventListener("change", handleDesktopChange);
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
   const toggleInventory = () => {
-    if (isDesktop) return;
-
     const expanded = !showFullInventory;
     setShowFullInventory(expanded);
     trackMarketingEvent("landing_inventory_toggle", {
@@ -260,7 +239,15 @@ export function Landing() {
               </h1>
 
               <p className="mt-5 max-w-xl text-lg text-muted-foreground">
-                For contractors and owners who need dispatch control, audit-ready records, and cleaner closeout across every job.
+                Reduce handoff friction, keep EPA records audit-ready, and deliver cleaner closeout documentation across every job.
+              </p>
+
+              <p className="mt-3 text-sm font-semibold text-foreground/90">
+                27 workflow-linked tools in one login.
+              </p>
+
+              <p className="mt-2 text-xs text-muted-foreground">
+                Designed for EPA-regulated HVAC&R teams running field and office workflows.
               </p>
 
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
@@ -274,7 +261,7 @@ export function Landing() {
                   }
                 >
                   <Button size="lg" className="h-12 px-6">
-                    Start Engineering Free
+                    Start Free
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
@@ -289,13 +276,13 @@ export function Landing() {
                   }
                 >
                   <Button size="lg" variant="outline" className="h-12 px-6">
-                    Book an Ops Demo
+                    Book Ops Demo
                   </Button>
                 </Link>
               </div>
 
               <p className="mt-3 text-xs text-muted-foreground">
-                New shop or engineering-first team? <span className="font-semibold text-foreground/85">Start free.</span> Running multi-crew operations? <span className="font-semibold text-foreground/85">Book a demo.</span>
+                Start free for engineering now. Add Business Ops when dispatch volume and compliance complexity increase.
               </p>
 
               <p className="mt-5 text-sm text-muted-foreground">
@@ -355,9 +342,13 @@ export function Landing() {
             <div className="max-w-2xl">
               <p className="landing-kicker text-primary">What&apos;s Inside</p>
               <h2 className="landing-heading mt-3 text-3xl font-semibold md:text-4xl">
-                Route-backed modules, grouped by real service workflows.
+                Workflow-linked modules used in real HVAC operations.
               </h2>
             </div>
+
+            <p className="mt-4 max-w-3xl text-sm text-muted-foreground">
+              Workflow-linked modules used in real HVAC operations. Start with key tools, then expand to the full stack when needed.
+            </p>
 
             <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {toolInventory.map((group) => {
@@ -388,28 +379,26 @@ export function Landing() {
               })}
             </div>
 
-            {!isDesktop && (
-              <div className="mt-8 flex justify-center">
-                <Button
-                  variant="outline"
-                  onClick={toggleInventory}
-                  aria-expanded={showFullInventory}
-                  className="min-w-52"
-                >
-                  {showFullInventory ? (
-                    <>
-                      Show Condensed Inventory
-                      <ChevronUp className="ml-2 h-4 w-4" />
-                    </>
-                  ) : (
-                    <>
-                      View Full Inventory
-                      <ChevronDown className="ml-2 h-4 w-4" />
-                    </>
-                  )}
-                </Button>
-              </div>
-            )}
+            <div className="mt-8 flex justify-center">
+              <Button
+                variant="outline"
+                onClick={toggleInventory}
+                aria-expanded={showFullInventory}
+                className="min-w-56"
+              >
+                {showFullInventory ? (
+                  <>
+                    Show Condensed Tool List
+                    <ChevronUp className="ml-2 h-4 w-4" />
+                  </>
+                ) : (
+                  <>
+                    See Full {totalToolCount}-Tool List
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </section>
 
@@ -420,6 +409,12 @@ export function Landing() {
               <h2 className="landing-heading mt-3 text-3xl font-semibold md:text-4xl">
                 Intake, diagnose, report. One continuous HVAC&R workflow.
               </h2>
+            </div>
+
+            <div className="landing-surface mt-6 rounded-2xl p-4 md:p-5">
+              <p className="text-sm text-foreground/90">
+                Service requests enter triage, dispatch assigns work, technicians document findings, compliance records update automatically, and client-ready closeout reports are delivered from the same job timeline.
+              </p>
             </div>
 
             <div className="mt-10 grid gap-5 md:grid-cols-3">
@@ -468,6 +463,10 @@ export function Landing() {
                 Start with engineering now. Add Business Ops when dispatch and compliance scale.
               </h2>
             </div>
+
+            <p className="mt-4 max-w-3xl text-sm text-muted-foreground">
+              Solo operators can stay on Engineering as long as needed. Move to Business Ops when you need dispatch control, EPA log workflows, and team visibility.
+            </p>
 
             <div className="mt-10 grid gap-5 md:grid-cols-2">
               {pricingTracks.map((track) => (
@@ -532,7 +531,7 @@ export function Landing() {
                   }
                 >
                   <Button size="lg" className="h-12 px-6">
-                    Start Engineering Free
+                    Start Free
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
@@ -547,7 +546,7 @@ export function Landing() {
                   }
                 >
                   <Button size="lg" variant="outline" className="h-12 px-6">
-                    Book an Ops Demo
+                    Book Ops Demo
                   </Button>
                 </Link>
               </div>
@@ -572,7 +571,7 @@ export function Landing() {
               })
             }
           >
-            <Button className="h-11 w-full">Start Engineering Free</Button>
+            <Button className="h-11 w-full">Start Free</Button>
           </Link>
 
           <Link
@@ -585,7 +584,7 @@ export function Landing() {
             }
           >
             <Button variant="outline" className="h-11 px-4">
-              Book Demo
+              Book Ops Demo
             </Button>
           </Link>
         </div>

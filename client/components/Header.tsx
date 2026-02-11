@@ -263,7 +263,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
             <Button variant="ghost">Sign In</Button>
           </Link>
           <Link to="/signup">
-            <Button disabled={isRefreshing}>{isAuthenticated && companies.length ? "Go to Dashboard" : "Start Free Trial"}</Button>
+            <Button disabled={isRefreshing}>{isAuthenticated && companies.length ? "Go to Dashboard" : "Start Free"}</Button>
           </Link>
         </div>
 
@@ -298,7 +298,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 <Button variant="outline" className="w-full">Sign In</Button>
               </Link>
               <Link to="/signup" onClick={() => setMobileOpen(false)}>
-                <Button className="w-full">Start Free Trial</Button>
+                <Button className="w-full">Start Free</Button>
               </Link>
             </div>
           </div>

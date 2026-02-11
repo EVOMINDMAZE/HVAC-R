@@ -45,13 +45,19 @@ function slugify(text) {
     fullPage: false,
   });
 
-  const heroPrimary = page.getByRole("link", { name: /^Start Engineering Free$/i }).first();
-  const heroSecondary = page.getByRole("link", { name: /^Book an Ops Demo$/i }).first();
+  const heroPrimary = page
+    .getByRole("link", { name: /^(Start Free|Start Engineering Free)$/i })
+    .first();
+  const heroSecondary = page
+    .getByRole("link", {
+      name: /^(Book Ops Demo|Book an Ops Demo|Book Business Ops Demo)$/i,
+    })
+    .first();
 
   notes.push(`Hero primary CTA href: ${await heroPrimary.getAttribute("href")}`);
   notes.push(`Hero secondary CTA href: ${await heroSecondary.getAttribute("href")}`);
 
-  const trustChips = page.locator("text=EPA 608 compliant logs");
+  const trustChips = page.locator("text=/EPA 608|Leak-rate tracking/i");
   notes.push(`Compliance trust strip visible: ${(await trustChips.count()) > 0}`);
 
   const sections = page.locator("main > section");
@@ -74,7 +80,9 @@ function slugify(text) {
   }
 
   const inventoryButton = page
-    .getByRole("button", { name: /View Full Inventory|Show Condensed Inventory/i })
+    .getByRole("button", {
+      name: /See Full .*Tool List|View Full Inventory|Show Condensed Tool List|Show Condensed Inventory/i,
+    })
     .first();
 
   await inventoryButton.scrollIntoViewIfNeeded();
@@ -87,7 +95,7 @@ function slugify(text) {
   await page.waitForTimeout(350);
 
   const expandedButton = page
-    .getByRole("button", { name: /Show Condensed Inventory/i })
+    .getByRole("button", { name: /Show Condensed Tool List|Show Condensed Inventory/i })
     .first();
 
   const afterExpand = await expandedButton.getAttribute("aria-expanded");
@@ -102,7 +110,7 @@ function slugify(text) {
   await page.waitForTimeout(250);
   notes.push("Inventory toggle collapse action: success");
 
-  const pricingCta = page.getByRole("link", { name: /See Engineering Pricing/i }).first();
+  const pricingCta = page.locator("#pricing-decision a[href='/pricing']").first();
   const pricingHref = await pricingCta.getAttribute("href");
   notes.push(`Pricing CTA href: ${pricingHref}`);
 
@@ -120,11 +128,13 @@ function slugify(text) {
   await page.screenshot({ path: path.join(outDir, "70-hero-mobile.png"), fullPage: false });
 
   const mobilePrimaryVisible = await page
-    .getByRole("link", { name: /^Start Engineering Free$/i })
+    .getByRole("link", { name: /^(Start Free|Start Engineering Free)$/i })
     .first()
     .isVisible();
   const mobileSecondaryVisible = await page
-    .getByRole("link", { name: /^Book an Ops Demo$/i })
+    .getByRole("link", {
+      name: /^(Book Ops Demo|Book an Ops Demo|Book Business Ops Demo)$/i,
+    })
     .first()
     .isVisible();
 

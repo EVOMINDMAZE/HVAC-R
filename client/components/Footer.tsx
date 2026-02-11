@@ -25,11 +25,11 @@ export function Footer() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/signup">
-                <Button size="lg">Start Engineering Free</Button>
+                <Button size="lg">Start Free</Button>
               </Link>
               <Link to="/contact">
                 <Button variant="outline" size="lg">
-                  Book an Ops Demo
+                  Book Ops Demo
                 </Button>
               </Link>
             </div>
@@ -63,6 +63,17 @@ export function Footer() {
                 </ul>
               </div>
             )}
+
+            <div className="bg-background/70 p-4 rounded-lg border border-border/70">
+              <p className="text-foreground text-sm font-semibold mb-2">
+                Trust Anchors
+              </p>
+              <ul className="text-muted-foreground text-sm space-y-1">
+                <li>EPA-aligned workflow design</li>
+                <li>Secure cloud records + role-based access</li>
+                <li>Built for regulated HVAC&R environments</li>
+              </ul>
+            </div>
           </div>
 
           <div>
@@ -165,7 +176,7 @@ export function Footer() {
                 </p>
                 <Link to="/signup">
                   <Button size="lg" className="w-full">
-                    Start Engineering Free
+                    Start Free
                   </Button>
                 </Link>
               </div>

@@ -46,7 +46,7 @@ export const toolCategories: readonly ToolCategory[] = [
     title: "Work Operations",
     outcomeLine:
       "Schedule, assign, execute, and close jobs with full client context.",
-    previewCount: 5,
+    previewCount: 3,
     heroTools: ["/dashboard/dispatch", "/dashboard/jobs", "/dashboard/clients"],
   },
   {
@@ -54,7 +54,7 @@ export const toolCategories: readonly ToolCategory[] = [
     title: "Field + Diagnostics",
     outcomeLine:
       "Guide technicians from symptom capture to documented resolution.",
-    previewCount: 4,
+    previewCount: 3,
     heroTools: ["/tech", "/troubleshooting", "/ai/pattern-insights"],
   },
   {
@@ -221,8 +221,8 @@ export const toolCapabilities: readonly ToolCapability[] = [
     outcomeTag: "warranty_lookup",
   },
   {
-    name: "DIY Calculator Suite",
-    shortName: "DIY Calcs",
+    name: "Field-Tested Calculator Suite",
+    shortName: "Field Calcs",
     route: "/diy-calculators",
     category: "field_diagnostics",
     audience: ["contractor_lead_tech", "entrepreneur"],

@@ -22,7 +22,7 @@ export function HeroMedia({
       </div>
 
       <p className="landing-capability-subtitle mt-3">
-        Five capability pillars mapped to live modules used in daily HVAC&R execution.
+        Five operational pillars with flagship tools shown first.
       </p>
 
       <ul className="mt-3 space-y-2.5">
@@ -31,7 +31,11 @@ export function HeroMedia({
             category.heroToolsMeta.length > 0
               ? category.heroToolsMeta
               : category.tools.slice(0, 3);
-          const visibleHeroTools = heroTools.slice(0, 2);
+          const visibleHeroTools = heroTools.slice(0, 3);
+          const remainingTools = Math.max(
+            category.tools.length - visibleHeroTools.length,
+            0,
+          );
 
           return (
             <li key={category.id} className="landing-pillar-row rounded-2xl p-3.5">
@@ -48,13 +52,10 @@ export function HeroMedia({
                 {category.outcomeLine}
               </p>
 
-              <div className="mt-2.5 flex flex-wrap gap-2">
-                {visibleHeroTools.map((tool) => (
-                  <span key={tool.route} className="landing-module-tag">
-                    {tool.shortName}
-                  </span>
-                ))}
-              </div>
+              <p className="landing-pillar-tools-line mt-2.5">
+                {visibleHeroTools.map((tool) => tool.shortName).join(" • ")}
+                {remainingTools > 0 ? ` • +${remainingTools} more` : ""}
+              </p>
             </li>
           );
         })}

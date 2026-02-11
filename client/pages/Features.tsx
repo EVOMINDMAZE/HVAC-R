@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -106,9 +106,23 @@ const technicalSpecs = [
 ];
 
 export function Features() {
+  const location = useLocation();
+
   useEffect(() => {
     trackMarketingEvent("features_view", { section: "hero" });
   }, []);
+
+  useEffect(() => {
+    if (!location.hash) return;
+
+    const targetId = location.hash.replace("#", "");
+    const target = document.getElementById(targetId);
+    if (!target) return;
+
+    requestAnimationFrame(() => {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, [location.hash]);
 
   return (
     <div className="app-shell min-h-screen bg-background text-foreground">
@@ -125,7 +139,7 @@ export function Features() {
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-primary">Platform Features</p>
               <h1 className="mt-4 text-4xl md:text-[3.25rem] leading-[1.04] font-semibold">
-                Operations and engineering in one HVAC&R workflow system.
+                Run HVAC operations and engineering from one connected workflow.
               </h1>
               <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
                 Coordinate dispatch, field diagnostics, compliance, and engineering from one platform built for contractor teams.
@@ -140,7 +154,7 @@ export function Features() {
                     })
                   }
                 >
-                  <Button size="lg">Start Engineering Free</Button>
+                  <Button size="lg">Start Free</Button>
                 </Link>
                 <Link
                   to="/contact"
@@ -151,7 +165,7 @@ export function Features() {
                     })
                   }
                 >
-                  <Button size="lg" variant="outline">Book an Ops Demo</Button>
+                  <Button size="lg" variant="outline">Book Ops Demo</Button>
                 </Link>
               </div>
             </div>
@@ -173,12 +187,12 @@ export function Features() {
           </div>
         </section>
 
-        <section className="px-4 py-16 bg-secondary/30">
+        <section id="use-cases" className="scroll-mt-28 px-4 py-16 bg-secondary/30">
           <div className="max-w-6xl mx-auto">
             <div className="max-w-2xl">
               <p className="text-xs uppercase tracking-[0.2em] text-primary">Capability Suite</p>
               <h2 className="mt-4 text-3xl md:text-4xl font-semibold">
-                Built for daily service execution, not disconnected tools.
+                Built for daily service execution, not disconnected software.
               </h2>
               <p className="mt-4 text-muted-foreground">
                 Every module is designed to reduce rework and move your team from intake to closeout with cleaner handoffs.
@@ -237,7 +251,7 @@ export function Features() {
                     })
                   }
                 >
-                  <Button size="lg">Start Engineering Free</Button>
+                  <Button size="lg">Start Free</Button>
                 </Link>
                 <Link
                   to="/contact"
@@ -248,7 +262,7 @@ export function Features() {
                     })
                   }
                 >
-                  <Button size="lg" variant="outline">Book an Ops Demo</Button>
+                  <Button size="lg" variant="outline">Book Ops Demo</Button>
                 </Link>
               </div>
             </div>

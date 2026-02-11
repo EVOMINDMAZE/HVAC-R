@@ -121,7 +121,7 @@ export default function Pricing() {
       key: "FREE",
       title: "Engineering Free",
       description: "For entrepreneurs and teams starting with core HVAC&R analysis.",
-      cta: "Start Engineering Free",
+      cta: "Start Free",
       action: () => navigate("/signup"),
       popular: false,
     },
@@ -170,7 +170,7 @@ export default function Pricing() {
                   navigate("/signup");
                 }}
               >
-                Start Engineering Free
+                Start Free
               </Button>
               <Button
                 size="lg"
@@ -184,9 +184,13 @@ export default function Pricing() {
                   navigate("/contact");
                 }}
               >
-                Book an Ops Demo
+                Book Ops Demo
               </Button>
             </div>
+
+            <p className="mt-4 text-sm text-muted-foreground">
+              Start free for engineering workflows. Upgrade when dispatch control, compliance logs, and multi-crew visibility become operational priorities.
+            </p>
 
             <div className="mx-auto mt-7 grid max-w-4xl gap-3 text-left md:grid-cols-2">
               <div className="rounded-xl border border-border/70 bg-card/70 px-4 py-3">
