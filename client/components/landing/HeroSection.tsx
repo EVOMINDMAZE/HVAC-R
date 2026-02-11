@@ -113,7 +113,7 @@ export function HeroSection() {
                 size="lg"
                 className="w-full sm:w-auto h-12 px-8 rounded-lg font-medium text-base bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg"
               >
-                Start Free Trial – No Credit Card
+                Start Free
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
@@ -153,7 +153,7 @@ export function HeroSection() {
             variants={fadeInUp}
             className="text-sm text-muted-foreground mt-8"
           >
-            No credit card required • 14‑day free trial • Cancel anytime
+            No credit card required • Cancel anytime
           </motion.p>
 
           {/* Industry Standards */}

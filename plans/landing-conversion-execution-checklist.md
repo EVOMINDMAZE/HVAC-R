@@ -12,16 +12,18 @@
 - [x] Tracking verification (instrumentation + browser event checks)
 - [x] Performance + accessibility pass (core checks)
 - [x] Stability cleanup (`npm run typecheck` baseline)
-- [ ] Real buyer validation (requires user interviews)
-- [ ] V5 iteration from buyer interview findings
+- [x] Proxy buyer validation (non-purchase, 5 sessions)
+- [x] Focused V53 iteration from proxy findings
+- [ ] External real buyer validation (recommended before final lock)
 
 ## Completed Work
 
 ### 1) Cross-page consistency (`/features`, `/pricing`)
 - Updated `/features` and `/pricing` narrative to a unified operations + engineering message.
 - Standardized conversion CTAs to:
-  - `Start Engineering Free`
-  - `Book an Ops Demo`
+  - `Start Free`
+  - `Book Ops Demo`
+- Fixed `Use Cases` navigation reliability via hash-aware header links + resilient section scroll logic.
 - Verified page copy/CTA in browser audit:
   - `output/playwright/ux/cross-page-audit.json`
 
@@ -30,6 +32,8 @@
   - `client/lib/marketingAnalytics.ts`
 - Added unit tests:
   - `client/lib/marketingAnalytics.test.ts`
+- Added persisted QA sink:
+  - `sessionStorage.__MARKETING_EVENTS__`
 - Verified in browser:
   - Landing hero primary => `landing_hero_primary_click`
   - Landing hero secondary => `landing_hero_secondary_click`
@@ -39,6 +43,7 @@
 - Evidence:
   - `output/playwright/ux/landing-audit.json`
   - `output/playwright/ux/cross-page-audit.json`
+  - `output/playwright/ux/tracking-verification.json`
 
 ### 3) Performance + accessibility pass
 - Hero media behavior:
@@ -85,4 +90,3 @@
 ### 6) V5 iteration
 - Build one focused V5 release from top 3 interview objections.
 - Re-run same landing audit and CTA event checks.
-

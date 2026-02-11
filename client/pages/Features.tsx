@@ -116,12 +116,26 @@ export function Features() {
     if (!location.hash) return;
 
     const targetId = location.hash.replace("#", "");
-    const target = document.getElementById(targetId);
-    if (!target) return;
+    let frameId = 0;
+    let attempts = 0;
 
-    requestAnimationFrame(() => {
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
+    const scrollToHashTarget = () => {
+      const target = document.getElementById(targetId);
+      if (!target && attempts < 10) {
+        attempts += 1;
+        frameId = requestAnimationFrame(scrollToHashTarget);
+        return;
+      }
+      if (!target) return;
+
+      const stickyHeaderOffset = 92;
+      const top =
+        target.getBoundingClientRect().top + window.scrollY - stickyHeaderOffset;
+      window.scrollTo({ top, behavior: "smooth" });
+    };
+
+    frameId = requestAnimationFrame(scrollToHashTarget);
+    return () => cancelAnimationFrame(frameId);
   }, [location.hash]);
 
   return (

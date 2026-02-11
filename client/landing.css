@@ -597,6 +597,21 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .landing-page *,
+  .landing-page *::before,
+  .landing-page *::after {
+    animation-duration: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .landing-page .landing-mobile-cta {
+    transition: none !important;
+  }
+}
+
 @media (min-width: 1024px) {
   .landing-page .landing-hero {
     padding-top: 2.15rem;
@@ -648,11 +663,5 @@
 
   .landing-page .landing-pillar-proofline {
     font-size: 0.66rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .landing-page .landing-mobile-cta {
-    transition: none;
   }
 }

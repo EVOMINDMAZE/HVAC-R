@@ -5,6 +5,8 @@ describe("trackMarketingEvent", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     window.dataLayer = [];
+    window.__MARKETING_EVENTS__ = [];
+    sessionStorage.clear();
     window.gtag = vi.fn();
   });
 
@@ -23,6 +25,11 @@ describe("trackMarketingEvent", () => {
     expect(pushed.section).toBe("hero");
     expect(pushed.destination).toBe("/signup");
     expect(typeof pushed.timestamp).toBe("string");
+    const persisted = JSON.parse(
+      sessionStorage.getItem("__MARKETING_EVENTS__") || "[]",
+    ) as Array<Record<string, unknown>>;
+    expect(persisted).toHaveLength(1);
+    expect(persisted[0]?.event).toBe("landing_hero_primary_click");
   });
 
   it("calls gtag with matching payload", () => {

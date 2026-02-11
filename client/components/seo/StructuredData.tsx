@@ -36,7 +36,7 @@ export function StructuredData() {
       lowPrice: "0",
       highPrice: "199",
       priceCurrency: "USD",
-      offerCount: "4",
+      offerCount: "3",
     },
     featureList: [
       "Work operations board",
@@ -62,7 +62,7 @@ export function StructuredData() {
       lowPrice: "0",
       highPrice: "199",
       priceCurrency: "USD",
-      offerCount: "4",
+      offerCount: "3",
       offers: [
         {
           "@type": "Offer",
@@ -83,13 +83,6 @@ export function StructuredData() {
           price: "199",
           priceCurrency: "USD",
           name: "Business Ops",
-          availability: "https://schema.org/InStock",
-        },
-        {
-          "@type": "Offer",
-          price: "Custom",
-          priceCurrency: "USD",
-          name: "Enterprise",
           availability: "https://schema.org/InStock",
         },
       ],
@@ -113,7 +106,7 @@ export function StructuredData() {
         name: "Is there a free plan?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Yes. Start Engineering Free, then expand into Business Ops at $199 per month when your team needs dispatch and compliance workflows.",
+          text: "Yes. Start Free, then expand into Business Ops at $199 per month when your team needs dispatch and compliance workflows.",
         },
       },
       {

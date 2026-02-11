@@ -37,7 +37,7 @@ function slugify(text) {
     }
   });
 
-  await page.goto(baseUrl, { waitUntil: "networkidle" });
+  await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
   await page.waitForTimeout(900);
 
   await page.screenshot({
@@ -119,11 +119,11 @@ function slugify(text) {
   notes.push(`Pricing CTA navigation URL: ${page.url()}`);
   await page.screenshot({ path: path.join(outDir, "60-pricing-page.png"), fullPage: false });
 
-  await page.goBack({ waitUntil: "networkidle" });
+  await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
   await page.waitForTimeout(300);
 
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto(baseUrl, { waitUntil: "networkidle" });
+  await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
   await page.waitForTimeout(700);
   await page.screenshot({ path: path.join(outDir, "70-hero-mobile.png"), fullPage: false });
 

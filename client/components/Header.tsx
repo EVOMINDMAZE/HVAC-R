@@ -78,6 +78,40 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
 
   const showBackButton = location.pathname !== "/" && location.pathname !== "/dashboard";
 
+  const getLandingLinkTarget = (item: (typeof landingLinks)[number]) =>
+    item.hash ? `${item.to}${item.hash}` : item.to;
+
+  const isLandingLinkActive = (item: (typeof landingLinks)[number]) => {
+    if (item.hash) {
+      return location.pathname === item.to && location.hash === item.hash;
+    }
+
+    if (item.to === "/features") {
+      return location.pathname === item.to && location.hash !== "#use-cases";
+    }
+
+    return location.pathname === item.to;
+  };
+
+  const handleLandingLinkClick = (
+    item: (typeof landingLinks)[number],
+    event: React.MouseEvent<HTMLAnchorElement>,
+  ) => {
+    if (!item.hash || location.pathname !== item.to) return;
+
+    event.preventDefault();
+    const targetId = item.hash.replace("#", "");
+    const target = document.getElementById(targetId);
+
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.history.replaceState(null, "", `${item.to}${item.hash}`);
+      return;
+    }
+
+    navigate(`${item.to}${item.hash}`);
+  };
+
   const handleSignOut = async () => {
     try {
       await signOut();
@@ -245,11 +279,12 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
         <nav className="hidden items-center gap-1 md:flex">
           {landingLinks.map((item) => (
             <Link
-              key={item.to}
-              to={item.to}
+              key={`${item.to}${item.hash ?? ""}`}
+              to={getLandingLinkTarget(item)}
+              onClick={(event) => handleLandingLinkClick(item, event)}
               className={cn(
                 "rounded-full px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary/80 hover:text-foreground",
-                location.pathname === item.to && "bg-secondary text-foreground",
+                isLandingLinkActive(item) && "bg-secondary text-foreground",
               )}
             >
               {item.label}
@@ -285,9 +320,12 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
           <div className="grid gap-2">
             {landingLinks.map((item) => (
               <Link
-                key={item.to}
-                to={item.to}
-                onClick={() => setMobileOpen(false)}
+                key={`${item.to}${item.hash ?? ""}`}
+                to={getLandingLinkTarget(item)}
+                onClick={(event) => {
+                  handleLandingLinkClick(item, event);
+                  setMobileOpen(false);
+                }}
                 className="rounded-xl px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary"
               >
                 {item.label}

@@ -179,7 +179,7 @@ export function CalculatorDemo() {
                     href="/signup"
                     className="block w-full py-4 px-6 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-medium rounded-xl text-center transition-all shadow-lg hover:shadow-xl"
                   >
-                    Start Free Trial to Unlock Full Features
+                    Start Free to Unlock Full Features
                   </a>
                 </div>
               </div>

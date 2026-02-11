@@ -1,6 +1,6 @@
 import "@/landing.css";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
   CheckCircle,
@@ -146,8 +146,15 @@ const motionUp = {
 };
 
 export function Landing() {
+  const shouldReduceMotion = useReducedMotion();
   const [showFullInventory, setShowFullInventory] = useState(false);
   const [showMobileCta, setShowMobileCta] = useState(false);
+  const easedTransition = shouldReduceMotion
+    ? { duration: 0 }
+    : { duration: 0.45, ease: "easeOut" as const };
+  const quickTransition = shouldReduceMotion
+    ? { duration: 0 }
+    : { duration: 0.3, ease: "easeOut" as const };
 
   useEffect(() => {
     trackMarketingEvent("landing_view", { section: "hero" });
@@ -226,7 +233,7 @@ export function Landing() {
             variants={motionUp}
             initial="hidden"
             animate="visible"
-            transition={{ duration: 0.45, ease: "easeOut" }}
+            transition={easedTransition}
             className="relative mx-auto grid max-w-6xl items-start gap-5 lg:grid-cols-[1fr_1.02fr]"
           >
             <div className="max-w-xl">
@@ -249,6 +256,13 @@ export function Landing() {
               <p className="mt-2 text-xs text-muted-foreground">
                 Designed for EPA-regulated HVAC&R teams running field and office workflows.
               </p>
+
+              <div className="mt-4 rounded-xl border border-border/70 bg-card/70 px-3 py-2.5">
+                <p className="text-xs font-semibold text-foreground/90">Implementation path</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Start in one day with active jobs first, then add clients and templates as your team scales.
+                </p>
+              </div>
 
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <Link
@@ -288,6 +302,12 @@ export function Landing() {
               <p className="mt-5 text-sm text-muted-foreground">
                 Dispatch control • Audit-ready records • Report-ready closeout
               </p>
+
+              <div className="mt-4 grid grid-cols-3 gap-2 md:hidden">
+                <span className="landing-module-tag w-full justify-center">Field Jobs</span>
+                <span className="landing-module-tag w-full justify-center">Troubleshooting</span>
+                <span className="landing-module-tag w-full justify-center">Compliance Log</span>
+              </div>
             </div>
 
             <HeroMedia
@@ -304,7 +324,7 @@ export function Landing() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.34, ease: "easeOut" }}
+            transition={quickTransition}
             className="mx-auto grid max-w-6xl gap-3 text-sm md:grid-cols-3 lg:grid-cols-5"
           >
             {trustStrip.map((item) => (
@@ -425,7 +445,7 @@ export function Landing() {
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true, amount: 0.25 }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  transition={quickTransition}
                   className="landing-surface rounded-2xl p-5"
                 >
                   <div className="landing-workflow-media-wrap">

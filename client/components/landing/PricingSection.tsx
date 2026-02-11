@@ -40,7 +40,7 @@ const pricingTiers = [
       "Custom refrigerant libraries",
       "API access",
     ],
-    cta: "Start Free Trial",
+    cta: "Start Free",
     ctaLink: "/signup",
     ctaVariant: "default" as const,
     icon: Zap,

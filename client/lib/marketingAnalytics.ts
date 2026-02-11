@@ -52,6 +52,18 @@ export function trackMarketingEvent(
   window.dataLayer?.push({ event: eventName, ...eventPayload });
   window.__MARKETING_EVENTS__?.push({ event: eventName, ...eventPayload });
 
+  // Persist a QA-visible event trail across route transitions.
+  try {
+    const persisted =
+      JSON.parse(sessionStorage.getItem("__MARKETING_EVENTS__") ?? "[]") as Array<
+        Record<string, unknown>
+      >;
+    persisted.push({ event: eventName, ...eventPayload });
+    sessionStorage.setItem("__MARKETING_EVENTS__", JSON.stringify(persisted));
+  } catch {
+    // Ignore storage errors (private mode, disabled storage, etc).
+  }
+
   if (typeof window.gtag === "function") {
     window.gtag("event", eventName, eventPayload);
   }
