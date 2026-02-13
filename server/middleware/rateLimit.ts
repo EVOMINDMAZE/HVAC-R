@@ -9,7 +9,7 @@ interface RateLimitConfig {
   keyGenerator?: (req: Request) => string;
   skipFailedRequests?: boolean;
   skipSuccessfulRequests?: boolean;
-  handler?: (req: Request, res: Response, next: NextFunction, options: RateLimitConfig) => void;
+  handler?: (req: Request, res: Response, next: NextFunction, options: RateLimitConfig, resetTime?: number) => void;
 }
 
 interface RateLimitInfo {
@@ -27,12 +27,14 @@ interface RateLimitStore {
 
 const defaultStore: RateLimitStore = {};
 
-const defaultHandler = (req: Request, res: Response, _next: NextFunction, options: RateLimitConfig) => {
+const defaultHandler = (req: Request, res: Response, _next: NextFunction, options: RateLimitConfig, resetTime?: number) => {
   const retryAfter = Math.ceil(options.windowMs / 1000);
   res.setHeader('Retry-After', retryAfter);
   res.setHeader('X-RateLimit-Limit', String(options.maxRequests));
   res.setHeader('X-RateLimit-Remaining', '0');
-  res.setHeader('X-RateLimit-Reset', String(Math.ceil(defaultStore[req.rateLimitKey || '']?.resetTime / 1000) || Date.now()));
+
+  const resetHeader = resetTime ? Math.ceil(resetTime / 1000) : Math.ceil(Date.now() / 1000);
+  res.setHeader('X-RateLimit-Reset', String(resetHeader));
   
   res.status(options.statusCode || 429).json({
     success: false,
@@ -90,7 +92,7 @@ export function createRateLimiter(config: RateLimitConfig) {
     res.setHeader('X-RateLimit-Reset', String(Math.ceil(record.resetTime / 1000)));
 
     if (record.count > options.maxRequests) {
-      options.handler!(req, res, next, options);
+      options.handler!(req, res, next, options, record.resetTime);
       return;
     }
 
