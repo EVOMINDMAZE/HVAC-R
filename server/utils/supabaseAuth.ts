@@ -8,11 +8,11 @@ export const authenticateSupabaseToken: RequestHandler = async (
   next,
 ) => {
   try {
-    console.log("Auth middleware called for:", req.path);
+    // console.log("Auth middleware called for:", req.path);
     const token = req.headers.authorization?.replace("Bearer ", "");
 
     if (!token) {
-      console.log("No token provided");
+      // console.log("No token provided");
       return res.status(401).json({
         error: "Authentication required",
       });
@@ -20,25 +20,41 @@ export const authenticateSupabaseToken: RequestHandler = async (
 
     // Verify JWT signature using JWT_SECRET or SUPABASE_JWT_SECRET environment variable
     const jwtSecret = process.env.JWT_SECRET || process.env.SUPABASE_JWT_SECRET;
+    const defaultSecret = "your_super_secret_jwt_key_change_in_production";
     
-    if (!jwtSecret || jwtSecret === "your_super_secret_jwt_key_change_in_production") {
-      console.warn("WARNING: Using default JWT_SECRET. Set a strong secret in production.");
-      // In development with default secret, we still verify but with warning
+    let secretToUse = jwtSecret;
+
+    if (!secretToUse) {
+      if (process.env.NODE_ENV === "production") {
+        console.error("FATAL SECURITY ERROR: JWT_SECRET or SUPABASE_JWT_SECRET is missing in production!");
+        return res.status(500).json({ error: "Internal server configuration error" });
+      } else {
+        console.warn("WARNING: Using default JWT_SECRET. Set a strong secret in production.");
+        secretToUse = defaultSecret;
+      }
+    } else if (secretToUse === defaultSecret) {
+      if (process.env.NODE_ENV === "production") {
+        console.error("FATAL SECURITY ERROR: Using default JWT_SECRET in production is not allowed!");
+        return res.status(500).json({ error: "Internal server configuration error" });
+      } else {
+        console.warn("WARNING: Using default JWT_SECRET. Set a strong secret in production.");
+      }
     }
 
     let decoded: any;
     try {
       // Always verify JWT signature - no decode-only fallback for security
-      decoded = jwt.verify(token, jwtSecret || "fallback-secret-change-in-production");
+      // FIX: Removed hardcoded "fallback-secret-change-in-production"
+      decoded = jwt.verify(token, secretToUse!);
     } catch (verifyError: any) {
-      console.log("JWT verification failed:", verifyError.message);
+      // console.log("JWT verification failed:", verifyError.message);
       return res.status(401).json({
         error: "Invalid token signature",
       });
     }
 
     if (!decoded || !decoded.sub) {
-      console.log("Invalid token structure");
+      // console.log("Invalid token structure");
       return res.status(401).json({
         error: "Invalid token",
       });
