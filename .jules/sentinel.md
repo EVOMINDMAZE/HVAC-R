@@ -1,0 +1,4 @@
+## 2024-05-22 - [Critical] Hardcoded Fallback Secrets in Auth Middleware
+**Vulnerability:** The `authenticateSupabaseToken` middleware was configured to use a hardcoded fallback secret (`"fallback-secret-change-in-production"`) whenever the `JWT_SECRET` or `SUPABASE_JWT_SECRET` environment variables were missing. This allowed anyone who knew this default string to forge valid authentication tokens.
+**Learning:** Developers often add fallback secrets for "convenience" in development, but without strict environment checks (`NODE_ENV`), these fallbacks become critical backdoors in production if configuration is missed.
+**Prevention:** Always wrap development-only fallbacks in strict `process.env.NODE_ENV !== 'production'` checks. In production, the application must fail to start or fail secure (500 error) if critical secrets are missing.
