@@ -355,6 +355,7 @@ function AppRoutes() {
             <Route path="/stories" element={<WebStories />} />
             <Route path="/podcasts" element={<Podcasts />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/demo" element={<Navigate to="/contact" replace />} />
             <Route path="/documentation" element={<Documentation />} />
             <Route path="/help" element={<HelpCenter />} />
             <Route path="/help-center" element={<HelpCenter />} />
