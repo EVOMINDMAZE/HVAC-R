@@ -3,7 +3,7 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { AlertTriangle, MapPin, Brain, BarChart3, FileText, Settings, ChevronRight, ChevronLeft, Zap, Clock, CheckCircle, XCircle, AlertCircle, Users, Shield, TrendingUp, ArrowRight, Lock } from "lucide-react";
+import { AlertTriangle, MapPin, Brain, BarChart3, FileText, Settings, ChevronRight, ChevronLeft, Zap, CheckCircle, Users, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 // ====================
@@ -523,8 +523,8 @@ interface Act2Props {
 }
 
 function Act2_Intelligence({ onProgress, onNext, prefersReducedMotion = false }: Act2Props) {
-  const [viewedPattern, setViewedPattern] = useState(false);
-  const [exploredFleet, setExploredFleet] = useState(false);
+  const [, setViewedPattern] = useState(false);
+  const [, setExploredFleet] = useState(false);
 
   const handleViewPattern = () => {
     onProgress("patternViewed");
@@ -717,7 +717,7 @@ interface Act3Props {
   prefersReducedMotion?: boolean;
 }
 
-function Act3_Professional({ onProgress, onNext, prefersReducedMotion = false }: Act3Props) {
+function Act3_Professional({ onProgress, onNext: _onNext, prefersReducedMotion = false }: Act3Props) {
   const [viewedDiagram, setViewedDiagram] = useState(false);
   const [generatedReport, setGeneratedReport] = useState(false);
   const [builtAutomation, setBuiltAutomation] = useState(false);
@@ -1086,10 +1086,10 @@ export function MiniAppPlayground() {
                     exit={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, x: -30 }}
                     transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4 }}
                   >
-                    <Act1_Emergency 
+                    <Act1_Emergency
                       onProgress={(key) => handleProgress(1, key)}
                       onNext={handleNext}
-                      prefersReducedMotion={prefersReducedMotion}
+                      prefersReducedMotion={prefersReducedMotion ?? undefined}
                     />
                   </motion.div>
                 )}
@@ -1101,10 +1101,10 @@ export function MiniAppPlayground() {
                     exit={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, x: -30 }}
                     transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4 }}
                   >
-                    <Act2_Intelligence 
+                    <Act2_Intelligence
                       onProgress={(key) => handleProgress(2, key)}
                       onNext={handleNext}
-                      prefersReducedMotion={prefersReducedMotion}
+                      prefersReducedMotion={prefersReducedMotion ?? undefined}
                     />
                   </motion.div>
                 )}
@@ -1116,10 +1116,10 @@ export function MiniAppPlayground() {
                     exit={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, x: -30 }}
                     transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4 }}
                   >
-                    <Act3_Professional 
+                    <Act3_Professional
                       onProgress={(key) => handleProgress(3, key)}
                       onNext={handleNext}
-                      prefersReducedMotion={prefersReducedMotion}
+                      prefersReducedMotion={prefersReducedMotion ?? undefined}
                     />
                   </motion.div>
                 )}
