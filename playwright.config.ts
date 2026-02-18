@@ -31,6 +31,13 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+      // Avoid double-running role-scoped tests which have their own projects/storageState.
+      testIgnore: [
+        "**/admin/**",
+        "**/technician/**",
+        "**/client/**",
+        "**/student/**",
+      ],
     },
 
     // Role-based projects with storageState for faster test execution

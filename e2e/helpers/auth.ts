@@ -33,6 +33,32 @@ export const USER_CREDENTIALS: Record<UserRole, UserCredentials> = {
   },
 };
 
+async function ensurePostLoginLanding(role: UserRole, page: any): Promise<void> {
+  // Some roles (notably admin) may be forced through /select-company when they have
+  // multiple memberships. Handle that flow here so tests can assume a stable landing.
+  const url = page.url();
+  if (!url.includes("/select-company")) return;
+
+  console.log(`[Auth Helper] On /select-company, selecting first workspace...`);
+
+  // The SelectCompany cards are clickable; the inner button text is stable.
+  const selectBtn = page.getByRole("button", { name: /select workspace/i }).first();
+  await selectBtn.waitFor({ state: "visible", timeout: 15000 });
+  await selectBtn.click();
+
+  // After selecting, app redirects based on role.
+  const expected =
+    role === "technician"
+      ? /\/(tech|dashboard)(\?|$)/
+      : role === "client"
+        ? /\/(portal|dashboard)(\?|$)/
+        : role === "student"
+          ? /\/(learn|dashboard)(\?|$)/
+          : /\/dashboard(\?|$)/;
+
+  await page.waitForURL(expected, { timeout: 15000 });
+}
+
 /**
  * Log in as a specific role using UI flow
  */
@@ -45,10 +71,10 @@ export async function loginAs(
 
   // Role-specific dashboard paths
   const ROLE_DASHBOARD_PATHS: Record<UserRole, string[]> = {
-    admin: ["/dashboard"],
+    admin: ["/dashboard", "/select-company"],
     technician: ["/tech", "/dashboard"],
-    client: ["/client", "/dashboard"],
-    student: ["/learn", "/dashboard"],
+    client: ["/portal", "/dashboard", "/select-company"],
+    student: ["/learn", "/dashboard", "/select-company"],
   };
 
   // Check if already logged in (only skip if already on appropriate dashboard)
@@ -89,9 +115,8 @@ export async function loginAs(
   }
 
   if (!urlAfterNavigation.includes("/signin")) {
-    console.log(
-      `[Auth Helper] Already authenticated, redirected to: ${urlAfterNavigation}`,
-    );
+    console.log(`[Auth Helper] Already authenticated, redirected to: ${urlAfterNavigation}`);
+    await ensurePostLoginLanding(role, page);
     return;
   }
 
@@ -102,8 +127,11 @@ export async function loginAs(
       `[Auth Helper] Page shows "Loading...", waiting for redirect to dashboard...`,
     );
     try {
-      await page.waitForURL("**/dashboard", { timeout: 10000 });
-      console.log(`[Auth Helper] Redirected to dashboard: ${page.url()}`);
+      await page.waitForURL(/\/(dashboard|select-company|tech|portal|learn)(\?|$)/, {
+        timeout: 10000,
+      });
+      console.log(`[Auth Helper] Redirected post-auth: ${page.url()}`);
+      await ensurePostLoginLanding(role, page);
       return;
     } catch (error) {
       console.log(
@@ -138,8 +166,11 @@ export async function loginAs(
     throw error;
   }
 
-  // Wait for redirect to dashboard
-  await page.waitForURL("**/dashboard", { timeout: 15000 });
+  // Wait for redirect after login (some users will land on /select-company first).
+  await page.waitForURL(/\/(dashboard|select-company|tech|portal|learn)(\?|$)/, {
+    timeout: 15000,
+  });
+  await ensurePostLoginLanding(role, page);
 
   await page.waitForLoadState("domcontentloaded");
   console.log(`[Auth Helper] ${role} login successful`);

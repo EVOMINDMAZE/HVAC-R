@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -27,24 +25,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Loader2,
-  Mail,
   Trash2,
-  Shield,
   UserPlus,
   ArrowLeft,
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { PageContainer } from "@/components/PageContainer";
 import { useNavigate } from "react-router-dom";
-
-interface TeamMember {
-  user_id: string;
-  role: "admin" | "manager" | "tech" | "client";
-  email?: string;
-}
+import { AppPageHeader } from "@/components/app/AppPageHeader";
+import { AppSectionCard } from "@/components/app/AppSectionCard";
 
 export default function Team() {
   const { user, role: myRole, session } = useSupabaseAuth();
@@ -60,10 +52,12 @@ export default function Team() {
   const [inviting, setInviting] = useState(false);
 
   useEffect(() => {
+    if (!user || !session?.access_token) return;
     fetchTeam();
-  }, [user]);
+  }, [user, session?.access_token]);
 
   const fetchTeam = async () => {
+    if (!session?.access_token) return;
     try {
       const response = await fetch("/api/team", {
         headers: {
@@ -89,6 +83,9 @@ export default function Team() {
     setInviting(true);
 
     try {
+      if (!session?.access_token) {
+        throw new Error("You are not authenticated. Please sign in again.");
+      }
       const response = await fetch("/api/team/invite", {
         method: "POST",
         headers: {
@@ -132,6 +129,9 @@ export default function Team() {
     newRole: "admin" | "manager" | "tech",
   ) => {
     try {
+      if (!session?.access_token) {
+        throw new Error("You are not authenticated. Please sign in again.");
+      }
       const response = await fetch("/api/team/role", {
         method: "PUT",
         headers: {
@@ -169,6 +169,9 @@ export default function Team() {
     )
       return;
     try {
+      if (!session?.access_token) {
+        throw new Error("You are not authenticated. Please sign in again.");
+      }
       const response = await fetch("/api/team/member", {
         method: "DELETE",
         headers: {
@@ -199,27 +202,25 @@ export default function Team() {
   };
 
   return (
-    <PageContainer variant="standard" className="space-y-8">
-      <div className="flex justify-between items-center">
-        <div className="space-y-1">
+    <PageContainer variant="standard" className="app-stack-24">
+      <AppPageHeader
+        kicker="Account"
+        title="Team Management"
+        subtitle="Manage roles, permissions, and staff invitations from one workspace."
+        actions={
           <Button
-            variant="ghost"
-            className="pl-0 hover:bg-transparent text-muted-foreground hover:text-foreground mb-2"
+            variant="outline"
             onClick={() => navigate("/dashboard")}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Dashboard
           </Button>
-          <h1 className="text-3xl font-bold tracking-tight">Team Management</h1>
-          <p className="text-muted-foreground">
-            Manage your technicians and office staff.
-          </p>
-        </div>
-      </div>
+        }
+      />
 
       <div className="grid gap-8 md:grid-cols-3">
         {/* Invite Column */}
-        <Card className="md:col-span-1 h-fit bg-card/50 backdrop-blur-sm">
+        <AppSectionCard className="h-fit p-0 md:col-span-1">
           <CardHeader>
             <CardTitle>Invite New Member</CardTitle>
             <CardDescription>
@@ -258,6 +259,7 @@ export default function Team() {
                   <SelectContent>
                     <SelectItem value="tech">Technician</SelectItem>
                     <SelectItem value="manager">Manager</SelectItem>
+                    <SelectItem value="client">Client</SelectItem>
                     {myRole === "admin" && (
                       <SelectItem value="admin">Admin</SelectItem>
                     )}
@@ -274,10 +276,10 @@ export default function Team() {
               </Button>
             </form>
           </CardContent>
-        </Card>
+        </AppSectionCard>
 
         {/* Team List Column */}
-        <Card className="md:col-span-2 bg-card/50 backdrop-blur-sm">
+        <AppSectionCard className="p-0 md:col-span-2">
           <CardHeader>
             <CardTitle>Current Team</CardTitle>
           </CardHeader>
@@ -387,7 +389,7 @@ export default function Team() {
               </Table>
             )}
           </CardContent>
-        </Card>
+        </AppSectionCard>
       </div>
     </PageContainer>
   );
