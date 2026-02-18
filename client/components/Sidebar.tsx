@@ -51,7 +51,7 @@ function GroupMenu({
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {items.map((item) => (
-          <DropdownMenuItem key={item.to} asChild>
+          <DropdownMenuItem key={`${item.to}:${item.label}`} asChild>
             <Link to={item.to} className="flex items-start gap-2 rounded-md p-2">
               <item.icon className="mt-0.5 h-4 w-4 text-muted-foreground" />
               <div>
@@ -77,7 +77,7 @@ export function Sidebar() {
         <div className="mx-auto flex max-w-[1600px] items-center gap-2 px-4 py-2 sm:px-6 lg:px-8">
           {landingLinks.map((item) => (
             <Link
-              key={item.to}
+              key={`${item.to}${item.hash ?? ""}:${item.label}`}
               to={item.to}
               className="rounded-full px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary/80 hover:text-foreground"
             >
@@ -143,7 +143,7 @@ export function Sidebar() {
                       {group.label}
                     </DropdownMenuLabel>
                     {group.items.map((item: any) => (
-                      <DropdownMenuItem key={item.to} asChild>
+                      <DropdownMenuItem key={`${item.to}:${item.label}`} asChild>
                         {item.to.startsWith("http") ? (
                           <a
                             href={item.to}

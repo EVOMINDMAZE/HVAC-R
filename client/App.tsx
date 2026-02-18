@@ -337,30 +337,31 @@ function AppRoutes() {
   const bypass = shouldBypassAuth();
 
   return (
-    <AnimatePresence mode="wait">
+    <>
       {bypass && <DevModeBanner isActive={bypass} />}
-      <ErrorBoundary fallback={<PageLoading message="Application error. Please refresh." />}>
-        <Suspense fallback={<PageLoading />}>
-        <Routes location={location} key={location.pathname}>
-          {/* Public Routes */}
-          <Route path="/" element={<Landing />} />
-          <Route path="/triage" element={<Triage />} />
-          <Route path="/a2l-resources" element={<A2LLandingPage />} />
-          <Route path="/features" element={<Features />} />
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
-          <Route path="/stories" element={<WebStories />} />
-          <Route path="/podcasts" element={<Podcasts />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/documentation" element={<Documentation />} />
-          <Route path="/help" element={<HelpCenter />} />
-          <Route path="/help-center" element={<HelpCenter />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/terms" element={<TermsOfService />} />
-          <Route path="/connect-provider" element={<IntegrationLanding />} />
-          <Route path="/callback/:provider" element={<Callback />} />
+      <AnimatePresence mode="wait">
+        <ErrorBoundary fallback={<PageLoading message="Application error. Please refresh." />}>
+          <Suspense fallback={<PageLoading />}>
+          <Routes location={location} key={location.pathname}>
+            {/* Public Routes */}
+            <Route path="/" element={<Landing />} />
+            <Route path="/triage" element={<Triage />} />
+            <Route path="/a2l-resources" element={<A2LLandingPage />} />
+            <Route path="/features" element={<Features />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/stories" element={<WebStories />} />
+            <Route path="/podcasts" element={<Podcasts />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/documentation" element={<Documentation />} />
+            <Route path="/help" element={<HelpCenter />} />
+            <Route path="/help-center" element={<HelpCenter />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/connect-provider" element={<IntegrationLanding />} />
+            <Route path="/callback/:provider" element={<Callback />} />
 
           {/* Auth Routes */}
           <Route
@@ -687,11 +688,12 @@ function AppRoutes() {
           />
 
           {/* 404 Route */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
-      </ErrorBoundary>
-    </AnimatePresence>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+        </ErrorBoundary>
+      </AnimatePresence>
+    </>
   );
 }
 
