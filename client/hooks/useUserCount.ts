@@ -9,8 +9,7 @@ interface UserCountData {
 
 /**
  * Hook to fetch dynamic user count
- * In production, this should connect to a real API endpoint
- * For now, it simulates a growing user base
+ * Uses a real API endpoint when available, with a safe fallback.
  */
 export function useUserCount(): UserCountData {
   const [count, setCount] = useState<number>(0);
@@ -20,18 +19,26 @@ export function useUserCount(): UserCountData {
   useEffect(() => {
     const fetchUserCount = async () => {
       try {
-        // TODO: Replace with actual API call
-        // const response = await fetch('/api/stats/user-count');
-        // const data = await response.json();
-        
-        // Simulated data for demonstration
-        // In production, this should come from your analytics/database
-        const simulatedCount = 1247; // Replace with actual count
-        
-        setCount(simulatedCount);
+        const response = await fetch("/api/stats/user-count");
+        if (!response.ok) {
+          throw new Error(`Failed to fetch user count (${response.status})`);
+        }
+        const data = await response.json();
+
+        const next =
+          data && typeof data.count === "number" && Number.isFinite(data.count)
+            ? data.count
+            : 0;
+
+        setCount(next);
         setLoading(false);
       } catch (err) {
-        setError(err instanceof Error ? err : new Error("Failed to fetch user count"));
+        // Fallback: keep UI functional even if stats endpoint isn't configured.
+        const fallback = 1247;
+        setCount(fallback);
+        setError(
+          err instanceof Error ? err : new Error("Failed to fetch user count"),
+        );
         setLoading(false);
       }
     };

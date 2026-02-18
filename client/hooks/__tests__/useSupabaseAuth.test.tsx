@@ -1,66 +1,54 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
-import { SupabaseAuthProvider } from '../useSupabaseAuth.tsx';
+import { describe, it, expect, vi } from "vitest";
 
-// Mock supabase client
-vi.mock('@/lib/supabase', () => {
-  const mockAuth = {
-    signOut: vi.fn(),
-    signInWithPassword: vi.fn(),
-    signUp: vi.fn(),
-    signInWithOAuth: vi.fn(),
-    updateUser: vi.fn(),
-    getSession: vi.fn(),
-    onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe: vi.fn() } } })),
-  };
-  const mockRpc = vi.fn();
-  const mockFrom = vi.fn(() => ({ select: vi.fn(() => ({ eq: vi.fn() })) }));
-  return {
-    supabase: {
-      auth: mockAuth,
-      rpc: mockRpc,
-      from: mockFrom,
+vi.mock('@/lib/supabase', () => ({
+  supabase: {
+    auth: {
+      getSession: vi.fn().mockResolvedValue({ data: { session: null } }),
+      onAuthStateChange: vi.fn().mockReturnValue({ 
+        data: { subscription: { unsubscribe: vi.fn() } } 
+      }),
+      signInWithPassword: vi.fn(),
+      signUp: vi.fn(),
+      signOut: vi.fn(),
+      signInWithOAuth: vi.fn(),
+      updateUser: vi.fn(),
     },
-  };
-});
-
-// Mock auth error handler
-vi.mock('@/utils/authErrorHandler', () => ({
-  isTokenError: vi.fn(() => false),
-  AuthErrorHandler: {
-    handleAuthError: vi.fn(),
+    from: vi.fn(() => ({
+      select: vi.fn().mockReturnThis(),
+      insert: vi.fn().mockReturnThis(),
+      update: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      single: vi.fn(),
+    })),
+    rpc: vi.fn(),
   },
 }));
 
-describe('useSupabaseAuth cache behavior', () => {
-  beforeEach(() => {
-    // Clear localStorage
-    localStorage.clear();
-    vi.clearAllMocks();
+vi.mock('@/utils/authErrorHandler', () => ({
+  isTokenError: vi.fn().mockReturnValue(false),
+  AuthErrorHandler: {
+    handle: vi.fn(),
+  },
+}));
+
+describe('useSupabaseAuth', () => {
+  it('exports the hook', async () => {
+    const { useSupabaseAuth } = await import('../useSupabaseAuth');
+    expect(typeof useSupabaseAuth).toBe('function');
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
+  it('exports the provider', async () => {
+    const { SupabaseAuthProvider } = await import('../useSupabaseAuth');
+    expect(SupabaseAuthProvider).toBeDefined();
   });
 
-  it('should cache companies for 1 minute', async () => {
-    // Mock supabase.rpc to return test data
-    const mockCompanies = [
-      { company_id: 'test-id', company_name: 'Test Co', role: 'admin', is_owner: true },
-    ];
-    const mockRpc = vi.fn().mockResolvedValue({ data: mockCompanies, error: null });
-    // Need to access the mocked supabase
-    const { supabase } = await import('@/lib/supabase');
-    supabase.rpc = mockRpc;
+  it('exports useMultiCompanyAuth', async () => {
+    const { useMultiCompanyAuth } = await import('../useSupabaseAuth');
+    expect(typeof useMultiCompanyAuth).toBe('function');
+  });
 
-    // Render provider and get hook
-    const { result } = renderHook(() => SupabaseAuthProvider, {
-      wrapper: ({ children }) => <SupabaseAuthProvider>{children}</SupabaseAuthProvider>,
-    });
-    // This is complex; we need to test the hook directly.
-    // For now, let's test the cache logic by importing the module and spying on internal functions
-    // We'll need to export fetchCompanies for testing
-    console.log('Test not implemented yet');
-    expect(true).toBe(true);
+  it('exports useAuth alias', async () => {
+    const { useAuth } = await import('../useSupabaseAuth');
+    expect(typeof useAuth).toBe('function');
   });
 });

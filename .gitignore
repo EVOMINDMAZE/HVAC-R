@@ -27,12 +27,16 @@ dist-ssr
 !.env
 .env
 
+# AI/assistant tooling artifacts
+.trae/
+
 # Supabase
 supabase/.temp
 supabase/.branches
 
 # Test results
 test-results/
+e2e-results/
 coverage/
 playwright-report/
 playwright.auth/
@@ -40,3 +44,19 @@ playwright.auth/*.json
 
 # Session files
 session-*.md
+
+# Generated artifacts (keep source scripts, ignore outputs)
+output/**/*.png
+output/**/*.jpg
+output/**/*.jpeg
+output/**/*.webp
+output/**/*.svg
+output/**/*.mp4
+output/**/*.webm
+output/**/*.json
+output/**/*.html
+
+# Local captures / debug assets
+screenshots/
+playwright/.auth/*.json
+*.pid

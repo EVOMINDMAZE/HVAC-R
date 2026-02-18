@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useToast } from "@/hooks/useToast";
 import { apiClient } from "@/lib/api";
 import { ApiServiceStatus } from "@/components/ApiServiceStatus";
@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Loader2,
   Calculator,
@@ -50,18 +50,6 @@ interface CascadeFormData {
   ltCycle: CycleData;
   htCycle: CycleData;
   cascadeHeatExchangerDT: number;
-}
-
-interface CycleResult {
-  cop: number;
-  refrigerationEffect: number;
-  workInput: number;
-  heatRejection: number;
-  massFlowRate: number;
-  point_1?: any;
-  point_2?: any;
-  point_3?: any;
-  point_4?: any;
 }
 
 interface CascadeResult {
@@ -572,18 +560,19 @@ export function CascadeCycleContent() {
     }
 
     // Detailed point mapping with comprehensive data extraction
+    const pointNames = [
+      "Evaporator Outlet",
+      "Compressor Outlet",
+      "Condenser Outlet",
+      "Expansion Valve Outlet",
+    ] as const;
     const mappedPoints = points.map((point, index) => ({
       id: `${index + 1}`,
-      name: [
-        "Evaporator Outlet",
-        "Compressor Outlet",
-        "Condenser Outlet",
-        "Expansion Valve Outlet",
-      ][index],
-      temperature: extractPointData(point, "temperature"),
-      pressure: extractPointData(point, "pressure"),
-      enthalpy: extractPointData(point, "enthalpy"),
-      entropy: extractPointData(point, "entropy"),
+      name: pointNames[index] ?? `Point ${index + 1}`,
+      temperature: extractPointData(point, "temperature") ?? 0,
+      pressure: extractPointData(point, "pressure") ?? 0,
+      enthalpy: extractPointData(point, "enthalpy") ?? 0,
+      entropy: extractPointData(point, "entropy") ?? 0,
       quality: point.vapor_quality ?? point.quality,
       x: 0,
       y: 0,
@@ -606,9 +595,7 @@ export function CascadeCycleContent() {
     };
   };
 
-  const cascadeDeltaTOutOfRange =
-    formData.cascadeHeatExchangerDT < RECOMMENDED_GUIDANCE.cascadeDeltaT.min ||
-    formData.cascadeHeatExchangerDT > RECOMMENDED_GUIDANCE.cascadeDeltaT.max;
+
 
   return (
     <div className="min-h-screen bg-slate-950 text-foreground animate-in fade-in duration-500 pb-20 selection:bg-cyan-500/30">

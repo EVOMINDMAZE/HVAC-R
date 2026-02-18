@@ -61,6 +61,7 @@ import {
 } from "./routes/privacy.ts";
 import { getFleetStatus } from "./routes/fleet.ts";
 import { dynamicRateLimiter } from "./middleware/rateLimit.ts";
+import { getUserCount } from "./routes/stats.ts";
 
 export function createServer() {
   const app = express();
@@ -70,14 +71,16 @@ export function createServer() {
 
   // Middleware
   // Configure CORS origins.
-  const defaultAllowed = [
-    "https://173ba54839db44079504686aa5642124-7d4f8c681adb406aa5642124-7d4f8c681adb406aa7578b14f.fly.dev",
-    "http://localhost:8080",
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "http://localhost:8081",
-    "http://localhost:5173",
-  ];
+  const defaultAllowed =
+    process.env.NODE_ENV === "production"
+      ? []
+      : [
+          "http://localhost:8080",
+          "http://localhost:3000",
+          "http://localhost:3001",
+          "http://localhost:8081",
+          "http://localhost:5173",
+        ];
 
   const envList = process.env.ALLOWED_CORS_ORIGINS
     ? process.env.ALLOWED_CORS_ORIGINS.split(",")
@@ -118,6 +121,9 @@ export function createServer() {
       database: "connected",
     });
   });
+
+  // Marketing/landing stats (public)
+  app.get("/api/stats/user-count", getUserCount);
 
   // Middleware to accept either Supabase JWT (contains dots) or legacy session token
   const authenticateEither: import("express").RequestHandler = (
@@ -248,9 +254,9 @@ export function createServer() {
   app.use(
     (
       err: any,
-      req: express.Request,
+      _req: express.Request,
       res: express.Response,
-      next: express.NextFunction,
+      _next: express.NextFunction,
     ) => {
       console.error("Server error:", err);
       res.status(500).json({

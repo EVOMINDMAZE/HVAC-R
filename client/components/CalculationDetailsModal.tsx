@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calculation } from "@/hooks/useSupabaseCalculations";
 
@@ -34,9 +34,10 @@ export function CalculationDetailsModal({
       // try nested lt_cycle/ht_cycle keys
       for (const val of Object.values(obj)) {
         if (val && typeof val === "object") {
+          const nested = val as Record<string, unknown>;
           for (const key of candidates) {
-            if (val[key] !== undefined && val[key] !== null && val[key] !== "")
-              return val[key];
+            if (nested[key] !== undefined && nested[key] !== null && nested[key] !== "")
+              return nested[key];
           }
         }
       }
@@ -513,7 +514,7 @@ export function CalculationDetailsModal({
           const cleaned = String(v).replace(/[^0-9eE+\-\.]/g, "");
           const n2 = Number(cleaned);
           if (!Number.isNaN(n2)) return n2;
-        } catch (e) {
+        } catch (_e) {
           // ignore
         }
       }
@@ -628,7 +629,7 @@ export function CalculationDetailsModal({
     };
 
     switch (calculation.calculation_type) {
-      case "Standard Cycle":
+      case "Standard Cycle": {
         // Accept multiple shapes: results.performance, results.data.performance, results.data?.data?.performance
         const perf =
           pick(results, [
@@ -806,6 +807,7 @@ export function CalculationDetailsModal({
             )}
           </div>
         );
+      }
 
       case "Troubleshooting": {
         // results expected: { recommendations: string[], severity: string, summary: string }
@@ -855,7 +857,7 @@ export function CalculationDetailsModal({
         );
       }
 
-      case "Refrigerant Comparison":
+      case "Refrigerant Comparison": {
         const comparisonResults =
           pick(results, [["data", "results"], ["data"], ["results"], []]) || [];
 
@@ -916,8 +918,9 @@ export function CalculationDetailsModal({
             })}
           </div>
         );
+      }
 
-      case "Cascade Cycle":
+      case "Cascade Cycle": {
         // fallthrough to existing cascade rendering
         // Use deepPick to search multiple potential roots (results, results.data, etc.)
         const deepPick = (paths: string[][]) => {
@@ -1237,6 +1240,7 @@ export function CalculationDetailsModal({
             </div>
           </div>
         );
+      }
 
       default:
         return <div className="text-gray-500">No result details available</div>;

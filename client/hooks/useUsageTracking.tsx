@@ -24,14 +24,16 @@ interface UsageTracking {
 export function useUsageTracking(): UsageTracking {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { user, companies } = useSupabaseAuth();
+  const { user, companies, activeCompany, companyId } = useSupabaseAuth();
 
   // Get current company ID (first company if available, otherwise null)
   const getCompanyId = useCallback((): string | null => {
+    // Prefer explicit active company, then context companyId, then first company.
+    if (activeCompany?.company_id) return activeCompany.company_id;
+    if (companyId) return companyId;
     if (!companies || companies.length === 0) return null;
-    // TODO: Support selected company if we implement company switching
     return companies[0]?.company_id || null;
-  }, [companies]);
+  }, [activeCompany, companyId, companies]);
 
   const incrementUsage = useCallback(
     async (feature: string, limit?: number | null): Promise<UsageResult> => {

@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -63,7 +63,6 @@ const SYMPTOMS = [
 
 import { EnhancedTroubleshooting } from "@/components/ai/EnhancedTroubleshooting";
 import { TechnicianFeedback } from "@/components/ai/TechnicianFeedback";
-import { aiPatternsAPI } from "@/lib/ai-patterns";
 
 function AiAnalysisDisplay({
   data,
@@ -78,17 +77,11 @@ function AiAnalysisDisplay({
   equipmentModel?: string;
   companyId: string;
 }) {
-  const [patternData, setPatternData] = useState(null);
-  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+  const [_patternData, _setPatternData] = useState(null);
+  const [_feedbackSubmitted, _setFeedbackSubmitted] = useState(false);
 
-  const handleRecommendationSelect = (recommendation) => {
+  const handleRecommendationSelect = (recommendation: unknown) => {
     console.log("Selected recommendation:", recommendation);
-    // Integrate with existing action flow
-  };
-
-  const handleFeedbackSubmit = (feedback) => {
-    console.log("Feedback submitted:", feedback);
-    setFeedbackSubmitted(true);
   };
 
   return (
@@ -148,7 +141,7 @@ function AiAnalysisDisplay({
       )}
 
       {/* Technician Feedback */}
-      {!feedbackSubmitted && (
+      {!_feedbackSubmitted && (
         <TechnicianFeedback
           diagnosis={data?.diagnosis || "General troubleshooting"}
           recommendedActions={data?.recommended_actions || []}
@@ -308,7 +301,7 @@ export function TroubleshootingContent() {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResponse, setAiResponse] = useState<any>(null);
   const [aiError, setAiError] = useState<string | null>(null);
-  const [aiConversationId, setAiConversationId] = useState<string | null>(null);
+  const [_aiConversationId, setAiConversationId] = useState<string | null>(null);
 
   // Structured measurements
   const [suctionPressure, setSuctionPressure] = useState<string>("");
@@ -664,6 +657,7 @@ export function TroubleshootingContent() {
     } finally {
       setUploading(false);
     }
+    return null;
   };
 
   const handleSave = async () => {
@@ -707,7 +701,7 @@ export function TroubleshootingContent() {
         title: "Session Saved",
         description: "Your troubleshooting session has been saved to history.",
       });
-    } catch (e) {
+    } catch (_e) {
       toast({
         variant: "destructive",
         title: "Save failed",
@@ -771,7 +765,7 @@ export function TroubleshootingContent() {
       if (typeof data === "string") {
         try {
           data = JSON.parse(sanitizeString(data));
-        } catch (e) {}
+        } catch (_e) {}
       }
 
       setAiResponse(data);
@@ -981,7 +975,7 @@ export function TroubleshootingContent() {
                     <div className="absolute left-[11px] top-2 bottom-2 w-0.5 bg-border -z-10" />
 
                     {steps.map((s, i) => (
-                      <div key={s.id} className="flex gap-3 items-center">
+                      <div key={s?.id ?? i} className="flex gap-3 items-center">
                         <div
                           className={`
                                         w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border
@@ -1004,7 +998,7 @@ export function TroubleshootingContent() {
                               : "text-muted-foreground"
                           }
                         >
-                          {s.title}
+                          {s?.title}
                         </div>
                       </div>
                     ))}
@@ -1090,19 +1084,19 @@ export function TroubleshootingContent() {
                         </Button>
                       </div>
                       <CardTitle className="text-2xl md:text-3xl font-bold leading-tight">
-                        {steps[step].q}
+                        {steps[step]?.q}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-8 pb-12">
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {steps[step].options.map((opt) => (
+                        {steps[step]?.options.map((opt) => (
                           <button
                             key={opt.v}
-                            onClick={() => handleAnswer(steps[step].id, opt.v)}
+                            onClick={() => handleAnswer(steps[step]?.id ?? "", opt.v)}
                             className={`
                                                 relative flex flex-col items-start p-6 rounded-xl border-2 transition-all duration-200 text-left hover:scale-[1.02]
                                                 ${
-                                                  answers[steps[step].id] ===
+                                                  answers[steps[step]?.id ?? ""] ===
                                                   opt.v
                                                     ? "border-primary bg-primary/5 shadow-md ring-1 ring-primary"
                                                     : "border-border bg-card hover:border-primary/50 hover:bg-accent/50"
@@ -1115,7 +1109,7 @@ export function TroubleshootingContent() {
                             <div className="text-sm text-muted-foreground">
                               {opt.description}
                             </div>
-                            {answers[steps[step].id] === opt.v && (
+                            {answers[steps[step]?.id ?? ""] === opt.v && (
                               <div className="absolute top-4 right-4 text-primary">
                                 <CheckCircle className="h-6 w-6" />
                               </div>
@@ -1262,12 +1256,12 @@ export function TroubleshootingContent() {
                     measurements={{
                       suction_pressure: suctionPressure
                         ? Number(suctionPressure)
-                        : undefined,
+                        : 0,
                       head_pressure: headPressure
                         ? Number(headPressure)
-                        : undefined,
-                      voltage: voltage ? Number(voltage) : undefined,
-                      current: current ? Number(current) : undefined,
+                        : 0,
+                      voltage: voltage ? Number(voltage) : 0,
+                      current: current ? Number(current) : 0,
                     }}
                     equipmentModel={modelSerial || undefined}
                     companyId={companyId || ""} // Get from user context

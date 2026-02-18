@@ -2,13 +2,10 @@ import React, { useState, useCallback, useEffect, useMemo } from "react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
 import { GlassCard } from "@/components/ui/glass-card";
-import { DataPanel } from "@/components/ui/data-panel";
-import { DashboardGrid, DashboardGridItem } from "@/components/ui/dashboard-grid";
 import { motion } from "framer-motion";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -19,7 +16,6 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs";
-import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
 import { Badge } from "../components/ui/badge";
 import { Separator } from "../components/ui/separator";
 import {
@@ -29,16 +25,13 @@ import {
   FileText,
   Wrench,
   Info,
-  CheckCircle,
   ArrowRight,
   Download,
 } from "lucide-react";
 import { apiClient } from "@/lib/api";
-import { Skeleton } from "@/components/ui/skeleton";
 import { EnhancedRefrigerantSelector } from "../components/EnhancedRefrigerantSelector";
 import { CycleVisualization } from "../components/CycleVisualization";
 import { EquipmentDiagrams } from "../components/EquipmentDiagrams";
-import { TechnicalTooltip, TechTerm } from "../components/TechnicalTooltip";
 import { SaveCalculation } from "../components/SaveCalculation";
 import { RenameCalculationDialog } from "../components/RenameCalculationDialog";
 import { ProfessionalFeatures } from "../components/ProfessionalFeatures";
@@ -235,7 +228,7 @@ export function EnhancedStandardCycleContent() {
       const inputs = preset.inputs as Partial<typeof formData>;
       let combinedInputs: typeof formData | null = null;
 
-      setFormData((prev) => {
+      setFormData((prev: typeof formData) => {
         combinedInputs = { ...prev, ...inputs };
         return combinedInputs;
       });
@@ -263,7 +256,7 @@ export function EnhancedStandardCycleContent() {
   }, []);
 
   const handleInputChange = useCallback((field: string, value: number) => {
-    setFormData((prev) => ({
+    setFormData((prev: typeof formData) => ({
       ...prev,
       [field]: value,
     }));
@@ -272,9 +265,9 @@ export function EnhancedStandardCycleContent() {
 
   const handleRefrigerantChange = useCallback(
     (refrigerant: string) => {
-      setFormData((prev) => ({ ...prev, refrigerant }));
+      setFormData((prev: typeof formData) => ({ ...prev, refrigerant }));
       const refProps = getRefrigerantById(refrigerant);
-      setSelectedRefrigerant(refProps);
+      setSelectedRefrigerant(refProps ?? null);
 
       if (refProps) {
         const warnings = validateCycleConditions(refProps, {
@@ -387,7 +380,7 @@ export function EnhancedStandardCycleContent() {
       } else {
         safeOverride = overrideParams;
       }
-    } catch (e) {
+    } catch (_e) {
       safeOverride = null;
     }
 
@@ -471,7 +464,7 @@ export function EnhancedStandardCycleContent() {
           );
 
           // Update visible form values so user sees the attempted adjustment
-          setFormData((prev) => ({
+          setFormData((prev: typeof formData) => ({
             ...prev,
             superheat_c: newSuperheat,
             subcooling_c: newSubcooling,
@@ -523,7 +516,7 @@ export function EnhancedStandardCycleContent() {
     try {
       const pdfDoc = await PDFDocument.create();
       const page = pdfDoc.addPage();
-      const { width, height } = page.getSize();
+      const { height } = page.getSize();
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
@@ -1089,7 +1082,7 @@ export function EnhancedStandardCycleContent() {
       for (const primary of variants) {
         if (
           key.toLowerCase() === primary.toLowerCase() ||
-          key.toLowerCase().includes(primary.split("_")[0].toLowerCase())
+          key.toLowerCase().includes(primary.split("_")[0]?.toLowerCase() ?? "")
         ) {
           const val = perf[key];
           if (val !== undefined && val !== null && !isNaN(Number(val))) {
@@ -1410,7 +1403,7 @@ export function EnhancedStandardCycleContent() {
                     evaporatorTemp={formData.evap_temp_c}
                     condenserTemp={formData.cond_temp_c}
                     onSuggestedRangeApply={(evap, cond) =>
-                      setFormData((prev) => ({
+                      setFormData((prev: typeof formData) => ({
                         ...prev,
                         evap_temp_c: evap,
                         cond_temp_c: cond,
@@ -1815,13 +1808,6 @@ export function EnhancedStandardCycleContent() {
                             const pt =
                               results.state_points?.[pointId.toString()];
                             if (!pt) return null;
-                            const colors =
-                              {
-                                1: "blue",
-                                2: "red",
-                                3: "green",
-                                4: "amber",
-                              }[pointId] || "gray";
 
                             return (
                               <div
@@ -2070,7 +2056,6 @@ function KPI({
   value,
   icon,
   color,
-  bg,
 }: {
   title: string;
   value: string;

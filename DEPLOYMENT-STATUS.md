@@ -9,6 +9,34 @@ GitHub (Source)
     └─→ Render (Heavy Calculations Service)
 ```
 
+## Source Of Truth (Prod API)
+
+**Chosen model: Option A**: Supabase Edge Functions + direct Supabase client for the primary production API.
+
+- **Frontend (Netlify)** talks to:
+  - **Supabase (DB/Auth/Storage)** directly via `@supabase/supabase-js`
+  - **Supabase Edge Functions** for automations/integrations/AI gateway workflows
+  - **Render** for heavy thermodynamic calculations (external service)
+- **Express (`/server`) is development/legacy only**:
+  - Used in local dev via Vite middleware (`vite.config.ts`) for `/api/*`
+  - Not considered the canonical production API surface
+
+### Stable Endpoint Contracts
+
+- **Supabase**:
+  - DB + Auth: Supabase project `rxqflxmzsqhqrzffcsej`
+  - Edge Functions: `https://<project>.supabase.co/functions/v1/<function>`
+- **Render (Math Engine)**:
+  - `VITE_CALCULATION_SERVICE_URL`
+
+### Auth Token Contract (Canonical)
+
+- **Frontend -> Supabase**: uses `@supabase/supabase-js` session access token.
+- **Frontend -> Edge Functions**: send `Authorization: Bearer <supabase_access_token>` when function requires auth.
+- **Frontend -> Express `/api/*` (dev/legacy only)**:
+  - Send `Authorization: Bearer <supabase_access_token>`
+  - Server verifies via `authenticateSupabaseToken` (preferred) and does not rely on the legacy token format.
+
 ---
 
 ## Deployment Methods

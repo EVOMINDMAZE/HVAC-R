@@ -20,49 +20,17 @@ export interface CertificateData {
 // Helper to convert Hex to PDF-Lib RGB
 function hexToRgb(hex: string) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? rgb(
-        parseInt(result[1], 16) / 255,
-        parseInt(result[2], 16) / 255,
-        parseInt(result[3], 16) / 255
-    ) : rgb(0, 0.32, 0.49); // Default ThermoNeural Blue
+    if (result && result[1] && result[2] && result[3]) {
+        return rgb(
+            parseInt(result[1], 16) / 255,
+            parseInt(result[2], 16) / 255,
+            parseInt(result[3], 16) / 255
+        );
+    }
+    return rgb(0, 0.32, 0.49);
 }
 
-async function drawBrandedHeader(page: any, data: CertificateData, width: number, height: number, boldFont: any, font: any, title: string, subtitle: string) {
-    const brandColor = data.branding?.primaryColor ? hexToRgb(data.branding.primaryColor) : rgb(0, 0.32, 0.49);
-
-    // Header Bar
-    page.drawRectangle({
-        x: 0,
-        y: height - 100,
-        width: width,
-        height: 100,
-        color: brandColor,
-    });
-
-    // Logo (if available) - This requires embedding which is async, simplified for now to text fallback or we need to pass doc
-    // For this iteration, we focus on Color and Company Name text. 
-    // Image embedding requires fetching the blob. To keep this function simple we might skip logo image for this specific 'drawBrandedHeader' helper 
-    // or we pass the doc to it.
-
-    // Header Text
-    page.drawText(title, {
-        x: 50,
-        y: height - 50,
-        size: 24,
-        font: boldFont,
-        color: rgb(1, 1, 1),
-    });
-
-    page.drawText(subtitle, {
-        x: 50,
-        y: height - 75,
-        size: 14,
-        font: font,
-        color: rgb(0.9, 0.9, 0.9),
-    });
-}
-
-function drawBrandedFooter(page: any, headerHeight: number, branding: CertificateData['branding'], font: any, boldFont: any) {
+function drawBrandedFooter(page: any, _headerHeight: number, branding: CertificateData['branding'], font: any, boldFont: any) {
     const footerText = branding?.companyName ? `${branding.companyName} Certified` : 'ThermoNeural Risk Shield™';
     const brandColor = branding?.primaryColor ? hexToRgb(branding.primaryColor) : rgb(0, 0.32, 0.49);
 

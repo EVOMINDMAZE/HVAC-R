@@ -1,12 +1,6 @@
 // Team routes using Supabase
 import { RequestHandler } from "express";
-import { supabaseAdmin, getSupabaseClient } from "../utils/supabase";
-
-interface TeamMember {
-  user_id: string;
-  role: "admin" | "manager" | "tech" | "client";
-  email?: string;
-}
+import { supabaseAdmin } from "../utils/supabase";
 
 // Helper to get user ID by email using RPC
 async function getUserIdByEmail(email: string): Promise<string | null> {
@@ -136,13 +130,13 @@ export const getTeam: RequestHandler = async (req, res) => {
       }),
     );
 
-    res.json({
+    return res.json({
       success: true,
       data: membersWithEmails,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching team:", error);
-    res.status(500).json({ error: "Failed to fetch team" });
+    return res.status(500).json({ error: "Failed to fetch team" });
   }
 };
 
@@ -153,7 +147,7 @@ export const inviteTeamMember: RequestHandler = async (req, res) => {
       return res.status(401).json({ error: "Authentication required" });
     }
 
-    const { email, role, full_name } = req.body;
+    const { email, role, full_name, client_id } = req.body;
     if (!email || !role) {
       return res.status(400).json({ error: "Email and role are required" });
     }
@@ -214,6 +208,75 @@ export const inviteTeamMember: RequestHandler = async (req, res) => {
       }
     }
 
+    // Client invitations must be scoped to a specific client record.
+    // We allow passing `client_id`, or we will resolve/create one using contact_email.
+    let resolvedClientId: string | null = null;
+    if (role === "client") {
+      // Resolve provided client_id and ensure it belongs to inviter's company.
+      if (client_id && typeof client_id === "string") {
+        const { data: clientRow, error: clientErr } = await supabaseAdmin
+          .from("clients")
+          .select("id, company_id")
+          .eq("id", client_id)
+          .maybeSingle();
+
+        if (clientErr) {
+          console.error("Error validating client_id:", clientErr);
+          return res.status(500).json({ error: "Failed to validate client" });
+        }
+
+        if (!clientRow || clientRow.company_id !== currentUserCompanyId) {
+          return res.status(400).json({
+            error: "Invalid client_id for this company",
+          });
+        }
+
+        resolvedClientId = clientRow.id;
+      } else {
+        // Try to find an existing client by contact email.
+        const { data: existingClient, error: findErr } = await supabaseAdmin
+          .from("clients")
+          .select("id")
+          .eq("company_id", currentUserCompanyId)
+          .eq("contact_email", email)
+          .maybeSingle();
+
+        if (findErr) {
+          console.error("Error resolving client by contact_email:", findErr);
+          return res.status(500).json({ error: "Failed to resolve client" });
+        }
+
+        if (existingClient?.id) {
+          resolvedClientId = existingClient.id;
+        } else {
+          // Create a minimal client record so the invited user can be scoped correctly.
+          const derivedName =
+            typeof full_name === "string" && full_name.trim()
+              ? full_name.trim()
+              : String(email).split("@")[0] || "Client";
+
+          const { data: createdClient, error: createErr } = await supabaseAdmin
+            .from("clients")
+            .insert({
+              company_id: currentUserCompanyId,
+              name: derivedName,
+              contact_email: email,
+            })
+            .select("id")
+            .single();
+
+          if (createErr) {
+            console.error("Error creating client for invitation:", createErr);
+            return res
+              .status(500)
+              .json({ error: "Failed to create client for invitation" });
+          }
+
+          resolvedClientId = createdClient.id;
+        }
+      }
+    }
+
     let newUserId: string | null = null;
 
     // Try to get existing user ID by email
@@ -227,6 +290,8 @@ export const inviteTeamMember: RequestHandler = async (req, res) => {
             full_name: full_name || "",
             invited_by: user.id,
             company_id: currentUserCompanyId,
+            // For client portal invites, we must keep the invited user scoped.
+            client_id: resolvedClientId,
           },
           redirectTo: "https://hvac-r.app/dashboard",
         });
@@ -270,8 +335,8 @@ export const inviteTeamMember: RequestHandler = async (req, res) => {
       .upsert({
         user_id: newUserId,
         role: role,
-        company_id: role === "client" ? null : currentUserCompanyId,
-        client_id: null, // TODO: support client invitations
+        company_id: currentUserCompanyId,
+        client_id: role === "client" ? resolvedClientId : null,
       });
 
     if (upsertError) {
@@ -281,15 +346,15 @@ export const inviteTeamMember: RequestHandler = async (req, res) => {
 
     console.log(`Team member invited: ${email} as ${role}`);
 
-    res.json({
+    return res.json({
       success: true,
       message: `Invitation sent to ${email}`,
       user: newUserId,
       emailStatus: "Sent",
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error inviting team member:", error);
-    res.status(500).json({ error: "Failed to invite team member" });
+    return res.status(500).json({ error: "Failed to invite team member" });
   }
 };
 
@@ -331,13 +396,13 @@ export const updateTeamMemberRole: RequestHandler = async (req, res) => {
       return res.status(500).json({ error: "Failed to update role" });
     }
 
-    res.json({
+    return res.json({
       success: true,
       message: `Role updated to ${newRole}`,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error updating team member role:", error);
-    res.status(500).json({ error: "Failed to update role" });
+    return res.status(500).json({ error: "Failed to update role" });
   }
 };
 
@@ -381,12 +446,12 @@ export const removeTeamMember: RequestHandler = async (req, res) => {
       return res.status(500).json({ error: "Failed to remove team member" });
     }
 
-    res.json({
+    return res.json({
       success: true,
       message: "Member removed",
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error removing team member:", error);
-    res.status(500).json({ error: "Failed to remove team member" });
+    return res.status(500).json({ error: "Failed to remove team member" });
   }
 };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -67,7 +67,6 @@ const UNIT_SYSTEMS: Record<string, UnitSystem> = {
   },
 };
 
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useProFeature } from "@/hooks/useFeatureAccess";
 
 export function ProfessionalFeatures({
@@ -75,15 +74,7 @@ export function ProfessionalFeatures({
   results,
   refrigerant = "R134a",
 }: ProfessionalFeaturesProps) {
-  // Safety wrapper to prevent crashes from undefined values
-  const safeToFixed = (value: any, decimals: number = 2): string => {
-    if (value === undefined || value === null || isNaN(Number(value))) {
-      return "N/A";
-    }
-    return Number(value).toFixed(decimals);
-  };
   const [unitSystem, setUnitSystem] = useState<"SI" | "Imperial">("SI");
-  const { user } = useSupabaseAuth();
   const { hasAccess: isPro } = useProFeature('Professional Features');
   const [reportConfig, setReportConfig] = useState({
     includeCalculations: true,
@@ -321,7 +312,7 @@ export function ProfessionalFeatures({
       for (const primary of variants) {
         if (
           key.toLowerCase() === primary.toLowerCase() ||
-          key.toLowerCase().includes(primary.split("_")[0].toLowerCase())
+          key.toLowerCase().includes(primary.split("_")[0]?.toLowerCase() ?? "")
         ) {
           const val = perf[key];
           if (val !== undefined && val !== null && !isNaN(Number(val)))
@@ -546,8 +537,11 @@ export function ProfessionalFeatures({
         }
 
         for (let i = 0; i < Math.min(domeX.length, domeY.length); i++) {
-          const x = xScale(domeX[i]);
-          const y = yScale(domeY[i]);
+          const xVal = domeX[i];
+          const yVal = domeY[i];
+          if (xVal === undefined || yVal === undefined) continue;
+          const x = xScale(xVal);
+          const y = yScale(yVal);
           domePath += i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`;
         }
 
@@ -575,7 +569,7 @@ export function ProfessionalFeatures({
         }
 
         const ptsMarkup = pts
-          .map((p) => {
+          .map((p: { x: number; y: number; id?: string }) => {
             const x = xScale(p.x);
             const y = yScale(p.y);
             const label = p.id ? p.id : "";
@@ -733,7 +727,7 @@ export function ProfessionalFeatures({
           );
           const s =
             p.entropy ?? p.s ?? p.entropy_kj_kgk ?? p.entropy_kj_kg ?? "";
-          return `<tr><td style='padding:6px;border:1px solid #e6eefc'>Point ${idx + 1}</td><td style='padding:6px;border:1px solid #e6eefc'>${t !== null && t !== undefined ? t.toFixed(2) : "N/A"} ${UNIT_SYSTEMS[unitSystem].temperature}</td><td style='padding:6px;border:1px solid #e6eefc'>${pval !== null && pval !== undefined ? pval.toFixed(1) : "N/A"} ${UNIT_SYSTEMS[unitSystem].pressure}</td><td style='padding:6px;border:1px solid #e6eefc'>${h !== null && h !== undefined ? Number(h).toFixed(2) : "N/A"} ${UNIT_SYSTEMS[unitSystem].enthalpy}</td><td style='padding:6px;border:1px solid #e6eefc'>${s ? (Number(s).toFixed ? Number(s).toFixed(3) : s) : "N/A"}</td></tr>`;
+          return `<tr><td style='padding:6px;border:1px solid #e6eefc'>Point ${idx + 1}</td><td style='padding:6px;border:1px solid #e6eefc'>${t !== null && t !== undefined ? t.toFixed(2) : "N/A"} ${UNIT_SYSTEMS[unitSystem]?.temperature ?? ""}</td><td style='padding:6px;border:1px solid #e6eefc'>${pval !== null && pval !== undefined ? pval.toFixed(1) : "N/A"} ${UNIT_SYSTEMS[unitSystem]?.pressure ?? ""}</td><td style='padding:6px;border:1px solid #e6eefc'>${h !== null && h !== undefined ? Number(h).toFixed(2) : "N/A"} ${UNIT_SYSTEMS[unitSystem]?.enthalpy ?? ""}</td><td style='padding:6px;border:1px solid #e6eefc'>${s ? (Number(s).toFixed ? Number(s).toFixed(3) : s) : "N/A"}</td></tr>`;
         })
         .join("");
 
@@ -773,7 +767,7 @@ export function ProfessionalFeatures({
             },
           }),
         );
-      } catch (e) {}
+      } catch (_e) {}
       return;
     }
     try {
@@ -787,7 +781,7 @@ export function ProfessionalFeatures({
         const valid = canvases.filter((c) => c && c.width > 0 && c.height > 0);
         let srcCanvas: HTMLCanvasElement | null = null;
         if (valid.length === 1) {
-          srcCanvas = valid[0];
+          srcCanvas = valid[0] ?? null;
         } else if (valid.length > 1) {
           srcCanvas = valid.reduce((a, b) =>
             a.width * a.height > b.width * b.height ? a : b,
@@ -860,7 +854,7 @@ export function ProfessionalFeatures({
               "data:image/svg+xml;charset=utf8," + encodeURIComponent(svgStr);
             await new Promise<void>((resolve, reject) => {
               img.onload = () => resolve();
-              img.onerror = (ev) => reject(new Error("SVG image load failed"));
+              img.onerror = () => reject(new Error("SVG image load failed"));
             });
             const cvs = document.createElement("canvas");
             cvs.width = width;
@@ -1011,7 +1005,7 @@ export function ProfessionalFeatures({
         let txt = "";
         try {
           txt = await resp.clone().text();
-        } catch (e) {
+        } catch (_e) {
           try {
             const j = await resp.clone().json();
             txt = JSON.stringify(j);
@@ -1152,7 +1146,7 @@ export function ProfessionalFeatures({
               },
             }),
           );
-        } catch (e) {}
+        } catch (_e) {}
         return;
       }
       const rows: string[] = [];
@@ -1189,15 +1183,15 @@ export function ProfessionalFeatures({
         rows.push('"--- Cycle Points ---",""');
         cycleData.points.forEach((p: any, idx: number) => {
           pushKV(
-            `Point ${idx + 1} - Temperature (${UNIT_SYSTEMS[unitSystem].temperature})`,
+            `Point ${idx + 1} - Temperature (${UNIT_SYSTEMS[unitSystem]?.temperature ?? ""})`,
             convertTemperature(p.temperature),
           );
           pushKV(
-            `Point ${idx + 1} - Pressure (${UNIT_SYSTEMS[unitSystem].pressure})`,
+            `Point ${idx + 1} - Pressure (${UNIT_SYSTEMS[unitSystem]?.pressure ?? ""})`,
             convertPressure(p.pressure),
           );
           pushKV(
-            `Point ${idx + 1} - Enthalpy (${UNIT_SYSTEMS[unitSystem].enthalpy})`,
+            `Point ${idx + 1} - Enthalpy (${UNIT_SYSTEMS[unitSystem]?.enthalpy ?? ""})`,
             convertEnthalpy(p.enthalpy),
           );
         });
@@ -1225,56 +1219,6 @@ export function ProfessionalFeatures({
   // Chart package: create an HTML package with embedded SVG summary charts, data tables and diagram image (if present)
   const downloadChartPackage = async () => {
     const project = reportConfig.projectName || "hvac-project";
-
-    // Capture diagram canvas (best-effort)
-    let diagramDataUrl: string | null = null;
-    try {
-      const canvases = Array.from(
-        document.querySelectorAll("canvas"),
-      ) as HTMLCanvasElement[];
-      const valid = canvases.filter((c) => c && c.width > 0 && c.height > 0);
-      let srcCanvas: HTMLCanvasElement | null = null;
-      if (valid.length === 1) srcCanvas = valid[0];
-      else if (valid.length > 1)
-        srcCanvas = valid.reduce((a, b) =>
-          a.width * a.height > b.width * b.height ? a : b,
-        );
-      else if (canvases.length > 0) srcCanvas = canvases[0];
-
-      if (srcCanvas) {
-        await new Promise(requestAnimationFrame);
-        const scale = Math.min(3, Math.max(1, window.devicePixelRatio || 1));
-        const off = document.createElement("canvas");
-        off.width = Math.max(1, Math.floor(srcCanvas.width * scale));
-        off.height = Math.max(1, Math.floor(srcCanvas.height * scale));
-        const ctx = off.getContext("2d", {
-          willReadFrequently: true,
-        } as any) as CanvasRenderingContext2D | null;
-        if (ctx) {
-          ctx.scale(scale, scale);
-          (ctx as any).imageSmoothingEnabled = true;
-          ctx.drawImage(srcCanvas, 0, 0);
-          try {
-            diagramDataUrl = off.toDataURL("image/png");
-          } catch (e) {
-            try {
-              diagramDataUrl = srcCanvas.toDataURL("image/png");
-            } catch (e2) {
-              diagramDataUrl = null;
-            }
-          }
-        } else {
-          try {
-            diagramDataUrl = srcCanvas.toDataURL("image/png");
-          } catch (e) {
-            diagramDataUrl = null;
-          }
-        }
-      }
-    } catch (e) {
-      console.warn("Chart package: failed to capture diagram canvas", e);
-      diagramDataUrl = null;
-    }
 
     // Simple SVG generator for a metric bar chart
     const makeBarSVG = (
@@ -1343,22 +1287,11 @@ export function ProfessionalFeatures({
           const h = convertEnthalpy(
             p.enthalpy ?? p.h ?? p.enthalpy_kj_kg ?? null,
           );
-          return `<tr><td style='padding:6px;border:1px solid #e6eefc'>Point ${idx + 1}</td><td style='padding:6px;border:1px solid #e6eefc'>${t !== null && t !== undefined ? t.toFixed(2) : "N/A"} ${UNIT_SYSTEMS[unitSystem].temperature}</td><td style='padding:6px;border:1px solid #e6eefc'>${pval !== null && pval !== undefined ? pval.toFixed(1) : "N/A"} ${UNIT_SYSTEMS[unitSystem].pressure}</td><td style='padding:6px;border:1px solid #e6eefc'>${h !== null && h !== undefined ? Number(h).toFixed(2) : "N/A"} ${UNIT_SYSTEMS[unitSystem].enthalpy}</td></tr>`;
+          return `<tr><td style='padding:6px;border:1px solid #e6eefc'>Point ${idx + 1}</td><td style='padding:6px;border:1px solid #e6eefc'>${t !== null && t !== undefined ? t.toFixed(2) : "N/A"} ${UNIT_SYSTEMS[unitSystem]?.temperature ?? ""}</td><td style='padding:6px;border:1px solid #e6eefc'>${pval !== null && pval !== undefined ? pval.toFixed(1) : "N/A"} ${UNIT_SYSTEMS[unitSystem]?.pressure ?? ""}</td><td style='padding:6px;border:1px solid #e6eefc'>${h !== null && h !== undefined ? Number(h).toFixed(2) : "N/A"} ${UNIT_SYSTEMS[unitSystem]?.enthalpy ?? ""}</td></tr>`;
         })
         .join("");
       return `<div style='margin-top:12px'><h4 style='margin:0 0 8px;font-size:13px;color:#0f172a'>Point Details</h4><div style='overflow:auto'><table style='border-collapse:collapse;width:100%'><thead><tr><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Point</th><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Temperature</th><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Pressure</th><th style='text-align:left;padding:6px;border:1px solid #e6eefc'>Enthalpy</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
     };
-
-    const diagramSection = diagramDataUrl
-      ? `<div class='card'><h3>Diagram</h3><div><img src='${diagramDataUrl}' style='max-width:100%;height:auto;border-radius:6px;border:1px solid #e6eefc' /></div></div>`
-      : svgs && (svgs.ph || svgs.ts)
-        ? `
-          <div class='card'><h3>Diagrams</h3>
-            ${svgs.ph ? `<div style='margin-bottom:12px'>${sanitizeSvgInline(svgs.ph)}</div>` : ""}
-            ${svgs.ts ? `<div style='margin-bottom:12px'>${sanitizeSvgInline(svgs.ts)}</div>` : ""}
-            ${buildPointsHtmlSmall(cycleData)}
-          </div>`
-        : "";
 
     const html = `<!doctype html><html><head><meta charset='utf-8'><title>${project} - Chart Package</title>
     <meta name='viewport' content='width=device-width,initial-scale=1'/>
@@ -1476,7 +1409,7 @@ export function ProfessionalFeatures({
   };
 
   const getApplicationRecommendations = () => {
-    const applications = {
+    const applications: Record<string, string> = {
       R134a:
         "Commercial refrigeration, automotive AC, medium temperature applications",
       R410A:
@@ -1605,12 +1538,12 @@ export function ProfessionalFeatures({
                   <h4 className="font-semibold">Current Unit System:</h4>
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div>
-                      Temperature: {UNIT_SYSTEMS[unitSystem].temperature}
+                      Temperature: {UNIT_SYSTEMS[unitSystem]?.temperature ?? ""}
                     </div>
-                    <div>Pressure: {UNIT_SYSTEMS[unitSystem].pressure}</div>
-                    <div>Enthalpy: {UNIT_SYSTEMS[unitSystem].enthalpy}</div>
-                    <div>Power: {UNIT_SYSTEMS[unitSystem].power}</div>
-                    <div>Flow Rate: {UNIT_SYSTEMS[unitSystem].flow}</div>
+                    <div>Pressure: {UNIT_SYSTEMS[unitSystem]?.pressure ?? ""}</div>
+                    <div>Enthalpy: {UNIT_SYSTEMS[unitSystem]?.enthalpy ?? ""}</div>
+                    <div>Power: {UNIT_SYSTEMS[unitSystem]?.power ?? ""}</div>
+                    <div>Flow Rate: {UNIT_SYSTEMS[unitSystem]?.flow ?? ""}</div>
                   </div>
                 </div>
 
@@ -1647,7 +1580,7 @@ export function ProfessionalFeatures({
                             coolingCapacityKwNum !== undefined
                               ? convertPower(coolingCapacityKwNum)
                               : (undefined as any),
-                            UNIT_SYSTEMS[unitSystem].power,
+                            UNIT_SYSTEMS[unitSystem]?.power ?? "",
                           )}
                         </div>
                       </div>
@@ -1660,7 +1593,7 @@ export function ProfessionalFeatures({
                             compressorWorkKwNum !== undefined
                               ? convertPower(compressorWorkKwNum)
                               : (undefined as any),
-                            UNIT_SYSTEMS[unitSystem].power,
+                            UNIT_SYSTEMS[unitSystem]?.power ?? "",
                           )}
                         </div>
                       </div>
@@ -1681,12 +1614,12 @@ export function ProfessionalFeatures({
                                 <span>
                                   {formatValue(
                                     convertTemperature(point.temperature),
-                                    UNIT_SYSTEMS[unitSystem].temperature,
+                                    UNIT_SYSTEMS[unitSystem]?.temperature ?? "",
                                   )}
                                   ,
                                   {formatValue(
                                     convertPressure(point.pressure),
-                                    UNIT_SYSTEMS[unitSystem].pressure,
+                                    UNIT_SYSTEMS[unitSystem]?.pressure ?? "",
                                   )}
                                 </span>
                               </div>

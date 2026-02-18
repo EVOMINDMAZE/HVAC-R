@@ -75,4 +75,34 @@ test.describe("Team Management", () => {
 
     console.log("Invitation success verified.");
   });
+
+  test("Admin can invite a client portal user (client role)", async ({ page }) => {
+    await page.goto("/settings/team");
+    await expect(page.getByText("Team Management")).toBeVisible({
+      timeout: 10000,
+    });
+
+    const testEmail = `test_client_${Date.now()}@thermoneural.com`;
+    const testName = "Test Client";
+
+    await page.fill('input[placeholder*="john@example.com"]', testEmail);
+    await page.fill('input[placeholder*="John Doe"]', testName);
+
+    // Select Client role. Server will resolve/create the client record by email if needed.
+    const roleTrigger = page.locator("form").locator('button[role="combobox"]');
+    if (await roleTrigger.isVisible()) {
+      await roleTrigger.click();
+      await page.getByLabel("Client").click();
+    } else {
+      const selectOptions = page.locator("select");
+      if (await selectOptions.isVisible()) {
+        await selectOptions.selectOption("client");
+      }
+    }
+
+    await page.locator('button:has-text("Send Invite")').click();
+
+    const toast = page.getByText("Invitation Sent", { exact: true }).first();
+    await expect(toast).toBeVisible({ timeout: 10000 });
+  });
 });

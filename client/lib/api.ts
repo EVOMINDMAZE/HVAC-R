@@ -8,7 +8,7 @@ import { supabase } from "./supabase";
  */
 export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
-  "http://localhost:8080";
+  (typeof window !== "undefined" ? window.location.origin : "");
 
 /**
  * URL for the calculation service (external physics engine)
@@ -122,18 +122,6 @@ type SupabaseSubscriptionPlanRow = {
  */
 class ApiClient {
   /**
-   * Get authorization headers for API requests
-   * @returns Headers with Content-Type and Authorization (if token exists)
-   */
-  private getAuthHeaders(): HeadersInit {
-    const token = localStorage.getItem("simulateon_token");
-    return {
-      "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }),
-    };
-  }
-
-  /**
    * Make authenticated API request with automatic token handling
    * @template T - Expected response data type
    * @param endpoint - API endpoint path (e.g., "/api/auth/signin")
@@ -146,17 +134,6 @@ class ApiClient {
     options: RequestInit = {},
     baseUrl: string = API_BASE_URL,
   ): Promise<ApiResponse<T>> {
-    // Return mock failure when no backend server is configured
-    if (!baseUrl) {
-      console.warn("No backend service configured - returning mock failure");
-      return {
-        success: false,
-        error: "Backend service not configured",
-        details:
-          "No internal calculation service is currently configured. Using fallback data where available.",
-      };
-    }
-
     try {
       let token: string | null = null;
       try {
@@ -180,10 +157,8 @@ class ApiClient {
         },
       };
 
-      const response = await fetch(
-        `${baseUrl}${endpoint}`,
-        requestOptions,
-      );
+      const requestUrl = baseUrl ? `${baseUrl}${endpoint}` : endpoint;
+      const response = await fetch(requestUrl, requestOptions);
 
       if (!response.ok) {
         let errorData;
@@ -214,7 +189,7 @@ class ApiClient {
               },
             }),
           );
-        } catch (e) {
+        } catch (_e) {
           // ignore when running in non-browser environments
         }
 
@@ -237,7 +212,7 @@ class ApiClient {
             },
           }),
         );
-      } catch (e) {
+      } catch (_e) {
         // ignore in non-browser contexts
       }
 
@@ -345,7 +320,7 @@ class ApiClient {
           data: { session },
         } = await supabase.auth.getSession();
         token = session?.access_token ?? null;
-      } catch (e) {
+      } catch (_e) {
         // Fallback to stored token if present
         token = localStorage.getItem("simulateon_token") ?? null;
       }
@@ -376,7 +351,7 @@ class ApiClient {
             ? payload
             : JSON.stringify(payload, null, 2);
         console.log("[api.aiTroubleshoot] payload preview:", preview);
-      } catch (e) { /* ignore */ }
+      } catch (_e) { /* ignore */ }
 
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       if (!supabaseUrl) {
@@ -435,7 +410,7 @@ class ApiClient {
       return {
         success: false,
         error: "Empty response from AI troubleshoot",
-        details: null,
+        details: undefined,
       };
     } catch (err: any) {
       console.error("Supabase AI function call failed", err);
