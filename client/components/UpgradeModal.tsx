@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Lock, Zap, Building, ArrowRight, CheckCircle, X } from "lucide-react";
+import { Lock, Zap, Building, ArrowRight, CheckCircle } from "lucide-react";
 import { PLANS } from "@/lib/stripe";
 import { useNavigate } from "react-router-dom";
 

@@ -14,13 +14,12 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
 import { useNavigate, Link } from "react-router-dom";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
 import { PLANS, STRIPE_PRICE_IDS } from "@/lib/stripe";
 import { ROICalculator } from "@/components/ui/roi-calculator";
 import { trackMarketingEvent } from "@/lib/marketingAnalytics";
 import { useEffect } from "react";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 
 const stripePromise = loadStripe(
   import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "pk_test_placeholder",
@@ -144,18 +143,15 @@ export default function Pricing() {
   ] as const;
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-
-      <main className="pt-24 pb-20">
-        <section className="px-4 py-16">
-          <div className="max-w-6xl mx-auto text-center">
+    <PublicPageShell mainClassName="pb-20">
+      <section className="px-4 py-16">
+        <div className="max-w-6xl mx-auto text-center">
             <p className="text-xs uppercase tracking-[0.2em] text-primary">Pricing</p>
             <h1 className="mt-4 text-4xl md:text-5xl font-semibold">
-              Start with engineering. Add Business Ops when your crew scales.
+              Operations + engineering pricing built for HVAC&R growth stages.
             </h1>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Choose the track that fits how you operate today, then move up without changing your workflow.
+              Start free with engineering tools, then move into Business Ops when dispatch load and compliance requirements increase.
             </p>
 
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
@@ -189,7 +185,7 @@ export default function Pricing() {
             </div>
 
             <p className="mt-4 text-sm text-muted-foreground">
-              Start free for engineering workflows. Upgrade when dispatch control, compliance logs, and multi-crew visibility become operational priorities.
+              Same two next steps as the storefront: start free now or book an operations demo for rollout planning.
             </p>
 
             <div className="mx-auto mt-7 grid max-w-4xl gap-3 text-left md:grid-cols-2">
@@ -246,9 +242,9 @@ export default function Pricing() {
                 <ShieldCheck className="h-4 w-4 text-success" />
                 <span>Cancel or upgrade anytime</span>
               </div>
-            </div>
-          </div>
-        </section>
+	            </div>
+	          </div>
+	      </section>
 
         <section className="px-4">
           <div className="max-w-6xl mx-auto grid gap-6 md:grid-cols-3">
@@ -336,9 +332,6 @@ export default function Pricing() {
             <ROICalculator />
           </div>
         </section>
-      </main>
-
-      <Footer />
-    </div>
+    </PublicPageShell>
   );
 }

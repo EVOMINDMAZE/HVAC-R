@@ -10,9 +10,29 @@ export default defineConfig({
       '**/dist/**',
       '**/e2e/**',
       '**/scripts/**',
-      '**/*.spec.ts', // Exclude Playwright spec files (they use test.describe)
+      '**/*.spec.ts',
     ],
     include: ['**/*.{test,spec}.{ts,tsx}'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'lcov'],
+      reportsDirectory: './coverage',
+      exclude: [
+        'node_modules/**',
+        'dist/**',
+        'e2e/**',
+        'scripts/**',
+        '**/*.d.ts',
+        '**/*.config.*',
+        '**/index.ts',
+      ],
+      thresholds: {
+        lines: 50,
+        functions: 50,
+        branches: 50,
+        statements: 50,
+      },
+    },
   },
   resolve: {
     alias: {

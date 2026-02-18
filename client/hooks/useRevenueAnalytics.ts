@@ -14,7 +14,8 @@ export interface PipelineStats {
   conversionRate: number;
 }
 
-export function useRevenueAnalytics() {
+export function useRevenueAnalytics(options?: { enabled?: boolean }) {
+  const enabled = options?.enabled ?? true;
   const { user } = useSupabaseAuth();
   const [revenueStats, setRevenueStats] = useState<RevenueStats>({
     unpaidCount: 0,
@@ -26,11 +27,39 @@ export function useRevenueAnalytics() {
     convertedLeads: 0,
     conversionRate: 0,
   });
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     async function fetchAnalytics() {
-      if (!user) return;
+      if (!enabled) {
+        setRevenueStats({
+          unpaidCount: 0,
+          unpaidAmount: 0,
+          revenueAtRisk: 0,
+        });
+        setPipelineStats({
+          activeLeads: 0,
+          convertedLeads: 0,
+          conversionRate: 0,
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      if (!user) {
+        setRevenueStats({
+          unpaidCount: 0,
+          unpaidAmount: 0,
+          revenueAtRisk: 0,
+        });
+        setPipelineStats({
+          activeLeads: 0,
+          convertedLeads: 0,
+          conversionRate: 0,
+        });
+        setIsLoading(false);
+        return;
+      }
       setIsLoading(true);
 
       try {
@@ -63,16 +92,20 @@ export function useRevenueAnalytics() {
         });
 
         // 2. Calculate Lead Pipeline (Triage -> Jobs)
-        // Fetch total triage uploads (leads)
+        // Fetch total triage submissions (leads)
         const { count: triageCount, error: triageError } = await supabase
-          .from("triage_uploads")
+          .from("triage_submissions")
           .select("*", { count: "exact", head: true });
+
+        if (triageError) {
+          console.error("Error fetching triage submissions:", triageError);
+        }
 
         // Fetch jobs that originated from triage (assuming we track source, or just verify jobs created recently)
         // For now, let's just get total jobs as a proxy for conversion if source isn't strictly linked yet,
         // OR better, checking if triage_uploads has a 'converted_job_id' column if it exists.
         // Checking schema... let's assume we want to just see raw counts for now.
-        const { count: jobsCount, error: jobsError } = await supabase
+        const { count: jobsCount } = await supabase
           .from("jobs")
           .select("*", { count: "exact", head: true });
 
@@ -96,7 +129,7 @@ export function useRevenueAnalytics() {
     }
 
     fetchAnalytics();
-  }, [user]);
+  }, [user, enabled]);
 
   return { revenueStats, pipelineStats, isLoading };
 }

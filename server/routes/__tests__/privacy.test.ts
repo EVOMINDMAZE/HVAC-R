@@ -18,7 +18,7 @@ vi.mock('../../utils/supabase.js', () => ({
 
 // Mock supabaseAuth
 vi.mock('../../utils/supabaseAuth.js', () => ({
-  authenticateSupabaseToken: vi.fn((req, res, next) => {
+  authenticateSupabaseToken: vi.fn((req, _res, next) => {
     (req as any).user = { id: 'test-user-id' };
     next();
   }),

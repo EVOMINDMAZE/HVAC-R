@@ -2,16 +2,12 @@ import A2LCalculator from "@/components/calculators/A2LCalculator";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2, ShieldCheck } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 
 export function A2LLandingPage() {
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-
-      <main className="pt-24">
+    <PublicPageShell mainClassName="pt-24">
         <SEO
           title="A2L Refrigerant Charge Calculator"
           description="Calculate A2L refrigerant charge limits aligned with modern safety standards."
@@ -91,9 +87,6 @@ export function A2LLandingPage() {
             </div>
           </div>
         </section>
-      </main>
-
-      <Footer />
-    </div>
+    </PublicPageShell>
   );
 }

@@ -3,7 +3,6 @@ import Papa from "papaparse";
 import {
   Upload,
   FileSpreadsheet,
-  Check,
   AlertCircle,
   Loader2,
   X,
@@ -34,7 +33,6 @@ import {
 } from "@/components/ui/select";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
 
 // Generic interface for column mapping
 export interface ColumnMapping {
@@ -308,7 +306,7 @@ export function SpreadsheetImporter({
                     <TableRow key={i}>
                       {targetFields.slice(0, 4).map((f) => (
                         <TableCell key={f.key} className="text-xs">
-                          {row[mappings[f.key]] || (
+                          {row[mappings[f.key] ?? ""] || (
                             <span className="text-muted-foreground">-</span>
                           )}
                         </TableCell>

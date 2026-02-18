@@ -50,10 +50,6 @@ function mdToHtml(md: string) {
   );
 
   // Headings
-  const headingClasses = (level: number, sizeClass: string) => {
-    return `${sizeClass} font-bold mt-4 mb-2 group text-foreground`;
-  };
-
   out = out.replace(
     /^######\s?(.*$)/gim,
     (_, t) =>
@@ -91,7 +87,7 @@ function mdToHtml(md: string) {
     (m) => {
       const lines = m.trim().split("\n").filter(Boolean);
       if (lines.length < 2) return m;
-      const header = lines[0]
+      const header = (lines[0] || "")
         .replace(/^\||\|$/g, "")
         .split("|")
         .map((s) => s.trim());
@@ -296,7 +292,7 @@ export function DocsViewer({
           const hs = nodes.map((n) => {
             // prefer the first text node so trailing anchor text (e.g. '#') isn't included
             const firstText =
-              n.childNodes && n.childNodes.length && n.childNodes[0].textContent
+              n.childNodes?.length && n.childNodes[0]?.textContent
                 ? String(n.childNodes[0].textContent).trim()
                 : (n.textContent || "").trim();
             const cleanText = firstText.replace(/\s*#\s*$/g, "");
@@ -307,7 +303,7 @@ export function DocsViewer({
             };
           });
           setHeadings(hs);
-        } catch (e) {
+        } catch (_e) {
           setHeadings([]);
         }
       } catch (err: any) {

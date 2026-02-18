@@ -15,13 +15,18 @@ export interface Calculation {
   name?: string;
 }
 
-export function useSupabaseCalculations() {
+export function useSupabaseCalculations(options?: { enabled?: boolean }) {
+  const enabled = options?.enabled ?? true;
   const [calculations, setCalculations] = useState<Calculation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasShownOfflineToast, setHasShownOfflineToast] = useState(false);
   const { user, companies } = useSupabaseAuth();
   const { addToast } = useToast();
-  const { subscription } = useSubscription();
+  const {
+    subscription,
+    loading: subscriptionLoading,
+    refetch: refetchSubscription,
+  } = useSubscription({ enabled });
   const lastFetchRef = useRef<number>(0);
   const FETCH_COOLDOWN = 30000; // 30 second cooldown
 
@@ -51,6 +56,7 @@ export function useSupabaseCalculations() {
   };
 
   const fetchCalculations = async () => {
+    if (!enabled) return;
     if (!user) return;
 
     const now = Date.now();
@@ -76,7 +82,7 @@ export function useSupabaseCalculations() {
             "simulateon:calculations",
             JSON.stringify(normalized),
           );
-        } catch (e) {
+        } catch (_e) {
           // ignore cache errors
         }
       } else if (error) {
@@ -101,7 +107,7 @@ export function useSupabaseCalculations() {
             }
           }
         }
-      } catch (e) {
+      } catch (_e) {
         // ignore
       }
     } finally {
@@ -243,12 +249,18 @@ export function useSupabaseCalculations() {
   };
 
   useEffect(() => {
+    if (!enabled) {
+      setCalculations([]);
+      setIsLoading(false);
+      return;
+    }
+
     if (user) {
       fetchCalculations();
     } else {
       setCalculations([]);
     }
-  }, [user]);
+  }, [user, enabled]);
 
   const findMatchingCalculation = (inputs: any, results: any): Calculation | null => {
     if (!calculations.length) return null;
@@ -263,6 +275,9 @@ export function useSupabaseCalculations() {
   return {
     calculations,
     isLoading,
+    subscription,
+    subscriptionLoading,
+    refetchSubscription,
     saveCalculation,
     deleteCalculation,
     updateCalculation,

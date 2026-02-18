@@ -1,17 +1,12 @@
-import { Link } from "react-router-dom";
-import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
 import { Card, CardContent } from "@/components/ui/card";
 import { SEO } from "@/components/SEO";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 
 export function Privacy() {
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-
-      <main className="pt-24 pb-20 px-4">
-        <SEO title="Privacy Policy" description="ThermoNeural privacy policy." />
-        <div className="max-w-4xl mx-auto">
+    <PublicPageShell mainClassName="pb-20 px-4">
+      <SEO title="Privacy Policy" description="ThermoNeural privacy policy." />
+      <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <p className="text-xs uppercase tracking-[0.2em] text-primary mb-4">
               Legal
@@ -267,9 +262,6 @@ export function Privacy() {
             </CardContent>
           </Card>
         </div>
-      </main>
-
-      <Footer />
-    </div>
+    </PublicPageShell>
   );
 }

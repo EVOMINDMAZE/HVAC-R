@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { supabaseAdmin, getSupabaseClient } from "../utils/supabase.js";
+import { getSupabaseClient } from "../utils/supabase.js";
 import { authenticateSupabaseToken } from "../utils/supabaseAuth.js";
 
 interface SignUpRequest {
@@ -65,7 +65,7 @@ export const signUp: RequestHandler = async (req, res) => {
     // However, if we use admin.createUser with email_confirm: true, we can then sign in.
     // Let's stick to standard signUp flow. If session is missing, client handles it.
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       data: {
         user: {
@@ -78,11 +78,12 @@ export const signUp: RequestHandler = async (req, res) => {
       }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to create account';
     console.error('Sign up error:', error);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       error: 'Internal server error', 
-      details: error.message || 'Failed to create account' 
+      details: message
     });
   }
 };
@@ -119,7 +120,7 @@ export const signIn: RequestHandler = async (req, res) => {
       return res.status(500).json({ error: "Failed to create session" });
     }
 
-    res.json({
+    return res.json({
       success: true,
       data: {
         user: {
@@ -132,11 +133,12 @@ export const signIn: RequestHandler = async (req, res) => {
       }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to sign in';
     console.error('Sign in error:', error);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       error: 'Internal server error', 
-      details: error.message || 'Failed to sign in' 
+      details: message
     });
   }
 };
@@ -152,16 +154,17 @@ export const signOut: RequestHandler = async (req, res) => {
       }
     }
 
-    res.json({
+    return res.json({
       success: true,
       message: 'Signed out successfully'
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to sign out';
     console.error('Sign out error:', error);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       error: 'Internal server error', 
-      details: error.message || 'Failed to sign out' 
+      details: message
     });
   }
 };
@@ -190,7 +193,7 @@ export const getCurrentUser: RequestHandler = async (req, res) => {
       });
     }
 
-    res.json({
+    return res.json({
       success: true,
       data: {
         user: {
@@ -201,11 +204,12 @@ export const getCurrentUser: RequestHandler = async (req, res) => {
       }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to get user information';
     console.error('Get current user error:', error);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       error: 'Internal server error', 
-      details: error.message || 'Failed to get user information' 
+      details: message
     });
   }
 };

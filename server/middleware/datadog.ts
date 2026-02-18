@@ -7,7 +7,7 @@
  * @module datadog-server
  */
 
-import { tracer, logger, metrics, profile } from 'dd-trace';
+import { tracer, logger, metrics } from 'dd-trace';
 import { Request, Response, NextFunction } from 'express';
 
 const DATADOG_AGENT_HOST = process.env.DATADOG_AGENT_HOST || 'localhost';
@@ -62,7 +62,7 @@ export function initDatadog() {
         },
       ],
       
-      onError: (error) => {
+      onError: (error: Error) => {
         console.error('[Datadog] Tracer error:', error);
       },
     });
@@ -131,7 +131,7 @@ export function datadogTracingMiddleware() {
     return (_req: Request, _res: Response, next: NextFunction) => next();
   }
 
-  return tracer.trace('middleware', 'express', (req: Request, res: Response, next: NextFunction) => {
+  return tracer.trace('middleware', 'express', (_req: Request, _res: Response, next: NextFunction) => {
     next();
   });
 }
@@ -172,7 +172,7 @@ export function trackDatadogError(error: Error, context?: Record<string, unknown
     return;
   }
 
-  tracer.trace('error', 'exception', (span) => {
+  tracer.trace('error', 'exception', (span: import('dd-trace').Span) => {
     span.setTag('error.message', error.message);
     span.setTag('error.stack', error.stack || '');
     span.setTag('error.type', error.constructor.name);

@@ -2,8 +2,6 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import {
   HelpCircle,
   Search,
@@ -14,6 +12,7 @@ import {
   Phone,
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 
 const faqs = [
   {
@@ -110,14 +109,11 @@ export function HelpCenter() {
     .filter((category) => category.questions.length > 0);
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-
-      <main className="pt-24 pb-20">
-        <SEO
-          title="Help Center"
-          description="Get answers and support for ThermoNeural HVAC&R and cryogenic engineering workflows."
-        />
+    <PublicPageShell mainClassName="pb-20">
+      <SEO
+        title="Help Center"
+        description="Get answers and support for ThermoNeural HVAC&R and cryogenic engineering workflows."
+      />
 
         <section className="px-4 py-16">
           <div className="max-w-5xl mx-auto">
@@ -238,9 +234,6 @@ export function HelpCenter() {
             ))}
           </div>
         </section>
-      </main>
-
-      <Footer />
-    </div>
+    </PublicPageShell>
   );
 }

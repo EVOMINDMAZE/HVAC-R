@@ -19,7 +19,8 @@ interface SubscriptionData {
   status: string;
 }
 
-export function useSubscription() {
+export function useSubscription(options?: { enabled?: boolean }) {
+  const enabled = options?.enabled ?? true;
   const [subscription, setSubscription] = useState<SubscriptionData | null>(
     null,
   );
@@ -79,8 +80,14 @@ export function useSubscription() {
   };
 
   useEffect(() => {
+    if (!enabled) {
+      setSubscription({ subscription: null, plan: "free", status: "active" });
+      setLoading(false);
+      return;
+    }
+
     fetchSubscription();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, enabled]);
 
   return {
     subscription,

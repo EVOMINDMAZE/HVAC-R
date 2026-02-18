@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Cookie, X, Settings, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { getSupabaseOrThrow } from '@/lib/supabase';
 
 interface ConsentBannerProps {
   /** Whether the banner is visible */
@@ -32,7 +32,7 @@ export function ConsentBanner({
   const handleAccept = async () => {
     setIsLoading(true);
     try {
-      // Record consent in backend if authenticated
+      const supabase = getSupabaseOrThrow();
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         await fetch('/api/privacy/consent', {
@@ -208,7 +208,7 @@ export function useConsent() {
     localStorage.setItem('consent_given', 'true');
     localStorage.setItem('consent_timestamp', new Date().toISOString());
 
-    // Sync to backend if authenticated
+    const supabase = getSupabaseOrThrow();
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       try {

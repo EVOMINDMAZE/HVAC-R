@@ -25,7 +25,7 @@ export function AppPageHeader({
     >
       <div className="app-stack-12">
         {kicker ? (
-          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-primary/80">
+          <p className="text-xs font-semibold tracking-[0.04em] text-primary/80">
             {kicker}
           </p>
         ) : null}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useNavigate, Link } from "react-router-dom";
 import {
   Card,
@@ -9,10 +9,9 @@ import {
 } from "@/components/ui/card";
 import { Loader2, CheckCircle, XCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { PageContainer } from "@/components/PageContainer";
 import { Button } from "@/components/ui/button";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 
 export function Callback() {
   const { provider } = useParams();
@@ -33,7 +32,7 @@ export function Callback() {
     let codeToUse = code;
     if (!codeToUse) {
       const match = window.location.search.match(/[?&]code=([^&]+)/);
-      if (match) {
+      if (match && match[1]) {
         codeToUse = decodeURIComponent(match[1]);
       }
     }
@@ -99,55 +98,51 @@ error: ${data.error}
         : "border-l-4 border-l-destructive";
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-      <main className="py-16">
-        <PageContainer>
-          <div className="mx-auto max-w-xl">
-            <Card className={statusBorder}>
-              <CardHeader className="text-center">
-                <div className="mx-auto mb-4">
-                  {status === "processing" && (
-                    <Loader2 className="h-12 w-12 text-primary animate-spin" />
-                  )}
-                  {status === "success" && (
-                    <CheckCircle className="h-12 w-12 text-emerald-500" />
-                  )}
-                  {status === "error" && (
-                    <XCircle className="h-12 w-12 text-destructive" />
-                  )}
-                </div>
-                <CardTitle className="capitalize">
-                  {status === "processing"
-                    ? `Connecting ${provider}...`
-                    : status === "success"
-                      ? "Connection complete"
-                      : "Connection failed"}
-                </CardTitle>
-                <CardDescription>{message}</CardDescription>
-              </CardHeader>
-              {status === "error" && (
-                <CardContent className="space-y-4 text-sm">
-                  {debugInfo && (
-                    <div className="rounded-lg border border-border bg-muted/30 p-3 text-left font-mono text-xs whitespace-pre-wrap">
-                      {debugInfo}
-                    </div>
-                  )}
-                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                    <Button variant="outline" onClick={() => navigate(-1)}>
-                      Return to integration
-                    </Button>
-                    <Button asChild>
-                      <Link to="/connect-provider">View providers</Link>
-                    </Button>
+    <PublicPageShell mainClassName="py-16">
+      <PageContainer>
+        <div className="mx-auto max-w-xl">
+          <Card className={statusBorder}>
+            <CardHeader className="text-center">
+              <div className="mx-auto mb-4">
+                {status === "processing" && (
+                  <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                )}
+                {status === "success" && (
+                  <CheckCircle className="h-12 w-12 text-emerald-500" />
+                )}
+                {status === "error" && (
+                  <XCircle className="h-12 w-12 text-destructive" />
+                )}
+              </div>
+              <CardTitle className="capitalize">
+                {status === "processing"
+                  ? `Connecting ${provider}...`
+                  : status === "success"
+                    ? "Connection complete"
+                    : "Connection failed"}
+              </CardTitle>
+              <CardDescription>{message}</CardDescription>
+            </CardHeader>
+            {status === "error" && (
+              <CardContent className="space-y-4 text-sm">
+                {debugInfo && (
+                  <div className="whitespace-pre-wrap rounded-lg border border-border bg-muted/30 p-3 text-left font-mono text-xs">
+                    {debugInfo}
                   </div>
-                </CardContent>
-              )}
-            </Card>
-          </div>
-        </PageContainer>
-      </main>
-      <Footer />
-    </div>
+                )}
+                <div className="flex flex-col justify-center gap-3 sm:flex-row">
+                  <Button variant="outline" onClick={() => navigate(-1)}>
+                    Return to integration
+                  </Button>
+                  <Button asChild>
+                    <Link to="/connect-provider">View providers</Link>
+                  </Button>
+                </div>
+              </CardContent>
+            )}
+          </Card>
+        </div>
+      </PageContainer>
+    </PublicPageShell>
   );
 }

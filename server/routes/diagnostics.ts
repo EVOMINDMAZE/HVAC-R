@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import { createClient } from "@supabase/supabase-js";
 
-export const supabaseDiag: RequestHandler = async (req, res) => {
+export const supabaseDiag: RequestHandler = async (_req, res) => {
   try {
     const supabaseUrl = process.env.VITE_SUPABASE_URL || "";
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";

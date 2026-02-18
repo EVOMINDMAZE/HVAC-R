@@ -108,11 +108,6 @@ export function useErrorHandler() {
   }, [error]);
 }
 
-interface AsyncErrorBoundaryState {
-  hasError: boolean;
-  error: Error | null;
-}
-
 export function withAsyncErrorBoundary<P extends object>(
   WrappedComponent: React.ComponentType<P>,
   fallback?: ReactNode

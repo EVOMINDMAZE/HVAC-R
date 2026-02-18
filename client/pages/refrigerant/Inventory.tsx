@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Plus,
   Archive,
-  ChevronRight,
   Activity,
   FileText,
   Calculator,
@@ -16,9 +14,8 @@ import { LogRefrigerantDialog } from "@/components/refrigerant/LogRefrigerantDia
 import { WarrantyCard } from "@/components/shared/WarrantyCard";
 import { SellingPointsCard } from "@/components/shared/SellingPointsCard";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/use-toast";

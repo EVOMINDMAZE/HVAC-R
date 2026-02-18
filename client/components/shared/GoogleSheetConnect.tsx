@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
-import { Label } from "../ui/label";
 import { useToast } from "../ui/use-toast";
 import { Loader2, FileSpreadsheet, Check, Copy, ArrowRight } from "lucide-react";
 import { supabase } from "@/lib/supabase";

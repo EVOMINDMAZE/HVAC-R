@@ -1,4 +1,3 @@
-import React from "react";
 import { Footer } from "@/components/Footer";
 import { ApiServiceStatus } from "@/components/ApiServiceStatus";
 import { EnhancedStandardCycleContent } from "@/pages/EnhancedStandardCycle";

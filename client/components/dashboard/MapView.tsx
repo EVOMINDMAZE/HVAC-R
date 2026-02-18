@@ -1,4 +1,5 @@
 import LiveMap, { MapMarker } from "@/components/job/LiveMap";
+import { MapPin, Route } from "lucide-react";
 
 interface Job {
   id: string;
@@ -36,8 +37,25 @@ const generateCoords = (id: string) => {
 export default function MapView({ jobs }: MapViewProps) {
   if (!jobs || jobs.length === 0) {
     return (
-      <div className="h-[500px] w-full rounded-2xl overflow-hidden shadow-sm border border-gray-100 bg-slate-50 flex items-center justify-center text-slate-400">
-        No active jobs to display on map.
+      <div className="app-surface app-elev-1 h-[460px] w-full overflow-hidden p-6 sm:p-8">
+        <div className="flex h-full items-center justify-center">
+          <div className="max-w-lg text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-border bg-secondary/50">
+              <MapPin className="h-7 w-7 text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold text-foreground">
+              No active jobs on the map yet
+            </h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Jobs appear here once they are scheduled and assigned. Use Create
+              Job or clear filters to widen results.
+            </p>
+            <p className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+              <Route className="h-3.5 w-3.5 text-primary" />
+              Live routing and location context activates automatically.
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
@@ -88,7 +106,7 @@ export default function MapView({ jobs }: MapViewProps) {
   });
 
   return (
-    <div className="h-[500px] w-full rounded-2xl overflow-hidden shadow-sm border border-gray-100 relative z-0">
+    <div className="app-surface app-elev-1 relative z-0 h-[460px] w-full overflow-hidden">
       <LiveMap markers={markers} />
     </div>
   );

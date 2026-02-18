@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Lock, ShieldCheck, CheckCircle } from "lucide-react";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 
 export function IntegrationLanding() {
   const [searchParams] = useSearchParams();
@@ -89,57 +90,63 @@ export function IntegrationLanding() {
 
   if (isFetching) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
+      <PublicPageShell mainClassName="py-16">
+        <div className="flex items-center justify-center py-20">
+          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-primary" />
+        </div>
+      </PublicPageShell>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background p-4">
-        <Card className="max-w-md w-full border-border/60">
-          <CardHeader>
-            <CardTitle>Access denied</CardTitle>
-            <CardDescription>{error}</CardDescription>
-          </CardHeader>
-        </Card>
-      </div>
+      <PublicPageShell mainClassName="py-16">
+        <div className="flex items-center justify-center px-4 py-20">
+          <Card className="w-full max-w-md border-border/60">
+            <CardHeader>
+              <CardTitle>Access denied</CardTitle>
+              <CardDescription>{error}</CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+      </PublicPageShell>
     );
   }
 
   return (
-    <div className="min-h-screen w-full bg-background flex items-center justify-center p-4">
-      <Card className="max-w-md w-full border-border/60 shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl font-semibold">Connect your device</CardTitle>
-          <CardDescription>
-            Securely link your {provider.replace("_", " ")} account to ThermoNeural.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-3">
-            <Lock className="h-4 w-4 text-primary" />
-            <span>Your credentials are handled by the provider.</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <ShieldCheck className="h-4 w-4 text-primary" />
-            <span>Connection can be revoked at any time.</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <CheckCircle className="h-4 w-4 text-primary" />
-            <span>Invitation sent by {replyTo ?? "your technician"}.</span>
-          </div>
-        </CardContent>
-        <CardFooter className="flex flex-col gap-3">
-          <Button className="w-full" onClick={handleConnect} disabled={isLoading}>
-            {isLoading ? "Connecting..." : isConnected ? "Reconnect" : "Connect"}
-          </Button>
-          <p className="text-xs text-muted-foreground">
-            By continuing, you agree to share device data with ThermoNeural for analysis.
-          </p>
-        </CardFooter>
-      </Card>
-    </div>
+    <PublicPageShell mainClassName="py-16">
+      <div className="flex items-center justify-center px-4 py-20">
+        <Card className="w-full max-w-md border-border/60 shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-2xl font-semibold">Connect your device</CardTitle>
+            <CardDescription>
+              Securely link your {provider.replace("_", " ")} account to ThermoNeural.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-3">
+              <Lock className="h-4 w-4 text-primary" />
+              <span>Your credentials are handled by the provider.</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <ShieldCheck className="h-4 w-4 text-primary" />
+              <span>Connection can be revoked at any time.</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <CheckCircle className="h-4 w-4 text-primary" />
+              <span>Invitation sent by {replyTo ?? "your technician"}.</span>
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-col gap-3">
+            <Button className="w-full" onClick={handleConnect} disabled={isLoading}>
+              {isLoading ? "Connecting..." : isConnected ? "Reconnect" : "Connect"}
+            </Button>
+            <p className="text-xs text-muted-foreground">
+              By continuing, you agree to share device data with ThermoNeural for analysis.
+            </p>
+          </CardFooter>
+        </Card>
+      </div>
+    </PublicPageShell>
   );
 }

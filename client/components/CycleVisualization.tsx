@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,14 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 import { Zap, Thermometer, Gauge, BarChart3 } from "lucide-react";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from "@/components/ui/accordion";
 import { computeDomain } from "@/lib/diagramDomain";
 
 interface CyclePoint {
@@ -364,7 +357,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
     // Use shared domain calculation so scales match Chart Package
     const config = DIAGRAM_CONFIGS[diagramType];
-    const domain = computeDomain(
+    computeDomain(
       diagramType,
       cycleData || {},
       cycleData?.points || [],
@@ -563,6 +556,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     // X-axis ticks with real values
     for (let i = 0; i < xTicks.length; i++) {
       const txVal = xTicks[i];
+      if (txVal === undefined) continue;
       const x =
         margin +
         ((txVal - xMinPadded) / (xMaxPadded - xMinPadded || 1)) * plotWidth;
@@ -590,6 +584,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     ctx.textAlign = "right";
     for (let i = 0; i < yTicks.length; i++) {
       const tyVal = yTicks[i];
+      if (tyVal === undefined) continue;
       const y =
         margin +
         plotHeight -
@@ -619,7 +614,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     margin: number,
     plotWidth: number,
     plotHeight: number,
-    config: DiagramConfig,
+    _config: DiagramConfig,
   ) => {
     // Accept either camelCase or snake_case saturation dome property names
     const dome =
@@ -691,11 +686,14 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       ctx.beginPath();
 
       for (let i = 0; i < Math.min(xData.length, yData.length); i++) {
-        const x = margin + ((xData[i] - xMin) / (xMax - xMin || 1)) * plotWidth;
+        const xVal = xData[i];
+        const yVal = yData[i];
+        if (xVal === undefined || yVal === undefined) continue;
+        const x = margin + ((xVal - xMin) / (xMax - xMin || 1)) * plotWidth;
         const y =
           margin +
           plotHeight -
-          ((yData[i] - yMin) / (yMax - yMin || 1)) * plotHeight;
+          ((yVal - yMin) / (yMax - yMin || 1)) * plotHeight;
 
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
@@ -741,7 +739,11 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     for (let i = 0; i < 4; i++) {
       const startPoint = points[i];
       const endPoint = points[(i + 1) % 4];
+      if (!startPoint || !endPoint) continue;
       const color = colors[i];
+      const lineWidth = lineWidths[i];
+      const processName = processNames[i];
+      if (color === undefined || lineWidth === undefined || processName === undefined) continue;
 
       // Calculate drawing progress for this line
       const lineProgress = Math.max(0, Math.min(1, (progress - i * 25) / 25));
@@ -764,7 +766,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
         ctx.shadowOffsetY = 2;
 
         ctx.strokeStyle = gradient;
-        ctx.lineWidth = lineWidths[i];
+        ctx.lineWidth = lineWidth;
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
 
@@ -823,7 +825,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
             startPoint,
             endPoint,
             margin,
-            processNames[i],
+            processName,
             color,
           );
         }
@@ -925,6 +927,8 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       const y = margin + point.y;
       const isSelected = selectedPoint === point.id;
       const color = pointColors[index];
+      const pointName = pointNames[index];
+      if (color === undefined || pointName === undefined) return;
       const radius = isSelected ? 12 : 10;
 
       // Point shadow
@@ -959,7 +963,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       ctx.fillStyle = "white";
       ctx.font = "bold 14px 'Inter', sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText(pointNames[index], x, y + 5);
+      ctx.fillText(pointName, x, y + 5);
 
       // Point label with background
       const labelY = y - radius - 20;
@@ -999,7 +1003,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
   const drawComponentLabels = (
     ctx: CanvasRenderingContext2D,
-    points: CyclePoint[],
+    _points: CyclePoint[],
     margin: number,
   ) => {
     const components = [
@@ -1085,13 +1089,19 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       return Number.isFinite(n) ? n : null;
     };
 
+    const p0 = points[0];
+    const p1 = points[1];
+    const p2 = points[2];
+    const p3 = points[3];
+
     const processes = [
       {
-        from: points[0],
-        to: points[1],
+        from: p0,
+        to: p1,
         label: (() => {
-          const t1 = safeNum(points[0].temperature);
-          const t2 = safeNum(points[1].temperature);
+          if (!p0 || !p1) return "ΔT: N/A";
+          const t1 = safeNum(p0.temperature);
+          const t2 = safeNum(p1.temperature);
           return t1 !== null && t2 !== null
             ? `ΔT: ${(t2 - t1).toFixed(1)}°C`
             : "ΔT: N/A";
@@ -1099,23 +1109,25 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
         color: isDarkMode ? "#f87171" : "#dc2626",
       },
       {
-        from: points[1],
-        to: points[2],
+        from: p1,
+        to: p2,
         label: (() => {
-          const p1 = safeNum(points[1].pressure);
-          const p2 = safeNum(points[2].pressure);
-          return p1 !== null && p2 !== null
-            ? `ΔP: ${((p1 - p2) / 1000).toFixed(1)}MPa`
+          if (!p1 || !p2) return "ΔP: N/A";
+          const p1v = safeNum(p1.pressure);
+          const p2v = safeNum(p2.pressure);
+          return p1v !== null && p2v !== null
+            ? `ΔP: ${((p1v - p2v) / 1000).toFixed(1)}MPa`
             : "ΔP: N/A";
         })(),
         color: isDarkMode ? "#60a5fa" : "#2563eb",
       },
       {
-        from: points[2],
-        to: points[3],
+        from: p2,
+        to: p3,
         label: (() => {
-          const h2 = safeNum(points[2].enthalpy);
-          const h3 = safeNum(points[3].enthalpy);
+          if (!p2 || !p3) return "ΔH: N/A";
+          const h2 = safeNum(p2.enthalpy);
+          const h3 = safeNum(p3.enthalpy);
           return h2 !== null && h3 !== null
             ? `ΔH: ${(h2 - h3).toFixed(1)}kJ/kg`
             : "ΔH: N/A";
@@ -1123,11 +1135,12 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
         color: isDarkMode ? "#34d399" : "#059669",
       },
       {
-        from: points[3],
-        to: points[0],
+        from: p3,
+        to: p0,
         label: (() => {
-          const h0 = safeNum(points[0].enthalpy);
-          const h3 = safeNum(points[3].enthalpy);
+          if (!p0 || !p3) return "ΔH: N/A";
+          const h0 = safeNum(p0.enthalpy);
+          const h3 = safeNum(p3.enthalpy);
           return h0 !== null && h3 !== null
             ? `ΔH: ${(h0 - h3).toFixed(1)}kJ/kg`
             : "ΔH: N/A";
@@ -1137,6 +1150,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     ];
 
     processes.forEach((process) => {
+      if (!process.from || !process.to) return;
       const midX = margin + (process.from.x + process.to.x) / 2;
       const midY = margin + (process.from.y + process.to.y) / 2;
 
@@ -1196,7 +1210,9 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       const colors = isDarkMode
         ? ["#f87171", "#60a5fa", "#34d399", "#fbbf24"]
         : ["#dc2626", "#2563eb", "#059669", "#d97706"];
-      ctx.strokeStyle = colors[index];
+      const color = colors[index];
+      if (color === undefined) return;
+      ctx.strokeStyle = color;
       ctx.lineWidth = 1;
 
       const maxWidth = Math.max(
@@ -1214,7 +1230,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       ctx.stroke();
 
       // Draw labels
-      ctx.fillStyle = colors[index];
+      ctx.fillStyle = color;
       ctx.font = "10px 'Inter', sans-serif";
       ctx.textAlign = index % 2 === 0 ? "left" : "right";
 

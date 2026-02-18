@@ -19,12 +19,6 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
 
-interface Company {
-  company_id: string;
-  company_name: string;
-  role: string;
-}
-
 export function CompanySwitcher() {
   const [open, setOpen] = useState(false);
   const { companies, activeCompany, switchCompany, isLoading } =

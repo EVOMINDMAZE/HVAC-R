@@ -1,9 +1,13 @@
 import { chromium } from "@playwright/test";
 import fs from "fs/promises";
 import path from "path";
+import { launchChromium } from "./_chromium.mjs";
 
 const baseUrl = process.env.BASE_URL || "http://localhost:8090";
 const outDir = process.env.OUT_DIR || path.resolve("output/playwright/ux");
+const headed = ["1", "true", "yes"].includes(
+  String(process.env.HEADED || "").toLowerCase(),
+);
 
 async function resetEventStore(page) {
   await page.evaluate(() => {
@@ -43,11 +47,7 @@ function countByEvent(events) {
   await fs.mkdir(outDir, { recursive: true });
   const reportPath = path.join(outDir, "tracking-verification.json");
 
-  const executablePath =
-    process.env.CHROME_PATH ||
-    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
-
-  const browser = await chromium.launch({ executablePath, headless: true });
+  const { browser } = await launchChromium({ headed });
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
 
@@ -56,6 +56,8 @@ function countByEvent(events) {
   // Landing checks
   await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
   await resetEventStore(page);
+
+  await page.getByRole("button", { name: /Engineering/i }).first().click();
 
   await clickAndWaitForUrl(
     page,
@@ -71,8 +73,14 @@ function countByEvent(events) {
   );
   await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
 
-  await page.getByRole("link", { name: /See full .*tool inventory/i }).first().click();
-  await page.getByRole("button", { name: /See Full .*Tool List/i }).first().click();
+  await page
+    .getByRole("link", { name: /(View all tools|See full .*tool inventory)/i })
+    .first()
+    .click();
+  await page
+    .getByRole("button", { name: /(See Full .*Tool List|Show Condensed Tool List)/i })
+    .first()
+    .click();
 
   await page.locator("#pricing-decision a[href='/pricing']").first().click();
   await page.waitForURL(/\/pricing/, { timeout: 15000 });
@@ -107,7 +115,9 @@ function countByEvent(events) {
   // Use-cases anchor behavior
   await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
   await page.getByRole("link", { name: /^Use Cases$/i }).first().click();
-  await page.waitForURL(/\/features#use-cases/, { timeout: 15000 });
+  await page.waitForFunction(() => window.location.hash === "#use-cases", {
+    timeout: 15000,
+  });
   await page.waitForTimeout(700);
   const useCasesInView = await page.evaluate(() => {
     const section = document.getElementById("use-cases");
@@ -125,6 +135,7 @@ function countByEvent(events) {
   const eventCounts = countByEvent(events);
 
   const required = [
+    "landing_hero_category_focus",
     "landing_hero_primary_click",
     "landing_hero_secondary_click",
     "landing_view_all_tools_click",

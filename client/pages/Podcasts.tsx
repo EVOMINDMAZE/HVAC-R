@@ -14,11 +14,10 @@ import {
   Share2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SEO } from "@/components/SEO";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 
 export function Podcasts() {
   const [podcasts, setPodcasts] = useState<PodcastEpisode[]>([]);
@@ -38,7 +37,7 @@ export function Podcasts() {
       try {
         const data = await fetchPodcastsFromRSS();
         setPodcasts(data);
-        if (data.length > 0) setActivePodcast(data[0]);
+        if (data.length > 0 && data[0]) setActivePodcast(data[0]);
       } catch (error) {
         console.error("Failed to load podcasts", error);
       } finally {
@@ -126,10 +125,7 @@ export function Podcasts() {
   };
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-
-      <main className="pt-24 pb-20">
+    <PublicPageShell mainClassName="pt-24 pb-20">
         <SEO
           title="Podcasts"
           description="Audio briefings for HVAC&R, refrigeration, and cryogenic engineering teams."
@@ -278,9 +274,6 @@ export function Podcasts() {
             </Card>
           </div>
         </section>
-      </main>
-
-      <Footer />
-    </div>
+    </PublicPageShell>
   );
 }

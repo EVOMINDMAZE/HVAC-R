@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, FileText, AlertCircle } from "lucide-react";
+import { Loader2, FileText } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { CreateWarrantyClaimDialog } from "./CreateWarrantyClaimDialog";
 

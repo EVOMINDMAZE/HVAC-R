@@ -3,22 +3,20 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router-dom';
 import { ConsentBanner, useConsent } from '../ConsentBanner';
-import { supabase } from '@/lib/supabase';
 
-// Mock supabase client
+const mockAuth = {
+  getUser: vi.fn(),
+  getSession: vi.fn(),
+};
+
 vi.mock('@/lib/supabase', () => {
-  const mockAuth = {
-    getUser: vi.fn(),
-    getSession: vi.fn(),
-  };
   return {
-    supabase: {
+    getSupabaseOrThrow: () => ({
       auth: mockAuth,
-    },
+    }),
   };
 });
 
-// Mock fetch globally
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
@@ -27,18 +25,14 @@ const renderWithRouter = (ui: JSX.Element) => {
 };
 
 describe('ConsentBanner', () => {
-  beforeEach(async () => {
-    // Clear all mocks and localStorage before each test
+  beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
     mockFetch.mockClear();
     
-    // Setup default mock implementations
-    const { supabase } = await import('@/lib/supabase');
-    vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: null }, error: null } as any);
-    vi.mocked(supabase.auth.getSession).mockResolvedValue({ data: { session: { access_token: 'mock-token' } }, error: null } as any);
+    mockAuth.getUser.mockResolvedValue({ data: { user: null }, error: null });
+    mockAuth.getSession.mockResolvedValue({ data: { session: { access_token: 'mock-token' } }, error: null });
     
-    // Mock successful fetch response
     mockFetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ success: true, consent_id: 'test-123' }),
@@ -102,43 +96,34 @@ describe('ConsentBanner', () => {
       const onDismiss = vi.fn();
       renderWithRouter(<ConsentBanner onConsentGranted={onConsentGranted} onDismiss={onDismiss} />);
       
-      // Mock unauthenticated user
-      const { supabase } = await import('@/lib/supabase');
-      vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: null }, error: null } as any);
+      mockAuth.getUser.mockResolvedValue({ data: { user: null }, error: null });
       
-      // Click Accept All
       fireEvent.click(screen.getByText('Accept All'));
       
-      // Should show loading state
       expect(screen.getByText('Saving...')).toBeInTheDocument();
       
       await waitFor(() => {
-        // localStorage should be updated
         expect(localStorage.getItem('consent_essential_cookies_v1.0')).toBe('true');
         expect(localStorage.getItem('consent_given')).toBe('true');
         expect(localStorage.getItem('consent_timestamp')).toBeTruthy();
         
-        // Callbacks should be called
         expect(onConsentGranted).toHaveBeenCalledTimes(1);
         expect(onDismiss).toHaveBeenCalledTimes(1);
         
-        // fetch should NOT be called for unauthenticated user
         expect(mockFetch).not.toHaveBeenCalled();
       });
     });
 
     it('should call API and store in localStorage when authenticated', async () => {
-      const mockUser = { id: 'user-123' } as any;
-      const { supabase } = await import('@/lib/supabase');
-      vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: mockUser }, error: null } as any);
-      vi.mocked(supabase.auth.getSession).mockResolvedValue({ data: { session: { access_token: 'auth-token' } }, error: null } as any);
+      const mockUser = { id: 'user-123' };
+      mockAuth.getUser.mockResolvedValue({ data: { user: mockUser }, error: null });
+      mockAuth.getSession.mockResolvedValue({ data: { session: { access_token: 'auth-token' } }, error: null });
       
       renderWithRouter(<ConsentBanner />);
       
       fireEvent.click(screen.getByText('Accept All'));
       
       await waitFor(() => {
-        // fetch should be called with correct parameters
         expect(mockFetch).toHaveBeenCalledTimes(1);
         expect(mockFetch).toHaveBeenCalledWith('/api/privacy/consent', {
           method: 'POST',
@@ -153,18 +138,15 @@ describe('ConsentBanner', () => {
           }),
         });
         
-        // localStorage should be updated
         expect(localStorage.getItem('consent_essential_cookies_v1.0')).toBe('true');
         expect(localStorage.getItem('consent_given')).toBe('true');
       });
     });
 
     it('should handle API error gracefully and still store locally', async () => {
-      const mockUser = { id: 'user-123' } as any;
-      const { supabase } = await import('@/lib/supabase');
-      vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: mockUser }, error: null } as any);
+      const mockUser = { id: 'user-123' };
+      mockAuth.getUser.mockResolvedValue({ data: { user: mockUser }, error: null });
       
-      // Mock fetch to fail
       mockFetch.mockRejectedValue(new Error('API Error'));
       
       renderWithRouter(<ConsentBanner />);
@@ -172,10 +154,8 @@ describe('ConsentBanner', () => {
       fireEvent.click(screen.getByText('Accept All'));
       
       await waitFor(() => {
-        // fetch should have been attempted
         expect(mockFetch).toHaveBeenCalledTimes(1);
         
-        // localStorage should still be updated (fallback)
         expect(localStorage.getItem('consent_essential_cookies_v1.0')).toBe('true');
         expect(localStorage.getItem('consent_given')).toBe('true');
       });
@@ -206,15 +186,13 @@ describe('ConsentBanner', () => {
 });
 
 describe('useConsent hook', () => {
-  beforeEach(async () => {
+  beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
     mockFetch.mockClear();
     
-    // Setup default mocks
-    const { supabase } = await import('@/lib/supabase');
-    vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: null }, error: null } as any);
-    vi.mocked(supabase.auth.getSession).mockResolvedValue({ data: { session: { access_token: 'mock-token' } }, error: null } as any);
+    mockAuth.getUser.mockResolvedValue({ data: { user: null }, error: null });
+    mockAuth.getSession.mockResolvedValue({ data: { session: { access_token: 'mock-token' } }, error: null });
     
     mockFetch.mockResolvedValue({
       ok: true,
@@ -228,18 +206,15 @@ describe('useConsent hook', () => {
 
   describe('hasConsent', () => {
     it('should return false when window is undefined', async () => {
-      // Temporarily set window to undefined
       const originalWindow = global.window;
       delete (global as any).window;
       
       try {
-        // Import hook after removing window to test SSR scenario
         const { useConsent } = await import('../ConsentBanner');
         const { hasConsent } = useConsent();
         
         expect(hasConsent()).toBe(false);
       } finally {
-        // Restore window
         global.window = originalWindow;
       }
     });
@@ -294,7 +269,6 @@ describe('useConsent hook', () => {
         
         await recordConsent('essential_cookies', 'v1.0', true);
         
-        // localStorage should not be modified
         expect(localStorage.length).toBe(0);
       } finally {
         global.window = originalWindow;
@@ -310,24 +284,20 @@ describe('useConsent hook', () => {
       expect(localStorage.getItem('consent_given')).toBe('true');
       expect(localStorage.getItem('consent_timestamp')).toBeTruthy();
       
-      // API should not be called for unauthenticated user
       expect(mockFetch).not.toHaveBeenCalled();
     });
 
     it('should call API and store locally for authenticated user', async () => {
-      const mockUser = { id: 'user-123' } as any;
-      const { supabase } = await import('@/lib/supabase');
-      vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: mockUser }, error: null } as any);
+      const mockUser = { id: 'user-123' };
+      mockAuth.getUser.mockResolvedValue({ data: { user: mockUser }, error: null });
       
       const { recordConsent } = useConsent();
       
       await recordConsent('analytics_tracking', 'v1.5', false);
       
-      // localStorage should be updated
       expect(localStorage.getItem('consent_analytics_tracking_v1.5')).toBe('false');
       expect(localStorage.getItem('consent_given')).toBe('true');
       
-      // API should be called
       expect(mockFetch).toHaveBeenCalledTimes(1);
       expect(mockFetch).toHaveBeenCalledWith('/api/privacy/consent', {
         method: 'POST',
@@ -344,9 +314,8 @@ describe('useConsent hook', () => {
     });
 
     it('should handle API errors gracefully for authenticated user', async () => {
-      const mockUser = { id: 'user-123' } as any;
-      const { supabase } = await import('@/lib/supabase');
-      vi.mocked(supabase.auth.getUser).mockResolvedValue({ data: { user: mockUser }, error: null } as any);
+      const mockUser = { id: 'user-123' };
+      mockAuth.getUser.mockResolvedValue({ data: { user: mockUser }, error: null });
       
       // Mock fetch to fail
       mockFetch.mockRejectedValue(new Error('Network error'));

@@ -20,7 +20,6 @@ export function FeatureLock({
   featureName,
   children,
   description,
-  showLockIcon = true,
   className = "",
   overlayClassName = "",
   disabled = false,

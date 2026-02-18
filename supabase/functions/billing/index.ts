@@ -1,16 +1,12 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import Stripe from "https://esm.sh/stripe@14.21.0";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-  "Access-Control-Allow-Credentials": "true",
-};
+import { getCorsHeaders } from "../_shared/cors.ts";
 
 serve(async (req) => {
+  const origin = req.headers.get('origin');
+  const corsHeaders = getCorsHeaders(origin);
+  
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -352,7 +348,7 @@ async function handleWebhook(req: Request) {
 
     // Handle the event
     switch (event.type) {
-      case "checkout.session.completed":
+      case "checkout.session.completed": {
         console.log("Checkout session completed:", event.data.object.id);
         const session = event.data.object;
         const userId = session.metadata?.userId;
@@ -375,8 +371,9 @@ async function handleWebhook(req: Request) {
           }
         }
         break;
+      }
 
-      case "customer.subscription.updated":
+      case "customer.subscription.updated": {
         console.log("Subscription updated:", event.data.object.id);
         const subscription = event.data.object;
         const status = subscription.status; // active, past_due, canceled, etc.
@@ -410,8 +407,9 @@ async function handleWebhook(req: Request) {
           console.log("No userId in subscription metadata, skipping DB update");
         }
         break;
+      }
 
-      case "customer.subscription.deleted":
+      case "customer.subscription.deleted": {
         console.log("Subscription deleted:", event.data.object.id);
         const deletedSub = event.data.object;
         const delUserId = deletedSub.metadata?.userId;
@@ -428,6 +426,7 @@ async function handleWebhook(req: Request) {
             .eq("user_id", delUserId);
         }
         break;
+      }
 
       case "invoice.payment_succeeded":
         console.log("Payment succeeded for invoice:", event.data.object.id);

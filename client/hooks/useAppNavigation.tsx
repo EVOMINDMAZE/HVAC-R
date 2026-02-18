@@ -1,7 +1,9 @@
 import {
   LayoutGrid,
-  Radio,
   Zap,
+  Gauge,
+  Route,
+  Siren,
   Briefcase,
   Users,
   Wrench,
@@ -24,11 +26,13 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useSupabaseAuth";
+import type { HudBadgeKey } from "@/components/hud/HudBadge";
 
 export interface NavItem {
   to: string;
   label: string;
   icon: any;
+  badgeKey?: HudBadgeKey;
   hash?: string;
   desc?: string;
 }
@@ -51,7 +55,7 @@ export const CALCULATOR_DETAILS: Record<string, { desc: string }> = {
 export function useAppNavigation() {
   const { role, isLoading, isAuthenticated } = useAuth();
 
-  const effectiveRole = role || "admin";
+  const effectiveRole = role;
   const isAdmin = effectiveRole === "admin" || effectiveRole === "owner";
   const isManager = effectiveRole === "manager";
   const isTech = effectiveRole === "tech" || effectiveRole === "technician";
@@ -66,14 +70,14 @@ export function useAppNavigation() {
     { to: "/contact", label: "Support", icon: ExternalLink },
   ];
 
-  if (isLoading) {
+  if (isLoading || (isAuthenticated && !effectiveRole)) {
     return {
       isAdmin: false,
       isManager: false,
       isTech: false,
       isClient: false,
       landingLinks,
-      mainLinks: [{ to: "/dashboard", label: "Dashboard", icon: LayoutGrid }],
+      mainLinks: [] as NavItem[],
       groups: [] as NavGroup[],
       resources: {
         visible: true,
@@ -84,26 +88,26 @@ export function useAppNavigation() {
 
   const workItems: NavItem[] = isClient
     ? [
-        { to: "/portal", label: "Client Home", icon: LayoutGrid },
-        { to: "/dashboard/jobs", label: "My Jobs", icon: Briefcase },
-        { to: "/triage", label: "Request Service", icon: Wrench },
+        { to: "/portal", label: "Client Home", icon: Gauge, badgeKey: "portal" },
+        { to: "/dashboard/jobs", label: "My Jobs", icon: Briefcase, badgeKey: "jobs" },
+        { to: "/triage", label: "Request Service", icon: Wrench, badgeKey: "triage" },
       ]
     : [
-        { to: "/dashboard", label: "Dashboard", icon: LayoutGrid },
-        { to: "/dashboard/dispatch", label: "Dispatch", icon: Radio },
-        { to: "/dashboard/triage", label: "Triage", icon: Zap },
-        { to: "/dashboard/jobs", label: "Jobs", icon: Briefcase },
-        { to: "/dashboard/clients", label: "Clients", icon: Users },
+        { to: "/dashboard", label: "Dashboard", icon: Gauge, badgeKey: "dashboard" },
+        { to: "/dashboard/dispatch", label: "Dispatch Board", icon: Route, badgeKey: "dispatch" },
+        { to: "/dashboard/triage", label: "Triage Board", icon: Siren, badgeKey: "triage" },
+        { to: "/dashboard/jobs", label: "Jobs", icon: Briefcase, badgeKey: "jobs" },
+        { to: "/dashboard/clients", label: "Clients", icon: Users, badgeKey: "clients" },
       ];
 
-  const fieldItems: NavItem[] = [{ to: "/tech", label: "Field Jobs", icon: Briefcase }];
+  const fieldItems: NavItem[] = [{ to: "/tech", label: "Field Jobs", icon: Briefcase, badgeKey: "tech" }];
 
   const toolsItems: NavItem[] = [
-    { to: "/troubleshooting", label: "Diagnostics", icon: Zap },
+    { to: "/troubleshooting", label: "Troubleshooting", icon: Zap },
     { to: "/ai/pattern-insights", label: "Pattern Insights", icon: Brain },
     { to: "/tools/iaq-wizard", label: "IAQ Wizard", icon: Wind },
     { to: "/tools/warranty-scanner", label: "Warranty Scanner", icon: Scan },
-    { to: "/diy-calculators", label: "DIY Calculators", icon: Hammer },
+    { to: "/diy-calculators", label: "Field Calculators", icon: Hammer },
   ];
 
   const engineeringItems: NavItem[] = [
@@ -111,19 +115,19 @@ export function useAppNavigation() {
       to: "/tools/standard-cycle",
       label: "Standard Cycle",
       icon: FileText,
-      desc: CALCULATOR_DETAILS["/tools/standard-cycle"].desc,
+      desc: CALCULATOR_DETAILS["/tools/standard-cycle"]?.desc,
     },
     {
       to: "/tools/refrigerant-comparison",
       label: "Refrigerant Comparison",
       icon: Zap,
-      desc: CALCULATOR_DETAILS["/tools/refrigerant-comparison"].desc,
+      desc: CALCULATOR_DETAILS["/tools/refrigerant-comparison"]?.desc,
     },
     {
       to: "/tools/cascade-cycle",
       label: "Cascade Cycle",
       icon: Cpu,
-      desc: CALCULATOR_DETAILS["/tools/cascade-cycle"].desc,
+      desc: CALCULATOR_DETAILS["/tools/cascade-cycle"]?.desc,
     },
   ];
 

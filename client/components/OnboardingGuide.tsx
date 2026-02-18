@@ -74,7 +74,7 @@ export function OnboardingGuide({ userName, className }: OnboardingGuideProps) {
     setActiveStep(0);
   };
 
-  const currentStep = steps[activeStep];
+  const currentStep = steps[activeStep] ?? steps[0]!;
   const StepIcon = currentStep.icon;
 
   return (

@@ -537,12 +537,12 @@ test.describe("HVAC-R Role-Based Access Control E2E Tests", () => {
   // ========================================
 
   test.describe("Test Summary", () => {
-    test("All roles tested successfully", async ({}) => {
+    test("All roles tested successfully", async () => {
       console.log("\n" + "=".repeat(60));
       console.log("HVAC-R ROLE-BASED ACCESS CONTROL TEST SUITE COMPLETE");
       console.log("=".repeat(60));
       console.log(`
-TEST RESULTS:
+	TEST RESULTS:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ✅ Admin Role:
    - Full access to all administrative pages

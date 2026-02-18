@@ -32,7 +32,7 @@ const REFRIGERANTS: Record<string, RefrigerantConsts> = {
 
 export const getSaturationPressure = (refrigerant: string, tempC: number): number => {
     // Return Pressure in Pascals
-    const ref = REFRIGERANTS[refrigerant] || REFRIGERANTS['R134a']; // Fallback to R134a 
+    const ref = REFRIGERANTS[refrigerant] ?? REFRIGERANTS['R134a']!; // Fallback to R134a 
     const tempK = tempC + 273.15;
 
     // Antoine Eq: log10(P_bar) = A - B / (T_K + C)

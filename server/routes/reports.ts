@@ -15,12 +15,9 @@ export const generateReportPdf: RequestHandler = async (req, res) => {
     const {
       reportConfig,
       results,
-      cycleData,
       costAnalysis,
       sustainability,
       diagramDataUrl,
-      refrigerant,
-      unitSystem,
     } = req.body as any;
 
     // Create PDF
@@ -88,7 +85,7 @@ export const generateReportPdf: RequestHandler = async (req, res) => {
           y = y - imgHeight - 16;
         }
       } catch (e) {
-        console.error('Failed to embed diagram image into PDF', e);
+        console.error("Failed to embed diagram image into PDF", e);
       }
     }
 
@@ -164,7 +161,7 @@ function getValue(obj: any, keys: string[]) {
   const ks = Object.keys(obj || {});
   for (const k of ks) {
     for (const want of keys) {
-      if (k.toLowerCase().includes(want.split('_')[0].toLowerCase())) {
+      if (k.toLowerCase().includes(want.split('_')[0]?.toLowerCase() ?? '')) {
         const val = obj[k];
         if (val !== undefined && val !== null && !isNaN(Number(val))) return Number(val);
       }

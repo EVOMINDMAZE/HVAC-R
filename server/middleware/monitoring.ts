@@ -457,21 +457,19 @@ export function getTopEndpoints(limit: number = 10): Array<{
 }
 
 export function cleanupOldLogs(maxAge: number = 24 * 60 * 60 * 1000): void {
-  const cutoff = new Date(Date.now() - maxAge);
-  
   const requestCutoff = new Date(Date.now() - maxAge);
   const perfCutoff = new Date(Date.now() - maxAge);
   const errorCutoff = new Date(Date.now() - maxAge);
   
-  while (requestLog.length > 0 && requestLog[0].timestamp < requestCutoff) {
+  while (requestLog.length > 0 && requestLog[0]!.timestamp < requestCutoff) {
     requestLog.shift();
   }
   
-  while (performanceMetrics.length > 0 && performanceMetrics[0].timestamp < perfCutoff) {
+  while (performanceMetrics.length > 0 && performanceMetrics[0]!.timestamp < perfCutoff) {
     performanceMetrics.shift();
   }
   
-  while (errorLog.length > 0 && errorLog[0].timestamp < errorCutoff) {
+  while (errorLog.length > 0 && errorLog[0]!.timestamp < errorCutoff) {
     errorLog.shift();
   }
 }

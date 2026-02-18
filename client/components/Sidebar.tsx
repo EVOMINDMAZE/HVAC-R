@@ -2,8 +2,8 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { useAuth } from "@/hooks/useSupabaseAuth";
 import { useAppNavigation, NavItem } from "@/hooks/useAppNavigation";
-import { CompanySwitcher } from "@/components/CompanySwitcher";
 import { cn } from "@/lib/utils";
+import { HudBadge } from "@/components/hud/HudBadge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,10 +35,10 @@ function GroupMenu({
       <DropdownMenuTrigger asChild>
         <button
           className={cn(
-            "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+            "inline-flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg px-3 text-sm font-medium transition-colors",
             active
-              ? "bg-secondary text-foreground"
-              : "text-muted-foreground hover:bg-secondary/70 hover:text-foreground",
+              ? "bg-background text-foreground shadow-sm ring-1 ring-border"
+              : "text-muted-foreground hover:bg-background hover:text-foreground",
           )}
         >
           {label}
@@ -46,14 +46,18 @@ function GroupMenu({
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-72 p-1">
-        <DropdownMenuLabel className="text-xs uppercase tracking-[0.08em] text-muted-foreground">
+        <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
           {label}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {items.map((item) => (
           <DropdownMenuItem key={item.to} asChild>
             <Link to={item.to} className="flex items-start gap-2 rounded-md p-2">
-              <item.icon className="mt-0.5 h-4 w-4 text-muted-foreground" />
+              {item.badgeKey ? (
+                <HudBadge badgeKey={item.badgeKey} size={20} decorative />
+              ) : (
+                <item.icon className="mt-0.5 h-4 w-4 text-muted-foreground" />
+              )}
               <div>
                 <p className="text-sm font-medium">{item.label}</p>
                 {item.desc ? <p className="text-xs text-muted-foreground">{item.desc}</p> : null}
@@ -75,15 +79,17 @@ export function Sidebar() {
     return (
       <nav className="hidden md:block w-full border-b border-border bg-background/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-[1600px] items-center gap-2 px-4 py-2 sm:px-6 lg:px-8">
-          {landingLinks.map((item) => (
+          {landingLinks.map((item) => {
+            const target = item.hash ? `${item.to}${item.hash}` : item.to;
+            return (
             <Link
-              key={item.to}
-              to={item.to}
+              key={target}
+              to={target}
               className="rounded-full px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary/80 hover:text-foreground"
             >
               {item.label}
             </Link>
-          ))}
+          )})}
         </div>
       </nav>
     );
@@ -96,37 +102,42 @@ export function Sidebar() {
   return (
     <nav className="hidden md:block w-full border-b border-border bg-background/95 backdrop-blur-md">
       <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-3 px-4 py-2 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
-          {workGroup?.items.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                cn(
-                  "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
-                  isActive
-                    ? "bg-secondary text-foreground"
-                    : "text-muted-foreground hover:bg-secondary/80 hover:text-foreground",
-                )
-              }
-            >
-              <item.icon className="h-4 w-4" />
-              {item.label}
-            </NavLink>
-          ))}
+        <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide lg:flex-wrap">
+          <div className="flex shrink-0 items-center gap-1.5 rounded-2xl border border-border bg-muted/35 p-1.5 shadow-sm">
+            {workGroup?.items.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  cn(
+                    "inline-flex h-8 items-center gap-1.5 whitespace-nowrap rounded-xl px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                    isActive
+                      ? "bg-background text-foreground shadow-sm ring-1 ring-border"
+                      : "text-muted-foreground hover:bg-background/80 hover:text-foreground",
+                  )
+                }
+              >
+                {item.badgeKey ? (
+                  <HudBadge badgeKey={item.badgeKey} size={20} decorative />
+                ) : (
+                  <item.icon className="h-4 w-4" />
+                )}
+                {item.label}
+              </NavLink>
+            ))}
 
-          {otherGroups.map((group) => (
-            <GroupMenu
-              key={group.id}
-              label={group.label}
-              items={group.items}
-              pathname={location.pathname}
-            />
-          ))}
+            {otherGroups.map((group) => (
+              <GroupMenu
+                key={group.id}
+                label={group.label}
+                items={group.items}
+                pathname={location.pathname}
+              />
+            ))}
+          </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <CompanySwitcher />
           {resources.visible ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -139,7 +150,7 @@ export function Sidebar() {
                 {resources.groups.map((group, idx) => (
                   <div key={group.label}>
                     {idx > 0 ? <DropdownMenuSeparator /> : null}
-                    <DropdownMenuLabel className="text-xs uppercase tracking-[0.08em] text-muted-foreground">
+                    <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
                       {group.label}
                     </DropdownMenuLabel>
                     {group.items.map((item: any) => (
@@ -159,7 +170,11 @@ export function Sidebar() {
                           </a>
                         ) : (
                           <Link to={item.to} className="flex items-start gap-2 rounded-md p-2">
-                            <item.icon className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                            {item.badgeKey ? (
+                              <HudBadge badgeKey={item.badgeKey} size={20} decorative />
+                            ) : (
+                              <item.icon className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                            )}
                             <div>
                               <p className="text-sm font-medium">{item.label}</p>
                               <p className="text-xs text-muted-foreground">{item.desc}</p>

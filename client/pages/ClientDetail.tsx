@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import {
   ArrowLeft,
   Building,
@@ -21,7 +21,6 @@ import {
   BarChart3,
   Edit,
   Bell,
-  BellOff,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,7 +28,6 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-  CardDescription,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
@@ -172,9 +170,19 @@ export function ClientDetail() {
   const [isSavingPrefs, setIsSavingPrefs] = useState(false);
   const [forceSend, setForceSend] = useState(false);
   const [isSendingManual, setIsSendingManual] = useState(false);
+  const isValidUuid = (value: string) =>
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      value,
+    );
 
   useEffect(() => {
-    if (id) fetchData();
+    if (!id) return;
+    if (!isValidUuid(id)) {
+      setLoading(false);
+      setClient(null);
+      return;
+    }
+    fetchData();
   }, [id]);
 
   async function fetchData() {
@@ -530,21 +538,21 @@ export function ClientDetail() {
   const getAssetIcon = (type: string) => {
     switch (type) {
       case "Freezer":
-        return <Snowflake className="h-5 w-5 text-cyan-600" />;
+        return <Snowflake className="h-5 w-5 text-primary" />;
       case "Chiller":
-        return <Snowflake className="h-5 w-5 text-cyan-500" />;
+        return <Snowflake className="h-5 w-5 text-primary" />;
       case "HVAC":
-        return <Fan className="h-5 w-5 text-slate-500" />;
+        return <Fan className="h-5 w-5 text-muted-foreground" />;
       case "Sensor":
-        return <WifiOff className="h-5 w-5 text-slate-600" />;
+        return <WifiOff className="h-5 w-5 text-muted-foreground" />;
       default:
-        return <Activity className="h-5 w-5 text-slate-500" />;
+        return <Activity className="h-5 w-5 text-muted-foreground" />;
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6 space-y-6">
+      <div className="min-h-screen space-y-6 bg-background p-6">
         <Skeleton className="h-12 w-1/3" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Skeleton className="h-32 w-full" />
@@ -563,7 +571,7 @@ export function ClientDetail() {
       <div className="space-y-8">
         <Button
           variant="ghost"
-          className="mb-2 pl-0 hover:bg-transparent hover:text-cyan-600 dark:hover:text-cyan-400"
+          className="mb-2 pl-0 text-muted-foreground hover:bg-transparent hover:text-foreground"
           onClick={() => navigate("/dashboard/clients")}
         >
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Clients
@@ -572,22 +580,22 @@ export function ClientDetail() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cyan-600 to-slate-700 p-8 shadow-xl shadow-slate-900/20 text-white"
+          className="relative overflow-hidden rounded-3xl border border-border bg-card p-8 text-foreground shadow-sm"
         >
           <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="flex items-center gap-6">
-              <div className="h-20 w-20 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-inner">
-                <Building className="h-10 w-10 text-white" />
+              <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-border bg-secondary shadow-sm">
+                <Building className="h-10 w-10 text-primary" />
               </div>
               <div>
                 <h1 className="text-3xl font-bold tracking-tight">
                   {client.name}
                 </h1>
-                <div className="flex flex-wrap items-center gap-4 mt-2 text-slate-100">
-                  <span className="flex items-center gap-1.5 bg-cyan-500/30 px-3 py-1 rounded-full text-sm backdrop-blur-sm border border-cyan-400/30">
+                <div className="mt-2 flex flex-wrap items-center gap-4 text-muted-foreground">
+                  <span className="flex items-center gap-1.5 rounded-full border border-border bg-secondary px-3 py-1 text-sm text-foreground">
                     {client.contact_name}
                   </span>
-                  <span className="flex items-center gap-1.5 text-sm opacity-80">
+                  <span className="flex items-center gap-1.5 text-sm">
                     {client.contact_email}
                   </span>
                 </div>
@@ -597,7 +605,7 @@ export function ClientDetail() {
             <div className="flex gap-3">
               <Button
                 variant="outline"
-                className="bg-white/10 text-white border-white/20 hover:bg-white/20 hover:text-white"
+                className="border-border bg-background text-foreground hover:bg-secondary"
                 onClick={() => {
                   setEditForm(client);
                   setIsEditOpen(true);
@@ -608,14 +616,14 @@ export function ClientDetail() {
               </Button>
               <Button
                 variant="outline"
-                className="bg-white/10 text-white border-white/20 hover:bg-white/20 hover:text-white"
+                className="border-border bg-background text-foreground hover:bg-secondary"
                 onClick={() => setIsInviteOpen(true)}
               >
                 <Mail className="h-4 w-4 mr-2" />
                 Invite User
               </Button>
               <Button
-                className="bg-slate-600 hover:bg-slate-700 text-white shadow-md border-0 transition-all font-medium"
+                className="border border-border bg-secondary text-foreground shadow-sm transition-all hover:bg-secondary/70"
                 onClick={() => setIsSmartWizardOpen(true)}
               >
                 <Wifi className="h-4 w-4 mr-2" />
@@ -624,7 +632,7 @@ export function ClientDetail() {
 
               <Dialog open={isAssetOpen} onOpenChange={setIsAssetOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-white text-cyan-700 hover:bg-cyan-50 hover:text-cyan-800 shadow-lg border-0 font-semibold transition-all hover:scale-105 active:scale-95">
+                  <Button className="font-semibold">
                     <Plus className="h-4 w-4 mr-2" />
                     Add Asset
                   </Button>
@@ -703,8 +711,8 @@ export function ClientDetail() {
             </div>
           </div>
 
-          <div className="absolute -top-20 -right-20 w-80 h-80 bg-cyan-500/30 rounded-full blur-3xl" />
-          <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-slate-500/30 rounded-full blur-3xl" />
+          <div className="pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-primary/10 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-secondary blur-3xl" />
 
           {client && (
             <GrantAccessDialog

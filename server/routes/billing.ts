@@ -18,7 +18,7 @@ const priceIdToPlan: { [key: string]: string } = {
 };
 
 // Test route
-router.get("/test", (req, res) => {
+router.get("/test", (_req, res) => {
   res.json({ message: "Billing routes are working!" });
 });
 
@@ -42,13 +42,14 @@ router.post(
         user.id // Pass user ID for metadata
       );
 
-      res.json({
+      return res.json({
         sessionId: session.id,
         url: session.url,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Checkout failed";
       console.error("Error creating checkout session:", error);
-      res.status(500).json({ error: error.message || "Checkout failed" });
+      return res.status(500).json({ error: message });
     }
   },
 );
@@ -67,7 +68,7 @@ router.post(
         // Try fallback lookup
         const customers = await stripe.customers.list({ email: user.email, limit: 1 });
         if (customers.data.length > 0) {
-          customerId = customers.data[0].id;
+          customerId = customers.data[0]?.id;
         }
       }
 
@@ -78,10 +79,11 @@ router.post(
       const returnUrl = `${process.env.CLIENT_URL || "http://localhost:3000"}/profile`;
       const session = await createCustomerPortalSession(customerId, returnUrl);
 
-      res.json({ url: session.url });
-    } catch (error: any) {
+      return res.json({ url: session.url });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Portal session failed";
       console.error("Error creating portal session:", error);
-      res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: message });
     }
   },
 );
@@ -99,7 +101,7 @@ router.get("/subscription", authenticateSupabaseToken, async (req, res) => {
     let customerId = user.stripe_customer_id;
     if (!customerId) {
       const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-      if (customers.data.length > 0) customerId = customers.data[0].id;
+      if (customers.data.length > 0) customerId = customers.data[0]?.id;
     }
 
     if (!customerId) {
@@ -115,7 +117,7 @@ router.get("/subscription", authenticateSupabaseToken, async (req, res) => {
     const priceId = subscription.items.data[0]?.price.id;
     const planName = (priceId && priceIdToPlan[priceId]) || "free";
 
-    res.json({
+    return res.json({
       subscription: {
         id: subscription.id,
         status: subscription.status,
@@ -128,9 +130,10 @@ router.get("/subscription", authenticateSupabaseToken, async (req, res) => {
       plan: planName,
       status: subscription.status,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Failed to fetch subscription";
     console.error("Error fetching subscription:", error);
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: message });
   }
 });
 
@@ -147,9 +150,10 @@ router.post(
     let event;
     try {
       event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
-    } catch (err: any) {
-      console.error("Webhook signature verification failed:", err.message);
-      return res.status(400).send(`Webhook Error: ${err.message}`);
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : "Unknown error";
+      console.error("Webhook signature verification failed:", errMsg);
+      return res.status(400).send(`Webhook Error: ${errMsg}`);
     }
 
     if (!supabaseAdmin) {
@@ -263,6 +267,7 @@ router.post(
     }
 
     res.json({ received: true });
+    return;
   },
 );
 

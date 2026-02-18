@@ -178,7 +178,6 @@ class SimplePatternMigration {
   }
 
   private async getCompanyId(userId: string): Promise<string> {
-    // Simple fallback - try to get from user_roles
     try {
       const { data: role } = await supabaseAdmin!
         .from("user_roles")
@@ -188,7 +187,6 @@ class SimplePatternMigration {
 
       if (role?.company_id) return role.company_id;
     } catch {
-      // Fallback - try companies table
       try {
         const { data: company } = await supabaseAdmin!
           .from("companies")
@@ -198,9 +196,10 @@ class SimplePatternMigration {
 
         if (company?.id) return company.id;
       } catch {
-        return "default-company"; // Last resort
+        return "default-company";
       }
     }
+    return "default-company";
   }
 
   async dryRun(): Promise<void> {
@@ -241,10 +240,10 @@ class SimplePatternMigration {
     }
 
     console.log(
-      `Estimated patterns to create: ${Math.round((potentialPatterns * calculations.length) / 10)}`,
+      `Estimated patterns to create: ${Math.round((potentialPatterns * (calculations || []).length) / 10)}`,
     );
     console.log(
-      `Estimated anomalies to create: ${Math.round((potentialAnomalies * calculations.length) / 10)}`,
+      `Estimated anomalies to create: ${Math.round((potentialAnomalies * (calculations || []).length) / 10)}`,
     );
   }
 }

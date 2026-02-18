@@ -2,11 +2,7 @@ import React, { useState, useRef, useCallback } from "react";
 import Webcam from "react-webcam";
 import Tesseract from "tesseract.js";
 import {
-  Camera,
   RefreshCw,
-  Search,
-  CheckCircle,
-  AlertTriangle,
   Scan,
   Copy,
   ExternalLink,
@@ -19,7 +15,6 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-  CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -169,14 +164,14 @@ export default function WarrantyScanner() {
       serialKeywords.forEach((k) => {
         if (cleanLine.includes(k)) {
           const match = line.match(/[:.\-\s]+([a-zA-Z0-9]{5,})/i);
-          if (match && !foundSerial) foundSerial = match[1].trim();
+          if (match && !foundSerial) foundSerial = match[1]?.trim() ?? "";
         }
       });
 
       modelKeywords.forEach((k) => {
         if (cleanLine.includes(k)) {
           const match = line.match(/[:.\-\s]+([a-zA-Z0-9\-]{5,})/i);
-          if (match && !foundModel) foundModel = match[1].trim();
+          if (match && !foundModel) foundModel = match[1]?.trim() ?? "";
         }
       });
     });

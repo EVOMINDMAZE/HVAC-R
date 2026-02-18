@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { supabase } from "@/lib/supabase";
 import { Loader2 } from "lucide-react";
+import { withPersistedUiFlags } from "@/lib/featureFlags";
 
 interface SubscriptionGuardProps {
   children?: React.ReactNode;
@@ -33,6 +34,7 @@ export function SubscriptionGuard({
   requiredTier,
 }: SubscriptionGuardProps) {
   const { user } = useSupabaseAuth();
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
   const [userTier, setUserTier] = useState<string | undefined>(undefined);
 
@@ -49,7 +51,7 @@ export function SubscriptionGuard({
           .from("subscriptions")
           .select("status, plan")
           .eq("user_id", user.id)
-          .single();
+          .maybeSingle();
 
         let tier = "free";
 
@@ -106,7 +108,12 @@ export function SubscriptionGuard({
 
   if (!hasRequiredTier) {
     // Redirect to pricing page with upgrade suggestion
-    return <Navigate to="/pricing" replace />;
+    return (
+      <Navigate
+        to={withPersistedUiFlags("/pricing", { search: location.search })}
+        replace
+      />
+    );
   }
 
   // Support both Wrapper (children) and Outlet (Route) patterns

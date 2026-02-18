@@ -30,6 +30,7 @@ export function RolePathCards({ segments, onTrack }: RolePathCardsProps) {
                 alt={`${segment.title} workflow preview`}
                 className="landing-path-media"
                 loading="lazy"
+                decoding="async"
               />
             </div>
 

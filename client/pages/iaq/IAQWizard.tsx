@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
@@ -27,14 +27,12 @@ import {
   Thermometer,
   Droplets,
   ShieldCheck,
-  Camera,
   ChevronRight,
   ChevronLeft,
   Loader2,
   CheckCircle2,
   AlertTriangle,
   Info,
-  Smile,
   Frown,
   Meh,
   Sparkles,
@@ -311,7 +309,7 @@ export default function IAQWizard() {
                       max={85}
                       step={1}
                       onValueChange={([v]) =>
-                        setFormData({ ...formData, temperature_f: v })
+                        setFormData({ ...formData, temperature_f: v ?? 72 })
                       }
                     />
                   </div>
@@ -333,7 +331,7 @@ export default function IAQWizard() {
                       max={100}
                       step={1}
                       onValueChange={([v]) =>
-                        setFormData({ ...formData, humidity_percent: v })
+                        setFormData({ ...formData, humidity_percent: v ?? 45 })
                       }
                     />
                   </div>

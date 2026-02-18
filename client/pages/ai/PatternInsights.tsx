@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -20,14 +19,8 @@ import {
 import {
   Brain,
   TrendingUp,
-  AlertTriangle,
-  CheckCircle,
-  BarChart3,
-  Calendar,
-  Target,
   Activity,
   Clock,
-  Filter,
   Download,
   RefreshCw,
 } from "lucide-react";
@@ -36,8 +29,6 @@ import { useToast } from "@/hooks/use-toast";
 import {
   LineChart,
   Line,
-  AreaChart,
-  Area,
   BarChart,
   Bar,
   PieChart,
@@ -94,7 +85,7 @@ export function PatternInsights({ companyId }: PatternInsightsProps) {
   const [patterns, setPatterns] = useState<PatternInsight[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedType, setSelectedType] = useState<string>("all");
-  const [timeRange, setTimeRange] = useState<string>("30d");
+  const [timeRange] = useState<string>("30d");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -106,12 +97,6 @@ export function PatternInsights({ companyId }: PatternInsightsProps) {
   const loadPatternData = async () => {
     setLoading(true);
     try {
-      // Load pattern analytics
-      const analysisResponse = await aiPatternsAPI.analyzePatterns({
-        companyId,
-      });
-
-      // Load patterns by type
       let allPatterns: PatternInsight[] = [];
       const types =
         selectedType === "all"
@@ -185,7 +170,7 @@ export function PatternInsights({ companyId }: PatternInsightsProps) {
     const last30Days = Array.from({ length: 30 }, (_, i) => {
       const date = new Date();
       date.setDate(date.getDate() - (29 - i));
-      return date.toISOString().split("T")[0];
+      return date.toISOString().split("T")[0] as string;
     });
 
     return last30Days.map((date) => {
@@ -478,7 +463,7 @@ export function PatternInsights({ companyId }: PatternInsightsProps) {
                       dataKey="value"
                     >
                       {Object.entries(insights.patternsByType).map(
-                        (entry, index) => (
+                        (_entry, index) => (
                           <Cell
                             key={`cell-${index}`}
                             fill={COLORS[index % COLORS.length]}

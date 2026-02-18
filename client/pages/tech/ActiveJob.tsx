@@ -7,7 +7,6 @@ import {
   CheckCircle,
   ArrowLeft,
   Phone,
-  AlertTriangle,
 } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { AppSectionCard } from "@/components/app/AppSectionCard";
@@ -17,10 +16,14 @@ export default function ActiveJob() {
   const navigate = useNavigate();
   const [job, setJob] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState(false);
+  const [_updating, setUpdating] = useState(false);
 
   // Dev Simulation State
   const [simulating, setSimulating] = useState(false);
+  const isValidUuid = (value: string) =>
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      value,
+    );
 
   // Simulation Effect
   useEffect(() => {
@@ -45,6 +48,11 @@ export default function ActiveJob() {
 
   useEffect(() => {
     if (id) {
+      if (!isValidUuid(id)) {
+        setLoading(false);
+        setJob(null);
+        return;
+      }
       fetchJob();
 
       // Safety Timeout
@@ -57,6 +65,7 @@ export default function ActiveJob() {
 
       return () => clearTimeout(timer);
     }
+    return;
   }, [id]);
 
   useEffect(() => {
@@ -106,6 +115,12 @@ export default function ActiveJob() {
   }
 
   async function fetchJob() {
+    if (!id || !isValidUuid(id)) {
+      setJob(null);
+      setLoading(false);
+      return;
+    }
+
     const { data, error } = await supabase
       .from("jobs")
       .select(
@@ -200,7 +215,7 @@ export default function ActiveJob() {
             <h2 className="font-bold text-lg text-foreground">
               {job.ticket_number}
             </h2>
-            <span className="text-xs text-muted-foreground uppercase">
+            <span className="text-xs text-muted-foreground capitalize">
               {displayStatus.replace("_", " ")}
             </span>
           </div>
@@ -211,7 +226,7 @@ export default function ActiveJob() {
       <div className="app-page pb-32 app-stack-24">
         {/* Client Info */}
         <section>
-          <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
+          <h3 className="app-label mb-2 font-semibold">
             Client
           </h3>
           <AppSectionCard className="p-4">
@@ -237,7 +252,7 @@ export default function ActiveJob() {
         {/* Asset Info */}
         {job.asset && (
           <section>
-            <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
+            <h3 className="app-label mb-2 font-semibold">
               Equipment
             </h3>
             <AppSectionCard className="border-l-4 border-l-primary p-4">
@@ -256,7 +271,7 @@ export default function ActiveJob() {
 
         {/* Timeline (Mini) */}
         <section>
-          <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
+          <h3 className="app-label mb-2 font-semibold">
             Action Required
           </h3>
           {displayStatus === "pending" && (

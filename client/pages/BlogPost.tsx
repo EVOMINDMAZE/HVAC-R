@@ -9,9 +9,8 @@ import {
 } from "@/lib/sanity";
 import { ArrowLeft, Calendar, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 
 export function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
@@ -19,31 +18,32 @@ export function BlogPost() {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-24 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
+      <PublicPageShell mainClassName="pt-24 pb-20">
+        <div className="flex items-center justify-center py-20">
+          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-primary" />
+        </div>
+      </PublicPageShell>
     );
   }
 
   if (error || !post) {
     return (
-      <div className="min-h-screen pt-24 flex flex-col items-center justify-center text-center px-4">
-        <h1 className="text-2xl font-semibold mb-4">Post Not Found</h1>
-        <p className="text-muted-foreground mb-6">
-          The article you are looking for does not exist or has been removed.
-        </p>
-        <Link to="/blog">
-          <Button>Back to Blog</Button>
-        </Link>
-      </div>
+      <PublicPageShell mainClassName="pt-24 pb-20">
+        <div className="flex flex-col items-center justify-center px-4 py-20 text-center">
+          <h1 className="mb-4 text-2xl font-semibold">Post Not Found</h1>
+          <p className="mb-6 text-muted-foreground">
+            The article you are looking for does not exist or has been removed.
+          </p>
+          <Link to="/blog">
+            <Button>Back to Blog</Button>
+          </Link>
+        </div>
+      </PublicPageShell>
     );
   }
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-
-      <main className="pt-24 pb-20">
+    <PublicPageShell mainClassName="pt-24 pb-20">
         <SEO title={post.title} description={post.excerpt || post.title} />
 
         <section className="px-4 py-12">
@@ -109,9 +109,6 @@ export function BlogPost() {
             </div>
           </div>
         </section>
-      </main>
-
-      <Footer />
-    </div>
+    </PublicPageShell>
   );
 }

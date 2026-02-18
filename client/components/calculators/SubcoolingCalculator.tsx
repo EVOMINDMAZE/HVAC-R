@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +16,7 @@ interface SubcoolingCalculatorProps {
     saveCalculation?: any;
 }
 
-export default function SubcoolingCalculator({ saveCalculation }: SubcoolingCalculatorProps) {
+export default function SubcoolingCalculator(_props: SubcoolingCalculatorProps) {
     const [refrigerants, setRefrigerants] = useState<RefrigerantProperties[]>([]);
     const [selectedRefrigerant, setSelectedRefrigerant] = useState<string>("R410A");
 

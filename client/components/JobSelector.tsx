@@ -7,7 +7,6 @@ import {
     SelectContent,
     SelectItem,
     SelectTrigger,
-    SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Briefcase } from "lucide-react";
@@ -42,10 +41,15 @@ export function JobSelector() {
             .order("created_at", { ascending: false });
 
         if (error) {
-            console.error("Error fetching projects:", error);
-        } else {
-            setProjects(data || []);
+            // Non-blocking: some roles/workspaces may not have project rows yet.
+            if (!String(error.message || "").toLowerCase().includes("failed to fetch")) {
+                console.warn("JobSelector: project list unavailable:", error.message);
+            }
+            setProjects([]);
+            return;
         }
+
+        setProjects(data || []);
     };
 
     useEffect(() => {
@@ -89,7 +93,6 @@ export function JobSelector() {
                 title: "Project Created",
                 description: `Switched to ${data.name}`,
             });
-            // @ts-ignore
             setProjects([data, ...projects]);
             selectJob(data);
             setOpenNewProject(false);

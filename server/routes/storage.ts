@@ -29,7 +29,7 @@ export const uploadAvatar: RequestHandler = async (req, res) => {
     try {
       buf = Buffer.from(contentBase64, 'base64');
     } catch (e) {
-      console.error('Failed to decode base64 content', e);
+      console.error("Failed to decode base64 content", e);
       return res.status(400).json({ error: 'Invalid file content' });
     }
 
@@ -40,9 +40,9 @@ export const uploadAvatar: RequestHandler = async (req, res) => {
       // createBucket may fail if it already exists; ignore that error
       // createBucket may exist on admin storage client
       await admin.storage.createBucket(bucketName, { public: true });
-    } catch (e: any) {
-      // If bucket already exists, supabase may return an error we can ignore
-      console.warn('createBucket result:', e?.message || e);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      console.warn('createBucket result:', msg);
     }
 
     // Upload using the admin client
@@ -53,7 +53,7 @@ export const uploadAvatar: RequestHandler = async (req, res) => {
       let details: any = null;
       try {
         details = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
-      } catch (e) {
+      } catch (_e) {
         details = String(error);
       }
       return res.status(500).json({ success: false, error: 'Upload failed', details });

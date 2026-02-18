@@ -25,9 +25,8 @@ import {
   ClipboardCheck,
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { PageContainer } from "@/components/PageContainer";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 
 export default function Triage() {
   const { toast } = useToast();
@@ -61,6 +60,7 @@ export default function Triage() {
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
+        if (!file) continue;
         const fileExt = file.name.split(".").pop();
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
         const filePath = `submissions/${fileName}`;
@@ -139,12 +139,10 @@ export default function Triage() {
   const stepLabel = step <= 3 ? `Step ${step} of 3` : "Complete";
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-      <main className="relative py-12 sm:py-16">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.08),transparent_55%)]" />
-        <PageContainer>
-          <div className="mx-auto max-w-3xl space-y-8">
+    <PublicPageShell mainClassName="relative py-12 sm:py-16">
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.08),transparent_55%)]" />
+      <PageContainer>
+        <div className="mx-auto max-w-3xl space-y-8">
             <div className="space-y-3">
               <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.24em] text-muted-foreground">
                 Service Intake
@@ -419,9 +417,7 @@ export default function Triage() {
               )}
             </AnimatePresence>
           </div>
-        </PageContainer>
-      </main>
-      <Footer />
-    </div>
+      </PageContainer>
+    </PublicPageShell>
   );
 }

@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { supabase } from "@/lib/supabase";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { PageContainer } from "@/components/PageContainer";
 import {
   Card,
@@ -97,53 +95,43 @@ export default function Career() {
 
   if (loading) {
     return (
-      <div className="app-shell min-h-screen bg-background text-foreground">
-        <Header />
-        <main className="flex items-center justify-center h-[calc(100vh-200px)]">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        </main>
+      <div className="flex items-center justify-center py-16">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="app-shell min-h-screen bg-background text-foreground">
-        <Header variant="landing" />
-        <main className="py-16">
-          <PageContainer>
-            <div className="mx-auto max-w-xl">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Sign in required</CardTitle>
-                  <CardDescription>
-                    Access your skills logbook and professional profile by signing
-                    in.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-col sm:flex-row gap-3">
-                  <Button asChild>
-                    <Link to="/signin">Sign in</Link>
-                  </Button>
-                  <Button asChild variant="outline">
-                    <Link to="/signup">Create account</Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </PageContainer>
-        </main>
-        <Footer />
+      <div className="py-16">
+        <PageContainer>
+          <div className="mx-auto max-w-xl">
+            <Card>
+              <CardHeader>
+                <CardTitle>Sign in required</CardTitle>
+                <CardDescription>
+                  Access your skills logbook and professional profile by signing in.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-3 sm:flex-row">
+                <Button asChild>
+                  <Link to="/signin">Sign in</Link>
+                </Button>
+                <Button asChild variant="outline">
+                  <Link to="/signup">Create account</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </PageContainer>
       </div>
     );
   }
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header />
-      <main className="py-10">
-        <PageContainer>
-          <div className="space-y-8">
+    <div className="py-10">
+      <PageContainer>
+        <div className="space-y-8">
             <div className="space-y-2">
               <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
                 Career profile
@@ -314,8 +302,6 @@ export default function Career() {
             </div>
           </div>
         </PageContainer>
-      </main>
-      <Footer />
     </div>
   );
 }

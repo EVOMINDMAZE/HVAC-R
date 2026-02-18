@@ -1,5 +1,3 @@
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, User, ArrowRight, AlertTriangle } from "lucide-react";
@@ -12,6 +10,7 @@ import {
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 
 export function Blog() {
   const { posts, loading, error } = useSanityPosts();
@@ -22,16 +21,13 @@ export function Blog() {
   const formatDate = (dateString: string) => {
     try {
       return format(new Date(dateString), "MMMM d, yyyy");
-    } catch (e) {
+    } catch (_e) {
       return dateString;
     }
   };
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-
-      <main className="pt-24 pb-20">
+    <PublicPageShell mainClassName="pt-24 pb-20">
         <SEO
           title="Blog"
           description="Insights on HVAC&R engineering, refrigeration, and cryogenic system design."
@@ -147,9 +143,6 @@ export function Blog() {
             )}
           </div>
         </section>
-      </main>
-
-      <Footer />
-    </div>
+    </PublicPageShell>
   );
 }

@@ -3,17 +3,16 @@ import {
   Routes,
   Route,
   Navigate,
-  Outlet,
   useLocation,
 } from "react-router-dom";
-import { useEffect, Suspense, lazy } from "react";
+import { Suspense, lazy } from "react";
 import { SupabaseAuthProvider, useAuth } from "@/hooks/useSupabaseAuth";
-import { ToastProvider, useToast } from "@/hooks/useToast";
+import { ToastProvider } from "@/hooks/useToast";
 import { ThemeProvider } from "@/components/theme-provider";
 import { DevModeBanner } from "@/components/DevModeBanner";
-import "@/utils/authErrorHandler"; // Import to setup global error handling
+import "@/utils/authErrorHandler";
 import { JobProvider } from "@/context/JobContext";
-// Critical path - keep static
+import { devLog } from "@/lib/logger";
 import { Landing } from "@/pages/Landing";
 import { SignIn } from "@/pages/SignIn";
 import { SignUp } from "@/pages/SignUp";
@@ -147,32 +146,7 @@ import { SubscriptionGuard } from "@/components/SubscriptionGuard";
 import PageLoading from "@/components/ui/page-loading.tsx";
 import { MonitoringProvider } from "@/lib/monitoring";
 import { useKeyboardShortcuts, KeyboardShortcutsHelp } from "@/hooks/useKeyboardShortcuts";
-
-export function shouldBypassAuth() {
-  // Disable authentication bypass in production for security
-  if (import.meta.env.PROD) {
-    return false;
-  }
-
-  try {
-    if (typeof window === "undefined") return false;
-    
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("bypassAuth") === "1") {
-      console.warn("[DEV MODE] Authentication bypass enabled via URL parameter (?bypassAuth=1)");
-      return true;
-    }
-    
-    if (localStorage && localStorage.getItem("DEBUG_BYPASS") === "1") {
-      console.warn("[DEV MODE] Authentication bypass enabled via localStorage (DEBUG_BYPASS=1)");
-      return true;
-    }
-  } catch (e) {
-    // ignore errors in SSR or when localStorage is blocked
-  }
-  
-  return false;
-}
+import { withPersistedUiFlags, shouldBypassAuth } from "@/lib/featureFlags";
 
 // PatternInsights Wrapper Component
 function PatternInsightsWrapper() {
@@ -186,23 +160,34 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     isAuthenticated,
     isLoading,
     role,
-    companyId: userCompanyId,
+    user,
     needsCompanySelection,
   } = useAuth();
+  const effectiveRole = (role || user?.user_metadata?.active_role || null) as
+    | "admin"
+    | "client"
+    | "tech"
+    | "manager"
+    | "technician"
+    | "owner"
+    | "student"
+    | null;
   const bypass = shouldBypassAuth();
   const location = useLocation();
+  const withUiFlags = (to: string) =>
+    withPersistedUiFlags(to, { search: location.search });
 
-  console.log("[ProtectedRouteDebug] Check:", {
+  devLog("[ProtectedRouteDebug] Check:", {
     path: location.pathname,
     isAuthenticated,
     isLoading,
-    role,
+    role: effectiveRole,
     bypass,
     needsCompanySelection,
   });
 
-  if (isLoading && !bypass) {
-    console.log("[ProtectedRouteDebug] Loading...");
+  if (isLoading && !bypass && !isAuthenticated) {
+    devLog("[ProtectedRouteDebug] Loading...");
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -214,13 +199,12 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (!isAuthenticated && !bypass) {
-    console.log(
+    devLog(
       "[ProtectedRouteDebug] Not authenticated. Redirecting to /signin",
     );
-    return <Navigate to="/signin" replace />;
+    return <Navigate to={withUiFlags("/signin")} replace />;
   }
 
-  // Multi-Company Selection Logic
   if (
     isAuthenticated &&
     needsCompanySelection &&
@@ -230,17 +214,17 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     !location.pathname.startsWith("/callback") &&
     !location.pathname.startsWith("/invite/")
   ) {
-    console.log(
+    devLog(
       "[ProtectedRouteDebug] Needs company selection. Redirecting to /select-company",
     );
-    return <Navigate to="/select-company" replace />;
+    return <Navigate to={withUiFlags("/select-company")} replace />;
   }
 
-  // RBAC Redirection Logic
-  if (role === "client") {
+  if (effectiveRole === "client") {
     const allowedClientRoutes = [
       "/portal",
       "/history",
+      "/profile",
       "/track-job",
       "/settings",
       "/dashboard/jobs",
@@ -250,58 +234,38 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
       location.pathname.startsWith(route),
     );
 
-    // If client is trying to access restricted areas, redirect to portal
     if (!isAllowed) {
-      console.log(
+      devLog(
         "[ProtectedRouteDebug] Client restricted. Redirecting to /portal",
       );
-      return <Navigate to="/portal" replace />;
+      return <Navigate to={withUiFlags("/portal")} replace />;
     }
-    // Render with Layout so clients see their scoped Sidebar
     return <Layout>{children}</Layout>;
   }
 
-  // Technician Logic
-  if (role === "technician" || role === "tech") {
-    // Techs only allowed: /tech, /tools, /settings/profile (maybe), /help, /about
-    // Explicitly BLOCK: /dashboard (executive), /settings/company, /dashboard/dispatch
-    const blockedRoutes = [
-      "/dashboard",
-      "/settings/company",
-      "/history",
-      "/portal",
-    ];
-    // Allow /dashboard/jobs if it's their view? No, use /tech/jobs.
-
-    // Simple block list approach
-    const isBlocked = blockedRoutes.some((route) =>
-      location.pathname.startsWith(route),
-    );
-    // Exception: /dashboard/jobs is blocked in favor of /tech
-
-    // Actually, safest is to redirect /dashboard root to /tech
+  if (effectiveRole === "technician" || effectiveRole === "tech") {
     if (
       location.pathname === "/dashboard" ||
       location.pathname.startsWith("/dashboard/dispatch")
     ) {
-      console.log(
+      devLog(
         "[ProtectedRouteDebug] Tech restricted from Exec Dashboard. Redirecting to /tech",
       );
-      return <Navigate to="/tech" replace />;
+      return <Navigate to={withUiFlags("/tech")} replace />;
     }
   }
 
-  // Logic for Admin/Standard Users
-  // If non-admin tries to access portal, redirect to dashboard
-  if (location.pathname.startsWith("/portal") && role !== "admin") {
-    console.log(
-      "[ProtectedRouteDebug] Non-admin restricted. Redirecting to /dashboard",
+  if (
+    location.pathname.startsWith("/portal") &&
+    effectiveRole
+  ) {
+    devLog(
+      "[ProtectedRouteDebug] Non-client restricted. Redirecting to /dashboard",
     );
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={withUiFlags("/dashboard")} replace />;
   }
 
-  console.log("[ProtectedRouteDebug] Access Granted.");
-  // Wrap protected pages in the app Layout for consistent navigation
+  devLog("[ProtectedRouteDebug] Access Granted.");
   return <Layout>{children}</Layout>;
 }
 
@@ -311,26 +275,41 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
     isAuthenticated,
     isLoading,
     role,
-    companyId: userCompanyId,
+    user,
   } = useAuth();
+  const effectiveRole = (role || user?.user_metadata?.active_role || null) as
+    | "admin"
+    | "client"
+    | "tech"
+    | "manager"
+    | "technician"
+    | "owner"
+    | "student"
+    | null;
   const bypass = shouldBypassAuth();
+  const location = useLocation();
+  const withUiFlags = (to: string) =>
+    withPersistedUiFlags(to, { search: location.search });
 
-  if (isLoading && !bypass) {
+  if (isLoading && !bypass && !isAuthenticated) {
     return <PageLoading message="Checking authentication..." />;
   }
 
   if (isAuthenticated || bypass) {
     // Redirect based on Role
-    if (role === "client") {
-      return <Navigate to="/portal" replace />;
+    if (effectiveRole === "client") {
+      return <Navigate to={withUiFlags("/portal")} replace />;
     }
-    return <Navigate to="/dashboard" replace />;
+    if (effectiveRole === "technician" || effectiveRole === "tech") {
+      return <Navigate to={withUiFlags("/tech")} replace />;
+    }
+    return <Navigate to={withUiFlags("/dashboard")} replace />;
   }
 
   return <>{children}</>;
 }
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 
 function AppRoutes() {
   const location = useLocation();
@@ -338,8 +317,11 @@ function AppRoutes() {
 
   return (
     <AnimatePresence mode="wait">
-      {bypass && <DevModeBanner isActive={bypass} />}
-      <ErrorBoundary fallback={<PageLoading message="Application error. Please refresh." />}>
+      {bypass && <DevModeBanner key="dev-mode-banner" isActive={bypass} />}
+      <ErrorBoundary
+        key="app-routes-boundary"
+        fallback={<PageLoading message="Application error. Please refresh." />}
+      >
         <Suspense fallback={<PageLoading />}>
         <Routes location={location} key={location.pathname}>
           {/* Public Routes */}

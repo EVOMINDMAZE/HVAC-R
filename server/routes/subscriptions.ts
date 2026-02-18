@@ -84,7 +84,7 @@ const FALLBACK_PLANS = [
   },
 ];
 
-export const getSubscriptionPlans: RequestHandler = async (req, res) => {
+export const getSubscriptionPlans: RequestHandler = async (_req, res) => {
   try {
     let plans = [];
 
@@ -173,7 +173,10 @@ export const updateSubscription: RequestHandler = async (req, res) => {
 
     if (!supabaseAdmin) {
       // Fallback behavior if configured without Supabase write access
-      const fallbackPlan = FALLBACK_PLANS.find((p) => p.name === planName) || FALLBACK_PLANS[0];
+      const fallbackPlan = FALLBACK_PLANS.find((p) => p.name === planName) ?? FALLBACK_PLANS[0];
+      if (!fallbackPlan) {
+        return res.status(500).json({ error: "No fallback plan available" });
+      }
       return res.json({
         success: true,
         data: {
@@ -205,11 +208,12 @@ export const updateSubscription: RequestHandler = async (req, res) => {
         try {
           await stripeUpdateSubscription(user.stripe_subscription_id, priceId);
           console.log(`Updated Stripe subscription ${user.stripe_subscription_id} to ${priceId}`);
-        } catch (stripeError: any) {
+        } catch (stripeError: unknown) {
+          const errMsg = stripeError instanceof Error ? stripeError.message : "Unknown error";
           console.error("Stripe subscription update failed:", stripeError);
           return res.status(500).json({
             error: "Subscription update failed",
-            details: stripeError.message,
+            details: errMsg,
           });
         }
       }
@@ -229,7 +233,7 @@ export const updateSubscription: RequestHandler = async (req, res) => {
       // If user.id is integer (SQLite), Supabase update will fail.
     }
 
-    res.json({
+    return res.json({
       success: true,
       data: {
         ...planToUse,
@@ -242,7 +246,7 @@ export const updateSubscription: RequestHandler = async (req, res) => {
 
   } catch (error) {
     console.error("Update subscription error:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Internal server error",
       details: "Failed to update subscription",
     });
@@ -258,11 +262,12 @@ export const cancelSubscription: RequestHandler = async (req, res) => {
       try {
         await stripeCancelSubscription(user.stripe_subscription_id);
         console.log(`Cancelled Stripe subscription ${user.stripe_subscription_id}`);
-      } catch (stripeError: any) {
+      } catch (stripeError: unknown) {
+        const errMsg = stripeError instanceof Error ? stripeError.message : "Unknown error";
         console.error("Stripe subscription cancellation failed:", stripeError);
         return res.status(500).json({
           error: "Cancellation failed",
-          details: stripeError.message,
+          details: errMsg,
         });
       }
     }
@@ -274,13 +279,13 @@ export const cancelSubscription: RequestHandler = async (req, res) => {
       );
     }
 
-    res.json({
+    return res.json({
       success: true,
       message: "Subscription cancelled successfully. You have been moved to the free plan.",
     });
   } catch (error) {
     console.error("Cancel subscription error:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Internal server error",
       details: "Failed to cancel subscription",
     });
@@ -321,7 +326,7 @@ export const createPaymentIntent: RequestHandler = async (req, res) => {
       },
     });
 
-    res.json({
+    return res.json({
       success: true,
       data: {
         client_secret: paymentIntent.client_secret,
@@ -331,11 +336,12 @@ export const createPaymentIntent: RequestHandler = async (req, res) => {
         status: paymentIntent.status,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Unknown error";
     console.error("Create payment intent error:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Internal server error",
-      details: error.message,
+      details: message,
     });
   }
 };

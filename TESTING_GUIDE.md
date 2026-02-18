@@ -12,15 +12,12 @@ For development and testing convenience, the application includes an authenticat
 ### How to Activate
 
 1. **URL Parameter**: Append `?bypassAuth=1` to any URL (e.g., `http://localhost:3001/dashboard?bypassAuth=1`)
-2. **LocalStorage Flag**: Set `DEBUG_BYPASS=1` in browser's localStorage:
-   ```javascript
-   localStorage.setItem('DEBUG_BYPASS', '1');
-   ```
+   - **Note:** This only works in development mode (`npm run dev`)
 
 ### Safety Features
 
 - **Production Disabled**: The bypass is automatically disabled in production builds (`import.meta.env.PROD`)
-- **Console Warnings**: When enabled, clear warnings appear in browser console
+- **Development Only**: The bypass only works when `import.meta.env.DEV` is true
 - **Visual Indicator**: A prominent purple "Development Mode Active" banner appears at the top of the page
 
 ### Visual Indicator
@@ -29,13 +26,11 @@ When bypass is active, you'll see:
 - A purple banner at the top of the application
 - Instructions on how the bypass was activated
 - Button to disable development mode
-- Debug information button
 
 ### Disabling the Bypass
 
 1. **URL Method**: Remove `?bypassAuth=1` from URL and refresh
-2. **LocalStorage Method**: Run `localStorage.removeItem('DEBUG_BYPASS')` and refresh
-3. **Button Method**: Click "Disable Development Mode" in the banner
+2. **Button Method**: Click "Disable Development Mode" in the banner
 
 ### Important Notes
 

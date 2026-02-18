@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,10 +12,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 interface A2LCalculatorProps {
-    saveCalculation: any;
+    saveCalculation?: any;
 }
 
-export default function A2LCalculator({ saveCalculation }: A2LCalculatorProps) {
+export default function A2LCalculator(_props: A2LCalculatorProps) {
     const [refrigerants, setRefrigerants] = useState<RefrigerantProperties[]>([]);
     const [inputs, setInputs] = useState({
         refrigerantId: "R32",

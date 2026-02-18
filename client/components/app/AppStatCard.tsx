@@ -36,7 +36,7 @@ export function AppStatCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="app-stack-8">
-          <p className="text-xs font-medium uppercase tracking-[0.08em] text-muted-foreground">
+          <p className="text-xs font-medium tracking-[0.04em] text-muted-foreground">
             {label}
           </p>
           <p className="text-2xl font-semibold tracking-tight">{value}</p>

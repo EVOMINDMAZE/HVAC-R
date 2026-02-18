@@ -72,12 +72,12 @@ export function InvoiceList({ jobId, clientId, companyId, suggestedInvoiceData }
 
             toast({ title: "Invoice Paid", description: "Status updated to Paid." });
             fetchInvoices();
-        } catch (e) {
+        } catch (_e) {
             toast({ title: "Error", description: "Failed to update status", variant: "destructive" });
         }
     };
 
-    const handleResend = async (id: string) => {
+    const handleResend = async (_id: string) => {
         // Trigger Edge Function logic via direct update or just a toast for now
         toast({ title: "Reminder Queued", description: "The system will send a reminder shortly." });
     };

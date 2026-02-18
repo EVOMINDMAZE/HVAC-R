@@ -1,34 +1,25 @@
-import { useState, useEffect } from "react";
-import { Footer } from "@/components/Footer";
+import { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Plus,
   Search,
   Users,
-  Settings,
-  Trash2,
-  CheckCircle2,
-  Clock,
-  UserPlus,
-  ArrowRight,
-  ShieldCheck,
   Building,
-  Mail,
   Phone,
-  BarChart3,
-  FileSpreadsheet,
+  MapPin,
+  MoreHorizontal,
+  Eye,
+  Edit,
   Download,
 } from "lucide-react";
 import Papa from "papaparse";
-import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/lib/supabase";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { useToast } from "@/hooks/useToast";
+import { PageContainer } from "@/components/PageContainer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -38,17 +29,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { supabase } from "@/lib/supabase";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { useToast } from "@/hooks/useToast";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Link } from "react-router-dom";
-import { PageContainer } from "@/components/PageContainer";
-import { SpreadsheetImporter } from "@/components/shared/SpreadsheetImporter";
-import { AppPageHeader } from "@/components/app/AppPageHeader";
-import { AppSectionCard } from "@/components/app/AppSectionCard";
-import { AppStatCard } from "@/components/app/AppStatCard";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { PageHero } from "@/components/shared/PageHero";
+import { StatsRow, type StatItem } from "@/components/shared/StatsRow";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 interface Client {
   id: string;
@@ -63,13 +52,12 @@ interface Client {
 export function Clients() {
   const { user } = useSupabaseAuth();
   const { addToast } = useToast();
+  const navigate = useNavigate();
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isImportOpen, setIsImportOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
-
   const [newClient, setNewClient] = useState({
     name: "",
     email: "",
@@ -86,8 +74,6 @@ export function Clients() {
 
     try {
       setIsLoading(true);
-
-      // Get the company ID for the current user
       const { data: companyData, error: companyError } = await supabase
         .from("companies")
         .select("id")
@@ -118,53 +104,65 @@ export function Clients() {
     }
   }
 
-  async function handleImport(importedData: any[]) {
+  async function handleCreateClient() {
+    if (!newClient.name || !newClient.email) {
+      addToast({
+        title: "Missing Information",
+        description: "Client name and email are required.",
+        type: "error",
+      });
+      return;
+    }
+
+    if (!user) return;
+
+    setIsCreating(true);
+
     try {
-      // Ensure company_id is attached if missing (though the backend checks user)
-      // But validation-import expects 'records' which are inserted directly.
-      // We should ideally attach company_id here if we can.
-
-      // Get current user's company
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
       const { data: companyData } = await supabase
         .from("companies")
         .select("id")
         .eq("user_id", user.id)
         .single();
 
-      const companyId = companyData?.id;
+      let companyId = companyData?.id;
 
-      const recordsWithCompany = importedData.map((record) => ({
-        ...record,
-        company_id: companyId, // Add company_id to every record
-      }));
+      if (!companyId) {
+        const { data: newCompany } = await supabase
+          .from("companies")
+          .insert({ user_id: user.id, name: `${user.email?.split("@")[0]}'s Company` })
+          .select()
+          .single();
+        if (newCompany) companyId = newCompany.id;
+      }
 
-      const { data: result, error } = await supabase.functions.invoke(
-        "validate-import",
-        {
-          body: { targetTable: "clients", records: recordsWithCompany },
-        },
-      );
+      const { error } = await supabase.from("clients").insert({
+        name: newClient.name,
+        contact_email: newClient.email,
+        contact_phone: newClient.phone,
+        address: newClient.address,
+        company_id: companyId,
+      });
 
       if (error) throw error;
 
       addToast({
-        title: "Import Successful",
-        description: `Successfully imported ${importedData.length} records.`,
+        title: "Success",
+        description: "Client created successfully.",
         type: "success",
       });
+
+      setIsDialogOpen(false);
+      setNewClient({ name: "", email: "", phone: "", address: "" });
       fetchClients();
     } catch (err: any) {
-      console.error("Import error:", err);
       addToast({
-        title: "Import Failed",
-        description: err.message || "Failed to import clients.",
+        title: "Error",
+        description: err.message || "Failed to create client.",
         type: "error",
       });
+    } finally {
+      setIsCreating(false);
     }
   }
 
@@ -181,18 +179,9 @@ export function Clients() {
     const csv = Papa.unparse(clients);
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-
-    link.setAttribute("href", url);
-    link.setAttribute(
-      "download",
-      `clients_export_${new Date().toISOString().split("T")[0]}.csv`,
-    );
-    link.style.visibility = "hidden";
-
-    document.body.appendChild(link);
+    link.href = URL.createObjectURL(blob);
+    link.download = `clients_export_${new Date().toISOString().split("T")[0]}.csv`;
     link.click();
-    document.body.removeChild(link);
 
     addToast({
       title: "Export Started",
@@ -201,467 +190,208 @@ export function Clients() {
     });
   }
 
-  async function handleCreateClient() {
-    if (!newClient.name || !newClient.email) {
-      addToast({
-        title: "Missing Information",
-        description: "Client name and email are required.",
-        type: "error",
-      });
-      return;
-    }
+  const filteredClients = useMemo(() => {
+    return clients.filter(
+      (client) =>
+        client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        client.contact_email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (client.address && client.address.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+  }, [clients, searchQuery]);
 
-    if (!user) {
-      addToast({
-        title: "Authentication Error",
-        description: "You must be logged in to add clients.",
-        type: "error",
-      });
-      return;
-    }
+  const stats: StatItem[] = useMemo(() => {
+    const total = clients.length;
+    const thisMonth = clients.filter((c) => {
+      const created = new Date(c.created_at);
+      const now = new Date();
+      return created.getMonth() === now.getMonth() && created.getFullYear() === now.getFullYear();
+    }).length;
 
-    setIsCreating(true);
-
-    try {
-      // 1. Get Company
-      console.log("Checking for existing company for user:", user.id);
-
-      const { data: companyData, error: companyError } = await supabase
-        .from("companies")
-        .select("id")
-        .eq("user_id", user.id)
-        .single();
-
-      if (companyError && companyError.code !== "PGRST116") {
-        console.error("Error fetching company:", companyError);
-        throw companyError;
-      }
-
-      let companyId = companyData?.id;
-
-      if (!companyId) {
-        console.log(
-          "No company found. Attempting to create default company...",
-        );
-        const newCompanyPayload = {
-          user_id: user.id,
-          name: `${user.email?.split("@")[0] || "My HVAC"}'s Company`,
-          // Removed email/phone as they don't exist in companies table
-        };
-        console.log("New Company Payload:", newCompanyPayload);
-
-        const { data: newCompany, error: createCompanyError } = await supabase
-          .from("companies")
-          .insert([newCompanyPayload])
-          .select("id")
-          .single();
-
-        if (createCompanyError) {
-          console.error("Error creating company:", createCompanyError);
-          throw new Error(
-            `Company Creation Failed: ${createCompanyError.message}`,
-          );
-        }
-        companyId = newCompany.id;
-        console.log("Company created successfully:", companyId);
-      }
-
-      // 2. Insert Client - Map frontend fields to database columns
-      console.log("Creating client linked to company:", companyId);
-      const clientPayload = {
-        name: newClient.name,
-        contact_email: newClient.email,
-        contact_phone: newClient.phone,
-        address: newClient.address,
-        company_id: companyId,
-      };
-      console.log("Client Payload:", clientPayload);
-
-      const { data: createdClient, error: insertError } = await supabase
-        .from("clients")
-        .insert([clientPayload])
-        .select()
-        .single();
-
-      if (insertError) {
-        console.error("Error inserting client:", insertError);
-        throw new Error(`Client Insertion Failed: ${insertError.message}`);
-      }
-
-      if (createdClient) {
-        console.log("Client created successfully:", createdClient);
-        setClients([createdClient, ...clients]);
-        setIsDialogOpen(false);
-        setNewClient({ name: "", email: "", phone: "", address: "" });
-        addToast({
-          title: "Client Added",
-          description: `${newClient.name} has been successfully registered.`,
-          type: "success",
-        });
-      }
-    } catch (err: any) {
-      console.error("Critical Error in handleCreateClient:", err);
-      addToast({
-        title: "Operation Failed",
-        description: err.message || JSON.stringify(err),
-        type: "error",
-      });
-    } finally {
-      setIsCreating(false);
-    }
-  }
-
-  const filteredClients = clients.filter(
-    (client) =>
-      client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (client.contact_email &&
-        client.contact_email.toLowerCase().includes(searchQuery.toLowerCase())),
-  );
+    return [
+      {
+        id: "total",
+        label: "Total Clients",
+        value: total,
+        status: "neutral",
+        icon: <Users className="w-4 h-4" />,
+      },
+      {
+        id: "new",
+        label: "New This Month",
+        value: thisMonth,
+        status: "success",
+        icon: <Plus className="w-4 h-4" />,
+      },
+      {
+        id: "active",
+        label: "Active",
+        value: total,
+        status: "success",
+        icon: <Building className="w-4 h-4" />,
+      },
+    ];
+  }, [clients]);
 
   return (
-    <div className="app-bg min-h-screen transition-colors duration-300">
-      {/* Background patterns */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
-        <div className="absolute top-[10%] right-[5%] w-[500px] h-[500px] bg-slate-500/5 rounded-full blur-[100px]" />
-        <div className="absolute bottom-[10%] left-[5%] w-[400px] h-[400px] bg-cyan-500/5 rounded-full blur-[80px]" />
-      </div>
-
-      <PageContainer variant="standard" className="app-stack-24">
-        <AppPageHeader
-          kicker="Work"
-          title="Clients"
-          subtitle="Organize your customer records, communication details, and service history in one place."
-          actions={
-            <div className="flex flex-wrap items-center gap-2">
-            <Button
-              variant="outline"
-              className="h-11 rounded-xl"
-              onClick={handleExport}
-            >
-              <Download className="h-4 w-4" />
-              <span>Export CSV</span>
+    <PageContainer variant="standard" className="clients-page">
+      <PageHero
+        title="Clients"
+        subtitle="Manage your customer relationships and contact information"
+        icon={<Users className="w-5 h-5" />}
+        actions={
+          <>
+            <Button variant="outline" onClick={handleExport} disabled={clients.length === 0}>
+              <Download className="w-4 h-4 mr-2" />
+              Export
             </Button>
-
-            <Button
-              variant="outline"
-              className="h-11 rounded-xl"
-              onClick={() => setIsImportOpen(true)}
-            >
-              <FileSpreadsheet className="h-4 w-4" />
-              <span>Import List</span>
-            </Button>
-
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button className="h-11 rounded-xl">
-                  <UserPlus className="h-4 w-4" />
-                  <span>Add New Client</span>
+                <Button>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Client
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px] rounded-3xl">
+              <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                  <DialogTitle className="text-2xl font-bold">
-                    New Client Registration
-                  </DialogTitle>
+                  <DialogTitle>Add New Client</DialogTitle>
                   <DialogDescription>
-                    Enter the client details to create a new profile.
+                    Enter the client's information to add them to your list.
                   </DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-6 py-4">
-                  <div className="grid gap-2">
-                    <Label
-                      htmlFor="name"
-                      className="text-sm font-semibold text-gray-700"
-                    >
-                      Full Name
-                    </Label>
+                <div className="grid gap-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Name *</Label>
                     <Input
                       id="name"
-                      placeholder="e.g. John Smith"
-                      className="rounded-xl border-gray-200 focus:ring-cyan-500"
+                      placeholder="Company or person name"
                       value={newClient.name}
-                      onChange={(e) =>
-                        setNewClient({ ...newClient, name: e.target.value })
-                      }
+                      onChange={(e) => setNewClient({ ...newClient, name: e.target.value })}
                     />
                   </div>
-                  <div className="grid gap-2">
-                    <Label
-                      htmlFor="email"
-                      className="text-sm font-semibold text-gray-700"
-                    >
-                      Email Address
-                    </Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email *</Label>
                     <Input
                       id="email"
                       type="email"
-                      placeholder="john@example.com"
-                      className="rounded-xl border-gray-200 focus:ring-cyan-500"
+                      placeholder="contact@example.com"
                       value={newClient.email}
-                      onChange={(e) =>
-                        setNewClient({ ...newClient, email: e.target.value })
-                      }
+                      onChange={(e) => setNewClient({ ...newClient, email: e.target.value })}
                     />
                   </div>
-                  <div className="grid gap-2">
-                    <Label
-                      htmlFor="phone"
-                      className="text-sm font-semibold text-gray-700"
-                    >
-                      Phone Number
-                    </Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone</Label>
                     <Input
                       id="phone"
-                      placeholder="(555) 000-0000"
-                      className="rounded-xl border-gray-200 focus:ring-cyan-500"
+                      placeholder="(555) 123-4567"
                       value={newClient.phone}
-                      onChange={(e) =>
-                        setNewClient({ ...newClient, phone: e.target.value })
-                      }
+                      onChange={(e) => setNewClient({ ...newClient, phone: e.target.value })}
                     />
                   </div>
-                  <div className="grid gap-2">
-                    <Label
-                      htmlFor="address"
-                      className="text-sm font-semibold text-gray-700"
-                    >
-                      Service Address
-                    </Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="address">Address</Label>
                     <Input
                       id="address"
-                      placeholder="Street, City, Zip"
-                      className="rounded-xl border-gray-200 focus:ring-cyan-500"
+                      placeholder="123 Main St, City, ST"
                       value={newClient.address}
-                      onChange={(e) =>
-                        setNewClient({ ...newClient, address: e.target.value })
-                      }
+                      onChange={(e) => setNewClient({ ...newClient, address: e.target.value })}
                     />
                   </div>
                 </div>
-                <DialogFooter className="gap-2 sm:gap-0">
-                  <Button
-                    variant="ghost"
-                    onClick={() => setIsDialogOpen(false)}
-                    className="rounded-xl"
-                  >
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                     Cancel
                   </Button>
-                  <Button
-                    onClick={handleCreateClient}
-                    disabled={isCreating}
-                    className="bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl px-8"
-                  >
-                    {isCreating ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        <span>Creating...</span>
-                      </div>
-                    ) : (
-                      "Register Client"
-                    )}
+                  <Button onClick={handleCreateClient} disabled={isCreating}>
+                    {isCreating ? "Creating..." : "Add Client"}
                   </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-            </div>
-          }
-        />
+          </>
+        }
+      />
 
-        {/* Stats Summary */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            {
-              label: "Total Clients",
-              value: clients.length,
-              icon: Users,
-              tone: "default",
-            },
-            {
-              label: "Active This Month",
-              value: "12",
-              icon: BarChart3,
-              tone: "default",
-            },
-            {
-              label: "Pending Follow-ups",
-              value: "5",
-              icon: Clock,
-              tone: "warning",
-            },
-            {
-              label: "Verified Profiles",
-              value: "98%",
-              icon: ShieldCheck,
-              tone: "success",
-            },
-          ].map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-            >
-              <AppStatCard
-                label={stat.label}
-                value={stat.value}
-                tone={stat.tone as "default" | "success" | "warning" | "danger"}
-                icon={<stat.icon className="h-5 w-5" />}
-              />
-            </motion.div>
-          ))}
+      <StatsRow stats={stats} columns={3} />
+
+      <div className="clients-page__toolbar">
+        <div className="clients-page__search">
+          <Search className="clients-page__search-icon w-4 h-4" />
+          <input
+            type="text"
+            placeholder="Search by name, email, or address..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="clients-page__search-input"
+          />
         </div>
+      </div>
 
-        {/* Search and Filters */}
-        <AppSectionCard className="mb-2 flex flex-col gap-4 p-4 md:flex-row">
-          <div className="relative flex-grow group">
-            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" />
-            <Input
-              placeholder="Search clients by name, email, or company..."
-              className="h-11 rounded-2xl border-border bg-background pl-12"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <Button
-            variant="outline"
-            className="h-11 rounded-2xl px-6 gap-2"
-          >
-            <Settings className="h-4 w-4 text-muted-foreground" />
-            <span>Filter</span>
-          </Button>
-        </AppSectionCard>
-
-        {/* Content Area */}
+      <div className="clients-page__content">
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3, 4, 5, 6].map((n) => (
+          <div className="clients-page__loading">
+            <div className="clients-page__loading-spinner" />
+            <span>Loading clients...</span>
+          </div>
+        ) : filteredClients.length === 0 ? (
+          <EmptyState
+            icon={<Users className="w-12 h-12" />}
+            title="No clients found"
+            description={searchQuery ? "Try adjusting your search" : "Add your first client to get started"}
+            action={!searchQuery ? { label: "Add Client", onClick: () => setIsDialogOpen(true) } : undefined}
+          />
+        ) : (
+          <div className="clients-page__grid">
+            {filteredClients.map((client) => (
               <div
-                key={n}
-                className="bg-card p-8 rounded-3xl border border-gray-100 dark:border-slate-800 space-y-4"
+                key={client.id}
+                className="client-card"
+                onClick={() => navigate(`/dashboard/clients/${client.id}`)}
               >
-                <Skeleton className="h-12 w-12 rounded-2xl" />
-                <Skeleton className="h-6 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-                <div className="pt-4 space-y-2">
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-full" />
+                <div className="client-card__header">
+                  <div className="client-card__avatar">
+                    {client.name.charAt(0).toUpperCase()}
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                      <button className="client-card__menu">
+                        <MoreHorizontal className="w-4 h-4" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); navigate(`/dashboard/clients/${client.id}`); }}>
+                        <Eye className="w-4 h-4 mr-2" /> View Details
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); navigate(`/dashboard/clients/${client.id}?edit=true`); }}>
+                        <Edit className="w-4 h-4 mr-2" /> Edit
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
+                <div className="client-card__body">
+                  <h3 className="client-card__name">{client.name}</h3>
+                  <p className="client-card__email">{client.contact_email}</p>
+                </div>
+
+                <div className="client-card__meta">
+                  {client.contact_phone && (
+                    <div className="client-card__meta-item">
+                      <Phone className="w-3.5 h-3.5" />
+                      <span>{client.contact_phone}</span>
+                    </div>
+                  )}
+                  {client.address && (
+                    <div className="client-card__meta-item">
+                      <MapPin className="w-3.5 h-3.5" />
+                      <span>{client.address}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
           </div>
-        ) : filteredClients.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <AnimatePresence>
-              {filteredClients.map((client, index) => (
-                <motion.div
-                  key={client.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="group"
-                >
-                  <Card className="h-full rounded-[2rem] border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-xl hover:shadow-cyan-500/5 transition-all duration-300 overflow-hidden relative group">
-                    <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </Button>
-                    </div>
-
-                    <CardHeader className="pb-4">
-                      <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-cyan-500 to-slate-600 flex items-center justify-center text-white mb-6 shadow-lg shadow-cyan-200">
-                        <span className="text-2xl font-bold">
-                          {client.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
-                        </span>
-                      </div>
-                      <CardTitle className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 transition-colors">
-                        {client.name}
-                      </CardTitle>
-                      <CardDescription className="flex items-center gap-2">
-                        <Building className="w-4 h-4" />
-                        Residential Account
-                      </CardDescription>
-                    </CardHeader>
-
-                    <CardContent className="space-y-6">
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 group-hover:bg-cyan-50 dark:group-hover:bg-cyan-900/20 transition-colors">
-                          <Mail className="w-4 h-4 text-cyan-500" />
-                          <span className="truncate">
-                            {client.contact_email || "No email"}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 group-hover:bg-cyan-50 dark:group-hover:bg-cyan-900/20 transition-colors">
-                          <Phone className="w-4 h-4 text-cyan-500" />
-                          <span>{client.contact_phone || "No phone"}</span>
-                        </div>
-                      </div>
-
-                      <div className="pt-6 border-t border-slate-100 dark:border-slate-800">
-                        <Link
-                          to={`/dashboard/clients/${client.id}`}
-                          className="w-full inline-flex items-center justify-center h-12 rounded-2xl bg-slate-900 dark:bg-cyan-600 text-white font-medium hover:bg-slate-800 dark:hover:bg-cyan-700 transition-all gap-2 group/btn"
-                        >
-                          View Profile
-                          <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
-                        </Link>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-32 bg-card rounded-[3rem] border border-dashed border-gray-300 dark:border-slate-700"
-          >
-            <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Users className="w-12 h-12 text-gray-300" />
-            </div>
-            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-              No clients found
-            </h3>
-            <p className="text-slate-500 max-w-sm mx-auto mb-8">
-              {searchQuery
-                ? `No results for "${searchQuery}". Try a different term or clear filters.`
-                : "Start building your customer base by adding your first client."}
-            </p>
-            {!searchQuery && (
-              <Button
-                onClick={() => setIsDialogOpen(true)}
-                className="bg-cyan-600 hover:bg-cyan-700 text-white px-8 h-12 rounded-xl"
-              >
-                Add Your First Client
-              </Button>
-            )}
-          </motion.div>
         )}
-      </PageContainer>
-      <Footer />
-
-      <SpreadsheetImporter
-        isOpen={isImportOpen}
-        onClose={setIsImportOpen}
-        onImport={handleImport}
-        title="Import Clients"
-        description="Upload a CSV file containing client details. We'll map the columns for you."
-        targetFields={[
-          { key: "name", label: "Full Name", required: true },
-          { key: "contact_email", label: "Email Address", required: true },
-          { key: "contact_phone", label: "Phone Number" },
-          { key: "address", label: "Address" },
-        ]}
-      />
-    </div>
+      </div>
+    </PageContainer>
   );
 }

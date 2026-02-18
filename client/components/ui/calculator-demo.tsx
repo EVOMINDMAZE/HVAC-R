@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Calculator, TrendingUp, Clock, Zap } from "lucide-react";
+import { TrendingUp, Clock, Zap } from "lucide-react";
 
 export function CalculatorDemo() {
   const [evaporatorTemp, setEvaporatorTemp] = useState(-20);

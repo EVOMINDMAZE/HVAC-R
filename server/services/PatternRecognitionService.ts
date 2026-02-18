@@ -179,7 +179,7 @@ export class PatternRecognitionService {
 
       if (error) throw error;
 
-      return (data || []).map((pattern) => ({
+      return (data || []).map((pattern: { pattern_id: string; pattern_type: string; pattern_data: unknown; confidence_score: number; relevance_score: number; occurrence_count: number }) => ({
         pattern_id: pattern.pattern_id,
         pattern_type: pattern.pattern_type,
         pattern_data: pattern.pattern_data,
@@ -512,7 +512,7 @@ export class PatternRecognitionService {
 
   private calculateSeasonalCorrelation(patterns: any[]): number {
     // Calculate how seasonal this pattern is based on distribution across seasons
-    const seasonalCounts = {
+    const seasonalCounts: Record<string, number> = {
       spring: 0,
       summer: 0,
       fall: 0,
@@ -524,7 +524,9 @@ export class PatternRecognitionService {
     for (const pattern of patterns) {
       const createdAt = new Date(pattern.created_at || pattern.last_seen);
       const season = this.getSeason(createdAt);
-      seasonalCounts[season]++;
+      if (seasonalCounts[season] !== undefined) {
+        seasonalCounts[season]++;
+      }
       totalPatterns++;
     }
 
@@ -562,10 +564,6 @@ export class PatternRecognitionService {
       if (!patternData?.diagnosis) continue;
 
       const diagnosis = patternData.diagnosis;
-      const symptom = patternData.symptoms
-        ? patternData.symptoms[0]
-        : "General failure";
-      const lastSeen = new Date(pattern.last_seen);
 
       if (!failureModes[diagnosis]) {
         failureModes[diagnosis] = {
@@ -604,11 +602,11 @@ export class PatternRecognitionService {
       .sort((a, b) => b.frequency - a.frequency);
   }
 
-  private extractCommonCauses(patterns: any[]): string[] {
+  private extractCommonCauses(_patterns: any[]): string[] {
     return ["Lack of maintenance", "Age of equipment", "Environmental factors"];
   }
 
-  private extractPreventiveMeasures(patterns: any[]): string[] {
+  private extractPreventiveMeasures(_patterns: any[]): string[] {
     return [
       "Regular filter changes",
       "Annual maintenance",
@@ -633,11 +631,6 @@ export class PatternRecognitionService {
 
     // Calculate statistics
     const avgValue = values.reduce((sum, val) => sum + val, 0) / values.length;
-    const midpoints = expectedRanges.map(
-      (range) => (range.min + range.max) / 2,
-    );
-    const avgMidpoint =
-      midpoints.reduce((sum, mid) => sum + mid, 0) / midpoints.length;
 
     // Determine if values are consistently high or low
     const highCount = values.filter((val) => {
@@ -671,7 +664,7 @@ export class PatternRecognitionService {
     }
   }
 
-  private extractThresholdViolations(patterns: any[]) {
+  private extractThresholdViolations(_patterns: any[]) {
     return [
       {
         condition: "Pressure too high",
@@ -716,7 +709,7 @@ export class PatternRecognitionService {
     });
 
     // Find co-occurring parameters
-    for (const [sessionId, sessionPatterns] of sessions) {
+    for (const [_sessionId, sessionPatterns] of sessions) {
       const sessionParams = sessionPatterns
         .map((p) => p.pattern_data?.parameter)
         .filter((p) => p);
@@ -740,7 +733,7 @@ export class PatternRecognitionService {
     }
 
     // Calculate correlation strength
-    for (const [param, data] of Object.entries(correlations)) {
+    for (const [_param, data] of Object.entries(correlations)) {
       data.correlation = data.coOccurrence / targetOccurrences;
     }
 
@@ -752,11 +745,11 @@ export class PatternRecognitionService {
       .map(([param]) => param);
   }
 
-  private extractDiagnosticClues(patterns: any[]): string[] {
+  private extractDiagnosticClues(_patterns: any[]): string[] {
     return ["Check for ice formation", "Listen for unusual noises"];
   }
 
-  private calculateSymptomIncrease(patterns: any[]) {
+  private calculateSymptomIncrease(_patterns: any[]) {
     return [
       {
         symptom: "High head pressure",
@@ -814,10 +807,9 @@ export class PatternRecognitionService {
   private calculateSeasonalRelevance(
     pattern: any,
     symptoms: string[],
-    measurements: Record<string, number>,
+    _measurements: Record<string, number>,
   ): number {
     // Get the current season
-    const currentMonth = new Date().getMonth();
     const currentSeason = this.getSeason(new Date());
 
     // If pattern has seasonal data, calculate relevance
@@ -927,7 +919,7 @@ export class PatternRecognitionService {
       "General failure": { parts: 500, labor: 400 },
     };
 
-    let cost = baseCosts["General failure"]; // Default
+    let cost: { parts: number; labor: number } = baseCosts["General failure"] ?? { parts: 500, labor: 400 };
 
     for (const [key, baseCost] of Object.entries(baseCosts)) {
       if (failureType.toLowerCase().includes(key.toLowerCase())) {
@@ -941,8 +933,10 @@ export class PatternRecognitionService {
       const avgHistoricalCost =
         costs.reduce((sum, c) => sum + c, 0) / costs.length;
       const adjustment = avgHistoricalCost / (cost.parts + cost.labor);
-      cost.parts = Math.round(cost.parts * adjustment);
-      cost.labor = Math.round(cost.labor * adjustment);
+      cost = {
+        parts: Math.round(cost.parts * adjustment),
+        labor: Math.round(cost.labor * adjustment),
+      };
     }
 
     return {

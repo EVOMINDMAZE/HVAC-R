@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense } from "react";
+import { useState, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
@@ -214,7 +214,7 @@ function AirflowCalculator() {
   });
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [_error, setError] = useState<string | null>(null);
 
   const handleCalculate = async () => {
     setError(null);
@@ -249,8 +249,8 @@ function AirflowCalculator() {
         return;
       }
       setResult(response.data);
-    } catch (e: any) {
-      setError(e?.message || "Network error");
+    } catch (_e: any) {
+      setError(_e?.message || "Network error");
     } finally {
       setLoading(false);
     }
@@ -292,10 +292,10 @@ function AirflowCalculator() {
         <div className="grid grid-cols-1 lg:grid-cols-2">
           {/* Input Section */}
           <div className="p-6 md:p-8 space-y-8 border-r border-slate-100 dark:border-slate-800">
-            {error && (
+            {_error && (
               <Alert variant="destructive">
                 <AlertTitle>Error</AlertTitle>
-                <AlertDescription>{error}</AlertDescription>
+                <AlertDescription>{_error}</AlertDescription>
               </Alert>
             )}
 
@@ -490,7 +490,7 @@ function DeltaTCalculator() {
   });
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [_error, setError] = useState<string | null>(null);
 
   const handleCalculate = async () => {
     setError(null);
@@ -519,8 +519,8 @@ function DeltaTCalculator() {
         return;
       }
       setResult(response.data);
-    } catch (e: any) {
-      setError(e?.message || "Network error");
+    } catch (_e: any) {
+      setError(_e?.message || "Network error");
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Select,
   SelectContent,
@@ -30,7 +30,6 @@ import {
   REFRIGERANT_DATABASE,
   validateOperatingConditions,
   getSuggestedOperatingRange,
-  RefrigerantProperties,
   searchRefrigerants,
   getRefrigerantsByPopularity,
   POPULAR_REFRIGERANTS,
@@ -76,7 +75,7 @@ export function EnhancedRefrigerantSelector({
   );
 
   // Filter refrigerants based on search and category
-  const filteredRefrigerants = React.useMemo(() => {
+  const filteredRefrigerants = useMemo(() => {
     let results = searchTerm
       ? searchRefrigerants(searchTerm)
       : getRefrigerantsByPopularity();
@@ -159,7 +158,8 @@ export function EnhancedRefrigerantSelector({
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && filteredRefrigerants.length > 0) {
-                    onChange(filteredRefrigerants[0].id);
+                    const firstId = filteredRefrigerants[0]?.id;
+                    if (firstId) onChange(firstId);
                   }
                 }}
                 className="focus:ring-2 focus:ring-sky-500 focus:outline-none"

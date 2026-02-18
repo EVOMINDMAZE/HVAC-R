@@ -1,16 +1,26 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+  Plus,
+  Search,
+  Briefcase,
+  Clock,
+  CheckCircle2,
+  AlertCircle,
+  MapPin,
+  Calendar,
+  ArrowLeft,
+  Eye,
+  Edit,
+  MoreHorizontal,
+} from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { useToast } from "@/hooks/use-toast";
+import { PageContainer } from "@/components/PageContainer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -29,25 +39,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  Plus,
-  Search,
-  MapPin,
-  Calendar,
-  Briefcase,
-  User,
-  FileText,
-  Loader2,
-  ArrowLeft,
-  Filter,
-  HardHat,
-} from "lucide-react";
-import { supabase } from "@/lib/supabase";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { useToast } from "@/hooks/use-toast";
-import { motion, AnimatePresence } from "framer-motion";
-import { PageContainer } from "@/components/PageContainer";
-import { AppPageHeader } from "@/components/app/AppPageHeader";
-import { AppSectionCard } from "@/components/app/AppSectionCard";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { PageHero } from "@/components/shared/PageHero";
+import { StatsRow, type StatItem } from "@/components/shared/StatsRow";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { cn } from "@/lib/utils";
 
 interface Job {
   id: string;
@@ -76,9 +76,7 @@ export default function Jobs() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [technicians, setTechnicians] = useState<Technician[]>([]); // Store technicians
-
-  // New Job State
+  const [technicians, setTechnicians] = useState<Technician[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [creating, setCreating] = useState(false);
   const [newJob, setNewJob] = useState({
@@ -87,59 +85,40 @@ export default function Jobs() {
     status: "active" as const,
     address: "",
     notes: "",
-    technician_id: "" as string, // Add technician_id
+    technician_id: "",
   });
 
   useEffect(() => {
     if (user) {
       fetchJobs();
-      // Only fetch technicians if NOT a client (security/privacy)
       if (role !== "client") {
         fetchTechnicians();
       }
     } else if (user === null) {
-      // If user is explicitly null (not loading), we should stop the spinner
       setLoading(false);
     }
-
-    // Safety Timeout: Force loading to false after 5s if anything hangs
     const timer = setTimeout(() => {
-      if (loading) {
-        console.warn("[Jobs] Safety timeout reached. Forcing loading false.");
-        setLoading(false);
-      }
+      if (loading) setLoading(false);
     }, 5000);
-
     return () => clearTimeout(timer);
   }, [user]);
 
   const fetchTechnicians = async () => {
     try {
-      console.log("[Jobs] Fetching technicians from user_roles...");
-      // profiles table doesn't exist, use user_roles instead
       const { data, error } = await supabase
         .from("user_roles")
         .select("user_id, role")
         .in("role", ["technician", "tech"]);
 
-      console.log("[Jobs] Technicians query result:", { data, error });
-
-      if (error) {
-        console.error("[Jobs] Error fetching technicians:", error);
-        // Fallback or silent fail if table setup is incomplete
-      } else if (data) {
-        // Transform to match Technician interface
-        const techs = data.map((t: any) => ({
+      if (error) throw error;
+      if (data) {
+        const techs = data.map((t) => ({
           id: t.user_id,
           full_name: `${t.role === "technician" ? "Technician" : "Tech"} (${t.user_id.slice(0, 8)})`,
           email: "technician@example.com",
           role: t.role,
         }));
-        console.log("[Jobs] Setting technicians:", techs.length);
         setTechnicians(techs);
-      } else {
-        console.log("[Jobs] No technicians data returned");
-        setTechnicians([]);
       }
     } catch (err) {
       console.error("[Jobs] Failed to fetch techs", err);
@@ -149,36 +128,17 @@ export default function Jobs() {
   const fetchJobs = async () => {
     try {
       setLoading(true);
-
-      // Create a promise for the Supabase query
-      const jobsPromise = supabase
+      const { data, error } = await supabase
         .from("jobs")
         .select("*")
         .order("created_at", { ascending: false });
 
-      // Create a timeout promise to prevents indefinite spinners
-      const timeoutPromise = new Promise<{ data: null; error: any }>(
-        (_, reject) => {
-          setTimeout(() => reject(new Error("Request timed out")), 10000);
-        },
-      );
-
-      // Race them
-      const { data, error } = (await Promise.race([
-        jobsPromise,
-        timeoutPromise,
-      ])) as any;
-
       if (error) throw error;
       setJobs(data || []);
     } catch (error: any) {
-      console.error("Error fetching jobs:", error);
       toast({
         title: "Error loading jobs",
-        description:
-          error.message === "Request timed out"
-            ? "Network request timed out. Please check your connection."
-            : "Failed to load jobs. Please try again.",
+        description: "Failed to load jobs. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -187,8 +147,7 @@ export default function Jobs() {
   };
 
   const handleCreateJob = async () => {
-    if (!user) return;
-    if (!newJob.client_name || !newJob.job_name) {
+    if (!user || !newJob.client_name || !newJob.job_name) {
       toast({
         title: "Missing Information",
         description: "Please provide both a client name and a job name.",
@@ -199,9 +158,8 @@ export default function Jobs() {
 
     try {
       setCreating(true);
-      if (!companyId) {
-        throw new Error("You must be assigned to a company to create jobs");
-      }
+      if (!companyId) throw new Error("You must be assigned to a company to create jobs");
+
       const { data, error } = await supabase
         .from("jobs")
         .insert({
@@ -237,7 +195,6 @@ export default function Jobs() {
           : "Job created successfully.",
       });
     } catch (error: any) {
-      console.error("Error creating job:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to create job.",
@@ -248,366 +205,268 @@ export default function Jobs() {
     }
   };
 
-  const filteredJobs = jobs.filter((job) => {
-    const matchesSearch =
-      job.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.job_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (job.address &&
-        job.address.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredJobs = useMemo(() => {
+    return jobs.filter((job) => {
+      const matchesSearch =
+        job.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.job_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (job.address && job.address.toLowerCase().includes(searchTerm.toLowerCase()));
+      const matchesStatus = statusFilter === "all" || job.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [jobs, searchTerm, statusFilter]);
 
-    const matchesStatus = statusFilter === "all" || job.status === statusFilter;
+  const stats: StatItem[] = useMemo(() => {
+    const active = jobs.filter((j) => j.status === "active").length;
+    const pending = jobs.filter((j) => j.status === "pending").length;
+    const completed = jobs.filter((j) => j.status === "completed").length;
 
-    return matchesSearch && matchesStatus;
-  });
+    return [
+      {
+        id: "total",
+        label: "Total Jobs",
+        value: jobs.length,
+        status: "neutral",
+        icon: <Briefcase className="w-4 h-4" />,
+      },
+      {
+        id: "active",
+        label: "Active",
+        value: active,
+        status: "warning",
+        icon: <Clock className="w-4 h-4" />,
+      },
+      {
+        id: "pending",
+        label: "Pending",
+        value: pending,
+        status: pending > 5 ? "danger" : "neutral",
+        icon: <AlertCircle className="w-4 h-4" />,
+      },
+      {
+        id: "completed",
+        label: "Completed",
+        value: completed,
+        status: "success",
+        icon: <CheckCircle2 className="w-4 h-4" />,
+      },
+    ];
+  }, [jobs]);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-200 border-cyan-200 dark:border-cyan-800";
-      case "completed":
-        return "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200 border-emerald-200 dark:border-emerald-800";
-      case "pending":
-        return "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-200 border-amber-200 dark:border-amber-800";
-      case "assigned":
-        return "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-200 border-purple-200 dark:border-purple-800";
-      default:
-        return "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300";
-    }
+  const statusConfig: Record<string, { label: string; color: string }> = {
+    active: { label: "Active", color: "bg-cyan-100 text-cyan-700 border-cyan-200" },
+    pending: { label: "Pending", color: "bg-amber-100 text-amber-700 border-amber-200" },
+    completed: { label: "Completed", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
   };
 
   return (
-    <PageContainer variant="standard" className="app-stack-24">
-      <AppPageHeader
-        kicker="Work"
-        title={role === "client" ? "My Service Jobs" : "Open Jobs"}
-        subtitle={
-          role === "client"
-            ? "Track your active requests and completed service visits."
-            : "Track, organize, and assign HVAC service jobs across your team."
-        }
+    <PageContainer variant="standard" className="jobs-page">
+      <PageHero
+        title={role === "client" ? "My Service Jobs" : "Jobs"}
+        subtitle={role === "client" ? "Track your service requests and completed visits" : "Track, organize, and assign HVAC service jobs"}
+        icon={<Briefcase className="w-5 h-5" />}
         actions={
-          <div className="flex flex-wrap items-center gap-2">
-            <Button
-              variant="outline"
-              onClick={() => navigate(role === "client" ? "/portal" : "/dashboard")}
-            >
-              <ArrowLeft className="h-4 w-4" />
+          <>
+            <Button variant="outline" onClick={() => navigate(role === "client" ? "/portal" : "/dashboard")}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
-
-            {role !== "client" ? (
+            {role !== "client" && (
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
                   <Button>
-                    <Plus className="h-4 w-4" /> Create Job
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create Job
                   </Button>
                 </DialogTrigger>
-            <DialogContent className="sm:max-w-[600px] bg-card/95 backdrop-blur-md border-border">
-              <DialogHeader>
-                <DialogTitle className="text-2xl">Create New Job</DialogTitle>
-                <DialogDescription>
-                  Enter the details for the new service job assignment.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-6 py-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="client-name">Client Name</Label>
-                    <Input
-                      id="client-name"
-                      placeholder="e.g. John Doe"
-                      value={newJob.client_name}
-                      onChange={(e) =>
-                        setNewJob({ ...newJob, client_name: e.target.value })
-                      }
-                      className="bg-slate-950/50"
-                    />
+                <DialogContent className="sm:max-w-[500px]">
+                  <DialogHeader>
+                    <DialogTitle>Create New Job</DialogTitle>
+                    <DialogDescription>
+                      Enter the details for the new service job assignment.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="client-name">Client Name</Label>
+                        <Input
+                          id="client-name"
+                          placeholder="John Doe"
+                          value={newJob.client_name}
+                          onChange={(e) => setNewJob({ ...newJob, client_name: e.target.value })}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="job-name">Job Title</Label>
+                        <Input
+                          id="job-name"
+                          placeholder="AC Repair - Unit 2"
+                          value={newJob.job_name}
+                          onChange={(e) => setNewJob({ ...newJob, job_name: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="technician">Assign Technician</Label>
+                        <Select
+                          value={newJob.technician_id || "unassigned"}
+                          onValueChange={(val) => setNewJob({ ...newJob, technician_id: val === "unassigned" ? "" : val })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="unassigned">Unassigned</SelectItem>
+                            {technicians.map((tech) => (
+                              <SelectItem key={tech.id} value={tech.id}>
+                                {tech.full_name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="status">Status</Label>
+                        <Select value={newJob.status} onValueChange={(val: any) => setNewJob({ ...newJob, status: val })}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="active">Active</SelectItem>
+                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="completed">Completed</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="address">Service Address</Label>
+                      <Input
+                        id="address"
+                        placeholder="123 Main St, City, ST"
+                        value={newJob.address}
+                        onChange={(e) => setNewJob({ ...newJob, address: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="notes">Notes</Label>
+                      <Textarea
+                        id="notes"
+                        placeholder="Description of the issue..."
+                        value={newJob.notes}
+                        onChange={(e) => setNewJob({ ...newJob, notes: e.target.value })}
+                        className="min-h-[80px]"
+                      />
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="job-name">Job Title</Label>
-                    <Input
-                      id="job-name"
-                      placeholder="e.g. AC Repair - Unit 2"
-                      value={newJob.job_name}
-                      onChange={(e) =>
-                        setNewJob({ ...newJob, job_name: e.target.value })
-                      }
-                      className="bg-slate-950/50"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="status">Status</Label>
-                    <Select
-                      value={newJob.status}
-                      onValueChange={(val: any) =>
-                        setNewJob({ ...newJob, status: val })
-                      }
-                    >
-                      <SelectTrigger className="bg-slate-950/50">
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="completed">Completed</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Technician Assignment */}
-                  <div className="space-y-2">
-                    <Label htmlFor="technician">Assign Technician</Label>
-                    <Select
-                      value={newJob.technician_id || "unassigned"}
-                      onValueChange={(val) =>
-                        setNewJob({
-                          ...newJob,
-                          technician_id: val === "unassigned" ? "" : val,
-                        })
-                      }
-                    >
-                      <SelectTrigger className="bg-slate-950/50">
-                        <div className="flex items-center gap-2">
-                          <HardHat className="w-4 h-4 text-muted-foreground" />
-                          <SelectValue placeholder="Select Technician" />
-                        </div>
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="unassigned">
-                          -- Unassigned --
-                        </SelectItem>
-                        {technicians.length > 0 ? (
-                          technicians.map((tech) => (
-                            <SelectItem key={tech.id} value={tech.id}>
-                              {tech.full_name || tech.email || "Unknown Tech"}
-                            </SelectItem>
-                          ))
-                        ) : (
-                          <div className="p-2 text-xs text-muted-foreground">
-                            No technicians found
-                          </div>
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="address">Service Address</Label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="address"
-                      placeholder="123 Main St, City, ST"
-                      value={newJob.address}
-                      onChange={(e) =>
-                        setNewJob({ ...newJob, address: e.target.value })
-                      }
-                      className="pl-10 bg-slate-950/50"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="notes">Job Notes</Label>
-                  <Textarea
-                    id="notes"
-                    placeholder="Detailed description of the issue or required service..."
-                    value={newJob.notes}
-                    onChange={(e) =>
-                      setNewJob({ ...newJob, notes: e.target.value })
-                    }
-                    className="min-h-[100px] bg-slate-950/50"
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button
-                  variant="outline"
-                  onClick={() => setIsDialogOpen(false)}
-                  disabled={creating}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleCreateJob}
-                  disabled={creating}
-                  className="bg-primary hover:bg-primary/90"
-                >
-                  {creating ? (
-                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                  ) : null}
-                  Create Job
-                </Button>
-              </DialogFooter>
-            </DialogContent>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                    <Button onClick={handleCreateJob} disabled={creating}>
+                      {creating ? "Creating..." : "Create Job"}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
               </Dialog>
-            ) : (
-              <Button onClick={() => navigate("/triage")}>
-                <Plus className="h-4 w-4" /> Request Service
-              </Button>
             )}
-          </div>
+          </>
         }
       />
 
-      <AppSectionCard className="mb-2">
-        <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-              <Input
-                placeholder="Search by job title, client name, or address..."
-                className="pl-10 bg-background border-input"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <div className="w-full sm:w-[200px]">
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="bg-background border-input">
-                  <div className="flex items-center">
-                    <Filter className="w-4 h-4 mr-2 text-muted-foreground" />
-                    <SelectValue placeholder="Filter by status" />
-                  </div>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Statuses</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="assigned">Assigned</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+      <StatsRow stats={stats} columns={4} />
+
+      <div className="jobs-page__toolbar">
+        <div className="jobs-page__search">
+          <Search className="jobs-page__search-icon w-4 h-4" />
+          <input
+            type="text"
+            placeholder="Search by job title, client, or address..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="jobs-page__search-input"
+          />
+        </div>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="jobs-page__filter w-[180px]">
+            <SelectValue placeholder="All Statuses" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Statuses</SelectItem>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="completed">Completed</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="jobs-page__content">
+        {loading ? (
+          <div className="jobs-page__loading">
+            <div className="jobs-page__loading-spinner" />
+            <span>Loading jobs...</span>
           </div>
-        </CardContent>
-      </AppSectionCard>
-
-      {loading ? (
-        <div className="flex flex-col items-center justify-center py-24">
-          <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
-          <p className="text-muted-foreground">Loading your jobs...</p>
-        </div>
-      ) : (
-        <div className="min-h-[300px]">
-          <AnimatePresence mode="popLayout">
-            {filteredJobs.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-              >
-                <Card className="bg-card/30 border-dashed border-2 border-muted flex flex-col items-center justify-center text-center py-16">
-                  <div className="w-20 h-20 rounded-full bg-muted/50 flex items-center justify-center mb-6">
-                    <Briefcase className="w-10 h-10 text-muted-foreground" />
+        ) : filteredJobs.length === 0 ? (
+          <EmptyState
+            icon={<Briefcase className="w-12 h-12" />}
+            title="No jobs found"
+            description={searchTerm || statusFilter !== "all" ? "Try adjusting your filters" : "Create your first job to get started"}
+            action={(!searchTerm && statusFilter === "all" && role !== "client") ? { label: "Create Job", onClick: () => setIsDialogOpen(true) } : undefined}
+          />
+        ) : (
+          <div className="jobs-page__grid">
+            {filteredJobs.map((job) => {
+              const status = statusConfig[job.status] ?? statusConfig.pending!;
+              return (
+                <div
+                  key={job.id}
+                  className="job-card"
+                  onClick={() => navigate(`/dashboard/jobs/${job.id}`)}
+                >
+                  <div className="job-card__header">
+                    <span className={cn("job-card__status", status.color)}>
+                      {status.label}
+                    </span>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                        <button className="job-card__menu">
+                          <MoreHorizontal className="w-4 h-4" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={(e) => { e.stopPropagation(); navigate(`/dashboard/jobs/${job.id}`); }}>
+                          <Eye className="w-4 h-4 mr-2" /> View Details
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => { e.stopPropagation(); navigate(`/dashboard/jobs/${job.id}?edit=true`); }}>
+                          <Edit className="w-4 h-4 mr-2" /> Edit
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
-                  <h3 className="text-xl font-semibold text-foreground mb-2">
-                    No jobs found
-                  </h3>
-                  <p className="text-muted-foreground max-w-sm mx-auto mb-8">
-                    {searchTerm || statusFilter !== "all"
-                      ? "We couldn't find any jobs matching your current filters."
-                      : "Get started by creating a new job assignment for your team."}
-                  </p>
-                  {!searchTerm && statusFilter === "all" && (
-                    <Button onClick={() => setIsDialogOpen(true)}>
-                      Create your first job
-                    </Button>
-                  )}
-                </Card>
-              </motion.div>
-            ) : (
-              <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                layout
-              >
-                {filteredJobs.map((job) => (
-                  <motion.div
-                    key={job.id}
-                    layout
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <Card
-                      className="h-full bg-card/60 backdrop-blur-sm border-border hover:shadow-xl hover:bg-card/80 transition-all duration-300 group cursor-pointer hover:-translate-y-1"
-                      onClick={() => navigate(`/dashboard/jobs/${job.id}`)}
-                    >
-                      <CardHeader className="pb-3">
-                        <div className="flex justify-between items-start mb-2">
-                          <Badge
-                            variant="outline"
-                            className={`${getStatusColor(job.status)} border px-2.5 py-0.5 capitalize shadow-sm font-medium`}
-                          >
-                            {job.status}
-                          </Badge>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-muted"
-                            onClick={() =>
-                              navigate(`/dashboard/jobs/${job.id}`)
-                            }
-                          >
-                            <FileText className="w-4 h-4 text-muted-foreground" />
-                          </Button>
-                        </div>
-                        <CardTitle className="text-xl font-bold text-foreground line-clamp-1 group-hover:text-primary transition-colors">
-                          {job.job_name}
-                        </CardTitle>
-                        <div className="flex items-center mt-1 text-sm text-muted-foreground">
-                          <User className="w-3.5 h-3.5 mr-1.5" />
-                          <span className="font-medium">{job.client_name}</span>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-4">
-                          {job.address ? (
-                            <div className="flex items-start text-sm text-muted-foreground bg-muted/30 p-2.5 rounded-lg">
-                              <MapPin className="w-3.5 h-3.5 mr-2 mt-0.5 shrink-0 text-primary" />
-                              <span className="line-clamp-2">
-                                {job.address}
-                              </span>
-                            </div>
-                          ) : (
-                            <div className="h-[42px] flex items-center text-sm text-muted-foreground/50 italic px-2">
-                              No address provided
-                            </div>
-                          )}
 
-                          <div className="pt-4 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
-                            <div className="flex items-center">
-                              <Calendar className="w-3.5 h-3.5 mr-1.5" />
-                              {new Date(job.created_at).toLocaleDateString(
-                                undefined,
-                                {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                },
-                              )}
-                            </div>
-                            {job.photos && job.photos.length > 0 && (
-                              <Badge variant="secondary" className="text-xs">
-                                {job.photos.length} photos
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      )}
+                  <div className="job-card__body">
+                    <h3 className="job-card__title">{job.job_name}</h3>
+                    <p className="job-card__client">{job.client_name}</p>
+                  </div>
+
+                  <div className="job-card__meta">
+                    {job.address && (
+                      <div className="job-card__meta-item">
+                        <MapPin className="w-3.5 h-3.5" />
+                        <span>{job.address}</span>
+                      </div>
+                    )}
+                    <div className="job-card__meta-item">
+                      <Calendar className="w-3.5 h-3.5" />
+                      <span>{new Date(job.created_at).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </PageContainer>
   );
 }

@@ -21,7 +21,6 @@ import {
   MicOff,
   Loader2,
   Sparkles,
-  ShieldCheck,
 } from "lucide-react";
 import { InvoiceList } from "@/components/invoices/InvoiceList";
 import { WarrantyList } from "@/components/warranty/WarrantyList";
@@ -87,6 +86,10 @@ export default function JobDetails() {
   const [updatingTech, setUpdatingTech] = useState(false); // State for loading spinner during assignment
 
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const isValidUuid = (value: string) =>
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      value,
+    );
 
   const handleSmartAnalysis = async () => {
     if (!localNotes) return;
@@ -184,6 +187,16 @@ export default function JobDetails() {
 
   useEffect(() => {
     if (id) {
+      if (!isValidUuid(id)) {
+        setLoading(false);
+        setJob(null);
+        toast({
+          title: "Invalid job link",
+          description: "This job ID is not valid. Open the job from Jobs list.",
+          variant: "destructive",
+        });
+        return;
+      }
       fetchJob(id);
       // Only fetch technicians if user exists and is not a client
       if (authCompanyId) {
@@ -219,6 +232,10 @@ export default function JobDetails() {
 
   const fetchJob = async (jobId: string) => {
     try {
+      if (!isValidUuid(jobId)) {
+        setJob(null);
+        return;
+      }
       console.log("[JobDetails] fetchJob called for id:", jobId);
       setLoading(true);
       const { data, error } = await supabase
@@ -429,7 +446,7 @@ export default function JobDetails() {
                     size="sm"
                     onClick={startRecording}
                     disabled={isTranscribing}
-                    className="border-cyan-200 hover:bg-cyan-50 dark:border-cyan-800 dark:hover:bg-cyan-950"
+                    className="border-border hover:bg-secondary"
                   >
                     {isTranscribing ? (
                       <>
@@ -438,7 +455,7 @@ export default function JobDetails() {
                       </>
                     ) : (
                       <>
-                        <Mic className="w-4 h-4 mr-2 text-cyan-500" />
+                        <Mic className="w-4 h-4 mr-2 text-primary" />
                         Add Voice Note
                       </>
                     )}
@@ -578,8 +595,8 @@ export default function JobDetails() {
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                      <User className="w-5 h-5 text-slate-500" />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary">
+                      <User className="w-5 h-5 text-muted-foreground" />
                     </div>
                     <div className="flex-1">
                       {job.technician_id ? (

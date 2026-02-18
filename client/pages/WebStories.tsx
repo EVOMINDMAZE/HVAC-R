@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { Play, AlertTriangle } from "lucide-react";
 import {
   useSanityWebStories,
@@ -10,16 +8,14 @@ import {
 } from "@/lib/sanity";
 import { SanityStoryViewer } from "@/components/web-stories/SanityStoryViewer";
 import { SEO } from "@/components/SEO";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 
 export function WebStories() {
   const { stories, loading, error } = useSanityWebStories();
   const [selectedStory, setSelectedStory] = useState<SanityWebStory | null>(null);
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-
-      <main className="pt-24 pb-20">
+    <PublicPageShell mainClassName="pt-24 pb-20">
         <SEO
           title="Stories"
           description="Visual HVAC&R stories and quick technical guides from ThermoNeural."
@@ -97,9 +93,6 @@ export function WebStories() {
             onClose={() => setSelectedStory(null)}
           />
         )}
-      </main>
-
-      <Footer />
-    </div>
+    </PublicPageShell>
   );
 }

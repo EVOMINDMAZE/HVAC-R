@@ -58,7 +58,7 @@ export function setupGlobalErrorHandler() {
       return originalJSONParse.call(this, text, reviver);
     } catch (error) {
       // Get stack trace to identify source
-      const stack = error instanceof Error ? error.stack : "";
+      const stack = error instanceof Error ? (error.stack ?? "") : "";
       const isFromExternalAPI =
         stack.includes("simulateon-backend.onrender.com") ||
         stack.includes("calculate-standard") ||

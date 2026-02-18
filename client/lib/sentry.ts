@@ -49,8 +49,9 @@ export function initSentry() {
     replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1.0,
     
-    beforeSend(event, hint) {
-      const error = hint.originalException;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    beforeSend(event: any, hint: any) {
+      const error = hint.originalException as Error | undefined;
       
       if (error?.message?.includes('ResizeObserver')) {
         return null;
@@ -63,7 +64,7 @@ export function initSentry() {
       return event;
     },
     
-    beforeBreadcrumb(breadcrumb) {
+    beforeBreadcrumb(breadcrumb: Sentry.Breadcrumb) {
       if (breadcrumb.category === 'console' && breadcrumb.level === 'debug') {
         return null;
       }

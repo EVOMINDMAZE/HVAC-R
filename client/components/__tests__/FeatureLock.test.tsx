@@ -2,7 +2,6 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { FeatureLock, FeatureBadge } from '../FeatureLock';
-import { UpgradeModal } from '../UpgradeModal';
 
 // Mock UpgradeModal to avoid complex dialog rendering
 vi.mock('../UpgradeModal', () => ({

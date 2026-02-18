@@ -20,7 +20,7 @@ interface UseBluetoothProbeOptions {
 
 export function useBluetoothProbe({
     serviceUuid = 0x181a,
-    characteristicUuid = 0x2a6e,
+    characteristicUuid: _characteristicUuid = 0x2a6e,
     simulate = false,
 }: UseBluetoothProbeOptions = {}) {
     const [device, setDevice] = useState<BluetoothDevice | null>(null);

@@ -10,7 +10,6 @@ import {
 import { useJob } from "@/context/JobContext";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { supabase } from "@/lib/supabase";
-import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 
 export function RiskShield() {

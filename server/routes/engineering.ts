@@ -28,8 +28,9 @@ export const calculateAirflow: RequestHandler = (req, res) => {
                 delta_t_f
             }
         });
-    } catch (e: any) {
-        res.status(500).json({ error: e.message });
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : "Unknown error";
+        return res.status(500).json({ error: message });
     }
 };
 
@@ -56,8 +57,9 @@ export const calculateDeltaT: RequestHandler = (req, res) => {
                 status
             }
         });
-    } catch (e: any) {
-        res.status(500).json({ error: e.message });
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : "Unknown error";
+        return res.status(500).json({ error: message });
     }
 };
 
@@ -143,9 +145,10 @@ export const calculateStandardCycleEndpoint: RequestHandler = (req, res) => {
             data: responseData
         });
 
-    } catch (e: any) {
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : "Calculation failed";
         console.error("Calculation error:", e);
-        res.status(500).json({ error: e.message || "Calculation failed" });
+        return res.status(500).json({ error: message });
     }
 };
 
@@ -189,9 +192,10 @@ export const compareRefrigerantsEndpoint: RequestHandler = (req, res) => {
             data: { results }
         });
 
-    } catch (e: any) {
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : "Comparison failed";
         console.error("Comparison error:", e);
-        res.status(500).json({ error: e.message || "Comparison failed" });
+        return res.status(500).json({ error: message });
     }
 };
 
@@ -273,14 +277,15 @@ export const calculateCascadeCycleEndpoint: RequestHandler = (req, res) => {
             }
         };
 
-        res.json({
+        return res.json({
             success: true,
             data: responseData
         });
 
-    } catch (e: any) {
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : "Cascade Calculation failed";
         console.error("Cascade Calculation error:", e);
-        res.status(500).json({ error: e.message || "Cascade Calculation failed" });
+        return res.status(500).json({ error: message });
     }
 };
 

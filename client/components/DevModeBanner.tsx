@@ -10,7 +10,7 @@ interface DevModeBannerProps {
 }
 
 export function DevModeBanner({ isActive, onClose }: DevModeBannerProps) {
-  if (!isActive) {
+  if (!isActive || !import.meta.env.DEV) {
     return null;
   }
 
@@ -21,10 +21,6 @@ export function DevModeBanner({ isActive, onClose }: DevModeBannerProps) {
   };
 
   const handleDisableBypass = () => {
-    // Remove localStorage flag if present
-    if (localStorage.getItem('DEBUG_BYPASS') === '1') {
-      localStorage.removeItem('DEBUG_BYPASS');
-    }
     // Remove URL parameter by reloading without it
     const url = new URL(window.location.href);
     url.searchParams.delete('bypassAuth');
@@ -55,7 +51,7 @@ export function DevModeBanner({ isActive, onClose }: DevModeBannerProps) {
                   <p className="text-sm font-medium text-purple-800 dark:text-purple-300">How this was activated:</p>
                   <ul className="text-xs space-y-1 list-disc list-inside text-purple-700 dark:text-purple-400">
                     <li>URL parameter: <code className="px-1 py-0.5 bg-purple-100 dark:bg-purple-900 rounded">?bypassAuth=1</code></li>
-                    <li>LocalStorage flag: <code className="px-1 py-0.5 bg-purple-100 dark:bg-purple-900 rounded">DEBUG_BYPASS=1</code></li>
+                    <li>Only works in development mode</li>
                   </ul>
                 </div>
                 
@@ -63,7 +59,6 @@ export function DevModeBanner({ isActive, onClose }: DevModeBannerProps) {
                   <p className="text-sm font-medium text-purple-800 dark:text-purple-300">To disable:</p>
                   <ul className="text-xs space-y-1 list-disc list-inside text-purple-700 dark:text-purple-400">
                     <li>Remove <code>?bypassAuth=1</code> from URL and refresh</li>
-                    <li>Clear <code>DEBUG_BYPASS</code> from localStorage</li>
                     <li>Use the button below</li>
                   </ul>
                 </div>
@@ -77,20 +72,6 @@ export function DevModeBanner({ isActive, onClose }: DevModeBannerProps) {
                   className="border-purple-300 text-purple-700 hover:bg-purple-100 hover:text-purple-800"
                 >
                   Disable Development Mode
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    console.log({
-                      bypassAuth: new URLSearchParams(window.location.search).get('bypassAuth'),
-                      DEBUG_BYPASS: localStorage.getItem('DEBUG_BYPASS'),
-                      isProduction: import.meta.env.PROD,
-                    });
-                  }}
-                  className="text-purple-600 hover:text-purple-800 hover:bg-purple-100"
-                >
-                  Debug Info
                 </Button>
                 <a
                   href="/signout"

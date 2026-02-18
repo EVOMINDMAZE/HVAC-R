@@ -1,6 +1,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import { motion, HTMLMotionProps } from "framer-motion";
+import { InlineMonitorSlot } from "@/components/monitor/InlineMonitorSlot";
 
 type PageContainerVariant = "standard" | "narrow" | "wide" | "full" | "prose";
 
@@ -9,6 +10,7 @@ interface PageContainerProps extends HTMLMotionProps<"div"> {
   variant?: PageContainerVariant;
   className?: string;
   withMotion?: boolean;
+  showInlineMonitor?: boolean;
 }
 
 
@@ -25,10 +27,11 @@ export const PageContainer = ({
   variant = "standard",
   className,
   withMotion = true,
+  showInlineMonitor = false,
   ...props
 }: PageContainerProps) => {
   const containerClassName = cn(
-    "mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12",
+    "app-page",
     variants[variant],
     className,
   );
@@ -36,6 +39,7 @@ export const PageContainer = ({
   if (!withMotion) {
     return (
       <div className={containerClassName} {...(props as any)}>
+        {showInlineMonitor ? <InlineMonitorSlot /> : null}
         {children}
       </div>
     );
@@ -49,6 +53,7 @@ export const PageContainer = ({
       className={containerClassName}
       {...props}
     >
+      {showInlineMonitor ? <InlineMonitorSlot /> : null}
       {children}
     </motion.div>
   );

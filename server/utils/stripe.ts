@@ -1,6 +1,5 @@
 import Stripe from 'stripe';
 import dotenv from 'dotenv';
-import { supabaseAdmin } from './supabase.js';
 
 dotenv.config();
 
@@ -78,10 +77,15 @@ export async function cancelSubscription(subscriptionId: string) {
 export async function updateSubscription(subscriptionId: string, newPriceId: string) {
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
+  const itemId = subscription.items.data[0]?.id;
+  if (!itemId) {
+    throw new Error('No subscription item found');
+  }
+
   const updatedSubscription = await stripe.subscriptions.update(subscriptionId, {
     items: [
       {
-        id: subscription.items.data[0].id,
+        id: itemId,
         price: newPriceId,
       },
     ],

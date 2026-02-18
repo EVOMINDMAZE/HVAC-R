@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import {
   Select,
   SelectContent,
@@ -15,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Mail, Phone, MapPin, Clock, Send, Building2, User } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 
 export function Contact() {
   const [formData, setFormData] = useState({
@@ -36,30 +35,27 @@ export function Contact() {
   };
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
+    <PublicPageShell mainClassName="pb-20">
+      <SEO
+        title="Contact"
+        description="Contact ThermoNeural for HVAC&R, refrigeration, and cryogenic engineering support."
+      />
 
-      <main className="pt-24 pb-20">
-        <SEO
-          title="Contact"
-          description="Contact ThermoNeural for HVAC&R, refrigeration, and cryogenic engineering support."
-        />
+      <section className="px-4 py-16">
+        <div className="max-w-6xl mx-auto">
+          <p className="text-xs uppercase tracking-[0.2em] text-primary">Contact</p>
+          <h1 className="mt-4 text-4xl md:text-5xl font-semibold">
+            Let’s talk about your HVAC&R workflows.
+          </h1>
+          <p className="mt-4 text-lg text-muted-foreground max-w-3xl">
+            Reach out for product questions, implementation guidance, or enterprise requirements.
+            We respond within one business day.
+          </p>
+        </div>
+      </section>
 
-        <section className="px-4 py-16">
-          <div className="max-w-6xl mx-auto">
-            <p className="text-xs uppercase tracking-[0.2em] text-primary">Contact</p>
-            <h1 className="mt-4 text-4xl md:text-5xl font-semibold">
-              Let’s talk about your HVAC&R workflows.
-            </h1>
-            <p className="mt-4 text-lg text-muted-foreground max-w-3xl">
-              Reach out for product questions, implementation guidance, or enterprise requirements.
-              We respond within one business day.
-            </p>
-          </div>
-        </section>
-
-        <section className="px-4">
-          <div className="max-w-6xl mx-auto grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+      <section className="px-4">
+        <div className="max-w-6xl mx-auto grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
             <Card className="border-border/60">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl">
@@ -221,11 +217,8 @@ export function Contact() {
                 </CardContent>
               </Card>
             </div>
-          </div>
-        </section>
-      </main>
-
-      <Footer />
-    </div>
+        </div>
+      </section>
+    </PublicPageShell>
   );
 }

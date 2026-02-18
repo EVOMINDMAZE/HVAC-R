@@ -2,11 +2,10 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import DocsViewer from "@/components/DocsViewer";
 import { Search, FileText } from "lucide-react";
 import { SEO } from "@/components/SEO";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 
 const documentation = [
   {
@@ -87,10 +86,7 @@ export function Documentation() {
     .filter((section) => section.articles.length > 0);
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-
-      <main className="pt-24 pb-20">
+    <PublicPageShell mainClassName="pt-24 pb-20">
         <SEO
           title="Documentation"
           description="ThermoNeural documentation for HVAC&R, refrigeration, and cryogenic engineering workflows."
@@ -168,9 +164,6 @@ export function Documentation() {
             onClose={() => setActiveDocTitle(null)}
           />
         )}
-      </main>
-
-      <Footer />
-    </div>
+    </PublicPageShell>
   );
 }

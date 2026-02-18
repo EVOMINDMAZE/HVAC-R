@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
-import { useSubscription } from "@/hooks/useStripe";
 
 export interface DashboardStats {
   totalCalculations: number;
@@ -18,24 +17,18 @@ export interface DashboardStats {
   billingCycleResetLabel: string;
 }
 
-export function useDashboardStats() {
-  console.log("[useDashboardStats] hook called");
+export function useDashboardStats(options?: { enabled?: boolean }) {
+  const enabled = options?.enabled ?? true;
   const {
     calculations,
     isLoading: calculationsLoading,
     refetch: refetchCalculations,
-  } = useSupabaseCalculations();
-  const {
     subscription,
-    loading: subscriptionLoading,
-    refetch: refetchSubscription,
-  } = useSubscription();
+    subscriptionLoading,
+    refetchSubscription,
+  } = useSupabaseCalculations({ enabled });
 
   const stats = useMemo<DashboardStats>(() => {
-    console.log("[useDashboardStats] computing stats", {
-      calculationsCount: calculations.length,
-      subscription: subscription?.plan,
-    });
     const totalCalculations = calculations.length;
     const now = new Date();
     const currentMonth = now.getMonth();
@@ -89,18 +82,14 @@ export function useDashboardStats() {
   }, [calculations, subscription]);
 
   const isLoading = calculationsLoading || subscriptionLoading;
-  console.log("[useDashboardStats] isLoading:", isLoading, {
-    calculationsLoading,
-    subscriptionLoading,
-  });
 
   const refreshStats = async () => {
     try {
-      await Promise.all([refetchCalculations(), refetchSubscription?.()]);
-    } catch (e) {
+      await Promise.all([refetchCalculations(), refetchSubscription()]);
+    } catch (_e) {
       // silent
     }
   };
 
-  return { stats, isLoading, refreshStats };
+  return { stats, isLoading, refreshStats, calculations };
 }

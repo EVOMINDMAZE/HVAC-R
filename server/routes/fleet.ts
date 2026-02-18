@@ -117,7 +117,7 @@ export const getFleetStatus: RequestHandler = async (req, res) => {
       })
     );
 
-    res.json({
+    return res.json({
       success: true,
       data: {
         techs: fleetStatus,
@@ -131,8 +131,8 @@ export const getFleetStatus: RequestHandler = async (req, res) => {
       }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error getting fleet status:", error);
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 };

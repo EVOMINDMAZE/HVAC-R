@@ -19,14 +19,14 @@ export const analyzePatterns: import("express").RequestHandler = async (
 
     const analysis = await patternService.analyzeHistoricalData(companyId);
 
-    res.json({
+    return res.json({
       success: true,
       data: analysis,
       message: "Pattern analysis completed successfully",
     });
   } catch (error) {
     console.error("Error in pattern analysis:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Failed to analyze patterns",
       details: error instanceof Error ? error.message : "Unknown error",
     });
@@ -55,14 +55,14 @@ export const getRelatedPatterns: import("express").RequestHandler = async (
       companyId,
     );
 
-    res.json({
+    return res.json({
       success: true,
       data: patterns,
       message: `Found ${patterns.length} related patterns`,
     });
   } catch (error) {
     console.error("Error getting related patterns:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Failed to get related patterns",
       details: error instanceof Error ? error.message : "Unknown error",
     });
@@ -100,14 +100,14 @@ export const createSymptomOutcomePattern: import("express").RequestHandler =
         companyId,
       );
 
-      res.json({
+      return res.json({
         success: true,
         data: { patternId },
         message: "Symptom outcome pattern created successfully",
       });
     } catch (error) {
       console.error("Error creating symptom outcome pattern:", error);
-      res.status(500).json({
+      return res.status(500).json({
         error: "Failed to create symptom outcome pattern",
         details: error instanceof Error ? error.message : "Unknown error",
       });
@@ -145,14 +145,14 @@ export const createMeasurementAnomalyPattern: import("express").RequestHandler =
         companyId,
       );
 
-      res.json({
+      return res.json({
         success: true,
         data: { patternId },
         message: "Measurement anomaly pattern created successfully",
       });
     } catch (error) {
       console.error("Error creating measurement anomaly pattern:", error);
-      res.status(500).json({
+      return res.status(500).json({
         error: "Failed to create measurement anomaly pattern",
         details: error instanceof Error ? error.message : "Unknown error",
       });
@@ -186,13 +186,13 @@ export const updatePatternFeedback: import("express").RequestHandler = async (
 
     await patternService.updatePattern(patternId, feedback);
 
-    res.json({
+    return res.json({
       success: true,
       message: "Pattern updated successfully",
     });
   } catch (error) {
     console.error("Error updating pattern:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Failed to update pattern",
       details: error instanceof Error ? error.message : "Unknown error",
     });
@@ -215,7 +215,7 @@ export const getPatternsByType: import("express").RequestHandler = async (
       "seasonal_pattern",
     ];
 
-    if (!validTypes.includes(type)) {
+    if (!type || !validTypes.includes(type)) {
       return res.status(400).json({
         error: `Invalid pattern type. Must be one of: ${validTypes.join(", ")}`,
       });
@@ -237,14 +237,14 @@ export const getPatternsByType: import("express").RequestHandler = async (
 
     if (error) throw error;
 
-    res.json({
+    return res.json({
       success: true,
       data: data || [],
       message: `Retrieved ${data?.length || 0} patterns of type ${type}`,
     });
   } catch (error) {
     console.error("Error getting patterns by type:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Failed to get patterns",
       details: error instanceof Error ? error.message : "Unknown error",
     });
@@ -308,7 +308,7 @@ export const enhancedTroubleshoot: import("express").RequestHandler = async (
       context,
     );
 
-    res.json({
+    return res.json({
       success: true,
       data: {
         patterns: enhancedPatterns,
@@ -329,7 +329,7 @@ export const enhancedTroubleshoot: import("express").RequestHandler = async (
     });
   } catch (error) {
     console.error("Error in enhanced troubleshooting:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Failed to perform enhanced troubleshooting",
       details: error instanceof Error ? error.message : "Unknown error",
     });
@@ -337,7 +337,7 @@ export const enhancedTroubleshoot: import("express").RequestHandler = async (
 };
 
 // Helper function to generate pattern-aware recommendations
-function generatePatternAwareRecommendations(patterns: any[], context: any) {
+function generatePatternAwareRecommendations(patterns: any[], _context: any) {
   const recommendations = [];
   const topPatterns = patterns.slice(0, 3);
 

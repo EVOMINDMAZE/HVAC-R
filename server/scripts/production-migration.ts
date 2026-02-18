@@ -73,7 +73,7 @@ class ProductionMigration {
     console.log("Checking AI tables...");
 
     // Check ai_learning_patterns
-    const { data: testPattern, error: patternError } = await supabaseAdmin
+    const { data: _testPattern, error: patternError } = await supabaseAdmin
       .from("ai_learning_patterns")
       .select("count")
       .limit(1);
@@ -85,7 +85,7 @@ class ProductionMigration {
     }
 
     // Check diagnostic_outcomes
-    const { data: testOutcome, error: outcomeError } = await supabaseAdmin
+    const { data: _testOutcome, error: outcomeError } = await supabaseAdmin
       .from("diagnostic_outcomes")
       .select("count")
       .limit(1);
@@ -136,7 +136,7 @@ class ProductionMigration {
 
         if (symptoms.length > 0 && diagnosis) {
           // Create symptom pattern
-          const { data: pattern, error: patternError } = await supabaseAdmin
+          const { data: _pattern, error: patternError } = await supabaseAdmin
             .from("ai_learning_patterns")
             .insert({
               pattern_type: "symptom_outcome",
@@ -220,7 +220,7 @@ class ProductionMigration {
 
   private extractMeasurements(
     parameters: any,
-    results: any,
+    _results: any,
   ): Record<string, number> {
     const measurements: Record<string, number> = {};
 
@@ -255,7 +255,7 @@ class ProductionMigration {
     return measurements;
   }
 
-  private inferOutcome(parameters: any, results: any): string {
+  private inferOutcome(_parameters: any, results: any): string {
     // Infer outcome from available data
     if (results?.outcome) return results.outcome;
     if (results?.success !== undefined)

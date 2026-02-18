@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { config } from "dotenv";
 
 config();
@@ -14,7 +14,7 @@ if (!serviceRoleKey) {
     console.warn("SUPABASE_SERVICE_ROLE_KEY missing. Admin operations will fail.");
 }
 
-export const supabaseAdmin =
+export const supabaseAdmin = (
     supabaseUrl && serviceRoleKey
         ? createClient(supabaseUrl, serviceRoleKey, {
             auth: {
@@ -22,7 +22,8 @@ export const supabaseAdmin =
                 persistSession: false,
             },
         })
-        : null;
+        : null
+) as SupabaseClient;
 
 export const getSupabaseClient = (authToken?: string) => {
     if (!supabaseUrl || !anonKey) return null;

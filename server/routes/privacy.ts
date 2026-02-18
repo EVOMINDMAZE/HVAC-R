@@ -1,6 +1,5 @@
 import { RequestHandler } from "express";
 import { supabaseAdmin, getSupabaseClient } from "../utils/supabase.js";
-import { authenticateSupabaseToken } from "../utils/supabaseAuth.js";
 
 interface ConsentRequest {
   consent_type: string;
@@ -72,9 +71,10 @@ export const recordConsent: RequestHandler = async (req, res) => {
       consent_id: data,
       message: 'Consent recorded successfully'
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
     console.error('Unexpected error in recordConsent:', error);
-    return res.status(500).json({ error: 'Internal server error', details: error.message });
+    return res.status(500).json({ error: 'Internal server error', details: message });
   }
 };
 
@@ -102,9 +102,10 @@ export const getUserConsents: RequestHandler = async (req, res) => {
     return res.status(200).json({
       consents: data || []
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
     console.error('Unexpected error in getUserConsents:', error);
-    return res.status(500).json({ error: 'Internal server error', details: error.message });
+    return res.status(500).json({ error: 'Internal server error', details: message });
   }
 };
 
@@ -147,9 +148,10 @@ export const checkConsent: RequestHandler = async (req, res) => {
       consent_type,
       consent_version: version
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
     console.error('Unexpected error in checkConsent:', error);
-    return res.status(500).json({ error: 'Internal server error', details: error.message });
+    return res.status(500).json({ error: 'Internal server error', details: message });
   }
 };
 
@@ -211,9 +213,10 @@ export const submitDataSubjectRequest: RequestHandler = async (req, res) => {
       message: 'Your data subject request has been received. We will process it within 30 days as required by GDPR/CCPA.',
       next_steps: 'You will receive a confirmation email shortly.'
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
     console.error('Unexpected error in submitDataSubjectRequest:', error);
-    return res.status(500).json({ error: 'Internal server error', details: error.message });
+    return res.status(500).json({ error: 'Internal server error', details: message });
   }
 };
 
@@ -242,8 +245,9 @@ export const exportUserData: RequestHandler = async (req, res) => {
       request_id: `export_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       estimated_completion: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString()
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
     console.error('Unexpected error in exportUserData:', error);
-    return res.status(500).json({ error: 'Internal server error', details: error.message });
+    return res.status(500).json({ error: 'Internal server error', details: message });
   }
 };

@@ -64,9 +64,11 @@ export function useKeyboardShortcuts(): KeyboardShortcutsOptions {
         e.preventDefault();
         setShowHelp(prev => !prev);
         break;
-      case "/":
+      case "/": {
         e.preventDefault();
-        const searchInput = document.querySelector('input[placeholder*="Search"]') as HTMLInputElement;
+        const searchInput = document.querySelector(
+          'input[placeholder*="Search"]',
+        ) as HTMLInputElement;
         if (searchInput) {
           searchInput.focus();
           // Show toast on first use
@@ -82,6 +84,7 @@ export function useKeyboardShortcuts(): KeyboardShortcutsOptions {
           }
         }
         break;
+      }
       case "p":
       case "P":
         if (!e.ctrlKey && !e.metaKey) {

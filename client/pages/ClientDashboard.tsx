@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { Button } from "@/components/ui/button";
@@ -19,6 +18,8 @@ import { ClientNotificationSettings } from "@/components/settings/ClientNotifica
 import { useNavigate } from "react-router-dom";
 import { AppPageHeader } from "@/components/app/AppPageHeader";
 import { AppSectionCard } from "@/components/app/AppSectionCard";
+import { AppStatCard } from "@/components/app/AppStatCard";
+import { PageContainer } from "@/components/PageContainer";
 
 interface Asset {
   id: string;
@@ -43,7 +44,7 @@ interface TelemetryReading {
 }
 
 export function ClientDashboard() {
-  const { user, signOut } = useSupabaseAuth();
+  const { user } = useSupabaseAuth();
   const navigate = useNavigate();
   const [assets, setAssets] = useState<Asset[]>([]);
   const [alerts, setAlerts] = useState<Alert[]>([]);
@@ -122,19 +123,17 @@ export function ClientDashboard() {
   }, [user]);
 
   return (
-    <div className="app-bg min-h-screen">
-      <div className="app-page app-stack-24">
-        <AppPageHeader
-          kicker="Client"
-          title="Client Dashboard"
-          subtitle={`Live system status and alerts for ${user?.email || "your account"}.`}
-          actions={<Activity className="h-5 w-5 text-primary" />}
-        />
+    <PageContainer variant="standard" className="app-stack-24">
+      <AppPageHeader
+        kicker="Client"
+        title="Client Dashboard"
+        subtitle={`Live system status and alerts for ${user?.email || "your account"}.`}
+        actions={<Activity className="h-5 w-5 text-primary" />}
+      />
 
-        {/* Tabs Navigation */}
-        <AppSectionCard className="p-4 sm:p-6">
-          <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="mx-auto grid w-full max-w-md grid-cols-2 rounded-lg border bg-card p-1">
+      <AppSectionCard className="app-stack-24">
+        <Tabs defaultValue="overview" className="w-full">
+          <TabsList className="mx-auto grid w-full max-w-md grid-cols-2 rounded-xl bg-secondary/40 p-1">
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <Activity className="h-4 w-4" />
               Overview
@@ -145,199 +144,185 @@ export function ClientDashboard() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Overview Tab */}
-            <TabsContent value="overview" className="space-y-6">
-            {/* Status Overview */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <Card className="border-l-4 border-l-primary">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Total Assets
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{assets.length}</div>
-                  <p className="text-xs text-muted-foreground">
-                    Monitored Units
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card
-                className={`border-l-4 ${alerts.length > 0 ? "border-l-destructive" : "border-l-success"}`}
-              >
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    System Status
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-2">
-                    {alerts.length > 0 ? (
-                      <>
-                        <AlertTriangle className="h-6 w-6 text-destructive" />
-                        <div className="text-2xl font-bold text-destructive">
-                          {alerts.length} Alerts
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle className="h-6 w-6 text-success" />
-                        <div className="text-2xl font-bold text-success">
-                          Healthy
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+          <TabsContent value="overview" className="app-stack-24 pt-6">
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              <AppStatCard
+                label="Total Assets"
+                value={assets.length}
+                meta="Monitored units"
+                icon={<Smartphone className="h-5 w-5" />}
+              />
+              <AppStatCard
+                label="System Status"
+                value={alerts.length > 0 ? `${alerts.length} Alerts` : "Healthy"}
+                meta={alerts.length > 0 ? "New alerts require review" : "No new alerts detected"}
+                icon={
+                  alerts.length > 0 ? (
+                    <AlertTriangle className="h-5 w-5 text-destructive" />
+                  ) : (
+                    <CheckCircle className="h-5 w-5 text-success" />
+                  )
+                }
+                tone={alerts.length > 0 ? "danger" : "success"}
+              />
             </div>
 
-            {/* Continue with the rest of the Overview content */}
-            {alerts.length > 0 && (
-              <div>
-                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5 text-red-500" />
-                  Active Alerts
-                </h2>
-                <div className="space-y-2">
+            {alerts.length > 0 ? (
+              <AppSectionCard className="app-stack-16">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="app-stack-8">
+                    <h2 className="text-lg font-semibold">Active Alerts</h2>
+                    <p className="text-sm text-muted-foreground">
+                      Review alerts and coordinate service if action is needed.
+                    </p>
+                  </div>
+                  <AlertTriangle className="h-5 w-5 text-destructive" />
+                </div>
+
+                <div className="grid gap-3">
                   {alerts.map((alert) => (
-                    <Card
+                    <div
                       key={alert.id}
-                      className="border-l-4 border-l-red-500"
+                      className="app-surface-muted app-border-strong flex flex-wrap items-start justify-between gap-3 p-4"
                     >
-                      <CardContent className="p-4">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="font-medium text-red-600">
-                              {alert.alert_msg}
-                            </p>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              {format(new Date(alert.created_at), "PPpp")}
-                            </p>
-                          </div>
-                          <span
-                            className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                              alert.severity === "critical"
-                                ? "bg-red-100 text-red-800"
-                                : "bg-yellow-100 text-yellow-800"
-                            }`}
-                          >
-                            {alert.severity}
-                          </span>
-                        </div>
-                      </CardContent>
-                    </Card>
+                      <div className="min-w-[240px] app-stack-8">
+                        <p className="text-sm font-semibold text-foreground">
+                          {alert.alert_msg}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {format(new Date(alert.created_at), "PPpp")}
+                        </p>
+                      </div>
+                      <span
+                        className={[
+                          "inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium",
+                          alert.severity === "critical"
+                            ? "border-destructive/30 bg-destructive/10 text-destructive"
+                            : "border-warning/30 bg-warning/10 text-warning",
+                        ].join(" ")}
+                      >
+                        {alert.severity}
+                      </span>
+                    </div>
                   ))}
                 </div>
-              </div>
-            )}
+              </AppSectionCard>
+            ) : null}
 
-            {/* Assets List */}
-            <div>
-              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <Smartphone className="h-5 w-5 text-cyan-500" />
-                My Assets
-              </h2>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <AppSectionCard className="app-stack-16">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="app-stack-8">
+                  <h2 className="text-lg font-semibold">My Assets</h2>
+                  <p className="text-sm text-muted-foreground">
+                    Live readings update automatically when telemetry is available.
+                  </p>
+                </div>
+                <Button variant="outline" onClick={() => navigate("/history")}>
+                  View History
+                </Button>
+              </div>
+
+              {loading ? (
+                <p className="rounded-xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+                  Loading assets...
+                </p>
+              ) : null}
+
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {assets.map((asset) => {
                   const readings = telemetryMap[asset.id] || [];
-                  const latestReading = readings[readings.length - 1]?.value; // Changed to last element for latest
+                  const latestReading = readings[readings.length - 1]?.value;
 
                   return (
-                    <Card
-                      key={asset.id}
-                      className="hover:shadow-lg transition-shadow"
-                    >
-                      <CardContent className="p-5">
-                        <div className="flex items-start justify-between mb-3">
-                          <div>
-                            <h3 className="font-semibold text-lg">
-                              {asset.name}
-                            </h3>
-                            <p className="text-sm text-muted-foreground">
-                              {asset.type}
-                            </p>
-                          </div>
-                          {asset.type === "Chiller" ? (
-                            <Wind className="h-6 w-6 text-cyan-500" />
+                    <AppSectionCard key={asset.id} className="app-stack-16 p-5 sm:p-6">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="app-stack-8">
+                          <p className="text-sm font-semibold">{asset.name}</p>
+                          <p className="text-xs text-muted-foreground">{asset.type}</p>
+                        </div>
+                        {asset.type === "Chiller" ? (
+                          <Wind className="h-5 w-5 text-primary" />
+                        ) : (
+                          <Thermometer className="h-5 w-5 text-primary" />
+                        )}
+                      </div>
+
+                      <div className="flex items-end justify-between gap-4">
+                        <div className="app-stack-8">
+                          <p className="text-xs font-medium tracking-[0.04em] text-muted-foreground">
+                            Real-Time
+                          </p>
+                          <p
+                            className={[
+                              "text-3xl font-semibold tracking-tight",
+                              latestReading !== undefined && latestReading > 40
+                                ? "text-destructive"
+                                : "text-foreground",
+                            ].join(" ")}
+                          >
+                            {latestReading !== undefined ? `${latestReading}°` : "--"}
+                          </p>
+                        </div>
+
+                        <div className="h-12 w-28 rounded-xl border border-border bg-background/70 p-2">
+                          {readings.length > 1 ? (
+                            <ResponsiveContainer width="100%" height="100%">
+                              <LineChart data={readings}>
+                                <YAxis hide domain={["auto", "auto"]} />
+                                <Line
+                                  type="monotone"
+                                  dataKey="value"
+                                  stroke={(latestReading ?? 0) > 40 ? "#ef4444" : "#3b82f6"}
+                                  strokeWidth={2}
+                                  dot={false}
+                                  isAnimationActive={false}
+                                />
+                              </LineChart>
+                            </ResponsiveContainer>
                           ) : (
-                            <Thermometer className="h-6 w-6 text-cyan-500" />
+                            <div className="flex h-full items-center justify-center text-[10px] text-muted-foreground">
+                              Waiting for data...
+                            </div>
                           )}
                         </div>
+                      </div>
 
-                        <div className="flex items-end justify-between">
-                          <div>
-                            <div className="text-xs text-slate-400 uppercase tracking-wide mb-1">
-                              Real-Time
-                            </div>
-                            <span
-                              className={`text-3xl font-bold ${latestReading > 40 ? "text-red-500" : "text-cyan-600"}`}
-                            >
-                              {latestReading !== undefined
-                                ? `${latestReading}°`
-                                : "--"}
-                            </span>
-                          </div>
-
-                          <div className="w-24 h-12">
-                            {readings.length > 1 ? (
-                              <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={readings}>
-                                  <Line
-                                    type="monotone"
-                                    dataKey="value"
-                                    stroke={
-                                      latestReading > 40 ? "#ef4444" : "#3b82f6"
-                                    }
-                                    strokeWidth={2}
-                                    dot={false}
-                                    isAnimationActive={false}
-                                  />
-                                </LineChart>
-                              </ResponsiveContainer>
-                            ) : (
-                              <div className="h-full w-full bg-slate-100 dark:bg-slate-800 rounded flex items-center justify-center text-[10px] text-muted-foreground">
-                                Waiting for data...
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
-                            Active
-                          </span>
-                          <Button
-                            variant="ghost"
-                            className="h-6 text-xs"
-                            onClick={() => navigate("/history")}
-                          >
-                            View History
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
+                      <div className="flex items-center justify-between border-t border-border pt-4">
+                        <span className="inline-flex items-center rounded-full border border-success/30 bg-success/10 px-2 py-0.5 text-xs font-medium text-success">
+                          Active
+                        </span>
+                        <Button variant="ghost" size="sm" onClick={() => navigate("/history")}>
+                          View History
+                        </Button>
+                      </div>
+                    </AppSectionCard>
                   );
                 })}
               </div>
-              {assets.length === 0 && !loading && (
-                <div className="text-center py-12 bg-white dark:bg-slate-900 rounded-lg border border-dashed">
-                  <p className="text-muted-foreground">
+
+              {assets.length === 0 && !loading ? (
+                <div className="rounded-xl border border-dashed border-border p-10 text-center">
+                  <p className="text-sm text-muted-foreground">
                     No assets found linked to your account.
                   </p>
                 </div>
-              )}
-            </div>
-            </TabsContent>
+              ) : null}
+            </AppSectionCard>
+          </TabsContent>
 
-          {/* Settings Tab */}
-            <TabsContent value="settings" className="space-y-6">
-            <ClientNotificationSettings />
-            </TabsContent>
-          </Tabs>
-        </AppSectionCard>
-      </div>
-    </div>
+          <TabsContent value="settings" className="pt-6">
+            <AppSectionCard className="app-stack-16">
+              <div className="app-stack-8">
+                <h2 className="text-lg font-semibold">Notification Settings</h2>
+                <p className="text-sm text-muted-foreground">
+                  Choose how you want to receive updates and service notifications.
+                </p>
+              </div>
+              <ClientNotificationSettings />
+            </AppSectionCard>
+          </TabsContent>
+        </Tabs>
+      </AppSectionCard>
+    </PageContainer>
   );
 }

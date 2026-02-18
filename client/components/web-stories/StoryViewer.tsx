@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { motion, AnimatePresence, useAnimation } from "framer-motion";
-import { X, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
-import { Story, StorySlide } from "@/data/stories";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Pause, Play } from "lucide-react";
+import { Story } from "@/data/stories";
 import { cn } from "@/lib/utils";
 
 interface StoryViewerProps {
@@ -28,7 +28,11 @@ export function StoryViewer({ story, onClose, onNextStory, onPrevStory }: StoryV
             pausedTimeRef.current = 0;
             startTimeRef.current = null;
         } else {
-            onNextStory ? onNextStory() : onClose();
+            if (onNextStory) {
+                onNextStory();
+            } else {
+                onClose();
+            }
         }
     }, [currentSlideIndex, story.slides.length, onNextStory, onClose]);
 
@@ -39,13 +43,17 @@ export function StoryViewer({ story, onClose, onNextStory, onPrevStory }: StoryV
             pausedTimeRef.current = 0;
             startTimeRef.current = null;
         } else {
-            onPrevStory ? onPrevStory() : onClose();
+            if (onPrevStory) {
+                onPrevStory();
+            } else {
+                onClose();
+            }
         }
     }, [currentSlideIndex, onPrevStory, onClose]);
 
     // Timer logic
     useEffect(() => {
-        const duration = currentSlide.duration * 1000;
+        const duration = (currentSlide?.duration ?? 5) * 1000;
 
         const animate = (time: number) => {
             if (!startTimeRef.current) startTimeRef.current = time;
@@ -143,7 +151,7 @@ export function StoryViewer({ story, onClose, onNextStory, onPrevStory }: StoryV
                 {/* Content Layer */}
                 <AnimatePresence mode="wait">
                     <motion.div
-                        key={currentSlide.id}
+                        key={currentSlide?.id ?? currentSlideIndex}
                         initial={{ opacity: 0, scale: 1.05 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0 }}
@@ -151,7 +159,7 @@ export function StoryViewer({ story, onClose, onNextStory, onPrevStory }: StoryV
                         drag="x"
                         dragConstraints={{ left: 0, right: 0 }}
                         dragElastic={0.2}
-                        onDragEnd={(e, { offset, velocity }) => {
+                        onDragEnd={(_e, { offset }) => {
                             const swipeThreshold = 50;
                             if (offset.x < -swipeThreshold) {
                                 handleNext();
@@ -159,20 +167,16 @@ export function StoryViewer({ story, onClose, onNextStory, onPrevStory }: StoryV
                                 handlePrev();
                             }
                         }}
-                        onTap={(event, info) => {
-                            const width = window.innerWidth;
-                            // If in a small container (desktop), we should use relative coordinates, 
-                            // but for now simpler is fine or we keep the overlay removed?
-                            // Wait, I will use a ref for the container to get bounding rect for accurate tap logic.
+                        onTap={() => {
                         }}
                         className="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"
-                        style={{ background: currentSlide.background || '#000' }}
+                        style={{ background: currentSlide?.background || '#000' }}
                     >
                         {/* Tap Zones embedded in draggable content to allow both */}
                         <div className="absolute inset-y-0 left-0 w-[30%] z-10" onClick={(e) => { e.stopPropagation(); handlePrev(); }} />
                         <div className="absolute inset-y-0 right-0 w-[70%] z-10" onClick={(e) => { e.stopPropagation(); handleNext(); }} />
 
-                        {currentSlide.type === 'text' && (
+                        {currentSlide?.type === 'text' && (
                             <div className="flex flex-col items-center justify-center h-full p-8 text-center">
                                 <h2 className="text-2xl md:text-3xl font-bold text-white leading-tight drop-shadow-lg">
                                     {currentSlide.content}
@@ -180,16 +184,15 @@ export function StoryViewer({ story, onClose, onNextStory, onPrevStory }: StoryV
                             </div>
                         )}
 
-                        {(currentSlide.type === 'image' || currentSlide.type === 'infographic') && (
+                        {(currentSlide?.type === 'image' || currentSlide?.type === 'infographic') && (
                             <>
                                 <img
-                                    src={currentSlide.mediaUrl || currentSlide.content}
+                                    src={currentSlide?.mediaUrl || currentSlide?.content}
                                     alt="Story content"
                                     className="w-full h-full object-cover"
                                 />
 
-                                {/* Text Overlay for Image */}
-                                {currentSlide.content && currentSlide.mediaUrl && (
+                                {currentSlide?.content && currentSlide?.mediaUrl && (
                                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 pt-20">
                                         <p className="text-white text-lg font-medium text-center drop-shadow-md">
                                             {currentSlide.content}
@@ -199,7 +202,7 @@ export function StoryViewer({ story, onClose, onNextStory, onPrevStory }: StoryV
                             </>
                         )}
 
-                        {currentSlide.ctaLink && (
+                        {currentSlide?.ctaLink && (
                             <div className="absolute bottom-10 left-0 right-0 flex justify-center z-30">
                                 <a
                                     href={currentSlide.ctaLink}

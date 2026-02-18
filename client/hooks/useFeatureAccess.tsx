@@ -43,7 +43,7 @@ export function useFeatureAccess({
   currentTier: explicitCurrentTier,
 }: UseFeatureAccessOptions): FeatureAccessResult {
   const { subscription } = useSubscription();
-  const { user } = useSupabaseAuth();
+  const { user: _user } = useSupabaseAuth();
   
   // Determine current tier
   const getCurrentTier = (): Tier => {

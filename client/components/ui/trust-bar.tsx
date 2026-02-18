@@ -1,4 +1,4 @@
-import { Shield, CheckCircle, Lock, Users, Award, Clock } from "lucide-react";
+import { CheckCircle, Lock, Users, Award, Clock } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,

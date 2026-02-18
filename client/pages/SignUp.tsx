@@ -20,9 +20,8 @@ import {
   UserPlus,
   CheckCircle,
 } from "lucide-react";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { PageContainer } from "@/components/PageContainer";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 
 export function SignUp() {
   const [formData, setFormData] = useState({
@@ -139,11 +138,9 @@ export function SignUp() {
   };
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-      <main className="py-12 sm:py-16">
-        <PageContainer>
-          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] items-start">
+    <PublicPageShell withFooter={false} mainClassName="py-12 sm:py-16">
+      <PageContainer>
+        <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] items-start">
             <div className="space-y-6">
               <Link to="/" className="inline-flex">
                 <picture>
@@ -328,9 +325,7 @@ export function SignUp() {
               </CardContent>
             </Card>
           </div>
-        </PageContainer>
-      </main>
-      <Footer />
-    </div>
+      </PageContainer>
+    </PublicPageShell>
   );
 }

@@ -10,7 +10,6 @@ import {
   Users,
   Wrench,
   ArrowRight,
-  Check,
   Plus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -38,7 +37,7 @@ export default function SelectCompany() {
   useEffect(() => {
     // If only one company, auto-select and redirect
     if (!isLoading && !isRefreshing && companies.length === 1) {
-      handleSelectCompany(companies[0].company_id);
+      handleSelectCompany(companies[0]?.company_id ?? "");
     }
   }, [companies, isLoading, isRefreshing, navigate]);
 

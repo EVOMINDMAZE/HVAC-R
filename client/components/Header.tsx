@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import { CompanySwitcher } from "@/components/CompanySwitcher";
 import { JobSelector } from "@/components/JobSelector";
+import { HudBadge } from "@/components/hud/HudBadge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,14 +37,14 @@ function MobileGroup({
   onNavigate,
 }: {
   label: string;
-  items: Array<{ to: string; label: string; icon: any }>;
+  items: Array<{ to: string; label: string; icon: any; badgeKey?: any }>;
   onNavigate: () => void;
 }) {
   if (!items.length) return null;
 
   return (
     <div className="app-stack-8">
-      <p className="px-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+      <p className="px-2 text-xs font-semibold text-muted-foreground">
         {label}
       </p>
       <div className="grid gap-1">
@@ -54,7 +55,11 @@ function MobileGroup({
             onClick={onNavigate}
             className="flex items-center gap-2 rounded-xl px-2 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
           >
-            <item.icon className="h-4 w-4 text-muted-foreground" />
+            {item.badgeKey ? (
+              <HudBadge badgeKey={item.badgeKey} size={20} decorative />
+            ) : (
+              <item.icon className="h-4 w-4 text-muted-foreground" />
+            )}
             {item.label}
           </Link>
         ))}
@@ -64,7 +69,7 @@ function MobileGroup({
 }
 
 export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
-  const { user, isAuthenticated, signOut, companies, isRefreshing } = useSupabaseAuth();
+  const { user, isAuthenticated, signOut, companies } = useSupabaseAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
@@ -81,13 +86,24 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
   const getLandingLinkTarget = (item: (typeof landingLinks)[number]) =>
     item.hash ? `${item.to}${item.hash}` : item.to;
 
+  const desktopLandingLinks = useMemo(
+    () =>
+      landingLinks.filter((item) =>
+        ["Features", "Use Cases", "Pricing", "Support"].includes(item.label),
+      ),
+    [landingLinks],
+  );
+  const overflowLandingLinks = useMemo(
+    () =>
+      landingLinks.filter(
+        (item) => !["Features", "Use Cases", "Pricing", "Support"].includes(item.label),
+      ),
+    [landingLinks],
+  );
+
   const isLandingLinkActive = (item: (typeof landingLinks)[number]) => {
     if (item.hash) {
       return location.pathname === item.to && location.hash === item.hash;
-    }
-
-    if (item.to === "/features") {
-      return location.pathname === item.to && location.hash !== "#use-cases";
     }
 
     return location.pathname === item.to;
@@ -149,7 +165,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               </Button>
             ) : null}
 
-            <Link to="/dashboard" className="flex items-center">
+            <Link to="/dashboard" className="flex items-center" aria-label="Go to dashboard">
               <img
                 src="/logo-landscape.png"
                 alt="ThermoNeural"
@@ -267,7 +283,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               <ArrowLeft className="h-4 w-4" />
             </Button>
           ) : null}
-          <Link to="/" className="flex items-center">
+          <Link to="/" className="flex items-center" aria-label="Go to homepage">
             <img
               src="/logo-landscape.png"
               alt="ThermoNeural"
@@ -276,8 +292,8 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
           </Link>
         </div>
 
-        <nav className="hidden items-center gap-1 md:flex">
-          {landingLinks.map((item) => (
+        <nav className="hidden md:flex items-center gap-1">
+          {desktopLandingLinks.map((item) => (
             <Link
               key={`${item.to}${item.hash ?? ""}`}
               to={getLandingLinkTarget(item)}
@@ -290,16 +306,40 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               {item.label}
             </Link>
           ))}
+          {overflowLandingLinks.length > 0 ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="rounded-full px-3 py-1.5 text-sm font-medium">
+                  More
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                {overflowLandingLinks.map((item) => (
+                  <DropdownMenuItem key={`${item.to}${item.hash ?? ""}`} asChild>
+                    <Link
+                      to={getLandingLinkTarget(item)}
+                      onClick={(event) => handleLandingLinkClick(item, event)}
+                    >
+                      {item.label}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : null}
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
           <ModeToggle />
-          <Link to="/signin">
-            <Button variant="ghost">Sign In</Button>
-          </Link>
-          <Link to="/signup">
-            <Button disabled={isRefreshing}>{isAuthenticated && companies.length ? "Go to Dashboard" : "Start Free"}</Button>
-          </Link>
+          <Button asChild variant="ghost">
+            <Link to="/signin">Sign In</Link>
+          </Button>
+          <Button asChild>
+            <Link to="/signup">
+              {isAuthenticated && companies.length ? "Go to Dashboard" : "Start Free"}
+            </Link>
+          </Button>
         </div>
 
         <div className="flex items-center gap-2 md:hidden">

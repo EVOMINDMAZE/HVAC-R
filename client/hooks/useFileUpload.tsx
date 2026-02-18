@@ -86,7 +86,7 @@ export function useFileUpload() {
         let errStr = '';
         try {
           errStr = JSON.stringify(error, Object.getOwnPropertyNames(error));
-        } catch (e) {
+        } catch (_e) {
           errStr = String(error);
         }
 
@@ -104,7 +104,7 @@ export function useFileUpload() {
               },
             }),
           );
-        } catch (e) {}
+        } catch (_e) {}
 
         // Helpful guidance for common issues
         const msg = (error && (error.message || errStr)) || String(error);
@@ -115,7 +115,14 @@ export function useFileUpload() {
             // convert file to base64
             const toBase64 = (file: File) => new Promise<string>((resolve, reject) => {
               const reader = new FileReader();
-              reader.onload = () => resolve((reader.result as string).split(',')[1]);
+              reader.onload = () => {
+                const result = reader.result as string | undefined;
+                if (result) {
+                  const parts = result.split(',');
+                  resolve(parts[1] ?? '');
+                }
+                else reject(new Error('Failed to read file'));
+              };
               reader.onerror = (e) => reject(e);
               reader.readAsDataURL(file);
             });
@@ -127,7 +134,7 @@ export function useFileUpload() {
               try {
                 const sess = await supabase.auth.getSession();
                 token = sess?.data?.session?.access_token ?? token;
-              } catch (e) {
+              } catch (_e) {
                 // ignore
               }
             }
@@ -149,7 +156,7 @@ export function useFileUpload() {
               try {
                 const txt = await resp.clone().text();
                 jr = txt ? (function(){ try { return JSON.parse(txt); } catch(e){ return { text: txt }; } })() : null;
-              } catch (e) {
+              } catch (_e) {
                 jr = null;
               }
             }
@@ -170,12 +177,12 @@ export function useFileUpload() {
               console.error('Server fallback upload failed', { parsedBody: jr, status: statusInfo });
               const guidance = (jr && (jr.error || jr.details || jr.message)) || (`Server-side upload failed (${statusInfo})`);
               // Emit telemetry including raw body when available
-              try { window.dispatchEvent(new CustomEvent('storage:upload_failed', { detail: { reason: 'server_fallback_failed', status: resp.status, body: jr } })); } catch (e) {}
+              try { window.dispatchEvent(new CustomEvent('storage:upload_failed', { detail: { reason: 'server_fallback_failed', status: resp.status, body: jr } })); } catch (_e) {}
               addToast({ type: 'error', title: 'Upload Failed', description: guidance });
               return { url: null, error: guidance };
             }
           } catch (e) {
-            console.error('Server fallback error', e);
+            console.error("Server fallback error", e);
             const guidance = 'Upload failed due to storage policy restrictions and server fallback also failed';
             addToast({ type: 'error', title: 'Upload Failed', description: guidance });
             return { url: null, error: guidance };

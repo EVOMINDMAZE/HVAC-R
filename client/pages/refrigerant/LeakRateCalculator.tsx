@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { format, differenceInDays } from "date-fns";
 import {
   ArrowLeft,
@@ -48,7 +48,7 @@ type LogEntry = {
 
 export default function LeakRateCalculator() {
   const { user } = useSupabaseAuth();
-  const { toast } = useToast();
+  const { toast: _toast } = useToast();
   const [assets, setAssets] = useState<Asset[]>([]);
   const [selectedAssetId, setSelectedAssetId] = useState<string>("");
   const [loading, setLoading] = useState(true);
@@ -70,7 +70,7 @@ export default function LeakRateCalculator() {
 
   const fetchAssets = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error: _error } = await supabase
         .from("assets")
         .select("id, name, refrigerant_type, full_charge_lbs, serial_number")
         .not("full_charge_lbs", "is", null);
@@ -85,7 +85,7 @@ export default function LeakRateCalculator() {
 
   const fetchLogs = async (assetId: string) => {
     try {
-      const { data, error } = await supabase
+      const { data, error: _error } = await supabase
         .from("refrigerant_logs")
         .select("id, created_at, amount_lbs, transaction_type")
         .eq("asset_id", assetId)
@@ -113,6 +113,11 @@ export default function LeakRateCalculator() {
     // Leak Rate = [ (lbs added / lbs full charge) * (365 / days since last addition) ] * 100
 
     const latestAddition = logData[0];
+    if (!latestAddition) {
+      setLeakRate(null);
+      setDaysElapsed(null);
+      return;
+    }
     const lbsAdded = Number(latestAddition.amount_lbs);
     const fullCharge = Number(asset.full_charge_lbs);
 
@@ -124,7 +129,7 @@ export default function LeakRateCalculator() {
     if (logData.length > 1) {
       days = differenceInDays(
         new Date(latestAddition.created_at),
-        new Date(logData[1].created_at),
+        new Date(logData[1]?.created_at ?? new Date()),
       );
     } else {
       // If only 1 log, EPA allows using the period since the last successful leak repair OR the last year.

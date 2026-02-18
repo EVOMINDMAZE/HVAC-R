@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { AlertCircle, ArrowRight, DollarSign, Package } from "lucide-react";
+import { ArrowRight, DollarSign, Package } from "lucide-react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -30,12 +29,16 @@ interface SellingPointsCardProps {
 export function SellingPointsCard({ context, data }: SellingPointsCardProps) {
   const [points, setPoints] = useState<SellingPoint[]>([]);
   const [loading, setLoading] = useState(true);
+  const sellingPointsEnabled = import.meta.env.VITE_ENABLE_SELLING_POINTS === "true";
 
   useEffect(() => {
-    if (data) {
+    if (sellingPointsEnabled && data) {
       analyzeData();
+    } else {
+      setLoading(false);
+      setPoints([]);
     }
-  }, [data]);
+  }, [data, sellingPointsEnabled]);
 
   const analyzeData = async () => {
     try {

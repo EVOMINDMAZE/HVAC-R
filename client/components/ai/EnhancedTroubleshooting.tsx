@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -8,13 +8,11 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   AlertTriangle,
   Brain,
-  TrendingUp,
   Clock,
   CheckCircle,
   Lightbulb,
@@ -24,11 +22,9 @@ import {
   Star,
   ChevronRight,
   Target,
-  Zap,
   BarChart3,
 } from "lucide-react";
 import {
-  PatternMatch,
   PatternRecommendation,
   EnhancedTroubleshootResponse,
   aiPatternsAPI,
@@ -466,8 +462,11 @@ export function EnhancedTroubleshooting({
                               setFeedback((prev) => ({
                                 ...prev,
                                 [recommendation.pattern_id!]: {
-                                  ...prev[recommendation.pattern_id!],
+                                  patternId: recommendation.pattern_id!,
+                                  helpful: prev[recommendation.pattern_id!]?.helpful ?? true,
+                                  correct_diagnosis: prev[recommendation.pattern_id!]?.correct_diagnosis ?? true,
                                   additional_notes: e.target.value,
+                                  technician_rating: prev[recommendation.pattern_id!]?.technician_rating,
                                 },
                               }))
                             }
@@ -490,7 +489,10 @@ export function EnhancedTroubleshooting({
                                     setFeedback((prev) => ({
                                       ...prev,
                                       [recommendation.pattern_id!]: {
-                                        ...prev[recommendation.pattern_id!],
+                                        patternId: recommendation.pattern_id!,
+                                        helpful: prev[recommendation.pattern_id!]?.helpful ?? true,
+                                        correct_diagnosis: prev[recommendation.pattern_id!]?.correct_diagnosis ?? true,
+                                        additional_notes: prev[recommendation.pattern_id!]?.additional_notes,
                                         technician_rating: rating,
                                       },
                                     }));

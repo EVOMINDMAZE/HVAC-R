@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 interface CreateJobDialogProps {
   open: boolean;
@@ -23,7 +23,7 @@ export function CreateJobDialog({
   onOpenChange,
   onSuccess,
 }: CreateJobDialogProps) {
-  const [loading, setLoading] = useState(false);
+  const [_loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   // Data

@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { supabaseAdmin, getSupabaseClient } from "../utils/supabase.js";
+import { getSupabaseClient } from "../utils/supabase.js";
 
 import { SaveCalculationRequest } from "@shared/types/dtos";
 
@@ -92,23 +92,23 @@ export const saveCalculation: RequestHandler = async (req, res) => {
       throw new Error("Database insert failed: " + saveError.message);
     }
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       data: savedCalc
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to save calculation';
     console.error('Save calculation error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Internal server error',
-      details: error.message || 'Failed to save calculation'
+      details: message
     });
   }
 };
 
 export const getCalculations: RequestHandler = async (req, res) => {
   try {
-    const user = (req as any).user;
     const token = req.headers.authorization;
 
     const supabase = getSupabaseClient(token);
@@ -123,14 +123,14 @@ export const getCalculations: RequestHandler = async (req, res) => {
 
     if (error) throw error;
 
-    res.json({
+    return res.json({
       success: true,
       data: data
     });
 
   } catch (error) {
     console.error('Get calculations error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Internal server error',
       details: 'Failed to retrieve calculations'
     });
@@ -139,7 +139,6 @@ export const getCalculations: RequestHandler = async (req, res) => {
 
 export const getCalculation: RequestHandler = async (req, res) => {
   try {
-    const user = (req as any).user;
     const { id } = req.params;
     const token = req.headers.authorization;
 
@@ -160,14 +159,14 @@ export const getCalculation: RequestHandler = async (req, res) => {
       });
     }
 
-    res.json({
+    return res.json({
       success: true,
       data: data
     });
 
   } catch (error) {
     console.error('Get calculation error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Internal server error',
       details: 'Failed to retrieve calculation'
     });
@@ -176,7 +175,6 @@ export const getCalculation: RequestHandler = async (req, res) => {
 
 export const updateCalculation: RequestHandler = async (req, res) => {
   try {
-    const user = (req as any).user;
     const { id } = req.params;
     const { name, notes } = req.body;
     const token = req.headers.authorization;
@@ -199,14 +197,14 @@ export const updateCalculation: RequestHandler = async (req, res) => {
       });
     }
 
-    res.json({
+    return res.json({
       success: true,
       data: data
     });
 
   } catch (error) {
     console.error('Update calculation error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Internal server error',
       details: 'Failed to update calculation'
     });
@@ -215,7 +213,6 @@ export const updateCalculation: RequestHandler = async (req, res) => {
 
 export const deleteCalculation: RequestHandler = async (req, res) => {
   try {
-    const user = (req as any).user;
     const { id } = req.params;
     const token = req.headers.authorization;
 
@@ -233,14 +230,14 @@ export const deleteCalculation: RequestHandler = async (req, res) => {
       return res.status(500).json({ error: 'Delete failed' });
     }
 
-    res.json({
+    return res.json({
       success: true,
       message: 'Calculation deleted successfully'
     });
 
   } catch (error) {
     console.error('Delete calculation error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Internal server error',
       details: 'Failed to delete calculation'
     });
@@ -302,7 +299,7 @@ export const getUserStats: RequestHandler = async (req, res) => {
     });
     const usageByType = Object.entries(usageByTypeMap).map(([type, count]) => ({ calculation_type: type, count }));
 
-    res.json({
+    return res.json({
       success: true,
       data: {
         totalCalculations,
@@ -320,7 +317,7 @@ export const getUserStats: RequestHandler = async (req, res) => {
 
   } catch (error) {
     console.error('Get user stats error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       error: 'Internal server error',
       details: 'Failed to retrieve user statistics'
     });

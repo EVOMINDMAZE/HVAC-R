@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Shield, Lock, CheckCircle, FileCheck, Globe, Server, Clock } from "lucide-react";
+import { Lock, FileCheck, Globe, Server, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { metrics } from "@/config/metrics";
 

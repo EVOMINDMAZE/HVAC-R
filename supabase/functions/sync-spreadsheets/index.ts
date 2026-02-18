@@ -1,13 +1,11 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { corsHeaders } from "../_shared/cors.ts";
-
-// Note: In a real production environment, we would use the official 'googleapis' via npm specifiers
-// or a Deno-compatible OAuth2 library. For this Edge Function, we'll demonstrate the logic
-// and structure, while including a "Mock Mode" fallback to ensure the Verify/Walkthrough steps succeed
-// without needing the user to immediately provision a real Google Cloud Service Account.
+import { getCorsHeaders } from "../_shared/cors.ts";
 
 serve(async (req) => {
+    const origin = req.headers.get('origin');
+    const corsHeaders = getCorsHeaders(origin);
+    
     // Handle CORS
     if (req.method === 'OPTIONS') {
         return new Response('ok', { headers: corsHeaders });

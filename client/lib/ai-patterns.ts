@@ -92,8 +92,12 @@ class AIPatternsAPI {
     const {
       data: { session },
     } = (await supabase?.auth.getSession()) || { data: { session: null } };
+    const token = session?.access_token || localStorage.getItem("simulateon_token");
+    if (!token) {
+      throw new Error("Authentication required");
+    }
     return {
-      Authorization: `Bearer ${session?.access_token}`,
+      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     };
   }
@@ -251,7 +255,7 @@ class AIPatternsAPI {
 
   // Utility method to automatically capture diagnostic outcomes
   async captureDiagnosticOutcome(
-    troubleshootingSessionId: string,
+    _troubleshootingSessionId: string,
     symptoms: string[],
     diagnosis: string,
     outcome: "success" | "partial" | "failed",

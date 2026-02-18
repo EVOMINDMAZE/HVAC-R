@@ -1,9 +1,17 @@
 import { chromium } from "@playwright/test";
 import fs from "fs/promises";
 import path from "path";
+import { launchChromium } from "./_chromium.mjs";
 
-const baseUrl = process.env.BASE_URL || "http://localhost:8081/";
+const baseUrl = process.env.BASE_URL || "http://localhost:8090";
 const outDir = process.env.OUT_DIR || path.resolve("output/playwright/ux");
+const headed = ["1", "true", "yes"].includes(
+  String(process.env.HEADED || "").toLowerCase(),
+);
+
+function withQuery(url, query) {
+  return `${url}${url.includes("?") ? "&" : "?"}${query}`;
+}
 
 function slugify(text) {
   return (
@@ -18,18 +26,17 @@ function slugify(text) {
 (async () => {
   await fs.mkdir(outDir, { recursive: true });
 
-  const executablePath =
-    process.env.CHROME_PATH ||
-    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
-
-  const browser = await chromium.launch({ executablePath, headless: true });
+  const { browser, fallback } = await launchChromium({ headed });
   const context = await browser.newContext({
     viewport: { width: 1440, height: 900 },
   });
   const page = await context.newPage();
+  const monitoredBaseUrl = withQuery(baseUrl, "uiFuture=1");
+  const controlBaseUrl = withQuery(baseUrl, "uiFuture=0");
 
   const notes = [];
   const consoleErrors = [];
+  if (fallback) notes.push("Playwright launch fallback: headless-shell");
 
   page.on("console", (msg) => {
     if (msg.type() === "error") {
@@ -37,8 +44,12 @@ function slugify(text) {
     }
   });
 
-  await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
+  await page.goto(monitoredBaseUrl, { waitUntil: "domcontentloaded" });
   await page.waitForTimeout(900);
+
+  notes.push(
+    `Future monitor visible on landing (uiFuture=1): ${await page.locator("[data-monitor-shell]").count() > 0}`,
+  );
 
   await page.screenshot({
     path: path.join(outDir, "01-hero-desktop.png"),
@@ -119,11 +130,11 @@ function slugify(text) {
   notes.push(`Pricing CTA navigation URL: ${page.url()}`);
   await page.screenshot({ path: path.join(outDir, "60-pricing-page.png"), fullPage: false });
 
-  await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
+  await page.goto(monitoredBaseUrl, { waitUntil: "domcontentloaded" });
   await page.waitForTimeout(300);
 
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
+  await page.goto(monitoredBaseUrl, { waitUntil: "domcontentloaded" });
   await page.waitForTimeout(700);
   await page.screenshot({ path: path.join(outDir, "70-hero-mobile.png"), fullPage: false });
 
@@ -140,6 +151,12 @@ function slugify(text) {
 
   notes.push(`Mobile hero primary CTA visible: ${mobilePrimaryVisible}`);
   notes.push(`Mobile hero secondary CTA visible: ${mobileSecondaryVisible}`);
+
+  await page.goto(controlBaseUrl, { waitUntil: "domcontentloaded" });
+  await page.waitForTimeout(300);
+  notes.push(
+    `Future monitor visible on landing (uiFuture=0): ${await page.locator("[data-monitor-shell]").count() > 0}`,
+  );
 
   const footer = page.locator("footer").first();
   await footer.scrollIntoViewIfNeeded();

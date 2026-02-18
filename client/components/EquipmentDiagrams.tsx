@@ -655,7 +655,6 @@ interface EquipmentDiagramsProps {
 export function EquipmentDiagrams({
   cycleData,
   isAnimating = false,
-  animationSpeed = 1000,
 }: EquipmentDiagramsProps) {
   // Determine color theme based on cycle type
   const theme = React.useMemo(() => {

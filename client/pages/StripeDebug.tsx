@@ -5,6 +5,7 @@ import { STRIPE_PRICE_IDS } from "@/lib/stripe";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/useToast";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 
 export function StripeDebug() {
   const { isAuthenticated, user, session } = useSupabaseAuth();
@@ -96,102 +97,104 @@ export function StripeDebug() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Stripe Integration Debug Tool</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <Button onClick={testStripeConfig}>Test Stripe Config</Button>
-            <Button onClick={testAuthentication}>Test Authentication</Button>
-            <Button onClick={testBillingAPI}>Test Billing API</Button>
-            <Button onClick={testWithoutAuth}>Test Without Auth</Button>
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="font-semibold">Test Checkout Sessions</h3>
-            <div className="grid grid-cols-2 gap-2">
-              <Button
-                onClick={() =>
-                  testCheckoutSession(
-                    STRIPE_PRICE_IDS.PROFESSIONAL_MONTHLY,
-                    "Professional Monthly",
-                  )
-                }
-                disabled={loading}
-                variant="outline"
-              >
-                Professional Monthly
-              </Button>
-              <Button
-                onClick={() =>
-                  testCheckoutSession(
-                    STRIPE_PRICE_IDS.PROFESSIONAL_YEARLY,
-                    "Professional Yearly",
-                  )
-                }
-                disabled={loading}
-                variant="outline"
-              >
-                Professional Yearly
-              </Button>
-              <Button
-                onClick={() =>
-                  testCheckoutSession(
-                    STRIPE_PRICE_IDS.ENTERPRISE_MONTHLY,
-                    "Enterprise Monthly",
-                  )
-                }
-                disabled={loading}
-                variant="outline"
-              >
-                Enterprise Monthly
-              </Button>
-              <Button
-                onClick={() =>
-                  testCheckoutSession(
-                    STRIPE_PRICE_IDS.ENTERPRISE_YEARLY,
-                    "Enterprise Yearly",
-                  )
-                }
-                disabled={loading}
-                variant="outline"
-              >
-                Enterprise Yearly
-              </Button>
+    <PublicPageShell withFooter={false} mainClassName="py-10">
+      <div className="mx-auto max-w-4xl px-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Stripe Integration Debug Tool</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <Button onClick={testStripeConfig}>Test Stripe Config</Button>
+              <Button onClick={testAuthentication}>Test Authentication</Button>
+              <Button onClick={testBillingAPI}>Test Billing API</Button>
+              <Button onClick={testWithoutAuth}>Test Without Auth</Button>
             </div>
-          </div>
 
-          {loading && (
-            <div className="text-cyan-600">Processing checkout...</div>
-          )}
-          {error && <div className="text-red-600">Error: {error}</div>}
-
-          <div className="mt-6">
-            <h3 className="font-semibold mb-2">Test Results</h3>
-            <div className="bg-gray-100 p-4 rounded max-h-96 overflow-y-auto">
-              {testResults.length === 0 ? (
-                <div className="text-gray-500">No test results yet</div>
-              ) : (
-                testResults.map((result, index) => (
-                  <div key={index} className="text-sm mb-1 font-mono">
-                    {result}
-                  </div>
-                ))
-              )}
+            <div className="space-y-2">
+              <h3 className="font-semibold">Test Checkout Sessions</h3>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  onClick={() =>
+                    testCheckoutSession(
+                      STRIPE_PRICE_IDS.PROFESSIONAL_MONTHLY,
+                      "Professional Monthly",
+                    )
+                  }
+                  disabled={loading}
+                  variant="outline"
+                >
+                  Professional Monthly
+                </Button>
+                <Button
+                  onClick={() =>
+                    testCheckoutSession(
+                      STRIPE_PRICE_IDS.PROFESSIONAL_YEARLY,
+                      "Professional Yearly",
+                    )
+                  }
+                  disabled={loading}
+                  variant="outline"
+                >
+                  Professional Yearly
+                </Button>
+                <Button
+                  onClick={() =>
+                    testCheckoutSession(
+                      STRIPE_PRICE_IDS.ENTERPRISE_MONTHLY,
+                      "Enterprise Monthly",
+                    )
+                  }
+                  disabled={loading}
+                  variant="outline"
+                >
+                  Enterprise Monthly
+                </Button>
+                <Button
+                  onClick={() =>
+                    testCheckoutSession(
+                      STRIPE_PRICE_IDS.ENTERPRISE_YEARLY,
+                      "Enterprise Yearly",
+                    )
+                  }
+                  disabled={loading}
+                  variant="outline"
+                >
+                  Enterprise Yearly
+                </Button>
+              </div>
             </div>
-          </div>
 
-          <Button
-            onClick={() => setTestResults([])}
-            variant="outline"
-            size="sm"
-          >
-            Clear Results
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
+            {loading ? (
+              <div className="text-sm text-info">Processing checkout...</div>
+            ) : null}
+            {error ? <div className="text-sm text-destructive">Error: {error}</div> : null}
+
+            <div className="mt-6">
+              <h3 className="mb-2 font-semibold">Test Results</h3>
+              <div className="max-h-96 overflow-y-auto rounded bg-muted/40 p-4">
+                {testResults.length === 0 ? (
+                  <div className="text-sm text-muted-foreground">No test results yet</div>
+                ) : (
+                  testResults.map((result, index) => (
+                    <div key={index} className="mb-1 font-mono text-sm">
+                      {result}
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            <Button
+              onClick={() => setTestResults([])}
+              variant="outline"
+              size="sm"
+            >
+              Clear Results
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    </PublicPageShell>
   );
 }

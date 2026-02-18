@@ -1,19 +1,17 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import {
   Users,
   Copy,
   Check,
-  Clock,
   Shield,
   Wrench,
   User,
   AlertCircle,
   Loader2,
   Plus,
-  Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,8 +23,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -34,15 +30,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { withPersistedUiFlags } from "@/lib/featureFlags";
 
 const roleOptions = [
   {
@@ -74,6 +63,7 @@ const roleOptions = [
 export default function InviteTeam() {
   const { user, activeCompany } = useSupabaseAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [generatedCode, setGeneratedCode] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -109,9 +99,9 @@ export default function InviteTeam() {
   useEffect(() => {
     // Redirect if no active company
     if (!activeCompany && !user) {
-      navigate("/signin");
+      navigate(withPersistedUiFlags("/signin", { search: location.search }));
     }
-  }, [activeCompany, user, navigate]);
+  }, [activeCompany, user, navigate, location.search]);
 
   const handleCreateInvite = async () => {
     if (!activeCompany) {

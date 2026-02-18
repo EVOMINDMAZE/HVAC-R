@@ -705,7 +705,7 @@ export function Profile() {
                             <p className="text-muted-foreground">
                               Next billing:{" "}
                               {new Date(
-                                subscription.subscription!.current_period_end *
+                                (subscription.subscription!.current_period_end ?? 0) *
                                   1000,
                               ).toLocaleDateString()}
                             </p>

@@ -5,7 +5,6 @@
  * Measures response times, throughput, and error rates under load
  */
 
-import fetch from 'node-fetch';
 import { config } from 'dotenv';
 import { performance } from 'perf_hooks';
 

@@ -123,7 +123,7 @@ export const SupabaseAuthProvider = ({
   const [activeCompany, setActiveCompanyState] =
     useState<ActiveCompanyContext | null>(null);
   const [needsCompanySelection, setNeedsCompanySelection] = useState(false);
-  const [hasManuallySelected, setHasManuallySelected] = useState(false);
+  const [_hasManuallySelected, setHasManuallySelected] = useState(false);
 
   // Mutex to prevent concurrent refreshCompanies calls
   const refreshLock = useRef(false);
@@ -159,7 +159,7 @@ export const SupabaseAuthProvider = ({
       // Add timeout to prevent infinite loading
       const rpcPromise = supabase.rpc("get_user_companies_v2");
       const timeoutPromise = new Promise<{ data: null; error: any }>((_, reject) =>
-        setTimeout(() => reject(new Error("RPC timeout")), 10000)
+        setTimeout(() => reject(new Error("RPC timeout")), 5000)
       );
 
       const { data: companies, error } = await Promise.race([
@@ -219,17 +219,48 @@ export const SupabaseAuthProvider = ({
       companyList: UserCompany[],
       metadataCompanyId?: string | null,
       manuallySelected = false,
+      currentUser?: User | null,
     ) => {
       console.log("[useSupabaseAuth] updateActiveCompany", { 
         count: companyList.length, 
         metadataId: metadataCompanyId 
       });
 
+      const metadataRole =
+        normalizeRole(currentUser?.user_metadata?.active_role) ||
+        normalizeRole(currentUser?.user_metadata?.role);
+
       if (companyList.length === 0) {
         setActiveCompanyState(null);
-        setRole(null);
-        setCompanyId(null);
-        setNeedsCompanySelection(true);
+        const fallbackRole = metadataRole;
+        const fallbackCompanyId =
+          (metadataCompanyId as string | null) ||
+          (currentUser?.user_metadata?.active_company_id as string | null) ||
+          null;
+
+        setRole(fallbackRole);
+        setCompanyId(fallbackCompanyId);
+        setNeedsCompanySelection(!fallbackRole);
+        return;
+      }
+
+      // Client portal users should remain in client mode even when
+      // multi-company RPC returns operational memberships.
+      if (metadataRole === "client") {
+        const activeId = metadataCompanyId || companyList[0]?.company_id;
+        const active =
+          companyList.find((c) => c.company_id === activeId) || companyList[0];
+
+        if (active) {
+          setActiveCompanyState({
+            company_id: active.company_id,
+            company_name: active.company_name,
+            role: "client",
+          });
+          setRole("client");
+          setCompanyId(active.company_id);
+        }
+        setNeedsCompanySelection(false);
         return;
       }
 
@@ -238,6 +269,11 @@ export const SupabaseAuthProvider = ({
       // 2. The first company in the list
       const activeId = metadataCompanyId || companyList[0]?.company_id;
       const active = companyList.find((c) => c.company_id === activeId) || companyList[0];
+
+      if (!active) {
+        setNeedsCompanySelection(false);
+        return;
+      }
 
       console.log("[useSupabaseAuth] Setting active company:", active.company_name, "role:", active.role);
       
@@ -286,6 +322,7 @@ export const SupabaseAuthProvider = ({
           companyList,
           u.user_metadata?.active_company_id,
           manuallySelected,
+          u,
         );
         
         const endTime = Date.now();
@@ -311,7 +348,7 @@ export const SupabaseAuthProvider = ({
       }
 
       try {
-        const { data, error } = await supabase.rpc("switch_company_context", {
+        const { error } = await supabase.rpc("switch_company_context", {
           p_company_id: companyId,
         });
 
@@ -335,6 +372,19 @@ export const SupabaseAuthProvider = ({
     return fetchCompanies();
   }, [fetchCompanies]);
 
+  const normalizeRole = (rawRole?: string | null): UserRole | null => {
+    if (!rawRole) return null;
+    const normalized = rawRole.toLowerCase();
+    if (normalized === "tech") return "technician";
+    if (normalized === "technician") return "technician";
+    if (normalized === "owner") return "owner";
+    if (normalized === "manager") return "manager";
+    if (normalized === "client") return "client";
+    if (normalized === "admin") return "admin";
+    if (normalized === "student") return "student";
+    return null;
+  };
+
   const signIn = async (email: string, password: string) => {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -347,10 +397,47 @@ export const SupabaseAuthProvider = ({
       }
 
       if (data.user) {
-        // We can't immediately get the role because we need to fetch companies.
-        // We'll let the session listener handle state updates, but we'll try to return the role if possible.
-        // For now, return null role and let navigation happen via useEffect or default.
-        return { user: data.user, error: null, role: null };
+        // Prime auth state immediately so route guards do not stall during
+        // secondary company hydration.
+        setSession(data.session ?? null);
+        setUser(data.user);
+        setIsLoading(false);
+
+        // Resolve role immediately so post-login routing lands in the correct workspace.
+        const companyList = await fetchCompanies(data.user);
+        setCompanies(companyList);
+
+        if (companyList.length > 0) {
+          const preferredCompanyId = data.user.user_metadata?.active_company_id;
+          const activeCompanyMatch =
+            companyList.find((c) => c.company_id === preferredCompanyId) ||
+            companyList[0];
+
+          await updateActiveCompany(companyList, preferredCompanyId, false, data.user);
+          return {
+            user: data.user,
+            error: null,
+            role: normalizeRole(activeCompanyMatch?.role) as UserRole | null,
+          };
+        }
+
+        // Fallback: infer role from user_roles mapping if no company list was returned.
+        const { data: roleData } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", data.user.id)
+          .maybeSingle();
+
+        const inferredRole =
+          normalizeRole(roleData?.role) ||
+          normalizeRole(data.user.user_metadata?.active_role) ||
+          normalizeRole(data.user.user_metadata?.role);
+
+        if (inferredRole) {
+          setRole(inferredRole);
+        }
+
+        return { user: data.user, error: null, role: inferredRole };
       }
 
       return { user: null, error: new Error("User not found"), role: null };
@@ -426,7 +513,7 @@ export const SupabaseAuthProvider = ({
 
   const signInWithGoogle = async () => {
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
           queryParams: {
@@ -516,6 +603,8 @@ export const SupabaseAuthProvider = ({
       setUser(session?.user ?? null);
 
       if (session?.user) {
+        // Keep protected routes usable while context refresh runs in background.
+        setIsLoading(false);
         if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
           console.log("[useSupabaseAuth] Fetching companies after sign in...");
           await refreshCompanies(false, session.user);
@@ -528,6 +617,7 @@ export const SupabaseAuthProvider = ({
         setCompanies([]);
         setActiveCompanyState(null);
         setNeedsCompanySelection(false);
+        setIsLoading(false);
       }
       
       console.groupEnd();

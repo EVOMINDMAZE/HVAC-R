@@ -2,21 +2,10 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
 import {
   MapPin,
-  Calendar,
   Clock,
-  Phone,
   ArrowRight,
-  CheckCircle2,
   AlertCircle,
   Briefcase,
 } from "lucide-react";
@@ -63,7 +52,10 @@ export default function JobBoard() {
       if (error) throw error;
       setJobs(data || []);
     } catch (err: any) {
-      console.error("Error fetching jobs:", err);
+      if (!String(err?.message || "").toLowerCase().includes("failed to fetch")) {
+        console.warn("JobBoard: jobs unavailable:", err?.message || err);
+      }
+      setJobs([]);
     } finally {
       setLoading(false);
     }
@@ -92,18 +84,18 @@ export default function JobBoard() {
       <AppSectionCard className="space-y-4">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 opacity-50">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-cyan-600 mb-4"></div>
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mb-4"></div>
             <p className="text-sm font-medium">Loading your schedule...</p>
           </div>
         ) : sortedJobs.length === 0 ? (
-          <div className="text-center py-20 px-6 bg-slate-50 dark:bg-slate-900 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
-            <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="text-center py-20 px-6 bg-secondary/40 rounded-3xl border-2 border-dashed border-border">
+            <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
               <Briefcase className="h-8 w-8 text-slate-400" />
             </div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+            <h3 className="text-lg font-bold">
               No active jobs
             </h3>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 mb-6">
+            <p className="text-muted-foreground text-sm mt-1 mb-6">
               You're all caught up for now.
             </p>
             <p className="inline-block rounded-full bg-secondary px-3 py-1 text-xs text-muted-foreground">
@@ -115,14 +107,14 @@ export default function JobBoard() {
             <div
               key={job.id}
               onClick={() => navigate(`/tech/jobs/${job.id}`)}
-              className="group bg-white dark:bg-slate-950 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-md hover:border-cyan-500/30 active:scale-[0.99] transition-all cursor-pointer relative overflow-hidden"
+              className="group app-surface app-elev-1 rounded-2xl p-5 hover:border-primary/40 active:scale-[0.99] transition-all cursor-pointer relative overflow-hidden"
             >
               {/* Status Stripe */}
               <div
                 className={`absolute left-0 top-0 bottom-0 w-1.5 
-                                ${job.status === "en_route" ? "bg-cyan-500" : ""}
+                                ${job.status === "en_route" ? "bg-primary" : ""}
                                 ${job.status === "on_site" ? "bg-amber-500" : ""}
-                                ${job.status === "pending" || job.status === "assigned" ? "bg-slate-300 dark:bg-slate-700" : ""}
+                                ${job.status === "pending" || job.status === "assigned" ? "bg-border" : ""}
                             `}
               />
 
@@ -134,38 +126,38 @@ export default function JobBoard() {
                       : "secondary"
                   }
                   className={`
-                                    ${job.status === "en_route" ? "bg-cyan-100 text-cyan-700 hover:bg-cyan-200 dark:bg-cyan-900/50 dark:text-cyan-300" : ""}
+                                    ${job.status === "en_route" ? "bg-primary/10 text-primary hover:bg-primary/20" : ""}
                                     ${job.status === "on_site" ? "bg-amber-100 text-amber-700 hover:bg-amber-200 dark:bg-amber-900/50 dark:text-amber-300" : ""}
                                     capitalize
                                 `}
                 >
                   {job.status.replace("_", " ")}
                 </Badge>
-                <span className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded-md">
+                <span className="text-[10px] font-medium text-muted-foreground bg-secondary px-2 py-1 rounded-md">
                   {job.ticket_number || "No Ticket #"}
                 </span>
               </div>
 
               <div className="pl-2">
-                <h3 className="font-bold text-lg text-slate-900 dark:text-white mb-1 leading-tight">
+                <h3 className="font-bold text-lg mb-1 leading-tight">
                   {job.client?.name || job.client_name || "Unknown Client"}
                 </h3>
                 {job.title && (
-                  <p className="text-sm font-medium text-cyan-600 dark:text-cyan-400 mb-3">
+                  <p className="text-sm font-medium text-primary mb-3">
                     {job.title}
                   </p>
                 )}
 
-                <div className="space-y-2.5 text-sm text-slate-500 dark:text-slate-400">
+                <div className="space-y-2.5 text-sm text-muted-foreground">
                   <div className="flex items-start gap-2.5">
-                    <MapPin className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
+                    <MapPin className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
                     <span className="leading-snug">
                       {job.client?.address || "No Address"}
                     </span>
                   </div>
                   {job.asset && (
                     <div className="flex items-center gap-2.5">
-                      <AlertCircle className="w-4 h-4 text-cyan-400 shrink-0" />
+                      <AlertCircle className="w-4 h-4 text-primary shrink-0" />
                       <span>
                         {job.asset.name}{" "}
                         <span className="text-xs opacity-70">
@@ -175,9 +167,9 @@ export default function JobBoard() {
                     </div>
                   )}
                   <div className="flex items-center gap-2.5">
-                    <Clock className="w-4 h-4 text-slate-400 shrink-0" />
+                    <Clock className="w-4 h-4 text-muted-foreground shrink-0" />
                     <span
-                      className={`font-medium ${job.scheduled_at ? "text-slate-700 dark:text-slate-300" : "text-red-500"}`}
+                      className={`font-medium ${job.scheduled_at ? "text-foreground" : "text-destructive"}`}
                     >
                       {job.scheduled_at
                         ? format(new Date(job.scheduled_at), "h:mm a")
@@ -186,7 +178,7 @@ export default function JobBoard() {
                   </div>
                 </div>
 
-                <div className="mt-5 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-cyan-600 dark:text-cyan-400 font-bold text-sm group-hover:translate-x-1 transition-transform origin-left">
+                <div className="mt-5 pt-3 border-t border-border flex justify-between items-center text-primary font-bold text-sm group-hover:translate-x-1 transition-transform origin-left">
                   <span>View Details</span>
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </div>

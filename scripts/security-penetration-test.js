@@ -5,7 +5,6 @@
  * Tests various attack vectors against new privacy compliance APIs
  */
 
-import fetch from 'node-fetch';
 import { config } from 'dotenv';
 
 config();

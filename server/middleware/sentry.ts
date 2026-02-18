@@ -37,7 +37,7 @@ export function initSentry() {
     
     profilesSampleRate: 0.1,
     
-    beforeSend(event, hint) {
+    beforeSend(event: Sentry.Event, hint: { originalException?: { message?: string } }) {
       const error = hint.originalException;
       
       if (error?.message?.includes('ECONNRESET')) {
@@ -51,7 +51,7 @@ export function initSentry() {
       return event;
     },
     
-    beforeBreadcrumb(breadcrumb) {
+    beforeBreadcrumb(breadcrumb: Sentry.Breadcrumb) {
       if (breadcrumb.category === 'console' && breadcrumb.level === 'debug') {
         return null;
       }
@@ -109,8 +109,8 @@ export function sentryErrorHandler() {
   }
 
   return Sentry.Handlers.errorHandler({
-    shouldHandleError(error) {
-      return error.status >= 400 && error.status < 600;
+    shouldHandleError(error: { status?: number }) {
+      return (error.status ?? 0) >= 400 && (error.status ?? 0) < 600;
     },
   });
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,15 +6,11 @@ import { Separator } from "@/components/ui/separator";
 import {
   TrendingUp,
   Activity,
-  DollarSign,
   Leaf,
   Calculator,
   BarChart3,
   Zap,
-  CheckCircle,
-  Info,
   Star,
-  Users,
   Building,
   Thermometer,
   RefreshCw,
@@ -26,9 +22,9 @@ import { SupabaseStatus } from "@/components/SupabaseStatus";
 
 export function UnifiedDashboard() {
   const [time, setTime] = useState(new Date());
-  const { calculations, isLoading: isLoadingCalculations } =
+  const { calculations } =
     useSupabaseCalculations();
-  const { stats, isLoading: isLoadingStats } = useUserStats();
+  const { stats } = useUserStats();
   const navigate = useNavigate();
 
   useEffect(() => {

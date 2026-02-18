@@ -1,18 +1,16 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { getCorsHeaders } from "../_shared/cors.ts";
 
 console.log("Verify License Function Invoked");
 
 serve(async (req) => {
+  const origin = req.headers.get('origin');
+  const corsHeaders = getCorsHeaders(origin);
+  
   // Handle CORS
   if (req.method === "OPTIONS") {
-    return new Response("ok", {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers":
-          "authorization, x-client-info, apikey, content-type, x-license-key",
-      },
-    });
+    return new Response("ok", { headers: corsHeaders });
   }
 
   const { headers } = req;
@@ -25,7 +23,7 @@ serve(async (req) => {
     try {
       const body = await req.json();
       licenseKey = body.license_key;
-      userId = body.user_id; // Support checking by User ID directly
+      userId = body.user_id;
     } catch (e) {
       // ignore JSON parse error
     }
@@ -40,7 +38,7 @@ serve(async (req) => {
         status: 400,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
+          ...corsHeaders,
         },
       },
     );
@@ -69,7 +67,7 @@ serve(async (req) => {
       .from("licenses")
       .select("status, plan_tier")
       .eq("user_id", userId)
-      .eq("status", "active") // Only fetch if active
+      .eq("status", "active")
       .limit(1)
       .single();
     data = result.data;
@@ -81,10 +79,10 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ valid: false, error: "License not found or inactive" }),
       {
-        status: 200, // Return 200 so callers can handle result logically (true/false)
+        status: 200,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
+          ...corsHeaders,
         },
       },
     );
@@ -101,7 +99,7 @@ serve(async (req) => {
         status: 200,
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
+          ...corsHeaders,
         },
       },
     );
@@ -112,7 +110,7 @@ serve(async (req) => {
     status: 200,
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
+      ...corsHeaders,
     },
   });
 });

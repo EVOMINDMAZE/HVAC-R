@@ -7,7 +7,6 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter,
 } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -20,6 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Check } from "lucide-react";
 import { GoogleSheetConnect } from "../components/shared/GoogleSheetConnect";
 import { Badge } from "@/components/ui/badge";
+import { AppPageHeader } from "@/components/app/AppPageHeader";
 
 interface TestAutomationButtonProps {
   phone: string;
@@ -130,10 +130,19 @@ export default function CompanySettings() {
         return;
       }
       try {
-        const { data: subscriptionData, error: subError } = await supabase.rpc(
+        let { data: subscriptionData, error: subError } = await supabase.rpc(
           "get_company_subscription",
-          { company_uuid: activeCompany.company_id },
+          { p_company_id: activeCompany.company_id },
         );
+
+        // Backward-compatible fallback for environments still using the legacy parameter name.
+        if (subError?.code === "PGRST202") {
+          const fallback = await supabase.rpc("get_company_subscription", {
+            company_uuid: activeCompany.company_id,
+          });
+          subscriptionData = fallback.data;
+          subError = fallback.error;
+        }
 
         if (subError) throw subError;
 
@@ -146,10 +155,18 @@ export default function CompanySettings() {
           );
         }
 
-        const { data: settingsData, error: settingsError } = await supabase.rpc(
+        let { data: settingsData, error: settingsError } = await supabase.rpc(
           "get_company_settings",
-          { company_uuid: activeCompany.company_id },
+          { p_company_id: activeCompany.company_id },
         );
+
+        if (settingsError?.code === "PGRST202") {
+          const fallback = await supabase.rpc("get_company_settings", {
+            company_uuid: activeCompany.company_id,
+          });
+          settingsData = fallback.data;
+          settingsError = fallback.error;
+        }
 
         if (settingsError && settingsError.code !== "PGRST116")
           throw settingsError;
@@ -237,8 +254,7 @@ export default function CompanySettings() {
     setSaving(true);
 
     try {
-      const settingsUpdates = {
-        company_uuid: activeCompany.company_id,
+      const settingsPayload = {
         name: companyName,
         website: website,
         primary_color: primaryColor,
@@ -259,10 +275,19 @@ export default function CompanySettings() {
         payment_received_alerts: paymentReceivedAlerts,
       };
 
-      const { error } = await supabase.rpc(
-        "update_company_settings",
-        settingsUpdates,
-      );
+      let { error } = await supabase.rpc("update_company_settings", {
+        p_company_id: activeCompany.company_id,
+        p_settings: settingsPayload,
+      });
+
+      // Backward-compatible fallback for legacy function signatures.
+      if (error?.code === "PGRST202") {
+        const fallback = await supabase.rpc("update_company_settings", {
+          company_uuid: activeCompany.company_id,
+          ...settingsPayload,
+        });
+        error = fallback.error;
+      }
 
       if (error) throw error;
 
@@ -291,26 +316,30 @@ export default function CompanySettings() {
   }
 
   return (
-    <PageContainer variant="standard">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold">Company Settings</h1>
-          <div className="flex items-center gap-3">
-            <Badge
-              variant={
-                subscriptionStatus === "active" ? "default" : "destructive"
-              }
-              className="text-sm"
-            >
-              {subscriptionTier.charAt(0).toUpperCase() +
-                subscriptionTier.slice(1)}{" "}
-              Plan
-            </Badge>
-            <span className="text-sm text-muted-foreground">
-              {seatUsage} / {seatLimit} seats used
-            </span>
-          </div>
-        </div>
+    <PageContainer variant="standard" className="app-stack-24">
+      <div className="max-w-5xl mx-auto app-stack-24">
+        <AppPageHeader
+          kicker="Account"
+          title="Company Settings"
+          subtitle="Manage branding, alerts, regional defaults, and integrations for your team."
+          actions={
+            <div className="flex items-center gap-3">
+              <Badge
+                variant={
+                  subscriptionStatus === "active" ? "default" : "destructive"
+                }
+                className="text-sm"
+              >
+                {subscriptionTier.charAt(0).toUpperCase() +
+                  subscriptionTier.slice(1)}{" "}
+                Plan
+              </Badge>
+              <span className="text-sm text-muted-foreground">
+                {seatUsage} / {seatLimit} seats used
+              </span>
+            </div>
+          }
+        />
 
         <Tabs
           value={activeTab}
@@ -487,7 +516,7 @@ export default function CompanySettings() {
                 />
 
                 <div className="grid gap-6 md:grid-cols-2">
-                  <div className="flex flex-col space-y-2 p-4 border rounded-lg bg-slate-50">
+                  <div className="flex flex-col space-y-2 rounded-lg border bg-secondary/40 p-4">
                     <div className="flex items-center space-x-2">
                       <input
                         type="checkbox"
@@ -511,7 +540,7 @@ export default function CompanySettings() {
                     </p>
                   </div>
 
-                  <div className="flex flex-col space-y-2 p-4 border rounded-lg bg-slate-50">
+                  <div className="flex flex-col space-y-2 rounded-lg border bg-secondary/40 p-4">
                     <div className="flex items-center space-x-2">
                       <input
                         type="checkbox"
@@ -544,7 +573,7 @@ export default function CompanySettings() {
                       placeholder="+15551234567"
                       value={alertPhone}
                       onChange={(e) => setAlertPhone(e.target.value)}
-                      className="bg-white text-slate-900 border-slate-200"
+                      className="bg-background text-foreground border-border"
                     />
                     <p className="text-xs text-gray-500">
                       For System Alerts (Admin).
@@ -557,7 +586,7 @@ export default function CompanySettings() {
                       placeholder="Review us..."
                       value={alertMessage}
                       onChange={(e) => setAlertMessage(e.target.value)}
-                      className="bg-white text-slate-900 border-slate-200"
+                      className="bg-background text-foreground border-border"
                     />
                     <p className="text-xs text-gray-500">
                       Default message for Review Requests.

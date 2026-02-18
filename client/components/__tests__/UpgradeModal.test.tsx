@@ -2,7 +2,6 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { UpgradeModal } from '../UpgradeModal';
-import { PLANS } from '@/lib/stripe';
 
 // Mock useNavigate from react-router-dom
 vi.mock('react-router-dom', () => ({

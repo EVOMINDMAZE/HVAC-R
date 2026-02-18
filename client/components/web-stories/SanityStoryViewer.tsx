@@ -1,7 +1,6 @@
 import { useRef, useState, useEffect } from "react";
-import { X, ChevronLeft, ChevronRight, ArrowUpLeft, Heart, Share2, MoreVertical, Play, Pause } from "lucide-react";
+import { X, ArrowUpLeft, Heart, Share2, Play, Pause } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { SanityWebStory, getSanityImageUrl } from "@/lib/sanity";
 
 interface SanityStoryViewerProps {
@@ -18,7 +17,7 @@ export function SanityStoryViewer({ story, onClose }: SanityStoryViewerProps) {
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
     const currentSlide = story.slides[currentSlideIndex];
-    const slideDuration = (currentSlide.duration || 5) * 1000; // ms
+    const slideDuration = (currentSlide?.duration || 5) * 1000; // ms
 
     // Keyboard navigation
     useEffect(() => {
@@ -142,8 +141,7 @@ export function SanityStoryViewer({ story, onClose }: SanityStoryViewerProps) {
                         transition={{ duration: 0.3 }}
                         className="absolute inset-0 z-10"
                     >
-                        {/* Background Image */}
-                        {currentSlide.image && (
+                        {currentSlide?.image && (
                             <img
                                 src={getSanityImageUrl(currentSlide.image)}
                                 alt="Slide"
@@ -156,7 +154,7 @@ export function SanityStoryViewer({ story, onClose }: SanityStoryViewerProps) {
 
                         {/* Text Content */}
                         <div className="absolute bottom-20 left-0 right-0 p-8 text-center text-white pb-32">
-                            {currentSlide.content && (
+                            {currentSlide?.content && (
                                 <motion.p
                                     initial={{ y: 20, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
@@ -167,7 +165,7 @@ export function SanityStoryViewer({ story, onClose }: SanityStoryViewerProps) {
                             )}
 
                             {/* CTA Button */}
-                            {currentSlide.link && (
+                            {currentSlide?.link && (
                                 <motion.div
                                     initial={{ y: 20, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}

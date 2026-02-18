@@ -1,7 +1,6 @@
-import React, { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useToast } from "@/hooks/useToast";
 import { apiClient } from "@/lib/api";
-import { Footer } from "@/components/Footer";
 import { ApiServiceStatus } from "@/components/ApiServiceStatus";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import {
   Loader2,
@@ -24,14 +23,11 @@ import {
   Eye,
   FileText,
   AlertTriangle,
-  Trash2,
-  Trophy,
   Calculator,
   Info,
 } from "lucide-react";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { SaveCalculation } from "@/components/SaveCalculation";
-import { EnhancedRefrigerantSelector } from "@/components/EnhancedRefrigerantSelector";
 import { CycleVisualization } from "@/components/CycleVisualization";
 import {
   validateCycleConditions,

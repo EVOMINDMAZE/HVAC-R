@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { DialogFooter } from "@/components/ui/dialog";
-import { Thermometer, Smartphone, Mail, Snowflake, Copy } from "lucide-react";
+import { Thermometer } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
 

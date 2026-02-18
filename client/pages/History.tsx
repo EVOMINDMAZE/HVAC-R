@@ -5,36 +5,24 @@ import {
   Calculation,
 } from "@/hooks/useSupabaseCalculations";
 import { useToast } from "@/hooks/useToast";
-import { Footer } from "@/components/Footer";
+import { PageContainer } from "@/components/PageContainer";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import {
   Search,
-  Calendar,
   Trash2,
   Calculator,
   TrendingUp,
   BarChart3,
-  Eye,
   RefreshCw,
   Copy,
-  Loader2,
-  MoreVertical,
+  MoreHorizontal,
   Filter,
-  ArrowUpRight,
   History as HistoryIcon,
-  Pencil,
   FileText,
+  Clock,
+  ArrowUpDown,
 } from "lucide-react";
-import { PageContainer } from "@/components/PageContainer";
 import {
   Select,
   SelectContent,
@@ -46,17 +34,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -67,42 +46,54 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { CalculationDetailsModal } from "@/components/CalculationDetailsModal";
-import { RenameCalculationDialog } from "@/components/RenameCalculationDialog";
+import { PageHero } from "@/components/shared/PageHero";
+import { StatsRow, type StatItem } from "@/components/shared/StatsRow";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { cn } from "@/lib/utils";
 import { storeCalculationPreset } from "@/lib/historyPresets";
-import { AppPageHeader } from "@/components/app/AppPageHeader";
-import { AppSectionCard } from "@/components/app/AppSectionCard";
-import { AppStatCard } from "@/components/app/AppStatCard";
 
 export function History() {
-  const {
-    calculations,
-    isLoading,
-    deleteCalculation,
-    updateCalculation,
-    saveCalculation,
-  } = useSupabaseCalculations();
+  const { calculations, isLoading, deleteCalculation, saveCalculation } = useSupabaseCalculations();
   const { addToast } = useToast();
   const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("newest");
-  const [selectedCalculation, setSelectedCalculation] =
-    useState<Calculation | null>(null);
-  const [showDetails, setShowDetails] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Calculation | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [cloneLoadingId, setCloneLoadingId] = useState<string | null>(null);
 
-  // --- Stats Computation ---
-  const stats = useMemo(() => {
-    if (!calculations) return { total: 0, types: {} };
+  const stats: StatItem[] = useMemo(() => {
+    if (!calculations) return [];
     const types: Record<string, number> = {};
     calculations.forEach((c) => {
       types[c.calculation_type] = (types[c.calculation_type] || 0) + 1;
     });
-    return { total: calculations.length, types };
+
+    return [
+      {
+        id: "total",
+        label: "Total Calculations",
+        value: calculations.length,
+        status: "neutral",
+        icon: <Calculator className="w-4 h-4" />,
+      },
+      {
+        id: "standard",
+        label: "Standard Cycles",
+        value: types["Standard Cycle"] || 0,
+        status: "neutral",
+        icon: <BarChart3 className="w-4 h-4" />,
+      },
+      {
+        id: "comparison",
+        label: "Comparisons",
+        value: types["Refrigerant Comparison"] || 0,
+        status: "success",
+        icon: <TrendingUp className="w-4 h-4" />,
+      },
+    ];
   }, [calculations]);
 
   const filteredCalculations = useMemo(() => {
@@ -113,27 +104,17 @@ export function History() {
           ? (calc.name || "")?.toLowerCase().includes(lowered) ||
             calc.calculation_type.toLowerCase().includes(lowered)
           : true;
-        const matchesFilter =
-          filterType === "all" || calc.calculation_type === filterType;
-
+        const matchesFilter = filterType === "all" || calc.calculation_type === filterType;
         return matchesSearch && matchesFilter;
       })
       .sort((a, b) => {
         switch (sortBy) {
           case "newest":
-            return (
-              new Date(b.created_at).getTime() -
-              new Date(a.created_at).getTime()
-            );
+            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
           case "oldest":
-            return (
-              new Date(a.created_at).getTime() -
-              new Date(b.created_at).getTime()
-            );
+            return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
           case "name":
-            return (a.name || a.calculation_type).localeCompare(
-              b.name || b.calculation_type,
-            );
+            return (a.name || a.calculation_type).localeCompare(b.name || b.calculation_type);
           default:
             return 0;
         }
@@ -143,73 +124,38 @@ export function History() {
   const getCalculationConfig = (type: string) => {
     switch (type) {
       case "Standard Cycle":
-        return {
-          icon: Calculator,
-          color: "text-cyan-500",
-          bg: "bg-cyan-500/10",
-          border: "border-cyan-200 dark:border-cyan-900",
-        };
+        return { icon: Calculator, color: "text-cyan-500", bg: "bg-cyan-500/10" };
       case "Refrigerant Comparison":
-        return {
-          icon: TrendingUp,
-          color: "text-emerald-500",
-          bg: "bg-emerald-500/10",
-          border: "border-emerald-200 dark:border-emerald-900",
-        };
+        return { icon: TrendingUp, color: "text-emerald-500", bg: "bg-emerald-500/10" };
       case "Cascade Cycle":
-        return {
-          icon: BarChart3,
-          color: "text-purple-500",
-          bg: "bg-purple-500/10",
-          border: "border-purple-200 dark:border-purple-900",
-        };
+        return { icon: BarChart3, color: "text-purple-500", bg: "bg-purple-500/10" };
       case "Troubleshooting":
-        return {
-          icon: FileText,
-          color: "text-amber-500",
-          bg: "bg-amber-500/10",
-          border: "border-amber-200 dark:border-amber-900",
-        };
+        return { icon: FileText, color: "text-amber-500", bg: "bg-amber-500/10" };
       default:
-        return {
-          icon: Calculator,
-          color: "text-slate-500",
-          bg: "bg-slate-500/10",
-          border: "border-slate-200 dark:border-slate-800",
-        };
+        return { icon: Calculator, color: "text-slate-500", bg: "bg-slate-500/10" };
     }
   };
 
   const getKeyResult = (calc: Calculation): string | null => {
-    // Logic to extract a SINGLE "Hero" metric to show on card
     try {
       let results: any = calc.results;
       if (typeof results === "string") results = JSON.parse(results);
       if (!results) return null;
 
       if (calc.calculation_type === "Standard Cycle") {
-        const cop =
-          results?.performance?.cop ||
-          results?.data?.performance?.cop ||
-          results?.cop;
+        const cop = results?.performance?.cop || results?.data?.performance?.cop || results?.cop;
         return cop ? `COP: ${Number(cop).toFixed(2)}` : null;
       }
       if (calc.calculation_type === "Cascade Cycle") {
-        const cop =
-          results?.overall_performance?.cop ||
-          results?.data?.overall_performance?.cop ||
-          results?.overallCOP;
+        const cop = results?.overall_performance?.cop || results?.data?.overall_performance?.cop || results?.overallCOP;
         return cop ? `Overall COP: ${Number(cop).toFixed(2)}` : null;
       }
       if (calc.calculation_type === "Refrigerant Comparison") {
         const count = calc.inputs?.refrigerants?.length;
         return count ? `${count} Fluids Compared` : null;
       }
-      if (calc.calculation_type === "Troubleshooting") {
-        return results?.summary ? "Diagnosis Complete" : null;
-      }
       return null;
-    } catch (e) {
+    } catch (_e) {
       return null;
     }
   };
@@ -225,11 +171,7 @@ export function History() {
     (calculation: Calculation) => {
       const route = calculationRoutes[calculation.calculation_type];
       if (!route) {
-        addToast({
-          type: "error",
-          title: "Unsupported",
-          description: "Cannot open this calculation.",
-        });
+        addToast({ type: "error", title: "Unsupported", description: "Cannot open this calculation." });
         return;
       }
       storeCalculationPreset({
@@ -240,7 +182,7 @@ export function History() {
       });
       navigate(route);
     },
-    [addToast, navigate],
+    [addToast, navigate]
   );
 
   const handleCloneCalculation = useCallback(
@@ -249,22 +191,13 @@ export function History() {
       const clonedName = `${baseName} copy`;
       setCloneLoadingId(calculation.id);
       try {
-        await saveCalculation(
-          calculation.calculation_type,
-          calculation.inputs,
-          calculation.results,
-          clonedName,
-        );
-        addToast({
-          type: "success",
-          title: "Cloned",
-          description: "Calculation duplicated successfully.",
-        });
+        await saveCalculation(calculation.calculation_type, calculation.inputs, calculation.results, clonedName);
+        addToast({ type: "success", title: "Cloned", description: "Calculation duplicated successfully." });
       } finally {
         setCloneLoadingId(null);
       }
     },
-    [saveCalculation, addToast],
+    [saveCalculation, addToast]
   );
 
   const handleConfirmDelete = async () => {
@@ -273,11 +206,7 @@ export function History() {
     try {
       await deleteCalculation(deleteTarget.id);
       setDeleteTarget(null);
-      addToast({
-        type: "success",
-        title: "Deleted",
-        description: "Calculation removed.",
-      });
+      addToast({ type: "success", title: "Deleted", description: "Calculation removed." });
     } finally {
       setIsDeleting(false);
     }
@@ -285,273 +214,157 @@ export function History() {
 
   if (isLoading) {
     return (
-      <div className="app-bg min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
+      <PageContainer variant="standard" className="history-page">
+        <div className="history-page__loading">
+          <div className="history-page__loading-spinner" />
+          <span>Loading history...</span>
+        </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="app-bg min-h-screen flex flex-col">
-      <PageContainer variant="standard" className="app-stack-24">
-        <AppPageHeader
-          kicker="Account"
-          title="Calculation History"
-          subtitle="Review, rename, and reuse your saved calculations and diagnostic sessions."
-          actions={
-            <Button variant="outline" onClick={() => navigate("/")}>
-              Back to Dashboard
-            </Button>
-          }
-        />
+    <PageContainer variant="standard" className="history-page">
+      <PageHero
+        title="Calculation History"
+        subtitle="View and manage your saved calculations and estimates"
+        icon={<HistoryIcon className="w-5 h-5" />}
+      />
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <AppStatCard label="Total Items" value={stats.total} icon={<HistoryIcon className="h-5 w-5" />} />
-          <AppStatCard
-            label="Standard Cycles"
-            value={stats.types["Standard Cycle"] || 0}
-            icon={<Calculator className="h-5 w-5" />}
-          />
-          <AppStatCard
-            label="Cascade Cycles"
-            value={stats.types["Cascade Cycle"] || 0}
-            icon={<TrendingUp className="h-5 w-5" />}
-          />
-          <AppStatCard
-            label="Diagnostics"
-            value={stats.types["Troubleshooting"] || 0}
-            tone="warning"
-            icon={<BarChart3 className="h-5 w-5" />}
+      <StatsRow stats={stats} columns={3} />
+
+      <div className="history-page__toolbar">
+        <div className="history-page__search">
+          <Search className="history-page__search-icon w-4 h-4" />
+          <input
+            type="text"
+            placeholder="Search calculations..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="history-page__search-input"
           />
         </div>
 
-        {/* Filters Toolbar */}
-        <AppSectionCard className="sticky top-20 z-10 mb-2 flex flex-col items-center justify-between gap-4 border-border/80 bg-card/90 p-4 backdrop-blur-xl md:flex-row">
-          <div className="flex items-center gap-2 w-full md:w-auto flex-1">
-            <div className="relative flex-1 md:max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search by name or tags..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="border-border/50 bg-background pl-9"
-              />
-            </div>
-            <Select value={filterType} onValueChange={setFilterType}>
-              <SelectTrigger className="w-[180px] border-border/50 bg-background">
-                <Filter className="w-3 h-3 mr-2" />
-                <SelectValue placeholder="Filter Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="Standard Cycle">Standard Cycle</SelectItem>
-                <SelectItem value="Refrigerant Comparison">
-                  Ref Comparison
-                </SelectItem>
-                <SelectItem value="Cascade Cycle">Cascade Cycle</SelectItem>
-                <SelectItem value="Troubleshooting">Troubleshooting</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="history-page__filters">
+          <Select value={filterType} onValueChange={setFilterType}>
+            <SelectTrigger className="history-page__filter w-[160px]">
+              <Filter className="w-4 h-4 mr-2" />
+              <SelectValue placeholder="Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="Standard Cycle">Standard Cycle</SelectItem>
+              <SelectItem value="Refrigerant Comparison">Comparison</SelectItem>
+              <SelectItem value="Cascade Cycle">Cascade Cycle</SelectItem>
+              <SelectItem value="Troubleshooting">Troubleshooting</SelectItem>
+            </SelectContent>
+          </Select>
 
           <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[160px] border-border/50 bg-background">
+            <SelectTrigger className="history-page__filter w-[140px]">
+              <ArrowUpDown className="w-4 h-4 mr-2" />
               <SelectValue placeholder="Sort" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="newest">Newest First</SelectItem>
-              <SelectItem value="oldest">Oldest First</SelectItem>
-              <SelectItem value="name">Name A-Z</SelectItem>
+              <SelectItem value="newest">Newest</SelectItem>
+              <SelectItem value="oldest">Oldest</SelectItem>
+              <SelectItem value="name">Name</SelectItem>
             </SelectContent>
           </Select>
-        </AppSectionCard>
+        </div>
+      </div>
 
-        {/* Calculations Grid */}
+      <div className="history-page__content">
         {filteredCalculations.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="bg-muted/30 rounded-full h-20 w-20 flex items-center justify-center mx-auto mb-4">
-              <HistoryIcon className="h-10 w-10 text-muted-foreground/50" />
-            </div>
-            <h3 className="text-xl font-medium text-foreground">
-              No records found
-            </h3>
-            <p className="text-muted-foreground mt-2 max-w-sm mx-auto">
-              {searchTerm
-                ? "Try adjusting your filters or search terms."
-                : "You haven't saved any calculations yet."}
-            </p>
-          </div>
+          <EmptyState
+            icon={<HistoryIcon className="w-12 h-12" />}
+            title="No calculations found"
+            description={searchTerm || filterType !== "all" ? "Try adjusting your filters" : "Save your first calculation to see it here"}
+          />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCalculations.map((calc, idx) => {
-              const cfg = getCalculationConfig(calc.calculation_type);
-              const heroResult = getKeyResult(calc);
+          <div className="history-page__list">
+            {filteredCalculations.map((calc) => {
+              const config = getCalculationConfig(calc.calculation_type);
+              const Icon = config.icon;
+              const keyResult = getKeyResult(calc);
 
               return (
-                <div
-                  key={calc.id}
-                  style={{ animationDelay: `${idx * 50}ms` }}
-                  className="group relative flex flex-col bg-card hover:bg-card/80 border rounded-xl shadow-sm hover:shadow-md transition-all duration-300 animate-in fade-in slide-in-from-bottom-2"
-                >
-                  <div
-                    className={`absolute left-0 top-0 bottom-0 w-1 rounded-l-xl ${cfg.bg.replace("/10", "")}`}
-                  />
+                <div key={calc.id} className="history-card">
+                  <div className="history-card__icon">
+                    <Icon className={cn("w-5 h-5", config.color)} />
+                  </div>
 
-                  <div className="p-5 flex-1 flex flex-col">
-                    {/* Header */}
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`h-10 w-10 rounded-lg flex items-center justify-center ${cfg.bg} ${cfg.color}`}
-                        >
-                          <cfg.icon className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <h3
-                            className="font-semibold text-foreground line-clamp-1"
-                            title={calc.name || calc.calculation_type}
-                          >
-                            {calc.name || calc.calculation_type}
-                          </h3>
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
-                            <Calendar className="h-3 w-3" />
-                            {new Date(calc.created_at).toLocaleDateString()}
-                          </div>
-                        </div>
-                      </div>
-
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() => handleRerunCalculation(calc)}
-                          >
-                            <RefreshCw className="mr-2 h-4 w-4" /> Re-run
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleCloneCalculation(calc)}
-                          >
-                            {cloneLoadingId === calc.id ? (
-                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            ) : (
-                              <Copy className="mr-2 h-4 w-4" />
-                            )}
-                            Clone
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => {
-                              setSelectedCalculation(calc);
-                              setShowDetails(true);
-                            }}
-                          >
-                            <Eye className="mr-2 h-4 w-4" /> View Details
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            className="text-destructive focus:text-destructive"
-                            onClick={() => setDeleteTarget(calc)}
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" /> Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                  <div className="history-card__content">
+                    <div className="history-card__header">
+                      <h3 className="history-card__name">{calc.name || calc.calculation_type}</h3>
+                      <Badge variant="secondary" className="history-card__type">
+                        {calc.calculation_type}
+                      </Badge>
                     </div>
 
-                    {/* Content */}
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-3">
-                        <Badge
-                          variant="outline"
-                          className="font-normal bg-slate-950/50"
-                        >
-                          {calc.calculation_type}
-                        </Badge>
-                      </div>
-
-                      {heroResult && (
-                        <div className="mt-2 p-3 bg-muted/30 rounded-lg border border-border/50">
-                          <div className="text-sm font-medium text-foreground text-center">
-                            {heroResult}
-                          </div>
-                        </div>
-                      )}
+                    <div className="history-card__meta">
+                      <span className="history-card__date">
+                        <Clock className="w-3 h-3" />
+                        {new Date(calc.created_at).toLocaleDateString()}
+                      </span>
+                      {keyResult && <span className="history-card__result">{keyResult}</span>}
                     </div>
+                  </div>
 
-                    {/* Footer Actions */}
-                    <div className="mt-5 pt-4 border-t border-border/50 flex gap-2">
-                      <Button
-                        className="flex-1 bg-white dark:bg-slate-800 text-foreground hover:bg-slate-50 dark:hover:bg-slate-700 border-border"
-                        variant="outline"
-                        onClick={() => handleRerunCalculation(calc)}
-                      >
-                        <RefreshCw className="mr-2 h-3.5 w-3.5" /> Re-run
-                      </Button>
-                      <RenameCalculationDialog
-                        calculationId={calc.id}
-                        initialName={calc.name ?? undefined}
-                        fallbackName={calc.calculation_type}
-                        disabled={isDeleting}
-                        className="h-9 w-9 p-0 aspect-square"
-                      />
-                    </div>
+                  <div className="history-card__actions">
+                    <Button variant="ghost" size="sm" onClick={() => handleRerunCalculation(calc)}>
+                      <RefreshCw className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleCloneCalculation(calc)}
+                      disabled={cloneLoadingId === calc.id}
+                    >
+                      <Copy className="w-4 h-4" />
+                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm">
+                          <MoreHorizontal className="w-4 h-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => handleRerunCalculation(calc)}>
+                          <RefreshCw className="w-4 h-4 mr-2" /> Rerun
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleCloneCalculation(calc)}>
+                          <Copy className="w-4 h-4 mr-2" /> Clone
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setDeleteTarget(calc)} className="text-destructive">
+                          <Trash2 className="w-4 h-4 mr-2" /> Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </div>
               );
             })}
           </div>
         )}
-      </PageContainer>
+      </div>
 
-      {/* Dialogs */}
-      <Dialog open={showDetails} onOpenChange={setShowDetails}>
-        <DialogContent className="max-w-3xl max-h-[85vh] overflow-hidden flex flex-col">
-          <DialogHeader className="mb-4">
-            <DialogTitle>Calculation Details</DialogTitle>
-            <DialogDescription>
-              Full inputs and results for this session.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex-1 overflow-y-auto pr-2">
-            {selectedCalculation && (
-              <CalculationDetailsModal calculation={selectedCalculation} />
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      <AlertDialog
-        open={!!deleteTarget}
-        onOpenChange={(o) => !o && setDeleteTarget(null)}
-      >
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Calculation?</AlertDialogTitle>
+            <AlertDialogTitle>Delete Calculation</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. "{deleteTarget?.name || "Untitled"}"
-              will be permanently removed.
+              Are you sure you want to delete "{deleteTarget?.name || deleteTarget?.calculation_type}"? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleConfirmDelete}
-              disabled={isDeleting}
-              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-            >
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDelete} disabled={isDeleting} className="bg-destructive text-destructive-foreground">
               {isDeleting ? "Deleting..." : "Delete"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      <Footer />
-    </div>
+    </PageContainer>
   );
 }
