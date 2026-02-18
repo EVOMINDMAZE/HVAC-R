@@ -2,12 +2,8 @@ import { Link, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import {
   Thermometer,
-  Gauge,
-  Layers,
   Shield,
   FileText,
   Users,
@@ -17,6 +13,7 @@ import {
 } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { trackMarketingEvent } from "@/lib/marketingAnalytics";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 
 const coreFeatures = [
   {
@@ -139,48 +136,52 @@ export function Features() {
   }, [location.hash]);
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-
-      <main>
-        <SEO
-          title="Features"
-          description="Explore ThermoNeural's operations + engineering workflows for HVAC&R contractors, owners, and field teams."
-        />
+    <PublicPageShell>
+      <SEO
+        title="Features"
+        description="Explore ThermoNeural's operations + engineering workflows for HVAC&R contractors, owners, and field teams."
+      />
 
         <section className="px-4 pt-8 pb-10 md:pt-10 md:pb-12 lg:min-h-[calc(100svh-88px)] lg:flex lg:items-center">
           <div className="max-w-6xl mx-auto w-full grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-primary">Platform Features</p>
+              <p className="text-xs uppercase tracking-[0.2em] text-primary">Operations + Engineering</p>
               <h1 className="mt-4 text-4xl md:text-[3.25rem] leading-[1.04] font-semibold">
-                Run HVAC operations and engineering from one connected workflow.
+                One operating system for dispatch, compliance, and engineering execution.
               </h1>
               <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-                Coordinate dispatch, field diagnostics, compliance, and engineering from one platform built for contractor teams.
+                Coordinate field and office work from intake through closeout with route-backed workflows your team can run daily.
+              </p>
+              <p className="mt-3 text-sm text-muted-foreground">
+                Start free for engineering tools, then add Business Ops when dispatch and compliance workflows become daily priorities.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
-                <Link
-                  to="/signup"
-                  onClick={() =>
-                    trackMarketingEvent("features_primary_click", {
-                      section: "hero",
-                      destination: "/signup",
-                    })
-                  }
-                >
-                  <Button size="lg">Start Free</Button>
-                </Link>
-                <Link
-                  to="/contact"
-                  onClick={() =>
-                    trackMarketingEvent("features_secondary_click", {
-                      section: "hero",
-                      destination: "/contact",
-                    })
-                  }
-                >
-                  <Button size="lg" variant="outline">Book Ops Demo</Button>
-                </Link>
+                <Button asChild size="lg">
+                  <Link
+                    to="/signup"
+                    onClick={() =>
+                      trackMarketingEvent("features_primary_click", {
+                        section: "hero",
+                        destination: "/signup",
+                      })
+                    }
+                  >
+                    Start Free
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="outline">
+                  <Link
+                    to="/contact"
+                    onClick={() =>
+                      trackMarketingEvent("features_secondary_click", {
+                        section: "hero",
+                        destination: "/contact",
+                      })
+                    }
+                  >
+                    Book Ops Demo
+                  </Link>
+                </Button>
               </div>
             </div>
             <div className="grid gap-3">
@@ -204,12 +205,12 @@ export function Features() {
         <section id="use-cases" className="scroll-mt-28 px-4 py-16 bg-secondary/30">
           <div className="max-w-6xl mx-auto">
             <div className="max-w-2xl">
-              <p className="text-xs uppercase tracking-[0.2em] text-primary">Capability Suite</p>
+              <p className="text-xs uppercase tracking-[0.2em] text-primary">Use Cases</p>
               <h2 className="mt-4 text-3xl md:text-4xl font-semibold">
-                Built for daily service execution, not disconnected software.
+                Built for owner/manager visibility and technician execution.
               </h2>
               <p className="mt-4 text-muted-foreground">
-                Every module is designed to reduce rework and move your team from intake to closeout with cleaner handoffs.
+                Use these workflows to keep dispatch organized, compliance audit-ready, and engineering analysis tied to live service work.
               </p>
             </div>
             <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -250,10 +251,10 @@ export function Features() {
             <div className="max-w-2xl">
               <p className="text-xs uppercase tracking-[0.2em] text-primary">Ready to start</p>
               <h2 className="mt-4 text-3xl md:text-4xl font-semibold">
-                Give your team one system for field execution and engineering decisions.
+                Start free for engineering now, then expand to Business Ops control.
               </h2>
               <p className="mt-4 text-muted-foreground">
-                Start engineering free now, then book an operations walkthrough for your dispatch and compliance rollout.
+                Keep the same operating model as the homepage: one primary path to start free, one secondary path to book an ops rollout.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
@@ -282,9 +283,6 @@ export function Features() {
             </div>
           </div>
         </section>
-      </main>
-
-      <Footer />
-    </div>
+    </PublicPageShell>
   );
 }
