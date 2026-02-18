@@ -20,15 +20,27 @@ export const authenticateSupabaseToken: RequestHandler = async (
 
     // Verify JWT signature using JWT_SECRET or SUPABASE_JWT_SECRET environment variable
     const jwtSecret = process.env.JWT_SECRET || process.env.SUPABASE_JWT_SECRET;
+    const isProduction = process.env.NODE_ENV === 'production';
     
+    // CRITICAL SECURITY FIX: Fail secure in production if secret is missing
+    // We check for both missing secret AND the known default/placeholder value
+    if (isProduction && (!jwtSecret || jwtSecret === "your_super_secret_jwt_key_change_in_production")) {
+      console.error("CRITICAL SECURITY ERROR: JWT_SECRET is missing or default in production environment. Refusing to authenticate with fallback secret.");
+      return res.status(500).json({
+        error: "Server configuration error",
+        message: "Authentication service unavailable"
+      });
+    }
+
+    // In non-production environments, we allow fallback but log a warning
     if (!jwtSecret || jwtSecret === "your_super_secret_jwt_key_change_in_production") {
       console.warn("WARNING: Using default JWT_SECRET. Set a strong secret in production.");
-      // In development with default secret, we still verify but with warning
     }
 
     let decoded: any;
     try {
       // Always verify JWT signature - no decode-only fallback for security
+      // The fallback secret is ONLY used in non-production environments (due to the check above)
       decoded = jwt.verify(token, jwtSecret || "fallback-secret-change-in-production");
     } catch (verifyError: any) {
       console.log("JWT verification failed:", verifyError.message);
