@@ -147,3 +147,157 @@
   --z-tooltip: 1060;
   --z-toast: 1070;
 }
+
+/* ============================================
+   INFOGRAPHIC DESIGN TOKENS
+   ============================================ */
+
+:root {
+  /* Stage Colors (Pipeline Flow) */
+  --stage-queue: 189 94% 43%;      /* Cyan-500: #06B6D4 */
+  --stage-enroute: 38 92% 50%;     /* Amber-500: #F59E0B */
+  --stage-onsite: 160 84% 39%;     /* Emerald-500: #10B981 */
+  --stage-done: 217 91% 60%;       /* Blue-500: #3B82F6 */
+  --stage-techs: 215 16% 47%;      /* Slate-500: #64748B */
+
+  /* Status Colors (Semantic) */
+  --status-clear: 160 84% 39%;     /* Emerald-500: Clear, optimal */
+  --status-attention: 38 92% 50%;  /* Amber-500: Needs review */
+  --status-critical: 0 84% 60%;    /* Red-500: Urgent, blocked */
+  --status-neutral: 189 94% 43%;   /* Cyan-500: Scheduled, queued */
+  --status-featured: 263 70% 66%;  /* Violet-500: New, highlighted */
+
+  /* Infographic Typography */
+  --text-stat-hero: 3.75rem;       /* 60px - Large infographic numbers */
+  --text-stat-value: 2.25rem;      /* 36px - Primary metric values */
+  --text-stat-label: 0.75rem;      /* 12px - Metric labels */
+  --text-flow-number: 1.5rem;      /* 24px - Pipeline flow numbers */
+  --text-flow-label: 0.625rem;     /* 10px - Pipeline stage labels */
+
+  /* Infographic Spacing */
+  --infographic-gap: 1rem;
+  --infographic-gap-sm: 0.5rem;
+  --infographic-gap-lg: 1.5rem;
+  --infographic-padding: 1rem;
+  --infographic-padding-lg: 1.5rem;
+
+  /* Infographic Radii */
+  --radius-stat: 0.75rem;
+  --radius-flow: 0.5rem;
+  --radius-badge: 9999px;
+
+  /* Infographic Shadows (Light Mode) */
+  --infographic-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --infographic-shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+
+  /* Infographic Glow Opacity */
+  --infographic-glow-opacity: 0.15;
+}
+
+.dark {
+  /* Infographic Shadows (Dark Mode) */
+  --infographic-shadow: none;
+  --infographic-shadow-lg: none;
+
+  /* Infographic Glow Opacity (more prominent in dark) */
+  --infographic-glow-opacity: 0.30;
+}
+
+/* Infographic Color Classes */
+:root {
+  /* Stage color utilities */
+  --color-queue: hsl(var(--stage-queue));
+  --color-enroute: hsl(var(--stage-enroute));
+  --color-onsite: hsl(var(--stage-onsite));
+  --color-done: hsl(var(--stage-done));
+  --color-techs: hsl(var(--stage-techs));
+
+  /* Status color utilities */
+  --color-clear: hsl(var(--status-clear));
+  --color-attention: hsl(var(--status-attention));
+  --color-critical: hsl(var(--status-critical));
+  --color-neutral: hsl(var(--status-neutral));
+  --color-featured: hsl(var(--status-featured));
+}
+
+/* Infographic Gradients */
+:root {
+  --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(221 83% 40%));
+  --gradient-success: linear-gradient(135deg, hsl(var(--status-clear)), hsl(160 84% 30%));
+  --gradient-warning: linear-gradient(135deg, hsl(var(--status-attention)), hsl(38 92% 40%));
+  --gradient-danger: linear-gradient(135deg, hsl(var(--status-critical)), hsl(0 84% 45%));
+  --gradient-info: linear-gradient(135deg, hsl(var(--status-neutral)), hsl(189 94% 35%));
+}
+
+/* Badge Size Scale */
+:root {
+  --badge-size-xs: 24px;
+  --badge-size-sm: 32px;
+  --badge-size-md: 44px;
+  --badge-size-lg: 64px;
+  --badge-size-xl: 96px;
+}
+
+/* ============================================
+   BOLD VIBRANT DESIGN TOKENS
+   ============================================ */
+
+:root {
+  /* Section Accent Colors */
+  --accent-queue: 189 94% 43%;        /* Cyan */
+  --accent-enroute: 38 92% 50%;       /* Amber */
+  --accent-onsite: 160 84% 39%;       /* Emerald */
+  --accent-done: 217 91% 60%;         /* Blue */
+  --accent-dispatch: 262 83% 58%;     /* Purple */
+  --accent-triage: 0 84% 60%;         /* Red */
+  --accent-jobs: 173 80% 40%;         /* Teal */
+  --accent-clients: 330 81% 60%;      /* Pink */
+
+  /* Bold Card Backgrounds */
+  --card-queue: linear-gradient(135deg, hsl(189 94% 43% / 0.1), hsl(189 94% 43% / 0.05));
+  --card-enroute: linear-gradient(135deg, hsl(38 92% 50% / 0.1), hsl(38 92% 50% / 0.05));
+  --card-onsite: linear-gradient(135deg, hsl(160 84% 39% / 0.1), hsl(160 84% 39% / 0.05));
+  --card-done: linear-gradient(135deg, hsl(217 91% 60% / 0.1), hsl(217 91% 60% / 0.05));
+  --card-dispatch: linear-gradient(135deg, hsl(262 83% 58% / 0.1), hsl(262 83% 58% / 0.05));
+  --card-triage: linear-gradient(135deg, hsl(0 84% 60% / 0.1), hsl(0 84% 60% / 0.05));
+
+  /* Hero Metric Typography */
+  --text-hero-xl: 4rem;              /* 64px - Hero numbers */
+  --text-hero-lg: 3rem;              /* 48px - Large metrics */
+  --text-hero-md: 2.5rem;            /* 40px - Medium metrics */
+  --text-hero-sm: 1.75rem;           /* 28px - Small metrics */
+
+  /* Vibrant Shadows */
+  --shadow-glow-cyan: 0 0 30px hsl(189 94% 43% / 0.3);
+  --shadow-glow-amber: 0 0 30px hsl(38 92% 50% / 0.3);
+  --shadow-glow-emerald: 0 0 30px hsl(160 84% 39% / 0.3);
+  --shadow-glow-blue: 0 0 30px hsl(217 91% 60% / 0.3);
+  --shadow-glow-purple: 0 0 30px hsl(262 83% 58% / 0.3);
+  --shadow-glow-red: 0 0 30px hsl(0 84% 60% / 0.3);
+
+  /* Card Border Radius */
+  --radius-card: 1rem;
+  --radius-card-lg: 1.5rem;
+
+  /* Progress Ring */
+  --ring-size: 80px;
+  --ring-stroke: 6px;
+}
+
+.dark {
+  /* Darker, more vibrant cards in dark mode */
+  --card-queue: linear-gradient(135deg, hsl(189 94% 43% / 0.15), hsl(189 94% 43% / 0.08));
+  --card-enroute: linear-gradient(135deg, hsl(38 92% 50% / 0.15), hsl(38 92% 50% / 0.08));
+  --card-onsite: linear-gradient(135deg, hsl(160 84% 39% / 0.15), hsl(160 84% 39% / 0.08));
+  --card-done: linear-gradient(135deg, hsl(217 91% 60% / 0.15), hsl(217 91% 60% / 0.08));
+  --card-dispatch: linear-gradient(135deg, hsl(262 83% 58% / 0.15), hsl(262 83% 58% / 0.08));
+  --card-triage: linear-gradient(135deg, hsl(0 84% 60% / 0.15), hsl(0 84% 60% / 0.08));
+
+  /* Stronger glows in dark mode */
+  --shadow-glow-cyan: 0 0 40px hsl(189 94% 43% / 0.4);
+  --shadow-glow-amber: 0 0 40px hsl(38 92% 50% / 0.4);
+  --shadow-glow-emerald: 0 0 40px hsl(160 84% 39% / 0.4);
+  --shadow-glow-blue: 0 0 40px hsl(217 91% 60% / 0.4);
+  --shadow-glow-purple: 0 0 40px hsl(262 83% 58% / 0.4);
+  --shadow-glow-red: 0 0 40px hsl(0 84% 60% / 0.4);
+}
