@@ -281,7 +281,9 @@ export function EnhancedStandardCycleContent() {
       setError(null);
       try {
         refreshAi();
-      } catch (_) {}
+      } catch (_) {
+        // Ignore any AI refresh issues; the calculator should remain usable.
+      }
     },
     [
       formData.evap_temp_c,

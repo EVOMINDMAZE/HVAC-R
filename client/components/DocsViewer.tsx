@@ -27,7 +27,7 @@ function mdToHtml(md: string) {
     (_, lang, code) => {
       const escaped = code.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
       const langClass = lang ? ` language-${lang}` : "";
-      return `<pre class=\"rounded-md bg-slate-900 text-slate-100 p-4 overflow-auto text-sm mb-6 border border-slate-800\"><code class=\"block code-block${langClass}\">${escaped}</code></pre>`;
+      return `<pre class="rounded-md bg-slate-900 text-slate-100 p-4 overflow-auto text-sm mb-6 border border-slate-800"><code class="block code-block${langClass}">${escaped}</code></pre>`;
     },
   );
 
@@ -39,14 +39,14 @@ function mdToHtml(md: string) {
 
   // Images
   out = out.replace(/!\[([^\]]*)\]\(([^)]+)\)/gim, (_, alt, src) => {
-    return `<figure class=\"my-6\"><img src=\"${src}\" alt=\"${alt}\" class=\"rounded w-full\" /><figcaption class=\"text-sm text-gray-500 dark:text-gray-400 mt-2\">${alt}</figcaption></figure>`;
+    return `<figure class="my-6"><img src="${src}" alt="${alt}" class="rounded w-full" /><figcaption class="text-sm text-gray-500 dark:text-gray-400 mt-2">${alt}</figcaption></figure>`;
   });
 
   // Blockquotes
   out = out.replace(
     /^>\s?(.*$)/gim,
     (_, t) =>
-      `<blockquote class=\"bg-slate-50 dark:bg-slate-800/50 border-l-4 border-slate-200 dark:border-slate-700 pl-4 py-2 rounded mt-4 text-slate-700 dark:text-slate-300\">${t}</blockquote>`,
+      `<blockquote class="bg-slate-50 dark:bg-slate-800/50 border-l-4 border-slate-200 dark:border-slate-700 pl-4 py-2 rounded mt-4 text-slate-700 dark:text-slate-300">${t}</blockquote>`,
   );
 
   // Headings
@@ -57,37 +57,37 @@ function mdToHtml(md: string) {
   out = out.replace(
     /^######\s?(.*$)/gim,
     (_, t) =>
-      `<h6 id=\"${slugify(t)}\" class=\"text-sm font-semibold mt-4 mb-2 group text-foreground\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm opacity-0 group-hover:opacity-100\">#</a></h6>`,
+      `<h6 id="${slugify(t)}" class="text-sm font-semibold mt-4 mb-2 group text-foreground">${t}<a href="#${slugify(t)}" class="ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm opacity-0 group-hover:opacity-100">#</a></h6>`,
   );
   out = out.replace(
     /^#####\s?(.*$)/gim,
     (_, t) =>
-      `<h5 id=\"${slugify(t)}\" class=\"text-sm font-semibold mt-4 mb-2 group text-foreground\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm opacity-0 group-hover:opacity-100\">#</a></h5>`,
+      `<h5 id="${slugify(t)}" class="text-sm font-semibold mt-4 mb-2 group text-foreground">${t}<a href="#${slugify(t)}" class="ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm opacity-0 group-hover:opacity-100">#</a></h5>`,
   );
   out = out.replace(
     /^####\s?(.*$)/gim,
     (_, t) =>
-      `<h4 id=\"${slugify(t)}\" class=\"text-lg font-semibold mt-6 mb-3 group text-foreground\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm opacity-0 group-hover:opacity-100\">#</a></h4>`,
+      `<h4 id="${slugify(t)}" class="text-lg font-semibold mt-6 mb-3 group text-foreground">${t}<a href="#${slugify(t)}" class="ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm opacity-0 group-hover:opacity-100">#</a></h4>`,
   );
   out = out.replace(
     /^###\s?(.*$)/gim,
     (_, t) =>
-      `<h3 id=\"${slugify(t)}\" class=\"text-xl font-semibold mt-6 mb-3 group text-foreground\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm opacity-0 group-hover:opacity-100\">#</a></h3>`,
+      `<h3 id="${slugify(t)}" class="text-xl font-semibold mt-6 mb-3 group text-foreground">${t}<a href="#${slugify(t)}" class="ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm opacity-0 group-hover:opacity-100">#</a></h3>`,
   );
   out = out.replace(
     /^##\s?(.*$)/gim,
     (_, t) =>
-      `<h2 id=\"${slugify(t)}\" class=\"text-2xl font-bold mt-8 mb-4 group text-foreground\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm opacity-0 group-hover:opacity-100\">#</a></h2>`,
+      `<h2 id="${slugify(t)}" class="text-2xl font-bold mt-8 mb-4 group text-foreground">${t}<a href="#${slugify(t)}" class="ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm opacity-0 group-hover:opacity-100">#</a></h2>`,
   );
   out = out.replace(
     /^#\s?(.*$)/gim,
     (_, t) =>
-      `<h1 id=\"${slugify(t)}\" class=\"text-3xl font-extrabold mt-8 mb-6 group text-foreground\">${t}<a href=\"#${slugify(t)}\" class=\"ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm opacity-0 group-hover:opacity-100\">#</a></h1>`,
+      `<h1 id="${slugify(t)}" class="text-3xl font-extrabold mt-8 mb-6 group text-foreground">${t}<a href="#${slugify(t)}" class="ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm opacity-0 group-hover:opacity-100">#</a></h1>`,
   );
 
   // Tables
   out = out.replace(
-    /(^\|.+\|\n\|[-: \|]+\|\n([\s\S]*?\n)*?)(?=\n|$)/gm,
+    /(^\|.+\|\n\|[-: |]+\|\n([\s\S]*?\n)*?)(?=\n|$)/gm,
     (m) => {
       const lines = m.trim().split("\n").filter(Boolean);
       if (lines.length < 2) return m;
@@ -101,16 +101,16 @@ function mdToHtml(md: string) {
           .split("|")
           .map((s) => s.trim()),
       );
-      const thead = `<thead class=\"bg-slate-50 dark:bg-slate-800 text-left text-foreground\"><tr>${header.map((h) => `<th class=\"px-3 py-2 font-semibold\">${h}</th>`).join("")}</tr></thead>`;
-      const tbody = `<tbody>${rows.map((r) => `<tr>${r.map((c) => `<td class=\"px-3 py-2 border-t border-slate-200 dark:border-slate-700 text-foreground\">${c}</td>`).join("")}</tr>`).join("")}</tbody>`;
-      return `<div class=\"overflow-auto my-4\"><table class=\"min-w-full border-collapse text-sm\">${thead}${tbody}</table></div>`;
+      const thead = `<thead class="bg-slate-50 dark:bg-slate-800 text-left text-foreground"><tr>${header.map((h) => `<th class="px-3 py-2 font-semibold">${h}</th>`).join("")}</tr></thead>`;
+      const tbody = `<tbody>${rows.map((r) => `<tr>${r.map((c) => `<td class="px-3 py-2 border-t border-slate-200 dark:border-slate-700 text-foreground">${c}</td>`).join("")}</tr>`).join("")}</tbody>`;
+      return `<div class="overflow-auto my-4"><table class="min-w-full border-collapse text-sm">${thead}${tbody}</table></div>`;
     },
   );
 
   // Inline code
   out = out.replace(
     /`([^`]+)`/gim,
-    '<code class=\"rounded bg-slate-100 dark:bg-slate-800 px-1 py-0.5 text-sm text-rose-600 dark:text-rose-400\">$1</code>',
+    '<code class="rounded bg-slate-100 dark:bg-slate-800 px-1 py-0.5 text-sm text-rose-600 dark:text-rose-400">$1</code>',
   );
 
   // Bold and italic
@@ -123,7 +123,7 @@ function mdToHtml(md: string) {
   // Links
   out = out.replace(
     /\[([^\]]+)\]\(([^)]+)\)/gim,
-    '<a class=\"text-orange-600 dark:text-orange-400 underline\" href="$2" target=\"_blank\" rel=\"noreferrer\">$1</a>',
+    '<a class="text-orange-600 dark:text-orange-400 underline" href="$2" target="_blank" rel="noreferrer">$1</a>',
   );
 
   // List replacements remain mostly the same structure but semantic classes
@@ -132,7 +132,7 @@ function mdToHtml(md: string) {
     '$1<li class="text-foreground">$2</li>',
   );
   out = out.replace(/(<li>[\s\S]*?<\/li>)/gim, (m) => {
-    return `<ol class=\"list-decimal ml-6 mt-2 marker:text-muted-foreground\">${m}</ol>`;
+    return `<ol class="list-decimal ml-6 mt-2 marker:text-muted-foreground">${m}</ol>`;
   });
 
   out = out.replace(
@@ -140,7 +140,7 @@ function mdToHtml(md: string) {
     '$1<li class="text-foreground">$2</li>',
   );
   out = out.replace(/(<li>[\s\S]*?<\/li>)/gim, (m) => {
-    return `<ul class=\"list-disc list-inside ml-6 mt-2 marker:text-muted-foreground\">${m}</ul>`;
+    return `<ul class="list-disc list-inside ml-6 mt-2 marker:text-muted-foreground">${m}</ul>`;
   });
 
   // Paragraphs
@@ -159,7 +159,7 @@ function mdToHtml(md: string) {
         p.startsWith("<blockquote")
       )
         return p;
-      return `<p class=\"text-gray-700 dark:text-slate-300 mt-4 leading-relaxed text-base\">${p.replace(/\n/g, "<br />")}</p>`;
+      return `<p class="text-gray-700 dark:text-slate-300 mt-4 leading-relaxed text-base">${p.replace(/\n/g, "<br />")}</p>`;
     })
     .join("\n");
 
@@ -313,7 +313,7 @@ export function DocsViewer({
       } catch (err: any) {
         console.error("Failed to load doc:", err);
         setContent(
-          `<p class=\"text-red-600\">Document not found: ${title}</p>`,
+          `<p class="text-red-600">Document not found: ${title}</p>`,
         );
         setHeadings([]);
       } finally {

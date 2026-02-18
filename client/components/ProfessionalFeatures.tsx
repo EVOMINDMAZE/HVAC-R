@@ -697,7 +697,7 @@ export function ProfessionalFeatures({
       if (!/viewBox=/i.test(svg)) {
         const w = svg.match(/width=['"]?(\d+)/)?.[1] || "760";
         const h = svg.match(/height=['"]?(\d+)/)?.[1] || "420";
-        svg = svg.replace(/<svg/, `<svg viewBox=\"0 0 ${w} ${h}\"`);
+        svg = svg.replace(/<svg/, `<svg viewBox="0 0 ${w} ${h}"`);
       }
       // make responsive
       svg = svg.replace(
@@ -705,7 +705,7 @@ export function ProfessionalFeatures({
         `<svg$1$2 style='max-width:100%;height:auto;display:block'`,
       );
       svg = svg.replace(
-        /<svg([^>]*)width=\"[^\"]*\"([^>]*)>/i,
+        /<svg([^>]*)width="[^"]*"([^>]*)>/i,
         `<svg$1$2 style='max-width:100%;height:auto;display:block'`,
       );
       return svg;
@@ -767,7 +767,9 @@ export function ProfessionalFeatures({
             },
           }),
         );
-      } catch (_e) {}
+      } catch (_e) {
+        // Ignore: if a custom event fails to dispatch, the app still functions.
+      }
       return;
     }
     try {
@@ -1146,7 +1148,9 @@ export function ProfessionalFeatures({
               },
             }),
           );
-        } catch (_e) {}
+        } catch (_e) {
+          // Ignore: if a custom event fails to dispatch, the app still functions.
+        }
         return;
       }
       const rows: string[] = [];
@@ -1264,7 +1268,7 @@ export function ProfessionalFeatures({
       if (!/viewBox=/i.test(svg)) {
         const w = svg.match(/width=['"]?(\d+)/)?.[1] || "760";
         const h = svg.match(/height=['"]?(\d+)/)?.[1] || "420";
-        svg = svg.replace(/<svg/, `<svg viewBox=\"0 0 ${w} ${h}\"`);
+        svg = svg.replace(/<svg/, `<svg viewBox="0 0 ${w} ${h}"`);
       }
       svg = svg.replace(
         /<svg([^>]*)width=['"][^'"]*['"]([^>]*)>/i,

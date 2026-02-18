@@ -65,23 +65,27 @@ export function useKeyboardShortcuts(): KeyboardShortcutsOptions {
         setShowHelp(prev => !prev);
         break;
       case "/":
-        e.preventDefault();
-        const searchInput = document.querySelector('input[placeholder*="Search"]') as HTMLInputElement;
-        if (searchInput) {
-          searchInput.focus();
-          // Show toast on first use
-          if (firstTime) {
-            addToast({
-              type: "info",
-              title: "Pro tip: Keyboard shortcuts",
-              description: "Press '?' anytime to see all available shortcuts",
-              duration: 5000,
-            });
-            localStorage.setItem(FIRST_TIME_KEY, "false");
-            setFirstTime(false);
+        {
+          e.preventDefault();
+          const searchInput = document.querySelector(
+            'input[placeholder*="Search"]',
+          ) as HTMLInputElement;
+          if (searchInput) {
+            searchInput.focus();
+            // Show toast on first use
+            if (firstTime) {
+              addToast({
+                type: "info",
+                title: "Pro tip: Keyboard shortcuts",
+                description: "Press '?' anytime to see all available shortcuts",
+                duration: 5000,
+              });
+              localStorage.setItem(FIRST_TIME_KEY, "false");
+              setFirstTime(false);
+            }
           }
+          break;
         }
-        break;
       case "p":
       case "P":
         if (!e.ctrlKey && !e.metaKey) {

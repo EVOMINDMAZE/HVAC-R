@@ -89,8 +89,7 @@ export function JobSelector() {
                 title: "Project Created",
                 description: `Switched to ${data.name}`,
             });
-            // @ts-ignore
-            setProjects([data, ...projects]);
+            setProjects([data as Job, ...projects]);
             selectJob(data);
             setOpenNewProject(false);
             setNewProjectName("");

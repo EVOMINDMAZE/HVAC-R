@@ -735,7 +735,7 @@ export function RefrigerantComparisonContent() {
           const cleaned = String(v).trim();
           if (cleaned === "") return null;
           // remove common non-numeric chars but allow exponentials and signs
-          const n = Number(cleaned.replace(/[^0-9eE+\-\.]/g, ""));
+          const n = Number(cleaned.replace(/[^0-9eE+\-.]/g, ""));
           return Number.isFinite(n) ? n : null;
         };
 

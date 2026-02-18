@@ -68,7 +68,19 @@ export function useFileUpload() {
           const guidance = `Upload Failed: Storage bucket "${AVATAR_BUCKET}" (or fallback "${fallbackBucket}") not found or inaccessible. Please create a public bucket and ensure your anon key has permission to upload.`;
           addToast({ type: 'error', title: 'Upload Failed', description: guidance });
           // Emit telemetry event
-          try { window.dispatchEvent(new CustomEvent('storage:upload_failed', { detail: { reason: 'bucket_not_found', user: user.id, attemptedBucket: bucketToUse } })); } catch(e){}
+	          try {
+	            window.dispatchEvent(
+	              new CustomEvent("storage:upload_failed", {
+	                detail: {
+	                  reason: "bucket_not_found",
+	                  user: user.id,
+	                  attemptedBucket: bucketToUse,
+	                },
+	              }),
+	            );
+	          } catch (e) {
+	            // Ignore telemetry errors (e.g. window not available).
+	          }
           return { url: null, error: guidance };
         }
       }
@@ -104,7 +116,9 @@ export function useFileUpload() {
               },
             }),
           );
-        } catch (e) {}
+	        } catch (e) {
+	          // Ignore telemetry errors (e.g. window not available).
+	        }
 
         // Helpful guidance for common issues
         const msg = (error && (error.message || errStr)) || String(error);
@@ -170,7 +184,19 @@ export function useFileUpload() {
               console.error('Server fallback upload failed', { parsedBody: jr, status: statusInfo });
               const guidance = (jr && (jr.error || jr.details || jr.message)) || (`Server-side upload failed (${statusInfo})`);
               // Emit telemetry including raw body when available
-              try { window.dispatchEvent(new CustomEvent('storage:upload_failed', { detail: { reason: 'server_fallback_failed', status: resp.status, body: jr } })); } catch (e) {}
+	              try {
+	                window.dispatchEvent(
+	                  new CustomEvent("storage:upload_failed", {
+	                    detail: {
+	                      reason: "server_fallback_failed",
+	                      status: resp.status,
+	                      body: jr,
+	                    },
+	                  }),
+	                );
+	              } catch (e) {
+	                // Ignore telemetry errors (e.g. window not available).
+	              }
               addToast({ type: 'error', title: 'Upload Failed', description: guidance });
               return { url: null, error: guidance };
             }

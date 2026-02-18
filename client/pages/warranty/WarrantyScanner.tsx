@@ -175,7 +175,7 @@ export default function WarrantyScanner() {
 
       modelKeywords.forEach((k) => {
         if (cleanLine.includes(k)) {
-          const match = line.match(/[:.\-\s]+([a-zA-Z0-9\-]{5,})/i);
+          const match = line.match(/[:.\-\s]+([a-zA-Z0-9-]{5,})/i);
           if (match && !foundModel) foundModel = match[1].trim();
         }
       });

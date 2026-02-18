@@ -28,7 +28,8 @@ export function StoryViewer({ story, onClose, onNextStory, onPrevStory }: StoryV
             pausedTimeRef.current = 0;
             startTimeRef.current = null;
         } else {
-            onNextStory ? onNextStory() : onClose();
+            if (onNextStory) onNextStory();
+            else onClose();
         }
     }, [currentSlideIndex, story.slides.length, onNextStory, onClose]);
 
@@ -39,7 +40,8 @@ export function StoryViewer({ story, onClose, onNextStory, onPrevStory }: StoryV
             pausedTimeRef.current = 0;
             startTimeRef.current = null;
         } else {
-            onPrevStory ? onPrevStory() : onClose();
+            if (onPrevStory) onPrevStory();
+            else onClose();
         }
     }, [currentSlideIndex, onPrevStory, onClose]);
 

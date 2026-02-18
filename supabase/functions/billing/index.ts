@@ -352,7 +352,7 @@ async function handleWebhook(req: Request) {
 
     // Handle the event
     switch (event.type) {
-      case "checkout.session.completed":
+      case "checkout.session.completed": {
         console.log("Checkout session completed:", event.data.object.id);
         const session = event.data.object;
         const userId = session.metadata?.userId;
@@ -360,7 +360,7 @@ async function handleWebhook(req: Request) {
         if (userId) {
           const supabaseAdmin = createClient(
             Deno.env.get("SUPABASE_URL") ?? "",
-            Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+            Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
           );
 
           const { error } = await supabaseAdmin
@@ -375,8 +375,9 @@ async function handleWebhook(req: Request) {
           }
         }
         break;
+      }
 
-      case "customer.subscription.updated":
+      case "customer.subscription.updated": {
         console.log("Subscription updated:", event.data.object.id);
         const subscription = event.data.object;
         const status = subscription.status; // active, past_due, canceled, etc.
@@ -398,7 +399,7 @@ async function handleWebhook(req: Request) {
         if (subUserId) {
           const supabaseAdmin = createClient(
             Deno.env.get("SUPABASE_URL") ?? "",
-            Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+            Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
           );
 
           await supabaseAdmin
@@ -410,8 +411,9 @@ async function handleWebhook(req: Request) {
           console.log("No userId in subscription metadata, skipping DB update");
         }
         break;
+      }
 
-      case "customer.subscription.deleted":
+      case "customer.subscription.deleted": {
         console.log("Subscription deleted:", event.data.object.id);
         const deletedSub = event.data.object;
         const delUserId = deletedSub.metadata?.userId;
@@ -419,7 +421,7 @@ async function handleWebhook(req: Request) {
         if (delUserId) {
           const supabaseAdmin = createClient(
             Deno.env.get("SUPABASE_URL") ?? "",
-            Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+            Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
           );
 
           await supabaseAdmin
@@ -428,6 +430,7 @@ async function handleWebhook(req: Request) {
             .eq("user_id", delUserId);
         }
         break;
+      }
 
       case "invoice.payment_succeeded":
         console.log("Payment succeeded for invoice:", event.data.object.id);

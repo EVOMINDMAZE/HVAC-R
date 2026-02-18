@@ -511,7 +511,7 @@ export function CalculationDetailsModal({
         if (!Number.isNaN(n)) return n;
         // Fallback: strip non-numeric characters (except exponent, sign, dot) and parse
         try {
-          const cleaned = String(v).replace(/[^0-9eE+\-\.]/g, "");
+          const cleaned = String(v).replace(/[^0-9eE+\-.]/g, "");
           const n2 = Number(cleaned);
           if (!Number.isNaN(n2)) return n2;
         } catch (_e) {
@@ -576,7 +576,7 @@ export function CalculationDetailsModal({
             const n = Number(p[k]);
             if (!Number.isNaN(n)) return n;
             // try parse strings with units
-            const parsed = Number(String(p[k]).replace(/[^0-9eE+\-\.]/g, ""));
+            const parsed = Number(String(p[k]).replace(/[^0-9eE+\-.]/g, ""));
             if (!Number.isNaN(parsed)) return parsed;
           }
         }
@@ -598,7 +598,7 @@ export function CalculationDetailsModal({
                   const n = Number(candidate[k]);
                   if (!Number.isNaN(n)) return n;
                   const parsed = Number(
-                    String(candidate[k]).replace(/[^0-9eE+\-\.]/g, ""),
+                    String(candidate[k]).replace(/[^0-9eE+\-.]/g, ""),
                   );
                   if (!Number.isNaN(parsed)) return parsed;
                 }
@@ -613,7 +613,7 @@ export function CalculationDetailsModal({
               const n = Number(cur[k]);
               if (!Number.isNaN(n)) return n;
               const parsed = Number(
-                String(cur[k]).replace(/[^0-9eE+\-\.]/g, ""),
+                String(cur[k]).replace(/[^0-9eE+\-.]/g, ""),
               );
               if (!Number.isNaN(parsed)) return parsed;
             }

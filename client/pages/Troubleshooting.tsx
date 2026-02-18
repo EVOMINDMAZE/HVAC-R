@@ -765,7 +765,9 @@ export function TroubleshootingContent() {
       if (typeof data === "string") {
         try {
           data = JSON.parse(sanitizeString(data));
-        } catch (_e) {}
+        } catch (_e) {
+          // Best-effort: allow non-JSON / partially formatted responses.
+        }
       }
 
       setAiResponse(data);
