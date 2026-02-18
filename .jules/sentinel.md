@@ -1,0 +1,4 @@
+## 2026-02-18 - [CRITICAL] Authentication Bypass via Hardcoded Secret Fallback
+**Vulnerability:** The `authenticateSupabaseToken` middleware fell back to a hardcoded string (`"fallback-secret-change-in-production"`) when `JWT_SECRET` was missing in production. This allowed attackers to forge valid JWTs using this known secret and bypass authentication completely.
+**Learning:** The fallback was intended for local development convenience but lacked a check for production environment, leading to a "fail-open" vulnerability in misconfigured production deployments.
+**Prevention:** Always use "fail-secure" logic for critical secrets: if a required secret is missing in production, the application must crash or refuse to function rather than using an insecure default. Explicitly check `NODE_ENV === 'production'`.
