@@ -55,4 +55,36 @@ describe("api compatibility adapter", () => {
             },
         });
     });
+
+    it("emits migration tags and compat context in metadata when provided", () => {
+        const body = toCompatEnvelope(
+            { plan: "pro" },
+            {
+                runtimePath: "compat",
+                includeMeta: true,
+                migrationTags: ["billing.plan.compat.normalized"],
+                compatContext: {
+                    billingPlan: {
+                        canonicalPlan: "professional",
+                        normalizedFrom: "professional",
+                    },
+                },
+            },
+        );
+
+        expect(body).toMatchObject({
+            success: true,
+            plan: "pro",
+            _meta: {
+                runtimePath: "compat",
+                migrationTags: ["billing.plan.compat.normalized"],
+                compat: {
+                    billingPlan: {
+                        canonicalPlan: "professional",
+                        normalizedFrom: "professional",
+                    },
+                },
+            },
+        });
+    });
 });

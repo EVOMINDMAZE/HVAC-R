@@ -3,6 +3,8 @@ export type RuntimePathLabel = "legacy" | "compat" | "canonical";
 type CompatEnvelopeOptions = {
     runtimePath?: string | null;
     includeMeta?: boolean;
+    migrationTags?: string[];
+    compatContext?: Record<string, unknown>;
 };
 
 function normalizeRuntimePathLabel(
@@ -25,8 +27,14 @@ function buildMeta(options?: CompatEnvelopeOptions) {
         return undefined;
     }
 
+    const migrationTags = Array.isArray(options.migrationTags)
+        ? options.migrationTags.filter((tag) => Boolean(tag))
+        : [];
+
     return {
         runtimePath: normalizeRuntimePathLabel(options.runtimePath),
+        ...(migrationTags.length > 0 ? { migrationTags } : {}),
+        ...(options.compatContext ? { compat: options.compatContext } : {}),
     };
 }
 
@@ -55,4 +63,3 @@ export function toCompatErrorEnvelope<T extends Record<string, unknown>>(
         ...(meta ? { _meta: meta } : {}),
     };
 }
-

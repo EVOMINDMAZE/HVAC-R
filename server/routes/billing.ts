@@ -11,6 +11,7 @@ import {
   toCompatEnvelope,
   toCompatErrorEnvelope,
 } from "./compat/apiAdapter.js";
+import { projectBillingPlanForRouteResponse } from "./compat/billingPlanCompat.js";
 
 const router = express.Router();
 
@@ -18,7 +19,12 @@ type RuntimeTaggedRequest = express.Request & {
   runtimePath?: string;
 };
 
-function getCompatOptions(req: RuntimeTaggedRequest) {
+type CompatMetaOptions = {
+  migrationTags?: string[];
+  compatContext?: Record<string, unknown>;
+};
+
+function getCompatOptions(req: RuntimeTaggedRequest, meta?: CompatMetaOptions) {
   const metaHeader = req.headers["x-compat-meta"];
   const metaRaw = Array.isArray(metaHeader) ? metaHeader[0] : metaHeader;
   const includeMeta = metaRaw === "1" || metaRaw === "true";
@@ -31,6 +37,7 @@ function getCompatOptions(req: RuntimeTaggedRequest) {
   return {
     includeMeta,
     runtimePath,
+    ...meta,
   };
 }
 
@@ -39,10 +46,11 @@ function sendCompatSuccess(
   res: express.Response,
   payload: Record<string, unknown>,
   statusCode = 200,
+  meta?: CompatMetaOptions,
 ) {
   return res
     .status(statusCode)
-    .json(toCompatEnvelope(payload, getCompatOptions(req)));
+    .json(toCompatEnvelope(payload, getCompatOptions(req, meta)));
 }
 
 function sendCompatError(
@@ -50,10 +58,11 @@ function sendCompatError(
   res: express.Response,
   payload: Record<string, unknown>,
   statusCode = 500,
+  meta?: CompatMetaOptions,
 ) {
   return res
     .status(statusCode)
-    .json(toCompatErrorEnvelope(payload, getCompatOptions(req)));
+    .json(toCompatErrorEnvelope(payload, getCompatOptions(req, meta)));
 }
 
 const priceIdToPlan: { [key: string]: string } = {
@@ -149,11 +158,15 @@ router.get("/subscription", authenticateSupabaseToken, async (req, res) => {
 
     // Check if Stripe is configured
     if (!process.env.STRIPE_SECRET_KEY) {
+      const projectedPlan = projectBillingPlanForRouteResponse(
+        user.subscription_plan || "free",
+      );
+
       return sendCompatSuccess(req, res, {
         subscription: null,
-        plan: user.subscription_plan || "free",
+        plan: projectedPlan.responsePlan,
         status: "active",
-      });
+      }, 200, projectedPlan.meta);
     }
 
     let customerId = user.stripe_customer_id;
@@ -181,21 +194,22 @@ router.get("/subscription", authenticateSupabaseToken, async (req, res) => {
     }
 
     const priceId = subscription.items.data[0]?.price.id;
-    const planName = (priceId && priceIdToPlan[priceId]) || "free";
+    const rawPlanName = (priceId && priceIdToPlan[priceId]) || "free";
+    const projectedPlan = projectBillingPlanForRouteResponse(rawPlanName);
 
     return sendCompatSuccess(req, res, {
       subscription: {
         id: subscription.id,
         status: subscription.status,
         current_period_end: (subscription as any).current_period_end,
-        plan: planName,
+        plan: projectedPlan.responsePlan,
         amount: (subscription.items.data[0]?.price.unit_amount || 0) / 100,
         currency: subscription.items.data[0]?.price.currency,
         interval: subscription.items.data[0]?.price.recurring?.interval,
       },
-      plan: planName,
+      plan: projectedPlan.responsePlan,
       status: subscription.status,
-    });
+    }, 200, projectedPlan.meta);
   } catch (error: any) {
     console.error("Error fetching subscription:", error);
     return sendCompatError(req, res, { error: error.message }, 500);
