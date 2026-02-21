@@ -7,8 +7,54 @@ import {
   getCustomerSubscription,
   createCheckoutSession
 } from "../utils/stripe.js";
+import {
+  toCompatEnvelope,
+  toCompatErrorEnvelope,
+} from "./compat/apiAdapter.js";
 
 const router = express.Router();
+
+type RuntimeTaggedRequest = express.Request & {
+  runtimePath?: string;
+};
+
+function getCompatOptions(req: RuntimeTaggedRequest) {
+  const metaHeader = req.headers["x-compat-meta"];
+  const metaRaw = Array.isArray(metaHeader) ? metaHeader[0] : metaHeader;
+  const includeMeta = metaRaw === "1" || metaRaw === "true";
+  const runtimePath =
+    req.runtimePath ||
+    (Array.isArray(req.headers["x-runtime-path"])
+      ? req.headers["x-runtime-path"][0]
+      : req.headers["x-runtime-path"]);
+
+  return {
+    includeMeta,
+    runtimePath,
+  };
+}
+
+function sendCompatSuccess(
+  req: RuntimeTaggedRequest,
+  res: express.Response,
+  payload: Record<string, unknown>,
+  statusCode = 200,
+) {
+  return res
+    .status(statusCode)
+    .json(toCompatEnvelope(payload, getCompatOptions(req)));
+}
+
+function sendCompatError(
+  req: RuntimeTaggedRequest,
+  res: express.Response,
+  payload: Record<string, unknown>,
+  statusCode = 500,
+) {
+  return res
+    .status(statusCode)
+    .json(toCompatErrorEnvelope(payload, getCompatOptions(req)));
+}
 
 const priceIdToPlan: { [key: string]: string } = {
   [process.env.VITE_STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID || ""]: "pro",
@@ -19,7 +65,7 @@ const priceIdToPlan: { [key: string]: string } = {
 
 // Test route
 router.get("/test", (req, res) => {
-  res.json({ message: "Billing routes are working!" });
+  sendCompatSuccess(req, res, { message: "Billing routes are working!" });
 });
 
 // Create checkout session
@@ -32,7 +78,7 @@ router.post(
       const user = (req as any).user;
 
       if (!priceId) {
-        return res.status(400).json({ error: "Price ID is required" });
+        return sendCompatError(req, res, { error: "Price ID is required" }, 400);
       }
 
       const session = await createCheckoutSession(
@@ -42,13 +88,18 @@ router.post(
         user.id // Pass user ID for metadata
       );
 
-      res.json({
+      return sendCompatSuccess(req, res, {
         sessionId: session.id,
         url: session.url,
       });
     } catch (error: any) {
       console.error("Error creating checkout session:", error);
-      res.status(500).json({ error: error.message || "Checkout failed" });
+      return sendCompatError(
+        req,
+        res,
+        { error: error.message || "Checkout failed" },
+        500,
+      );
     }
   },
 );
@@ -72,16 +123,21 @@ router.post(
       }
 
       if (!customerId) {
-        return res.status(400).json({ error: "No Stripe customer found. Please make a purchase first." });
+        return sendCompatError(
+          req,
+          res,
+          { error: "No Stripe customer found. Please make a purchase first." },
+          400,
+        );
       }
 
       const returnUrl = `${process.env.CLIENT_URL || "http://localhost:3000"}/profile`;
       const session = await createCustomerPortalSession(customerId, returnUrl);
 
-      res.json({ url: session.url });
+      return sendCompatSuccess(req, res, { url: session.url });
     } catch (error: any) {
       console.error("Error creating portal session:", error);
-      res.status(500).json({ error: error.message });
+      return sendCompatError(req, res, { error: error.message }, 500);
     }
   },
 );
@@ -93,7 +149,11 @@ router.get("/subscription", authenticateSupabaseToken, async (req, res) => {
 
     // Check if Stripe is configured
     if (!process.env.STRIPE_SECRET_KEY) {
-      return res.json({ subscription: null, plan: user.subscription_plan || "free", status: "active" });
+      return sendCompatSuccess(req, res, {
+        subscription: null,
+        plan: user.subscription_plan || "free",
+        status: "active",
+      });
     }
 
     let customerId = user.stripe_customer_id;
@@ -103,19 +163,27 @@ router.get("/subscription", authenticateSupabaseToken, async (req, res) => {
     }
 
     if (!customerId) {
-      return res.json({ subscription: null, plan: "free", status: "active" });
+      return sendCompatSuccess(req, res, {
+        subscription: null,
+        plan: "free",
+        status: "active",
+      });
     }
 
     const subscription = await getCustomerSubscription(customerId);
 
     if (!subscription) {
-      return res.json({ subscription: null, plan: "free", status: "active" });
+      return sendCompatSuccess(req, res, {
+        subscription: null,
+        plan: "free",
+        status: "active",
+      });
     }
 
     const priceId = subscription.items.data[0]?.price.id;
     const planName = (priceId && priceIdToPlan[priceId]) || "free";
 
-    res.json({
+    return sendCompatSuccess(req, res, {
       subscription: {
         id: subscription.id,
         status: subscription.status,
@@ -130,7 +198,7 @@ router.get("/subscription", authenticateSupabaseToken, async (req, res) => {
     });
   } catch (error: any) {
     console.error("Error fetching subscription:", error);
-    res.status(500).json({ error: error.message });
+    return sendCompatError(req, res, { error: error.message }, 500);
   }
 });
 
@@ -259,10 +327,15 @@ router.post(
       }
     } catch (error) {
       console.error("Webhook processing error:", error);
-      return res.status(500).json({ error: "Webhook handling failed" });
+      return sendCompatError(
+        req,
+        res,
+        { error: "Webhook handling failed" },
+        500,
+      );
     }
 
-    res.json({ received: true });
+    return sendCompatSuccess(req, res, { received: true });
   },
 );
 
