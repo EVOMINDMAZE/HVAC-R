@@ -75,17 +75,17 @@ export function createServer() {
     process.env.NODE_ENV === "production"
       ? []
       : [
-          "http://localhost:8080",
-          "http://localhost:3000",
-          "http://localhost:3001",
-          "http://localhost:8081",
-          "http://localhost:5173",
-        ];
+        "http://localhost:8080",
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "http://localhost:8081",
+        "http://localhost:5173",
+      ];
 
   const envList = process.env.ALLOWED_CORS_ORIGINS
     ? process.env.ALLOWED_CORS_ORIGINS.split(",")
-        .map((s) => s.trim())
-        .filter(Boolean)
+      .map((s) => s.trim())
+      .filter(Boolean)
     : [];
 
   const allowedOrigins = Array.from(new Set([...envList, ...defaultAllowed]));
@@ -131,18 +131,9 @@ export function createServer() {
     res,
     next,
   ) => {
-    const token = req.headers.authorization?.replace("Bearer ", "") || "";
-    if (!token)
-      return res.status(401).json({ error: "Authentication required" });
-    // Heuristic: JWTs have at least two dots
-    if ((token.match(/\./g) || []).length >= 2) {
-      return authenticateSupabaseToken(req, res, next);
-    }
-    // If Supabase is configured, treat all tokens as Supabase JWTs (might be missing dots due to encoding?)
-    if (process.env.VITE_SUPABASE_URL) {
-      return authenticateSupabaseToken(req, res, next);
-    }
-    return authenticateToken(req, res, next);
+    // Compatibility guard in supabaseAuth standardizes canonical/legacy validation
+    // sequence while preserving external route protection semantics.
+    return authenticateSupabaseToken(req, res, next);
   };
 
   // Authentication routes

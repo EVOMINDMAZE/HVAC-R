@@ -4,6 +4,10 @@ declare global {
   namespace Express {
     interface Request {
       requestId?: string;
+      runtimePath?: "legacy" | "compat" | "canonical";
+      authPath?: "legacy" | "canonical";
+      fallbackUsed?: boolean;
+      authMigrationTags?: string[];
       session?: {
         id?: string;
         [key: string]: unknown;
@@ -19,4 +23,4 @@ declare global {
   }
 }
 
-export {};
+export { };
