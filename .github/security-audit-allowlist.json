@@ -1,0 +1,37 @@
+{
+    "$schema": "https://json.schemastore.org/security-audit-allowlist.json",
+    "version": "1.0.0",
+    "description": "Allowlist for known vulnerabilities with documented mitigations. Entries must include expiration dates and will be automatically flagged when expired.",
+    "entries": [
+        {
+            "id": 1094456,
+            "module": "xlsx",
+            "severity": "high",
+            "reason": "SheetJS xlsx prototype pollution vulnerability (GHSA-4r6h-8v6p-xvw6). Mitigation: File upload validation implemented in client/components/shared/SpreadsheetImporter.tsx with size limits and type checking. No user-supplied file paths processed. Awaiting upstream fix.",
+            "expires": "2026-06-01T00:00:00Z",
+            "cve": "GHSA-4r6h-8v6p-xvw6",
+            "references": [
+                "https://github.com/advisories/GHSA-4r6h-8v6p-xvw6",
+                "docs/security/VULNERABILITY_REPORT.md"
+            ]
+        },
+        {
+            "id": 1094457,
+            "module": "xlsx",
+            "severity": "high",
+            "reason": "SheetJS xlsx ReDoS vulnerability (GHSA-5pgg-2g8v-p4x9). Mitigation: File size limits enforced, no untrusted patch/diff processing. Awaiting upstream fix.",
+            "expires": "2026-06-01T00:00:00Z",
+            "cve": "GHSA-5pgg-2g8v-p4x9",
+            "references": [
+                "https://github.com/advisories/GHSA-5pgg-2g8v-p4x9",
+                "docs/security/VULNERABILITY_REPORT.md"
+            ]
+        }
+    ],
+    "notes": [
+        "This allowlist should be reviewed monthly during security reviews.",
+        "Expired entries will cause the CI security gate to fail.",
+        "All entries must have documented mitigations and expiration dates.",
+        "Contact: security@thermoneutral.com"
+    ]
+}
