@@ -120,6 +120,14 @@ For detailed setup instructions, please refer to the [Developer Guide](./skills/
 - **E2E Tests**: 40+ comprehensive scenarios (Playwright)
 - **Coverage**: 65%+ code coverage
 
+### CI Quality Gates
+
+The CI pipeline enforces these quality gates on every PR:
+
+1. **Quality Gate** (required): Lint, typecheck, unit tests
+2. **E2E Smoke Gate** (required): Deterministic public-page tests
+3. **Full E2E Suite** (manual dispatch): Complete authenticated workflow tests
+
 ```bash
 # Run unit tests
 npm test
@@ -130,9 +138,14 @@ npm run test:coverage
 # Run e2e tests
 npm run test:e2e
 
+# Run e2e smoke tests (CI-safe)
+npm run test:e2e -- --project=ci-smoke
+
 # Run e2e with UI
 npm run test:e2e:ui
 ```
+
+See [`e2e/README.md`](./e2e/README.md) for detailed E2E testing documentation.
 
 ## 📊 Quality Metrics
 
@@ -204,4 +217,4 @@ For support, contact api-support@thermoneural.com or visit our developer portal.
 
 ---
 
-*Last updated: 2026-02-07 | Version: 2.0.0 Production Ready*
+*Last updated: 2026-02-21 | Version: 2.1.0 Production Ready*

@@ -9,7 +9,43 @@ End-to-end tests are organized by user role to test authenticated workflows:
 - **client/** - Client portal features (asset viewing, requests)
 - **student/** - Learning tools access
 - **shared/** - Cross-role tests (authentication, navigation)
+- **flows/** - CI-specific test flows (deterministic smoke tests)
 - **helpers/** - Shared utilities (authentication helpers)
+
+## CI/E2E Execution Modes
+
+### Smoke E2E (Automated on every PR)
+
+The `e2e-smoke` CI job runs automatically on every pull request. It uses the `ci-smoke` project which targets **deterministic public-page tests only** - tests that don't require authentication or external services.
+
+```bash
+# Runs automatically in CI via .github/workflows/ci.yml
+# Test file: e2e/flows/ci-reliability-smoke.spec.ts
+# Project: ci-smoke (chromium)
+# Retries: 2
+```
+
+**Characteristics:**
+- Runs on every PR to `main`
+- No Supabase or seeded users required
+- Tests public pages only (landing, login, pricing, etc.)
+- Fast execution (~30 seconds)
+- Deterministic and reliable
+
+### Full E2E Suite (Manual Dispatch)
+
+The `e2e-full` CI job requires manual workflow dispatch and needs Supabase with seeded test users.
+
+```bash
+# Trigger via GitHub Actions UI: Actions → CI → Run workflow
+# Requires: Supabase instance + seeded test users
+```
+
+**Characteristics:**
+- Manual trigger only (`workflow_dispatch`)
+- Tests all authenticated workflows
+- Requires test users and authentication state
+- Longer execution time
 
 ## Setup
 
@@ -48,6 +84,12 @@ PLAYWRIGHT_BASE_URL=http://localhost:3001
 
 ```bash
 npm run test:e2e
+```
+
+**Run CI smoke tests (deterministic, no auth required):**
+
+```bash
+npm run test:e2e -- --project=ci-smoke
 ```
 
 **Run tests by role:**
@@ -91,7 +133,15 @@ test.beforeEach(async ({ page }) => {
 
 ### 6. CI/CD Integration
 
-Tests run automatically in CI with persisted authentication states. Ensure `PLAYWRIGHT_BASE_URL` is set correctly for your environment.
+**Automated Smoke Tests:**
+- Smoke tests run automatically in CI on every PR
+- Uses `ci-smoke` project targeting `e2e/flows/ci-reliability-smoke.spec.ts`
+- No external dependencies required
+
+**Full E2E Suite:**
+- Requires manual workflow dispatch
+- Ensure `PLAYWRIGHT_BASE_URL` is set correctly for your environment
+- Requires Supabase instance with seeded test users
 
 ## Writing New Tests
 
@@ -100,6 +150,15 @@ Tests run automatically in CI with persisted authentication states. Ensure `PLAY
 3. Include both positive (authorized access) and negative (unauthorized access) tests
 4. Use descriptive test names that include the role and functionality
 5. Follow existing patterns for consistency
+
+### CI-Safe Tests
+
+For tests that should run in CI without external dependencies:
+
+1. Place in `e2e/flows/` directory
+2. Target public pages only (no authentication)
+3. Use the `ci-smoke` project pattern
+4. Avoid external API calls or mock them appropriately
 
 ## Running Tests in Headed Mode
 
@@ -161,8 +220,31 @@ The helper intercepts the `verify_skool_subscription` RPC call and returns `true
 - Set `PLAYWRIGHT_BASE_URL=http://localhost:8081` environment variable to match the dev server port
 - Ensure the dev server is running before executing tests
 
+### 7. CI Smoke Test Failures
+- CI smoke tests should be deterministic; if they fail, check for:
+  - Network timeouts (increase timeout in `playwright.config.ts`)
+  - Missing wait conditions for page elements
+  - External service dependencies (should be avoided in smoke tests)
+
 ## Debugging
 
 - Failed tests generate traces, screenshots, and videos in `test-results/`
 - Use `npx playwright show-trace` to analyze failures
 - Check browser console logs in test output
+
+## Project Configuration
+
+The `playwright.config.ts` defines the following projects:
+
+| Project | Purpose | Authentication |
+|---------|---------|----------------|
+| `ci-smoke` | CI smoke tests (deterministic) | None (public pages) |
+| `chromium` | Default project (public pages) | None |
+| `admin` | Admin role tests | `playwright/.auth/admin.json` |
+| `technician` | Technician role tests | `playwright/.auth/technician.json` |
+| `client` | Client role tests | `playwright/.auth/client.json` |
+| `student` | Student role tests | `playwright/.auth/student.json` |
+
+---
+**Last Updated:** 2026-02-21  
+**Node.js Version:** 20 (as defined in `.github/workflows/ci.yml`)

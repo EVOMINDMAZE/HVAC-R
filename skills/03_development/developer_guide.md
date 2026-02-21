@@ -1,7 +1,7 @@
 ---
 name: Developer Guide & Onboarding 🚀
 description: Complete developer guide and onboarding for ThermoNeural HVAC-R platform covering setup, architecture, workflows, testing, and deployment.
-version: 2.0
+version: 2.1
 ---
 
 # Developer Guide & Onboarding 🚀
@@ -56,14 +56,14 @@ This starts:
 ### Core Framework
 
 - **Frontend**: React 18 + TypeScript + Vite
-- **Build Tool**: Vite 5.2+ (TypeScript, SWC, Lightning CSS)
+- **Build Tool**: Vite 6.2+ (TypeScript, SWC, Lightning CSS)
 - **Styling**: Tailwind CSS + CSS Modules
 - **State Management**: Zustand (global) + React Query (server state)
 - **Routing**: React Router 6
 
 ### Backend Services
 
-- **Database**: Supabase PostgreSQL 15
+- **Database**: Supabase PostgreSQL 17
 - **Authentication**: Supabase Auth (email/password, OAuth)
 - **Edge Functions**: Supabase Edge Functions (Deno)
 - **Storage**: Supabase Storage (S3-compatible)
@@ -114,7 +114,7 @@ HVAC-R/
 
 ### Prerequisites
 
-- **Node.js 18+** (recommended: 20+)
+- **Node.js 20+** (required; CI uses Node 20)
 - **npm 9+** or **yarn 1.22+**
 - **Git** for version control
 - **Supabase CLI** (for local development)
@@ -246,7 +246,7 @@ npm run dev:client
 ### Test Suite
 
 ```bash
-# Run all tests
+# Run all unit tests
 npm run test
 
 # Run specific test
@@ -257,20 +257,59 @@ npm run test:watch
 
 # Coverage report
 npm run test:coverage
+
+# Run E2E tests
+npm run test:e2e
+
+# Run E2E tests in headed mode
+npm run test:e2e:headed
 ```
 
 ### Testing Strategy
 
-- **Unit Tests**: Jest + Testing Library
+- **Unit Tests**: Vitest + Testing Library
 - **Integration Tests**: Playwright (E2E)
 - **API Tests**: Supertest for Edge Functions
 - **Visual Regression**: Percy (optional)
+
+### CI Test Gates
+
+The CI pipeline (`.github/workflows/ci.yml`) enforces these quality gates on every PR:
+
+#### 1. Quality Gate (Required)
+- **Lint**: `npm run lint` - ESLint checks
+- **Typecheck**: `npm run typecheck` - TypeScript compilation
+- **Unit Tests**: `npm run test` - All unit tests must pass
+
+#### 2. E2E Smoke Gate (Required)
+- **Deterministic Smoke Tests**: `e2e/flows/ci-reliability-smoke.spec.ts`
+- Runs on every PR without external dependencies
+- Tests public pages only (no authentication required)
+- Node.js 20 runtime
+
+#### 3. Full E2E Suite (Manual)
+- Triggered via `workflow_dispatch` only
+- Requires Supabase instance with seeded test users
+- Tests all authenticated workflows
 
 ### Test Coverage Requirements
 
 - **Minimum**: 80% line coverage
 - **Critical Paths**: 95%+ (auth, billing, AI)
 - **New Features**: Must include tests
+
+### E2E Test Projects
+
+| Project | Purpose | Auth Required |
+|---------|---------|---------------|
+| `ci-smoke` | CI smoke tests (deterministic) | No |
+| `chromium` | Default project (public pages) | No |
+| `admin` | Admin role tests | Yes |
+| `technician` | Technician role tests | Yes |
+| `client` | Client role tests | Yes |
+| `student` | Student role tests | Yes |
+
+See [`e2e/README.md`](../../e2e/README.md) for detailed E2E testing documentation.
 
 ## Deployment
 
@@ -295,8 +334,10 @@ ThermoNeural uses a multi-service deployment strategy:
 
 ### CI/CD Pipeline
 
-- **GitHub Actions**: `.github/workflows/deploy.yml`
-- **Automated Tests**: Run on every PR
+- **GitHub Actions**: `.github/workflows/ci.yml`
+- **Quality Gate**: Lint, typecheck, unit tests (required on every PR)
+- **E2E Smoke Gate**: Deterministic public-page tests (required on every PR)
+- **Full E2E**: Manual dispatch only (requires Supabase + seeded users)
 - **Preview Deployments**: Netlify preview URLs
 - **Production Deployments**: Auto-deploy on `main`
 
