@@ -27,6 +27,16 @@ export default defineConfig({
     },
   },
   projects: [
+    // CI Smoke project - deterministic, public-page tests only
+    // Run with: npm run test:e2e -- --project=ci-smoke
+    {
+      name: "ci-smoke",
+      use: { ...devices["Desktop Chrome"] },
+      testMatch: "**/flows/ci-reliability-smoke.spec.ts",
+      retries: 2, // Extra retries for CI flakiness tolerance
+      timeout: 30000, // Per-test timeout for CI
+    },
+
     // Default project - no authentication (for public pages)
     {
       name: "chromium",

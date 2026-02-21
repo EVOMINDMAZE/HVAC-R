@@ -36,8 +36,53 @@ jobs:
       - name: Unit tests
         run: npm run test
 
-  e2e:
-    name: E2E (manual)
+  # Deterministic E2E smoke test - runs on every PR
+  # Tests only public pages that don't require auth or external services
+  e2e-smoke:
+    name: E2E Smoke (deterministic)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Start frontend server
+        run: npm run dev &
+        env:
+          # Use CI-friendly settings
+          NODE_ENV: test
+          PORT: 3001
+
+      - name: Wait for server ready
+        run: npx wait-on http://localhost:3001 --timeout 60000
+
+      - name: Run E2E smoke tests
+        run: npm run test:e2e -- e2e/flows/ci-reliability-smoke.spec.ts --project=chromium --retries=2
+        env:
+          PLAYWRIGHT_BASE_URL: http://localhost:3001
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-smoke-report
+          path: playwright-report/
+          retention-days: 7
+
+  # Full E2E suite - manual dispatch only (requires Supabase/seeded users)
+  e2e-full:
+    name: E2E Full Suite (manual)
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     steps:
