@@ -1,0 +1,25 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "strict": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedIndexedAccess": true,
+        "exactOptionalPropertyTypes": false
+    },
+    "include": [
+        "shared/types/dtos.ts",
+        "server/services/billing/BillingService.ts",
+        "server/routes/billing.ts",
+        "server/routes/compat/apiAdapter.ts",
+        "server/routes/compat/billingPlanCompat.ts",
+        "server/routes/compat/authAdapter.ts",
+        "tests/typecheck/phase2-hardening.test.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}

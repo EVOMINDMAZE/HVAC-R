@@ -90,10 +90,14 @@ export async function runAuthCompatibilityGuard(
     input: RunGuardInput,
 ): Promise<AuthGuardSuccess | AuthGuardFailure> {
     const runtimePath = normalizeAuthRuntimePath(input.runtimePath);
-    const [primaryPath, fallbackPath] = buildAuthValidationSequence({
+    const sequence = buildAuthValidationSequence({
         token: input.token,
         runtimePath,
     });
+
+    // Sequence always returns exactly 2 elements, but TypeScript needs assertion in strict mode
+    const primaryPath: AuthValidationPath = sequence[0] ?? "canonical";
+    const fallbackPath: AuthValidationPath = sequence[1] ?? "legacy";
 
     const validators: Record<AuthValidationPath, AuthValidationFn> = {
         canonical: input.validateCanonical,

@@ -82,8 +82,9 @@ type BillingRouteModelError = {
 
 const BILLING_BOUNDARY_TAG = "billing.boundary.canonical_service";
 
-function mergeMigrationTags(...groups: Array<string[] | undefined>) {
-    return Array.from(new Set(groups.flat().filter(Boolean)));
+function mergeMigrationTags(...groups: Array<string[] | undefined>): string[] {
+    const flattened = groups.flat().filter((tag): tag is string => Boolean(tag));
+    return Array.from(new Set(flattened));
 }
 
 function toBoundaryMeta(pathTag: string, meta?: BillingCompatMeta): BillingCompatMeta {
@@ -172,8 +173,9 @@ export class BillingService {
 
         if (!customerId && input.user.email) {
             const customers = await this.deps.listCustomersByEmail(input.user.email);
-            if (customers.length > 0) {
-                customerId = customers[0].id;
+            const firstCustomer = customers[0];
+            if (firstCustomer) {
+                customerId = firstCustomer.id;
             }
         }
 
@@ -223,8 +225,9 @@ export class BillingService {
 
         if (!customerId && input.user.email) {
             const customers = await this.deps.listCustomersByEmail(input.user.email);
-            if (customers.length > 0) {
-                customerId = customers[0].id;
+            const firstCustomer = customers[0];
+            if (firstCustomer) {
+                customerId = firstCustomer.id;
             }
         }
 

@@ -52,7 +52,7 @@ function formatLogEntry(entry: LogEntry): string {
   if (entry.requestId) extras.requestId = entry.requestId;
   if (entry.userId) extras.userId = entry.userId;
   if (entry.context) extras.context = entry.context;
-  
+
   let formatted = `[${timestamp}] [${entry.level.toUpperCase()}] ${entry.message}`;
   if (Object.keys(extras).length > 0) {
     formatted += ` ${JSON.stringify(extras)}`;
@@ -65,7 +65,7 @@ function formatLogEntry(entry: LogEntry): string {
 
 function sendToConsole(entry: LogEntry): void {
   if (!shouldLog(entry.level)) return;
-  
+
   const formatted = formatLogEntry(entry);
   switch (entry.level) {
     case 'error':
@@ -86,13 +86,13 @@ function sendToConsole(entry: LogEntry): void {
 function sendToRemote(entry: LogEntry): void {
   const endpoint = process.env.MONITORING_ENDPOINT;
   if (!endpoint) return;
-  
+
   try {
     fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(entry),
-    }).catch(() => {});
+    }).catch(() => { });
   } catch {
     console.warn('Failed to send log to remote endpoint');
   }
@@ -101,7 +101,7 @@ function sendToRemote(entry: LogEntry): void {
 function processLog(entry: LogEntry): void {
   sendToConsole(entry);
   sendToRemote(entry);
-  
+
   if (entry.level === 'error') {
     errorLog.push(entry);
     if (errorLog.length > 1000) {
@@ -113,14 +113,14 @@ function processLog(entry: LogEntry): void {
 export function requestLogger(req: Request, res: Response, next: NextFunction): void {
   const requestId = req.headers['x-request-id'] as string || uuidv4();
   const startTime = Date.now();
-  
+
   req.requestId = requestId;
   res.setHeader('X-Request-ID', requestId);
 
   const originalSend = res.send;
   let responseBodySize = 0;
-  
-  res.send = function(body) {
+
+  res.send = function (body) {
     responseBodySize = Buffer.byteLength(body as string || '');
     return originalSend.call(this, body);
   };
@@ -128,8 +128,8 @@ export function requestLogger(req: Request, res: Response, next: NextFunction): 
   res.on('finish', () => {
     const duration = Date.now() - startTime;
     const userId = (req as any).user?.id;
-    const sessionId = req.session?.id;
-    
+    const sessionId = (req as any).session?.id;
+
     const metrics: RequestMetrics = {
       requestId,
       method: req.method,
@@ -144,12 +144,12 @@ export function requestLogger(req: Request, res: Response, next: NextFunction): 
       query: req.query as Record<string, string>,
       bodySize: responseBodySize,
     };
-    
+
     requestLog.push(metrics);
     if (requestLog.length > 10000) {
       requestLog.shift();
     }
-    
+
     if (res.statusCode >= 400) {
       processLog({
         level: res.statusCode >= 500 ? 'error' : 'warn',
@@ -167,7 +167,7 @@ export function requestLogger(req: Request, res: Response, next: NextFunction): 
         },
       });
     }
-    
+
     trackPerformance('http_request_duration', duration, 'ms', {
       method: req.method,
       path: req.path.split('/')[1] || 'unknown',
@@ -186,7 +186,7 @@ export function errorHandler(
 ): void {
   const requestId = (req as any).requestId;
   const userId = (req as any).user?.id;
-  
+
   processLog({
     level: 'error',
     message: err.message,
@@ -200,12 +200,12 @@ export function errorHandler(
     },
     error: err,
   });
-  
+
   res.status(500).json({
     success: false,
     error: 'Internal Server Error',
-    message: process.env.NODE_ENV === 'production' 
-      ? 'An unexpected error occurred' 
+    message: process.env.NODE_ENV === 'production'
+      ? 'An unexpected error occurred'
       : err.message,
     requestId,
   });
@@ -224,12 +224,12 @@ export function trackPerformance(
     tags,
     timestamp: new Date(),
   };
-  
+
   performanceMetrics.push(metric);
   if (performanceMetrics.length > 10000) {
     performanceMetrics.shift();
   }
-  
+
   console.log(`[Metrics] ${name}: ${value}${unit}`, tags);
 }
 
@@ -272,7 +272,7 @@ export function getRequestLog(filters?: {
   statusCode?: number;
 }): RequestMetrics[] {
   let logs = [...requestLog];
-  
+
   if (filters?.startDate) {
     logs = logs.filter(l => l.timestamp >= filters.startDate!);
   }
@@ -288,7 +288,7 @@ export function getRequestLog(filters?: {
   if (filters?.statusCode) {
     logs = logs.filter(l => l.statusCode === filters.statusCode);
   }
-  
+
   return logs;
 }
 
@@ -298,7 +298,7 @@ export function getPerformanceMetrics(filters?: {
   endDate?: Date;
 }): PerformanceMetric[] {
   let metrics = [...performanceMetrics];
-  
+
   if (filters?.name) {
     metrics = metrics.filter(m => m.name === filters.name);
   }
@@ -308,7 +308,7 @@ export function getPerformanceMetrics(filters?: {
   if (filters?.endDate) {
     metrics = metrics.filter(m => m.timestamp <= filters.endDate!);
   }
-  
+
   return metrics;
 }
 
@@ -318,7 +318,7 @@ export function getErrorLog(filters?: {
   level?: LogEntry['level'];
 }): LogEntry[] {
   let logs = [...errorLog];
-  
+
   if (filters?.startDate) {
     logs = logs.filter(l => l.timestamp >= filters.startDate!);
   }
@@ -328,7 +328,7 @@ export function getErrorLog(filters?: {
   if (filters?.level) {
     logs = logs.filter(l => l.level === filters.level);
   }
-  
+
   return logs;
 }
 
@@ -339,28 +339,28 @@ export function getHealthMetrics(): {
 } {
   const now = new Date();
   const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
-  
+
   const recentRequests = requestLog.filter(r => r.timestamp >= oneHourAgo);
   const recentErrors = errorLog.filter(e => e.timestamp >= oneHourAgo);
-  
+
   const total = recentRequests.length;
   const errors = recentRequests.filter(r => r.statusCode >= 400).length;
   const durations = recentRequests.map(r => r.duration).sort((a, b) => a - b);
-  
+
   const avgDuration = durations.length > 0
     ? durations.reduce((a, b) => a + b, 0) / durations.length
     : 0;
-  
+
   const p95Index = Math.floor(durations.length * 0.95);
   const p99Index = Math.floor(durations.length * 0.99);
   const p95Duration = durations[p95Index] || 0;
   const p99Duration = durations[p99Index] || 0;
-  
+
   const byLevel: Record<string, number> = {};
   recentErrors.forEach(e => {
     byLevel[e.level] = (byLevel[e.level] || 0) + 1;
   });
-  
+
   return {
     requests: {
       total,
@@ -397,7 +397,7 @@ export function countRequests(method: string, path: string): number {
 export function averageResponseTime(method: string, path: string): number {
   const relevant = requestLog.filter(r => r.method === method && r.path === path);
   if (relevant.length === 0) return 0;
-  
+
   const total = relevant.reduce((sum, r) => sum + r.duration, 0);
   return total / relevant.length;
 }
@@ -405,7 +405,7 @@ export function averageResponseTime(method: string, path: string): number {
 export function errorRate(method: string, path: string): number {
   const relevant = requestLog.filter(r => r.method === method && r.path === path);
   if (relevant.length === 0) return 0;
-  
+
   const errors = relevant.filter(r => r.statusCode >= 400).length;
   return (errors / relevant.length) * 100;
 }
@@ -424,7 +424,7 @@ export function getTopEndpoints(limit: number = 10): Array<{
     totalDuration: number;
     errors: number;
   }>();
-  
+
   requestLog.forEach(r => {
     const key = `${r.method}:${r.path}`;
     const existing = endpointMap.get(key) || {
@@ -434,16 +434,16 @@ export function getTopEndpoints(limit: number = 10): Array<{
       totalDuration: 0,
       errors: 0,
     };
-    
+
     existing.count++;
     existing.totalDuration += r.duration;
     if (r.statusCode >= 400) {
       existing.errors++;
     }
-    
+
     endpointMap.set(key, existing);
   });
-  
+
   return Array.from(endpointMap.values())
     .map(e => ({
       path: e.path,
@@ -458,20 +458,20 @@ export function getTopEndpoints(limit: number = 10): Array<{
 
 export function cleanupOldLogs(maxAge: number = 24 * 60 * 60 * 1000): void {
   const cutoff = new Date(Date.now() - maxAge);
-  
+
   const requestCutoff = new Date(Date.now() - maxAge);
   const perfCutoff = new Date(Date.now() - maxAge);
   const errorCutoff = new Date(Date.now() - maxAge);
-  
-  while (requestLog.length > 0 && requestLog[0].timestamp < requestCutoff) {
+
+  while (requestLog.length > 0 && requestLog[0] && requestLog[0].timestamp < requestCutoff) {
     requestLog.shift();
   }
-  
-  while (performanceMetrics.length > 0 && performanceMetrics[0].timestamp < perfCutoff) {
+
+  while (performanceMetrics.length > 0 && performanceMetrics[0] && performanceMetrics[0].timestamp < perfCutoff) {
     performanceMetrics.shift();
   }
-  
-  while (errorLog.length > 0 && errorLog[0].timestamp < errorCutoff) {
+
+  while (errorLog.length > 0 && errorLog[0] && errorLog[0].timestamp < errorCutoff) {
     errorLog.shift();
   }
 }

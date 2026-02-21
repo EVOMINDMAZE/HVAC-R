@@ -78,10 +78,15 @@ export async function cancelSubscription(subscriptionId: string) {
 export async function updateSubscription(subscriptionId: string, newPriceId: string) {
   const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
+  const firstItem = subscription.items.data[0];
+  if (!firstItem) {
+    throw new Error("Subscription has no items");
+  }
+
   const updatedSubscription = await stripe.subscriptions.update(subscriptionId, {
     items: [
       {
-        id: subscription.items.data[0].id,
+        id: firstItem.id,
         price: newPriceId,
       },
     ],

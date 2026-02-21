@@ -115,16 +115,17 @@ export function createAuthenticateSupabaseToken(deps?: {
   validateCanonical?: ValidateTokenFn;
   validateLegacy?: ValidateTokenFn;
 }): RequestHandler {
-  return async (req, res, next) => {
+  return async (req, res, next): Promise<void> => {
     try {
       console.log("Auth middleware called for:", req.path);
       const token = req.headers.authorization?.replace("Bearer ", "");
 
       if (!token) {
         console.log("No token provided");
-        return res.status(401).json({
+        res.status(401).json({
           error: "Authentication required",
         });
+        return;
       }
 
       const runtimePath = getRuntimePathFromRequest(req);
@@ -149,9 +150,10 @@ export function createAuthenticateSupabaseToken(deps?: {
       if (!authResult.ok) {
         const errorMessage =
           "error" in authResult ? authResult.error : "Authentication failed";
-        return res.status(401).json({
+        res.status(401).json({
           error: errorMessage,
         });
+        return;
       }
 
       (req as any).user = authResult.user;
