@@ -3,17 +3,15 @@ import { authenticateSupabaseToken } from "../utils/supabaseAuth.js";
 import { supabaseAdmin } from "../utils/supabase.js";
 import {
   stripe,
-  createCustomerPortalSession,
-  getCustomerSubscription,
-  createCheckoutSession
 } from "../utils/stripe.js";
 import {
   toCompatEnvelope,
   toCompatErrorEnvelope,
 } from "./compat/apiAdapter.js";
-import { projectBillingPlanForRouteResponse } from "./compat/billingPlanCompat.js";
+import { BillingService } from "../services/billing/BillingService.js";
 
 const router = express.Router();
+const billingService = new BillingService();
 
 type RuntimeTaggedRequest = express.Request & {
   runtimePath?: string;
@@ -72,6 +70,63 @@ const priceIdToPlan: { [key: string]: string } = {
   [process.env.VITE_STRIPE_ENTERPRISE_YEARLY_PRICE_ID || ""]: "business",
 };
 
+function createCheckoutSessionResponder(service: BillingService) {
+  return async (req: RuntimeTaggedRequest, res: express.Response) => {
+    const result = await service.createCheckoutSessionRouteModel({
+      priceId: req.body?.priceId,
+      user: (req as any).user,
+    });
+
+    if (!result.ok) {
+      return sendCompatError(
+        req,
+        res,
+        result.payload,
+        "statusCode" in result ? result.statusCode : 500,
+        result.meta,
+      );
+    }
+
+    return sendCompatSuccess(req, res, result.payload, 200, result.meta);
+  };
+}
+
+function createPortalSessionResponder(service: BillingService) {
+  return async (req: RuntimeTaggedRequest, res: express.Response) => {
+    const result = await service.createPortalSessionRouteModel({
+      user: (req as any).user,
+      clientUrl: process.env.CLIENT_URL || "http://localhost:3000",
+    });
+
+    if (!result.ok) {
+      return sendCompatError(
+        req,
+        res,
+        result.payload,
+        "statusCode" in result ? result.statusCode : 500,
+        result.meta,
+      );
+    }
+
+    return sendCompatSuccess(req, res, result.payload, 200, result.meta);
+  };
+}
+
+export function createGetSubscriptionHandler(service: BillingService) {
+  return async (req: RuntimeTaggedRequest, res: express.Response) => {
+    const result = await service.getSubscriptionRouteModel({
+      user: (req as any).user,
+      priceIdToPlan,
+    });
+
+    return sendCompatSuccess(req, res, result.payload, 200, result.meta);
+  };
+}
+
+const handleCreateCheckoutSession = createCheckoutSessionResponder(billingService);
+const handleCreatePortalSession = createPortalSessionResponder(billingService);
+const handleGetSubscription = createGetSubscriptionHandler(billingService);
+
 // Test route
 router.get("/test", (req, res) => {
   sendCompatSuccess(req, res, { message: "Billing routes are working!" });
@@ -83,24 +138,7 @@ router.post(
   authenticateSupabaseToken,
   async (req, res) => {
     try {
-      const { priceId } = req.body;
-      const user = (req as any).user;
-
-      if (!priceId) {
-        return sendCompatError(req, res, { error: "Price ID is required" }, 400);
-      }
-
-      const session = await createCheckoutSession(
-        priceId,
-        user.stripe_customer_id, // Might be null
-        user.email,
-        user.id // Pass user ID for metadata
-      );
-
-      return sendCompatSuccess(req, res, {
-        sessionId: session.id,
-        url: session.url,
-      });
+      return await handleCreateCheckoutSession(req, res);
     } catch (error: any) {
       console.error("Error creating checkout session:", error);
       return sendCompatError(
@@ -119,31 +157,7 @@ router.post(
   authenticateSupabaseToken,
   async (req, res) => {
     try {
-      const user = (req as any).user;
-
-      let customerId = user.stripe_customer_id;
-
-      if (!customerId) {
-        // Try fallback lookup
-        const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-        if (customers.data.length > 0) {
-          customerId = customers.data[0].id;
-        }
-      }
-
-      if (!customerId) {
-        return sendCompatError(
-          req,
-          res,
-          { error: "No Stripe customer found. Please make a purchase first." },
-          400,
-        );
-      }
-
-      const returnUrl = `${process.env.CLIENT_URL || "http://localhost:3000"}/profile`;
-      const session = await createCustomerPortalSession(customerId, returnUrl);
-
-      return sendCompatSuccess(req, res, { url: session.url });
+      return await handleCreatePortalSession(req, res);
     } catch (error: any) {
       console.error("Error creating portal session:", error);
       return sendCompatError(req, res, { error: error.message }, 500);
@@ -154,62 +168,7 @@ router.post(
 // Get subscription details
 router.get("/subscription", authenticateSupabaseToken, async (req, res) => {
   try {
-    const user = (req as any).user;
-
-    // Check if Stripe is configured
-    if (!process.env.STRIPE_SECRET_KEY) {
-      const projectedPlan = projectBillingPlanForRouteResponse(
-        user.subscription_plan || "free",
-      );
-
-      return sendCompatSuccess(req, res, {
-        subscription: null,
-        plan: projectedPlan.responsePlan,
-        status: "active",
-      }, 200, projectedPlan.meta);
-    }
-
-    let customerId = user.stripe_customer_id;
-    if (!customerId) {
-      const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-      if (customers.data.length > 0) customerId = customers.data[0].id;
-    }
-
-    if (!customerId) {
-      return sendCompatSuccess(req, res, {
-        subscription: null,
-        plan: "free",
-        status: "active",
-      });
-    }
-
-    const subscription = await getCustomerSubscription(customerId);
-
-    if (!subscription) {
-      return sendCompatSuccess(req, res, {
-        subscription: null,
-        plan: "free",
-        status: "active",
-      });
-    }
-
-    const priceId = subscription.items.data[0]?.price.id;
-    const rawPlanName = (priceId && priceIdToPlan[priceId]) || "free";
-    const projectedPlan = projectBillingPlanForRouteResponse(rawPlanName);
-
-    return sendCompatSuccess(req, res, {
-      subscription: {
-        id: subscription.id,
-        status: subscription.status,
-        current_period_end: (subscription as any).current_period_end,
-        plan: projectedPlan.responsePlan,
-        amount: (subscription.items.data[0]?.price.unit_amount || 0) / 100,
-        currency: subscription.items.data[0]?.price.currency,
-        interval: subscription.items.data[0]?.price.recurring?.interval,
-      },
-      plan: projectedPlan.responsePlan,
-      status: subscription.status,
-    }, 200, projectedPlan.meta);
+    return await handleGetSubscription(req, res);
   } catch (error: any) {
     console.error("Error fetching subscription:", error);
     return sendCompatError(req, res, { error: error.message }, 500);
