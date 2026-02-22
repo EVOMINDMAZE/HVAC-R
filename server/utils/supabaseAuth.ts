@@ -21,8 +21,26 @@ export const authenticateSupabaseToken: RequestHandler = async (
     // Verify JWT signature using JWT_SECRET or SUPABASE_JWT_SECRET environment variable
     const jwtSecret = process.env.JWT_SECRET || process.env.SUPABASE_JWT_SECRET;
     
+    // In production, strictly enforce that a secure secret is provided.
+    // This prevents the application from accidentally using the insecure fallback.
+    if (process.env.NODE_ENV === 'production') {
+      if (
+        !jwtSecret ||
+        jwtSecret === "your_super_secret_jwt_key_change_in_production" ||
+        jwtSecret === "fallback-secret-change-in-production"
+      ) {
+        console.error(
+          "CRITICAL SECURITY ERROR: Missing valid JWT_SECRET in production environment. Authentication disabled.",
+        );
+        return res.status(500).json({
+          error: "Internal Server Error",
+          message: "Security configuration error", // Don't leak details
+        });
+      }
+    }
+
     if (!jwtSecret || jwtSecret === "your_super_secret_jwt_key_change_in_production") {
-      console.warn("WARNING: Using default JWT_SECRET. Set a strong secret in production.");
+      console.warn("WARNING: Using default JWT_SECRET. Set a strong secret in development.");
       // In development with default secret, we still verify but with warning
     }
 
