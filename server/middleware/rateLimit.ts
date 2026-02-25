@@ -192,35 +192,75 @@ export const dynamicRateLimiter: RequestHandler = (req, res, next) => {
 };
 
 export function createSlidingWindowRateLimiter(windowMs: number = 60000, maxRequests: number = 100) {
-  const requests: number[] = [];
+  // Store request timestamps per client key (IP or user ID)
+  const store = new Map<string, number[]>();
+
+  // Clean up old entries periodically to prevent memory leaks
+  const cleanupInterval = setInterval(() => {
+    const now = Date.now();
+    const windowStart = now - windowMs;
+    for (const [key, timestamps] of store.entries()) {
+      const validTimestamps = timestamps.filter(ts => ts > windowStart);
+      if (validTimestamps.length === 0) {
+        store.delete(key);
+      } else {
+        store.set(key, validTimestamps);
+      }
+    }
+  }, windowMs);
+
+  // Ensure interval doesn't prevent process exit
+  if (cleanupInterval.unref) {
+    cleanupInterval.unref();
+  }
   
   return (req: Request, res: Response, next: NextFunction) => {
     const now = Date.now();
     const windowStart = now - windowMs;
     
-    while (requests.length > 0 && requests[0] <= windowStart) {
-      requests.shift();
-    }
+    // Determine key: prioritize user ID if authenticated, else IP
+    const ip = req.ip || req.socket?.remoteAddress || 'unknown';
+    const userId = (req as any).user?.id;
+    const key = userId ? `user:${userId}` : `ip:${ip}`;
     
-    requests.push(now);
+    let timestamps = store.get(key) || [];
     
-    const remaining = Math.max(0, maxRequests - requests.length);
-    const resetTime = new Date(now + windowMs);
+    // Filter out expired timestamps
+    timestamps = timestamps.filter(ts => ts > windowStart);
     
-    res.setHeader('X-RateLimit-Limit', String(maxRequests));
-    res.setHeader('X-RateLimit-Remaining', String(remaining));
-    res.setHeader('X-RateLimit-Reset', String(Math.ceil(resetTime.getTime() / 1000)));
+    const currentCount = timestamps.length;
     
-    if (requests.length > maxRequests) {
-      res.setHeader('Retry-After', String(Math.ceil(windowMs / 1000)));
+    // Check if limit is exceeded
+    if (currentCount >= maxRequests) {
+      const oldestTimestamp = timestamps[0] || now;
+      const retryAfter = Math.ceil((oldestTimestamp + windowMs - now) / 1000);
+      const resetTime = new Date(oldestTimestamp + windowMs);
+
+      res.setHeader('X-RateLimit-Limit', String(maxRequests));
+      res.setHeader('X-RateLimit-Remaining', '0');
+      res.setHeader('X-RateLimit-Reset', String(Math.ceil(resetTime.getTime() / 1000)));
+      res.setHeader('Retry-After', String(retryAfter));
+
       res.status(429).json({
         success: false,
         error: 'Too Many Requests',
         message: 'Rate limit exceeded. Please try again later.',
+        retry_after: retryAfter,
       });
       return;
     }
     
+    // Add current request
+    timestamps.push(now);
+    store.set(key, timestamps);
+
+    const remaining = Math.max(0, maxRequests - timestamps.length);
+    const resetTime = new Date(now + windowMs);
+
+    res.setHeader('X-RateLimit-Limit', String(maxRequests));
+    res.setHeader('X-RateLimit-Remaining', String(remaining));
+    res.setHeader('X-RateLimit-Reset', String(Math.ceil(resetTime.getTime() / 1000)));
+
     next();
   };
 }
