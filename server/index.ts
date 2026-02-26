@@ -62,6 +62,7 @@ import {
 import { getFleetStatus } from "./routes/fleet.ts";
 import { dynamicRateLimiter } from "./middleware/rateLimit.ts";
 import { getUserCount } from "./routes/stats.ts";
+import { apiSecurityHeaders } from "./middleware/securityHeaders.ts";
 
 export function createServer() {
   const app = express();
@@ -104,6 +105,7 @@ export function createServer() {
     }),
   );
 
+  app.use(apiSecurityHeaders);
   app.use(express.json({ limit: "30mb" }));
   app.use(express.urlencoded({ extended: true, limit: "30mb" }));
   app.use(dynamicRateLimiter);
