@@ -8,11 +8,11 @@ export const authenticateSupabaseToken: RequestHandler = async (
   next,
 ) => {
   try {
-    console.log("Auth middleware called for:", req.path);
+    // console.log("Auth middleware called for:", req.path);
     const token = req.headers.authorization?.replace("Bearer ", "");
 
     if (!token) {
-      console.log("No token provided");
+      // console.log("No token provided");
       return res.status(401).json({
         error: "Authentication required",
       });
@@ -21,15 +21,32 @@ export const authenticateSupabaseToken: RequestHandler = async (
     // Verify JWT signature using JWT_SECRET or SUPABASE_JWT_SECRET environment variable
     const jwtSecret = process.env.JWT_SECRET || process.env.SUPABASE_JWT_SECRET;
     
-    if (!jwtSecret || jwtSecret === "your_super_secret_jwt_key_change_in_production") {
+    // Critical Security Check: Fail Secure if no secret is configured
+    if (!jwtSecret) {
+      console.error("CRITICAL: No JWT_SECRET or SUPABASE_JWT_SECRET configured.");
+      return res.status(500).json({ error: "Server configuration error" });
+    }
+
+    // Critical Security Check: Fail Secure if using default/weak secrets in production
+    const isProduction = process.env.NODE_ENV === "production";
+    const weakSecrets = [
+      "your_super_secret_jwt_key_change_in_production",
+      "fallback-secret-change-in-production"
+    ];
+
+    if (isProduction && weakSecrets.includes(jwtSecret)) {
+      console.error("CRITICAL: Insecure JWT secret in production!");
+      return res.status(500).json({ error: "Server configuration error" });
+    }
+
+    if (!isProduction && weakSecrets.includes(jwtSecret)) {
       console.warn("WARNING: Using default JWT_SECRET. Set a strong secret in production.");
-      // In development with default secret, we still verify but with warning
     }
 
     let decoded: any;
     try {
       // Always verify JWT signature - no decode-only fallback for security
-      decoded = jwt.verify(token, jwtSecret || "fallback-secret-change-in-production");
+      decoded = jwt.verify(token, jwtSecret);
     } catch (verifyError: any) {
       console.log("JWT verification failed:", verifyError.message);
       return res.status(401).json({
