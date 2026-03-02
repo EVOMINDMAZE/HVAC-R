@@ -1,0 +1,4 @@
+## 2024-03-02 - Enforce Fail-Secure Policy for JWT Verification
+**Vulnerability:** In production environments, the `authenticateSupabaseToken` middleware would fall back to an insecure default secret or proceed to verify tokens using a development secret if `JWT_SECRET` was missing. This violates the fail-secure principle and could lead to unauthorized access.
+**Learning:** Security-critical configuration like JWT secrets must be enforced strictly. Falling back to default values in production environments introduces a critical vulnerability where attackers can forge tokens using the known default secret.
+**Prevention:** Implement strict environment variable checks in critical security middleware. If `NODE_ENV` is production and necessary secrets are absent or insecure, immediately fail securely by logging the error and returning a 500 status code, preventing the application from relying on insecure fallbacks.
