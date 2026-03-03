@@ -1,0 +1,4 @@
+## 2024-05-24 - Hardcoded JWT Fallback Secret in Production
+**Vulnerability:** The `authenticateSupabaseToken` middleware would fall back to a hardcoded insecure default secret (`fallback-secret-change-in-production`) to verify JWT tokens if `JWT_SECRET` was not provided via environment variables.
+**Learning:** In a production setting, providing a cryptographic fallback secret undermines the requirement for a fail-secure architecture. If the environment configuration fails (e.g. `JWT_SECRET` is unset), the application proceeds in a vulnerable state, allowing potential JWT forging.
+**Prevention:** Implement a strict fail-secure policy for all cryptographic secrets. If critical environment variables are missing or use known weak defaults in production (`process.env.NODE_ENV === "production"`), the application must refuse the operation and return a `500 Internal Server Error` instead of using an insecure fallback.
