@@ -20,8 +20,13 @@ export const authenticateSupabaseToken: RequestHandler = async (
 
     // Verify JWT signature using JWT_SECRET or SUPABASE_JWT_SECRET environment variable
     const jwtSecret = process.env.JWT_SECRET || process.env.SUPABASE_JWT_SECRET;
+    const isProduction = process.env.NODE_ENV === "production";
     
     if (!jwtSecret || jwtSecret === "your_super_secret_jwt_key_change_in_production") {
+      if (isProduction) {
+        console.error("CRITICAL: Missing or insecure JWT_SECRET in production. Failing securely.");
+        return res.status(500).json({ error: "Internal server configuration error" });
+      }
       console.warn("WARNING: Using default JWT_SECRET. Set a strong secret in production.");
       // In development with default secret, we still verify but with warning
     }
@@ -29,7 +34,13 @@ export const authenticateSupabaseToken: RequestHandler = async (
     let decoded: any;
     try {
       // Always verify JWT signature - no decode-only fallback for security
-      decoded = jwt.verify(token, jwtSecret || "fallback-secret-change-in-production");
+      // Fail securely if somehow reaching here without secret in production
+      const secretToUse = jwtSecret || "fallback-secret-change-in-production";
+      if (isProduction && secretToUse === "fallback-secret-change-in-production") {
+         console.error("CRITICAL: Attempted to use fallback secret in production. Failing securely.");
+         return res.status(500).json({ error: "Internal server configuration error" });
+      }
+      decoded = jwt.verify(token, secretToUse);
     } catch (verifyError: any) {
       console.log("JWT verification failed:", verifyError.message);
       return res.status(401).json({
