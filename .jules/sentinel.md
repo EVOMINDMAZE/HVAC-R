@@ -1,0 +1,4 @@
+## 2024-05-18 - Fail-Secure JWT Secret Handling in Production
+**Vulnerability:** The application was falling back to insecure default JWT secrets (`your_super_secret_jwt_key_change_in_production` or `fallback-secret-change-in-production`) when the `JWT_SECRET` environment variable was missing. This was happening even in production environments.
+**Learning:** Fallbacks and insecure defaults are useful for development, but in production, missing critical configuration must follow a strict fail-secure policy to prevent attackers from bypassing authentication using known default secrets.
+**Prevention:** Explicitly check for `NODE_ENV === "production"` and immediately throw a 500 error if secrets are missing or match insecure defaults, rather than allowing the application to proceed insecurely.
