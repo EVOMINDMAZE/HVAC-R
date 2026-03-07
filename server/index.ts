@@ -104,7 +104,19 @@ export function createServer() {
     }),
   );
 
-  app.use(express.json({ limit: "30mb" }));
+  app.use(
+    express.json({
+      limit: "30mb",
+      verify: (req: any, _res, buf) => {
+        if (
+          req.originalUrl &&
+          req.originalUrl.startsWith("/api/billing/webhook")
+        ) {
+          req.rawBody = buf.toString();
+        }
+      },
+    }),
+  );
   app.use(express.urlencoded({ extended: true, limit: "30mb" }));
   app.use(dynamicRateLimiter);
 
