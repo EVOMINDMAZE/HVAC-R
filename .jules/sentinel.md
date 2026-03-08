@@ -1,0 +1,4 @@
+## 2024-03-08 - [Hardcoded JWT Fallback in Production]
+**Vulnerability:** A hardcoded default JWT secret ("fallback-secret-change-in-production") was used in `server/utils/supabaseAuth.ts` when the environment variables `JWT_SECRET` and `SUPABASE_JWT_SECRET` were missing, even in a production environment. This would allow an attacker knowing the open source default to forge valid JWTs, potentially leading to unauthorized access.
+**Learning:** Default configuration fallbacks meant to ease local development can accidentally leak into production if there is no explicit fail-secure environment check.
+**Prevention:** Always implement a strict fail-secure policy for critical secrets. Verify that `NODE_ENV === "production"` and trigger a fatal error or return a 500 status rather than relying on insecure defaults for any crypto or auth logic.
