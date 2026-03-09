@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
+import DOMPurify from "dompurify";
 
 function slugify(title: string) {
   return title
@@ -357,7 +358,8 @@ export function DocsViewer({
                 </div>
               </div>
             ) : (
-              <div dangerouslySetInnerHTML={{ __html: content || "" }} />
+              // Sanitized with DOMPurify to prevent XSS vulnerabilities from markdown content
+              <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content || "") }} />
             )}
           </div>
         </div>
