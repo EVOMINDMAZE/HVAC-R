@@ -1,0 +1,4 @@
+## 2026-02-14 - Inconsistent Default Fallback Secrets
+**Vulnerability:** A hardcoded fallback secret ("fallback-secret-change-in-production") was used in `jwt.verify` when `JWT_SECRET` was missing, which differed from the default secret checked in the warning message ("your_super_secret_jwt_key_change_in_production"). This created a hidden backdoor if `JWT_SECRET` was unset in production.
+**Learning:** Fallback logic for secrets can introduce hidden vulnerabilities if the fallback value is hardcoded and committed, especially if it differs from the "default" configuration displayed to the user.
+**Prevention:** Always fail fast in production if required secrets are missing. Do not use hardcoded fallbacks in `verify` calls; if a default is needed for dev, define it once and use it consistently.
