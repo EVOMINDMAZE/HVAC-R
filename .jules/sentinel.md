@@ -1,0 +1,4 @@
+## 2024-05-19 - Unsanitized Markdown Render Vulnerability
+**Vulnerability:** Markdown fetched from relative paths (`/docs/*.md`) was converted to HTML using a minimal custom converter and passed directly to React's `dangerouslySetInnerHTML` in `client/components/DocsViewer.tsx` without any sanitization.
+**Learning:** Even if the markdown content originates from within the application (e.g. static assets), relying solely on a custom, handwritten regex-based converter (`mdToHtml`) to escape HTML is insufficient. If a malicious user manages to upload or inject crafted markdown, it could result in a Cross-Site Scripting (XSS) execution.
+**Prevention:** Always use a robust, dedicated HTML sanitization library (like `DOMPurify`) before passing dynamic content to `dangerouslySetInnerHTML`, regardless of whether the source is considered "internal".
