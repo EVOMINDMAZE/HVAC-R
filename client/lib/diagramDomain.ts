@@ -67,7 +67,7 @@ function niceStep(range: number, ticks: number) {
   const rawStep = range / ticks;
   const mag = Math.pow(10, Math.floor(Math.log10(rawStep)));
   const norm = rawStep / mag; // between 1 and 10
-  let nice = 1;
+  let nice;
   if (norm >= 7.5) nice = 10;
   else if (norm >= 3.5) nice = 5;
   else if (norm >= 1.5) nice = 2;

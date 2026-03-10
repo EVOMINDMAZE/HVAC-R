@@ -100,8 +100,8 @@ export default function SubcoolingCalculator({ saveCalculation }: SubcoolingCalc
 
             // Allow +/- 3F
             const diff = actualSC - target;
-            let status: "Normal" | "Warning" | "Critical" = "Normal";
-            let recommendation = "System charge is correct.";
+            let status: "Normal" | "Warning" | "Critical";
+            let recommendation: string;
 
             // Thresholds
             if (actualSC < target - 3) {

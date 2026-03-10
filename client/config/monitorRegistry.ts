@@ -2084,8 +2084,7 @@ function resolvePresentationDefaults(
   let pattern: MonitorPattern = "grid";
   let icon: MonitorIconKey = "activity";
   let modeLabel = "SYSTEM";
-  let signatureLabel = fallbackSurface;
-  const defaultExpanded = false;
+  let signatureLabel: string;
 
   if (entryId === "operations") {
     template = "pipeline";
@@ -2133,7 +2132,7 @@ function resolvePresentationDefaults(
     icon,
     modeLabel,
     signatureLabel,
-    defaultExpanded,
+    defaultExpanded: false,
   };
 }
 

@@ -237,6 +237,7 @@ async function callOllama(
       throw new Error(
         `Failed to parse Ollama response: ${parseError instanceof Error ? parseError.message : String(parseError)
         } | body: ${bodyText.slice(0, 500)}`,
+        { cause: parseError }
       );
     }
   } catch (error) {
