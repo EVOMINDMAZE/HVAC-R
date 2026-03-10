@@ -368,7 +368,7 @@ export function EnhancedStandardCycleContent() {
     setResults(null);
 
     // Defensive: if overrideParams looks like a DOM/Event accidentally passed by React (onClick passes event), ignore it
-    let safeOverride: Partial<typeof formData> | null = null;
+    let safeOverride: Partial<typeof formData> | null;
     try {
       if (
         overrideParams &&

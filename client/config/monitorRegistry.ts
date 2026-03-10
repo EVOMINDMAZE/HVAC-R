@@ -2085,7 +2085,7 @@ function resolvePresentationDefaults(
   let icon: MonitorIconKey = "activity";
   let modeLabel = "SYSTEM";
   let signatureLabel = fallbackSurface;
-  const defaultExpanded = false;
+  let defaultExpanded: boolean = false;
 
   if (entryId === "operations") {
     template = "pipeline";

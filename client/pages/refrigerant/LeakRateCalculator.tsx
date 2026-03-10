@@ -120,7 +120,7 @@ export default function LeakRateCalculator() {
     // Or if there's a previous log, we use the interval between them.
     // Usually, the interval is since the LAST addition.
 
-    let days = 365; // Default if no previous log (estimate 1 year)
+    let days: number; // Default if no previous log (estimate 1 year)
     if (logData.length > 1) {
       days = differenceInDays(
         new Date(latestAddition.created_at),
