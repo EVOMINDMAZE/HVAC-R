@@ -220,7 +220,7 @@ async function run() {
         continue;
       }
 
-      let targetCompanyId = null;
+      let targetCompanyId;
       if (u.email === "manager@demo.com" || u.email === "client@test.com") {
           targetCompanyId = demoCompany?.id;
       } else {
