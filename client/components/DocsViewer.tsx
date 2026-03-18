@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
+import DOMPurify from "dompurify";
 
 function slugify(title: string) {
   return title
@@ -285,7 +286,7 @@ export function DocsViewer({
         }
 
         const html = mdToHtml(raw || "");
-        setContent(html);
+        setContent(DOMPurify.sanitize(html));
 
         try {
           const parser = new DOMParser();
