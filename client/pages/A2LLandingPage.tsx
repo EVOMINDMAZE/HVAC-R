@@ -1,10 +1,11 @@
-import A2LCalculator from "@/components/calculators/A2LCalculator";
-import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2, ShieldCheck } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Header } from "@/components/Header";
+
+import A2LCalculator from "@/components/calculators/A2LCalculator";
 import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
 import { SEO } from "@/components/SEO";
+import { Button } from "@/components/ui/button";
 
 export function A2LLandingPage() {
   return (

@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
 import { ArrowRight } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+
 import type { ToolCategoryWithTools } from "@/content/capabilityMap";
 
 interface HeroMediaProps {

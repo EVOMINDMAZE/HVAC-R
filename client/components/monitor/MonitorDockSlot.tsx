@@ -1,11 +1,12 @@
 import { useLocation } from "react-router-dom";
-import { cn } from "@/lib/utils";
+
+import { MonitorDock } from "@/components/monitor/MonitorDock";
+import { useMonitorPageModel } from "@/hooks/useMonitorPageModel";
 import {
   resolveFutureMonitorsFlag,
   resolveFutureMonitorsSkin,
 } from "@/lib/featureFlags";
-import { useMonitorPageModel } from "@/hooks/useMonitorPageModel";
-import { MonitorDock } from "@/components/monitor/MonitorDock";
+import { cn } from "@/lib/utils";
 
 export function MonitorDockSlot({ className }: { className?: string }) {
   const location = useLocation();

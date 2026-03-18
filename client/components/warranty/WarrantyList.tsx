@@ -1,10 +1,13 @@
+import { Loader2, FileText, AlertCircle } from "lucide-react";
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { CreateWarrantyClaimDialog } from "./CreateWarrantyClaimDialog";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, FileText, AlertCircle } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/lib/supabase";
-import { CreateWarrantyClaimDialog } from "./CreateWarrantyClaimDialog";
+
 
 interface WarrantyListProps {
     jobId: string;

@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+
+import { Badge } from "@/components/ui/badge";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import {
   calculateSuperheat,
   calculateSubcooling,
   calculateTargetSuperheat,
 } from "@/lib/formula-oracle";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
 const AgentSandbox = () => {
   const { user, role, companyId } = useSupabaseAuth();

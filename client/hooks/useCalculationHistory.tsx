@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 import { useSupabaseAuth } from './useSupabaseAuth';
 import { useSupabaseCalculations } from './useSupabaseCalculations';
 

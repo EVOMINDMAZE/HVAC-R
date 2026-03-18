@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
 export function QuickSearch({ open, onClose }: { open: boolean; onClose: () => void }) {

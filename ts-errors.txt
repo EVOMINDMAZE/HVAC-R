@@ -1,0 +1,351 @@
+
+> typecheck
+> tsc
+
+client/App.tsx(248,11): error TS6133: 'blockedRoutes' is declared but its value is never read.
+client/components/ai/EnhancedTroubleshooting.tsx(11,1): error TS6133: 'Separator' is declared but its value is never read.
+client/components/ai/EnhancedTroubleshooting.tsx(17,3): error TS6133: 'TrendingUp' is declared but its value is never read.
+client/components/ai/EnhancedTroubleshooting.tsx(27,3): error TS6133: 'Zap' is declared but its value is never read.
+client/components/ai/EnhancedTroubleshooting.tsx(31,3): error TS6133: 'PatternMatch' is declared but its value is never read.
+client/components/ai/TechnicianFeedback.tsx(5,3): error TS6133: 'CardHeader' is declared but its value is never read.
+client/components/ai/TechnicianFeedback.tsx(6,3): error TS6133: 'CardTitle' is declared but its value is never read.
+client/components/ai/TechnicianFeedback.tsx(7,3): error TS6133: 'CardDescription' is declared but its value is never read.
+client/components/ai/TechnicianFeedback.tsx(10,1): error TS6133: 'Badge' is declared but its value is never read.
+client/components/calculators/A2LCalculator.tsx(18,39): error TS6133: 'saveCalculation' is declared but its value is never read.
+client/components/calculators/AirDensityCalculator.tsx(21,1): error TS6133: 'Badge' is declared but its value is never read.
+client/components/calculators/AirDensityCalculator.tsx(30,46): error TS6133: 'saveCalculation' is declared but its value is never read.
+client/components/calculators/AirDensityCalculator.tsx(411,25): error TS7031: Binding element 'loading' implicitly has an 'any' type.
+client/components/calculators/SubcoolingCalculator.tsx(19,46): error TS6133: 'saveCalculation' is declared but its value is never read.
+client/components/calculators/TargetSuperheatCalculator.tsx(85,5): error TS2339: Property '_device' does not exist on type '{ connect: () => Promise<void>; disconnect: () => void; isConnected: boolean; device: BluetoothDevice | null; data: ProbeData | null; error: string | null; }'.
+client/components/calculators/TargetSuperheatCalculator.tsx(85,5): error TS6133: '_device' is declared but its value is never read.
+client/components/CompanySwitcher.tsx(22,11): error TS6196: 'Company' is declared but never used.
+client/components/CycleVisualization.tsx(12,1): error TS6133: 'Label' is declared but its value is never read.
+client/components/CycleVisualization.tsx(14,1): error TS6192: All imports in import declaration are unused.
+client/components/CycleVisualization.tsx(367,11): error TS6133: 'domain' is declared but its value is never read.
+client/components/CycleVisualization.tsx(622,5): error TS6133: 'config' is declared but its value is never read.
+client/components/CycleVisualization.tsx(1002,5): error TS6133: 'points' is declared but its value is never read.
+client/components/dashboard/OpsMissions.tsx(9,15): error TS6196: 'MissionItem' is declared but never used.
+client/components/DocsViewer.tsx(53,9): error TS6133: 'headingClasses' is declared but its value is never read.
+client/components/DocsViewer.tsx(53,27): error TS6133: 'level' is declared but its value is never read.
+client/components/EnhancedRefrigerantSelector.tsx(1,31): error TS6133: 'useMemo' is declared but its value is never read.
+client/components/EnhancedRefrigerantSelector.tsx(33,3): error TS6133: 'RefrigerantProperties' is declared but its value is never read.
+client/components/EnhancedRefrigerantSelector.tsx(79,32): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+client/components/EquipmentDiagrams.tsx(657,3): error TS6133: 'animationSpeed' is declared but its value is never read.
+client/components/EquipmentDiagrams.tsx(660,17): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+client/components/ErrorBoundary.tsx(89,23): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+client/components/ErrorModal.tsx(9,3): error TS6133: 'DialogTrigger' is declared but its value is never read.
+client/components/FeatureLock.tsx(23,3): error TS6133: 'showLockIcon' is declared but its value is never read.
+client/components/GrantAccessDialog.tsx(27,37): error TS18047: 'supabase' is possibly 'null'.
+client/components/GrantAccessDialog.tsx(58,37): error TS18047: 'supabase' is possibly 'null'.
+client/components/infographic/NavigationRail.tsx(5,1): error TS6133: 'DEFAULT_NAV_ITEMS' is declared but its value is never read.
+client/components/infographic/OpsStatusBar.tsx(66,12): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+client/components/infographic/OpsStatusBar.tsx(69,13): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+client/components/invoices/CreateInvoiceDialog.tsx(58,37): error TS18047: 'supabase' is possibly 'null'.
+client/components/invoices/InvoiceList.tsx(45,43): error TS18047: 'supabase' is possibly 'null'.
+client/components/invoices/InvoiceList.tsx(66,37): error TS18047: 'supabase' is possibly 'null'.
+client/components/invoices/InvoiceList.tsx(80,33): error TS6133: 'id' is declared but its value is never read.
+client/components/jobs/CreateJobDialog.tsx(13,22): error TS6133: 'CalendarIcon' is declared but its value is never read.
+client/components/jobs/CreateJobDialog.tsx(26,10): error TS6133: 'loading' is declared but its value is never read.
+client/components/jobs/CreateJobDialog.tsx(58,15): error TS18047: 'supabase' is possibly 'null'.
+client/components/jobs/CreateJobDialog.tsx(64,58): error TS18047: 'supabase' is possibly 'null'.
+client/components/jobs/CreateJobDialog.tsx(86,62): error TS18047: 'supabase' is possibly 'null'.
+client/components/jobs/CreateJobDialog.tsx(117,7): error TS18047: 'supabase' is possibly 'null'.
+client/components/jobs/CreateJobDialog.tsx(142,28): error TS18047: 'supabase' is possibly 'null'.
+client/components/jobs/CreateJobDialog.tsx(164,28): error TS18047: 'supabase' is possibly 'null'.
+client/components/jobs/CreateJobDialog.tsx(226,15): error TS18047: 'supabase' is possibly 'null'.
+client/components/jobs/CreateJobDialog.tsx(254,35): error TS18047: 'supabase' is possibly 'null'.
+client/components/JobSelector.tsx(11,5): error TS6133: 'SelectValue' is declared but its value is never read.
+client/components/JobSelector.tsx(39,39): error TS18047: 'supabase' is possibly 'null'.
+client/components/JobSelector.tsx(64,39): error TS18047: 'supabase' is possibly 'null'.
+client/components/monitor/MonitorChartPanel.tsx(263,17): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: Props): Line', gave the following error.
+    Type 'false | ((props: { cx?: number | undefined; cy?: number | undefined; index?: number | undefined; }) => Element | null)' is not assignable to type 'LineDot | undefined'.
+      Type '(props: { cx?: number; cy?: number; index?: number; }) => JSX.Element | null' is not assignable to type 'LineDot | undefined'.
+        Type '(props: { cx?: number; cy?: number; index?: number; }) => JSX.Element | null' is not assignable to type '(props: any) => ReactElement<SVGElement, string | JSXElementConstructor<any>>'.
+          Type 'Element | null' is not assignable to type 'ReactElement<SVGElement, string | JSXElementConstructor<any>>'.
+            Type 'null' is not assignable to type 'ReactElement<SVGElement, string | JSXElementConstructor<any>>'.
+  Overload 2 of 2, '(props: Props, context: any): Line', gave the following error.
+    Type 'false | ((props: { cx?: number | undefined; cy?: number | undefined; index?: number | undefined; }) => Element | null)' is not assignable to type 'LineDot | undefined'.
+      Type '(props: { cx?: number; cy?: number; index?: number; }) => JSX.Element | null' is not assignable to type 'LineDot | undefined'.
+        Type '(props: { cx?: number; cy?: number; index?: number; }) => JSX.Element | null' is not assignable to type '(props: any) => ReactElement<SVGElement, string | JSXElementConstructor<any>>'.
+          Type 'Element | null' is not assignable to type 'ReactElement<SVGElement, string | JSXElementConstructor<any>>'.
+            Type 'null' is not assignable to type 'ReactElement<SVGElement, string | JSXElementConstructor<any>>'.
+client/components/OwnerDashboard/RiskShield.tsx(13,1): error TS6133: 'Badge' is declared but its value is never read.
+client/components/OwnerDashboard/RiskShield.tsx(30,45): error TS18047: 'supabase' is possibly 'null'.
+client/components/refrigerant/AddCylinderDialog.tsx(77,66): error TS18047: 'supabase' is possibly 'null'.
+client/components/refrigerant/AddCylinderDialog.tsx(94,15): error TS18047: 'supabase' is possibly 'null'.
+client/components/refrigerant/LogRefrigerantDialog.tsx(19,5): error TS6133: 'TabsContent' is declared but its value is never read.
+client/components/refrigerant/LogRefrigerantDialog.tsx(54,33): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+client/components/refrigerant/LogRefrigerantDialog.tsx(56,5): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+client/components/refrigerant/LogRefrigerantDialog.tsx(63,32): error TS18047: 'supabase' is possibly 'null'.
+client/components/refrigerant/LogRefrigerantDialog.tsx(97,37): error TS18047: 'supabase' is possibly 'null'.
+client/components/reports/ClientReportPDF.tsx(2,50): error TS6133: 'Image' is declared but its value is never read.
+client/components/SaveCalculation.tsx(74,46): error TS18047: 'supabase' is possibly 'null'.
+client/components/SaveCalculation.tsx(79,43): error TS18047: 'supabase' is possibly 'null'.
+client/components/settings/ClientNotificationSettings.tsx(51,19): error TS18047: 'supabase' is possibly 'null'.
+client/components/settings/ClientNotificationSettings.tsx(57,64): error TS18047: 'supabase' is possibly 'null'.
+client/components/settings/ClientNotificationSettings.tsx(72,39): error TS18047: 'supabase' is possibly 'null'.
+client/components/settings/ClientNotificationSettings.tsx(108,31): error TS18047: 'supabase' is possibly 'null'.
+client/components/shared/GoogleSheetConnect.tsx(5,1): error TS6133: 'Label' is declared but its value is never read.
+client/components/shared/GoogleSheetConnect.tsx(47,43): error TS18047: 'supabase' is possibly 'null'.
+client/components/shared/PageHero.tsx(27,14): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+client/components/shared/PageHero.tsx(36,15): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+client/components/shared/SellingPointsCard.tsx(2,10): error TS6133: 'AlertCircle' is declared but its value is never read.
+client/components/shared/SellingPointsCard.tsx(6,3): error TS6133: 'CardDescription' is declared but its value is never read.
+client/components/shared/SellingPointsCard.tsx(44,45): error TS18047: 'supabase' is possibly 'null'.
+client/components/shared/SpreadsheetImporter.tsx(6,3): error TS6133: 'Check' is declared but its value is never read.
+client/components/shared/SpreadsheetImporter.tsx(37,1): error TS6133: 'cn' is declared but its value is never read.
+client/components/shared/WarrantyCard.tsx(6,27): error TS6133: 'CheckCircle' is declared but its value is never read.
+client/components/shared/WarrantyCard.tsx(6,40): error TS6133: 'AlertCircle' is declared but its value is never read.
+client/components/shared/WarrantyCard.tsx(38,43): error TS18047: 'supabase' is possibly 'null'.
+client/components/SubscriptionGuard.tsx(48,76): error TS18047: 'supabase' is possibly 'null'.
+client/components/SupabaseStatus.tsx(4,1): error TS6133: 'Button' is declared but its value is never read.
+client/components/SystemStatus.tsx(1,1): error TS6192: All imports in import declaration are unused.
+client/components/SystemStatus.tsx(2,1): error TS6133: 'Badge' is declared but its value is never read.
+client/components/SystemStatus.tsx(3,1): error TS6192: All imports in import declaration are unused.
+client/components/ui/badge.tsx(2,10): error TS6133: 'cva' is declared but its value is never read.
+client/components/ui/button.tsx(3,10): error TS6133: 'cva' is declared but its value is never read.
+client/components/ui/calculator-demo.tsx(3,10): error TS6133: 'Calculator' is declared but its value is never read.
+client/components/ui/calendar.tsx(55,20): error TS6133: '_props' is declared but its value is never read.
+client/components/ui/calendar.tsx(56,21): error TS6133: '_props' is declared but its value is never read.
+client/components/ui/navigation-menu.tsx(3,1): error TS6133: 'cva' is declared but its value is never read.
+client/components/ui/security-section.tsx(2,10): error TS6133: 'Shield' is declared but its value is never read.
+client/components/ui/security-section.tsx(2,24): error TS6133: 'CheckCircle' is declared but its value is never read.
+client/components/ui/toggle.tsx(3,10): error TS6133: 'cva' is declared but its value is never read.
+client/components/ui/trust-bar.tsx(1,10): error TS6133: 'Shield' is declared but its value is never read.
+client/components/UnifiedDashboard.tsx(9,3): error TS6133: 'DollarSign' is declared but its value is never read.
+client/components/UnifiedDashboard.tsx(14,3): error TS6133: 'CheckCircle' is declared but its value is never read.
+client/components/UnifiedDashboard.tsx(15,3): error TS6133: 'Info' is declared but its value is never read.
+client/components/UnifiedDashboard.tsx(17,3): error TS6133: 'Users' is declared but its value is never read.
+client/components/UnifiedDashboard.tsx(29,36): error TS6133: 'isLoadingCalculations' is declared but its value is never read.
+client/components/UnifiedDashboard.tsx(31,29): error TS6133: 'isLoadingStats' is declared but its value is never read.
+client/components/UpgradeModal.tsx(13,56): error TS6133: 'X' is declared but its value is never read.
+client/components/warranty/CreateWarrantyClaimDialog.tsx(54,37): error TS18047: 'supabase' is possibly 'null'.
+client/components/warranty/WarrantyList.tsx(5,29): error TS6133: 'AlertCircle' is declared but its value is never read.
+client/components/warranty/WarrantyList.tsx(22,43): error TS18047: 'supabase' is possibly 'null'.
+client/components/web-stories/SanityStoryViewer.tsx(2,13): error TS6133: 'ChevronLeft' is declared but its value is never read.
+client/components/web-stories/SanityStoryViewer.tsx(2,26): error TS6133: 'ChevronRight' is declared but its value is never read.
+client/components/web-stories/SanityStoryViewer.tsx(2,68): error TS6133: 'MoreVertical' is declared but its value is never read.
+client/components/web-stories/SanityStoryViewer.tsx(4,1): error TS6133: 'Button' is declared but its value is never read.
+client/components/web-stories/StoryViewer.tsx(2,35): error TS6133: 'useAnimation' is declared but its value is never read.
+client/components/web-stories/StoryViewer.tsx(3,13): error TS6133: 'ChevronLeft' is declared but its value is never read.
+client/components/web-stories/StoryViewer.tsx(3,26): error TS6133: 'ChevronRight' is declared but its value is never read.
+client/components/web-stories/StoryViewer.tsx(4,17): error TS6133: 'StorySlide' is declared but its value is never read.
+client/components/web-stories/StoryViewer.tsx(156,37): error TS6133: 'e' is declared but its value is never read.
+client/components/web-stories/StoryViewer.tsx(156,50): error TS6133: 'velocity' is declared but its value is never read.
+client/components/web-stories/StoryViewer.tsx(164,33): error TS6133: 'event' is declared but its value is never read.
+client/components/web-stories/StoryViewer.tsx(164,40): error TS6133: 'info' is declared but its value is never read.
+client/components/web-stories/StoryViewer.tsx(165,35): error TS6133: 'width' is declared but its value is never read.
+client/context/JobContext.tsx(3,22): error TS6133: 'useJob' is declared but its value is never read.
+client/hoc/with-async-error-boundary.ts(8,12): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+client/hoc/with-async-error-boundary.ts(12,19): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+client/hooks/SupabaseAuthProvider.tsx(35,10): error TS6133: 'hasManuallySelected' is declared but its value is never read.
+client/hooks/SupabaseAuthProvider.tsx(98,26): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/SupabaseAuthProvider.tsx(252,17): error TS6133: 'data' is declared but its value is never read.
+client/hooks/SupabaseAuthProvider.tsx(252,39): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/SupabaseAuthProvider.tsx(279,37): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/SupabaseAuthProvider.tsx(303,37): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/SupabaseAuthProvider.tsx(321,33): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/SupabaseAuthProvider.tsx(372,15): error TS6133: 'data' is declared but its value is never read.
+client/hooks/SupabaseAuthProvider.tsx(372,37): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/SupabaseAuthProvider.tsx(389,37): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/SupabaseAuthProvider.tsx(411,19): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/use-consent.ts(24,38): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/use-consent.ts(31,45): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/use-error-handler.ts(6,10): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+client/hooks/useAuth.tsx(4,1): error TS6133: 'AuthContextType' is declared but its value is never read.
+client/hooks/useBluetoothProbe.ts(23,5): error TS6133: 'characteristicUuid' is declared but its value is never read.
+client/hooks/useCalculationHistory.tsx(1,1): error TS6192: All imports in import declaration are unused.
+client/hooks/useFeatureAccess.tsx(46,9): error TS6133: 'user' is declared but its value is never read.
+client/hooks/useFileUpload.tsx(46,29): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useFileUpload.tsx(89,37): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useFileUpload.tsx(219,11): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useInviteAccept.tsx(72,26): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useInviteAccept.tsx(198,26): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useMonitorOpsTelemetry.ts(152,41): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useMonitorOpsTelemetry.ts(169,9): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useMonitorOpsTelemetry.ts(175,9): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useMonitorOpsTelemetry.ts(181,9): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useMonitorOpsTelemetry.ts(236,9): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useRevenueAnalytics.ts(39,69): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useRevenueAnalytics.ts(67,44): error TS6133: 'triageError' is declared but its value is never read.
+client/hooks/useRevenueAnalytics.ts(67,66): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useRevenueAnalytics.ts(75,42): error TS6133: 'jobsError' is declared but its value is never read.
+client/hooks/useRevenueAnalytics.ts(75,62): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useSkillTracker.ts(18,37): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useSupabaseCalculations.tsx(63,37): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useUsageTracking.tsx(52,39): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useUsageTracking.tsx(94,39): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useVoiceInput.ts(49,66): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useWorkflowTrigger.ts(47,65): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useWorkflowTrigger.ts(61,29): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useWorkflowTrigger.ts(97,31): error TS18047: 'supabase' is possibly 'null'.
+client/hooks/useWorkflowTrigger.ts(114,49): error TS18047: 'supabase' is possibly 'null'.
+client/lib/ai-patterns.ts(254,5): error TS6133: 'troubleshootingSessionId' is declared but its value is never read.
+client/lib/api.ts(140,32): error TS18047: 'supabase' is possibly 'null'.
+client/lib/datadog.ts(52,20): error TS7006: Parameter 'event' implicitly has an 'any' type.
+client/lib/datadog.ts(63,15): error TS7006: Parameter 'log' implicitly has an 'any' type.
+client/lib/datadog.ts(77,20): error TS7006: Parameter 'log' implicitly has an 'any' type.
+client/lib/sentry.ts(52,16): error TS7006: Parameter 'event' implicitly has an 'any' type.
+client/lib/sentry.ts(52,23): error TS7006: Parameter 'hint' implicitly has an 'any' type.
+client/lib/sentry.ts(66,22): error TS7006: Parameter 'breadcrumb' implicitly has an 'any' type.
+client/main.tsx(12,29): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+client/main.tsx(44,4): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+client/main.tsx(50,5): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+client/pages/AdvancedReporting.tsx(2,52): error TS6133: 'CardDescription' is declared but its value is never read.
+client/pages/ai/PatternInsights.tsx(10,1): error TS6133: 'Badge' is declared but its value is never read.
+client/pages/ai/PatternInsights.tsx(23,3): error TS6133: 'AlertTriangle' is declared but its value is never read.
+client/pages/ai/PatternInsights.tsx(24,3): error TS6133: 'CheckCircle' is declared but its value is never read.
+client/pages/ai/PatternInsights.tsx(25,3): error TS6133: 'BarChart3' is declared but its value is never read.
+client/pages/ai/PatternInsights.tsx(26,3): error TS6133: 'Calendar' is declared but its value is never read.
+client/pages/ai/PatternInsights.tsx(27,3): error TS6133: 'Target' is declared but its value is never read.
+client/pages/ai/PatternInsights.tsx(30,3): error TS6133: 'Filter' is declared but its value is never read.
+client/pages/ai/PatternInsights.tsx(39,3): error TS6133: 'AreaChart' is declared but its value is never read.
+client/pages/ai/PatternInsights.tsx(40,3): error TS6133: 'Area' is declared but its value is never read.
+client/pages/ai/PatternInsights.tsx(97,21): error TS6133: 'setTimeRange' is declared but its value is never read.
+client/pages/ai/PatternInsights.tsx(110,13): error TS6133: 'analysisResponse' is declared but its value is never read.
+client/pages/ai/PatternInsights.tsx(481,26): error TS6133: 'entry' is declared but its value is never read.
+client/pages/Callback.tsx(57,39): error TS18047: 'supabase' is possibly 'null'.
+client/pages/Career.tsx(54,37): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientDashboard.tsx(1,31): error TS6133: 'useMemo' is declared but its value is never read.
+client/pages/ClientDashboard.tsx(17,48): error TS6133: 'YAxis' is declared but its value is never read.
+client/pages/ClientDashboard.tsx(46,17): error TS6133: 'signOut' is declared but its value is never read.
+client/pages/ClientDashboard.tsx(59,64): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientDashboard.tsx(67,64): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientDashboard.tsx(91,21): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientDashboard.tsx(120,7): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientDetail.tsx(2,21): error TS6133: 'Link' is declared but its value is never read.
+client/pages/ClientDetail.tsx(24,3): error TS6133: 'BellOff' is declared but its value is never read.
+client/pages/ClientDetail.tsx(32,3): error TS6133: 'CardDescription' is declared but its value is never read.
+client/pages/ClientDetail.tsx(184,62): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientDetail.tsx(201,60): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientDetail.tsx(216,42): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientDetail.tsx(238,43): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientDetail.tsx(244,43): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientDetail.tsx(267,31): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientDetail.tsx(301,31): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientDetail.tsx(333,46): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientDetail.tsx(352,39): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientDetail.tsx(394,31): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientDetail.tsx(435,31): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientDetail.tsx(477,31): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientDetail.tsx(506,31): error TS18047: 'supabase' is possibly 'null'.
+client/pages/Clients.tsx(100,64): error TS18047: 'supabase' is possibly 'null'.
+client/pages/Clients.tsx(109,39): error TS18047: 'supabase' is possibly 'null'.
+client/pages/Clients.tsx(140,17): error TS18047: 'supabase' is possibly 'null'.
+client/pages/Clients.tsx(143,43): error TS18047: 'supabase' is possibly 'null'.
+client/pages/Clients.tsx(156,21): error TS6133: 'result' is declared but its value is never read.
+client/pages/Clients.tsx(156,45): error TS18047: 'supabase' is possibly 'null'.
+client/pages/Clients.tsx(239,64): error TS18047: 'supabase' is possibly 'null'.
+client/pages/Clients.tsx(263,71): error TS18047: 'supabase' is possibly 'null'.
+client/pages/Clients.tsx(290,65): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientTrackJob.tsx(18,19): error TS6133: 'error' is declared but its value is never read.
+client/pages/ClientTrackJob.tsx(18,35): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientTrackJob.tsx(63,21): error TS18047: 'supabase' is possibly 'null'.
+client/pages/ClientTrackJob.tsx(118,7): error TS18047: 'supabase' is possibly 'null'.
+client/pages/CompanySettings.tsx(10,3): error TS6133: 'CardFooter' is declared but its value is never read.
+client/pages/CompanySettings.tsx(133,67): error TS18047: 'supabase' is possibly 'null'.
+client/pages/CompanySettings.tsx(149,68): error TS18047: 'supabase' is possibly 'null'.
+client/pages/CompanySettings.tsx(209,44): error TS18047: 'supabase' is possibly 'null'.
+client/pages/CompanySettings.tsx(217,11): error TS18047: 'supabase' is possibly 'null'.
+client/pages/CompanySettings.tsx(262,31): error TS18047: 'supabase' is possibly 'null'.
+client/pages/CreateCompany.tsx(1,20): error TS6133: 'useEffect' is declared but its value is never read.
+client/pages/CreateCompany.tsx(54,59): error TS18047: 'supabase' is possibly 'null'.
+client/pages/Dashboard.tsx(7,1): error TS6133: 'Footer' is declared but its value is never read.
+client/pages/Dashboard.tsx(11,29): error TS6133: 'CardHeader' is declared but its value is never read.
+client/pages/Dashboard.tsx(11,41): error TS6133: 'CardTitle' is declared but its value is never read.
+client/pages/Dashboard.tsx(13,1): error TS6133: 'Progress' is declared but its value is never read.
+client/pages/Dashboard.tsx(22,3): error TS6133: 'Plus' is declared but its value is never read.
+client/pages/Dashboard.tsx(418,10): error TS6133: 'StatsCard' is declared but its value is never read.
+client/pages/dashboard/Dispatch.tsx(71,37): error TS18047: 'supabase' is possibly 'null'.
+client/pages/dashboard/Dispatch.tsx(95,37): error TS18047: 'supabase' is possibly 'null'.
+client/pages/dashboard/Dispatch.tsx(119,21): error TS18047: 'supabase' is possibly 'null'.
+client/pages/dashboard/Dispatch.tsx(127,7): error TS18047: 'supabase' is possibly 'null'.
+client/pages/dashboard/Dispatch.tsx(138,31): error TS18047: 'supabase' is possibly 'null'.
+client/pages/dashboard/FleetDashboard.tsx(71,19): error TS18047: 'supabase' is possibly 'null'.
+client/pages/dashboard/TriageDashboard.tsx(71,37): error TS18047: 'supabase' is possibly 'null'.
+client/pages/dashboard/TriageDashboard.tsx(95,23): error TS18047: 'supabase' is possibly 'null'.
+client/pages/dashboard/TriageDashboard.tsx(114,9): error TS18047: 'supabase' is possibly 'null'.
+client/pages/dashboard/TriageDashboard.tsx(126,28): error TS18047: 'supabase' is possibly 'null'.
+client/pages/dashboard/TriageDashboard.tsx(142,58): error TS18047: 'supabase' is possibly 'null'.
+client/pages/dashboard/TriageDashboard.tsx(156,41): error TS18047: 'supabase' is possibly 'null'.
+client/pages/dashboard/TriageDashboard.tsx(166,13): error TS18047: 'supabase' is possibly 'null'.
+client/pages/dashboard/TriageDashboard.tsx(182,31): error TS18047: 'supabase' is possibly 'null'.
+client/pages/DIYCalculators.tsx(493,10): error TS6133: 'error' is declared but its value is never read.
+client/pages/History.tsx(10,1): error TS6192: All imports in import declaration are unused.
+client/pages/History.tsx(32,3): error TS6133: 'ArrowUpRight' is declared but its value is never read.
+client/pages/History.tsx(34,3): error TS6133: 'Pencil' is declared but its value is never read.
+client/pages/History.tsx(49,3): error TS6133: 'DropdownMenuLabel' is declared but its value is never read.
+client/pages/History.tsx(82,5): error TS6133: 'updateCalculation' is declared but its value is never read.
+client/pages/iaq/IAQWizard.tsx(30,3): error TS6133: 'Camera' is declared but its value is never read.
+client/pages/iaq/IAQWizard.tsx(37,3): error TS6133: 'Smile' is declared but its value is never read.
+client/pages/iaq/IAQWizard.tsx(91,28): error TS18047: 'supabase' is possibly 'null'.
+client/pages/iaq/IAQWizard.tsx(154,39): error TS18047: 'supabase' is possibly 'null'.
+client/pages/iaq/IAQWizard.tsx(161,31): error TS18047: 'supabase' is possibly 'null'.
+client/pages/IntegrationLanding.tsx(26,3): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+client/pages/IntegrationLanding.tsx(35,39): error TS18047: 'supabase' is possibly 'null'.
+client/pages/InviteTeam.tsx(9,3): error TS6133: 'Clock' is declared but its value is never read.
+client/pages/InviteTeam.tsx(16,3): error TS6133: 'Settings' is declared but its value is never read.
+client/pages/InviteTeam.tsx(28,1): error TS6133: 'Badge' is declared but its value is never read.
+client/pages/InviteTeam.tsx(29,1): error TS6133: 'Switch' is declared but its value is never read.
+client/pages/InviteTeam.tsx(37,1): error TS6192: All imports in import declaration are unused.
+client/pages/InviteTeam.tsx(99,30): error TS18047: 'supabase' is possibly 'null'.
+client/pages/InviteTeam.tsx(129,37): error TS18047: 'supabase' is possibly 'null'.
+client/pages/JobDetails.tsx(24,3): error TS6133: 'ShieldCheck' is declared but its value is never read.
+client/pages/JobDetails.tsx(95,37): error TS18047: 'supabase' is possibly 'null'.
+client/pages/JobDetails.tsx(198,35): error TS18047: 'supabase' is possibly 'null'.
+client/pages/JobDetails.tsx(224,37): error TS18047: 'supabase' is possibly 'null'.
+client/pages/JobDetails.tsx(261,31): error TS18047: 'supabase' is possibly 'null'.
+client/pages/JobDetails.tsx(297,31): error TS18047: 'supabase' is possibly 'null'.
+client/pages/Jobs.tsx(8,3): error TS6133: 'CardDescription' is declared but its value is never read.
+client/pages/Jobs.tsx(133,37): error TS18047: 'supabase' is possibly 'null'.
+client/pages/Jobs.tsx(168,27): error TS18047: 'supabase' is possibly 'null'.
+client/pages/Jobs.tsx(224,37): error TS18047: 'supabase' is possibly 'null'.
+client/pages/Pricing.tsx(62,17): error TS18047: 'supabase' is possibly 'null'.
+client/pages/Privacy.tsx(1,1): error TS6133: 'Link' is declared but its value is never read.
+client/pages/Profile.tsx(708,33): error TS2532: Object is possibly 'undefined'.
+client/pages/public/Triage.tsx(68,46): error TS18047: 'supabase' is possibly 'null'.
+client/pages/public/Triage.tsx(76,13): error TS18047: 'supabase' is possibly 'null'.
+client/pages/public/Triage.tsx(84,62): error TS18047: 'supabase' is possibly 'null'.
+client/pages/public/Triage.tsx(102,17): error TS18047: 'supabase' is possibly 'null'.
+client/pages/refrigerant/ComplianceReport.tsx(48,37): error TS18047: 'supabase' is possibly 'null'.
+client/pages/refrigerant/LeakRateCalculator.tsx(51,9): error TS6133: 'toast' is declared but its value is never read.
+client/pages/refrigerant/LeakRateCalculator.tsx(73,21): error TS6133: 'error' is declared but its value is never read.
+client/pages/refrigerant/LeakRateCalculator.tsx(73,37): error TS18047: 'supabase' is possibly 'null'.
+client/pages/refrigerant/LeakRateCalculator.tsx(88,21): error TS6133: 'error' is declared but its value is never read.
+client/pages/refrigerant/LeakRateCalculator.tsx(88,37): error TS18047: 'supabase' is possibly 'null'.
+client/pages/RefrigerantComparison.tsx(4,1): error TS6133: 'Footer' is declared but its value is never read.
+client/pages/RefrigerantComparison.tsx(19,35): error TS6133: 'AlertTitle' is declared but its value is never read.
+client/pages/RefrigerantComparison.tsx(27,3): error TS6133: 'Trash2' is declared but its value is never read.
+client/pages/RefrigerantComparison.tsx(28,3): error TS6133: 'Trophy' is declared but its value is never read.
+client/pages/RefrigerantComparison.tsx(34,1): error TS6133: 'EnhancedRefrigerantSelector' is declared but its value is never read.
+client/pages/SelectCompany.tsx(13,3): error TS6133: 'Check' is declared but its value is never read.
+client/pages/SelectCompany.tsx(66,72): error TS18047: 'supabase' is possibly 'null'.
+client/pages/SelectCompany.tsx(86,50): error TS18047: 'supabase' is possibly 'null'.
+client/pages/SelectCompany.tsx(106,46): error TS18047: 'supabase' is possibly 'null'.
+client/pages/tech/ActiveJob.tsx(10,3): error TS6133: 'AlertTriangle' is declared but its value is never read.
+client/pages/tech/ActiveJob.tsx(20,10): error TS6133: 'updating' is declared but its value is never read.
+client/pages/tech/ActiveJob.tsx(109,35): error TS18047: 'supabase' is possibly 'null'.
+client/pages/tech/ActiveJob.tsx(139,11): error TS18047: 'supabase' is possibly 'null'.
+client/pages/tech/ActiveJob.tsx(154,31): error TS18047: 'supabase' is possibly 'null'.
+client/pages/tech/ActiveJob.tsx(162,13): error TS18047: 'supabase' is possibly 'null'.
+client/pages/tech/JobBoard.tsx(5,1): error TS6133: 'Button' is declared but its value is never read.
+client/pages/tech/JobBoard.tsx(6,1): error TS6192: All imports in import declaration are unused.
+client/pages/tech/JobBoard.tsx(15,3): error TS6133: 'Calendar' is declared but its value is never read.
+client/pages/tech/JobBoard.tsx(17,3): error TS6133: 'Phone' is declared but its value is never read.
+client/pages/tech/JobBoard.tsx(19,3): error TS6133: 'CheckCircle2' is declared but its value is never read.
+client/pages/tech/JobBoard.tsx(56,37): error TS18047: 'supabase' is possibly 'null'.
+client/pages/TermsOfService.tsx(1,1): error TS6133: 'Link' is declared but its value is never read.
+client/pages/warranty/WarrantyScanner.tsx(5,3): error TS6133: 'Camera' is declared but its value is never read.
+client/pages/warranty/WarrantyScanner.tsx(7,3): error TS6133: 'Search' is declared but its value is never read.
+client/pages/warranty/WarrantyScanner.tsx(8,3): error TS6133: 'CheckCircle' is declared but its value is never read.
+client/pages/warranty/WarrantyScanner.tsx(9,3): error TS6133: 'AlertTriangle' is declared but its value is never read.
+client/pages/warranty/WarrantyScanner.tsx(22,3): error TS6133: 'CardFooter' is declared but its value is never read.
+client/pages/warranty/WarrantyScanner.tsx(119,3): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+client/pages/warranty/WarrantyScanner.tsx(126,28): error TS18047: 'supabase' is possibly 'null'.
+client/pages/warranty/WarrantyScanner.tsx(230,31): error TS18047: 'supabase' is possibly 'null'.
+client/utils/errorHandler.ts(63,9): error TS18048: 'stack' is possibly 'undefined'.
+client/utils/errorHandler.ts(64,9): error TS18048: 'stack' is possibly 'undefined'.
+client/utils/errorHandler.ts(65,9): error TS18048: 'stack' is possibly 'undefined'.
+client/utils/errorHandler.ts(66,9): error TS18048: 'stack' is possibly 'undefined'.
+client/utils/errorHandler.ts(67,33): error TS18048: 'stack' is possibly 'undefined'.

@@ -217,9 +217,15 @@ npm run dev:client
 
 #### TypeScript
 
-- Use strict mode (`strict: true` in `tsconfig.json`)
-- Avoid `any` type; use `unknown` or proper interfaces
-- Use ESLint with TypeScript rules
+- **Strict Mode**: Enabled with `strict: true` in `tsconfig.json`, including:
+  - `noUnusedLocals`: true – removes unused local variables
+  - `noUnusedParameters`: true – removes unused function parameters  
+  - `noImplicitAny`: true – requires explicit types for ambiguous `any`
+  - `strictNullChecks`: true – ensures null/undefined safety
+- **Type Safety**: Avoid `any` type; use `unknown` or proper interfaces
+- **Tooling**: Use ESLint with TypeScript rules for consistent code quality
+- **Fast Refresh Compliance**: Components must export only React components (no mixed exports) to support Hot Module Replacement
+- **Migration from JavaScript**: Use `.ts`/`.tsx` extensions and incremental type checking
 
 #### React Components
 

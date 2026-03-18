@@ -1,7 +1,8 @@
-import { supabase } from '@/lib/supabase';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, ExternalLink } from 'lucide-react';
+
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/lib/supabase';
 
 export function SupabaseStatus() {
   if (supabase) {

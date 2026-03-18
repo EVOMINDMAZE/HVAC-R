@@ -1,0 +1,1361 @@
+{
+  "session": {
+    "startTime": "2026-03-15T21:53:11.009Z",
+    "url": "http://localhost:8082/clients",
+    "browser": "Chromium (Playwright)"
+  },
+  "consoleMessages": [
+    {
+      "timestamp": "2026-03-15T21:53:00.945Z",
+      "type": "debug",
+      "text": "[vite] connecting...",
+      "location": {
+        "url": "http://localhost:8082/@vite/client",
+        "lineNumber": 788,
+        "columnNumber": 8
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.976Z",
+      "type": "log",
+      "text": "Supabase client initialization: {supabaseUrl: http://localhost:54321, configured: true, valid: true, hasAnonKey: true, envLoaded: true}",
+      "location": {
+        "url": "http://localhost:8082/client/lib/supabase.ts",
+        "lineNumber": 28,
+        "columnNumber": 12
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.002Z",
+      "type": "log",
+      "text": "🛡️ Global error handler and JSON.parse monitor initialized",
+      "location": {
+        "url": "http://localhost:8082/client/utils/errorHandler.ts",
+        "lineNumber": 66,
+        "columnNumber": 12
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.047Z",
+      "type": "error",
+      "text": "404 Error: User attempted to access non-existent route: /clients",
+      "location": {
+        "url": "http://localhost:8082/client/pages/NotFound.tsx",
+        "lineNumber": 31,
+        "columnNumber": 16
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.048Z",
+      "type": "warning",
+      "text": "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.",
+      "location": {
+        "url": "http://localhost:8082/node_modules/.vite/deps/react-router-dom.js?v=1b96ef30",
+        "lineNumber": 4435,
+        "columnNumber": 12
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.048Z",
+      "type": "warning",
+      "text": "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath.",
+      "location": {
+        "url": "http://localhost:8082/node_modules/.vite/deps/react-router-dom.js?v=1b96ef30",
+        "lineNumber": 4435,
+        "columnNumber": 12
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.052Z",
+      "type": "startGroup",
+      "text": "[useSupabaseAuth] useEffect triggered - checkSession starting at 2026-03-15T21:53:01.047Z",
+      "location": {
+        "url": "http://localhost:8082/client/hooks/SupabaseAuthProvider.tsx",
+        "lineNumber": 409,
+        "columnNumber": 20
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.052Z",
+      "type": "error",
+      "text": "404 Error: User attempted to access non-existent route: /clients",
+      "location": {
+        "url": "http://localhost:8082/client/pages/NotFound.tsx",
+        "lineNumber": 31,
+        "columnNumber": 16
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.052Z",
+      "type": "startGroup",
+      "text": "[useSupabaseAuth] useEffect triggered - checkSession starting at 2026-03-15T21:53:01.049Z",
+      "location": {
+        "url": "http://localhost:8082/client/hooks/SupabaseAuthProvider.tsx",
+        "lineNumber": 409,
+        "columnNumber": 20
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.139Z",
+      "type": "debug",
+      "text": "[vite] connected.",
+      "location": {
+        "url": "http://localhost:8082/@vite/client",
+        "lineNumber": 911,
+        "columnNumber": 14
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.180Z",
+      "type": "log",
+      "text": "[useSupabaseAuth] session found: false user ID: undefined",
+      "location": {
+        "url": "http://localhost:8082/client/hooks/SupabaseAuthProvider.tsx",
+        "lineNumber": 420,
+        "columnNumber": 24
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.181Z",
+      "type": "log",
+      "text": "[useSupabaseAuth] checkSession completed in 132ms",
+      "location": {
+        "url": "http://localhost:8082/client/hooks/SupabaseAuthProvider.tsx",
+        "lineNumber": 441,
+        "columnNumber": 24
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.182Z",
+      "type": "endGroup",
+      "text": "console.groupEnd",
+      "location": {
+        "url": "http://localhost:8082/client/hooks/SupabaseAuthProvider.tsx",
+        "lineNumber": 442,
+        "columnNumber": 24
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.182Z",
+      "type": "log",
+      "text": "[useSupabaseAuth] setIsLoading(false) via setTimeout",
+      "location": {
+        "url": "http://localhost:8082/client/hooks/SupabaseAuthProvider.tsx",
+        "lineNumber": 436,
+        "columnNumber": 28
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.182Z",
+      "type": "log",
+      "text": "[useSupabaseAuth] isLoading after set: false",
+      "location": {
+        "url": "http://localhost:8082/client/hooks/SupabaseAuthProvider.tsx",
+        "lineNumber": 438,
+        "columnNumber": 28
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.193Z",
+      "type": "log",
+      "text": "[useSupabaseAuth] session found: false user ID: undefined",
+      "location": {
+        "url": "http://localhost:8082/client/hooks/SupabaseAuthProvider.tsx",
+        "lineNumber": 420,
+        "columnNumber": 24
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.193Z",
+      "type": "log",
+      "text": "[useSupabaseAuth] checkSession completed in 136ms",
+      "location": {
+        "url": "http://localhost:8082/client/hooks/SupabaseAuthProvider.tsx",
+        "lineNumber": 441,
+        "columnNumber": 24
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.193Z",
+      "type": "endGroup",
+      "text": "console.groupEnd",
+      "location": {
+        "url": "http://localhost:8082/client/hooks/SupabaseAuthProvider.tsx",
+        "lineNumber": 442,
+        "columnNumber": 24
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.194Z",
+      "type": "log",
+      "text": "[useSupabaseAuth] setIsLoading(false) via setTimeout",
+      "location": {
+        "url": "http://localhost:8082/client/hooks/SupabaseAuthProvider.tsx",
+        "lineNumber": 436,
+        "columnNumber": 28
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.195Z",
+      "type": "log",
+      "text": "[useSupabaseAuth] isLoading after set: false",
+      "location": {
+        "url": "http://localhost:8082/client/hooks/SupabaseAuthProvider.tsx",
+        "lineNumber": 438,
+        "columnNumber": 28
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.195Z",
+      "type": "startGroup",
+      "text": "[useSupabaseAuth] Auth state change at 2026-03-15T21:53:01.185Z: INITIAL_SESSION undefined",
+      "location": {
+        "url": "http://localhost:8082/client/hooks/SupabaseAuthProvider.tsx",
+        "lineNumber": 451,
+        "columnNumber": 20
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.195Z",
+      "type": "log",
+      "text": "[useSupabaseAuth] No session, clearing state",
+      "location": {
+        "url": "http://localhost:8082/client/hooks/SupabaseAuthProvider.tsx",
+        "lineNumber": 469,
+        "columnNumber": 24
+      }
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.195Z",
+      "type": "endGroup",
+      "text": "console.groupEnd",
+      "location": {
+        "url": "http://localhost:8082/client/hooks/SupabaseAuthProvider.tsx",
+        "lineNumber": 477,
+        "columnNumber": 20
+      }
+    }
+  ],
+  "networkRequests": [
+    {
+      "timestamp": "2026-03-15T21:53:00.712Z",
+      "url": "http://localhost:8082/clients",
+      "method": "GET",
+      "status": 200,
+      "type": "document",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.766Z",
+      "url": "http://localhost:8082/client/main.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.769Z",
+      "url": "http://localhost:8082/@vite/client",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.773Z",
+      "url": "http://localhost:8082/@react-refresh",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.775Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/react.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.775Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/react_jsx-dev-runtime.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.776Z",
+      "url": "http://localhost:8082/client/utils/errorHandler.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.776Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/react-helmet-async.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.779Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/react-dom_client.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.781Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-K7ZT2U4U.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.781Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-UN725CXD.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.783Z",
+      "url": "http://localhost:8082/node_modules/vite/dist/client/env.mjs",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.787Z",
+      "url": "http://localhost:8082/client/App.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.799Z",
+      "url": "http://localhost:8082/client/components/DevModeBanner.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.804Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/react-router-dom.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.804Z",
+      "url": "http://localhost:8082/client/components/theme-provider.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.805Z",
+      "url": "http://localhost:8082/client/hooks/ToastProvider.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.805Z",
+      "url": "http://localhost:8082/client/hooks/SupabaseAuthProvider.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.806Z",
+      "url": "http://localhost:8082/client/hooks/useSupabaseAuth.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.806Z",
+      "url": "http://localhost:8082/client/global.css",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.809Z",
+      "url": "http://localhost:8082/client/utils/authErrorHandler.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.809Z",
+      "url": "http://localhost:8082/client/pages/Landing.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.811Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-HEXDZATI.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.812Z",
+      "url": "http://localhost:8082/client/context/JobContext.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.813Z",
+      "url": "http://localhost:8082/client/lib/monitoring-provider.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.814Z",
+      "url": "http://localhost:8082/client/pages/SignUp.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.816Z",
+      "url": "http://localhost:8082/client/pages/tech/JobBoard.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.816Z",
+      "url": "http://localhost:8082/client/pages/NotFound.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.818Z",
+      "url": "http://localhost:8082/client/components/SupportBar.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.818Z",
+      "url": "http://localhost:8082/client/components/Layout.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.818Z",
+      "url": "http://localhost:8082/client/pages/SignIn.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.818Z",
+      "url": "http://localhost:8082/client/components/ErrorModal.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.818Z",
+      "url": "http://localhost:8082/client/components/ErrorBoundary.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.820Z",
+      "url": "http://localhost:8082/client/components/ui/toaster.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.826Z",
+      "url": "http://localhost:8082/client/components/SubscriptionGuard.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.826Z",
+      "url": "http://localhost:8082/client/components/ui/page-loading.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.826Z",
+      "url": "http://localhost:8082/client/hooks/useKeyboardShortcuts.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.826Z",
+      "url": "http://localhost:8082/client/hooks/KeyboardShortcuts.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.831Z",
+      "url": "http://localhost:8082/client/components/ui/button.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.833Z",
+      "url": "http://localhost:8082/client/components/theme-context.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.833Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/@capacitor_core.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.834Z",
+      "url": "http://localhost:8082/client/hooks/toast.context.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.834Z",
+      "url": "http://localhost:8082/client/components/ui/alert.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.834Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/framer-motion.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.836Z",
+      "url": "http://localhost:8082/client/lib/supabase.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.837Z",
+      "url": "http://localhost:8082/client/hooks/supabaseAuth.context.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.837Z",
+      "url": "http://localhost:8082/client/hooks/supabaseAuth.types.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.838Z",
+      "url": "http://localhost:8082/client/landing.css",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.838Z",
+      "url": "http://localhost:8082/client/components/public/PublicPageShell.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.839Z",
+      "url": "http://localhost:8082/client/components/seo/StructuredData.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.840Z",
+      "url": "http://localhost:8082/client/components/ui/accordion.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.842Z",
+      "url": "http://localhost:8082/client/components/ui/collapsible.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.844Z",
+      "url": "http://localhost:8082/client/components/SEO.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.844Z",
+      "url": "http://localhost:8082/client/context/job.context.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.844Z",
+      "url": "http://localhost:8082/client/config/metrics.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.844Z",
+      "url": "http://localhost:8082/client/lib/marketingAnalytics.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.844Z",
+      "url": "http://localhost:8082/client/lib/monitoring.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.844Z",
+      "url": "http://localhost:8082/client/components/ui/label.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.845Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/lucide-react.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.845Z",
+      "url": "http://localhost:8082/client/components/Footer.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.849Z",
+      "url": "http://localhost:8082/client/components/Header.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.849Z",
+      "url": "http://localhost:8082/client/components/PageContainer.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.850Z",
+      "url": "http://localhost:8082/client/hooks/useToast.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.850Z",
+      "url": "http://localhost:8082/client/components/ui/card.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.850Z",
+      "url": "http://localhost:8082/client/components/ui/input.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.851Z",
+      "url": "http://localhost:8082/client/components/app/AppPageHeader.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.853Z",
+      "url": "http://localhost:8082/client/components/app/AppSectionCard.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.853Z",
+      "url": "http://localhost:8082/client/components/ui/badge.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.853Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/date-fns.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.854Z",
+      "url": "http://localhost:8082/client/components/ConsentBanner.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.854Z",
+      "url": "http://localhost:8082/client/components/QuickSearch.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.854Z",
+      "url": "http://localhost:8082/client/components/ui/toast.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.855Z",
+      "url": "http://localhost:8082/client/hooks/use-toast.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.857Z",
+      "url": "http://localhost:8082/client/components/Sidebar.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.857Z",
+      "url": "http://localhost:8082/client/lib/biometricAuth.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.858Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/@radix-ui_react-slot.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.858Z",
+      "url": "http://localhost:8082/client/components/ui/dialog.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.859Z",
+      "url": "http://localhost:8082/client/lib/utils.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.860Z",
+      "url": "http://localhost:8082/client/components/ui/buttonVariants.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.862Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/class-variance-authority.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.862Z",
+      "url": "http://localhost:8082/client/components/LoadingSpinner.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.862Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-DYYYOWMI.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.862Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-S66HWGJ3.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.871Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/@supabase_supabase-js.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.874Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/@radix-ui_react-accordion.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.875Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/@radix-ui_react-label.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.875Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/@radix-ui_react-collapsible.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.876Z",
+      "url": "http://localhost:8082/client/components/CompanySwitcher.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.876Z",
+      "url": "http://localhost:8082/client/components/JobSelector.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.878Z",
+      "url": "http://localhost:8082/client/components/mode-toggle.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.878Z",
+      "url": "http://localhost:8082/client/components/ui/dropdown-menu.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.878Z",
+      "url": "http://localhost:8082/client/lib/navigation.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.878Z",
+      "url": "http://localhost:8082/client/hooks/useAppNavigation.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.879Z",
+      "url": "http://localhost:8082/client/components/ui/badgeVariants.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.880Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/@radix-ui_react-toast.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.880Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/@radix-ui_react-dialog.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.880Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-RRTSLD7Z.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.880Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/clsx.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.883Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/tailwind-merge.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.883Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/@capgo_capacitor-native-biometric.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.883Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-FNDU6FWN.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.883Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-U7P2NEEE.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.884Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-BZXDJTDF.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.884Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-QGEQHYSX.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.884Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-WJXUL7D2.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.884Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-O4UO6HWS.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.891Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-OOYLVKHQ.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.892Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-U4CRTCVD.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.892Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-SVYMU4Q5.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.892Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-6YMTNXMK.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.892Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-7GGHC7Z4.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.892Z",
+      "url": "http://localhost:8082/client/components/ui/avatar.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.892Z",
+      "url": "http://localhost:8082/client/components/ui/command.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.896Z",
+      "url": "http://localhost:8082/client/components/ui/popover.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.896Z",
+      "url": "http://localhost:8082/client/components/ui/use-toast.ts",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.896Z",
+      "url": "http://localhost:8082/client/components/ui/select.tsx",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.896Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/@radix-ui_react-dropdown-menu.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.896Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-IXXPAZVH.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.897Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-5M7OXISZ.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.897Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-MBH267NK.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.897Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-CBKREHDF.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.897Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-RG7VBZDI.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.897Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-Q4ILRDIQ.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.898Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/@radix-ui_react-avatar.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.898Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/cmdk.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.898Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/@radix-ui_react-popover.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.898Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/@radix-ui_react-select.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.898Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-ZCEEIE54.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.898Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-EPS7JKOK.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.898Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-2COD65RR.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.898Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-6ZMM2PAV.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.899Z",
+      "url": "http://localhost:8082/node_modules/.vite/deps/chunk-QIE4BTPW.js?v=1b96ef30",
+      "method": "GET",
+      "status": 200,
+      "type": "script",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.907Z",
+      "url": "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+      "method": "GET",
+      "status": 200,
+      "type": "stylesheet",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:00.912Z",
+      "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap",
+      "method": "GET",
+      "status": 200,
+      "type": "stylesheet",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.054Z",
+      "url": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
+      "method": "GET",
+      "status": 200,
+      "type": "stylesheet",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.054Z",
+      "url": "https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700&display=swap",
+      "method": "GET",
+      "status": 200,
+      "type": "stylesheet",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.137Z",
+      "url": "http://localhost:8082/logo-landscape.png",
+      "method": "GET",
+      "status": 200,
+      "type": "image",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.454Z",
+      "url": "https://fonts.gstatic.com/s/sora/v17/xMQ9uFFYT72X5wkB_18qmnndmSdSnh2BAfO5mnuyOo1lfiQAVaW2gaU.woff2",
+      "method": "GET",
+      "status": 200,
+      "type": "font",
+      "duration": 0
+    },
+    {
+      "timestamp": "2026-03-15T21:53:01.861Z",
+      "url": "https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIq15j8eUY.woff2",
+      "method": "GET",
+      "status": 200,
+      "type": "font",
+      "duration": 0
+    }
+  ],
+  "errors": [
+    "404 Error: User attempted to access non-existent route: /clients",
+    "404 Error: User attempted to access non-existent route: /clients"
+  ],
+  "warnings": [
+    "⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `React.startTransition` in v7. You can use the `v7_startTransition` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_starttransition.",
+    "⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is changing in v7. You can use the `v7_relativeSplatPath` future flag to opt-in early. For more information, see https://reactrouter.com/v6/upgrading/future#v7_relativesplatpath."
+  ]
+}

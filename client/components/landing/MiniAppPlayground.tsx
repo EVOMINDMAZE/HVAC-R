@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { AlertTriangle, MapPin, Brain, BarChart3, FileText, Settings, ChevronRight, ChevronLeft, Zap, CheckCircle, Users, ArrowRight } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { AlertTriangle, MapPin, Brain, BarChart3, FileText, Settings, ChevronRight, ChevronLeft, Zap, CheckCircle, Users, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+
 
 // ====================
 // DEMO DATA

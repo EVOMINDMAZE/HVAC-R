@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { Bell, Mail, MessageSquare, Loader2 } from "lucide-react";
+import { useState, useEffect } from 'react';
+
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -6,12 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
-import { Bell, Mail, MessageSquare, Loader2 } from "lucide-react";
 
 interface NotificationPreferences {
   sms_enabled: boolean;

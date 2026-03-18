@@ -38,7 +38,7 @@ describe('useSupabaseAuth', () => {
   });
 
   it('exports the provider', async () => {
-    const { SupabaseAuthProvider } = await import('../useSupabaseAuth');
+    const { SupabaseAuthProvider } = await import('../SupabaseAuthProvider');
     expect(SupabaseAuthProvider).toBeDefined();
   });
 

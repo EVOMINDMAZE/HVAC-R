@@ -1,10 +1,11 @@
 import { RequestHandler } from "express";
-import { supabaseAdmin } from "../utils/supabase.js";
+
 import {
   stripe,
   updateSubscription as stripeUpdateSubscription,
   cancelSubscription as stripeCancelSubscription,
 } from "../utils/stripe.js";
+import { supabaseAdmin } from "../utils/supabase.js";
 
 // Helper to get Stripe Price ID from plan name and billing cycle
 const getPlanPriceId = (planName: string, billingCycle: "monthly" | "yearly" = "monthly") => {
@@ -84,7 +85,7 @@ const FALLBACK_PLANS = [
   },
 ];
 
-export const getSubscriptionPlans: RequestHandler = async (req, res) => {
+export const getSubscriptionPlans: RequestHandler = async (_req, res) => {
   try {
     let plans = [];
 

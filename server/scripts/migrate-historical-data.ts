@@ -1,5 +1,5 @@
-import { supabaseAdmin } from "../utils/supabase.js";
 import { PatternRecognitionService } from "../services/PatternRecognitionService.js";
+import { supabaseAdmin } from "../utils/supabase.js";
 
 interface HistoricalCalculation {
   id: string;

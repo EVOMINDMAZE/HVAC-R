@@ -24,6 +24,31 @@ Phase 3 remediation has been executed with the following overall outcome:
 
 ---
 
+## 2026-03-13 Task 11-12 Completion Update
+
+| Task | Status | Evidence |
+|------|--------|----------|
+| Task 11 UX Regression Reliability | ✅ Completed | `npm run test:ux:regression` passes (8/8) |
+| Task 12 Docs Source-of-Truth | ✅ Completed | `npm run test -- tests/docs/check-docs-sot.test.ts` and `npm run check:docs-sot` pass |
+| Coverage Threshold Gate | ⚠️ Blocked by unrelated failing tests | `npm run test:coverage` fails in `client/components/dashboard/OpsMissions.test.ts` |
+| Final Validation Suite | ⚠️ Partially blocked | `npm run validate:final` fails at typecheck step |
+
+### Unresolved Blockers
+
+1. `client/components/dashboard/OpsMissions.test.ts` imports non-exported functions (`deriveOpsMissions`, `computeReadiness`) and fails in both unit and coverage runs.
+2. `client/components/PageContainer.tsx` has a Framer Motion prop typing conflict in `htmlProps` casting.
+3. `client/hoc/with-async-error-boundary.ts` has a `React.createElement` props mismatch for required `children`.
+4. `client/hooks/useDashboardCommandCenter.ts` imports non-exported Ops mission helpers.
+5. `server/routes/__tests__/auth.validation.test.ts` invokes handlers without required `next` argument.
+
+### Notes
+
+- Coverage infrastructure is now enabled and enforced via `vitest.config.ts` thresholds.
+- CI smoke test reliability has been tightened and now passes under the `ci-smoke` Playwright project.
+- Docs source-of-truth gate is wired into workflows and validates README + documentation navigation against OpenAPI prefixes.
+
+---
+
 ## Commands Executed and Outcomes
 
 ### 1. Lint Check

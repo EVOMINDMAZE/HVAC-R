@@ -1,7 +1,9 @@
-import { useState } from "react";
 import { Calendar, Wrench } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -9,8 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 export interface QuickActionsPanelProps {
   selectedJobId?: string;

@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 // These should be stored in environment variables
 const supabaseUrlRaw = import.meta.env.VITE_SUPABASE_URL ?? "";
@@ -31,16 +31,23 @@ export const getSupabaseConfig = () => {
 };
 
 // Only create client if environment variables are properly set
-const createSupabaseClient = () => {
+const createSupabaseClient = (): SupabaseClient => {
   const { supabaseUrl, configured, isValidUrl: valid } = getSupabaseConfig();
 
-
+  console.log("Supabase client initialization:", {
+    supabaseUrl,
+    configured,
+    valid,
+    hasAnonKey: !!supabaseAnonKey && supabaseAnonKey.length > 0,
+    envLoaded: !!import.meta.env.VITE_SUPABASE_URL && !!import.meta.env.VITE_SUPABASE_ANON_KEY,
+    nodeEnv: import.meta.env.MODE,
+  });
 
   if (!configured || !valid) {
     console.warn(
       "Supabase environment variables not configured or invalid. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY",
     );
-    return null;
+    throw new Error('Supabase environment variables not configured or invalid');
   }
 
   try {
@@ -54,12 +61,13 @@ const createSupabaseClient = () => {
     });
   } catch (error) {
     console.error("Failed to create Supabase client:", error);
-    return null;
+    throw new Error('Failed to create Supabase client', { cause: error });
   }
 };
 
 export const supabase = createSupabaseClient();
 
 // Types
-import { Database } from "@shared/types/database";
+import type { Database } from "../../shared/types/database";
+
 export type { Database };

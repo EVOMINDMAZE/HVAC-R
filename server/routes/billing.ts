@@ -1,14 +1,17 @@
 import express from "express";
-import { authenticateSupabaseToken } from "../utils/supabaseAuth.js";
-import { supabaseAdmin } from "../utils/supabase.js";
+
+import { BillingService } from "../services/billing/BillingService.js";
 import {
   stripe,
 } from "../utils/stripe.js";
+import { supabaseAdmin } from "../utils/supabase.js";
+import { authenticateSupabaseToken } from "../utils/supabaseAuth.js";
+
 import {
   toCompatEnvelope,
   toCompatErrorEnvelope,
 } from "./compat/apiAdapter.js";
-import { BillingService } from "../services/billing/BillingService.js";
+
 
 const router = express.Router();
 const billingService = new BillingService();

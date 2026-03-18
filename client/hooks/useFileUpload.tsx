@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
+
 import { useSupabaseAuth } from "./useSupabaseAuth";
 import { useToast } from "./useToast";
+
+import { supabase } from "@/lib/supabase";
 
 export function useFileUpload() {
   const [uploading, setUploading] = useState(false);
@@ -63,7 +65,7 @@ export function useFileUpload() {
       if (listResult && (listResult as any).error) {
         // Bucket likely missing or access denied
         console.error('Supabase storage.list error', { listError: listResult.error, triedBucket: bucketToUse });
-        const msg = (listResult.error && (listResult.error.message || String(listResult.error))) || String(listResult.error);
+        const msg = (listResult.error && ((listResult.error as any).message || String(listResult.error))) || String(listResult.error);
         if (String(msg).toLowerCase().includes('bucket') || String(msg).toLowerCase().includes('not found') || String(msg).toLowerCase().includes('404')) {
           const guidance = `Upload Failed: Storage bucket "${AVATAR_BUCKET}" (or fallback "${fallbackBucket}") not found or inaccessible. Please create a public bucket and ensure your anon key has permission to upload.`;
           addToast({ type: 'error', title: 'Upload Failed', description: guidance });
@@ -121,7 +123,7 @@ export function useFileUpload() {
 	        }
 
         // Helpful guidance for common issues
-        const msg = (error && (error.message || errStr)) || String(error);
+        const msg = (error && ((error as any).message || errStr)) || String(error);
 
         // If this is a row-level security / RLS error, attempt server-side upload fallback
         if (String(msg).toLowerCase().includes('row-level') || String(msg).toLowerCase().includes('row level') || String(msg).toLowerCase().includes('violates row-level') || (error && (((error as any)?.status === 403) || ((error as any)?.statusCode === 403)))) {

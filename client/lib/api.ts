@@ -345,14 +345,6 @@ class ApiClient {
         headers.apikey = String(anonKey);
       }
 
-      try {
-        const preview =
-          typeof payload === "string"
-            ? payload
-            : JSON.stringify(payload, null, 2);
-        console.log("[api.aiTroubleshoot] payload preview:", preview);
-      } catch (_e) { /* ignore */ }
-
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       if (!supabaseUrl) {
         return {

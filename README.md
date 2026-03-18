@@ -76,11 +76,37 @@ For detailed setup instructions, please refer to the [Developer Guide](./skills/
 
 - [**Developer Guide**](./skills/03_development/developer_guide.md): Architecture, Tech Stack, and detailed setup.
 - [**Developer Guide & Onboarding**](./skills/03_development/developer_guide.md): Complete guide with quick start, architecture, and workflows
-- [**API Documentation**](./docs/api/portal/index.html): Interactive API reference with 27 endpoints
+- [**API Documentation**](./docs/api/portal/index.html): Interactive API reference with 33 endpoints
+- [**OpenAPI Source of Truth**](./docs/api/openapi.yaml): Canonical endpoint contract for API docs and validation checks
 - [**Architecture Diagrams**](./docs/architecture/): C4 model diagrams (System Context, Container, Component) with GDPR/CCPA privacy compliance components
 - [**Deployment**](./skills/03_development/developer_guide.md#deployment--database-management): How to build and deploy.
 - [**AI Context**](./AI_ONBOARDING.md): **Start Here** for AI Agents and New Contributors.
 - [Documentation Navigation Map](./docs/documentation-navigation.md)
+
+### Archival Note
+
+- Historical content is retained in `.archive/`, `archive/`, and `supabase/migrations_archive/` for reference and rollback.
+- These paths are non-production archives and must not be imported by runtime application code.
+- New production migrations must be created under `supabase/migrations/` only.
+
+### API Surface Map
+
+- `/api/auth`
+- `/api/calculations`
+- `/api/user`
+- `/api/team`
+- `/api/fleet`
+- `/api/subscriptions`
+- `/api/calculate-airflow`
+- `/api/calculate-deltat`
+- `/api/calculate-standard`
+- `/api/calculate-cascade`
+- `/api/compare-refrigerants`
+- `/api/storage`
+- `/api/diagnostics`
+- `/api/ai`
+- `/api/reports`
+- `/api/health`
 
 ## 🛠️ Tech Stack
 
@@ -118,15 +144,17 @@ For detailed setup instructions, please refer to the [Developer Guide](./skills/
 
 - **Unit Tests**: 65+ passing tests (Vitest)
 - **E2E Tests**: 40+ comprehensive scenarios (Playwright)
-- **Coverage**: 65%+ code coverage
+- **Coverage**: Threshold-enforced (lines/functions/statements: 60%, branches: 50%)
 
 ### CI Quality Gates
 
 The CI pipeline enforces these quality gates on every PR:
 
 1. **Quality Gate** (required): Lint, typecheck, unit tests
-2. **E2E Smoke Gate** (required): Deterministic public-page tests
-3. **Full E2E Suite** (manual dispatch): Complete authenticated workflow tests
+2. **Coverage Gate** (required): Unit coverage thresholds from `vitest.config.ts`
+3. **Docs SoT Gate** (required): Cross-check README + navigation against OpenAPI
+4. **E2E Smoke Gate** (required): Deterministic public-page tests
+5. **Full E2E Suite** (manual dispatch): Complete authenticated workflow tests
 
 ```bash
 # Run unit tests
@@ -135,11 +163,17 @@ npm test
 # Run with coverage
 npm run test:coverage
 
+# Run docs source-of-truth validation
+npm run check:docs-sot
+
+# Run final local validation suite
+npm run validate:final
+
 # Run e2e tests
 npm run test:e2e
 
 # Run e2e smoke tests (CI-safe)
-npm run test:e2e -- --project=ci-smoke
+npm run test:ux:regression
 
 # Run e2e with UI
 npm run test:e2e:ui

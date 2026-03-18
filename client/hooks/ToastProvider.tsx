@@ -1,0 +1,99 @@
+import { Capacitor } from "@capacitor/core";
+import { useState, ReactNode } from "react";
+
+import { ToastContext, useToast } from "./toast.context";
+import { Toast } from "./toast.types";
+
+export function ToastProvider({ children }: { children: ReactNode }) {
+  const [toasts, setToasts] = useState<Toast[]>([]);
+
+  const addToast = (toast: Omit<Toast, "id">) => {
+    const id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const newToast = { ...toast, id };
+
+    setToasts((prev) => [...prev, newToast]);
+
+    const duration = toast.duration || (toast.type === "error" ? 10000 : 5000);
+    setTimeout(() => {
+      removeToast(id);
+    }, duration);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  };
+
+  return (
+    <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
+      {children}
+      <ToastContainer />
+    </ToastContext.Provider>
+  );
+}
+
+function ToastContainer() {
+  const { toasts, removeToast } = useToast();
+
+  const getToastStyles = (type: Toast["type"]) => {
+    switch (type) {
+      case "success":
+        return "bg-green-50 border-green-200 text-green-800";
+      case "error":
+        return "bg-red-50 border-red-200 text-red-800";
+      case "warning":
+        return "bg-yellow-50 border-yellow-200 text-yellow-800";
+      case "info":
+        return "bg-orange-50 border-orange-200 text-orange-800";
+      default:
+        return "bg-gray-50 border-gray-200 text-gray-800";
+    }
+  };
+
+  const getIcon = (type: Toast["type"]) => {
+    switch (type) {
+      case "success":
+        return "✓";
+      case "error":
+        return "✕";
+      case "warning":
+        return "⚠";
+      case "info":
+        return "ℹ";
+      default:
+        return "";
+    }
+  };
+
+  return (
+    <div
+      className={`fixed right-4 z-[11000] space-y-2 ${Capacitor.isNativePlatform() ? "top-14 pt-safe" : "top-4"}`}
+    >
+      {toasts.map((toast) => (
+        <div
+          key={toast.id}
+          className={`max-w-sm w-full p-4 border rounded-lg shadow-lg animate-in slide-in-from-right ${getToastStyles(toast.type)}`}
+        >
+          <div className="flex items-start">
+            <div className="flex-shrink-0 mr-3">
+              <span className="text-lg font-semibold">
+                {getIcon(toast.type)}
+              </span>
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold">{toast.title}</p>
+              {toast.description && (
+                <p className="text-sm mt-1 opacity-90">{toast.description}</p>
+              )}
+            </div>
+            <button
+              onClick={() => removeToast(toast.id)}
+              className="flex-shrink-0 ml-3 text-lg font-semibold opacity-70 hover:opacity-100"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}

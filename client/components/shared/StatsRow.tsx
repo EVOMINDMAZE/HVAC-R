@@ -1,5 +1,5 @@
-import React from "react";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 export interface StatItem {

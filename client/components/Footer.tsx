@@ -1,6 +1,8 @@
-import { Link, useLocation } from "react-router-dom";
 import { Calculator, Mail } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+
 import { Button } from "./ui/button";
+
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 
 export function Footer() {

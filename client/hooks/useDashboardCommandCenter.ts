@@ -1,9 +1,11 @@
 import { useMemo } from "react";
-import { deriveOpsMissions, computeReadiness } from "@/components/dashboard/OpsMissions";
+
+import type { DashboardModuleItem, MissionItem } from "@/types/dashboardGamified";
+
+import { deriveOpsMissions, computeReadiness } from "@/components/dashboard/ops-missions-utils";
 import { useMonitorOpsTelemetry } from "@/hooks/useMonitorOpsTelemetry";
 import { useRecentCalculations } from "@/hooks/useRecentCalculations";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import type { DashboardModuleItem, MissionItem } from "@/types/dashboardGamified";
 
 const MODULES: DashboardModuleItem[] = [
   {
@@ -72,4 +74,3 @@ export function useDashboardCommandCenter() {
     recentLoading,
   };
 }
-

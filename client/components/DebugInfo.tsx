@@ -1,6 +1,6 @@
-import { supabase } from '@/lib/supabase';
-import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
+import { supabase } from '@/lib/supabase';
 
 export function DebugInfo() {
   const { user, session, isAuthenticated } = useSupabaseAuth();

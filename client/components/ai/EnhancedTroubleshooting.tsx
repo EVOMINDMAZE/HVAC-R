@@ -1,20 +1,7 @@
-import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   AlertTriangle,
   Brain,
-  TrendingUp,
+
   Clock,
   CheckCircle,
   Lightbulb,
@@ -24,22 +11,35 @@ import {
   Star,
   ChevronRight,
   Target,
-  Zap,
+
   BarChart3,
 } from "lucide-react";
+import { useState, useEffect } from 'react';
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
-  PatternMatch,
-  PatternRecommendation,
-  EnhancedTroubleshootResponse,
-  aiPatternsAPI,
-} from "@/lib/ai-patterns";
-import { useToast } from "@/hooks/use-toast";
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useToast } from "@/hooks/use-toast";
+import {
+
+  PatternRecommendation,
+  EnhancedTroubleshootResponse,
+  aiPatternsAPI,
+} from "@/lib/ai-patterns";
 
 interface EnhancedTroubleshootingProps {
   symptoms: string[];

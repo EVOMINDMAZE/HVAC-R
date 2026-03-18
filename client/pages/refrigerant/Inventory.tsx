@@ -1,27 +1,25 @@
-import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Plus,
   Archive,
-  ChevronRight,
   Activity,
   FileText,
   Calculator,
   Download,
 } from "lucide-react";
 import Papa from "papaparse";
+import { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
+
 import { AddCylinderDialog } from "@/components/refrigerant/AddCylinderDialog";
 import { LogRefrigerantDialog } from "@/components/refrigerant/LogRefrigerantDialog";
-import { WarrantyCard } from "@/components/shared/WarrantyCard";
 import { SellingPointsCard } from "@/components/shared/SellingPointsCard";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { WarrantyCard } from "@/components/shared/WarrantyCard";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { supabase } from "@/lib/supabase";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { supabase } from "@/lib/supabase";
 import { Database } from "@/lib/supabase";
 
 type Cylinder = Database["public"]["Tables"]["refrigerant_cylinders"]["Row"];
@@ -40,6 +38,14 @@ export default function RefrigerantInventory() {
   }, [user, filter]);
 
   const fetchCylinders = async () => {
+    if (!supabase) {
+      toast({
+        title: "Error",
+        description: "Supabase client not configured.",
+        variant: "destructive",
+      });
+      return;
+    }
     try {
       setLoading(true);
       let query = supabase

@@ -179,7 +179,7 @@ export class PatternRecognitionService {
 
       if (error) throw error;
 
-      return (data || []).map((pattern) => ({
+      return (data || []).map((pattern: any) => ({
         pattern_id: pattern.pattern_id,
         pattern_type: pattern.pattern_type,
         pattern_data: pattern.pattern_data,
@@ -523,7 +523,7 @@ export class PatternRecognitionService {
 
     for (const pattern of patterns) {
       const createdAt = new Date(pattern.created_at || pattern.last_seen);
-      const season = this.getSeason(createdAt);
+      const season = this.getSeason(createdAt) as keyof typeof seasonalCounts;
       seasonalCounts[season]++;
       totalPatterns++;
     }
@@ -562,11 +562,6 @@ export class PatternRecognitionService {
       if (!patternData?.diagnosis) continue;
 
       const diagnosis = patternData.diagnosis;
-      const symptom = patternData.symptoms
-        ? patternData.symptoms[0]
-        : "General failure";
-      const lastSeen = new Date(pattern.last_seen);
-
       if (!failureModes[diagnosis]) {
         failureModes[diagnosis] = {
           symptom: diagnosis,
@@ -604,11 +599,11 @@ export class PatternRecognitionService {
       .sort((a, b) => b.frequency - a.frequency);
   }
 
-  private extractCommonCauses(patterns: any[]): string[] {
+  private extractCommonCauses(_patterns: any[]): string[] {
     return ["Lack of maintenance", "Age of equipment", "Environmental factors"];
   }
 
-  private extractPreventiveMeasures(patterns: any[]): string[] {
+  private extractPreventiveMeasures(_patterns: any[]): string[] {
     return [
       "Regular filter changes",
       "Annual maintenance",
@@ -633,12 +628,6 @@ export class PatternRecognitionService {
 
     // Calculate statistics
     const avgValue = values.reduce((sum, val) => sum + val, 0) / values.length;
-    const midpoints = expectedRanges.map(
-      (range) => (range.min + range.max) / 2,
-    );
-    const avgMidpoint =
-      midpoints.reduce((sum, mid) => sum + mid, 0) / midpoints.length;
-
     // Determine if values are consistently high or low
     const highCount = values.filter((val) => {
       const expected = expectedRanges.find((r) => val > r.max);
@@ -671,7 +660,7 @@ export class PatternRecognitionService {
     }
   }
 
-  private extractThresholdViolations(patterns: any[]) {
+  private extractThresholdViolations(_patterns: any[]) {
     return [
       {
         condition: "Pressure too high",
@@ -716,7 +705,7 @@ export class PatternRecognitionService {
     });
 
     // Find co-occurring parameters
-    for (const [sessionId, sessionPatterns] of sessions) {
+    for (const [, sessionPatterns] of sessions) {
       const sessionParams = sessionPatterns
         .map((p) => p.pattern_data?.parameter)
         .filter((p) => p);
@@ -740,7 +729,7 @@ export class PatternRecognitionService {
     }
 
     // Calculate correlation strength
-    for (const [param, data] of Object.entries(correlations)) {
+    for (const data of Object.values(correlations)) {
       data.correlation = data.coOccurrence / targetOccurrences;
     }
 
@@ -752,11 +741,11 @@ export class PatternRecognitionService {
       .map(([param]) => param);
   }
 
-  private extractDiagnosticClues(patterns: any[]): string[] {
+  private extractDiagnosticClues(_patterns: any[]): string[] {
     return ["Check for ice formation", "Listen for unusual noises"];
   }
 
-  private calculateSymptomIncrease(patterns: any[]) {
+  private calculateSymptomIncrease(_patterns: any[]) {
     return [
       {
         symptom: "High head pressure",
@@ -814,10 +803,8 @@ export class PatternRecognitionService {
   private calculateSeasonalRelevance(
     pattern: any,
     symptoms: string[],
-    measurements: Record<string, number>,
+    _measurements: Record<string, number>,
   ): number {
-    // Get the current season
-    const currentMonth = new Date().getMonth();
     const currentSeason = this.getSeason(new Date());
 
     // If pattern has seasonal data, calculate relevance

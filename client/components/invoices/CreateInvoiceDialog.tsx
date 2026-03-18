@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";  // Ensure this component exists, or use standard textarea if not
-import { Label } from "@/components/ui/label";
-import { supabase } from "@/lib/supabase";
-import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
+
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";  // Ensure this component exists, or use standard textarea if not
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
 
 interface CreateInvoiceDialogProps {
     jobId: string;
@@ -54,7 +55,9 @@ export function CreateInvoiceDialog({ jobId, clientId, companyId, onInvoiceCreat
 
         try {
             setLoading(true);
-
+            if (!supabase) {
+                throw new Error('Supabase client not configured');
+            }
             const { error } = await supabase
                 .from('invoices')
                 .insert({

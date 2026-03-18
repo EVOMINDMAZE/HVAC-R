@@ -1,19 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { supabase } from "@/lib/supabase";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { PageContainer } from "@/components/PageContainer";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
 import {
   Briefcase,
   Star,
@@ -24,7 +9,23 @@ import {
   CheckCircle,
   Shield,
 } from "lucide-react";
-import { format } from "date-fns";
+import { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
+
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { PageContainer } from "@/components/PageContainer";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { supabase } from "@/lib/supabase";
 
 interface SkillLog {
   id: string;

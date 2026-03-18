@@ -1,6 +1,7 @@
-import { useRef, useState, useEffect } from "react";
-import { X, ChevronLeft, ChevronRight, ArrowUpLeft, Heart, Share2, MoreVertical, Play, Pause } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { X, ChevronLeft, ChevronRight, ArrowUpLeft, Heart, Share2, MoreVertical, Play, Pause } from "lucide-react";
+import { useRef, useState, useEffect } from "react";
+
 import { Button } from "@/components/ui/button";
 import { SanityWebStory, getSanityImageUrl } from "@/lib/sanity";
 

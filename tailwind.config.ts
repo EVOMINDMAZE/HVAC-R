@@ -1,7 +1,8 @@
-import type { Config } from "tailwindcss";
-import animate from "tailwindcss-animate";
-// @ts-expect-error - typography does not have types exposed in this way usually but works in build
 import typography from "@tailwindcss/typography";
+import animate from "tailwindcss-animate";
+
+import type { Config } from "tailwindcss";
+// @ts-expect-error - typography does not have types exposed in this way usually but works in build
 
 export default {
   darkMode: ["class"],
@@ -17,8 +18,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Manrope", "sans-serif"],
-        display: ["Sora", "sans-serif"],
+        sans: ["Inter", "Manrope", "Sora", "sans-serif"],
+        display: ["Sora", "Inter", "Manrope", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
       },
       colors: {
@@ -83,6 +84,18 @@ export default {
           800: "#075985",
           900: "#0c4a6e",
         },
+        purple: {
+          50: "#f5f3ff",
+          100: "#ede9fe",
+          200: "#ddd6fe",
+          300: "#c4b5fd",
+          400: "#a78bfa",
+          500: "#6a53fe", // withcoherence.com primary accent
+          600: "#5b44d4",
+          700: "#4c36aa",
+          800: "#3d2980",
+          900: "#2e1d56",
+        },
         engineering: {
           blue: "#1e40af",
           cyan: "#0891b2",
@@ -91,15 +104,15 @@ export default {
           orange: "#ea580c",
           amber: "#d97706",
           red: "#dc2626",
-          purple: "#9333ea",
+          purple: "#6a53fe", // withcoherence.com primary accent
           indigo: "#4338ca",
         },
         brand: {
-          orange: "#ea580c", // ThermoNeural Orange (Primary)
-          amber: "#f59e0b", // Amber (Secondary accent)
+          orange: "#6a53fe", // withcoherence.com primary accent (replaces ThermoNeural Orange)
+          amber: "#c2b8ff", // withcoherence.com light purple (replaces Amber)
           red: "#DC2626", // Bright Red (Alerts)
-          dark: "#0F172A", // Slate 900 (Backgrounds)
-          slate: "#334155", // Slate 700 (Text)
+          dark: "#0c0a10", // Dark purple/black background
+          slate: "#928c97", // Muted purple/gray text
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

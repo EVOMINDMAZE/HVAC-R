@@ -1,23 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card";
-import { GlassCard } from "@/components/ui/glass-card";
 import { motion } from "framer-motion";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "../components/ui/tabs";
-import { Badge } from "../components/ui/badge";
-import { Separator } from "../components/ui/separator";
 import {
   Loader2,
   Calculator,
@@ -28,23 +9,49 @@ import {
   ArrowRight,
   Download,
 } from "lucide-react";
-import { apiClient } from "@/lib/api";
-import { EnhancedRefrigerantSelector } from "../components/EnhancedRefrigerantSelector";
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { useState, useCallback, useEffect, useMemo } from 'react';
+
 import { CycleVisualization } from "../components/CycleVisualization";
+import { EnhancedRefrigerantSelector } from "../components/EnhancedRefrigerantSelector";
 import { EquipmentDiagrams } from "../components/EquipmentDiagrams";
-import { SaveCalculation } from "../components/SaveCalculation";
 import { RenameCalculationDialog } from "../components/RenameCalculationDialog";
-import { ProfessionalFeatures } from "../components/ProfessionalFeatures";
+import { SaveCalculation } from "../components/SaveCalculation";
+import { Badge } from "../components/ui/badge";
+import { Button } from "../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { GlassCard } from "@/components/ui/glass-card";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../components/ui/tabs";
+import { Separator } from "../components/ui/separator";
+
+
 import { useOllamaRecommendedRange } from "@/hooks/useOllamaRecommendedRange";
+import { apiClient } from "@/lib/api";
+
+import { ProfessionalFeatures } from "../components/ProfessionalFeatures";
 import { useSupabaseCalculations } from "../hooks/useSupabaseCalculations";
+
 import { consumeCalculationPreset } from "@/lib/historyPresets";
+
 import { PageContainer } from "../components/PageContainer";
 import {
   RefrigerantProperties,
   validateCycleConditions,
   getRefrigerantById,
 } from "../lib/refrigerants";
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+
 
 // Animation Variants
 const fadeInUp = {
@@ -368,7 +375,7 @@ export function EnhancedStandardCycleContent() {
     setResults(null);
 
     // Defensive: if overrideParams looks like a DOM/Event accidentally passed by React (onClick passes event), ignore it
-    let safeOverride: Partial<typeof formData> | null = null;
+    let safeOverride: Partial<typeof formData> | null;
     try {
       if (
         overrideParams &&

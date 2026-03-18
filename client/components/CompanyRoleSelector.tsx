@@ -1,6 +1,3 @@
-import { useState, useRef, useEffect } from "react";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { useNavigate } from "react-router-dom";
 import {
   Building2,
   ChevronDown,
@@ -13,8 +10,11 @@ import {
   LogOut,
   Check,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { cn } from "@/lib/utils";
 
 const roleIcons: Record<string, React.ReactNode> = {

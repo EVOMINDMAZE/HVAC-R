@@ -1,6 +1,7 @@
 
-import React, { useState } from "react";
 import { Loader2, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
+import { useState, useEffect } from 'react';
+
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -13,17 +14,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "@/components/ui/tabs";
-import { supabase } from "@/lib/supabase";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { useToast } from "@/hooks/use-toast";
-import { Database } from "@/lib/supabase";
 import {
     Select,
     SelectContent,
@@ -31,6 +21,17 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select";
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { supabase } from "@/lib/supabase";
+import { Database } from "@/lib/supabase";
 
 type Cylinder = Database["public"]["Tables"]["refrigerant_cylinders"]["Row"];
 
@@ -51,9 +52,9 @@ export function LogRefrigerantDialog({ cylinder, onLogSuccess }: LogRefrigerantD
         asset_id: "",
         notes: "",
     });
-    const [assets, setAssets] = React.useState<{ id: string, name: string }[]>([]);
+    const [assets, setAssets] = useState<{ id: string, name: string }[]>([]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (open) {
             fetchAssets();
         }

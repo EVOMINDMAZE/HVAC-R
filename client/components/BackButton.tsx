@@ -1,5 +1,5 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
+
 import { Button } from "@/components/ui/button";
 
 export function BackButton({ fallback = "/dashboard", children }: { fallback?: string; children?: React.ReactNode }) {

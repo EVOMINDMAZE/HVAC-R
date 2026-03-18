@@ -1,8 +1,3 @@
-import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import {
   TrendingUp,
   Activity,
@@ -19,10 +14,18 @@ import {
   Thermometer,
   RefreshCw,
 } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
+
+import { SupabaseStatus } from "@/components/SupabaseStatus";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { useUserStats } from "@/hooks/useUserStats";
-import { useNavigate } from "react-router-dom";
-import { SupabaseStatus } from "@/components/SupabaseStatus";
+
+
 
 export function UnifiedDashboard() {
   const [time, setTime] = useState(new Date());

@@ -1,17 +1,3 @@
-import React, { useState, lazy, Suspense } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Loader2,
   History,
@@ -23,6 +9,23 @@ import {
   Ruler,
   Cloud,
 } from "lucide-react";
+import { useState, lazy, Suspense } from 'react';
+import { useNavigate } from "react-router-dom";
+
+import { PageContainer } from "@/components/PageContainer";
+import { SaveCalculation } from "@/components/SaveCalculation";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -30,11 +33,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { apiClient } from "@/lib/api";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
-import { PageContainer } from "@/components/PageContainer";
-import { Badge } from "@/components/ui/badge";
-import { SaveCalculation } from "@/components/SaveCalculation";
+import { apiClient } from "@/lib/api";
 
 // Lazy-load heavy calculator components
 const A2LCalculator = lazy(

@@ -1,6 +1,5 @@
-import React from "react";
-import { Footer } from "@/components/Footer";
 import { ApiServiceStatus } from "@/components/ApiServiceStatus";
+import { Footer } from "@/components/Footer";
 import { EnhancedStandardCycleContent } from "@/pages/EnhancedStandardCycle";
 
 // Main StandardCycle page that uses the enhanced tabbed version

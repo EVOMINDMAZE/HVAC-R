@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { MessageSquare } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+
+import { Button } from "@/components/ui/button";
 
 export function TestimonialsSection() {
   return (

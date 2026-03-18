@@ -1,4 +1,3 @@
-import { type CSSProperties } from "react";
 import {
   GaugeCircle,
   Info,
@@ -8,8 +7,12 @@ import {
   TrendingDown,
   TrendingUp,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { type CSSProperties } from "react";
+
 import type { MonitorKpiItem } from "@/types/monitor";
+
+import { cn } from "@/lib/utils";
+
 
 interface MonitorKpiStripProps {
   items: MonitorKpiItem[];

@@ -1,6 +1,7 @@
 #!/usr/bin/env tsx
-import { chromium, Browser, Page } from "@playwright/test";
 import fs from "fs";
+
+import { chromium, Browser, Page } from "@playwright/test";
 
 interface ConsoleMessage {
   timestamp: string;

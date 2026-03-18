@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { SEO } from "@/components/SEO";
-import { PageContainer } from "@/components/PageContainer";
-import { Button } from "@/components/ui/button";
-import { withPersistedUiFlags, shouldBypassAuth } from "@/lib/featureFlags";
+
+import type { ActionItem, RecentActivityItem, InsightCard, HeroMetric } from "@/components/infographic";
+
+import { AppFeedbackState } from "@/components/app/AppFeedbackState";
 import {
   OpsStatusBar,
   deriveOpsStages,
@@ -15,10 +15,13 @@ import {
   InsightsAccordion,
   HeroMetrics,
 } from "@/components/infographic";
-import type { ActionItem, RecentActivityItem, InsightCard, HeroMetric } from "@/components/infographic";
+import { PageContainer } from "@/components/PageContainer";
+import { SEO } from "@/components/SEO";
+import { Button } from "@/components/ui/button";
 import { useDashboardCommandCenter } from "@/hooks/useDashboardCommandCenter";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
 import { useRevenueAnalytics } from "@/hooks/useRevenueAnalytics";
+import { withPersistedUiFlags, shouldBypassAuth } from "@/lib/featureFlags";
 
 function deriveFirstName(user: any): string {
   const metadata = (user?.user_metadata ?? {}) as Record<string, unknown>;
@@ -224,13 +227,11 @@ export function DashboardV2() {
     return (
       <PageContainer variant="standard" className="dashboard-v2 dashboard-v2--loading">
         <SEO title="Dashboard" description="Loading command center..." />
-        <div className="dashboard-v2__skeleton">
-          <div className="dashboard-v2__skeleton-header" />
-          <div className="dashboard-v2__skeleton-content">
-            <div className="dashboard-v2__skeleton-card" />
-            <div className="dashboard-v2__skeleton-card" />
-          </div>
-        </div>
+        <AppFeedbackState
+          variant="loading"
+          title="Loading command center"
+          description="Preparing live operations, jobs, and performance signals."
+        />
       </PageContainer>
     );
   }
@@ -239,11 +240,12 @@ export function DashboardV2() {
     return (
       <PageContainer variant="standard" className="dashboard-v2 dashboard-v2--unauth">
         <SEO title="Dashboard" description="Please sign in" />
-        <div className="dashboard-v2__unauth">
-          <h2>Sign in required</h2>
-          <p>Please sign in to view your command center.</p>
-          <Button onClick={() => navigate("/signin")}>Sign In</Button>
-        </div>
+        <AppFeedbackState
+          variant="error"
+          title="Sign in required"
+          description="Please sign in to view your command center."
+          action={{ label: "Sign In", onClick: () => navigate("/signin") }}
+        />
       </PageContainer>
     );
   }

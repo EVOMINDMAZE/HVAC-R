@@ -1,7 +1,5 @@
-import React from "react";
 import { Search, Filter, MoreHorizontal } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Input } from "@/components/ui/input";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,6 +7,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 export interface Column<T> {
   key: keyof T | string;
@@ -30,10 +30,16 @@ export interface DataTableProps<T> {
   onFilterChange?: (value: string) => void;
   actions?: Array<{ label: string; onClick: (item: T) => void; icon?: React.ReactNode }>;
   emptyMessage?: string;
+  errorMessage?: string;
+  onRetry?: () => void;
   emptyIcon?: React.ReactNode;
   loading?: boolean;
   className?: string;
   onRowClick?: (item: T) => void;
+  page?: number;
+  pageSize?: number;
+  totalItems?: number;
+  onPageChange?: (page: number) => void;
 }
 
 export function DataTable<T extends Record<string, unknown>>({
@@ -47,12 +53,38 @@ export function DataTable<T extends Record<string, unknown>>({
   filterValue,
   onFilterChange,
   actions,
-  emptyMessage = "No data found",
+  emptyMessage = "No records match your filters.",
+  errorMessage,
+  onRetry,
   emptyIcon,
   loading = false,
   className,
   onRowClick,
+  page = 1,
+  pageSize = 25,
+  totalItems,
+  onPageChange,
 }: DataTableProps<T>) {
+  const effectiveTotalItems = totalItems ?? data.length;
+  const totalPages = Math.max(1, Math.ceil(effectiveTotalItems / pageSize));
+  const currentPage = Math.min(Math.max(1, page), totalPages);
+  const hasPagination = !!onPageChange && (totalItems !== undefined || data.length > pageSize);
+  const paginatedData = hasPagination
+    ? data
+    : data.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+  const totalColumns = columns.length + (actions ? 1 : 0);
+
+  const handleRowKeyDown = (event: React.KeyboardEvent<HTMLTableRowElement>, item: T) => {
+    if (!onRowClick) {
+      return;
+    }
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onRowClick(item);
+    }
+  };
+
   return (
     <div className={cn("data-table", className)}>
       {(onSearchChange || filterOptions) && (
@@ -103,25 +135,41 @@ export function DataTable<T extends Record<string, unknown>>({
           </thead>
 
           <tbody className="data-table__body">
-            {loading ? (
+            {errorMessage ? (
               <tr>
-                <td colSpan={columns.length + (actions ? 1 : 0)} className="data-table__loading">
+                <td colSpan={totalColumns} className="data-table__empty">
+                  <div className="flex flex-col items-center gap-3 py-6" role="alert" aria-live="assertive">
+                    <span className="text-sm font-semibold text-destructive">Unable to load table data.</span>
+                    <span className="text-xs text-muted-foreground">{errorMessage}</span>
+                    {onRetry ? (
+                      <Button variant="outline" size="sm" onClick={onRetry}>
+                        Try again
+                      </Button>
+                    ) : null}
+                  </div>
+                </td>
+              </tr>
+            ) : loading ? (
+              <tr>
+                <td colSpan={totalColumns} className="data-table__loading">
                   Loading...
                 </td>
               </tr>
-            ) : data.length === 0 ? (
+            ) : paginatedData.length === 0 ? (
               <tr>
-                <td colSpan={columns.length + (actions ? 1 : 0)} className="data-table__empty">
+                <td colSpan={totalColumns} className="data-table__empty">
                   {emptyIcon && <div className="data-table__empty-icon">{emptyIcon}</div>}
                   <span>{emptyMessage}</span>
                 </td>
               </tr>
             ) : (
-              data.map((item) => (
+              paginatedData.map((item) => (
                 <tr
                   key={keyExtractor(item)}
                   className={cn("data-table__row", onRowClick && "data-table__row--clickable")}
                   onClick={() => onRowClick?.(item)}
+                  onKeyDown={(event) => handleRowKeyDown(event, item)}
+                  tabIndex={onRowClick ? 0 : undefined}
                 >
                   {columns.map((column) => (
                     <td key={String(column.key)} className={cn("data-table__td", column.className)}>
@@ -158,6 +206,33 @@ export function DataTable<T extends Record<string, unknown>>({
           </tbody>
         </table>
       </div>
+      {hasPagination ? (
+        <div className="mt-3 flex items-center justify-between gap-2 border-t border-border/60 pt-3">
+          <p className="text-xs text-muted-foreground">
+            Page {currentPage} of {totalPages} • {effectiveTotalItems} total
+          </p>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={currentPage <= 1}
+              onClick={() => onPageChange(currentPage - 1)}
+            >
+              Previous
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={currentPage >= totalPages}
+              onClick={() => onPageChange(currentPage + 1)}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

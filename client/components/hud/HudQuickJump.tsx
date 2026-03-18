@@ -1,7 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { cn } from "@/lib/utils";
-import { withPersistedUiFlags } from "@/lib/featureFlags";
+
 import { HudBadge } from "@/components/hud/HudBadge";
+import { withPersistedUiFlags } from "@/lib/featureFlags";
+import { cn } from "@/lib/utils";
 
 type JumpItem = {
   key: "dispatch" | "triage" | "jobs" | "clients";

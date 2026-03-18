@@ -1,4 +1,3 @@
-import React from "react";
 import { cn } from "@/lib/utils";
 
 interface AppSectionCardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -16,7 +15,7 @@ export function AppSectionCard({
     <section
       className={cn(
         "app-surface app-elev-1",
-        padded ? "p-5 sm:p-6" : "p-0",
+        padded ? "p-5 sm:p-6 lg:p-7" : "p-0",
         className,
       )}
       {...props}

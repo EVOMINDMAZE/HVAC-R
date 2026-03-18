@@ -86,7 +86,7 @@ export function calculateSaturationTemperature(refrigerantId: string, pressurePs
     // 2. Convert Input Pressure (Gauge) to Targe Absolute Unit
 
     // Get PSIA
-    let psia = 0;
+    let psia: number;
     if (pressureInputUnit === "psig") {
         psia = pressurePsig + 14.696;
     } else {
@@ -109,7 +109,7 @@ export function calculateSaturationTemperature(refrigerantId: string, pressurePs
     // log_base(P) = A - B/(T + C)
     // T = (B / (A - log_base(P))) - C
 
-    let logP = 0;
+    let logP: number;
     if (data.equationType === "log10") {
         logP = Math.log10(P_target_abs);
     } else {

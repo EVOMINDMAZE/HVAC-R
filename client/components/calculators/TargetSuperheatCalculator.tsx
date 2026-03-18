@@ -1,4 +1,19 @@
-import React, { useState, useEffect } from "react";
+import {
+  Thermometer,
+  Save,
+  Info,
+  Calculator,
+  Gauge,
+  Bluetooth,
+  Link as LinkIcon,
+} from "lucide-react";
+import { Cloud, Loader2 } from "lucide-react";
+import { useState, useEffect, useMemo } from 'react';
+
+import { SaveCalculation } from "@/components/SaveCalculation";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,8 +23,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Select,
   SelectContent,
@@ -17,41 +30,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Thermometer,
-  Save,
-  Info,
-  ArrowUpRight,
-  Calculator,
-  Gauge,
-  Bluetooth,
-  Link as LinkIcon,
-  AlertCircle,
-} from "lucide-react";
-import { SaveCalculation } from "@/components/SaveCalculation";
-import { Badge } from "@/components/ui/badge";
-import {
-  getRefrigerantsByPopularity,
-  RefrigerantProperties,
-} from "@/lib/refrigerants";
+import { Switch } from "@/components/ui/switch";
+import { useBluetoothProbe } from "@/hooks/useBluetoothProbe";
+import { useGeolocation } from "@/hooks/useGeolocation";
+import { useWeatherAutoFill } from "@/hooks/useWeatherAutoFill";
 import {
   calculateSaturationTemperature,
   isRefrigerantSupported,
 } from "@/lib/pt-chart";
-import { Switch } from "@/components/ui/switch";
-import { useWeatherAutoFill } from "@/hooks/useWeatherAutoFill";
-import { useGeolocation } from "@/hooks/useGeolocation";
-import { Cloud, Loader2, MapPin } from "lucide-react";
-import { useBluetoothProbe } from "@/hooks/useBluetoothProbe";
+import {
+  getRefrigerantsByPopularity,
+  RefrigerantProperties,
+} from "@/lib/refrigerants";
 
 interface TargetSuperheatCalculatorProps {
   saveCalculation?: any;
 }
 
 export default function TargetSuperheatCalculator({
-  saveCalculation,
+  saveCalculation: _saveCalculation,
 }: TargetSuperheatCalculatorProps) {
-  const [refrigerants, setRefrigerants] = useState<RefrigerantProperties[]>(
+  const [refrigerants, _setRefrigerants] = useState<RefrigerantProperties[]>(
     getRefrigerantsByPopularity(),
   );
   const [selectedRefrigerant, setSelectedRefrigerant] =
@@ -84,14 +83,12 @@ export default function TargetSuperheatCalculator({
     connect,
     disconnect,
     isConnected,
-    device,
     data: probeData,
   } = useBluetoothProbe({ simulate: true });
 
   // Auto-update inputs from Probe Data
   useEffect(() => {
     if (isConnected && probeData) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setInputs((prev) => ({
         ...prev,
         // Map Probe Temperature -> Outdoor Dry Bulb (Example use case)
@@ -124,7 +121,6 @@ export default function TargetSuperheatCalculator({
   useEffect(() => {
     if (weather && !isConnected) {
       // Only auto-fill weather if NOT using probe
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setInputs((prev) => ({
         ...prev,
         outdoorDryBulb: weather.tempF.toFixed(1),
@@ -132,7 +128,7 @@ export default function TargetSuperheatCalculator({
     }
   }, [weather, isConnected]);
 
-  const result = React.useMemo(() => {
+  const result = useMemo(() => {
     let wb = parseFloat(inputs.indoorWetBulb);
     let db = parseFloat(inputs.outdoorDryBulb);
 

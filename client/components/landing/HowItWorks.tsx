@@ -1,10 +1,11 @@
-import { Settings, Brain, FileText, Sparkles, ArrowRight } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
+import { Settings, Brain, FileText, Sparkles, ArrowRight } from "lucide-react";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 const steps = [
   {

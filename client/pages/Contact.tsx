@@ -1,11 +1,13 @@
+import { Mail, Phone, MapPin, Clock, Send, Building2, User } from "lucide-react";
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import {
   Select,
   SelectContent,
@@ -13,8 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Mail, Phone, MapPin, Clock, Send, Building2, User } from "lucide-react";
-import { SEO } from "@/components/SEO";
+import { Textarea } from "@/components/ui/textarea";
 
 export function Contact() {
   const [formData, setFormData] = useState({

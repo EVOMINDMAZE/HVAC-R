@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+
 import type { MonitorOpsTelemetrySnapshot } from "@/types/monitorTelemetry";
+
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { supabase } from "@/lib/supabase";
 
 const OPS_ROUTE_RE =
   /^\/(dashboard(?:\/.*)?|portal|tech(?:\/.*)?|track-job(?:\/.*)?|history|profile|settings(?:\/.*)?|career)$/i;

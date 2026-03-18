@@ -37,14 +37,18 @@ test.describe("9 Scenarios Live Navigation Verification", () => {
         await page.waitForURL("**/select-company", { timeout: 15000 });
         await captureScreenshot(page, "s1_step1_select_company");
         
-        // 3. Verify selection cards
-        await expect(page.locator("text=ThermoTech HVAC")).toBeVisible();
-        await expect(page.locator("text=Demo Company")).toBeVisible();
+        // 3. Verify selection cards (target h3 headings)
+        await expect(page.locator('h3:has-text("ThermoTech HVAC")')).toBeVisible();
+        await expect(page.locator('h3:has-text("Demo Company")')).toBeVisible();
         
         // 4. Select First Company
-        await page.click("text=ThermoTech HVAC");
+        await page.locator('h3:has-text("ThermoTech HVAC")').click();
         await page.waitForURL("**/dashboard", { timeout: 15000 });
         await captureScreenshot(page, "s1_step2_dashboard_thermo");
+        // Verify company switcher shows ThermoTech HVAC
+        const switcherBtn = page.locator('button[role="combobox"]').filter({ hasNotText: 'Select Active Job' }).first();
+        await expect(switcherBtn).toBeVisible();
+        await expect(switcherBtn).toContainText('ThermoTech HVAC');
         
         // 5. Switch to Second Company
         // Click banner/profile menu to switch
@@ -52,9 +56,13 @@ test.describe("9 Scenarios Live Navigation Verification", () => {
         await page.click("text=Switch Company");
         await page.waitForURL("**/select-company");
         
-        await page.click("text=Demo Company");
+        await page.locator('h3:has-text("Demo Company")').click();
         await page.waitForURL("**/dashboard");
         await captureScreenshot(page, "s1_step3_dashboard_demo");
+        // Verify company switcher shows Demo Company
+        const switcherBtn2 = page.locator('button[role="combobox"]').filter({ hasNotText: 'Select Active Job' }).first();
+        await expect(switcherBtn2).toBeVisible();
+        await expect(switcherBtn2).toContainText('Demo Company');
     });
 
     // SCENARIO 2: Invitation Link System
@@ -177,13 +185,15 @@ test.describe("9 Scenarios Live Navigation Verification", () => {
         // Select First Company
         await page.waitForURL("**/select-company");
         await page.click("text=ThermoTech HVAC");
-        await expect(page.locator(".company-banner, .company-name")).toContainText("ThermoTech HVAC");
+        const switcherBtn = page.locator('button[role="combobox"]').filter({ hasNotText: 'Select Active Job' }).first();
+        await expect(switcherBtn).toContainText('ThermoTech HVAC');
         
         // Switch to Second
         await page.click('[data-testid="user-menu"]');
         await page.click("text=Switch Company");
         await page.click("text=Demo Company");
-        await expect(page.locator(".company-banner, .company-name")).toContainText("Demo Company");
+        const switcherBtn2 = page.locator('button[role="combobox"]').filter({ hasNotText: 'Select Active Job' }).first();
+        await expect(switcherBtn2).toContainText('Demo Company');
         await captureScreenshot(page, "s7_step1_company_isolation");
     });
 

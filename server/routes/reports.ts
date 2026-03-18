@@ -15,12 +15,9 @@ export const generateReportPdf: RequestHandler = async (req, res) => {
     const {
       reportConfig,
       results,
-      cycleData,
       costAnalysis,
       sustainability,
       diagramDataUrl,
-      refrigerant,
-      unitSystem,
     } = req.body as any;
 
     // Create PDF

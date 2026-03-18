@@ -1,7 +1,8 @@
 import { useLocation } from "react-router-dom";
-import { resolveFutureMonitorsFlag, resolveFutureMonitorsSkin } from "@/lib/featureFlags";
-import { useMonitorPageModel } from "@/hooks/useMonitorPageModel";
+
 import { MonitorDock } from "@/components/monitor/MonitorDock";
+import { useMonitorPageModel } from "@/hooks/useMonitorPageModel";
+import { resolveFutureMonitorsFlag, resolveFutureMonitorsSkin } from "@/lib/featureFlags";
 
 export function InlineMonitorSlot() {
   const location = useLocation();

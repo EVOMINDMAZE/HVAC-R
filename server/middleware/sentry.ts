@@ -37,7 +37,7 @@ export function initSentry() {
     
     profilesSampleRate: 0.1,
     
-    beforeSend(event, hint) {
+    beforeSend(event: any, hint: any) {
       const error = hint.originalException;
       
       if (error?.message?.includes('ECONNRESET')) {
@@ -51,7 +51,7 @@ export function initSentry() {
       return event;
     },
     
-    beforeBreadcrumb(breadcrumb) {
+    beforeBreadcrumb(breadcrumb: any) {
       if (breadcrumb.category === 'console' && breadcrumb.level === 'debug') {
         return null;
       }
@@ -109,7 +109,7 @@ export function sentryErrorHandler() {
   }
 
   return Sentry.Handlers.errorHandler({
-    shouldHandleError(error) {
+    shouldHandleError(error: any) {
       return error.status >= 400 && error.status < 600;
     },
   });

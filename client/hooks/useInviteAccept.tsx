@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
+
 import { useSupabaseAuth } from "./useSupabaseAuth";
+
+import { supabase } from "@/lib/supabase";
 import { isTokenError } from "@/utils/authErrorHandler";
 
 type InviteType = "code" | "link";

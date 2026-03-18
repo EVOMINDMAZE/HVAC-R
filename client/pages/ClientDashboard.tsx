@@ -1,9 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { Button } from "@/components/ui/button";
-import { supabase } from "@/lib/supabase";
+import { format } from "date-fns";
 import {
   AlertTriangle,
   CheckCircle,
@@ -13,12 +8,22 @@ import {
   Activity,
   Settings,
 } from "lucide-react";
-import { format } from "date-fns";
-import { LineChart, Line, ResponsiveContainer, YAxis } from "recharts";
-import { ClientNotificationSettings } from "@/components/settings/ClientNotificationSettings";
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from "react-router-dom";
+import { LineChart, Line, ResponsiveContainer, YAxis } from "recharts";
+
 import { AppPageHeader } from "@/components/app/AppPageHeader";
 import { AppSectionCard } from "@/components/app/AppSectionCard";
+import { ClientNotificationSettings } from "@/components/settings/ClientNotificationSettings";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { supabase } from "@/lib/supabase";
+
+
+
+
 
 interface Asset {
   id: string;

@@ -1,6 +1,6 @@
-import React from "react";
-import { cn } from "@/lib/utils";
 import { motion, HTMLMotionProps } from "framer-motion";
+
+import { cn } from "@/lib/utils";
 
 type PageContainerVariant = "standard" | "narrow" | "wide" | "full" | "prose";
 
@@ -27,6 +27,7 @@ export const PageContainer = ({
   withMotion = true,
   ...props
 }: PageContainerProps) => {
+  const htmlProps = props as unknown as React.HTMLAttributes<HTMLDivElement>;
   const containerClassName = cn(
     "mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12",
     variants[variant],
@@ -35,7 +36,7 @@ export const PageContainer = ({
 
   if (!withMotion) {
     return (
-      <div className={containerClassName} {...(props as any)}>
+      <div className={containerClassName} {...htmlProps}>
         {children}
       </div>
     );

@@ -1,6 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
+import { format } from "date-fns";
 import {
   Plus,
   Map,
@@ -16,10 +14,15 @@ import {
   Eye,
   Edit,
 } from "lucide-react";
-import { format } from "date-fns";
-import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
+import { useEffect, useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { AppFeedbackState } from "@/components/app/AppFeedbackState";
 import MapView from "@/components/dashboard/MapView";
+import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
 import { PageContainer } from "@/components/PageContainer";
+import { PageHero } from "@/components/shared/PageHero";
+import { StatsRow, type StatItem } from "@/components/shared/StatsRow";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -31,9 +34,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
-import { PageHero } from "@/components/shared/PageHero";
-import { StatsRow, type StatItem } from "@/components/shared/StatsRow";
-import { EmptyState } from "@/components/shared/EmptyState";
+import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 
 interface Job {
@@ -58,6 +59,7 @@ export default function Dispatch() {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -66,6 +68,7 @@ export default function Dispatch() {
 
   async function fetchJobs() {
     try {
+      setLoadError(null);
       const { data, error } = await supabase
         .from("jobs")
         .select(
@@ -82,6 +85,7 @@ export default function Dispatch() {
     } catch (err) {
       console.error("[Dispatch] Error fetching jobs:", err);
       setJobs([]);
+      setLoadError("We couldn’t load dispatch jobs right now. Please refresh and try again.");
     } finally {
       setLoading(false);
     }
@@ -278,18 +282,44 @@ export default function Dispatch() {
       ) : (
         <div className="dispatch-page__content">
           {loading ? (
-            <div className="dispatch-page__loading">
-              <div className="dispatch-page__loading-spinner" />
-              <span>Loading dispatch board...</span>
-            </div>
-          ) : filteredJobs.length === 0 ? (
-            <EmptyState
-              icon={<Calendar className="w-12 h-12" />}
-              title="No active jobs"
-              description="Create a new job to start dispatching technicians."
+            <AppFeedbackState
+              variant="loading"
+              title="Loading dispatch board"
+              description="Syncing jobs, assignments, and schedule slots."
+            />
+          ) : loadError ? (
+            <AppFeedbackState
+              variant="error"
+              title="Unable to load dispatch board"
+              description={loadError}
               action={{
-                label: "Create Job",
-                onClick: () => setShowCreateDialog(true),
+                label: "Try again",
+                onClick: () => {
+                  setLoading(true);
+                  fetchJobs();
+                },
+              }}
+            />
+          ) : filteredJobs.length === 0 ? (
+            <AppFeedbackState
+              variant="empty"
+              icon={<Calendar className="w-12 h-12" />}
+              title={searchTerm || statusFilter !== "all" ? "No matching jobs" : "No active jobs"}
+              description={
+                searchTerm || statusFilter !== "all"
+                  ? "No jobs match your search and filter combination yet."
+                  : "Create a new job to start dispatching technicians."
+              }
+              action={{
+                label: searchTerm || statusFilter !== "all" ? "Clear filters" : "Create Job",
+                onClick: () => {
+                  if (searchTerm || statusFilter !== "all") {
+                    setSearchTerm("");
+                    setStatusFilter("all");
+                    return;
+                  }
+                  setShowCreateDialog(true);
+                },
               }}
             />
           ) : (

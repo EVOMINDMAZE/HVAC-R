@@ -1,17 +1,3 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { useToast } from "@/hooks/useToast";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   Mail,
   Lock,
@@ -20,9 +6,24 @@ import {
   UserPlus,
   CheckCircle,
 } from "lucide-react";
-import { Header } from "@/components/Header";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+
 import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
 import { PageContainer } from "@/components/PageContainer";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { useToast } from "@/hooks/useToast";
 
 export function SignUp() {
   const [formData, setFormData] = useState({

@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+
 import { createGetSubscriptionHandler } from "../billing.js";
 
 function createMockResponse() {

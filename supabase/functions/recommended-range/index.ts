@@ -1,5 +1,5 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { serve } from "https://deno.land/std/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const createCorsHeaders = (origin: string | null) => {
   const allowedOrigin = origin && origin !== "null" ? origin : "*";
@@ -233,11 +233,10 @@ async function callOllama(
 
     try {
       return JSON.parse(bodyText);
-    } catch (parseError) {
-      throw new Error(
-        `Failed to parse Ollama response: ${parseError instanceof Error ? parseError.message : String(parseError)
-        } | body: ${bodyText.slice(0, 500)}`,
-      );
+    } catch (error) {
+      const message = `Failed to parse Ollama response: ${error instanceof Error ? error.message : String(error)
+        } | body: ${bodyText.slice(0, 500)}`;
+      throw new Error(message, { cause: error });
     }
   } catch (error) {
     clearTimeout(timeout);

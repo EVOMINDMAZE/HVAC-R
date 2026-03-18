@@ -1,4 +1,5 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, ReactNode, useCallback } from 'react';
+
 import { useMonitoring } from '../lib/monitoring';
 
 interface Props {
@@ -86,7 +87,7 @@ class ErrorBoundaryClass extends Component<Props, State> {
 export function ErrorBoundary({ children, fallback, onError }: Props) {
   const { error: logError } = useMonitoring();
 
-  const handleError = React.useCallback((err: Error, errorInfo: ErrorInfo) => {
+  const handleError = useCallback((err: Error, errorInfo: ErrorInfo) => {
     logError(err, { componentStack: errorInfo.componentStack });
     if (onError) {
       onError(err, errorInfo);
@@ -100,28 +101,5 @@ export function ErrorBoundary({ children, fallback, onError }: Props) {
   );
 }
 
-export function useErrorHandler() {
-  const { error } = useMonitoring();
 
-  return React.useCallback((err: Error) => {
-    error(err);
-  }, [error]);
-}
 
-interface AsyncErrorBoundaryState {
-  hasError: boolean;
-  error: Error | null;
-}
-
-export function withAsyncErrorBoundary<P extends object>(
-  WrappedComponent: React.ComponentType<P>,
-  fallback?: ReactNode
-) {
-  return function WithAsyncErrorBoundary(props: P) {
-    return (
-      <ErrorBoundary fallback={fallback}>
-        <WrappedComponent {...props} />
-      </ErrorBoundary>
-    );
-  };
-}

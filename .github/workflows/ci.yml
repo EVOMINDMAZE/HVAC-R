@@ -12,7 +12,7 @@ env:
 
 jobs:
   quality:
-    name: Lint, Typecheck, Unit Tests
+    name: Lint, Typecheck, Unit Tests, Coverage, Docs SOT
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -35,6 +35,31 @@ jobs:
 
       - name: Unit tests
         run: npm run test
+
+      - name: Coverage thresholds
+        run: npm run test:coverage
+
+      - name: Docs source-of-truth
+        run: npm run check:docs-sot
+
+  policy-automation:
+    name: RBAC, Privacy, and Security Policy Automation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Policy regression tests
+        run: npm run test:policy:automation
 
   # Security gate - runs npm audit and evaluates against allowlist
   security-gate:
@@ -59,7 +84,7 @@ jobs:
           npm audit --json > output/audit.json || true
 
       - name: Security gate
-        run: npx tsx scripts/security/ci-security-gate.ts output/audit.json .github/security-audit-allowlist.json
+        run: npm run audit:gate
 
       - name: Upload audit report
         uses: actions/upload-artifact@v4
@@ -101,7 +126,7 @@ jobs:
         run: npx wait-on http://localhost:3001 --timeout 60000
 
       - name: Run E2E smoke tests
-        run: npm run test:e2e -- e2e/flows/ci-reliability-smoke.spec.ts --project=chromium --retries=2
+        run: npm run test:ux:regression -- --retries=2
         env:
           PLAYWRIGHT_BASE_URL: http://localhost:3001
 

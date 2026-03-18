@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { normalizeBillingPlan } from "../compat/billingPlanCompat.js";
 
 describe("normalizeBillingPlan", () => {

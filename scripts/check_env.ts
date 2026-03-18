@@ -1,4 +1,5 @@
 import { config } from "dotenv";
+
 const result = config();
 console.log("Dotenv result:", result.error ? "Error" : "Success");
 console.log("VITE_SUPABASE_URL:", process.env.VITE_SUPABASE_URL ? "Defined" : "Undefined");

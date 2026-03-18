@@ -20,10 +20,12 @@
  *   This script is OPTIONAL for CI smoke tests (ci-reliability-smoke.spec.ts
  *   tests public pages only). For full E2E suites, run this before tests.
  */
-import { chromium, Browser, BrowserContext, Page } from "@playwright/test";
-import * as dotenv from "dotenv";
 import * as fs from "fs";
 import * as path from "path";
+
+import { chromium, Browser, BrowserContext, Page } from "@playwright/test";
+import * as dotenv from "dotenv";
+
 import { loginAs, USER_CREDENTIALS, UserRole } from "../e2e/helpers/auth";
 
 dotenv.config();
@@ -68,7 +70,6 @@ async function setupAuthForRole(
   console.log(`\n[${role}] Setting up auth (attempt ${retryCount + 1}/${MAX_RETRIES})...`);
 
   let browser: Browser | null = null;
-  let context: BrowserContext | null = null;
 
   try {
     browser = await chromium.launch({
@@ -76,7 +77,7 @@ async function setupAuthForRole(
       args: ["--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage"],
     });
 
-    context = await browser.newContext({
+    const context: BrowserContext = await browser.newContext({
       baseURL: BASE_URL,
       viewport: { width: 1400, height: 900 },
       ignoreHTTPSErrors: true,

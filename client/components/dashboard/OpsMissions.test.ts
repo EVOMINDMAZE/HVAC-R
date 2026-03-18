@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { computeReadiness, deriveOpsMissions } from "@/components/dashboard/OpsMissions";
+
 import type { MonitorOpsTelemetrySnapshot } from "@/types/monitorTelemetry";
+
+import { computeReadiness, deriveOpsMissions } from "@/components/dashboard/ops-missions-utils";
 
 function baseTelemetry(overrides: Partial<MonitorOpsTelemetrySnapshot> = {}): MonitorOpsTelemetrySnapshot {
   return {
@@ -55,7 +57,7 @@ describe("deriveOpsMissions", () => {
     });
 
     const missions = deriveOpsMissions(telemetry);
-    const map = new Map(missions.map((m) => [m.id, m]));
+    const map = new Map<string, (typeof missions)[number]>(missions.map((m) => [m.id, m]));
 
     expect(map.get("dispatch-queue")?.status).toBe("pending");
     expect(map.get("scheduled-today")?.status).toBe("complete");
@@ -83,4 +85,3 @@ describe("deriveOpsMissions", () => {
     expect(readiness.readinessPercent).toBe(100);
   });
 });
-

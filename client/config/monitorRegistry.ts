@@ -1,4 +1,3 @@
-import { metrics } from "@/config/metrics";
 import type { DashboardStats } from "@/hooks/useDashboardStats";
 import type { PipelineStats, RevenueStats } from "@/hooks/useRevenueAnalytics";
 import type { UserRole } from "@/hooks/useSupabaseAuth";
@@ -17,6 +16,8 @@ import type {
   MonitorPattern,
 } from "@/types/monitor";
 import type { MonitorOpsTelemetrySnapshot } from "@/types/monitorTelemetry";
+
+import { metrics } from "@/config/metrics";
 
 export interface NavigationTimingSnapshot {
   ttfbMs: number | null;
@@ -2084,7 +2085,7 @@ function resolvePresentationDefaults(
   let pattern: MonitorPattern = "grid";
   let icon: MonitorIconKey = "activity";
   let modeLabel = "SYSTEM";
-  let signatureLabel = fallbackSurface;
+  let signatureLabel: string;
   const defaultExpanded = false;
 
   if (entryId === "operations") {

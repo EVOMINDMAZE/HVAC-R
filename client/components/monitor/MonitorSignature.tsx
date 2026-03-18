@@ -1,4 +1,3 @@
-import React, { useMemo } from "react";
 import {
   Activity,
   Briefcase,
@@ -14,11 +13,15 @@ import {
   Truck,
   Users,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import type { MonitorPresentation, MonitorIconKey } from "@/types/monitor";
-import type { FutureMonitorSkin } from "@/lib/featureFlags";
+import { useMemo } from 'react';
+
+
 import type { HudBadgeKey } from "@/components/hud/HudBadge";
+import type { FutureMonitorSkin } from "@/lib/featureFlags";
+import type { MonitorPresentation, MonitorIconKey } from "@/types/monitor";
+
 import { HudBadge } from "@/components/hud/HudBadge";
+import { cn } from "@/lib/utils";
 
 const iconMap: Record<MonitorIconKey, React.ComponentType<{ className?: string }>> = {
   activity: Activity,

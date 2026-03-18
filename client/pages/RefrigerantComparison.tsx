@@ -1,23 +1,3 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { useToast } from "@/hooks/useToast";
-import { apiClient } from "@/lib/api";
-import { Footer } from "@/components/Footer";
-import { ApiServiceStatus } from "@/components/ApiServiceStatus";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Separator } from "@/components/ui/separator";
 import {
   Loader2,
   BarChart3,
@@ -29,16 +9,37 @@ import {
   Calculator,
   Info,
 } from "lucide-react";
-import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
-import { SaveCalculation } from "@/components/SaveCalculation";
-import { EnhancedRefrigerantSelector } from "@/components/EnhancedRefrigerantSelector";
+import { useState, useCallback, useEffect } from 'react';
+
+import { ApiServiceStatus } from "@/components/ApiServiceStatus";
 import { CycleVisualization } from "@/components/CycleVisualization";
+import { EnhancedRefrigerantSelector } from "@/components/EnhancedRefrigerantSelector";
+import { Footer } from "@/components/Footer";
+import { SaveCalculation } from "@/components/SaveCalculation";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { apiClient } from "@/lib/api";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
+import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
+import { useToast } from "@/hooks/useToast";
+import { consumeCalculationPreset } from "@/lib/historyPresets";
 import {
   validateCycleConditions,
   getRefrigerantById,
   REFRIGERANT_DATABASE,
 } from "@/lib/refrigerants";
-import { consumeCalculationPreset } from "@/lib/historyPresets";
 
 interface ComparisonFormData {
   refrigerants: string[];

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Calculator, FileText, Zap, Wrench, History, ExternalLink, BookOpen, Info, PlayCircle, Headphones, LayoutGrid, Cpu, Newspaper } from 'lucide-react';
 
 export const NAV_ITEMS: { to: string; label: string; icon: React.ComponentType<any> }[] = [

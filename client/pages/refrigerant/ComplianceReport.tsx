@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { Download, FileText, ArrowLeft, Loader2 } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
+
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -11,11 +14,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/lib/supabase";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/use-toast";
-import { Link } from "react-router-dom";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { supabase } from "@/lib/supabase";
+
 
 type LogEntry = {
   id: string;

@@ -1,4 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+
+import { supabaseAdmin } from '../../utils/supabase.js';
 import { 
   recordConsent, 
   getUserConsents, 
@@ -6,7 +8,6 @@ import {
   submitDataSubjectRequest, 
   exportUserData 
 } from '../privacy.js';
-import { supabaseAdmin } from '../../utils/supabase.js';
 
 // Mock supabaseAdmin and other dependencies
 vi.mock('../../utils/supabase.js', () => ({

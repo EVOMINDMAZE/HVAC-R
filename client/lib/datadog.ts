@@ -7,8 +7,8 @@
  * @module datadog-rum
  */
 
-import { datadogRum } from '@datadog/browser-rum';
 import { datadogLogs } from '@datadog/browser-logs';
+import { datadogRum } from '@datadog/browser-rum';
 
 const DATADOG_CLIENT_TOKEN = import.meta.env.VITE_DATADOG_CLIENT_TOKEN;
 const DATADOG_APPLICATION_ID = import.meta.env.VITE_DATADOG_APPLICATION_ID;
@@ -49,7 +49,7 @@ export function initDatadog() {
       trackResources: true,
       trackLongTasks: true,
       
-      beforeSend: (event) => {
+      beforeSend: (event: any) => {
         if (event.type === 'error' && event.error?.message?.includes('ResizeObserver')) {
           return false;
         }
@@ -60,7 +60,7 @@ export function initDatadog() {
         console.log('[Datadog] RUM initialized successfully');
       },
       
-      onLog: (log) => {
+      onLog: (log: any) => {
         console.log('[Datadog] Log:', log);
       },
     });
@@ -74,7 +74,7 @@ export function initDatadog() {
       forwardErrorsToLogs: true,
       sampleRate: 100,
       
-      beforeSend: (log) => {
+      beforeSend: (log: any) => {
         if (log.message?.includes('ResizeObserver')) {
           return false;
         }

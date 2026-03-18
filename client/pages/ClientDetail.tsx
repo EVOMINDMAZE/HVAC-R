@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
   Building,
@@ -23,6 +22,15 @@ import {
   Bell,
   BellOff,
 } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { useParams, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+import { AutomationRuleForm } from "@/components/AutomationRuleForm";
+import { GrantAccessDialog } from "@/components/GrantAccessDialog";
+import { PageContainer } from "@/components/PageContainer";
+import { SellingPointsCard } from "@/components/shared/SellingPointsCard";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -31,8 +39,6 @@ import {
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -42,8 +48,9 @@ import {
   DialogFooter,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectTrigger,
@@ -51,22 +58,18 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import { PageContainer } from "@/components/PageContainer";
-import { AutomationRuleForm } from "@/components/AutomationRuleForm";
-import { GrantAccessDialog } from "@/components/GrantAccessDialog";
-import { SellingPointsCard } from "@/components/shared/SellingPointsCard";
+import { supabase } from "@/lib/supabase";
+
+
 
 interface Client {
   id: string;

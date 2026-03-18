@@ -1,7 +1,9 @@
 import { ReactNode, useState, useCallback, useEffect } from "react";
-import { useSupabaseAuth } from "./useSupabaseAuth";
+
 import { useSubscription } from "./useStripe";
+import { useSupabaseAuth } from "./useSupabaseAuth";
 import { useUsageTracking } from "./useUsageTracking";
+
 import { FeatureLock, FeatureBadge } from "@/components/FeatureLock";
 import { UpgradeModal } from "@/components/UpgradeModal";
 

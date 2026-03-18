@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   AlertTriangle,
   Calendar,
@@ -10,15 +8,18 @@ import {
   Users,
   Wrench,
 } from "lucide-react";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { supabase } from "@/lib/supabase";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { PageContainer } from "@/components/PageContainer";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { AppPageHeader } from "@/components/app/AppPageHeader";
 import { AppSectionCard } from "@/components/app/AppSectionCard";
 import { AppStatCard } from "@/components/app/AppStatCard";
 import LiveMap, { MapMarker } from "@/components/job/LiveMap";
+import { PageContainer } from "@/components/PageContainer";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { supabase } from "@/lib/supabase";
 
 interface TechLocation {
   id: string;

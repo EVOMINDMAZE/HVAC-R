@@ -77,6 +77,7 @@ Required environment variables:
 - **Stripe**: `VITE_STRIPE_PUBLISHABLE_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`
 - **AI Providers**: `XAI_API_KEY`, `DEEPSEEK_API_KEY`, `GROQ_API_KEY` (for AI Gateway)
 - **Email/SMS**: `RESEND_API_KEY`, `TELNYX_API_KEY`, `TELNYX_FROM_NUMBER`
+- **Monitoring**: `VITE_SENTRY_DSN`, `VITE_SENTRY_ENVIRONMENT`, `VITE_SENTRY_RELEASE`, `VITE_DATADOG_CLIENT_TOKEN`, `VITE_DATADOG_APPLICATION_ID`, `VITE_DATADOG_ENVIRONMENT`, `VITE_DATADOG_SERVICE` (optional but recommended for production)
 
 ## Quick Start: One-Command Deployment
 
@@ -327,6 +328,54 @@ After deployment, verify all services:
 4. **Render**
    - [ ] Service healthy (Render Dashboard)
    - [ ] API responds: `curl https://your-service.onrender.com/health`
+
+## Supabase Cloud Synchronization
+
+### Quick Verification
+
+After resuming Supabase project or before deployments, verify synchronization:
+
+```bash
+# Run verification script
+npm run supabase:verify
+
+# Or directly
+node scripts/supabase-verify.cjs
+```
+
+This checks:
+- ✅ Edge Functions deployed and ACTIVE
+- ✅ Secrets configured (including GOOGLE_SERVICE_ACCOUNT_JSON)
+- ✅ Project linked correctly
+
+### Manual Cloud Verification
+
+```bash
+# List deployed functions
+supabase functions list
+
+# List configured secrets
+supabase secrets list
+
+# Verify project link
+supabase status
+```
+
+### Deploy Missing Functions
+
+```bash
+# Deploy specific function
+supabase functions deploy function-name
+
+# Deploy all functions
+for func in supabase/functions/*/; do
+  supabase functions deploy "$(basename "$func")"
+done
+```
+
+### Full Runbook
+
+For detailed troubleshooting and procedures, see the [Supabase Sync Runbook](../../docs/supabase-sync-runbook.md).
 
 ## Rollback Procedures
 

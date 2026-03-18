@@ -1,7 +1,7 @@
+import { useJob } from "@/context/job.context";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/useToast";
-import { useJob } from "@/context/JobContext";
+import { supabase } from "@/lib/supabase";
 
 export function useSkillTracker() {
     const { user } = useSupabaseAuth();

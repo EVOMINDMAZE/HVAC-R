@@ -1,10 +1,11 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Check, Sparkles, Zap, Crown, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
+import { Check, Sparkles, Zap, Crown, TrendingUp } from "lucide-react";
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 const pricingTiers = [
   {

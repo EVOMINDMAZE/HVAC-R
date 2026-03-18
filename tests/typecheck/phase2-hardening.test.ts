@@ -14,6 +14,19 @@
  */
 
 import { describe, expect, it } from "vitest";
+
+import {
+    toCompatEnvelope,
+    toCompatErrorEnvelope,
+    type RuntimePathLabel,
+} from "../../server/routes/compat/apiAdapter";
+import {
+    normalizeBillingPlan,
+    projectBillingPlanForRouteResponse,
+    type LegacyBillingPlan,
+    type CanonicalBillingPlan,
+} from "../../server/routes/compat/billingPlanCompat";
+import { BillingService } from "../../server/services/billing/BillingService";
 import {
     normalizeBillingDto,
     type BillingDto,
@@ -21,18 +34,6 @@ import {
     type BillingStatus,
     type BillingDtoInput,
 } from "../../shared/types/dtos";
-import { BillingService } from "../../server/services/billing/BillingService";
-import {
-    normalizeBillingPlan,
-    projectBillingPlanForRouteResponse,
-    type LegacyBillingPlan,
-    type CanonicalBillingPlan,
-} from "../../server/routes/compat/billingPlanCompat";
-import {
-    toCompatEnvelope,
-    toCompatErrorEnvelope,
-    type RuntimePathLabel,
-} from "../../server/routes/compat/apiAdapter";
 
 // ============================================================================
 // Type-level tests using expectTypeOf for compile-time verification

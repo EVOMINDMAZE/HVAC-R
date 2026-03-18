@@ -1,17 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { useAuth } from "@/hooks/useSupabaseAuth";
-import { useToast } from "@/hooks/useToast";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Capacitor } from "@capacitor/core";
 import {
   Mail,
   Lock,
@@ -21,16 +8,30 @@ import {
   Fingerprint,
   CheckCircle,
 } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { PageContainer } from "@/components/PageContainer";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/hooks/useSupabaseAuth";
+import { useToast } from "@/hooks/useToast";
 import {
   checkBiometricAvailability,
   getBiometricCredentials,
   storeCredentials,
   BiometricStatus,
 } from "@/lib/biometricAuth";
-import { Capacitor } from "@capacitor/core";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { PageContainer } from "@/components/PageContainer";
 
 export function SignIn() {
   const [formData, setFormData] = useState({
@@ -339,7 +340,7 @@ export function SignIn() {
                   </div>
 
                   {error && (
-                    <div className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                    <div className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive" data-testid="signin-error">
                       {error}
                     </div>
                   )}

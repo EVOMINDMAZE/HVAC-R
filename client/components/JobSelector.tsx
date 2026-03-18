@@ -1,16 +1,7 @@
-import { useEffect, useState } from "react";
-import { useJob, Job } from "@/context/JobContext";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { supabase } from "@/lib/supabase";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import { PlusCircle, Briefcase } from "lucide-react";
+import { useEffect, useState } from "react";
+
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -21,7 +12,18 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { useJob } from "@/context/job.context";
+import { Job } from "@/context/job.types";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
+import { supabase } from "@/lib/supabase";
 
 export function JobSelector() {
     const { currentJob, selectJob, clearJob } = useJob();

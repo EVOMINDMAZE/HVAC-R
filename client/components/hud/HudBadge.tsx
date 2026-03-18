@@ -1,5 +1,3 @@
-import { useEffect, useMemo, useState } from "react";
-import type { LucideIcon } from "lucide-react";
 import {
   Briefcase,
   Calculator,
@@ -16,6 +14,10 @@ import {
   Truck,
   Sparkles,
 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+
+import type { LucideIcon } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 export type HudBadgeKey =

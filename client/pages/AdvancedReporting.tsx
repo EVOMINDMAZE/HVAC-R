@@ -1,13 +1,15 @@
-import React, { useMemo, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { ProfessionalFeatures } from "@/components/ProfessionalFeatures";
-import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { FileText, Search, Download, Loader2, FileBarChart } from "lucide-react";
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { useMemo, useState } from 'react';
+
+import { ProfessionalFeatures } from "@/components/ProfessionalFeatures";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
+
 
 export function AdvancedReporting() {
   const { calculations, isLoading } = useSupabaseCalculations();

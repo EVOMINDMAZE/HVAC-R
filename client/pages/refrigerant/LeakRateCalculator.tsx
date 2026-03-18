@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import { format, differenceInDays } from "date-fns";
 import {
   ArrowLeft,
@@ -9,6 +8,10 @@ import {
   History,
   Database,
 } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
+
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,6 +20,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import {
   Select,
   SelectContent,
@@ -24,12 +28,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Link } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/use-toast";
-import { Progress } from "@/components/ui/progress";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { supabase } from "@/lib/supabase";
 
 type Asset = {
   id: string;
@@ -120,7 +121,7 @@ export default function LeakRateCalculator() {
     // Or if there's a previous log, we use the interval between them.
     // Usually, the interval is since the LAST addition.
 
-    let days = 365; // Default if no previous log (estimate 1 year)
+    let days: number;
     if (logData.length > 1) {
       days = differenceInDays(
         new Date(latestAddition.created_at),

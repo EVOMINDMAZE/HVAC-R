@@ -1,12 +1,13 @@
+import { Loader2, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
 import { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { useInviteAccept } from "@/hooks/useInviteAccept";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useSearchParams } from "react-router-dom";
+
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
+import { useInviteAccept } from "@/hooks/useInviteAccept";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 
 export default function JoinCompany() {

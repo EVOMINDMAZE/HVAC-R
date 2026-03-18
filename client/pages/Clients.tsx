@@ -1,12 +1,7 @@
-import { useState, useEffect } from "react";
-import { Footer } from "@/components/Footer";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
-  Plus,
   Search,
   Users,
-  Settings,
-  Trash2,
-  CheckCircle2,
   Clock,
   UserPlus,
   ArrowRight,
@@ -17,11 +12,23 @@ import {
   BarChart3,
   FileSpreadsheet,
   Download,
+  LayoutGrid,
+  Rows3,
+  ChevronDown,
+  Eye,
 } from "lucide-react";
 import Papa from "papaparse";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+
+import { AppFeedbackState } from "@/components/app/AppFeedbackState";
+import { AppPageHeader } from "@/components/app/AppPageHeader";
+import { AppSectionCard } from "@/components/app/AppSectionCard";
+import { AppStatCard } from "@/components/app/AppStatCard";
+import { Footer } from "@/components/Footer";
+import { PageContainer } from "@/components/PageContainer";
+import { SpreadsheetImporter } from "@/components/shared/SpreadsheetImporter";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Card,
   CardContent,
@@ -29,6 +36,11 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   Dialog,
   DialogContent,
@@ -38,17 +50,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { supabase } from "@/lib/supabase";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Link } from "react-router-dom";
-import { PageContainer } from "@/components/PageContainer";
-import { SpreadsheetImporter } from "@/components/shared/SpreadsheetImporter";
-import { AppPageHeader } from "@/components/app/AppPageHeader";
-import { AppSectionCard } from "@/components/app/AppSectionCard";
-import { AppStatCard } from "@/components/app/AppStatCard";
+import { supabase } from "@/lib/supabase";
+
+
 
 interface Client {
   id: string;
@@ -65,10 +73,13 @@ export function Clients() {
   const { addToast } = useToast();
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [viewMode, setViewMode] = useState<"cards" | "compact">("compact");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   const [newClient, setNewClient] = useState({
     name: "",
@@ -86,28 +97,44 @@ export function Clients() {
 
     try {
       setIsLoading(true);
+      setLoadError(null);
 
+      console.log("Fetching clients for user:", user.id);
+      console.log("Supabase client:", supabase);
+      
       // Get the company ID for the current user
+      console.log("Querying companies table for user_id:", user.id);
       const { data: companyData, error: companyError } = await supabase
         .from("companies")
         .select("id")
-        .eq("user_id", user.id)
-        .single();
+        .eq("user_id", user.id);
 
+      console.log("Company query result:", { companyData, companyError });
       if (companyError) throw companyError;
 
-      if (companyData) {
+      // companyData is now an array (could be empty)
+      const firstCompany = Array.isArray(companyData) && companyData.length > 0 ? companyData[0] : null;
+      
+      if (firstCompany) {
+        console.log("Found company ID:", firstCompany.id);
+        console.log("Querying clients for company_id:", firstCompany.id);
         const { data, error } = await supabase
           .from("clients")
           .select("*")
-          .eq("company_id", companyData.id)
+          .eq("company_id", firstCompany.id)
           .order("created_at", { ascending: false });
 
+        console.log("Clients query result:", { data, error });
         if (error) throw error;
         setClients(data || []);
+      } else {
+        console.log("No company found for user");
+        setClients([]);
       }
     } catch (err: any) {
       console.error("Error fetching clients:", err);
+      console.error("Error details:", err.message, err.stack);
+      setLoadError(err?.message || "Could not load clients.");
       addToast({
         title: "Error",
         description: "Failed to load clients. Please try again.",
@@ -371,14 +398,14 @@ export function Clients() {
                   <div className="grid gap-2">
                     <Label
                       htmlFor="name"
-                      className="text-sm font-semibold text-gray-700"
+                      className="text-sm font-semibold text-foreground"
                     >
                       Full Name
                     </Label>
                     <Input
                       id="name"
                       placeholder="e.g. John Smith"
-                      className="rounded-xl border-gray-200 focus:ring-cyan-500"
+                      className="rounded-xl border-border"
                       value={newClient.name}
                       onChange={(e) =>
                         setNewClient({ ...newClient, name: e.target.value })
@@ -388,7 +415,7 @@ export function Clients() {
                   <div className="grid gap-2">
                     <Label
                       htmlFor="email"
-                      className="text-sm font-semibold text-gray-700"
+                      className="text-sm font-semibold text-foreground"
                     >
                       Email Address
                     </Label>
@@ -396,7 +423,7 @@ export function Clients() {
                       id="email"
                       type="email"
                       placeholder="john@example.com"
-                      className="rounded-xl border-gray-200 focus:ring-cyan-500"
+                      className="rounded-xl border-border"
                       value={newClient.email}
                       onChange={(e) =>
                         setNewClient({ ...newClient, email: e.target.value })
@@ -406,14 +433,14 @@ export function Clients() {
                   <div className="grid gap-2">
                     <Label
                       htmlFor="phone"
-                      className="text-sm font-semibold text-gray-700"
+                      className="text-sm font-semibold text-foreground"
                     >
                       Phone Number
                     </Label>
                     <Input
                       id="phone"
                       placeholder="(555) 000-0000"
-                      className="rounded-xl border-gray-200 focus:ring-cyan-500"
+                      className="rounded-xl border-border"
                       value={newClient.phone}
                       onChange={(e) =>
                         setNewClient({ ...newClient, phone: e.target.value })
@@ -423,14 +450,14 @@ export function Clients() {
                   <div className="grid gap-2">
                     <Label
                       htmlFor="address"
-                      className="text-sm font-semibold text-gray-700"
+                      className="text-sm font-semibold text-foreground"
                     >
                       Service Address
                     </Label>
                     <Input
                       id="address"
                       placeholder="Street, City, Zip"
-                      className="rounded-xl border-gray-200 focus:ring-cyan-500"
+                      className="rounded-xl border-border"
                       value={newClient.address}
                       onChange={(e) =>
                         setNewClient({ ...newClient, address: e.target.value })
@@ -449,7 +476,7 @@ export function Clients() {
                   <Button
                     onClick={handleCreateClient}
                     disabled={isCreating}
-                    className="bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl px-8"
+                    className="rounded-xl px-8"
                   >
                     {isCreating ? (
                       <div className="flex items-center gap-2">
@@ -497,9 +524,9 @@ export function Clients() {
           ].map((stat, i) => (
             <motion.div
               key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
+              initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
+              transition={{ delay: prefersReducedMotion ? 0 : i * 0.08, duration: prefersReducedMotion ? 0 : 0.16 }}
             >
               <AppStatCard
                 label={stat.label}
@@ -522,58 +549,57 @@ export function Clients() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <Button
-            variant="outline"
-            className="h-11 rounded-2xl px-6 gap-2"
-          >
-            <Settings className="h-4 w-4 text-muted-foreground" />
-            <span>Filter</span>
-          </Button>
+          <div className="inline-flex rounded-2xl border border-input bg-background p-1">
+            <Button
+              variant={viewMode === "compact" ? "default" : "ghost"}
+              size="sm"
+              className="h-9 gap-2"
+              onClick={() => setViewMode("compact")}
+            >
+              <Rows3 className="h-4 w-4" />
+              Compact
+            </Button>
+            <Button
+              variant={viewMode === "cards" ? "default" : "ghost"}
+              size="sm"
+              className="h-9 gap-2"
+              onClick={() => setViewMode("cards")}
+            >
+              <LayoutGrid className="h-4 w-4" />
+              Cards
+            </Button>
+          </div>
         </AppSectionCard>
 
         {/* Content Area */}
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3, 4, 5, 6].map((n) => (
-              <div
-                key={n}
-                className="bg-card p-8 rounded-3xl border border-gray-100 dark:border-slate-800 space-y-4"
-              >
-                <Skeleton className="h-12 w-12 rounded-2xl" />
-                <Skeleton className="h-6 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-                <div className="pt-4 space-y-2">
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-full" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : filteredClients.length > 0 ? (
+          <AppFeedbackState
+            variant="loading"
+            title="Loading clients"
+            description="Fetching customer records and account details."
+          />
+        ) : loadError ? (
+          <AppFeedbackState
+            variant="error"
+            title="Unable to load clients"
+            description={loadError}
+            action={{ label: "Try again", onClick: fetchClients }}
+          />
+        ) : filteredClients.length > 0 && viewMode === "cards" ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <AnimatePresence>
               {filteredClients.map((client, index) => (
                 <motion.div
                   key={client.id}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ delay: index * 0.05 }}
+                  exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.98 }}
+                  transition={{ delay: prefersReducedMotion ? 0 : index * 0.04, duration: prefersReducedMotion ? 0 : 0.16 }}
                   className="group"
                 >
-                  <Card className="h-full rounded-[2rem] border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm hover:shadow-xl hover:shadow-cyan-500/5 transition-all duration-300 overflow-hidden relative group">
-                    <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </Button>
-                    </div>
-
+                  <Card className="group relative h-full overflow-hidden rounded-[2rem] border-border bg-card shadow-sm motion-interactive motion-card-feedback hover:shadow-xl">
                     <CardHeader className="pb-4">
-                      <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-cyan-500 to-slate-600 flex items-center justify-center text-white mb-6 shadow-lg shadow-cyan-200">
+                      <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-lg shadow-primary/20">
                         <span className="text-2xl font-bold">
                           {client.name
                             .split(" ")
@@ -581,7 +607,7 @@ export function Clients() {
                             .join("")}
                         </span>
                       </div>
-                      <CardTitle className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 transition-colors">
+                      <CardTitle className="text-xl font-bold text-foreground motion-interactive-micro group-hover:text-primary">
                         {client.name}
                       </CardTitle>
                       <CardDescription className="flex items-center gap-2">
@@ -592,25 +618,25 @@ export function Clients() {
 
                     <CardContent className="space-y-6">
                       <div className="space-y-3">
-                        <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 group-hover:bg-cyan-50 dark:group-hover:bg-cyan-900/20 transition-colors">
-                          <Mail className="w-4 h-4 text-cyan-500" />
+                        <div className="flex items-center gap-3 rounded-2xl bg-muted/50 p-3 text-sm text-muted-foreground transition-colors group-hover:bg-muted">
+                          <Mail className="h-4 w-4 text-primary" />
                           <span className="truncate">
                             {client.contact_email || "No email"}
                           </span>
                         </div>
-                        <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 group-hover:bg-cyan-50 dark:group-hover:bg-cyan-900/20 transition-colors">
-                          <Phone className="w-4 h-4 text-cyan-500" />
+                        <div className="flex items-center gap-3 rounded-2xl bg-muted/50 p-3 text-sm text-muted-foreground transition-colors group-hover:bg-muted">
+                          <Phone className="h-4 w-4 text-primary" />
                           <span>{client.contact_phone || "No phone"}</span>
                         </div>
                       </div>
 
-                      <div className="pt-6 border-t border-slate-100 dark:border-slate-800">
+                      <div className="border-t border-border pt-6">
                         <Link
                           to={`/dashboard/clients/${client.id}`}
-                          className="w-full inline-flex items-center justify-center h-12 rounded-2xl bg-slate-900 dark:bg-cyan-600 text-white font-medium hover:bg-slate-800 dark:hover:bg-cyan-700 transition-all gap-2 group/btn"
+                          className="group/btn inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-primary font-medium text-primary-foreground motion-interactive hover:bg-primary/90"
                         >
                           View Profile
-                          <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
+                          <ArrowRight className="w-4 h-4 motion-interactive-micro group-hover/btn:translate-x-1" />
                         </Link>
                       </div>
                     </CardContent>
@@ -619,32 +645,79 @@ export function Clients() {
               ))}
             </AnimatePresence>
           </div>
+        ) : filteredClients.length > 0 ? (
+          <div className="space-y-3">
+            <AnimatePresence>
+              {filteredClients.map((client, index) => (
+                <motion.div
+                  key={client.id}
+                  initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -12 }}
+                  transition={{ delay: prefersReducedMotion ? 0 : index * 0.03, duration: prefersReducedMotion ? 0 : 0.16 }}
+                >
+                  <Card className="border-border bg-card/70">
+                    <CardContent className="p-4">
+                      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                        <div className="min-w-0">
+                          <h3 className="truncate text-base font-semibold text-foreground">{client.name}</h3>
+                          <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                            <span className="inline-flex items-center">
+                              <Mail className="mr-1 h-3.5 w-3.5 text-primary" />
+                              {client.contact_email || "No email"}
+                            </span>
+                            <span className="inline-flex items-center">
+                              <Phone className="mr-1 h-3.5 w-3.5 text-primary" />
+                              {client.contact_phone || "No phone"}
+                            </span>
+                          </div>
+                        </div>
+                        <Button asChild variant="outline" size="sm" className="gap-2">
+                          <Link to={`/dashboard/clients/${client.id}`}>
+                            <Eye className="h-4 w-4" />
+                            Open
+                          </Link>
+                        </Button>
+                      </div>
+                      <Collapsible className="mt-3 border-t border-border pt-3">
+                        <CollapsibleTrigger asChild>
+                          <Button variant="ghost" size="sm" className="gap-2 px-0 text-muted-foreground">
+                            More details
+                            <ChevronDown className="h-4 w-4" />
+                          </Button>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="pt-2 text-sm text-muted-foreground">
+                          {client.address ? client.address : "No address provided"}
+                        </CollapsibleContent>
+                      </Collapsible>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
         ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-32 bg-card rounded-[3rem] border border-dashed border-gray-300 dark:border-slate-700"
-          >
-            <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Users className="w-12 h-12 text-gray-300" />
-            </div>
-            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-              No clients found
-            </h3>
-            <p className="text-slate-500 max-w-sm mx-auto mb-8">
-              {searchQuery
-                ? `No results for "${searchQuery}". Try a different term or clear filters.`
-                : "Start building your customer base by adding your first client."}
-            </p>
-            {!searchQuery && (
-              <Button
-                onClick={() => setIsDialogOpen(true)}
-                className="bg-cyan-600 hover:bg-cyan-700 text-white px-8 h-12 rounded-xl"
-              >
-                Add Your First Client
-              </Button>
-            )}
-          </motion.div>
+          <AppFeedbackState
+            variant="empty"
+            icon={<Users className="h-8 w-8 text-muted-foreground" />}
+            title={searchQuery ? "No matching clients" : "No clients yet"}
+            description={
+              searchQuery
+                ? `No results for "${searchQuery}". Try another keyword or clear your search.`
+                : "Start building your customer base by adding your first client."
+            }
+            action={
+              searchQuery
+                ? {
+                    label: "Clear search",
+                    onClick: () => setSearchQuery(""),
+                  }
+                : {
+                    label: "Add your first client",
+                    onClick: () => setIsDialogOpen(true),
+                  }
+            }
+          />
         )}
       </PageContainer>
       <Footer />

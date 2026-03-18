@@ -1,5 +1,7 @@
 import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
+
+import { trackPerformance } from "../middleware/monitoring.js";
 import {
   AuthValidationResult,
   AuthValidationPath,
@@ -7,8 +9,8 @@ import {
   runAuthCompatibilityGuard,
   toCompatAuthContext,
 } from "../routes/compat/authAdapter.js";
+
 import { getSupabaseClient } from "./supabase.js";
-import { trackPerformance } from "../middleware/monitoring.js";
 
 type ValidateTokenFn = (token: string) => Promise<AuthValidationResult>;
 
@@ -34,6 +36,24 @@ function getRuntimePathFromRequest(req: any): string | undefined {
     : req.headers?.["x-runtime-path"];
 
   return req.runtimePath || headerRuntimePath;
+}
+
+function extractBearerToken(value?: string): string | null {
+  if (!value) {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  if (trimmed.length === 0) {
+    return null;
+  }
+
+  const bearerMatch = /^bearer\s+(.+)$/i.exec(trimmed);
+  if (bearerMatch?.[1]) {
+    return bearerMatch[1].trim() || null;
+  }
+
+  return null;
 }
 
 const validateCanonicalToken: ValidateTokenFn = async (token) => {
@@ -118,7 +138,10 @@ export function createAuthenticateSupabaseToken(deps?: {
   return async (req, res, next): Promise<void> => {
     try {
       console.log("Auth middleware called for:", req.path);
-      const token = req.headers.authorization?.replace("Bearer ", "");
+      const rawAuthorization = Array.isArray(req.headers.authorization)
+        ? req.headers.authorization[0]
+        : req.headers.authorization;
+      const token = extractBearerToken(rawAuthorization);
 
       if (!token) {
         console.log("No token provided");

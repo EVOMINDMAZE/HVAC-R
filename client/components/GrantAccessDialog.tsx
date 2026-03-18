@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Mail, Loader2, UserPlus, Link } from 'lucide-react';
+import { useState } from 'react';
+
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { supabase } from '@/lib/supabase';
-import { useToast } from '@/components/ui/use-toast';
-import { Mail, Loader2, UserPlus, Link } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '@/lib/supabase';
 
 interface GrantAccessDialogProps {
     open: boolean;
@@ -24,6 +25,9 @@ export function GrantAccessDialog({ open, onOpenChange, clientId }: GrantAccessD
         if (!email) return;
         setLoading(true);
         try {
+            if (!supabase) {
+                throw new Error('Supabase client not configured');
+            }
             const { error } = await supabase.rpc('grant_client_access', {
                 target_email: email,
                 target_client_id: clientId
@@ -55,6 +59,9 @@ export function GrantAccessDialog({ open, onOpenChange, clientId }: GrantAccessD
         }
         setLoading(true);
         try {
+            if (!supabase) {
+                throw new Error('Supabase client not configured');
+            }
             const { error } = await supabase.functions.invoke('invite-user', {
                 body: {
                     email,

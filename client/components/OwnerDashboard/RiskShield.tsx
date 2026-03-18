@@ -1,17 +1,18 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { ShieldCheck, FileCheck, Download, Loader2 } from "lucide-react";
+import { useState } from "react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { useJob } from "@/context/job.context";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { supabase } from "@/lib/supabase";
 import {
   generateWinterizationCert,
   generateCommissioningCert,
   generateMaintenanceCert,
   downloadPdf,
 } from "@/utils/pdfGenerator";
-import { useJob } from "@/context/JobContext";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { supabase } from "@/lib/supabase";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
 
 export function RiskShield() {
   const { currentJob } = useJob();

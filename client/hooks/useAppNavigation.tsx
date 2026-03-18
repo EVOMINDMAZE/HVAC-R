@@ -23,6 +23,7 @@ import {
   User,
   ShieldCheck,
 } from "lucide-react";
+
 import { useAuth } from "@/hooks/useSupabaseAuth";
 
 export interface NavItem {

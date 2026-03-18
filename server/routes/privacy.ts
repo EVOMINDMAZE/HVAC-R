@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
+
 import { supabaseAdmin, getSupabaseClient } from "../utils/supabase.js";
-import { authenticateSupabaseToken } from "../utils/supabaseAuth.js";
 
 interface ConsentRequest {
   consent_type: string;
@@ -51,9 +51,13 @@ export const recordConsent: RequestHandler = async (req, res) => {
     if (!userId) {
       return res.status(401).json({ error: 'Authentication required' });
     }
+    const admin = supabaseAdmin;
+    if (!admin) {
+      return res.status(500).json({ error: "Supabase admin client not configured" });
+    }
 
     // Record consent via RPC function
-    const { data, error } = await supabaseAdmin.rpc('record_consent', {
+    const { data, error } = await admin.rpc('record_consent', {
       p_user_id: userId,
       p_consent_type: consent_type,
       p_consent_version: consent_version,
@@ -89,8 +93,12 @@ export const getUserConsents: RequestHandler = async (req, res) => {
     if (!userId) {
       return res.status(401).json({ error: 'Authentication required' });
     }
+    const admin = supabaseAdmin;
+    if (!admin) {
+      return res.status(500).json({ error: "Supabase admin client not configured" });
+    }
 
-    const { data, error } = await supabaseAdmin.rpc('get_user_consents', {
+    const { data, error } = await admin.rpc('get_user_consents', {
       p_user_id: userId
     });
 
@@ -128,10 +136,14 @@ export const checkConsent: RequestHandler = async (req, res) => {
     if (!userId) {
       return res.status(401).json({ error: 'Authentication required' });
     }
+    const admin = supabaseAdmin;
+    if (!admin) {
+      return res.status(500).json({ error: "Supabase admin client not configured" });
+    }
 
     const version = typeof consent_version === 'string' ? consent_version : 'latest';
     
-    const { data, error } = await supabaseAdmin.rpc('has_consent', {
+    const { data, error } = await admin.rpc('has_consent', {
       p_user_id: userId,
       p_consent_type: consent_type,
       p_consent_version: version

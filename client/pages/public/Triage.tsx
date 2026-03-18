@@ -1,19 +1,4 @@
-import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { supabase } from "@/lib/supabase";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  CardFooter,
-} from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
 import {
   CheckCircle,
   UploadCloud,
@@ -24,10 +9,26 @@ import {
   ImageIcon,
   ClipboardCheck,
 } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
-import { Header } from "@/components/Header";
+import { useState } from 'react';
+
 import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
 import { PageContainer } from "@/components/PageContainer";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
 
 export default function Triage() {
   const { toast } = useToast();

@@ -1,11 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Header } from "@/components/Header";
-import { Sidebar } from "@/components/Sidebar";
-import { QuickSearch } from "@/components/QuickSearch";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { ConsentBanner } from "@/components/ConsentBanner";
-
+import { useCallback, useEffect, useState } from 'react';
 import { Outlet } from "react-router-dom";
+
+import { ConsentBanner } from "@/components/ConsentBanner";
+import { Header } from "@/components/Header";
+import { QuickSearch } from "@/components/QuickSearch";
+import { Sidebar } from "@/components/Sidebar";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+
 
 export function Layout({ children }: { children?: React.ReactNode }) {
   const { isAuthenticated } = useSupabaseAuth();
@@ -30,10 +31,10 @@ export function Layout({ children }: { children?: React.ReactNode }) {
   }, [onKeyDown]);
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground flex flex-col">
+    <div className="app-shell app-bg min-h-screen flex flex-col overflow-x-clip">
       <Header variant={isAuthenticated ? "dashboard" : "landing"} onOpenSearch={() => setSearchOpen(true)} />
       <Sidebar />
-      <main className="flex-1 w-full">
+      <main className="flex-1 w-full overflow-x-clip">
         {children || <Outlet />}
       </main>
       <QuickSearch open={searchOpen} onClose={() => setSearchOpen(false)} />

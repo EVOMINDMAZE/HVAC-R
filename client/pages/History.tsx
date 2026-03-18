@@ -1,21 +1,3 @@
-import { useCallback, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  useSupabaseCalculations,
-  Calculation,
-} from "@/hooks/useSupabaseCalculations";
-import { useToast } from "@/hooks/useToast";
-import { Footer } from "@/components/Footer";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
   Search,
   Calendar,
@@ -34,7 +16,40 @@ import {
   Pencil,
   FileText,
 } from "lucide-react";
+import { useCallback, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { AppPageHeader } from "@/components/app/AppPageHeader";
+import { AppSectionCard } from "@/components/app/AppSectionCard";
+import { AppStatCard } from "@/components/app/AppStatCard";
+import { CalculationDetailsModal } from "@/components/CalculationDetailsModal";
+import { Footer } from "@/components/Footer";
 import { PageContainer } from "@/components/PageContainer";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  useSupabaseCalculations,
+  Calculation,
+} from "@/hooks/useSupabaseCalculations";
+import { useToast } from "@/hooks/useToast";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -57,22 +72,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { CalculationDetailsModal } from "@/components/CalculationDetailsModal";
 import { RenameCalculationDialog } from "@/components/RenameCalculationDialog";
 import { storeCalculationPreset } from "@/lib/historyPresets";
-import { AppPageHeader } from "@/components/app/AppPageHeader";
-import { AppSectionCard } from "@/components/app/AppSectionCard";
-import { AppStatCard } from "@/components/app/AppStatCard";
 
 export function History() {
   const {

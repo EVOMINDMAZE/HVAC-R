@@ -60,3 +60,4 @@ output/**/*.html
 screenshots/
 playwright/.auth/*.json
 *.pid
+archive/

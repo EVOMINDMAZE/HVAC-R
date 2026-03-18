@@ -337,7 +337,7 @@ export const enhancedTroubleshoot: import("express").RequestHandler = async (
 };
 
 // Helper function to generate pattern-aware recommendations
-function generatePatternAwareRecommendations(patterns: any[], context: any) {
+function generatePatternAwareRecommendations(patterns: any[], _context: any) {
   const recommendations = [];
   const topPatterns = patterns.slice(0, 3);
 

@@ -1,12 +1,13 @@
 
 import { RequestHandler } from "express";
+
 import { calculateSimpleCycle } from "../utils/thermo.js";
 
-import {
+import type {
     AirflowRequest,
     DeltaTRequest,
     StandardCycleRequest
-} from "@shared/types/dtos";
+} from "../../shared/types/dtos";
 
 export const calculateAirflow: RequestHandler = (req, res) => {
     try {
@@ -283,4 +284,3 @@ export const calculateCascadeCycleEndpoint: RequestHandler = (req, res) => {
         res.status(500).json({ error: e.message || "Cascade Calculation failed" });
     }
 };
-

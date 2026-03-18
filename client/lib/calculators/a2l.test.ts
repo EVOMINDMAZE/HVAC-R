@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { calculateA2LChargeLimit, calculateMinAreaForA2L } from './a2l';
 
 describe('A2L Calculator Logic', () => {

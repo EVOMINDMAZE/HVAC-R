@@ -1,7 +1,8 @@
 import { RequestHandler } from "express";
-import { supabaseAdmin, getSupabaseClient } from "../utils/supabase.js";
 
-import { SaveCalculationRequest } from "@shared/types/dtos";
+import { getSupabaseClient } from "../utils/supabase.js";
+
+import type { SaveCalculationRequest } from "../../shared/types/dtos";
 
 export const saveCalculation: RequestHandler = async (req, res) => {
   try {
@@ -108,7 +109,6 @@ export const saveCalculation: RequestHandler = async (req, res) => {
 
 export const getCalculations: RequestHandler = async (req, res) => {
   try {
-    const user = (req as any).user;
     const token = req.headers.authorization;
 
     const supabase = getSupabaseClient(token);
@@ -139,7 +139,6 @@ export const getCalculations: RequestHandler = async (req, res) => {
 
 export const getCalculation: RequestHandler = async (req, res) => {
   try {
-    const user = (req as any).user;
     const { id } = req.params;
     const token = req.headers.authorization;
 
@@ -176,7 +175,6 @@ export const getCalculation: RequestHandler = async (req, res) => {
 
 export const updateCalculation: RequestHandler = async (req, res) => {
   try {
-    const user = (req as any).user;
     const { id } = req.params;
     const { name, notes } = req.body;
     const token = req.headers.authorization;
@@ -215,7 +213,6 @@ export const updateCalculation: RequestHandler = async (req, res) => {
 
 export const deleteCalculation: RequestHandler = async (req, res) => {
   try {
-    const user = (req as any).user;
     const { id } = req.params;
     const token = req.headers.authorization;
 

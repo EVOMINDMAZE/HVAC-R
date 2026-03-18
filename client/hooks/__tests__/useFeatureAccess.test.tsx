@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
 import { useFeatureAccess, useProFeature, useBusinessFeature } from '../useFeatureAccess';
 import { useSubscription } from '../useStripe';
 import { useSupabaseAuth } from '../useSupabaseAuth';

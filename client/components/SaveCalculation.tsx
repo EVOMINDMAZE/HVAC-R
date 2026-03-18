@@ -1,7 +1,7 @@
+import { Save, Loader2, Camera, MapPin, Briefcase } from 'lucide-react';
 import { useState, useEffect } from 'react';
+
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Dialog,
   DialogContent,
@@ -11,12 +11,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Save, Loader2, Camera, MapPin, Briefcase } from 'lucide-react';
-import { useSupabaseCalculations } from '@/hooks/useSupabaseCalculations';
-import { useJob } from '@/context/JobContext';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useJob } from '@/context/job.context';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { useSkillTracker } from '@/hooks/useSkillTracker';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
+import { useSupabaseCalculations } from '@/hooks/useSupabaseCalculations';
 import { supabase } from '@/lib/supabase';
 
 interface SaveCalculationProps {

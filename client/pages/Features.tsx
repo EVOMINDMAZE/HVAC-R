@@ -1,7 +1,3 @@
-import { Link, useLocation } from "react-router-dom";
-import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Thermometer,
   Shield,
@@ -11,9 +7,14 @@ import {
   LineChart,
   Database,
 } from "lucide-react";
-import { SEO } from "@/components/SEO";
-import { trackMarketingEvent } from "@/lib/marketingAnalytics";
+import { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+
 import { PublicPageShell } from "@/components/public/PublicPageShell";
+import { SEO } from "@/components/SEO";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { trackMarketingEvent } from "@/lib/marketingAnalytics";
 
 const coreFeatures = [
   {

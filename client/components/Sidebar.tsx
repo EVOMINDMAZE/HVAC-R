@@ -1,9 +1,10 @@
-import { Link, NavLink, useLocation } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
-import { useAuth } from "@/hooks/useSupabaseAuth";
-import { useAppNavigation, NavItem } from "@/hooks/useAppNavigation";
+import { Link, NavLink, useLocation } from "react-router-dom";
+
+import type { ComponentType } from "react";
+
 import { CompanySwitcher } from "@/components/CompanySwitcher";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,11 +13,31 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import { useAppNavigation, NavItem } from "@/hooks/useAppNavigation";
+import { useAuth } from "@/hooks/useSupabaseAuth";
+import { cn } from "@/lib/utils";
+import { navLinkBaseClasses, navLinkIconClasses } from "@/lib/navigation";
+
+type ResourceItem = {
+  to: string;
+  label: string;
+  desc?: string;
+  icon: ComponentType<{ className?: string }>;
+};
 
 function isActivePath(currentPath: string, targetPath: string) {
   if (targetPath === "/dashboard") return currentPath === "/dashboard";
   return currentPath === targetPath || currentPath.startsWith(`${targetPath}/`);
+}
+
+function isLandingItemActive(pathname: string, hash: string, item: { to: string; hash?: string }) {
+  if (item.hash) {
+    return pathname === item.to && hash === item.hash;
+  }
+  if (item.to === "/features") {
+    return pathname === item.to && hash !== "#use-cases";
+  }
+  return isActivePath(pathname, item.to);
 }
 
 function GroupMenu({
@@ -34,12 +55,14 @@ function GroupMenu({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
+          type="button"
           className={cn(
-            "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+            navLinkIconClasses,
             active
-              ? "bg-secondary text-foreground"
-              : "text-muted-foreground hover:bg-secondary/70 hover:text-foreground",
+              ? "text-primary"
+              : "text-muted-foreground hover:text-foreground",
           )}
+          aria-current={active ? "page" : undefined}
         >
           {label}
           <ChevronDown className="h-3.5 w-3.5" />
@@ -78,8 +101,15 @@ export function Sidebar() {
           {landingLinks.map((item) => (
             <Link
               key={`${item.to}${item.hash ?? ""}:${item.label}`}
-              to={item.to}
-              className="rounded-full px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary/80 hover:text-foreground"
+              to={item.hash ? `${item.to}${item.hash}` : item.to}
+              className={cn(
+                `${navLinkBaseClasses} text-muted-foreground hover:text-foreground`,
+                isLandingItemActive(location.pathname, location.hash, item) &&
+                  "text-primary",
+              )}
+              aria-current={
+                isLandingItemActive(location.pathname, location.hash, item) ? "page" : undefined
+              }
             >
               {item.label}
             </Link>
@@ -103,10 +133,10 @@ export function Sidebar() {
               to={item.to}
               className={({ isActive }) =>
                 cn(
-                  "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+                  navLinkIconClasses,
                   isActive
-                    ? "bg-secondary text-foreground"
-                    : "text-muted-foreground hover:bg-secondary/80 hover:text-foreground",
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-foreground",
                 )
               }
             >
@@ -142,7 +172,7 @@ export function Sidebar() {
                     <DropdownMenuLabel className="text-xs uppercase tracking-[0.08em] text-muted-foreground">
                       {group.label}
                     </DropdownMenuLabel>
-                    {group.items.map((item: any) => (
+                    {group.items.map((item: ResourceItem) => (
                       <DropdownMenuItem key={`${item.to}:${item.label}`} asChild>
                         {item.to.startsWith("http") ? (
                           <a

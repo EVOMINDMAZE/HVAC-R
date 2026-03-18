@@ -1,12 +1,13 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import DocsViewer from "@/components/DocsViewer";
 import { Search, FileText } from "lucide-react";
+import { useState } from "react";
+
+import DocsViewer from "@/components/DocsViewer";
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
 import { SEO } from "@/components/SEO";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 const documentation = [
   {

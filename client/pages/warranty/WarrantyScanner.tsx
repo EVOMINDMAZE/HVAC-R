@@ -1,6 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
-import Webcam from "react-webcam";
-import Tesseract from "tesseract.js";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Camera,
   RefreshCw,
@@ -13,6 +11,14 @@ import {
   ShieldCheck,
   ClipboardCheck,
 } from "lucide-react";
+import { Save } from "lucide-react";
+import { useState, useRef, useCallback, useEffect } from 'react';
+import Webcam from "react-webcam";
+import { toast } from "sonner";
+import Tesseract from "tesseract.js";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -21,14 +27,8 @@ import {
   CardDescription,
   CardFooter,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
-import { motion, AnimatePresence } from "framer-motion";
-import { supabase } from "@/lib/supabase";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import {
   Select,
   SelectContent,
@@ -36,7 +36,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Save } from "lucide-react";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { supabase } from "@/lib/supabase";
+
 
 // Manufacturer Portal Database
 const MANUFACTURER_PORTALS: Record<
@@ -116,7 +118,7 @@ export default function WarrantyScanner() {
     manufacturer: "",
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (user) {
       fetchClients();
     }

@@ -164,5 +164,8 @@ export function toCompatAuthContext(decoded: any) {
         stripe_subscription_id: meta.stripe_subscription_id || null,
         subscription_plan: meta.subscription_plan || "free",
         subscription_status: meta.subscription_status || "active",
+        active_company_id: meta.active_company_id || null,
+        active_role: meta.active_role || null,
+        user_metadata: meta,
     };
 }

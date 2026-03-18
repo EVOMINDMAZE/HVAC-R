@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
+
 import type { LucideIcon } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 
 export interface RolePathItem {

@@ -49,7 +49,7 @@ export function initSentry() {
     replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1.0,
     
-    beforeSend(event, hint) {
+    beforeSend(event: any, hint: any) {
       const error = hint.originalException;
       
       if (error?.message?.includes('ResizeObserver')) {
@@ -63,7 +63,7 @@ export function initSentry() {
       return event;
     },
     
-    beforeBreadcrumb(breadcrumb) {
+    beforeBreadcrumb(breadcrumb: any) {
       if (breadcrumb.category === 'console' && breadcrumb.level === 'debug') {
         return null;
       }

@@ -220,12 +220,10 @@ async function run() {
         continue;
       }
 
-      let targetCompanyId = null;
-      if (u.email === "manager@demo.com" || u.email === "client@test.com") {
-          targetCompanyId = demoCompany?.id;
-      } else {
-          targetCompanyId = thermoTech?.id;
-      }
+      const targetCompanyId =
+        u.email === "manager@demo.com" || u.email === "client@test.com"
+          ? demoCompany?.id
+          : thermoTech?.id;
 
       if (targetCompanyId) {
           console.log(`Assigning ${u.email} to ${targetCompanyId} as ${u.role}`);

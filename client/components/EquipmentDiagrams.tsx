@@ -1,4 +1,5 @@
-import React from "react";
+import { useMemo } from 'react';
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface EquipmentDiagramProps {
@@ -658,7 +659,7 @@ export function EquipmentDiagrams({
   animationSpeed = 1000,
 }: EquipmentDiagramsProps) {
   // Determine color theme based on cycle type
-  const theme = React.useMemo(() => {
+  const theme = useMemo(() => {
     switch (cycleData?.cycleType) {
       case "cascade-low":
         return {

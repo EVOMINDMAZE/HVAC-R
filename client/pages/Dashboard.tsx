@@ -1,13 +1,5 @@
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
-import { useDashboardStats, DashboardStats } from "@/hooks/useDashboardStats";
-import { Footer } from "@/components/Footer";
-import { SystemStatus } from "@/components/SystemStatus";
-import { OnboardingGuide } from "@/components/OnboardingGuide";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { motion, useReducedMotion } from "framer-motion";
+
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -29,9 +21,11 @@ import {
   ArrowRight,
   Sparkles,
   Layers,
+  ChevronDown,
 } from "lucide-react";
-import { RiskShield } from "@/components/OwnerDashboard/RiskShield";
-import { SEO } from "@/components/SEO";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { PageContainer } from "@/components/PageContainer";
 import { AppPageHeader } from "@/components/app/AppPageHeader";
 import { useRevenueAnalytics } from "@/hooks/useRevenueAnalytics";
@@ -44,6 +38,21 @@ import {
   Tooltip as RechartsTooltip,
   Cell,
 } from "recharts";
+import { Footer } from "@/components/Footer";
+import { OnboardingGuide } from "@/components/OnboardingGuide";
+import { RiskShield } from "@/components/OwnerDashboard/RiskShield";
+import { SEO } from "@/components/SEO";
+import { SystemStatus } from "@/components/SystemStatus";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { useDashboardStats, DashboardStats } from "@/hooks/useDashboardStats";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -76,6 +85,7 @@ function formatNumber(n: number) {
 }
 
 function UsageProgressCard({ stats, onUpgrade }: UsageProgressCardProps) {
+  const prefersReducedMotion = useReducedMotion();
   const roundedUsage = Math.round(stats.usagePercentage);
   const usageColor = stats.usagePercentage >= 90 ? "red" : stats.usagePercentage >= 70 ? "amber" : "cyan";
   
@@ -107,9 +117,9 @@ function UsageProgressCard({ stats, onUpgrade }: UsageProgressCardProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: prefersReducedMotion ? 0 : 0.22 }}
     >
       <GlassCard variant="data" className="rounded-2xl p-1 border border-primary/20" glow={true}>
         <div className="p-6 space-y-6">
@@ -148,7 +158,7 @@ function UsageProgressCard({ stats, onUpgrade }: UsageProgressCardProps) {
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${stats.usagePercentage}%` }}
-                transition={{ duration: 1.5, ease: "easeOut" }}
+                transition={{ duration: prefersReducedMotion ? 0 : 0.3, ease: "easeOut" }}
                 className={`h-full rounded-full bg-gradient-to-r ${color.gradientFrom} ${color.gradientTo}`}
               />
             </div>
@@ -197,40 +207,38 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
         initial="initial"
         animate="animate"
         variants={staggerContainer}
-        className="glass-panel rounded-2xl p-6 border border-primary/20 mb-8"
+        className="rounded-2xl border border-border bg-card p-6 shadow-sm"
       >
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           <div className="flex-1">
             <motion.div variants={fadeInUp} className="flex items-center gap-4 mb-4">
               <Badge
                 variant="outline"
-                className="px-4 py-1.5 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md tracking-widest uppercase text-[10px] sm:text-xs"
+                className="px-4 py-1.5 rounded-full border-primary/30 bg-primary/10 text-primary tracking-widest uppercase text-[10px] sm:text-xs"
               >
                 <Sparkles className="w-3 h-3 mr-2" />
                 Daily Overview
               </Badge>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <div className="w-2 h-2 rounded-full bg-success" />
                 <div className="text-xs text-muted-foreground ">Live data</div>
               </div>
             </motion.div>
             
-            <motion.h2 variants={fadeInUp} className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight ">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary/80 to-primary">
-                Welcome, {firstName || "Team"}
-              </span>
+            <motion.h2 variants={fadeInUp} className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground">
+              Welcome, {firstName || "Team"}
             </motion.h2>
             
             <motion.p variants={fadeInUp} className="text-lg sm:text-xl text-muted-foreground mt-4 max-w-2xl leading-relaxed font-light">
               Track operations, monitor system health, and keep your field team moving with real-time visibility.
             </motion.p>
             
-            <motion.div variants={fadeInUp} className="mt-6 flex flex-wrap items-center gap-4">
+            <motion.div variants={fadeInUp} className="mt-6 flex flex-wrap items-center gap-3">
               <OnboardingGuide userName={firstName} />
               {!stats.isUnlimited && (
                 <Badge
                   variant="outline"
-                  className="px-4 py-1.5 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md tracking-widest uppercase text-[10px] sm:text-xs"
+                  className="px-4 py-1.5 rounded-full border-border bg-secondary/40 text-foreground tracking-widest uppercase text-[10px] sm:text-xs"
                 >
                   {stats.remaining} calculation{stats.remaining === 1 ? "" : "s"} remaining
                 </Badge>
@@ -319,6 +327,10 @@ function QuickStats({ stats, user, isLoading, onRefresh }: QuickStatsProps) {
         variants={staggerContainer}
         className="space-y-6"
       >
+        <div>
+          <h3 className="text-lg font-semibold text-foreground">Primary status and actions</h3>
+          <p className="text-sm text-muted-foreground">Scan usage risk, capacity, and plan in one row before diving deeper.</p>
+        </div>
         <DashboardGrid columns={{ sm: 1, md: 2, lg: 4 }} gap="lg">
           <DashboardGridItem span={{ sm: 1, md: 1, lg: 1 }}>
             <motion.div variants={fadeInUp}>
@@ -445,14 +457,15 @@ function StatsCard({
 
 function RecentCalculations({ isLoading }: any) {
   const navigate = useNavigate();
+  const prefersReducedMotion = useReducedMotion();
   const { calculations } = useSupabaseCalculations();
   const recentCalculations = calculations.slice(0, 5);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.2 }}
+      transition={{ duration: prefersReducedMotion ? 0 : 0.22, delay: prefersReducedMotion ? 0 : 0.08 }}
     >
       <GlassCard variant="data" className="rounded-2xl p-1 border border-primary/20 h-full flex flex-col" glow={true}>
         <div className="p-5 border-b border-primary/20">
@@ -465,7 +478,7 @@ function RecentCalculations({ isLoading }: any) {
                 <HistoryIcon className="w-3 h-3 mr-2" />
                 Recent Activity
               </Badge>
-              <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              <div className={`w-2 h-2 rounded-full bg-primary ${prefersReducedMotion ? "" : "animate-pulse"}`} />
             </div>
             <Button
               variant="outline"
@@ -515,13 +528,13 @@ function RecentCalculations({ isLoading }: any) {
               {recentCalculations.map((calc: any) => (
                 <motion.div
                   key={calc.id}
-                  initial={{ opacity: 0, x: -10 }}
+                  initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: -8 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="group flex items-center justify-between p-4 rounded-xl border border-primary/10 hover:border-primary/30 hover:bg-primary/5 transition-all cursor-pointer"
+                  className="group flex items-center justify-between p-4 rounded-xl border border-primary/10 hover:border-primary/30 hover:bg-primary/5 motion-interactive cursor-pointer"
                   onClick={() => navigate(`/calculations/${calc.id}`)}
                 >
                   <div className="flex items-center gap-4 min-w-0">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform border border-primary/20">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary group-hover:scale-110 motion-interactive border border-primary/20">
                       <Calculator className="h-6 w-6" />
                     </div>
                     <div className="min-w-0">
@@ -543,7 +556,7 @@ function RecentCalculations({ isLoading }: any) {
                       </div>
                     </div>
                   </div>
-                  <ArrowRight className="h-5 w-5 text-primary/50 group-hover:text-primary group-hover:translate-x-2 transition-all" />
+                  <ArrowRight className="h-5 w-5 text-primary/50 group-hover:text-primary group-hover:translate-x-2 motion-interactive" />
                 </motion.div>
               ))}
             </div>
@@ -556,69 +569,70 @@ function RecentCalculations({ isLoading }: any) {
 
 function QuickActions() {
   const navigate = useNavigate();
+  const prefersReducedMotion = useReducedMotion();
 
   const actions = [
     {
       label: "Standard Cycle",
       icon: Calculator,
       path: "/tools/standard-cycle",
-      color: "text-cyan-400",
-      bg: "bg-cyan-500/10",
-      border: "border-cyan-500/30",
+      color: "text-info",
+      bg: "bg-info/10",
+      border: "border-info/30",
     },
     {
       label: "Compare Refrigerants",
       icon: TrendingUp,
       path: "/tools/refrigerant-comparison",
-      color: "text-emerald-400",
-      bg: "bg-emerald-500/10",
-      border: "border-emerald-500/30",
+      color: "text-success",
+      bg: "bg-success/10",
+      border: "border-success/30",
     },
     {
       label: "Cascade Analysis",
       icon: BarChart3,
       path: "/tools/cascade-cycle",
-      color: "text-purple-400",
-      bg: "bg-purple-500/10",
-      border: "border-purple-500/30",
+      color: "text-accent",
+      bg: "bg-accent/10",
+      border: "border-accent/30",
     },
     {
       label: "Reports and PDF",
       icon: FileText,
       path: "/tools/advanced-reporting",
-      color: "text-amber-400",
-      bg: "bg-amber-500/10",
-      border: "border-amber-500/30",
+      color: "text-warning",
+      bg: "bg-warning/10",
+      border: "border-warning/30",
     },
     {
       label: "My Projects",
       icon: Layers,
       path: "/dashboard/projects",
-      color: "text-slate-400",
-      bg: "bg-slate-500/10",
-      border: "border-slate-500/30",
+      color: "text-muted-foreground",
+      bg: "bg-muted/10",
+      border: "border-muted/30",
     },
   ];
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.3 }}
+      transition={{ duration: prefersReducedMotion ? 0 : 0.22, delay: prefersReducedMotion ? 0 : 0.1 }}
     >
-      <GlassCard variant="command" className="rounded-2xl p-1 border border-cyan-500/20" glow={true}>
-        <div className="p-5 border-b border-cyan-500/20">
+      <GlassCard variant="command" className="rounded-2xl p-1 border border-info/20" glow={true}>
+        <div className="p-5 border-b border-info/20">
           <div className="flex items-center gap-3">
             <Badge
               variant="outline"
-              className="px-3 py-1 rounded-full border-cyan-500/50 bg-cyan-500/10 text-cyan-400 backdrop-blur-md tracking-widest uppercase text-[10px]"
+              className="px-3 py-1 rounded-full border-info/50 bg-info/10 text-info backdrop-blur-md tracking-widest uppercase text-[10px]"
             >
               <Zap className="w-3 h-3 mr-2" />
               Quick Actions
             </Badge>
-            <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
+            <div className={`w-2 h-2 rounded-full bg-info ${prefersReducedMotion ? "" : "animate-pulse"}`} />
           </div>
-          <p className="text-slate-300 text-sm mt-2">
+          <p className="text-foreground/70 text-sm mt-2">
             Open the tools your team uses most.
           </p>
         </div>
@@ -627,21 +641,21 @@ function QuickActions() {
           {actions.map((action) => (
             <motion.button
               key={action.path}
-              initial={{ opacity: 0, x: -10 }}
+              initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
-              whileHover={{ scale: 1.02, x: 5 }}
-              className="w-full flex items-center justify-between p-4 rounded-xl border border-cyan-500/10 hover:border-cyan-500/30 hover:bg-cyan-500/5 transition-all group"
+              whileHover={prefersReducedMotion ? undefined : { scale: 1.01, x: 4 }}
+              className="w-full flex items-center justify-between p-4 rounded-xl border border-info/10 hover:border-info/30 hover:bg-info/5 motion-interactive group"
               onClick={() => navigate(action.path)}
             >
               <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-xl ${action.bg} ${action.border} ${action.color} group-hover:scale-110 transition-transform`}>
+                <div className={`p-3 rounded-xl ${action.bg} ${action.border} ${action.color} group-hover:scale-110 motion-interactive`}>
                   <action.icon className="h-5 w-5" />
                 </div>
                 <span className="font-bold text-cyan-300 text-sm tracking-wide">
                   {action.label}
                 </span>
               </div>
-              <ArrowRight className="h-5 w-5 text-cyan-500/50 group-hover:text-cyan-400 group-hover:translate-x-2 transition-all" />
+              <ArrowRight className="h-5 w-5 text-info/50 group-hover:text-info group-hover:translate-x-2 motion-interactive" />
             </motion.button>
           ))}
         </div>
@@ -659,18 +673,18 @@ function ValueProposition() {
       style={{ animationDelay: "500ms" }}
     >
       <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-[100px] rounded-full -mr-16 -mt-16 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-48 h-48 bg-slate-500/20 blur-[80px] rounded-full -ml-12 -mb-12 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-48 h-48 bg-muted/20 blur-[80px] rounded-full -ml-12 -mb-12 pointer-events-none" />
 
       <CardContent className="p-8 relative z-10 text-center">
         <div className="inline-flex p-3 rounded-2xl bg-white/10 backdrop-blur-md mb-6 shadow-xl border border-white/10">
-          <Crown className="h-8 w-8 text-amber-400" />
+          <Crown className="h-8 w-8 text-warning" />
         </div>
 
-        <h2 className="text-2xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-300">
+        <h2 className="text-2xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-white to-foreground/70">
           Unlock Professional Power
         </h2>
 
-        <p className="text-slate-300 mb-8 max-w-sm mx-auto leading-relaxed">
+        <p className="text-foreground/70 mb-8 max-w-sm mx-auto leading-relaxed">
           Get unlimited calculations, PDF exports, and advanced team features.
         </p>
 
@@ -682,9 +696,9 @@ function ValueProposition() {
           ].map((item) => (
             <div key={item.label} className="flex flex-col items-center gap-2">
               <div className="p-2 rounded-lg bg-white/5 border border-white/10">
-                <item.icon className="h-4 w-4 text-slate-300" />
+                <item.icon className="h-4 w-4 text-foreground/70" />
               </div>
-              <span className="text-xs font-medium text-slate-400">
+              <span className="text-xs font-medium text-muted-foreground">
                 {item.label}
               </span>
             </div>
@@ -692,7 +706,7 @@ function ValueProposition() {
         </div>
 
         <Button
-          className="w-full bg-gradient-to-r from-amber-400 to-cyan-500 hover:from-amber-500 hover:to-cyan-600 text-white font-bold shadow-lg shadow-cyan-500/25 border-0"
+          className="w-full bg-gradient-to-r from-warning to-info hover:from-warning hover:to-cyan-600 text-white font-bold shadow-lg shadow-info/25 border-0"
           onClick={() => navigate("/pricing")}
         >
           Upgrade Now
@@ -703,46 +717,47 @@ function ValueProposition() {
 }
 
 function AnalyticsCharts() {
+  const prefersReducedMotion = useReducedMotion();
   const { revenueStats, pipelineStats, isLoading } = useRevenueAnalytics();
 
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <GlassCard variant="data" className="rounded-2xl p-1 border border-cyan-500/20 h-64 animate-pulse" />
-        <GlassCard variant="data" className="rounded-2xl p-1 border border-cyan-500/20 h-64 animate-pulse" />
+        <GlassCard variant="data" className="rounded-2xl p-1 border border-info/20 h-64 animate-pulse" />
+        <GlassCard variant="data" className="rounded-2xl p-1 border border-info/20 h-64 animate-pulse" />
       </div>
     );
   }
 
   const revenueData = [
-    { name: "COLLECTED", value: 0, color: "#06b6d4" }, // cyan-500
-    { name: "AT RISK", value: revenueStats.revenueAtRisk, color: "#f97316" }, // cyan-500
+    { name: "COLLECTED", value: 0, color: "#06b6d4" }, // info
+    { name: "AT RISK", value: revenueStats.revenueAtRisk, color: "#f97316" }, // info
   ];
 
   const pipelineData = [
-    { name: "LEADS", value: pipelineStats.activeLeads, color: "#8b5cf6" }, // purple-500
-    { name: "JOBS", value: pipelineStats.convertedLeads, color: "#10b981" }, // emerald-500
+    { name: "LEADS", value: pipelineStats.activeLeads, color: "#8b5cf6" }, // primary
+    { name: "JOBS", value: pipelineStats.convertedLeads, color: "#10b981" }, // success
   ];
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: prefersReducedMotion ? 0 : 0.22 }}
       className="grid grid-cols-1 md:grid-cols-2 gap-8"
     >
       {/* Revenue at Risk Chart */}
-      <GlassCard variant="data" className="rounded-2xl p-1 border border-cyan-500/20" glow={true}>
+      <GlassCard variant="data" className="rounded-2xl p-1 border border-info/20" glow={true}>
         <div className="p-5">
           <div className="flex items-center justify-between mb-6">
             <Badge
               variant="outline"
-              className="px-3 py-1 rounded-full border-cyan-500/50 bg-cyan-500/10 text-cyan-400 backdrop-blur-md tracking-widest uppercase text-[10px]"
+              className="px-3 py-1 rounded-full border-info/50 bg-info/10 text-info backdrop-blur-md tracking-widest uppercase text-[10px]"
             >
               <Target className="w-3 h-3 mr-2" />
               Revenue Health
             </Badge>
-            <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
+            <div className={`w-2 h-2 rounded-full bg-info ${prefersReducedMotion ? "" : "animate-pulse"}`} />
           </div>
           
           <div className="h-[180px] w-full">
@@ -781,15 +796,15 @@ function AnalyticsCharts() {
             </ResponsiveContainer>
           </div>
           
-          <div className="mt-6 grid grid-cols-2 gap-4 pt-4 border-t border-cyan-500/20">
+          <div className="mt-6 grid grid-cols-2 gap-4 pt-4 border-t border-info/20">
             <div>
-              <p className="text-xs text-slate-400 uppercase tracking-wider">Open Invoices</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Open Invoices</p>
               <p className="text-2xl font-bold text-cyan-300 mt-1">
                 ${formatNumber(revenueStats.revenueAtRisk)}
               </p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-slate-400 uppercase tracking-wider">Invoice Count</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Invoice Count</p>
               <p className="text-2xl font-bold text-cyan-300 mt-1">
                 {revenueStats.unpaidCount}
               </p>
@@ -799,17 +814,17 @@ function AnalyticsCharts() {
       </GlassCard>
 
       {/* Lead Pipeline Chart */}
-      <GlassCard variant="data" className="rounded-2xl p-1 border border-cyan-500/20" glow={true}>
+      <GlassCard variant="data" className="rounded-2xl p-1 border border-info/20" glow={true}>
         <div className="p-5">
           <div className="flex items-center justify-between mb-6">
             <Badge
               variant="outline"
-              className="px-3 py-1 rounded-full border-purple-500/50 bg-purple-500/10 text-purple-400 backdrop-blur-md tracking-widest uppercase text-[10px]"
+              className="px-3 py-1 rounded-full border-primary/50 bg-primary/10 text-accent backdrop-blur-md tracking-widest uppercase text-[10px]"
             >
               <TrendingUp className="w-3 h-3 mr-2" />
               Lead Pipeline
             </Badge>
-            <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
+            <div className={`w-2 h-2 rounded-full bg-primary ${prefersReducedMotion ? "" : "animate-pulse"}`} />
           </div>
           
           <div className="h-[180px] w-full">
@@ -845,15 +860,15 @@ function AnalyticsCharts() {
             </ResponsiveContainer>
           </div>
           
-          <div className="mt-6 grid grid-cols-2 gap-4 pt-4 border-t border-cyan-500/20">
+          <div className="mt-6 grid grid-cols-2 gap-4 pt-4 border-t border-info/20">
             <div>
-              <p className="text-xs text-slate-400 uppercase tracking-wider">Conversion Rate</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Conversion Rate</p>
               <p className="text-2xl font-bold text-purple-300 mt-1">
                 {pipelineStats.conversionRate}%
               </p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-slate-400 uppercase tracking-wider">Active Leads</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Active Leads</p>
               <p className="text-2xl font-bold text-purple-300 mt-1">
                 {pipelineStats.activeLeads}
               </p>
@@ -868,6 +883,7 @@ function AnalyticsCharts() {
 export function Dashboard() {
   const { user, isLoading: authLoading } = useSupabaseAuth();
   const { stats, isLoading, refreshStats } = useDashboardStats();
+  const [showAdvancedInsights, setShowAdvancedInsights] = useState(false);
 
   console.log("[Dashboard] Debug:", {
     user: user?.id,
@@ -918,7 +934,27 @@ export function Dashboard() {
         onRefresh={refreshStats}
       />
 
-      <AnalyticsCharts />
+      <Collapsible
+        open={showAdvancedInsights}
+        onOpenChange={setShowAdvancedInsights}
+        className="rounded-2xl border border-border bg-card/60 p-4"
+      >
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h3 className="text-base font-semibold text-foreground">Advanced insights</h3>
+            <p className="text-sm text-muted-foreground">Revenue and pipeline details are available on demand.</p>
+          </div>
+          <CollapsibleTrigger asChild>
+            <Button variant="outline" size="sm" className="gap-2">
+              {showAdvancedInsights ? "Hide details" : "Show details"}
+              <ChevronDown className={`h-4 w-4 transition-transform ${showAdvancedInsights ? "rotate-180" : ""}`} />
+            </Button>
+          </CollapsibleTrigger>
+        </div>
+        <CollapsibleContent className="pt-4">
+          <AnalyticsCharts />
+        </CollapsibleContent>
+      </Collapsible>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-8">
@@ -933,7 +969,20 @@ export function Dashboard() {
             <QuickActions />
           </div>
           <RiskShield />
-          <ValueProposition />
+          <Collapsible className="rounded-2xl border border-border bg-card/60 p-4">
+            <div className="flex items-center justify-between gap-2">
+              <h3 className="text-sm font-semibold text-foreground">Growth options</h3>
+              <CollapsibleTrigger asChild>
+                <Button variant="ghost" size="sm" className="gap-2">
+                  Explore
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </CollapsibleTrigger>
+            </div>
+            <CollapsibleContent className="pt-4">
+              <ValueProposition />
+            </CollapsibleContent>
+          </Collapsible>
         </aside>
       </div>
     </PageContainer>

@@ -1,5 +1,6 @@
-import { ReactNode } from "react";
 import { Lock } from "lucide-react";
+import { ReactNode } from "react";
+
 import { UpgradeModal } from "./UpgradeModal";
 
 interface FeatureLockProps {

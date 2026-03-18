@@ -2,7 +2,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router-dom';
-import { ConsentBanner, useConsent } from '../ConsentBanner';
+
+import { ConsentBanner } from '../ConsentBanner';
+
+import { useConsent } from '@/hooks/use-consent';
 import { supabase } from '@/lib/supabase';
 
 // Mock supabase client
@@ -234,7 +237,7 @@ describe('useConsent hook', () => {
       
       try {
         // Import hook after removing window to test SSR scenario
-        const { useConsent } = await import('../ConsentBanner');
+        const { useConsent } = await import('@/hooks/use-consent');
         const { hasConsent } = useConsent();
         
         expect(hasConsent()).toBe(false);
@@ -262,7 +265,7 @@ describe('useConsent hook', () => {
       delete (global as any).window;
       
       try {
-        const { useConsent } = await import('../ConsentBanner');
+        const { useConsent } = await import('@/hooks/use-consent');
         const { getConsentVersion } = useConsent();
         
         expect(getConsentVersion('essential_cookies', 'v1.0')).toBe(false);
@@ -289,7 +292,7 @@ describe('useConsent hook', () => {
       delete (global as any).window;
       
       try {
-        const { useConsent } = await import('../ConsentBanner');
+        const { useConsent } = await import('@/hooks/use-consent');
         const { recordConsent } = useConsent();
         
         await recordConsent('essential_cookies', 'v1.0', true);

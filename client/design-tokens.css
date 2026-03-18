@@ -6,108 +6,108 @@
  */
 
 :root {
-  /* Color Palette - Light Theme (Default) */
-  --background: 0 0% 100%; /* White background */
-  --foreground: 222 47% 4%; /* Dark slate text */
+  /* Color Palette - Light Theme (withcoherence.com inspired) */
+  --background: 30 15% 95%; /* Soft off-white */
+  --foreground: 260 23% 5%; /* Dark purple text */
 
-  --card: 0 0% 98%; /* Off-white */
-  --card-foreground: 222 47% 4%;
+  --card: 30 15% 93%; /* Slightly darker off-white */
+  --card-foreground: 260 23% 5%;
 
-  --popover: 0 0% 98%;
-  --popover-foreground: 222 47% 4%;
+  --popover: 30 15% 93%;
+  --popover-foreground: 260 23% 5%;
 
-  /* Primary: Professional blue (trust, reliability) */
-  --primary: 221 83% 56%; /* Blue-600 */
-  --primary-foreground: 0 0% 100%; /* White text on blue */
+  /* Primary: Bright purple (withcoherence.com accent) */
+  --primary: 248 99% 66%; /* #6a53fe */
+  --primary-foreground: 0 0% 100%; /* White text on purple */
 
-  /* Secondary: Neutral gray */
-  --secondary: 210 40% 96%;
-  --secondary-foreground: 222 47% 4%;
+  /* Secondary: Light gray */
+  --secondary: 30 15% 90%;
+  --secondary-foreground: 260 23% 5%;
 
   /* Muted: Subtle gray for less important text */
-  --muted: 210 40% 96%;
-  --muted-foreground: 215 16% 47%;
+  --muted: 30 15% 90%;
+  --muted-foreground: 260 23% 30%;
 
-  /* Accent: Brand orange (ThermoNeural identity) */
-  --accent: 20 90% 48%; /* Orange-600 */
-  --accent-foreground: 0 0% 100%; /* White text on orange */
+  /* Accent: Light purple (withcoherence.com primary) */
+  --accent: 248 100% 86%; /* #c2b8ff */
+  --accent-foreground: 260 23% 5%; /* Dark text on light purple */
 
   /* Destructive: System red (errors, destructive actions) */
   --destructive: 0 74% 50%; /* Red-600 */
   --destructive-foreground: 0 0% 100%; /* White text on red */
 
   /* Border, input, ring */
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
-  --ring: 221 83% 56%; /* Blue ring matching primary */
+  --border: 30 15% 80%;
+  --input: 30 15% 80%;
+  --ring: 248 99% 66%; /* Purple ring matching primary */
 
   --radius: 0.75rem;
 
   /* Sidebar */
-  --sidebar-background: 0 0% 99%;
-  --sidebar-foreground: 222 47% 4%;
-  --sidebar-primary: 221 83% 56%;
+  --sidebar-background: 30 15% 93%;
+  --sidebar-foreground: 260 23% 5%;
+  --sidebar-primary: 248 99% 66%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 20 90% 48%;
-  --sidebar-accent-foreground: 0 0% 100%;
-  --sidebar-border: 214 32% 91%;
-  --sidebar-ring: 221 83% 56%;
+  --sidebar-accent: 248 100% 86%;
+  --sidebar-accent-foreground: 260 23% 5%;
+  --sidebar-border: 30 15% 80%;
+  --sidebar-ring: 248 99% 66%;
 }
 
 .dark {
-  /* Color Palette - Dark Theme (Primary Interface) */
-  --background: 222 47% 4%; /* Dark slate background */
-  --foreground: 210 40% 98%; /* Near-white text */
+  /* Color Palette - Dark Theme (withcoherence.com inspired) */
+  --background: 260 23% 5%; /* Dark purple/black #0c0a10 */
+  --foreground: 30 15% 95%; /* Off-white/cream #f4f2f0 */
 
-  --card: 222 47% 8%; /* Slightly lighter slate */
-  --card-foreground: 210 40% 98%;
+  --card: 260 23% 8%; /* Slightly lighter dark purple */
+  --card-foreground: 30 15% 95%;
 
-  --popover: 222 47% 8%;
-  --popover-foreground: 210 40% 98%;
+  --popover: 260 23% 8%;
+  --popover-foreground: 30 15% 95%;
 
-  /* Primary: Lighter blue for dark mode */
-  --primary: 221 83% 65%;
-  --primary-foreground: 222 47% 4%; /* Dark text on light blue */
+  /* Primary: Bright purple (withcoherence.com accent) */
+  --primary: 248 99% 66%; /* #6a53fe */
+  --primary-foreground: 30 15% 95%; /* Light text on purple */
 
-  /* Secondary: Dark slate for secondary elements */
-  --secondary: 222 47% 11%;
-  --secondary-foreground: 210 40% 98%;
+  /* Secondary: Dark purple for secondary elements */
+  --secondary: 260 23% 11%;
+  --secondary-foreground: 30 15% 95%;
 
   /* Muted: Subtle gray for less important text */
-  --muted: 222 47% 15%;
-  --muted-foreground: 210 40% 80%;
+  --muted: 260 23% 15%;
+  --muted-foreground: 30 15% 80%;
 
-  /* Accent: Lighter orange for dark mode */
-  --accent: 20 90% 55%;
-  --accent-foreground: 222 47% 4%; /* Dark text on orange */
+  /* Accent: Light purple (withcoherence.com primary) */
+  --accent: 248 100% 86%; /* #c2b8ff */
+  --accent-foreground: 260 23% 5%; /* Dark text on light purple */
 
   /* Destructive: Lighter red for dark mode */
   --destructive: 0 74% 60%;
-  --destructive-foreground: 210 40% 98%; /* Light text on red */
+  --destructive-foreground: 30 15% 95%; /* Light text on red */
 
   /* Border, input, ring */
-  --border: 222 47% 20%;
-  --input: 222 47% 20%;
-  --ring: 221 83% 65%; /* Lighter blue ring */
+  --border: 260 23% 20%;
+  --input: 260 23% 20%;
+  --ring: 248 99% 66%; /* Purple ring matching primary */
 
   --radius: 0.75rem;
 
   /* Sidebar */
-  --sidebar-background: 222 47% 6%;
-  --sidebar-foreground: 210 40% 98%;
-  --sidebar-primary: 221 83% 65%;
-  --sidebar-primary-foreground: 222 47% 4%;
-  --sidebar-accent: 20 90% 55%;
-  --sidebar-accent-foreground: 222 47% 4%;
-  --sidebar-border: 222 47% 20%;
-  --sidebar-ring: 221 83% 65%;
+  --sidebar-background: 260 23% 6%;
+  --sidebar-foreground: 30 15% 95%;
+  --sidebar-primary: 248 99% 66%;
+  --sidebar-primary-foreground: 30 15% 95%;
+  --sidebar-accent: 248 100% 86%;
+  --sidebar-accent-foreground: 260 23% 5%;
+  --sidebar-border: 260 23% 20%;
+  --sidebar-ring: 248 99% 66%;
 }
 
-/* Typography Tokens (aligned with global.css) */
+/* Typography Tokens (withcoherence.com inspired) */
 :root {
-  --font-sans: "Manrope", sans-serif;
-  --font-display: "Sora", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-sans: "Inter", "Manrope", "Sora", sans-serif;
+  --font-display: "Sora", "Inter", "Manrope", sans-serif;
+  --font-mono: "JetBrains Mono", "Menlo", "Monaco", "Courier New", monospace;
 }
 
 /* Spacing Tokens (based on Tailwind scale) */
@@ -153,19 +153,19 @@
    ============================================ */
 
 :root {
-  /* Stage Colors (Pipeline Flow) */
+  /* Stage Colors (Pipeline Flow) - updated for purple theme */
   --stage-queue: 189 94% 43%;      /* Cyan-500: #06B6D4 */
   --stage-enroute: 38 92% 50%;     /* Amber-500: #F59E0B */
   --stage-onsite: 160 84% 39%;     /* Emerald-500: #10B981 */
-  --stage-done: 217 91% 60%;       /* Blue-500: #3B82F6 */
+  --stage-done: 248 99% 66%;       /* Purple-500: #6a53fe (withcoherence.com accent) */
   --stage-techs: 215 16% 47%;      /* Slate-500: #64748B */
 
-  /* Status Colors (Semantic) */
+  /* Status Colors (Semantic) - updated for purple theme */
   --status-clear: 160 84% 39%;     /* Emerald-500: Clear, optimal */
   --status-attention: 38 92% 50%;  /* Amber-500: Needs review */
   --status-critical: 0 84% 60%;    /* Red-500: Urgent, blocked */
   --status-neutral: 189 94% 43%;   /* Cyan-500: Scheduled, queued */
-  --status-featured: 263 70% 66%;  /* Violet-500: New, highlighted */
+  --status-featured: 248 99% 66%;  /* Purple-500: #6a53fe (withcoherence.com accent) */
 
   /* Infographic Typography */
   --text-stat-hero: 3.75rem;       /* 60px - Large infographic numbers */
@@ -222,7 +222,7 @@
 
 /* Infographic Gradients */
 :root {
-  --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(221 83% 40%));
+  --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(248 99% 40%)); /* Purple gradient */
   --gradient-success: linear-gradient(135deg, hsl(var(--status-clear)), hsl(160 84% 30%));
   --gradient-warning: linear-gradient(135deg, hsl(var(--status-attention)), hsl(38 92% 40%));
   --gradient-danger: linear-gradient(135deg, hsl(var(--status-critical)), hsl(0 84% 45%));

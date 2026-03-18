@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
+
 import type { FutureMonitorSkin } from "@/lib/featureFlags";
 import type { MonitorPageModel } from "@/types/monitor";
+
 import { MonitorShell } from "@/components/monitor/MonitorShell";
 
 const STORAGE_KEY = "ui.monitorDock.expanded";

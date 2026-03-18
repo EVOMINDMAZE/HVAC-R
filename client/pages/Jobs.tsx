@@ -1,33 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   Plus,
   Search,
@@ -40,14 +11,54 @@ import {
   ArrowLeft,
   Filter,
   HardHat,
+  LayoutGrid,
+  Rows3,
+  ChevronDown,
+  Eye,
 } from "lucide-react";
-import { supabase } from "@/lib/supabase";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { useToast } from "@/hooks/use-toast";
-import { motion, AnimatePresence } from "framer-motion";
-import { PageContainer } from "@/components/PageContainer";
+import { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
+
+import { AppFeedbackState } from "@/components/app/AppFeedbackState";
 import { AppPageHeader } from "@/components/app/AppPageHeader";
 import { AppSectionCard } from "@/components/app/AppSectionCard";
+import { PageContainer } from "@/components/PageContainer";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { supabase } from "@/lib/supabase";
 
 interface Job {
   id: string;
@@ -74,9 +85,12 @@ export default function Jobs() {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [viewMode, setViewMode] = useState<"cards" | "compact">("compact");
   const [technicians, setTechnicians] = useState<Technician[]>([]); // Store technicians
+  const prefersReducedMotion = useReducedMotion();
 
   // New Job State
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -149,6 +163,7 @@ export default function Jobs() {
   const fetchJobs = async () => {
     try {
       setLoading(true);
+      setLoadError(null);
 
       // Create a promise for the Supabase query
       const jobsPromise = supabase
@@ -173,6 +188,11 @@ export default function Jobs() {
       setJobs(data || []);
     } catch (error: any) {
       console.error("Error fetching jobs:", error);
+      setLoadError(
+        error.message === "Request timed out"
+          ? "Loading jobs is taking longer than expected. Please check your connection and retry."
+          : "We couldn’t load jobs right now. Please try again.",
+      );
       toast({
         title: "Error loading jobs",
         description:
@@ -259,6 +279,9 @@ export default function Jobs() {
 
     return matchesSearch && matchesStatus;
   });
+  const activeJobs = jobs.filter((job) => job.status === "active").length;
+  const pendingJobs = jobs.filter((job) => job.status === "pending").length;
+  const completedJobs = jobs.filter((job) => job.status === "completed").length;
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -320,7 +343,7 @@ export default function Jobs() {
                       onChange={(e) =>
                         setNewJob({ ...newJob, client_name: e.target.value })
                       }
-                      className="bg-slate-950/50"
+                      className="bg-background"
                     />
                   </div>
                   <div className="space-y-2">
@@ -332,7 +355,7 @@ export default function Jobs() {
                       onChange={(e) =>
                         setNewJob({ ...newJob, job_name: e.target.value })
                       }
-                      className="bg-slate-950/50"
+                      className="bg-background"
                     />
                   </div>
                 </div>
@@ -346,7 +369,7 @@ export default function Jobs() {
                         setNewJob({ ...newJob, status: val })
                       }
                     >
-                      <SelectTrigger className="bg-slate-950/50">
+                      <SelectTrigger className="bg-background">
                         <SelectValue placeholder="Select status" />
                       </SelectTrigger>
                       <SelectContent>
@@ -369,7 +392,7 @@ export default function Jobs() {
                         })
                       }
                     >
-                      <SelectTrigger className="bg-slate-950/50">
+                      <SelectTrigger className="bg-background">
                         <div className="flex items-center gap-2">
                           <HardHat className="w-4 h-4 text-muted-foreground" />
                           <SelectValue placeholder="Select Technician" />
@@ -406,7 +429,7 @@ export default function Jobs() {
                       onChange={(e) =>
                         setNewJob({ ...newJob, address: e.target.value })
                       }
-                      className="pl-10 bg-slate-950/50"
+                      className="pl-10 bg-background"
                     />
                   </div>
                 </div>
@@ -420,7 +443,7 @@ export default function Jobs() {
                     onChange={(e) =>
                       setNewJob({ ...newJob, notes: e.target.value })
                     }
-                    className="min-h-[100px] bg-slate-950/50"
+                    className="min-h-[100px] bg-background"
                   />
                 </div>
               </div>
@@ -456,7 +479,14 @@ export default function Jobs() {
 
       <AppSectionCard className="mb-2">
         <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              <Badge variant="outline" className="bg-background">Total {jobs.length}</Badge>
+              <Badge variant="outline" className="bg-background text-cyan-700 dark:text-cyan-300">Active {activeJobs}</Badge>
+              <Badge variant="outline" className="bg-background text-amber-700 dark:text-amber-300">Pending {pendingJobs}</Badge>
+              <Badge variant="outline" className="bg-background text-emerald-700 dark:text-emerald-300">Completed {completedJobs}</Badge>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
@@ -483,44 +513,79 @@ export default function Jobs() {
                 </SelectContent>
               </Select>
             </div>
+            <div className="inline-flex w-full sm:w-auto rounded-md border border-input bg-background p-1">
+              <Button
+                type="button"
+                variant={viewMode === "compact" ? "default" : "ghost"}
+                size="sm"
+                className="gap-2"
+                onClick={() => setViewMode("compact")}
+              >
+                <Rows3 className="h-4 w-4" />
+                Compact
+              </Button>
+              <Button
+                type="button"
+                variant={viewMode === "cards" ? "default" : "ghost"}
+                size="sm"
+                className="gap-2"
+                onClick={() => setViewMode("cards")}
+              >
+                <LayoutGrid className="h-4 w-4" />
+                Cards
+              </Button>
+            </div>
+            </div>
           </div>
         </CardContent>
       </AppSectionCard>
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-24">
-          <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
-          <p className="text-muted-foreground">Loading your jobs...</p>
-        </div>
+        <AppFeedbackState
+          variant="loading"
+          title="Loading jobs"
+          description="Syncing active jobs, assignments, and customer records."
+        />
+      ) : loadError ? (
+        <AppFeedbackState
+          variant="error"
+          title="Unable to load jobs"
+          description={loadError}
+          action={{ label: "Try again", onClick: fetchJobs }}
+        />
       ) : (
         <div className="min-h-[300px]">
           <AnimatePresence mode="popLayout">
             {filteredJobs.length === 0 ? (
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
+                exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.98 }}
+                transition={{ duration: prefersReducedMotion ? 0 : 0.16 }}
               >
-                <Card className="bg-card/30 border-dashed border-2 border-muted flex flex-col items-center justify-center text-center py-16">
-                  <div className="w-20 h-20 rounded-full bg-muted/50 flex items-center justify-center mb-6">
-                    <Briefcase className="w-10 h-10 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-foreground mb-2">
-                    No jobs found
-                  </h3>
-                  <p className="text-muted-foreground max-w-sm mx-auto mb-8">
-                    {searchTerm || statusFilter !== "all"
-                      ? "We couldn't find any jobs matching your current filters."
-                      : "Get started by creating a new job assignment for your team."}
-                  </p>
-                  {!searchTerm && statusFilter === "all" && (
-                    <Button onClick={() => setIsDialogOpen(true)}>
-                      Create your first job
-                    </Button>
-                  )}
-                </Card>
+                <AppFeedbackState
+                  variant="empty"
+                  icon={<Briefcase className="w-8 h-8 text-muted-foreground" />}
+                  title={searchTerm || statusFilter !== "all" ? "No jobs match these filters" : "No jobs yet"}
+                  description={
+                    searchTerm || statusFilter !== "all"
+                      ? "Try a broader search, clear filters, or check another status bucket."
+                      : "Get started by creating your first job assignment."
+                  }
+                  action={{
+                    label: searchTerm || statusFilter !== "all" ? "Clear filters" : "Create your first job",
+                    onClick: () => {
+                      if (searchTerm || statusFilter !== "all") {
+                        setSearchTerm("");
+                        setStatusFilter("all");
+                        return;
+                      }
+                      setIsDialogOpen(true);
+                    },
+                  }}
+                />
               </motion.div>
-            ) : (
+            ) : viewMode === "cards" ? (
               <motion.div
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                 layout
@@ -529,13 +594,13 @@ export default function Jobs() {
                   <motion.div
                     key={job.id}
                     layout
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.2 }}
+                    exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.98 }}
+                    transition={{ duration: prefersReducedMotion ? 0 : 0.16 }}
                   >
                     <Card
-                      className="h-full bg-card/60 backdrop-blur-sm border-border hover:shadow-xl hover:bg-card/80 transition-all duration-300 group cursor-pointer hover:-translate-y-1"
+                      className="h-full bg-card/60 backdrop-blur-sm border-border hover:shadow-xl hover:bg-card/80 motion-interactive motion-card-feedback group cursor-pointer"
                       onClick={() => navigate(`/dashboard/jobs/${job.id}`)}
                     >
                       <CardHeader className="pb-3">
@@ -549,7 +614,7 @@ export default function Jobs() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-muted"
+                            className="h-8 w-8 opacity-100 hover:bg-muted motion-interactive-micro"
                             onClick={() =>
                               navigate(`/dashboard/jobs/${job.id}`)
                             }
@@ -557,7 +622,7 @@ export default function Jobs() {
                             <FileText className="w-4 h-4 text-muted-foreground" />
                           </Button>
                         </div>
-                        <CardTitle className="text-xl font-bold text-foreground line-clamp-1 group-hover:text-primary transition-colors">
+                        <CardTitle className="text-xl font-bold text-foreground line-clamp-1 group-hover:text-primary motion-interactive-micro">
                           {job.job_name}
                         </CardTitle>
                         <div className="flex items-center mt-1 text-sm text-muted-foreground">
@@ -599,6 +664,69 @@ export default function Jobs() {
                             )}
                           </div>
                         </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div className="space-y-3" layout>
+                {filteredJobs.map((job) => (
+                  <motion.div
+                    key={job.id}
+                    layout
+                    initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -12 }}
+                    transition={{ duration: prefersReducedMotion ? 0 : 0.16 }}
+                  >
+                    <Card className="border-border bg-card/60">
+                      <CardContent className="p-4">
+                        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline" className={`${getStatusColor(job.status)} border px-2.5 py-0.5 capitalize font-medium`}>
+                                {job.status}
+                              </Badge>
+                              <h3 className="truncate font-semibold text-foreground">{job.job_name}</h3>
+                            </div>
+                            <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                              <span className="inline-flex items-center"><User className="mr-1 h-3.5 w-3.5" />{job.client_name}</span>
+                              <span className="inline-flex items-center"><Calendar className="mr-1 h-3.5 w-3.5" />{new Date(job.created_at).toLocaleDateString()}</span>
+                              {job.photos && job.photos.length > 0 ? <span>{job.photos.length} photos</span> : null}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="gap-2"
+                              onClick={() => navigate(`/dashboard/jobs/${job.id}`)}
+                            >
+                              <Eye className="h-4 w-4" />
+                              Open
+                            </Button>
+                          </div>
+                        </div>
+                        <Collapsible className="mt-3 border-t border-border pt-3">
+                          <CollapsibleTrigger asChild>
+                            <Button variant="ghost" size="sm" className="gap-2 px-0 text-muted-foreground">
+                              More details
+                              <ChevronDown className="h-4 w-4" />
+                            </Button>
+                          </CollapsibleTrigger>
+                          <CollapsibleContent className="pt-2">
+                            <div className="space-y-2 text-sm text-muted-foreground">
+                              <div className="inline-flex items-start">
+                                <MapPin className="mr-2 mt-0.5 h-3.5 w-3.5 text-primary" />
+                                {job.address || "No address provided"}
+                              </div>
+                              {job.notes ? (
+                                <p className="line-clamp-2">{job.notes}</p>
+                              ) : null}
+                            </div>
+                          </CollapsibleContent>
+                        </Collapsible>
                       </CardContent>
                     </Card>
                   </motion.div>

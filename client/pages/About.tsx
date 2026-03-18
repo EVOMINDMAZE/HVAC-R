@@ -1,8 +1,10 @@
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SEO } from "@/components/SEO";
 import { Shield, Target, Users } from "lucide-react";
+
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { SEO } from "@/components/SEO";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 
 const values = [
   {

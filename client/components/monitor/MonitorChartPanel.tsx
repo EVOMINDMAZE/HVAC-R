@@ -1,20 +1,22 @@
-import { useId, useMemo } from "react";
 import {
   Activity,
   ArrowDownRight,
   ArrowUpRight,
   LineChart as LineChartIcon,
 } from "lucide-react";
+import { useId, useMemo } from "react";
 import { Area, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
-import { cn } from "@/lib/utils";
+
+import type { FutureMonitorSkin } from "@/lib/featureFlags";
+import type { MonitorSeries } from "@/types/monitor";
+
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import type { MonitorSeries } from "@/types/monitor";
-import type { FutureMonitorSkin } from "@/lib/featureFlags";
+import { cn } from "@/lib/utils";
 
 interface MonitorChartPanelProps {
   series?: MonitorSeries;
@@ -260,12 +262,13 @@ export function MonitorChartPanel({
                 stroke="var(--color-value)"
                 strokeWidth={isHud ? 2.9 : 2.5}
                 filter={isHud ? `url(#${glowFilterId})` : undefined}
+                // @ts-expect-error Recharts dot prop expects boolean but we pass a function
                 dot={
                   isHud
                     ? (props: { cx?: number; cy?: number; index?: number }) => {
                         const { cx, cy, index } = props;
-                        if (typeof cx !== "number" || typeof cy !== "number") return null;
-                        if (index !== points.length - 1) return null;
+                        if (typeof cx !== "number" || typeof cy !== "number") return undefined;
+                        if (index !== points.length - 1) return undefined;
                         return (
                           <circle
                             cx={cx}
@@ -278,7 +281,7 @@ export function MonitorChartPanel({
                           />
                         );
                       }
-                    : false
+                    : undefined
                 }
                 activeDot={{
                   r: 3.5,

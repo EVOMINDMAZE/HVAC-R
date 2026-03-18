@@ -1,15 +1,16 @@
+import { ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
-import { SEO } from "@/components/SEO";
-import { PageContainer } from "@/components/PageContainer";
-import { Button } from "@/components/ui/button";
-import { withPersistedUiFlags } from "@/lib/featureFlags";
-import { HudBadge } from "@/components/hud/HudBadge";
+
 import { OpsMissions } from "@/components/dashboard/OpsMissions";
+import { HudBadge } from "@/components/hud/HudBadge";
+import { PageContainer } from "@/components/PageContainer";
+import { SEO } from "@/components/SEO";
+import { Button } from "@/components/ui/button";
 import { useDashboardCommandCenter } from "@/hooks/useDashboardCommandCenter";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
 import { useRevenueAnalytics } from "@/hooks/useRevenueAnalytics";
+import { withPersistedUiFlags } from "@/lib/featureFlags";
 import { cn } from "@/lib/utils";
 
 function formatTimestamp(value: string) {

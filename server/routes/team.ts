@@ -1,6 +1,24 @@
 // Team routes using Supabase
 import { RequestHandler } from "express";
+
+import {
+  asRecord,
+  isValidEmail,
+  isValidRole,
+  parseTrimmedString,
+} from "../utils/requestValidation";
 import { supabaseAdmin } from "../utils/supabase";
+
+function parsePagination(query: Record<string, unknown>) {
+  const rawPage = Number(query.page);
+  const rawPageSize = Number(query.pageSize);
+  const page = Number.isFinite(rawPage) && rawPage > 0 ? Math.floor(rawPage) : 1;
+  const pageSize =
+    Number.isFinite(rawPageSize) && rawPageSize > 0
+      ? Math.min(100, Math.floor(rawPageSize))
+      : 25;
+  return { page, pageSize };
+}
 
 // Helper to get user ID by email using RPC
 async function getUserIdByEmail(email: string): Promise<string | null> {
@@ -23,31 +41,62 @@ async function getUserIdByEmail(email: string): Promise<string | null> {
 // Helper to get user's company ID
 async function getUserCompanyId(
   userId: string,
+  userMetadata?: any,
 ): Promise<{ companyId: string | null; role: string | null }> {
   if (!supabaseAdmin) {
     throw new Error("Supabase admin client not configured");
   }
 
-  // First check user_roles table
-  const { data: roleData, error: roleError } = await supabaseAdmin
-    .from("user_roles")
-    .select("company_id, role")
-    .eq("user_id", userId)
-    .maybeSingle();
+  const activeCompanyId = userMetadata?.active_company_id;
 
-  if (!roleError && roleData) {
-    return { companyId: roleData.company_id, role: roleData.role };
+  // If active company ID is provided, try to find a matching user_roles entry
+  if (activeCompanyId) {
+    const { data: roleData, error: roleError } = await supabaseAdmin
+      .from("user_roles")
+      .select("company_id, role")
+      .eq("user_id", userId)
+      .eq("company_id", activeCompanyId)
+      .maybeSingle();
+
+    if (!roleError && roleData) {
+      return { companyId: roleData.company_id, role: roleData.role };
+    }
+
+    // If no matching user_roles, check if user owns this company
+    const { data: companyData, error: companyError } = await supabaseAdmin
+      .from("companies")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("id", activeCompanyId)
+      .maybeSingle();
+
+    if (!companyError && companyData) {
+      return { companyId: companyData.id, role: "admin" };
+    }
   }
 
-  // Fallback: check if user owns a company
-  const { data: companyData, error: companyError } = await supabaseAdmin
+  // No active company or not found, get all user_roles entries
+  const { data: allRoles, error: allRolesError } = await supabaseAdmin
+    .from("user_roles")
+    .select("company_id, role")
+    .eq("user_id", userId);
+
+  if (!allRolesError && allRoles && allRoles.length > 0) {
+    // Prioritize admin role, otherwise pick first
+    const adminRole = allRoles.find(r => r.role === "admin");
+    const selected = adminRole || allRoles[0];
+    return { companyId: selected.company_id, role: selected.role };
+  }
+
+  // Fallback: check if user owns any company
+  const { data: allCompanies, error: allCompaniesError } = await supabaseAdmin
     .from("companies")
     .select("id")
-    .eq("user_id", userId)
-    .maybeSingle();
+    .eq("user_id", userId);
 
-  if (!companyError && companyData) {
-    return { companyId: companyData.id, role: "admin" };
+  if (!allCompaniesError && allCompanies && allCompanies.length > 0) {
+    // Pick the first company (maybe the oldest)
+    return { companyId: allCompanies[0].id, role: "admin" };
   }
 
   return { companyId: null, role: null };
@@ -60,12 +109,14 @@ export const getTeam: RequestHandler = async (req, res) => {
       return res.status(401).json({ error: "Authentication required" });
     }
 
-    const { companyId } = await getUserCompanyId(user.id);
+    const { companyId } = await getUserCompanyId(user.id, user);
     if (!companyId) {
       return res
         .status(400)
         .json({ error: "User not associated with a company" });
     }
+
+    const { page, pageSize } = parsePagination(req.query as Record<string, unknown>);
 
     // Get team members for this company from user_roles
     const { data: roleMembers, error: roleError } = await supabaseAdmin!
@@ -130,9 +181,19 @@ export const getTeam: RequestHandler = async (req, res) => {
       }),
     );
 
+    const totalItems = membersWithEmails.length;
+    const start = (page - 1) * pageSize;
+    const data = membersWithEmails.slice(start, start + pageSize);
+
     return res.json({
       success: true,
-      data: membersWithEmails,
+      data,
+      pagination: {
+        page,
+        pageSize,
+        totalItems,
+        totalPages: Math.ceil(totalItems / pageSize),
+      },
     });
   } catch (error: unknown) {
     console.error("Error fetching team:", error);
@@ -147,9 +208,19 @@ export const inviteTeamMember: RequestHandler = async (req, res) => {
       return res.status(401).json({ error: "Authentication required" });
     }
 
-    const { email, role, full_name, client_id } = req.body;
+    const body = asRecord(req.body);
+    const email = body ? parseTrimmedString(body, "email") : null;
+    const role = body ? parseTrimmedString(body, "role") : null;
+    const full_name = body ? parseTrimmedString(body, "full_name") : null;
+    const client_id = body && typeof body.client_id === "string" ? body.client_id.trim() : null;
     if (!email || !role) {
       return res.status(400).json({ error: "Email and role are required" });
+    }
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ error: "Valid email is required" });
+    }
+    if (!isValidRole(role)) {
+      return res.status(400).json({ error: "Invalid role provided" });
     }
 
     if (!supabaseAdmin) {
@@ -158,7 +229,7 @@ export const inviteTeamMember: RequestHandler = async (req, res) => {
 
     // Get current user's company and role
     const { companyId: currentUserCompanyId, role: currentUserRole } =
-      await getUserCompanyId(user.id);
+      await getUserCompanyId(user.id, user);
     if (!currentUserCompanyId || !currentUserRole) {
     return res
       .status(403)
@@ -213,7 +284,7 @@ export const inviteTeamMember: RequestHandler = async (req, res) => {
     let resolvedClientId: string | null = null;
     if (role === "client") {
       // Resolve provided client_id and ensure it belongs to inviter's company.
-      if (client_id && typeof client_id === "string") {
+      if (client_id) {
         const { data: clientRow, error: clientErr } = await supabaseAdmin
           .from("clients")
           .select("id, company_id")
@@ -252,7 +323,7 @@ export const inviteTeamMember: RequestHandler = async (req, res) => {
           // Create a minimal client record so the invited user can be scoped correctly.
           const derivedName =
             typeof full_name === "string" && full_name.trim()
-              ? full_name.trim()
+              ? full_name
               : String(email).split("@")[0] || "Client";
 
           const { data: createdClient, error: createErr } = await supabaseAdmin
@@ -365,11 +436,16 @@ export const updateTeamMemberRole: RequestHandler = async (req, res) => {
       return res.status(401).json({ error: "Authentication required" });
     }
 
-    const { userId, newRole } = req.body;
+    const body = asRecord(req.body);
+    const userId = body ? parseTrimmedString(body, "userId") : null;
+    const newRole = body ? parseTrimmedString(body, "newRole") : null;
     if (!userId || !newRole) {
       return res
         .status(400)
         .json({ error: "User ID and new role are required" });
+    }
+    if (!isValidRole(newRole)) {
+      return res.status(400).json({ error: "Invalid role provided" });
     }
 
     if (!supabaseAdmin) {
@@ -378,7 +454,7 @@ export const updateTeamMemberRole: RequestHandler = async (req, res) => {
 
     // Get current user's role
     const { role: currentUserRole, companyId: currentUserCompanyId } =
-      await getUserCompanyId(user.id);
+      await getUserCompanyId(user.id, user);
 
     if (currentUserRole !== "admin") {
       return res.status(403).json({ error: "Only admins can update roles" });
@@ -413,7 +489,8 @@ export const removeTeamMember: RequestHandler = async (req, res) => {
       return res.status(401).json({ error: "Authentication required" });
     }
 
-    const { userId } = req.body;
+    const body = asRecord(req.body);
+    const userId = body ? parseTrimmedString(body, "userId") : null;
     if (!userId) {
       return res.status(400).json({ error: "User ID is required" });
     }
@@ -428,7 +505,7 @@ export const removeTeamMember: RequestHandler = async (req, res) => {
 
     // Get current user's role
     const { role: currentUserRole, companyId: currentUserCompanyId } =
-      await getUserCompanyId(user.id);
+      await getUserCompanyId(user.id, user);
 
     if (currentUserRole !== "admin") {
       return res.status(403).json({ error: "Only admins can remove members" });

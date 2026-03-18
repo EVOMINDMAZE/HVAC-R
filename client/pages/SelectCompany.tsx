@@ -1,8 +1,3 @@
-import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { supabase } from "@/lib/supabase";
-import { useToast } from "@/hooks/useToast";
 import {
   Building2,
   Crown,
@@ -13,6 +8,10 @@ import {
   Check,
   Plus,
 } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,7 +21,9 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { useToast } from "@/hooks/useToast";
+import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 
 export default function SelectCompany() {

@@ -1,4 +1,3 @@
-import { useEffect, useState, useCallback, useMemo } from "react";
 import {
   Zap,
   Phone,
@@ -10,18 +9,23 @@ import {
   CheckCircle,
   Filter,
 } from "lucide-react";
-import { supabase } from "@/lib/supabase";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState, useCallback, useMemo } from "react";
+
+import { AppFeedbackState } from "@/components/app/AppFeedbackState";
 import { PageContainer } from "@/components/PageContainer";
-import { Button } from "@/components/ui/button";
+import { PageHero } from "@/components/shared/PageHero";
+import { StatsRow, type StatItem } from "@/components/shared/StatsRow";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { supabase } from "@/lib/supabase";
 import {
   Select,
   SelectContent,
@@ -29,9 +33,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PageHero } from "@/components/shared/PageHero";
-import { StatsRow, type StatItem } from "@/components/shared/StatsRow";
-import { EmptyState } from "@/components/shared/EmptyState";
 import { cn } from "@/lib/utils";
 
 interface AIAnalysis {
@@ -59,6 +60,7 @@ export default function TriageDashboard() {
   const { toast } = useToast();
   const [submissions, setSubmissions] = useState<TriageSubmission[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [converting, setConverting] = useState<string | null>(null);
   const [companyId, setCompanyId] = useState<string | null>(null);
   const [selectedSubmission, setSelectedSubmission] = useState<TriageSubmission | null>(null);
@@ -66,6 +68,7 @@ export default function TriageDashboard() {
 
   const fetchSubmissions = useCallback(async () => {
     try {
+      setLoadError(null);
       const { data, error } = await supabase
         .from("triage_submissions")
         .select("*")
@@ -75,6 +78,7 @@ export default function TriageDashboard() {
       setSubmissions(data || []);
     } catch (error: any) {
       console.error("Error fetching triage:", error);
+      setLoadError(error?.message || "We couldn’t load triage leads.");
     } finally {
       setLoading(false);
     }
@@ -265,12 +269,27 @@ export default function TriageDashboard() {
 
       <div className="triage-page__content">
         {loading ? (
-          <div className="triage-page__loading">
-            <div className="triage-page__loading-spinner" />
-            <span>Loading triage leads...</span>
-          </div>
+          <AppFeedbackState
+            variant="loading"
+            title="Loading triage leads"
+            description="Collecting incoming homeowner submissions and AI summaries."
+          />
+        ) : loadError ? (
+          <AppFeedbackState
+            variant="error"
+            title="Unable to load triage leads"
+            description={loadError}
+            action={{
+              label: "Try again",
+              onClick: () => {
+                setLoading(true);
+                fetchSubmissions();
+              },
+            }}
+          />
         ) : filteredSubmissions.length === 0 ? (
-          <EmptyState
+          <AppFeedbackState
+            variant="empty"
             icon={<FileText className="w-12 h-12" />}
             title={`No ${filter} leads`}
             description="When new triage requests arrive, they'll appear here instantly."

@@ -356,10 +356,17 @@ When bypass is active, you'll see:
 ## 🐛 Known Issues to Test
 
 1. **Company Selector** - May not appear if user has only 1 company
-2. **Role Persistence** - Role might not update immediately after switch
+2. **Role Persistence** - Fixed: Role now updates immediately after company switch due to session refresh (test admin selecting Demo Company vs dropdown display)
 3. **Seat Counter** - May need refresh to show accurate count
 4. **Skool Integration** - Requires valid Skool credentials
 5. **Invite Code Expiration** - Check timezone handling
+
+## ✅ Cross-Company Access Guarantees
+
+- **Session Refresh Fix**: After switching companies via `switch_company_context` RPC, the system now performs a session refresh to ensure user metadata is immediately synchronized with the UI.
+- **UI Consistency**: The company dropdown now correctly displays the selected company (e.g., admin selecting Demo Company will see Demo Company in the banner, not ThermoTech HVAC).
+- **Role Isolation**: User roles are strictly isolated per company; switching companies automatically updates the role context without requiring page refresh.
+- **Data Integrity**: Cross-company operations maintain data isolation; actions performed in one company context do not affect another company's data.
 
 ---
 
@@ -373,5 +380,5 @@ When bypass is active, you'll see:
 
 ---
 
-**Last Updated:** February 5, 2025  
+**Last Updated:** March 14, 2026  
 **Test Environment:** localhost:3001

@@ -1,5 +1,3 @@
-import React, { useMemo, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
   Menu,
@@ -7,15 +5,16 @@ import {
   User,
   LogOut,
   X,
-  ChevronDown,
 } from "lucide-react";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { useToast } from "@/hooks/useToast";
-import { useAppNavigation } from "@/hooks/useAppNavigation";
-import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/mode-toggle";
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
+import type { ComponentType } from "react";
+
 import { CompanySwitcher } from "@/components/CompanySwitcher";
 import { JobSelector } from "@/components/JobSelector";
+import { ModeToggle } from "@/components/mode-toggle";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +22,11 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { useAppNavigation } from "@/hooks/useAppNavigation";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { useToast } from "@/hooks/useToast";
 import { cn } from "@/lib/utils";
+import { navLinkBaseClasses } from "@/lib/navigation";
 
 interface HeaderProps {
   variant?: "landing" | "dashboard";
@@ -33,10 +36,12 @@ interface HeaderProps {
 function MobileGroup({
   label,
   items,
+  pathname,
   onNavigate,
 }: {
   label: string;
-  items: Array<{ to: string; label: string; icon: any }>;
+  items: Array<{ to: string; label: string; icon: ComponentType<{ className?: string }> }>;
+  pathname: string;
   onNavigate: () => void;
 }) {
   if (!items.length) return null;
@@ -52,15 +57,100 @@ function MobileGroup({
             key={item.to}
             to={item.to}
             onClick={onNavigate}
-            className="flex items-center gap-2 rounded-xl px-2 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+            className={cn(
+              "flex min-h-12 items-center gap-2 rounded-lg px-4 py-3 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+              pathname === item.to || pathname.startsWith(`${item.to}/`)
+                ? "text-primary"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+            aria-current={pathname === item.to || pathname.startsWith(`${item.to}/`) ? "page" : undefined}
           >
-            <item.icon className="h-4 w-4 text-muted-foreground" />
+            <item.icon className="h-4 w-4 text-current" />
             {item.label}
           </Link>
         ))}
       </div>
     </div>
   );
+}
+
+function isRouteActive(currentPath: string, targetPath: string) {
+  if (targetPath === "/") return currentPath === "/";
+  return currentPath === targetPath || currentPath.startsWith(`${targetPath}/`);
+}
+
+function isNavItemActive(pathname: string, hash: string, item: { to: string; hash?: string }) {
+  if (item.hash) {
+    return pathname === item.to && hash === item.hash;
+  }
+
+  if (item.to === "/features") {
+    return pathname === item.to && hash !== "#use-cases";
+  }
+
+  return isRouteActive(pathname, item.to);
+}
+
+function HeaderMobileBackdrop({ onDismiss }: { onDismiss: () => void }) {
+  return (
+    <button
+      type="button"
+      className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm md:hidden"
+      aria-label="Dismiss menu"
+      onClick={onDismiss}
+    />
+  );
+}
+
+function HeaderMobilePanel({
+  id,
+  children,
+}: {
+  id: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div
+      id={id}
+      role="dialog"
+      aria-modal="true"
+      className="relative z-50 border-t border-border bg-background/95 backdrop-blur-md px-4 py-4 shadow-lg md:hidden"
+    >
+      {children}
+    </div>
+  );
+}
+
+function LandingMobileLink({
+  label,
+  to,
+  isActive,
+  onClick,
+}: {
+  label: string;
+  to: string;
+  isActive: boolean;
+  onClick: (event: React.MouseEvent<HTMLAnchorElement>) => void;
+}) {
+  return (
+    <Link
+      to={to}
+      onClick={onClick}
+      className={cn(
+        "min-h-12 rounded-lg px-4 py-3 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+        isActive
+          ? "text-primary"
+          : "text-muted-foreground hover:text-foreground",
+      )}
+      aria-current={isActive ? "page" : undefined}
+    >
+      {label}
+    </Link>
+  );
+}
+
+function MobileMenuSection({ children }: { children: React.ReactNode }) {
+  return <div className="app-stack-16">{children}</div>;
 }
 
 export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
@@ -70,6 +160,31 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { landingLinks, groups, mainLinks } = useAppNavigation();
+  const mobileMenuId = variant === "dashboard" ? "dashboard-mobile-menu" : "landing-mobile-menu";
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMobileOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", onEscape);
+    return () => document.removeEventListener("keydown", onEscape);
+  }, [mobileOpen]);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [location.pathname, location.hash]);
+
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   const initials = useMemo(() => {
     if (!user?.email) return "U";
@@ -81,17 +196,8 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
   const getLandingLinkTarget = (item: (typeof landingLinks)[number]) =>
     item.hash ? `${item.to}${item.hash}` : item.to;
 
-  const isLandingLinkActive = (item: (typeof landingLinks)[number]) => {
-    if (item.hash) {
-      return location.pathname === item.to && location.hash === item.hash;
-    }
-
-    if (item.to === "/features") {
-      return location.pathname === item.to && location.hash !== "#use-cases";
-    }
-
-    return location.pathname === item.to;
-  };
+  const isLandingLinkActive = (item: (typeof landingLinks)[number]) =>
+    isNavItemActive(location.pathname, location.hash, item);
 
   const handleLandingLinkClick = (
     item: (typeof landingLinks)[number],
@@ -149,7 +255,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               </Button>
             ) : null}
 
-            <Link to="/dashboard" className="flex items-center">
+            <Link to="/dashboard" className="flex items-center" aria-label="Go to dashboard home">
               <img
                 src="/logo-landscape.png"
                 alt="ThermoNeural"
@@ -205,22 +311,30 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               size="icon"
               onClick={() => setMobileOpen((prev) => !prev)}
               aria-label="Toggle menu"
+              aria-expanded={mobileOpen}
+              aria-controls={mobileMenuId}
             >
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
         </div>
 
+        {mobileOpen ? <HeaderMobileBackdrop onDismiss={() => setMobileOpen(false)} /> : null}
         {mobileOpen ? (
-          <div className="border-t border-border bg-background px-4 py-4 md:hidden">
-            <div className="app-stack-16">
+          <HeaderMobilePanel id={mobileMenuId}>
+            <MobileMenuSection>
               <div className="grid grid-cols-1 gap-2">
                 <JobSelector />
                 <CompanySwitcher />
               </div>
 
               <div className="grid gap-4">
-                <MobileGroup label="Quick Access" items={mainLinks} onNavigate={() => setMobileOpen(false)} />
+                <MobileGroup
+                  label="Quick Access"
+                  items={mainLinks}
+                  pathname={location.pathname}
+                  onNavigate={() => setMobileOpen(false)}
+                />
                 {mobileGroups
                   .filter((group) => group.id !== "work")
                   .map((group) => (
@@ -228,6 +342,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                       key={group.id}
                       label={group.label}
                       items={group.items}
+                      pathname={location.pathname}
                       onNavigate={() => setMobileOpen(false)}
                     />
                   ))}
@@ -237,7 +352,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 <Link
                   to="/profile"
                   onClick={() => setMobileOpen(false)}
-                  className="rounded-xl border border-border px-3 py-2 text-sm font-medium"
+                  className="min-h-12 rounded-lg border border-border px-4 py-3 text-sm font-medium"
                 >
                   Account
                 </Link>
@@ -246,8 +361,8 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                   Sign Out
                 </Button>
               </div>
-            </div>
-          </div>
+            </MobileMenuSection>
+          </HeaderMobilePanel>
         ) : null}
       </header>
     );
@@ -267,7 +382,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               <ArrowLeft className="h-4 w-4" />
             </Button>
           ) : null}
-          <Link to="/" className="flex items-center">
+          <Link to="/" className="flex items-center" aria-label="Go to home">
             <img
               src="/logo-landscape.png"
               alt="ThermoNeural"
@@ -276,16 +391,17 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
           </Link>
         </div>
 
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden items-center gap-2 md:flex" aria-label="Primary">
           {landingLinks.map((item) => (
             <Link
               key={`${item.to}${item.hash ?? ""}`}
               to={getLandingLinkTarget(item)}
               onClick={(event) => handleLandingLinkClick(item, event)}
               className={cn(
-                "rounded-full px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary/80 hover:text-foreground",
-                isLandingLinkActive(item) && "bg-secondary text-foreground",
+                `${navLinkBaseClasses} text-muted-foreground hover:text-foreground`,
+                isLandingLinkActive(item) && "text-primary",
               )}
+              aria-current={isLandingLinkActive(item) ? "page" : undefined}
             >
               {item.label}
             </Link>
@@ -309,27 +425,29 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
             size="icon"
             onClick={() => setMobileOpen((prev) => !prev)}
             aria-label="Toggle menu"
+            aria-expanded={mobileOpen}
+            aria-controls={mobileMenuId}
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
         </div>
       </div>
 
+      {mobileOpen ? <HeaderMobileBackdrop onDismiss={() => setMobileOpen(false)} /> : null}
       {mobileOpen ? (
-        <div className="border-t border-border bg-background px-4 py-4 md:hidden">
+        <HeaderMobilePanel id={mobileMenuId}>
           <div className="grid gap-2">
             {landingLinks.map((item) => (
-              <Link
+              <LandingMobileLink
                 key={`${item.to}${item.hash ?? ""}`}
+                label={item.label}
                 to={getLandingLinkTarget(item)}
+                isActive={isLandingLinkActive(item)}
                 onClick={(event) => {
                   handleLandingLinkClick(item, event);
                   setMobileOpen(false);
                 }}
-                className="rounded-xl px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary"
-              >
-                {item.label}
-              </Link>
+              />
             ))}
             <div className="grid grid-cols-2 gap-2 pt-2">
               <Link to="/signin" onClick={() => setMobileOpen(false)}>
@@ -340,7 +458,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               </Link>
             </div>
           </div>
-        </div>
+        </HeaderMobilePanel>
       ) : null}
     </header>
   );

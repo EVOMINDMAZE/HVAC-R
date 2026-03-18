@@ -1,4 +1,6 @@
+import { motion } from "framer-motion";
 import { Shield, CheckCircle, Lock, Users, Award, Clock } from "lucide-react";
+
 import {
   Tooltip,
   TooltipContent,
@@ -6,7 +8,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useUserCount } from "@/hooks/useUserCount";
-import { motion } from "framer-motion";
 
 const trustItems = [
   {

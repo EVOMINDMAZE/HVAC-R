@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from "react";
+import { ShieldAlert, Info, Save, Flame } from "lucide-react";
+import { useState, useEffect } from 'react';
+
+import { SaveCalculation } from "@/components/SaveCalculation";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { ShieldAlert, Info, Save, Flame } from "lucide-react";
-import { getRefrigerantsByPopularity, RefrigerantProperties } from "@/lib/refrigerants";
-import { SaveCalculation } from "@/components/SaveCalculation";
 import { calculateA2LChargeLimit, calculateMinAreaForA2L } from "@/lib/calculators/a2l";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { getRefrigerantsByPopularity, RefrigerantProperties } from "@/lib/refrigerants";
 
 interface A2LCalculatorProps {
     saveCalculation: any;

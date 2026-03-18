@@ -1,4 +1,5 @@
 import { RequestHandler } from "express";
+
 import { supabaseAdmin } from "../utils/supabase";
 
 export const getUserCount: RequestHandler = async (_req, res) => {

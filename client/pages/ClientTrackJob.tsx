@@ -1,8 +1,9 @@
+import { Phone, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
+
 import LiveMap, { TechIcon } from "@/components/job/LiveMap";
-import { Phone, User } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export default function ClientTrackJob() {
   const { id } = useParams();

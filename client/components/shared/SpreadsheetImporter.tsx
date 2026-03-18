@@ -1,5 +1,3 @@
-import React, { useState, useCallback } from "react";
-import Papa from "papaparse";
 import {
   Upload,
   FileSpreadsheet,
@@ -8,6 +6,12 @@ import {
   Loader2,
   X,
 } from "lucide-react";
+import Papa from "papaparse";
+import { parseXLSXFile, isXLSXFile } from "@/lib/spreadsheet-utils";
+import { useState, useCallback } from 'react';
+
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -16,7 +20,14 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -25,15 +36,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
 // Generic interface for column mapping
@@ -83,47 +85,66 @@ export function SpreadsheetImporter({
     }
   }, []);
 
-  // Process file (CSV only for now, can extend to XLSX later with regex check)
-  const processFile = (file: File) => {
+  // Process file (CSV or XLSX)
+  const processFile = async (file: File) => {
     setFile(file);
     setError(null);
 
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      preview: 5, // Preview first 5 rows
-      complete: (results) => {
-        if (results.data && results.data.length > 0) {
-          setHeaders(results.meta.fields || []);
-          setPreviewData(results.data);
+    try {
+      let data: any[];
+      let fields: string[];
 
-          // Auto-guess mappings
-          const initialMappings: Record<string, string> = {};
-          results.meta.fields?.forEach((header) => {
-            const normalizedHeader = header
-              .toLowerCase()
-              .replace(/[^a-z0-9]/g, "");
-            const match = targetFields.find(
-              (f) =>
-                f.label.toLowerCase().replace(/[^a-z0-9]/g, "") ===
-                  normalizedHeader ||
-                f.key.toLowerCase().replace(/[^a-z0-9]/g, "") ===
-                  normalizedHeader,
-            );
-            if (match) {
-              initialMappings[match.key] = header;
-            }
-          });
-          setMappings(initialMappings);
-          setStep("map");
-        } else {
+      if (isXLSXFile(file)) {
+        // Parse XLSX
+        data = await parseXLSXFile(file);
+        if (data.length === 0) {
           setError("No data found in file.");
+          return;
         }
-      },
-      error: (err) => {
-        setError(`Failed to parse file: ${err.message}`);
-      },
-    });
+        // Extract headers from first object keys
+        fields = Object.keys(data[0]);
+        // Limit preview to first 5 rows
+        setPreviewData(data.slice(0, 5));
+      } else {
+        // Parse CSV
+        const results = await new Promise<any>((resolve, reject) => {
+          Papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            preview: 5,
+            complete: resolve,
+            error: reject,
+          });
+        });
+        if (!results.data || results.data.length === 0) {
+          setError("No data found in file.");
+          return;
+        }
+        data = results.data;
+        fields = results.meta.fields || [];
+        setPreviewData(data);
+      }
+
+      setHeaders(fields);
+
+      // Auto-guess mappings
+      const initialMappings: Record<string, string> = {};
+      fields.forEach((header) => {
+        const normalizedHeader = header.toLowerCase().replace(/[^a-z0-9]/g, "");
+        const match = targetFields.find(
+          (f) =>
+            f.label.toLowerCase().replace(/[^a-z0-9]/g, "") === normalizedHeader ||
+            f.key.toLowerCase().replace(/[^a-z0-9]/g, "") === normalizedHeader,
+        );
+        if (match) {
+          initialMappings[match.key] = header;
+        }
+      });
+      setMappings(initialMappings);
+      setStep("map");
+    } catch (err: any) {
+      setError(`Failed to parse file: ${err.message}`);
+    }
   };
 
   const handleImport = async () => {
@@ -131,34 +152,40 @@ export function SpreadsheetImporter({
     setError(null);
 
     try {
-      // Parse full file now
       if (!file) return;
 
-      Papa.parse(file, {
-        header: true,
-        skipEmptyLines: true,
-        complete: async (results) => {
-          const mappedData = results.data.map((row: any) => {
-            const newRow: any = {};
-            Object.entries(mappings).forEach(([targetKey, sourceHeader]) => {
-              newRow[targetKey] = row[sourceHeader];
-            });
-            return newRow;
-          });
+      let fullData: any[];
 
-          await onImport(mappedData);
-          onClose(false);
-          setStep("upload");
-          setFile(null);
-          setMappings({});
-        },
-        error: (err) => {
-          setError(`Import failed: ${err.message}`);
-          setIsUploading(false);
-        },
+      if (isXLSXFile(file)) {
+        fullData = await parseXLSXFile(file);
+      } else {
+        fullData = await new Promise<any[]>((resolve, reject) => {
+          Papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            complete: (results) => resolve(results.data),
+            error: reject,
+          });
+        });
+      }
+
+      // Map columns based on user mappings
+      const mappedData = fullData.map((row: any) => {
+        const newRow: any = {};
+        Object.entries(mappings).forEach(([targetKey, sourceHeader]) => {
+          newRow[targetKey] = row[sourceHeader];
+        });
+        return newRow;
       });
+
+      await onImport(mappedData);
+      onClose(false);
+      setStep("upload");
+      setFile(null);
+      setMappings({});
     } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+      setError(`Import failed: ${err.message}`);
+    } finally {
       setIsUploading(false);
     }
   };
@@ -206,12 +233,12 @@ export function SpreadsheetImporter({
               Drag & Drop or Click to Upload
             </h3>
             <p className="text-sm text-muted-foreground mt-2">
-              Supports .CSV files (Excel coming soon)
+              Supports .CSV and .XLSX files
             </p>
             <input
               id="file-upload"
               type="file"
-              accept=".csv"
+              accept=".csv,.xlsx,.xls"
               className="hidden"
               onChange={(e) =>
                 e.target.files?.[0] && processFile(e.target.files[0])

@@ -1,4 +1,8 @@
+import { Lock, Zap, Building, ArrowRight, CheckCircle, X } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,10 +13,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { Lock, Zap, Building, ArrowRight, CheckCircle, X } from "lucide-react";
 import { PLANS } from "@/lib/stripe";
-import { useNavigate } from "react-router-dom";
+
 
 interface UpgradeModalProps {
   requiredTier: "pro" | "business";

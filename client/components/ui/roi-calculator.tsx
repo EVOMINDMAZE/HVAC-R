@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calculator, DollarSign, Clock, Users, Info, ChevronDown, ChevronUp } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export function ROICalculator() {
   const [hoursPerWeek, setHoursPerWeek] = useState(10);

@@ -1,12 +1,14 @@
+import { Loader2, RefreshCcw, Check, Mail } from "lucide-react";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
+import { CreateInvoiceDialog } from "./CreateInvoiceDialog";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CreateInvoiceDialog } from "./CreateInvoiceDialog";
-import { Loader2, RefreshCcw, Check, Mail } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
 
 interface Invoice {
     id: string;

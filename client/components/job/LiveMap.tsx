@@ -7,8 +7,8 @@ import 'leaflet/dist/leaflet.css';
 // ----------------------------------------------------------------------
 // 1. Icon Setup (Leaflet + Vite Workaround)
 // ----------------------------------------------------------------------
-import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
+import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import iconShadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
 const DefaultIcon = L.icon({

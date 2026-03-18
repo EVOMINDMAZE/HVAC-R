@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import { Thermometer } from "lucide-react";
+import { useState } from 'react';
+
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { DialogFooter } from "@/components/ui/dialog";
-import { Thermometer, Smartphone, Mail, Snowflake, Copy } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
 
@@ -37,6 +38,10 @@ export function AutomationRuleForm({ assets, onSuccess, companyId }: AutomationR
 
         try {
             setLoading(true);
+            if (!supabase) {
+                toast({ title: "Error", description: "Supabase client not configured.", variant: "destructive" });
+                return;
+            }
             const { error } = await supabase.from('automation_rules').insert({
                 asset_id: rule.asset_id,
                 company_id: companyId,

@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
+
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
-import { Card, CardContent } from "@/components/ui/card";
 import { SEO } from "@/components/SEO";
+import { Card, CardContent } from "@/components/ui/card";
 
 export function Privacy() {
   return (

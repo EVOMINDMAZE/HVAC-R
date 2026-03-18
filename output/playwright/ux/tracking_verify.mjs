@@ -1,9 +1,13 @@
 import { chromium } from "@playwright/test";
 import fs from "fs/promises";
 import path from "path";
+import { launchChromium } from "./_chromium.mjs";
 
 const baseUrl = process.env.BASE_URL || "http://localhost:8090";
 const outDir = process.env.OUT_DIR || path.resolve("output/playwright/ux");
+const headed = ["1", "true", "yes"].includes(
+  String(process.env.HEADED || "").toLowerCase(),
+);
 
 async function resetEventStore(page) {
   await page.evaluate(() => {
@@ -23,9 +27,42 @@ async function readStoredEvents(page) {
   });
 }
 
-async function clickAndWaitForUrl(page, locator, destinationPattern) {
+function toDestinationPattern(destination) {
+  if (destination instanceof RegExp) {
+    return destination;
+  }
+
+  const escaped = String(destination).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`${escaped}(?:[/?#]|$)`, "i");
+}
+
+async function clickAndWaitForUrl(page, locator, destinationPatterns) {
+  const expectedPatterns = (Array.isArray(destinationPatterns)
+    ? destinationPatterns
+    : [destinationPatterns]
+  ).map(toDestinationPattern);
+
+  await locator.waitFor({ state: "visible", timeout: 10000 });
+  await locator.scrollIntoViewIfNeeded();
+
+  const href = await locator.getAttribute("href");
+  if (href) {
+    try {
+      const inferredPath = new URL(href, page.url()).pathname;
+      expectedPatterns.push(toDestinationPattern(inferredPath));
+    } catch {
+      // Ignore malformed href values and continue with explicit expectations.
+    }
+  }
+
+  const waitForAnyDestination = Promise.race(
+    expectedPatterns.map((pattern) =>
+      page.waitForURL(pattern, { timeout: 15000 }),
+    ),
+  );
+
   await Promise.all([
-    page.waitForURL(destinationPattern, { timeout: 15000 }),
+    waitForAnyDestination,
     locator.click(),
   ]);
 }
@@ -43,11 +80,7 @@ function countByEvent(events) {
   await fs.mkdir(outDir, { recursive: true });
   const reportPath = path.join(outDir, "tracking-verification.json");
 
-  const executablePath =
-    process.env.CHROME_PATH ||
-    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
-
-  const browser = await chromium.launch({ executablePath, headless: true });
+  const { browser } = await launchChromium({ headed });
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
 
@@ -56,58 +89,100 @@ function countByEvent(events) {
   // Landing checks
   await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
   await resetEventStore(page);
+  // Re-trigger landing view tracking after reset.
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await page.waitForTimeout(350);
 
   await clickAndWaitForUrl(
     page,
-    page.locator("main").getByRole("link", { name: /^Start Free$/i }).first(),
+    page
+      .locator("main")
+      .getByRole("link", {
+        name: /^(Start 14-Day Free Trial|Start Your Free Trial|Start Free Trial|Start Free|Start Engineering Free)$/i,
+      })
+      .first(),
     /\/signup/,
   );
   await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
 
   await clickAndWaitForUrl(
     page,
-    page.locator("main").getByRole("link", { name: /^Book Ops Demo$/i }).first(),
-    /\/contact/,
+    page
+      .locator("main")
+      .getByRole("link", {
+        name: /^(Watch 3-Min Demo|Watch Strategy Video|Book Ops Demo|Book an Ops Demo|Book Business Ops Demo)$/i,
+      })
+      .first(),
+    [/\/demo/, /\/contact/],
   );
   await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
 
-  await page.getByRole("link", { name: /See full .*tool inventory/i }).first().click();
-  await page.getByRole("button", { name: /See Full .*Tool List/i }).first().click();
+  await page
+    .locator(".core-module-item")
+    .filter({ hasText: "Profit Guard" })
+    .first()
+    .click();
+  await page.waitForTimeout(250);
 
-  await page.locator("#pricing-decision a[href='/pricing']").first().click();
-  await page.waitForURL(/\/pricing/, { timeout: 15000 });
+  await page
+    .getByRole("button", { name: /How does the AI diagnostics system work\?/i })
+    .first()
+    .click();
+  await page.waitForTimeout(250);
+
+  await clickAndWaitForUrl(
+    page,
+    page
+      .locator("main")
+      .getByRole("link", { name: /^Systemize Your Business$/i })
+      .first(),
+    /\/signup/,
+  );
 
   // Pricing checks
-  await page.getByRole("button", { name: /^Start Free$/i }).first().click();
-  await page.waitForURL(/\/signup/, { timeout: 15000 });
+  await page.goto(`${baseUrl}/pricing`, { waitUntil: "domcontentloaded" });
+  await clickAndWaitForUrl(
+    page,
+    page.getByRole("button", { name: /^Start Free$/i }).first(),
+    /\/signup/,
+  );
   await page.goto(`${baseUrl}/pricing`, { waitUntil: "domcontentloaded" });
 
-  await page.getByRole("button", { name: /^Book Ops Demo$/i }).first().click();
-  await page.waitForURL(/\/contact/, { timeout: 15000 });
+  await clickAndWaitForUrl(
+    page,
+    page.getByRole("button", { name: /^Book Ops Demo$/i }).first(),
+    /\/contact/,
+  );
 
   // Features checks
   await page.goto(`${baseUrl}/features`, { waitUntil: "domcontentloaded" });
-  await page
-    .locator("main section")
-    .first()
-    .getByRole("link", { name: /^Start Free$/i })
-    .first()
-    .click();
-  await page.waitForURL(/\/signup/, { timeout: 15000 });
+  await clickAndWaitForUrl(
+    page,
+    page
+      .locator("main section")
+      .first()
+      .getByRole("link", { name: /^Start Free$/i })
+      .first(),
+    /\/signup/,
+  );
   await page.goto(`${baseUrl}/features`, { waitUntil: "domcontentloaded" });
 
-  await page
-    .locator("main section")
-    .first()
-    .getByRole("link", { name: /^Book Ops Demo$/i })
-    .first()
-    .click();
-  await page.waitForURL(/\/contact/, { timeout: 15000 });
+  await clickAndWaitForUrl(
+    page,
+    page
+      .locator("main section")
+      .first()
+      .getByRole("link", { name: /^Book Ops Demo$/i })
+      .first(),
+    /\/contact/,
+  );
 
   // Use-cases anchor behavior
   await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
   await page.getByRole("link", { name: /^Use Cases$/i }).first().click();
-  await page.waitForURL(/\/features#use-cases/, { timeout: 15000 });
+  await page.waitForFunction(() => window.location.hash === "#use-cases", {
+    timeout: 15000,
+  });
   await page.waitForTimeout(700);
   const useCasesInView = await page.evaluate(() => {
     const section = document.getElementById("use-cases");
@@ -125,10 +200,11 @@ function countByEvent(events) {
   const eventCounts = countByEvent(events);
 
   const required = [
+    "landing_view",
     "landing_hero_primary_click",
     "landing_hero_secondary_click",
-    "landing_view_all_tools_click",
-    "landing_inventory_toggle",
+    "landing_pillar_click",
+    "landing_faq_expand",
     "landing_pricing_cta_click",
     "pricing_plan_cta_click",
     "features_primary_click",

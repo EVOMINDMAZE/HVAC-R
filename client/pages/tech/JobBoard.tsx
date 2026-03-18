@@ -1,15 +1,4 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
 import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
 import {
   MapPin,
   Calendar,
@@ -20,11 +9,23 @@ import {
   AlertCircle,
   Briefcase,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useSupabaseAuth";
-import { PageContainer } from "@/components/PageContainer";
+
 import { AppPageHeader } from "@/components/app/AppPageHeader";
 import { AppSectionCard } from "@/components/app/AppSectionCard";
+import { PageContainer } from "@/components/PageContainer";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { useAuth } from "@/hooks/useSupabaseAuth";
+import { supabase } from "@/lib/supabase";
 
 export default function JobBoard() {
   const { user, session } = useAuth();

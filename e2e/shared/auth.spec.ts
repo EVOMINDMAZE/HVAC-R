@@ -39,8 +39,9 @@ test.describe("Authentication", () => {
     await page.click('button[type="submit"]');
 
     // Should show error message
-    const errorMessage = page.getByText(/invalid|incorrect|error/i);
+    const errorMessage = page.locator('[data-testid="signin-error"]');
     await expect(errorMessage).toBeVisible({ timeout: 5000 });
+    await expect(errorMessage).toHaveText(/invalid|incorrect|error/i);
 
     // Should stay on signin page
     await expect(page).toHaveURL(/\/signin/);

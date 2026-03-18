@@ -1,12 +1,23 @@
+import {
+  Loader2,
+  Trash2,
+  UserPlus,
+  ArrowLeft,
+} from "lucide-react";
 import { useState, useEffect } from "react";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { useNavigate } from "react-router-dom";
+
+import { AppPageHeader } from "@/components/app/AppPageHeader";
+import { AppSectionCard } from "@/components/app/AppSectionCard";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -24,19 +35,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import {
-  Loader2,
-  Trash2,
-  UserPlus,
-  ArrowLeft,
-} from "lucide-react";
+
+
 import { useToast } from "@/components/ui/use-toast";
+
+
 import { PageContainer } from "@/components/PageContainer";
-import { useNavigate } from "react-router-dom";
-import { AppPageHeader } from "@/components/app/AppPageHeader";
-import { AppSectionCard } from "@/components/app/AppSectionCard";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+
+const TEAM_UI_COPY = {
+  loadErrorTitle: "Unable to load team members.",
+  loadErrorDescription:
+    "Check your connection and try again. If it keeps failing, sign in again.",
+  emptyTable: "No team members yet. Send an invite to get started.",
+};
 
 export default function Team() {
   const { user, role: myRole, session } = useSupabaseAuth();
@@ -44,12 +56,63 @@ export default function Team() {
   const navigate = useNavigate();
   const [members, setMembers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   // Invite Form
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteName, setInviteName] = useState("");
   const [inviteRole, setInviteRole] = useState("tech");
   const [inviting, setInviting] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; name?: string; role?: string }>({});
+  const [touched, setTouched] = useState<{ email?: boolean; name?: boolean; role?: boolean }>({});
+
+  // Validation
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const validateField = (name: string, value: string) => {
+    let error = '';
+    switch (name) {
+      case 'email':
+        if (!value.trim()) {
+          error = 'Email is required';
+        } else if (!isValidEmail(value)) {
+          error = 'Please enter a valid email address';
+        }
+        break;
+      case 'name':
+        if (!value.trim()) {
+          error = 'Full name is required';
+        } else if (value.trim().length < 2) {
+          error = 'Name must be at least 2 characters';
+        }
+        break;
+      case 'role':
+        if (!value) {
+          error = 'Role is required';
+        }
+        break;
+    }
+    return error;
+  };
+
+  const validateForm = () => {
+    const newErrors = {
+      email: validateField('email', inviteEmail),
+      name: validateField('name', inviteName),
+      role: validateField('role', inviteRole),
+    };
+    setErrors(newErrors);
+    return !newErrors.email && !newErrors.name && !newErrors.role;
+  };
+
+  const handleBlur = (field: string) => () => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    const value = field === 'email' ? inviteEmail : field === 'name' ? inviteName : inviteRole;
+    const error = validateField(field, value);
+    setErrors(prev => ({ ...prev, [field]: error }));
+  };
 
   useEffect(() => {
     if (!user || !session?.access_token) return;
@@ -58,21 +121,37 @@ export default function Team() {
 
   const fetchTeam = async () => {
     if (!session?.access_token) return;
+    setLoadError(null);
     try {
-      const response = await fetch("/api/team", {
+      const url = "/api/team";
+      console.log("Fetching team from:", url);
+      console.log("Authorization token present:", !!session?.access_token);
+      const response = await fetch(url, {
         headers: {
           Authorization: `Bearer ${session?.access_token}`,
           "Content-Type": "application/json",
         },
       });
 
-      if (!response.ok) throw new Error("Failed to fetch team");
+      console.log("Response status:", response.status, response.statusText);
+      console.log("Response headers:", Object.fromEntries(response.headers.entries()));
+      
+      const responseText = await response.text();
+      console.log("Response text (first 500 chars):", responseText.substring(0, 500));
+      
+      if (!response.ok) {
+        console.error("Response not OK, text:", responseText);
+        throw new Error("Failed to fetch team");
+      }
 
-      const result = await response.json();
+      const result = JSON.parse(responseText);
+      console.log("Parsed result:", result);
       setMembers(result.data || []);
     } catch (error: any) {
       console.error("Error fetching team", error);
+      console.error("Error stack:", error.stack);
       setMembers([]);
+      setLoadError(error?.message || TEAM_UI_COPY.loadErrorDescription);
     } finally {
       setLoading(false);
     }
@@ -80,6 +159,15 @@ export default function Team() {
 
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Mark all fields as touched to show errors
+    setTouched({ email: true, name: true, role: true });
+    
+    // Validate form before submitting
+    if (!validateForm()) {
+      return; // validation errors displayed
+    }
+    
     setInviting(true);
 
     try {
@@ -110,8 +198,11 @@ export default function Team() {
         description: `Invited ${inviteEmail} as ${inviteRole}.`,
       });
 
+      // Reset form and errors
       setInviteEmail("");
       setInviteName("");
+      setErrors({});
+      setTouched({});
       fetchTeam(); // Refresh list
     } catch (error: any) {
       toast({
@@ -235,9 +326,20 @@ export default function Team() {
                   id="team-member-name"
                   placeholder="John Doe"
                   value={inviteName}
-                  onChange={(e) => setInviteName(e.target.value)}
+                  onChange={(e) => {
+                    setInviteName(e.target.value);
+                    if (touched.name) {
+                      const error = validateField('name', e.target.value);
+                      setErrors(prev => ({ ...prev, name: error }));
+                    }
+                  }}
+                  onBlur={handleBlur('name')}
                   required
+                  className={touched.name && errors.name ? "border-destructive" : ""}
                 />
+                {touched.name && errors.name && (
+                  <p className="text-sm text-destructive">{errors.name}</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="team-member-email">Email Address</Label>
@@ -246,14 +348,30 @@ export default function Team() {
                   type="email"
                   placeholder="john@example.com"
                   value={inviteEmail}
-                  onChange={(e) => setInviteEmail(e.target.value)}
+                  onChange={(e) => {
+                    setInviteEmail(e.target.value);
+                    if (touched.email) {
+                      const error = validateField('email', e.target.value);
+                      setErrors(prev => ({ ...prev, email: error }));
+                    }
+                  }}
+                  onBlur={handleBlur('email')}
                   required
+                  className={touched.email && errors.email ? "border-destructive" : ""}
                 />
+                {touched.email && errors.email && (
+                  <p className="text-sm text-destructive">{errors.email}</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="team-member-role">Role</Label>
-                <Select value={inviteRole} onValueChange={setInviteRole}>
-                  <SelectTrigger id="team-member-role">
+                <Select value={inviteRole} onValueChange={(value) => {
+                  setInviteRole(value);
+                  setTouched(prev => ({ ...prev, role: true }));
+                  const error = validateField('role', value);
+                  setErrors(prev => ({ ...prev, role: error }));
+                }}>
+                  <SelectTrigger id="team-member-role" className={touched.role && errors.role ? "border-destructive" : ""}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -265,6 +383,9 @@ export default function Team() {
                     )}
                   </SelectContent>
                 </Select>
+                {touched.role && errors.role && (
+                  <p className="text-sm text-destructive">{errors.role}</p>
+                )}
               </div>
               <Button type="submit" className="w-full" disabled={inviting}>
                 {inviting ? (
@@ -288,6 +409,22 @@ export default function Team() {
               <div className="text-center py-8">
                 <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
               </div>
+            ) : loadError ? (
+              <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4">
+                <p className="text-sm font-semibold text-destructive">
+                  {TEAM_UI_COPY.loadErrorTitle}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">{loadError}</p>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="mt-3"
+                  onClick={fetchTeam}
+                >
+                  Try again
+                </Button>
+              </div>
             ) : (
               <Table>
                 <TableHeader>
@@ -304,7 +441,7 @@ export default function Team() {
                         colSpan={3}
                         className="text-center py-6 text-muted-foreground"
                       >
-                        No team members found. Invite someone!
+                        {TEAM_UI_COPY.emptyTable}
                       </TableCell>
                     </TableRow>
                   )}

@@ -8,10 +8,18 @@ on:
     branches: [main, develop]
     paths:
       - 'docs/api/openapi.yaml'
+      - 'README.md'
+      - 'docs/documentation-navigation.md'
+      - 'scripts/check-docs-sot.ts'
+      - 'tests/docs/check-docs-sot.test.ts'
   pull_request:
     branches: [main, develop]
     paths:
       - 'docs/api/openapi.yaml'
+      - 'README.md'
+      - 'docs/documentation-navigation.md'
+      - 'scripts/check-docs-sot.ts'
+      - 'tests/docs/check-docs-sot.test.ts'
 
 jobs:
   validate-openapi:
@@ -37,6 +45,9 @@ jobs:
         run: |
           redocly lint docs/api/openapi.yaml
         continue-on-error: false
+
+      - name: Docs source-of-truth check
+        run: npm run check:docs-sot
 
       - name: Check for breaking changes
         run: |
@@ -97,5 +108,5 @@ jobs:
       - name: Run API tests
         run: |
           echo "API endpoint tests would run here"
-          echo "Current API coverage: 27 endpoints documented"
+          echo "Current API coverage: 33 endpoints documented"
         continue-on-error: true

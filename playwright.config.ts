@@ -10,6 +10,12 @@ export default defineConfig({
   fullyParallel: true,
   retries: 1, // Added 1 retry to use tracing on failure
   reporter: [["list"], ["html", { open: "never" }]],
+  webServer: {
+    command: "npm run dev -- --host 127.0.0.1 --port 3001",
+    url: "http://127.0.0.1:3001",
+    reuseExistingServer: true,
+    timeout: 120_000,
+  },
   use: {
     headless: true,
     viewport: { width: 1400, height: 900 },

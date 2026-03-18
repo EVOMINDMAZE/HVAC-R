@@ -1,8 +1,9 @@
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 import { ArrowRight, Zap, Play, Clock, CheckCircle, BarChart, Building, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { metrics } from "@/config/metrics";
 
 const fadeInUp = {

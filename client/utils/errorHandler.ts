@@ -58,13 +58,13 @@ export function setupGlobalErrorHandler() {
       return originalJSONParse.call(this, text, reviver);
     } catch (error) {
       // Get stack trace to identify source
-      const stack = error instanceof Error ? error.stack : "";
+      const stack = error instanceof Error ? error.stack ?? "" : "";
       const isFromExternalAPI =
-        stack.includes("simulateon-backend.onrender.com") ||
-        stack.includes("calculate-standard") ||
-        stack.includes("compare-refrigerants") ||
-        stack.includes("calculate-cascade");
-      const isFromInternalAPI = stack.includes("api.ts") && !isFromExternalAPI;
+        (stack as string).includes("simulateon-backend.onrender.com") ||
+        (stack as string).includes("calculate-standard") ||
+        (stack as string).includes("compare-refrigerants") ||
+        (stack as string).includes("calculate-cascade");
+      const isFromInternalAPI = (stack as string).includes("api.ts") && !isFromExternalAPI;
 
       console.error("🚨 JSON.parse FAILED:", {
         error: error instanceof Error ? error.message : "Unknown error",

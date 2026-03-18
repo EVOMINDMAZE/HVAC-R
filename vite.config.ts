@@ -1,10 +1,12 @@
-import { defineConfig, Plugin } from "vite";
-import react from "@vitejs/plugin-react-swc";
 import path from "path";
+
+import react from "@vitejs/plugin-react-swc";
+import { visualizer } from "rollup-plugin-visualizer";
+import { defineConfig, Plugin } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig(({ mode: _mode }) => ({
   server: {
     host: "::",
     port: 8080,
@@ -14,6 +16,7 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     outDir: "dist/spa",
+    treeshake: 'recommended',
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
@@ -24,8 +27,7 @@ export default defineConfig(({ mode }) => ({
           "vendor-styling": ["class-variance-authority", "tailwind-merge", "clsx", "cmdk", "sonner", "next-themes", "framer-motion", "embla-carousel-react", "react-day-picker", "react-hook-form", "react-resizable-panels"],
           "vendor-charts": ["recharts"],
           "vendor-maps": ["leaflet", "react-leaflet"],
-          "vendor-3d": ["three", "@react-three/fiber", "@react-three/drei"],
-          "vendor-utils": ["date-fns", "uuid", "xlsx", "tesseract.js"],
+          "vendor-utils": ["date-fns", "uuid", "tesseract.js"],
         },
       },
     },
@@ -57,7 +59,8 @@ export default defineConfig(({ mode }) => ({
       workbox: {
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB
       }
-    })
+    }),
+    ...(process.env.ANALYZE ? [visualizer()] : []),
   ],
   resolve: {
     alias: {

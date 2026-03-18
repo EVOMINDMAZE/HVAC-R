@@ -6,7 +6,7 @@ This document provides a hierarchical overview of all documentation in the HVAC-
 
 1. **Root Documentation** - [README.md](../README.md)
    - Project overview, quick start, and primary navigation
-   - Links to: [Developer Guide](./skills/03_development/developer_guide.md), [Deployment Guide](./skills/03_development/deployment.md), [API Portal](../docs/api/portal/index.html), [Architecture](../docs/architecture/)
+   - Links to: [Developer Guide](./skills/03_development/developer_guide.md), [Deployment Guide](./skills/03_development/deployment.md), [API Portal](../docs/api/portal/index.html), [OpenAPI](../docs/api/openapi.yaml), [Architecture](../docs/architecture/)
 
 2. **Skills Index** - [skills/README.md](../skills/README.md)
    - Organized documentation by category (00_meta through 06_automations)
@@ -112,6 +112,30 @@ Essential README files for different parts of the codebase:
 - **[e2e/README.md](../e2e/README.md)** - Playwright end-to-end testing guide
 - **[studio/README.md](../studio/README.md)** - Sanity Studio configuration
 - **[public/docs/README.md](../public/docs/README.md)** - Public documentation placeholder
+
+## API Source of Truth
+
+- Canonical contract: [docs/api/openapi.yaml](../docs/api/openapi.yaml)
+- Interactive portal: [docs/api/portal/index.html](../docs/api/portal/index.html)
+- Inventory index: [docs/api/INVENTORY.md](../docs/api/INVENTORY.md)
+
+### API Prefix Coverage Map
+- `/api/auth`
+- `/api/calculations`
+- `/api/user`
+- `/api/team`
+- `/api/fleet`
+- `/api/subscriptions`
+- `/api/calculate-airflow`
+- `/api/calculate-deltat`
+- `/api/calculate-standard`
+- `/api/calculate-cascade`
+- `/api/compare-refrigerants`
+- `/api/storage`
+- `/api/diagnostics`
+- `/api/ai`
+- `/api/reports`
+- `/api/health`
 
 ## Recommended Navigation Paths
 

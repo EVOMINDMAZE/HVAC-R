@@ -1,11 +1,11 @@
-import React from "react";
+import { Info, HelpCircle } from "lucide-react";
+
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Info, HelpCircle } from "lucide-react";
 
 interface TechnicalTooltipProps {
   term: string;

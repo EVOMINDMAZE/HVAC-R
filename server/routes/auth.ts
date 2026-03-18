@@ -1,5 +1,11 @@
 import { RequestHandler } from "express";
-import { supabaseAdmin, getSupabaseClient } from "../utils/supabase.js";
+
+import {
+  asRecord,
+  isValidEmail,
+  toSafeErrorMessage,
+} from "../utils/requestValidation.js";
+import { getSupabaseClient } from "../utils/supabase.js";
 import { authenticateSupabaseToken } from "../utils/supabaseAuth.js";
 
 interface SignUpRequest {
@@ -17,15 +23,56 @@ interface SignInRequest {
   password: string;
 }
 
+function parseSignUpRequest(value: unknown): SignUpRequest | null {
+  const body = asRecord(value);
+  if (!body) return null;
+  const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+  const password = typeof body.password === "string" ? body.password : "";
+  const firstName = typeof body.firstName === "string" ? body.firstName.trim() : "";
+  const lastName = typeof body.lastName === "string" ? body.lastName.trim() : "";
+  if (!email || !password || !firstName || !lastName) {
+    return null;
+  }
+  return {
+    email,
+    password,
+    firstName,
+    lastName,
+    company: typeof body.company === "string" ? body.company.trim() : undefined,
+    role: typeof body.role === "string" ? body.role.trim() : undefined,
+    phone: typeof body.phone === "string" ? body.phone.trim() : undefined,
+  };
+}
+
+function parseSignInRequest(value: unknown): SignInRequest | null {
+  const body = asRecord(value);
+  if (!body) return null;
+  const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+  const password = typeof body.password === "string" ? body.password : "";
+  if (!email || !password) return null;
+  return { email, password };
+}
+
 export const signUp: RequestHandler = async (req, res) => {
   try {
-    const { email, password, firstName, lastName, company, role, phone }: SignUpRequest = req.body;
+    const payload = parseSignUpRequest(req.body);
 
-    // Validate input
-    if (!email || !password || !firstName || !lastName) {
+    if (!payload) {
       return res.status(400).json({ 
         error: 'Missing required fields', 
         details: 'Email, password, first name, and last name are required' 
+      });
+    }
+    if (!isValidEmail(payload.email)) {
+      return res.status(400).json({
+        error: "Invalid email",
+        details: "Please enter a valid email address",
+      });
+    }
+    if (payload.password.length < 8) {
+      return res.status(400).json({
+        error: "Weak password",
+        details: "Password must be at least 8 characters long",
       });
     }
 
@@ -36,15 +83,15 @@ export const signUp: RequestHandler = async (req, res) => {
 
     // Use signUp
     const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
+      email: payload.email,
+      password: payload.password,
       options: {
         data: {
-          first_name: firstName,
-          last_name: lastName,
-          company,
-          role,
-          phone,
+          first_name: payload.firstName,
+          last_name: payload.lastName,
+          company: payload.company,
+          role: payload.role,
+          phone: payload.phone,
         },
       },
     });
@@ -78,23 +125,29 @@ export const signUp: RequestHandler = async (req, res) => {
       }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Sign up error:', error);
     res.status(500).json({ 
       error: 'Internal server error', 
-      details: error.message || 'Failed to create account' 
+      details: toSafeErrorMessage(error, "Failed to create account"),
     });
   }
 };
 
 export const signIn: RequestHandler = async (req, res) => {
   try {
-    const { email, password }: SignInRequest = req.body;
+    const payload = parseSignInRequest(req.body);
 
-    if (!email || !password) {
+    if (!payload) {
       return res.status(400).json({ 
         error: 'Missing credentials', 
         details: 'Email and password are required' 
+      });
+    }
+    if (!isValidEmail(payload.email)) {
+      return res.status(400).json({
+        error: "Invalid credentials",
+        details: "Email format is invalid",
       });
     }
 
@@ -104,8 +157,8 @@ export const signIn: RequestHandler = async (req, res) => {
     }
 
     const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+      email: payload.email,
+      password: payload.password,
     });
 
     if (error) {
@@ -132,11 +185,11 @@ export const signIn: RequestHandler = async (req, res) => {
       }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Sign in error:', error);
     res.status(500).json({ 
       error: 'Internal server error', 
-      details: error.message || 'Failed to sign in' 
+      details: toSafeErrorMessage(error, "Failed to sign in"),
     });
   }
 };
@@ -157,11 +210,11 @@ export const signOut: RequestHandler = async (req, res) => {
       message: 'Signed out successfully'
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Sign out error:', error);
     res.status(500).json({ 
       error: 'Internal server error', 
-      details: error.message || 'Failed to sign out' 
+      details: toSafeErrorMessage(error, "Failed to sign out"),
     });
   }
 };
@@ -201,11 +254,11 @@ export const getCurrentUser: RequestHandler = async (req, res) => {
       }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Get current user error:', error);
     res.status(500).json({ 
       error: 'Internal server error', 
-      details: error.message || 'Failed to get user information' 
+      details: toSafeErrorMessage(error, "Failed to get user information"),
     });
   }
 };

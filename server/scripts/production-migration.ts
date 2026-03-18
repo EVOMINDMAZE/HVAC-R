@@ -7,8 +7,8 @@
  * Designed to run in production after database migration is applied.
  */
 
-import { config } from "dotenv";
 import { createClient } from "@supabase/supabase-js";
+import { config } from "dotenv";
 
 // Load environment variables
 config();

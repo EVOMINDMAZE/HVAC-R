@@ -1,8 +1,9 @@
 #!/usr/bin/env tsx
-import WebSocket from "ws";
-import http from "http";
 import fs from "fs";
+import http from "http";
 import path from "path";
+
+import WebSocket from "ws";
 
 interface CDPMessage {
   id?: number;

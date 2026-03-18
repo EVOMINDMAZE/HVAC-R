@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { BillingService } from "../billing/BillingService.js";
 
 describe("BillingService canonical billing boundary", () => {

@@ -98,6 +98,21 @@ The following documentation gaps were identified but are out of scope for this b
 3. **API Versioning Strategy** - Currently v2.0.0; deprecation policy needed
 4. **Deployment Workflow Documentation** - Need to verify `deploy.yml` vs `ci.yml` distinction
 
+## 2026-03-13 Backlog Update
+
+Completed in Task 12 follow-up:
+
+1. Added automated docs source-of-truth validation (`scripts/check-docs-sot.ts`)
+2. Added regression tests for docs source-of-truth checker (`tests/docs/check-docs-sot.test.ts`)
+3. Updated README and documentation navigation with explicit API prefix map
+4. Wired docs source-of-truth checks into CI workflows
+
+Still open:
+
+1. API portal build step still performs a no-op self-copy in `.github/workflows/api-validation.yml`
+2. Manual endpoint count messaging in workflow logs can drift from OpenAPI unless generated
+3. Legacy docs still reference mixed CI/deploy workflow responsibilities
+
 ## Verification
 
 Cross-document consistency was validated by:

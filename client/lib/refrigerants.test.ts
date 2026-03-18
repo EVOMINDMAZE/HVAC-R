@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { validateOperatingConditions, validateCycleConditions, getRefrigerantById } from './refrigerants';
 
 describe('Refrigerant Validation Logic', () => {

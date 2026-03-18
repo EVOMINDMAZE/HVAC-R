@@ -50,12 +50,4 @@ export function HoneywellLogo({ className }: { className?: string }) {
   );
 }
 
-// Map of company names to their logo components
-export const companyLogos: Record<string, React.ComponentType<{ className?: string }>> = {
-  "Johnson Controls": JohnsonControlsLogo,
-  "Trane Technologies": TraneLogo,
-  "Carrier": CarrierLogo,
-  "Daikin": DaikinLogo,
-  "Lennox": LennoxLogo,
-  "Honeywell": HoneywellLogo,
-};
+

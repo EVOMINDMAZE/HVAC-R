@@ -1,51 +1,9 @@
 import "dotenv/config";
-import express from "express";
 import cors from "cors";
-// Database imports removed - using Supabase for all data storage
-import {
-  signUp,
-  signIn,
-  signOut,
-  getCurrentUser,
-  authenticateToken,
-} from "./routes/auth.ts";
-import { authenticateSupabaseToken } from "./utils/supabaseAuth.ts";
-import { generateReportPdf } from "./routes/reports.ts";
-import {
-  saveCalculation,
-  getCalculations,
-  getCalculation,
-  updateCalculation,
-  deleteCalculation,
-  getUserStats,
-} from "./routes/calculations.ts";
-import {
-  getSubscriptionPlans,
-  getCurrentSubscription,
-  updateSubscription,
-  cancelSubscription,
-  createPaymentIntent,
-} from "./routes/subscriptions.ts";
-import billingRoutes from "./routes/billing.ts";
-import {
-  calculateAirflow,
-  calculateDeltaT,
-  calculateStandardCycleEndpoint,
-  calculateCascadeCycleEndpoint,
-  compareRefrigerantsEndpoint,
-} from "./routes/engineering.ts";
+import express from "express";
 
-import { supabaseDiag } from "./routes/diagnostics.ts";
-import { uploadAvatar } from "./routes/storage.ts";
-import {
-  analyzePatterns,
-  getRelatedPatterns,
-  createSymptomOutcomePattern,
-  createMeasurementAnomalyPattern,
-  updatePatternFeedback,
-  getPatternsByType,
-  enhancedTroubleshoot,
-} from "./routes/ai-patterns.ts";
+// Database imports removed - using Supabase for all data storage
+
 import {
   getTeam,
   inviteTeamMember,
@@ -61,7 +19,55 @@ import {
 } from "./routes/privacy.ts";
 import { getFleetStatus } from "./routes/fleet.ts";
 import { dynamicRateLimiter } from "./middleware/rateLimit.ts";
+import {
+  securityHeaders,
+  hidePoweredBy,
+  requestId,
+  cspReportingEndpoint,
+} from "./middleware/securityHeaders.ts";
+import {
+  analyzePatterns,
+  getRelatedPatterns,
+  createSymptomOutcomePattern,
+  createMeasurementAnomalyPattern,
+  updatePatternFeedback,
+  getPatternsByType,
+  enhancedTroubleshoot,
+} from "./routes/ai-patterns.ts";
+import {
+  signUp,
+  signIn,
+  signOut,
+  getCurrentUser,
+} from "./routes/auth.ts";
+import billingRoutes from "./routes/billing.ts";
+import {
+  saveCalculation,
+  getCalculations,
+  getCalculation,
+  updateCalculation,
+  deleteCalculation,
+  getUserStats,
+} from "./routes/calculations.ts";
+import { supabaseDiag } from "./routes/diagnostics.ts";
+import {
+  calculateAirflow,
+  calculateDeltaT,
+  calculateStandardCycleEndpoint,
+  calculateCascadeCycleEndpoint,
+  compareRefrigerantsEndpoint,
+} from "./routes/engineering.ts";
+import { generateReportPdf } from "./routes/reports.ts";
 import { getUserCount } from "./routes/stats.ts";
+import { uploadAvatar } from "./routes/storage.ts";
+import {
+  getSubscriptionPlans,
+  getCurrentSubscription,
+  updateSubscription,
+  cancelSubscription,
+  createPaymentIntent,
+} from "./routes/subscriptions.ts";
+import { authenticateSupabaseToken } from "./utils/supabaseAuth.ts";
 
 export function createServer() {
   const app = express();
@@ -106,10 +112,51 @@ export function createServer() {
 
   app.use(express.json({ limit: "30mb" }));
   app.use(express.urlencoded({ extended: true, limit: "30mb" }));
+  app.use(hidePoweredBy);
+  app.use(requestId);
+  app.use(securityHeaders());
   app.use(dynamicRateLimiter);
+  app.post("/csp-report", cspReportingEndpoint);
 
-  app.use((req, _res, next) => {
+  app.use((req, res, next) => {
     console.log(`[server] ${req.method} ${req.path}`);
+    const originalSend = res.send;
+    const originalJson = res.json;
+    let responseBody: any = null;
+    
+    res.send = function(body: any) {
+      responseBody = body;
+      return originalSend.call(this, body);
+    };
+    
+    res.json = function(body: any) {
+      responseBody = JSON.stringify(body);
+      return originalJson.call(this, body);
+    };
+    
+    res.on('finish', () => {
+      if (req.path.startsWith('/api')) {
+        const contentType = res.getHeader('content-type');
+        console.log(`[server] Response: ${res.statusCode} ${res.statusMessage}, Content-Type: ${contentType}`);
+        if (responseBody && typeof responseBody === 'string' && responseBody.includes('<!doctype')) {
+          console.error(`[server] WARNING: HTML response detected for API route ${req.path}`);
+          console.error(`[server] First 500 chars: ${responseBody.substring(0, 500)}`);
+        }
+      }
+    });
+    
+    next();
+  });
+
+  // Ensure JSON content type for all API routes
+  app.use((req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      // Set default Content-Type to JSON if not already set
+      const contentType = res.getHeader('content-type');
+      if (!contentType) {
+        res.setHeader('Content-Type', 'application/json');
+      }
+    }
     next();
   });
 

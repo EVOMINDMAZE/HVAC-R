@@ -1,13 +1,3 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
-import { useJob } from "@/context/JobContext";
-import { useAuth } from "@/hooks/useSupabaseAuth";
 import {
   ArrowLeft,
   MapPin,
@@ -23,11 +13,21 @@ import {
   Sparkles,
   ShieldCheck,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { InvoiceList } from "@/components/invoices/InvoiceList";
-import { WarrantyList } from "@/components/warranty/WarrantyList";
 import { PageContainer } from "@/components/PageContainer";
-import { useVoiceInput } from "@/hooks/useVoiceInput";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { WarrantyList } from "@/components/warranty/WarrantyList";
+import { useJob } from "@/context/job.context";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useSupabaseAuth";
+import { useVoiceInput } from "@/hooks/useVoiceInput";
+import { supabase } from "@/lib/supabase";
 
 interface Job {
   id: string;

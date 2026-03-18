@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { useState, useEffect, useCallback, useRef } from "react";
+
 import { Story, StorySlide } from "@/data/stories";
 import { cn } from "@/lib/utils";
 

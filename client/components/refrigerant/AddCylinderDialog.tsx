@@ -1,5 +1,6 @@
-import React, { useState } from "react";
 import { Plus, Loader2 } from "lucide-react";
+import { useState } from 'react';
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,9 +20,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { supabase } from "@/lib/supabase";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { supabase } from "@/lib/supabase";
 
 interface AddCylinderDialogProps {
   onCylinderAdded: () => void;

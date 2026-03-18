@@ -1,5 +1,7 @@
+import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,8 +11,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 interface CreateJobDialogProps {
   open: boolean;

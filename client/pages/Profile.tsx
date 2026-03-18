@@ -1,22 +1,3 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
-import { useToast } from "@/hooks/useToast";
-import { useFileUpload } from "@/hooks/useFileUpload";
-import { useSubscription, useCustomerPortal } from "@/hooks/useStripe";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   User,
   Mail,
@@ -31,10 +12,33 @@ import {
   Trash2,
   Camera,
 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 import CompanySettings from "./CompanySettings";
-import { PageContainer } from "@/components/PageContainer";
+
 import { AppPageHeader } from "@/components/app/AppPageHeader";
 import { AppSectionCard } from "@/components/app/AppSectionCard";
+import { PageContainer } from "@/components/PageContainer";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useFileUpload } from "@/hooks/useFileUpload";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
+import { useToast } from "@/hooks/useToast";
+import { useSubscription, useCustomerPortal } from "@/hooks/useStripe";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+
 
 // User data comes from Supabase authentication and real backend data
 
@@ -690,38 +694,38 @@ export function Profile() {
                         <h3 className="text-lg font-semibold text-foreground mb-2">
                           Current Plan: {subscription?.plan || "Free"}
                         </h3>
-                        {subscription?.subscription ? (
-                          <div className="space-y-2">
-                            <p className="text-muted-foreground">
-                              Status:{" "}
-                              <span className="capitalize">
-                                {subscription.subscription!.status}
-                              </span>
-                            </p>
-                            <p className="text-muted-foreground">
-                              ${subscription.subscription!.amount}/
-                              {subscription.subscription!.interval}
-                            </p>
-                            <p className="text-muted-foreground">
-                              Next billing:{" "}
-                              {new Date(
-                                subscription.subscription!.current_period_end *
-                                  1000,
-                              ).toLocaleDateString()}
-                            </p>
-                            {subscription.subscription!.cancel_at_period_end && (
-                              <p className="text-red-400 font-semibold">
-                                Subscription will cancel at the end of current
-                                period
+                        {(() => {
+                          const sub = subscription?.subscription;
+                          return sub ? (
+                            <div className="space-y-2">
+                              <p className="text-muted-foreground">
+                                Status:{" "}
+                                <span className="capitalize">
+                                  {sub.status}
+                                </span>
                               </p>
-                            )}
-                          </div>
-                        ) : (
-                          <p className="text-primary">
-                            You have used {user.calculationsUsed} of{" "}
-                            {user.calculationsLimit} calculations this month.
-                          </p>
-                        )}
+                              <p className="text-muted-foreground">
+                                ${sub.amount}/{sub.interval}
+                              </p>
+                              <p className="text-muted-foreground">
+                                Next billing:{" "}
+                                {new Date(
+                                  (sub.current_period_end ?? 0) * 1000,
+                                ).toLocaleDateString()}
+                              </p>
+                              {sub.cancel_at_period_end && (
+                                <p className="text-red-400 font-semibold">
+                                  Subscription will cancel at the end of current period
+                                </p>
+                              )}
+                            </div>
+                          ) : (
+                            <p className="text-primary">
+                              You have used {user.calculationsUsed} of{" "}
+                              {user.calculationsLimit} calculations this month.
+                            </p>
+                          );
+                        })()}
                       </div>
 
                       {/* Billing Actions */}

@@ -1,6 +1,3 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
 import {
   MapPin,
   Navigation,
@@ -9,8 +6,12 @@ import {
   Phone,
   AlertTriangle,
 } from "lucide-react";
-import { ModeToggle } from "@/components/mode-toggle";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+
 import { AppSectionCard } from "@/components/app/AppSectionCard";
+import { ModeToggle } from "@/components/mode-toggle";
+import { supabase } from "@/lib/supabase";
 
 export default function ActiveJob() {
   const { id } = useParams();

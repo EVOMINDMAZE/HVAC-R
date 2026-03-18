@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+
 import { logger, devLog, devWarn, devError } from '../logger';
 
 vi.mock('import.meta', () => ({

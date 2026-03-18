@@ -1,5 +1,9 @@
-import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle, ArrowRight, DollarSign, Package } from "lucide-react";
+import { useEffect, useState } from "react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,10 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/lib/supabase";
-import { motion, AnimatePresence } from "framer-motion";
+
 
 interface SellingPoint {
   id: string;

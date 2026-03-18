@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { supabase } from "@/lib/supabase";
+
+import { useSubscription } from "./useStripe";
 import { useSupabaseAuth } from "./useSupabaseAuth";
 import { useToast } from "./useToast";
-import { useSubscription } from "./useStripe";
+
 import { extractErrorMessage, logError } from "@/lib/errorUtils";
+import { supabase } from "@/lib/supabase";
 
 export interface Calculation {
   id: string;

@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { useStripeCheckout } from "@/hooks/useStripe";
-import { STRIPE_PRICE_IDS } from "@/lib/stripe";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useStripeCheckout } from "@/hooks/useStripe";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
+import { STRIPE_PRICE_IDS } from "@/lib/stripe";
 
 export function StripeDebug() {
   const { isAuthenticated, user, session } = useSupabaseAuth();

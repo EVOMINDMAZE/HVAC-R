@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   Activity,
   TrendingDown,
@@ -21,21 +20,30 @@ import {
   HardHat,
   Truck,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
+
+
+import type { HudBadgeKey } from "@/components/hud/HudBadge";
+import type { FutureMonitorSkin } from "@/lib/featureFlags";
+import type { MonitorKpiItem, MonitorTone, MonitorSeriesPoint } from "@/types/monitor";
 import type { MonitorLayoutTemplate, MonitorPageModel } from "@/types/monitor";
+import type { MonitorDiagramItem } from "@/types/monitor";
+
+import { HudBadge } from "@/components/hud/HudBadge";
+import { HudMetaTooltip } from "@/components/hud/HudMetaTooltip";
+import { HudQuickJump } from "@/components/hud/HudQuickJump";
 import { MonitorChartPanel } from "@/components/monitor/MonitorChartPanel";
 import { MonitorDiagramPanel } from "@/components/monitor/MonitorDiagramPanel";
 import { MonitorEmptyState } from "@/components/monitor/MonitorEmptyState";
 import { MonitorKpiStrip } from "@/components/monitor/MonitorKpiStrip";
 import { MonitorSkeleton } from "@/components/monitor/MonitorSkeleton";
-import type { FutureMonitorSkin } from "@/lib/featureFlags";
-import type { MonitorKpiItem, MonitorTone, MonitorSeriesPoint } from "@/types/monitor";
+
 import { MonitorSignature } from "@/components/monitor/MonitorSignature";
-import type { HudBadgeKey } from "@/components/hud/HudBadge";
-import { HudBadge } from "@/components/hud/HudBadge";
-import { HudQuickJump } from "@/components/hud/HudQuickJump";
-import { HudMetaTooltip } from "@/components/hud/HudMetaTooltip";
-import type { MonitorDiagramItem } from "@/types/monitor";
+
+
+
+
+import { cn } from "@/lib/utils";
 
 interface MonitorShellProps {
   model: MonitorPageModel;

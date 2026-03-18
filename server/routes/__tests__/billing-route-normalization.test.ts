@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { projectBillingPlanForRouteResponse } from "../compat/billingPlanCompat.js";
 
 describe("billing route plan normalization projection", () => {

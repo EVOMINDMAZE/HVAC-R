@@ -75,9 +75,13 @@ const defaultConfig: SecurityHeadersConfig = {
       connectSrc: [
         "'self'",
         'https:',
+        'wss:',
+        'ws:',
         'https://*.supabase.co',
         'https://api.stripe.com',
         'https://*.thermoneural.com',
+        'ws://localhost:*',
+        'http://localhost:*',
       ],
       fontSrc: [
         "'self'",
@@ -95,7 +99,7 @@ const defaultConfig: SecurityHeadersConfig = {
       frameAncestors: ["'self'"],
       formAction: ["'self'"],
       baseUri: ["'self'"],
-      upgradeInsecureRequests: true,
+      upgradeInsecureRequests: process.env.NODE_ENV === 'production',
     },
     reportUri: '/csp-report',
     reportOnly: false,
@@ -132,7 +136,7 @@ const defaultConfig: SecurityHeadersConfig = {
 };
 
 export function securityHeaders(config: SecurityHeadersConfig = defaultConfig) {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (_req: Request, res: Response, next: NextFunction) => {
     if (config.contentSecurityPolicy) {
       const csp = buildContentSecurityPolicy(config.contentSecurityPolicy);
       if (config.contentSecurityPolicy.reportOnly) {
@@ -287,7 +291,7 @@ export const apiSecurityHeaders = securityHeaders({
   xXSSProtection: true,
 });
 
-export function hidePoweredBy(req: Request, res: Response, next: NextFunction) {
+export function hidePoweredBy(_req: Request, res: Response, next: NextFunction) {
   res.removeHeader('X-Powered-By');
   res.setHeader('X-Generated-By', 'ThermoNeural');
   next();
@@ -304,7 +308,7 @@ function generateRequestId(): string {
   return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
-export function serverTiming(req: Request, res: Response, next: NextFunction) {
+export function serverTiming(_req: Request, res: Response, next: NextFunction) {
   const startTime = Date.now();
   
   res.setHeader('Server-Timing', 'total;desc="Total Response Time"');

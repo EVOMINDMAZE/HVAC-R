@@ -1,5 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { Loader2, CheckCircle, XCircle } from "lucide-react";
+import { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useNavigate, Link } from "react-router-dom";
+
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { PageContainer } from "@/components/PageContainer";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -7,12 +13,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Loader2, CheckCircle, XCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { PageContainer } from "@/components/PageContainer";
-import { Button } from "@/components/ui/button";
 
 export function Callback() {
   const { provider } = useParams();

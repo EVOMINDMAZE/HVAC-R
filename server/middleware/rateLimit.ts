@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { v4 as uuidv4 } from 'uuid';
 
 interface RateLimitConfig {
   windowMs: number;
@@ -50,19 +49,18 @@ const defaultKeyGenerator = (req: Request): string => {
 
 export function createRateLimiter(config: RateLimitConfig) {
   const options: RateLimitConfig = {
-    windowMs: config.windowMs || 60000,
-    maxRequests: config.maxRequests || 100,
-    message: config.message || 'Too Many Requests',
-    statusCode: config.statusCode || 429,
-    keyGenerator: config.keyGenerator || defaultKeyGenerator,
-    skipFailedRequests: config.skipFailedRequests || false,
-    skipSuccessfulRequests: config.skipSuccessfulRequests || false,
-    handler: config.handler || defaultHandler,
     ...config,
+    windowMs: config.windowMs ?? 60000,
+    maxRequests: config.maxRequests ?? 100,
+    message: config.message ?? 'Too Many Requests',
+    statusCode: config.statusCode ?? 429,
+    keyGenerator: config.keyGenerator ?? defaultKeyGenerator,
+    skipFailedRequests: config.skipFailedRequests ?? false,
+    skipSuccessfulRequests: config.skipSuccessfulRequests ?? false,
+    handler: config.handler ?? defaultHandler,
   };
 
   const store = new Map<string, { count: number; resetTime: number }>();
-  const windowStart = Date.now();
 
   return (req: Request, res: Response, next: NextFunction) => {
     const key = options.keyGenerator!(req);
@@ -70,7 +68,6 @@ export function createRateLimiter(config: RateLimitConfig) {
 
     let record = store.get(key);
     const now = Date.now();
-    const windowEnd = windowStart + options.windowMs;
 
     if (!record || record.resetTime < now) {
       record = {
@@ -83,7 +80,6 @@ export function createRateLimiter(config: RateLimitConfig) {
     record.count++;
 
     const remaining = Math.max(0, options.maxRequests - record.count);
-    const resetTime = new Date(record.resetTime);
 
     res.setHeader('X-RateLimit-Limit', String(options.maxRequests));
     res.setHeader('X-RateLimit-Remaining', String(remaining));
@@ -194,7 +190,7 @@ export const dynamicRateLimiter: RequestHandler = (req, res, next) => {
 export function createSlidingWindowRateLimiter(windowMs: number = 60000, maxRequests: number = 100) {
   const requests: number[] = [];
   
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (_req: Request, res: Response, next: NextFunction) => {
     const now = Date.now();
     const windowStart = now - windowMs;
     

@@ -1,8 +1,9 @@
-import { Clock, CheckCircle, FileText, Sparkles } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
+import { Clock, CheckCircle, FileText, Sparkles } from "lucide-react";
 import { useRef } from "react";
+
+import { Badge } from "@/components/ui/badge";
 import { metrics } from "@/config/metrics";
 
 const valueProps = [

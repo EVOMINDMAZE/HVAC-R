@@ -44,9 +44,26 @@ test("Verify Team Member Invitation and Visibility", async ({ page }) => {
     // Wait for email input to be visible
     await page.waitForSelector("input#email", { timeout: 30000 });
     await page.fill("input#email", "admin@admin.com");
-    await page.fill("input#password", "password1");
+    await page.fill("input#password", "ThermoAdmin$2026!");
     await page.click('button[type="submit"]');
-    await expect(page).toHaveURL(/.*dashboard/, { timeout: 30000 });
+    
+    // Wait for either dashboard or select-company page
+    await page.waitForURL(/.*(dashboard|select-company)/, { timeout: 30000 });
+    const currentUrl = page.url();
+    console.log(`Redirected to: ${currentUrl}`);
+    
+    // If we're on select-company page, select the first company
+    if (currentUrl.includes('select-company')) {
+        console.log('Selecting first company...');
+        // Wait for company cards to appear
+        await page.waitForSelector('.cursor-pointer', { timeout: 10000 });
+        // Click the first company card
+        await page.locator('.cursor-pointer').first().click();
+        // Wait for navigation to dashboard
+        await expect(page).toHaveURL(/.*dashboard/, { timeout: 15000 });
+    } else {
+        console.log('Already on dashboard');
+    }
     console.log("Login Successful");
 
     // 2. Navigate to Team Management

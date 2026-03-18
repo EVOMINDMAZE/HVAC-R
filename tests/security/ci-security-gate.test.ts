@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+
 import { evaluateAuditReport } from "../../scripts/security/ci-security-gate.js";
 
 describe("evaluateAuditReport", () => {

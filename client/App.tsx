@@ -1,23 +1,26 @@
+import { Suspense, lazy } from "react";
 import {
   BrowserRouter,
   Routes,
   Route,
   Navigate,
-  Outlet,
   useLocation,
 } from "react-router-dom";
-import { useEffect, Suspense, lazy } from "react";
-import { SupabaseAuthProvider, useAuth } from "@/hooks/useSupabaseAuth";
-import { ToastProvider, useToast } from "@/hooks/useToast";
-import { ThemeProvider } from "@/components/theme-provider";
+
 import { DevModeBanner } from "@/components/DevModeBanner";
+import { ThemeProvider } from "@/components/theme-provider";
+import { SupabaseAuthProvider } from "@/hooks/SupabaseAuthProvider";
+import { ToastProvider } from "@/hooks/ToastProvider";
+import { useAuth } from "@/hooks/useSupabaseAuth";
+
 import "@/utils/authErrorHandler"; // Import to setup global error handling
 import { JobProvider } from "@/context/JobContext";
 // Critical path - keep static
+import { MonitoringProvider } from "@/lib/monitoring-provider";
 import { Landing } from "@/pages/Landing";
+import NotFound from "@/pages/NotFound";
 import { SignIn } from "@/pages/SignIn";
 import { SignUp } from "@/pages/SignUp";
-import NotFound from "@/pages/NotFound";
 
 // Lazy-loaded route components for code-splitting
 const A2LLandingPage = lazy(() =>
@@ -61,7 +64,8 @@ const Dispatch = lazy(() => import("@/pages/dashboard/Dispatch"));
 const TriageDashboard = lazy(() => import("@/pages/dashboard/TriageDashboard"));
 const ActiveJob = lazy(() => import("@/pages/tech/ActiveJob"));
 // const JobBoard = lazy(() => import("@/pages/tech/JobBoard"));
-import JobBoard from "@/pages/tech/JobBoard"; // Direct import for debugging
+import JobBoard from "@/pages/tech/JobBoard";
+ // Direct import for debugging
 const FleetDashboard = lazy(() => import("@/pages/dashboard/FleetDashboard"));
 const Career = lazy(() => import("@/pages/Career"));
 const StandardCycle = lazy(() =>
@@ -145,10 +149,10 @@ import { Layout } from "@/components/Layout";
 import { Toaster } from "@/components/ui/toaster";
 import { SubscriptionGuard } from "@/components/SubscriptionGuard";
 import PageLoading from "@/components/ui/page-loading.tsx";
-import { MonitoringProvider } from "@/lib/monitoring";
-import { useKeyboardShortcuts, KeyboardShortcutsHelp } from "@/hooks/useKeyboardShortcuts";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { KeyboardShortcutsHelp } from "@/hooks/KeyboardShortcuts";
 
-export function shouldBypassAuth() {
+function shouldBypassAuth() {
   // Disable authentication bypass in production for security
   if (import.meta.env.PROD) {
     return false;
@@ -159,12 +163,10 @@ export function shouldBypassAuth() {
     
     const params = new URLSearchParams(window.location.search);
     if (params.get("bypassAuth") === "1") {
-      console.warn("[DEV MODE] Authentication bypass enabled via URL parameter (?bypassAuth=1)");
       return true;
     }
     
     if (localStorage && localStorage.getItem("DEBUG_BYPASS") === "1") {
-      console.warn("[DEV MODE] Authentication bypass enabled via localStorage (DEBUG_BYPASS=1)");
       return true;
     }
   } catch (e) {
@@ -186,23 +188,12 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     isAuthenticated,
     isLoading,
     role,
-    companyId: userCompanyId,
     needsCompanySelection,
   } = useAuth();
   const bypass = shouldBypassAuth();
   const location = useLocation();
 
-  console.log("[ProtectedRouteDebug] Check:", {
-    path: location.pathname,
-    isAuthenticated,
-    isLoading,
-    role,
-    bypass,
-    needsCompanySelection,
-  });
-
   if (isLoading && !bypass) {
-    console.log("[ProtectedRouteDebug] Loading...");
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -214,9 +205,6 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (!isAuthenticated && !bypass) {
-    console.log(
-      "[ProtectedRouteDebug] Not authenticated. Redirecting to /signin",
-    );
     return <Navigate to="/signin" replace />;
   }
 
@@ -230,9 +218,6 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     !location.pathname.startsWith("/callback") &&
     !location.pathname.startsWith("/invite/")
   ) {
-    console.log(
-      "[ProtectedRouteDebug] Needs company selection. Redirecting to /select-company",
-    );
     return <Navigate to="/select-company" replace />;
   }
 
@@ -252,9 +237,6 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
     // If client is trying to access restricted areas, redirect to portal
     if (!isAllowed) {
-      console.log(
-        "[ProtectedRouteDebug] Client restricted. Redirecting to /portal",
-      );
       return <Navigate to="/portal" replace />;
     }
     // Render with Layout so clients see their scoped Sidebar
@@ -265,18 +247,10 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   if (role === "technician" || role === "tech") {
     // Techs only allowed: /tech, /tools, /settings/profile (maybe), /help, /about
     // Explicitly BLOCK: /dashboard (executive), /settings/company, /dashboard/dispatch
-    const blockedRoutes = [
-      "/dashboard",
-      "/settings/company",
-      "/history",
-      "/portal",
-    ];
+
     // Allow /dashboard/jobs if it's their view? No, use /tech/jobs.
 
     // Simple block list approach
-    const isBlocked = blockedRoutes.some((route) =>
-      location.pathname.startsWith(route),
-    );
     // Exception: /dashboard/jobs is blocked in favor of /tech
 
     // Actually, safest is to redirect /dashboard root to /tech
@@ -284,9 +258,6 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
       location.pathname === "/dashboard" ||
       location.pathname.startsWith("/dashboard/dispatch")
     ) {
-      console.log(
-        "[ProtectedRouteDebug] Tech restricted from Exec Dashboard. Redirecting to /tech",
-      );
       return <Navigate to="/tech" replace />;
     }
   }
@@ -294,13 +265,9 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   // Logic for Admin/Standard Users
   // If non-admin tries to access portal, redirect to dashboard
   if (location.pathname.startsWith("/portal") && role !== "admin") {
-    console.log(
-      "[ProtectedRouteDebug] Non-admin restricted. Redirecting to /dashboard",
-    );
     return <Navigate to="/dashboard" replace />;
   }
 
-  console.log("[ProtectedRouteDebug] Access Granted.");
   // Wrap protected pages in the app Layout for consistent navigation
   return <Layout>{children}</Layout>;
 }
@@ -311,7 +278,6 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
     isAuthenticated,
     isLoading,
     role,
-    companyId: userCompanyId,
   } = useAuth();
   const bypass = shouldBypassAuth();
 
@@ -330,7 +296,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 
 function AppRoutes() {
   const location = useLocation();
@@ -687,6 +653,9 @@ function AppRoutes() {
               </ProtectedRoute>
             }
           />
+
+          {/* Redirect from /clients to /dashboard/clients */}
+            <Route path="/clients" element={<Navigate to="/dashboard/clients" replace />} />
 
           {/* 404 Route */}
             <Route path="*" element={<NotFound />} />

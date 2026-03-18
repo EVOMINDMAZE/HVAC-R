@@ -1,11 +1,12 @@
 import { Info, RefreshCcw, Database } from "lucide-react";
-import { cn } from "@/lib/utils";
+
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 function formatUpdatedAt(value: string) {
   try {

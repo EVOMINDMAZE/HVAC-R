@@ -1,15 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
+
+import type { MonitorPageModel } from "@/types/monitor";
+
 import {
   buildMonitorModel,
   getNavigationTimingSnapshot,
 } from "@/config/monitorRegistry";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
+import { useMonitorOpsTelemetry } from "@/hooks/useMonitorOpsTelemetry";
 import { useRevenueAnalytics } from "@/hooks/useRevenueAnalytics";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
-import { useMonitorOpsTelemetry } from "@/hooks/useMonitorOpsTelemetry";
-import type { MonitorPageModel } from "@/types/monitor";
 
 function getNowMs() {
   if (typeof performance !== "undefined") return performance.now();

@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from "react";
+import { Thermometer, Save, Info, Gauge, Snowflake } from "lucide-react";
+import { useState, useEffect } from 'react';
+
+import { SaveCalculation } from "@/components/SaveCalculation";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Thermometer, Save, Info, Gauge, Snowflake } from "lucide-react";
-import { SaveCalculation } from "@/components/SaveCalculation";
-import { Badge } from "@/components/ui/badge";
-import { getRefrigerantsByPopularity, RefrigerantProperties } from "@/lib/refrigerants";
-import { calculateSaturationTemperature, isRefrigerantSupported } from "@/lib/pt-chart";
 import { Switch } from "@/components/ui/switch";
+import { calculateSaturationTemperature, isRefrigerantSupported } from "@/lib/pt-chart";
+import { getRefrigerantsByPopularity, RefrigerantProperties } from "@/lib/refrigerants";
 
 interface SubcoolingCalculatorProps {
     saveCalculation?: any;
@@ -100,8 +101,8 @@ export default function SubcoolingCalculator({ saveCalculation }: SubcoolingCalc
 
             // Allow +/- 3F
             const diff = actualSC - target;
-            let status: "Normal" | "Warning" | "Critical" = "Normal";
-            let recommendation = "System charge is correct.";
+            let status: "Normal" | "Warning" | "Critical";
+            let recommendation: string;
 
             // Thresholds
             if (actualSC < target - 3) {

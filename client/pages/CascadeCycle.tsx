@@ -1,20 +1,3 @@
-import { useState, useCallback, useEffect } from "react";
-import { useToast } from "@/hooks/useToast";
-import { apiClient } from "@/lib/api";
-import { ApiServiceStatus } from "@/components/ApiServiceStatus";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Loader2,
   Calculator,
@@ -27,16 +10,34 @@ import {
   ArrowDownCircle,
   Activity,
 } from "lucide-react";
-import { SaveCalculation } from "@/components/SaveCalculation";
-import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
-import { EnhancedRefrigerantSelector } from "@/components/EnhancedRefrigerantSelector";
+import { useState, useCallback, useEffect } from "react";
+
+import { ApiServiceStatus } from "@/components/ApiServiceStatus";
 import { CycleVisualization } from "@/components/CycleVisualization";
+import { EnhancedRefrigerantSelector } from "@/components/EnhancedRefrigerantSelector";
 import { EquipmentDiagrams } from "@/components/EquipmentDiagrams";
+import { SaveCalculation } from "@/components/SaveCalculation";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
+import { useToast } from "@/hooks/useToast";
+import { apiClient } from "@/lib/api";
+import { consumeCalculationPreset } from "@/lib/historyPresets";
 import {
   validateCycleConditions,
   getRefrigerantById,
 } from "@/lib/refrigerants";
-import { consumeCalculationPreset } from "@/lib/historyPresets";
 
 interface CycleData {
   refrigerant: string;

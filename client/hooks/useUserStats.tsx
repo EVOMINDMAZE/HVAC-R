@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+
+import { useSubscription } from "./useStripe";
 import { useSupabaseAuth } from "./useSupabaseAuth";
 import { useSupabaseCalculations } from "./useSupabaseCalculations";
-import { useSubscription } from "./useStripe";
+
 import { UserStats } from "@/lib/api";
 
 export function useUserStats() {

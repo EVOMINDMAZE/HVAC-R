@@ -1,6 +1,8 @@
 import { useState, useCallback } from 'react';
-import { supabase } from '@/lib/supabase';
+
 import { useSupabaseAuth } from './useSupabaseAuth';
+
+import { supabase } from '@/lib/supabase';
 
 interface UsageResult {
   success: boolean;

@@ -1,21 +1,11 @@
 import { ArrowRight, Briefcase, Route, Siren, Users } from "lucide-react";
+
+import { DEFAULT_NAV_ITEMS } from "./navigationRail.constants";
+import { NavItem, NavigationRailProps } from "./navigationRail.types";
+
 import type { LucideIcon } from "lucide-react";
+
 import { cn } from "@/lib/utils";
-
-export interface NavItem {
-  id: string;
-  label: string;
-  description: string;
-  count?: number | "--";
-  to: string;
-  badgeKey: string;
-}
-
-export interface NavigationRailProps {
-  items: NavItem[];
-  onNavigate?: (to: string) => void;
-  className?: string;
-}
 
 const NAV_ICONS: Record<string, LucideIcon> = {
   dispatch: Route,
@@ -63,34 +53,3 @@ export function NavigationRail({ items, onNavigate, className }: NavigationRailP
     </nav>
   );
 }
-
-export const DEFAULT_NAV_ITEMS: NavItem[] = [
-  {
-    id: "dispatch",
-    label: "Dispatch Board",
-    description: "Route active work",
-    to: "/dashboard/dispatch",
-    badgeKey: "dispatch",
-  },
-  {
-    id: "triage",
-    label: "Triage Board",
-    description: "Convert requests",
-    to: "/dashboard/triage",
-    badgeKey: "triage",
-  },
-  {
-    id: "jobs",
-    label: "Jobs",
-    description: "Track work",
-    to: "/dashboard/jobs",
-    badgeKey: "jobs",
-  },
-  {
-    id: "clients",
-    label: "Clients",
-    description: "Manage accounts",
-    to: "/dashboard/clients",
-    badgeKey: "clients",
-  },
-];

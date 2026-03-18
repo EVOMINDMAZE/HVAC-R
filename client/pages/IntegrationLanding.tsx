@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import { Lock, ShieldCheck, CheckCircle } from "lucide-react";
+import { useState, useEffect } from 'react';
 import { useSearchParams } from "react-router-dom";
-import { supabase } from "@/lib/supabase";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Lock, ShieldCheck, CheckCircle } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export function IntegrationLanding() {
   const [searchParams] = useSearchParams();
@@ -23,7 +24,7 @@ export function IntegrationLanding() {
   const [isFetching, setIsFetching] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function fetchInvite() {
       if (!integrationId) {
         setError("Missing Integration ID");

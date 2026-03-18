@@ -1,20 +1,7 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { useState, ReactNode, useEffect } from 'react';
 
-export interface Job {
-    id: string;
-    name: string;
-    address?: string;
-    status?: string;
-}
-
-interface JobContextType {
-    currentJob: Job | null;
-    selectJob: (job: Job) => void;
-    clearJob: () => void;
-    isLoading: boolean;
-}
-
-const JobContext = createContext<JobContextType | undefined>(undefined);
+import { JobContext, useJob } from './job.context';
+import { Job } from './job.types';
 
 export function JobProvider({ children }: { children: ReactNode }) {
     const [currentJob, setCurrentJob] = useState<Job | null>(null);
@@ -59,10 +46,4 @@ export function JobProvider({ children }: { children: ReactNode }) {
     );
 }
 
-export function useJob() {
-    const context = useContext(JobContext);
-    if (context === undefined) {
-        throw new Error('useJob must be used within a JobProvider');
-    }
-    return context;
-}
+

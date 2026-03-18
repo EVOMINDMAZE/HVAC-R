@@ -1,18 +1,3 @@
-import React, { useState, useEffect, useMemo } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import type { RecommendedRangeData } from "@/hooks/useOllamaRecommendedRange";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import {
   Loader2,
   AlertTriangle,
@@ -26,6 +11,24 @@ import {
   TrendingUp,
   Star,
 } from "lucide-react";
+import { useState, useEffect, useMemo } from 'react';
+
+import type { RecommendedRangeData } from "@/hooks/useOllamaRecommendedRange";
+
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   REFRIGERANT_DATABASE,
   validateOperatingConditions,
@@ -35,7 +38,6 @@ import {
   getRefrigerantsByPopularity,
   POPULAR_REFRIGERANTS,
 } from "@/lib/refrigerants";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface EnhancedRefrigerantSelectorProps {
   value: string;
@@ -76,7 +78,7 @@ export function EnhancedRefrigerantSelector({
   );
 
   // Filter refrigerants based on search and category
-  const filteredRefrigerants = React.useMemo(() => {
+  const filteredRefrigerants = useMemo(() => {
     let results = searchTerm
       ? searchRefrigerants(searchTerm)
       : getRefrigerantsByPopularity();

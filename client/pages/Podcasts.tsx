@@ -1,5 +1,3 @@
-import { useState, useEffect, useRef } from "react";
-import { fetchPodcastsFromRSS, PodcastEpisode } from "@/data/podcasts";
 import {
   Play,
   Pause,
@@ -13,12 +11,15 @@ import {
   Heart,
   Share2,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Header } from "@/components/Header";
+import { useState, useEffect, useRef } from "react";
+
 import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SEO } from "@/components/SEO";
+import { fetchPodcastsFromRSS, PodcastEpisode } from "@/data/podcasts";
+import { cn } from "@/lib/utils";
 
 export function Podcasts() {
   const [podcasts, setPodcasts] = useState<PodcastEpisode[]>([]);

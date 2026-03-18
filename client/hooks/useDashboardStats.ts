@@ -1,6 +1,7 @@
 import { useMemo } from "react";
-import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
+
 import { useSubscription } from "@/hooks/useStripe";
+import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 
 export interface DashboardStats {
   totalCalculations: number;

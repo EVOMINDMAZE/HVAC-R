@@ -1,17 +1,18 @@
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
 import { Calendar, User, ArrowRight, AlertTriangle } from "lucide-react";
+import { Link } from "react-router-dom";
+
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { SEO } from "@/components/SEO";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   useSanityPosts,
   getSanityImageUrl,
   getAuthorName,
   getCategory,
 } from "@/lib/sanity";
-import { format } from "date-fns";
-import { Link } from "react-router-dom";
-import { SEO } from "@/components/SEO";
 
 export function Blog() {
   const { posts, loading, error } = useSanityPosts();

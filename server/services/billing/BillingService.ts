@@ -1,12 +1,12 @@
 import {
+    projectBillingPlanForRouteResponse,
+} from "../../routes/compat/billingPlanCompat.js";
+import {
     createCheckoutSession,
     createCustomerPortalSession,
     getCustomerSubscription,
     stripe,
 } from "../../utils/stripe.js";
-import {
-    projectBillingPlanForRouteResponse,
-} from "../../routes/compat/billingPlanCompat.js";
 
 type BillingCompatMeta = {
     migrationTags?: string[];

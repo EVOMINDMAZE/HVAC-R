@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+
 import { useSupabaseAuth } from "./useSupabaseAuth";
+
 import { stripePromise } from "@/lib/stripe";
 
 interface StripeSubscription {

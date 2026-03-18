@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+
 import {
     authenticateSupabaseToken,
     createAuthenticateSupabaseToken,
@@ -65,6 +66,49 @@ describe("supabase auth compatibility middleware", () => {
             "auth.path.compat",
             "auth.path.legacy",
         ]);
+    });
+
+    it("accepts lowercase bearer prefix and extra spaces", async () => {
+        const middleware = createAuthenticateSupabaseToken({
+            validateCanonical: vi.fn(async () => ({
+                ok: true as const,
+                user: { id: "u-canonical" },
+            })),
+            validateLegacy: vi.fn(async () => ({
+                ok: false as const,
+                error: "Authentication failed",
+            })),
+        });
+
+        const req = {
+            headers: { authorization: "  bearer   a.b.c  " },
+            path: "/api/calculations",
+        } as any;
+        const res = createMockResponse();
+        const next = vi.fn();
+
+        await middleware(req, res, next);
+
+        expect(next).toHaveBeenCalledTimes(1);
+        expect(req.user).toMatchObject({ id: "u-canonical" });
+        expect(res.status).not.toHaveBeenCalled();
+    });
+
+    it("rejects malformed authorization value without bearer token", async () => {
+        const req = {
+            headers: { authorization: "token-only-value" },
+            path: "/api/calculations",
+        } as any;
+        const res = createMockResponse();
+        const next = vi.fn();
+
+        await authenticateSupabaseToken(req, res, next);
+
+        expect(next).not.toHaveBeenCalled();
+        expect(res.status).toHaveBeenCalledWith(401);
+        expect(res.json).toHaveBeenCalledWith({
+            error: "Authentication required",
+        });
     });
 
     it("fails deterministically with first-path error when both validators fail", async () => {

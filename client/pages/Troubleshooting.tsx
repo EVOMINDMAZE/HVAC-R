@@ -1,24 +1,3 @@
-import { useMemo, useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Save,
   AlertTriangle,
@@ -37,13 +16,37 @@ import {
   Terminal,
   Check,
 } from "lucide-react";
+import { useMemo, useState, useEffect } from "react";
+
+import { EnhancedTroubleshooting } from "@/components/ai/EnhancedTroubleshooting";
+import { TechnicianFeedback } from "@/components/ai/TechnicianFeedback";
+import { ApiServiceStatus } from "@/components/ApiServiceStatus";
+import { PageContainer } from "@/components/PageContainer";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { apiClient } from "@/lib/api";
 import { consumeCalculationPreset } from "@/lib/historyPresets";
-import { useToast } from "@/hooks/use-toast";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { ApiServiceStatus } from "@/components/ApiServiceStatus";
-import { PageContainer } from "@/components/PageContainer";
 
 const SYMPTOMS = [
   { id: "no_cooling", label: "No/insufficient cooling" },
@@ -61,8 +64,6 @@ const SYMPTOMS = [
   { id: "noisy", label: "Unusual noise/vibration" },
 ];
 
-import { EnhancedTroubleshooting } from "@/components/ai/EnhancedTroubleshooting";
-import { TechnicianFeedback } from "@/components/ai/TechnicianFeedback";
 
 function AiAnalysisDisplay({
   data,

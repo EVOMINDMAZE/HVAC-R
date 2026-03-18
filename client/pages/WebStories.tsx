@@ -1,15 +1,16 @@
-import { useState } from "react";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { Play, AlertTriangle } from "lucide-react";
+import { useState } from "react";
+
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { SEO } from "@/components/SEO";
+import { SanityStoryViewer } from "@/components/web-stories/SanityStoryViewer";
 import {
   useSanityWebStories,
   getSanityImageUrl,
   getAuthorName,
   SanityWebStory,
 } from "@/lib/sanity";
-import { SanityStoryViewer } from "@/components/web-stories/SanityStoryViewer";
-import { SEO } from "@/components/SEO";
 
 export function WebStories() {
   const { stories, loading, error } = useSanityWebStories();

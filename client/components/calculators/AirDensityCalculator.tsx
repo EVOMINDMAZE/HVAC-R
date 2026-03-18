@@ -1,4 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { Cloud, Save, Gauge, ArrowDown, Loader2 } from "lucide-react";
+import { FileText } from "lucide-react";
+import { useState, useEffect } from 'react';
+
+import { SaveCalculation } from "@/components/SaveCalculation";
+
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,7 +14,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -16,20 +21,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Cloud, Save, Gauge, ArrowDown, Loader2 } from "lucide-react";
-import { SaveCalculation } from "@/components/SaveCalculation";
-import { Badge } from "@/components/ui/badge";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { useWeatherAutoFill } from "@/hooks/useWeatherAutoFill";
-import { FileText } from "lucide-react";
+
 
 interface AirDensityCalculatorProps {
   saveCalculation?: any;
 }
 
-export default function AirDensityCalculator({
-  saveCalculation,
-}: AirDensityCalculatorProps) {
+export default function AirDensityCalculator({ saveCalculation: _saveCalculation }: AirDensityCalculatorProps) {
   const [units, setUnits] = useState<"imperial" | "metric">("imperial");
   const [inputs, setInputs] = useState({
     altitude: "0",
@@ -408,7 +408,7 @@ export default function AirDensityCalculator({
                     fileName={`ThermoNeural_Report_${new Date().toISOString().split("T")[0]}.pdf`}
                     className="w-full"
                   >
-                    {({ loading }) => (
+                    {({ loading }: { loading: boolean }) => (
                       <Button
                         variant="default"
                         className="w-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 mt-2"

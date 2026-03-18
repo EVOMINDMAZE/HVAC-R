@@ -1,4 +1,7 @@
+import { Loader2, Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
+
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,10 +11,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Pencil } from "lucide-react";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { useToast } from "@/hooks/useToast";
 

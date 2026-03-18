@@ -1,6 +1,11 @@
-import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Check, Loader2, ShieldCheck } from "lucide-react";
+import { useState } from "react";
+import { useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+
+import { PublicPageShell } from "@/components/public/PublicPageShell";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,16 +15,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ROICalculator } from "@/components/ui/roi-calculator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/lib/supabase";
-import { useNavigate, Link } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
-import { PLANS, STRIPE_PRICE_IDS } from "@/lib/stripe";
-import { ROICalculator } from "@/components/ui/roi-calculator";
 import { trackMarketingEvent } from "@/lib/marketingAnalytics";
-import { useEffect } from "react";
-import { PublicPageShell } from "@/components/public/PublicPageShell";
+import { PLANS, STRIPE_PRICE_IDS } from "@/lib/stripe";
+import { supabase } from "@/lib/supabase";
 
 const stripePromise = loadStripe(
   import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "pk_test_placeholder",

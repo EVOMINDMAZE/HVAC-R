@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import "@/landing.css";
 import {
   ArrowRight,
@@ -12,18 +12,24 @@ import {
   Clock,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 import { SEO } from "@/components/SEO";
 import { StructuredData } from "@/components/seo/StructuredData";
-import { PublicPageShell } from "@/components/public/PublicPageShell";
-import { trackMarketingEvent } from "@/lib/marketingAnalytics";
-import { landingConfig } from "@/config/metrics";
 import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { landingConfig } from "@/config/metrics";
+import { trackMarketingEvent } from "@/lib/marketingAnalytics";
 
 const pricing = landingConfig.pricing;
 const strategicPillars = landingConfig.strategicPillars;
@@ -83,6 +89,8 @@ export function Landing() {
   const [isVisible, setIsVisible] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [showMobileCta, setShowMobileCta] = useState(false);
+  const [expandedPillar, setExpandedPillar] = useState<number | null>(0);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     setIsVisible(true);
@@ -134,11 +142,17 @@ export function Landing() {
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: prefersReducedMotion ? 0 : 0.22 },
+    },
   };
 
   const stagger = {
-    visible: { transition: { staggerChildren: 0.2 } },
+    visible: {
+      transition: prefersReducedMotion ? undefined : { staggerChildren: 0.12 },
+    },
   };
 
   return (
@@ -150,7 +164,7 @@ export function Landing() {
       <StructuredData />
 
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-slate-50/50 dark:bg-background">
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-background/50 dark:bg-background">
         {/* Background Asset */}
         <div className="absolute inset-0 z-0">
           <LandingImage
@@ -158,11 +172,11 @@ export function Landing() {
             alt="Background"
             className="w-full h-full object-cover opacity-40 dark:opacity-30 mix-blend-overlay"
           />
-          <div className="absolute inset-0 bg-slate-50/80 dark:bg-background/80 z-10" />
+          <div className="absolute inset-0 bg-background/80 dark:bg-background/80 z-10" />
         </div>
 
-        <div className="container relative z-20 mx-auto px-4 pt-24 pb-32">
-          <div className="grid lg:grid-cols-[1.2fr,0.8fr] gap-16 items-center">
+        <div className="container relative z-20 mx-auto px-4 pt-24 pb-24 md:pb-28">
+          <div className="grid lg:grid-cols-[1.2fr,0.8fr] gap-12 lg:gap-16 items-center">
 
             {/* Hero Content */}
             <motion.div
@@ -175,21 +189,35 @@ export function Landing() {
                 <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse" />
                 <span className="text-sm font-medium text-primary">Enterprise-Grade HVAC&R Management</span>
               </motion.div>
-
               <motion.h1
                 variants={fadeInUp}
-                className="text-4xl sm:text-7xl lg:text-6xl xl:text-8xl font-black tracking-tighter leading-[1.1] mb-8 text-slate-950 dark:text-foreground excellence-header"
+                className="text-4xl sm:text-6xl lg:text-6xl xl:text-7xl font-black tracking-tighter leading-[1.05] mb-6 text-foreground dark:text-foreground excellence-header"
               >Engineering <br /><span className="text-primary">Operations</span> <br />at Scale.
               </motion.h1>
 
-              <motion.p variants={fadeInUp} className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed">
+              <motion.p variants={fadeInUp} className="text-lg md:text-xl text-muted-foreground mb-6 leading-relaxed max-w-2xl">
                 Stop trading time for money. Equip your technicians with AI-driven diagnostics, automated compliance, and profit-focused dispatching.
               </motion.p>
 
-              <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4">
-                <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 h-14 text-lg shadow-[0_0_20px_rgba(var(--primary),0.3)]">
+              <motion.div variants={fadeInUp} className="mb-8 flex flex-wrap gap-2 text-sm">
+                <span className="inline-flex items-center rounded-full border border-border bg-background/80 px-3 py-1 font-medium text-foreground/90 backdrop-blur-sm">
+                  <CheckCircle2 className="mr-1.5 h-3.5 w-3.5 text-success" />
+                  14-day full access
+                </span>
+                <span className="inline-flex items-center rounded-full border border-border bg-background/80 px-3 py-1 font-medium text-foreground/90 backdrop-blur-sm">
+                  <Shield className="mr-1.5 h-3.5 w-3.5 text-primary" />
+                  Compliance ledger included
+                </span>
+                <span className="inline-flex items-center rounded-full border border-border bg-background/80 px-3 py-1 font-medium text-foreground/90 backdrop-blur-sm">
+                  <Clock className="mr-1.5 h-3.5 w-3.5 text-primary" />
+                  Go live in under 1 week
+                </span>
+              </motion.div>
+
+              <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-3 sm:items-center">
+                <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground px-9 h-15 text-lg font-semibold shadow-[0_16px_40px_rgba(14,116,144,0.32)] ring-1 ring-primary/25">
                   <Link to="/signup" onClick={() => trackMarketingEvent("landing_hero_primary_click")}>
-                    Start Your Free Trial
+                    Start 14-Day Free Trial
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Link>
                 </Button>
@@ -197,13 +225,17 @@ export function Landing() {
                   asChild
                   variant="outline"
                   size="lg"
-                  className="border-slate-400 dark:border-border text-foreground hover:bg-slate-100 dark:hover:bg-secondary h-14 text-lg backdrop-blur-md shadow-md transition-all duration-300 active:scale-95"
+                  className="border-border dark:border-border text-foreground hover:bg-secondary dark:hover:bg-secondary h-14 text-base backdrop-blur-md shadow-sm motion-interactive motion-press"
                 ><Link to="/demo" onClick={() => trackMarketingEvent("landing_hero_secondary_click")}>
                     <Play className="w-4 h-4 mr-2 fill-current" />
-                    Watch Strategy Video
+                    Watch 3-Min Demo
                   </Link>
                 </Button>
               </motion.div>
+
+              <motion.p variants={fadeInUp} className="mt-4 text-sm text-muted-foreground">
+                No credit card required. Onboarding playbook and migration support included.
+              </motion.p>
 
               <motion.div variants={fadeInUp} className="mt-8 flex items-center gap-4 text-sm text-muted-foreground">
                 <div className="flex -space-x-2">
@@ -219,20 +251,20 @@ export function Landing() {
 
             {/* Hero Visual */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.8, rotateY: 10 }}
+              initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, rotateY: 6 }}
               animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-              transition={{ duration: 1, ease: "easeOut" }}
+              transition={{ duration: prefersReducedMotion ? 0 : 0.3, ease: "easeOut" }}
               className="relative hidden lg:block pr-8 pb-8"
             >
-              <div className="relative z-10 animate-float">
+              <div className={`relative z-10 ${prefersReducedMotion ? "" : "animate-float"}`}>
                 <LandingImage
                   src="/assets/landing/hero_premium.png"
                   alt="ThermoNeural Command Center"
-                  className="rounded-xl shadow-premium border border-slate-200/50 dark:border-border w-full transform hover:scale-[1.01] transition-transform duration-700"
+                  className="rounded-xl shadow-premium border border-border/50 dark:border-border w-full motion-interactive-emphasis hover:scale-[1.01]"
                 />
 
                 {/* Floating Elements (CSS Enhanced) */}
-                <div className="absolute -top-10 -right-10 p-4 bg-white/95 dark:bg-card/90 backdrop-blur-xl rounded-lg border border-slate-200/80 dark:border-border shadow-premium animate-float-delayed z-20">
+                <div className={`absolute -top-10 -right-10 p-4 bg-background/95 dark:bg-card/90 backdrop-blur-xl rounded-lg border border-border/80 dark:border-border shadow-premium z-20 ${prefersReducedMotion ? "" : "animate-float-delayed"}`}>
                   <div className="flex items-center gap-3 mb-2">
                     <Zap className="w-5 h-5 text-success" />
                     <span className="text-foreground font-medium">Revenue</span>
@@ -242,9 +274,9 @@ export function Landing() {
                 </div>
 
                 {/* New Halo HUD Cards */}
-                <div className="absolute top-1/2 -left-16 p-4 bg-white/95 dark:bg-card/90 backdrop-blur-xl rounded-lg border border-slate-200/80 dark:border-border shadow-premium animate-float z-20 hidden md:block">
+                <div className={`absolute top-1/2 -left-16 p-4 bg-background/95 dark:bg-card/90 backdrop-blur-xl rounded-lg border border-border/80 dark:border-border shadow-premium z-20 hidden md:block ${prefersReducedMotion ? "" : "animate-float"}`}>
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                    <div className={`w-2 h-2 rounded-full bg-primary ${prefersReducedMotion ? "" : "animate-pulse"}`}></div>
                     <span className="text-foreground font-medium text-sm">Live Dispatch</span>
                   </div>
                   <div className="space-y-2">
@@ -255,7 +287,7 @@ export function Landing() {
                   </div>
                 </div>
 
-                <div className="absolute -bottom-8 right-20 p-3 bg-white/95 dark:bg-card/90 backdrop-blur-xl rounded-lg border border-slate-200/80 dark:border-border shadow-premium animate-float-delayed z-20 hidden md:block">
+                <div className={`absolute -bottom-8 right-20 p-3 bg-background/95 dark:bg-card/90 backdrop-blur-xl rounded-lg border border-border/80 dark:border-border shadow-premium z-20 hidden md:block ${prefersReducedMotion ? "" : "animate-float-delayed"}`}>
                   <div className="flex items-center gap-3">
                     <Shield className="w-4 h-4 text-primary" />
                     <div className="text-xs font-medium text-foreground">System Health: <span className="text-success">98%</span></div>
@@ -271,7 +303,7 @@ export function Landing() {
       </section>
 
       {/* Problem / Agitation Section */}
-      <section className="py-20 bg-background relative border-y border-border/50">
+      <section className="py-16 md:py-20 bg-background relative border-y border-border/50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
@@ -287,9 +319,12 @@ export function Landing() {
       </section>
 
       {/* Interactive Strategic Core */}
-      <section className="py-32 bg-secondary/30 relative overflow-hidden">
+      <section className="py-20 md:py-24 bg-secondary/20 relative overflow-hidden border-y border-border/60">
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center mb-20">
+            <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-primary mb-4">
+              Storyline
+            </span>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               Four Pillars of Operational Excellence
             </h2>
@@ -304,25 +339,28 @@ export function Landing() {
               {strategicPillars.map((pillar, idx) => (
                 <div
                   key={idx}
-                  className={`core-module-item ${activeTab === idx ? 'active' : ''}`}
+                  className={`core-module-item ${activeTab === idx ? 'active ring-2 ring-primary/40 shadow-lg' : 'opacity-90 hover:opacity-100'}`}
                   onClick={() => {
                     setActiveTab(idx);
+                    if (expandedPillar === null) {
+                      setExpandedPillar(idx);
+                    }
                     trackMarketingEvent("landing_pillar_click", { section: pillar.title });
                   }}
                 >
                   <div className="painpoint-tag mb-4">{pillar.painpoint}</div>
                   <h3 className="text-2xl font-bold text-foreground mb-2">{pillar.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-                    {pillar.description}
+                  <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+                    {activeTab === idx ? pillar.description : pillar.subtitle}
                   </p>
 
                   {/* Integrated Media Preview */}
-                  <div className="mt-6 mb-4 rounded-xl overflow-hidden border border-border bg-muted/30 aspect-video relative group/media">
+                  <div className={`mt-6 mb-4 rounded-xl overflow-hidden border border-border bg-muted/30 aspect-video relative group/media ${activeTab === idx ? "" : "hidden md:block"}`}>
                     <LandingImage
                       src={pillar.icon}
                       alt={pillar.title}
                       loading="lazy"
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover/media:scale-110"
+                      className="w-full h-full object-cover motion-interactive-emphasis group-hover/media:scale-110"
                     />
                     {/* Technical HUD Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
@@ -335,6 +373,26 @@ export function Landing() {
                       </div>
                     </div>
                   </div>
+
+                  <Collapsible
+                    open={expandedPillar === idx}
+                    onOpenChange={(open) => setExpandedPillar(open ? idx : null)}
+                    className="mb-4"
+                  >
+                    <CollapsibleTrigger asChild>
+                      <button
+                        type="button"
+                        className={`text-xs font-semibold uppercase tracking-wider ${activeTab === idx ? "text-primary" : "text-muted-foreground"}`}
+                      >
+                        {expandedPillar === idx ? "Hide impact details" : "Show impact details"}
+                      </button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="pt-2">
+                      <div className="rounded-lg border border-border/70 bg-background/70 px-3 py-2 text-xs text-muted-foreground">
+                        {pillar.subtitle}. This module is designed to remove {pillar.painpoint.toLowerCase()} bottlenecks from daily operations.
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
 
                   <button className={`text-sm font-semibold uppercase tracking-wider flex items-center gap-2 ${activeTab === idx ? 'text-primary' : 'text-muted-foreground'}`}>
                     Deploy Module <ArrowRight className="w-4 h-4" />
@@ -374,7 +432,7 @@ export function Landing() {
       </section>
 
       {/* ROI Stats Section */}
-      <section className="py-20 bg-background border-y border-border">
+      <section className="py-16 md:py-20 bg-background border-y border-border">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center divide-y md:divide-y-0 md:divide-x divide-border">
             {landingConfig.roiStats.map((stat, idx) => (
@@ -391,19 +449,41 @@ export function Landing() {
       </section>
 
       {/* Trust Badges Section */}
-      <section className="py-12 bg-secondary/30 border-y border-border">
+      <section className="py-16 md:py-20 bg-secondary/30 border-y border-border">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center items-center gap-6 md:gap-12">
+          <div className="max-w-3xl mx-auto text-center mb-10">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">Trusted standards, readable proof</h2>
+            <p className="text-muted-foreground">
+              We align operations with recognized HVAC and security references so your team can move faster with confidence.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
             {landingConfig.trustBadges.map((badge, idx) => (
-              <div key={idx} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-background/50 border border-border">
-                {badge.status === 'active' ? (
-                  <BadgeCheck className="w-5 h-5 text-success" />
-                ) : (
-                  <Clock className="w-5 h-5 text-yellow-500" />
-                )}
-                <div className="text-sm">
-                  <span className="font-semibold text-foreground">{badge.name}</span>
-                  <span className="hidden md:inline text-muted-foreground ml-1">• {badge.description}</span>
+              <div
+                key={idx}
+                className="flex items-start gap-3 px-4 py-4 rounded-xl bg-background/70 border border-border shadow-sm"
+              >
+                <div className="mt-0.5">
+                  {badge.status === 'active' ? (
+                    <BadgeCheck className="w-5 h-5 text-success" />
+                  ) : (
+                    <Clock className="w-5 h-5 text-warning" />
+                  )}
+                </div>
+                <div className="text-sm min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-foreground">{badge.name}</span>
+                    <span
+                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                        badge.status === 'active'
+                          ? 'bg-success/15 text-success'
+                          : 'bg-warning/15 text-warning-foreground dark:text-warning'
+                      }`}
+                    >
+                      {badge.status === 'active' ? 'Active' : 'In progress'}
+                    </span>
+                  </div>
+                  <p className="text-muted-foreground mt-1 leading-relaxed">{badge.description}</p>
                 </div>
               </div>
             ))}
@@ -412,7 +492,7 @@ export function Landing() {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-24 bg-background">
+      <section className="py-20 md:py-24 bg-background">
         <div className="container mx-auto px-4">
           <motion.div
             initial="hidden"
@@ -464,7 +544,7 @@ export function Landing() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-24 bg-secondary/30">
+      <section className="py-20 md:py-24 bg-secondary/30">
         <div className="container mx-auto px-4">
           <motion.div
             initial="hidden"
@@ -497,7 +577,7 @@ export function Landing() {
       </section>
 
       {/* Final CTA - Premium Upgrade */}
-      <section className="py-24 md:py-40 bg-background relative overflow-hidden border-t border-border group/cta">
+      <section className="py-20 md:py-32 bg-background relative overflow-hidden border-t border-border group/cta">
         {/* Layered Background System */}
         <div className="absolute inset-0 z-0">
           <LandingImage
@@ -517,18 +597,18 @@ export function Landing() {
 
         <div className="container relative z-10 mx-auto px-4 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.3, ease: "easeOut" }}
             className="max-w-4xl mx-auto"
           >
             <motion.div
-              initial={{ scale: 0.9 }}
+              initial={{ scale: prefersReducedMotion ? 1 : 0.96 }}
               whileInView={{ scale: 1 }}
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-8 backdrop-blur-md"
             >
-              <Zap className="w-4 h-4 text-primary animate-pulse" />
+              <Zap className={`w-4 h-4 text-primary ${prefersReducedMotion ? "" : "animate-pulse"}`} />
               <span className="text-xs font-bold tracking-widest uppercase text-primary">Strategic Partnership</span>
             </motion.div>
 
@@ -545,10 +625,10 @@ export function Landing() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
               <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xl px-12 h-20 shadow-[0_20px_50px_rgba(var(--primary),0.3)] rounded-2xl group/btn overflow-hidden relative">
                 <Link to="/signup" onClick={() => trackMarketingEvent("landing_pricing_cta_click")}>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:translate-x-full motion-interactive-emphasis" />
                   <span className="relative flex items-center gap-3">
                     Systemize Your Business
-                    <ArrowRight className="w-6 h-6 group-hover/btn:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-6 h-6 group-hover/btn:translate-x-1 motion-interactive" />
                   </span>
                 </Link>
               </Button>
@@ -557,7 +637,7 @@ export function Landing() {
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: prefersReducedMotion ? 0 : 0.18 }}
               className="mt-12 flex flex-wrap items-center justify-center gap-8 text-sm text-muted-foreground/80 font-medium"
             >
               <div className="flex items-center gap-2">

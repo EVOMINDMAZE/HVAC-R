@@ -1,10 +1,12 @@
+import { Loader2, FileSpreadsheet, Check, Copy, ArrowRight } from "lucide-react";
 import { useState } from "react";
+
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { useToast } from "../ui/use-toast";
-import { Loader2, FileSpreadsheet, Check, Copy, ArrowRight } from "lucide-react";
+
 import { supabase } from "@/lib/supabase";
 
 interface SyncResult {
@@ -22,8 +24,8 @@ export function GoogleSheetConnect() {
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState<SyncResult | null>(null);
 
-    // Mock Service Account Email
-    const SERVICE_EMAIL = "thermoneural-bot@appspot.gserviceaccount.com";
+    // Service Account Email - Set via VITE_GOOGLE_SERVICE_ACCOUNT_EMAIL environment variable
+    const SERVICE_EMAIL = import.meta.env.VITE_GOOGLE_SERVICE_ACCOUNT_EMAIL || "thermoneural-bot@appspot.gserviceaccount.com";
 
     const handleCopyEmail = () => {
         navigator.clipboard.writeText(SERVICE_EMAIL);
@@ -96,8 +98,13 @@ export function GoogleSheetConnect() {
                     <div className="space-y-4 animate-in fade-in slide-in-from-right-4">
                         <div className="text-sm text-slate-600 dark:text-slate-400 space-y-2">
                             <p className="font-medium text-slate-900 dark:text-slate-200">Step 1: Share Access</p>
-                            <p>To let us read your sheet securely, share it with our Service Bot:</p>
-                            <div className="flex items-center gap-2 mt-2">
+                            <p className="text-sm">To let us read your sheet securely, share it with our Service Bot:</p>
+                            <ul className="text-sm list-disc pl-5 space-y-1 mt-1">
+                                <li>Open your Google Sheet and click the <strong>Share</strong> button</li>
+                                <li>Paste the service account email below and grant <strong>Viewer</strong> access</li>
+                                <li>Ensure the sheet is shared with this exact email address</li>
+                            </ul>
+                            <div className="flex items-center gap-2 mt-3">
                                 <code className="bg-slate-100 dark:bg-slate-800 px-3 py-2 rounded text-xs font-mono border flex-1 truncate">
                                     {SERVICE_EMAIL}
                                 </code>

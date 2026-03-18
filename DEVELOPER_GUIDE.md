@@ -23,4 +23,19 @@ The ThermoNeural project uses a skills-based documentation architecture where al
 
 ---
 
-*Last updated: 2026-02-07 | Documentation Audit v2.0*
+## Recent Updates from Code Cleanup
+
+### TypeScript Strict Mode
+- **Strict Mode Enabled**: `strict: true` with `noUnusedLocals`, `noUnusedParameters`, `noImplicitAny`, `strictNullChecks`
+- **Fast Refresh Compliance**: Components must export only React components (no mixed exports) to support Hot Module Replacement
+- **Dependency Cleanup**: 17 unused devDependencies removed, Sentry and Datadog monitoring packages added
+- **Security Improvements**: Regular `npm audit` fixes applied; `xlsx` package removed; `@capgo/capacitor-native-biometric` updated
+
+### Migration Consolidation
+- **Baseline Migration**: `20260313_baseline.sql` consolidates over 50 previous migrations, reducing migration count by 50%+
+
+Refer to the [Developer Guide](./skills/03_development/developer_guide.md) for detailed documentation.
+
+---
+
+*Last updated: 2026-03-13 | Code Cleanup Updates*

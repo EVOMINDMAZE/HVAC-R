@@ -1,7 +1,9 @@
 import { ArrowDown, Orbit, Workflow } from "lucide-react";
-import { cn } from "@/lib/utils";
-import type { MonitorDiagramItem } from "@/types/monitor";
+
 import type { FutureMonitorSkin } from "@/lib/featureFlags";
+import type { MonitorDiagramItem } from "@/types/monitor";
+
+import { cn } from "@/lib/utils";
 
 interface MonitorDiagramPanelProps {
   diagram?: MonitorDiagramItem;

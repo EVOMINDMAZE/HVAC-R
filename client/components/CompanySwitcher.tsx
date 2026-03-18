@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { Button } from "@/components/ui/button";
 import { Check, ChevronsUpDown } from "lucide-react";
+import { useState } from "react";
+
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -15,9 +16,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { cn } from "@/lib/utils";
 
 interface Company {
   company_id: string;

@@ -1,6 +1,10 @@
+import { Loader2, Upload, Building2, Globe, Palette, Send } from "lucide-react";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Check } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { supabase } from "../lib/supabase";
+import { GoogleSheetConnect } from "../components/shared/GoogleSheetConnect";
+import { Button } from "../components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,17 +13,15 @@ import {
   CardTitle,
   CardFooter,
 } from "../components/ui/card";
-import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { useToast } from "../components/ui/use-toast";
-import { Loader2, Upload, Building2, Globe, Palette, Send } from "lucide-react";
-import { useWorkflowTrigger } from "@/hooks/useWorkflowTrigger";
+import { supabase } from "../lib/supabase";
 import { PageContainer } from "@/components/PageContainer";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Check } from "lucide-react";
-import { GoogleSheetConnect } from "../components/shared/GoogleSheetConnect";
+
 import { Badge } from "@/components/ui/badge";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { useWorkflowTrigger } from "@/hooks/useWorkflowTrigger";
 
 interface TestAutomationButtonProps {
   phone: string;
