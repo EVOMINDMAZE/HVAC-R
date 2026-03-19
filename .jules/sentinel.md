@@ -1,0 +1,4 @@
+## 2025-03-08 - [Missing Sanitization for React innerHTML rendering]
+**Vulnerability:** A Cross-Site Scripting (XSS) vulnerability was found in the `DocsViewer.tsx` component, which converted markdown to HTML and rendered the resulting output via React's `dangerouslySetInnerHTML` without proper sanitization. This allowed any potentially malicious content in a `.md` file to execute scripts or modify the DOM when displayed to a user.
+**Learning:** Using regex-based or manual logic to parse markdown is often error-prone when it comes to HTML escaping. Even if basic HTML entities are escaped initially, complex structures (like `<a>` tags with inline events) might slip through, meaning any raw output sent directly to `dangerouslySetInnerHTML` remains a high risk.
+**Prevention:** Always use a battle-tested HTML sanitizer like `DOMPurify` (e.g., `DOMPurify.sanitize()`) as the final step immediately before passing content to `dangerouslySetInnerHTML`.
