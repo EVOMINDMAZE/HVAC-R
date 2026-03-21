@@ -1,3 +1,5 @@
+import "@/utils/authErrorHandler"; // Import to setup global error handling
+import { AnimatePresence } from "framer-motion";
 import { Suspense, lazy } from "react";
 import {
   BrowserRouter,
@@ -8,20 +10,25 @@ import {
 } from "react-router-dom";
 
 import { DevModeBanner } from "@/components/DevModeBanner";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { ErrorModal } from "@/components/ErrorModal";
+import { Layout } from "@/components/Layout";
+import { SubscriptionGuard } from "@/components/SubscriptionGuard";
+import { SupportBar } from "@/components/SupportBar";
 import { ThemeProvider } from "@/components/theme-provider";
+import PageLoading from "@/components/ui/page-loading.tsx";
+import { Toaster } from "@/components/ui/toaster";
+import { JobProvider } from "@/context/JobContext";
+import { KeyboardShortcutsHelp } from "@/hooks/KeyboardShortcuts";
 import { SupabaseAuthProvider } from "@/hooks/SupabaseAuthProvider";
 import { ToastProvider } from "@/hooks/ToastProvider";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useAuth } from "@/hooks/useSupabaseAuth";
-
-import "@/utils/authErrorHandler"; // Import to setup global error handling
-import { JobProvider } from "@/context/JobContext";
-// Critical path - keep static
 import { MonitoringProvider } from "@/lib/monitoring-provider";
 import { Landing } from "@/pages/Landing";
 import NotFound from "@/pages/NotFound";
 import { SignIn } from "@/pages/SignIn";
 import { SignUp } from "@/pages/SignUp";
-
 // Lazy-loaded route components for code-splitting
 const A2LLandingPage = lazy(() =>
   import("@/pages/A2LLandingPage").then((m) => ({ default: m.A2LLandingPage })),
@@ -64,9 +71,9 @@ const Dispatch = lazy(() => import("@/pages/dashboard/Dispatch"));
 const TriageDashboard = lazy(() => import("@/pages/dashboard/TriageDashboard"));
 const ActiveJob = lazy(() => import("@/pages/tech/ActiveJob"));
 // const JobBoard = lazy(() => import("@/pages/tech/JobBoard"));
+const FleetDashboard = lazy(() => import("@/pages/dashboard/FleetDashboard"));
 import JobBoard from "@/pages/tech/JobBoard";
  // Direct import for debugging
-const FleetDashboard = lazy(() => import("@/pages/dashboard/FleetDashboard"));
 const Career = lazy(() => import("@/pages/Career"));
 const StandardCycle = lazy(() =>
   import("@/pages/StandardCycle").then((m) => ({ default: m.StandardCycle })),
@@ -142,15 +149,6 @@ const SelectCompany = lazy(() => import("@/pages/SelectCompany"));
 const InviteLink = lazy(() => import("@/pages/InviteLink"));
 const CreateCompany = lazy(() => import("@/pages/CreateCompany"));
 const InviteTeam = lazy(() => import("@/pages/InviteTeam"));
-import { ErrorModal } from "@/components/ErrorModal";
-import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { SupportBar } from "@/components/SupportBar";
-import { Layout } from "@/components/Layout";
-import { Toaster } from "@/components/ui/toaster";
-import { SubscriptionGuard } from "@/components/SubscriptionGuard";
-import PageLoading from "@/components/ui/page-loading.tsx";
-import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
-import { KeyboardShortcutsHelp } from "@/hooks/KeyboardShortcuts";
 
 function shouldBypassAuth() {
   // Disable authentication bypass in production for security
@@ -295,8 +293,6 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 
   return <>{children}</>;
 }
-
-import { AnimatePresence } from "framer-motion";
 
 function AppRoutes() {
   const location = useLocation();
