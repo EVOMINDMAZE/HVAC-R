@@ -1,11 +1,11 @@
-import { Shield, Target, Users } from "lucide-react";
 import { motion } from "framer-motion";
+import { Shield, Target, Users } from "lucide-react";
 import { ArrowRight, BadgeCheck } from "lucide-react";
 
 import { PublicPageShell } from "@/components/public/PublicPageShell";
 import { SEO } from "@/components/SEO";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 
 const values = [

@@ -50,7 +50,11 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectTrigger,
@@ -58,13 +62,9 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { useToast } from "@/components/ui/use-toast";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { supabase } from "@/lib/supabase";
