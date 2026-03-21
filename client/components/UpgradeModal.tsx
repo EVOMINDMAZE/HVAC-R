@@ -171,7 +171,7 @@ export function UpgradeModal({
                   </li>
                   <li className="flex items-center">
                     <ArrowRight className="h-4 w-4 text-orange-500 mr-2" />
-                    <span>PDF export, API access, and priority support</span>
+                    <span>PDF export and priority support</span>
                   </li>
                   <li className="flex items-center">
                     <ArrowRight className="h-4 w-4 text-orange-500 mr-2" />

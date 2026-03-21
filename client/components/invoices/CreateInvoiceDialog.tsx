@@ -103,22 +103,22 @@ export function CreateInvoiceDialog({ jobId, clientId, companyId, onInvoiceCreat
                     Create Invoice
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
+                    <DialogTitle className="text-xl font-semibold flex items-center gap-2">
                         {initialData ? <Sparkles className="w-5 h-5 text-purple-600" /> : null}
                         Create New Invoice
                     </DialogTitle>
                 </DialogHeader>
 
-                <div className="grid gap-4 py-4">
+                <div className="grid gap-5 py-4">
                     {initialData && (
-                        <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-md text-sm text-purple-800 dark:text-purple-300 mb-2">
+                        <div className="bg-purple-50/80 dark:bg-purple-900/20 p-3 rounded-[0.75rem] text-sm text-purple-800 dark:text-purple-300 border border-purple-100 dark:border-purple-800/30">
                             AI suggested values applied. Please review.
                         </div>
                     )}
                     <div className="grid gap-2">
-                        <Label htmlFor="amount">Total Amount ($)</Label>
+                        <Label htmlFor="amount" className="text-foreground/80">Total Amount ($)</Label>
                         <Input
                             id="amount"
                             type="number"
@@ -128,7 +128,7 @@ export function CreateInvoiceDialog({ jobId, clientId, companyId, onInvoiceCreat
                         />
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="due-date">Due Date</Label>
+                        <Label htmlFor="due-date" className="text-foreground/80">Due Date</Label>
                         <Input
                             id="due-date"
                             type="date"
@@ -137,7 +137,7 @@ export function CreateInvoiceDialog({ jobId, clientId, companyId, onInvoiceCreat
                         />
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="description">Description / Notes</Label>
+                        <Label htmlFor="description" className="text-foreground/80">Description / Notes</Label>
                         <Textarea
                             id="description"
                             placeholder="Invoice details..."

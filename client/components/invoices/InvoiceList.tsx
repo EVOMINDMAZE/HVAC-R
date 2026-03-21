@@ -98,12 +98,12 @@ export function InvoiceList({ jobId, clientId, companyId, suggestedInvoiceData }
     }
 
     return (
-        <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Invoices</CardTitle>
+        <Card className="border-border/50 bg-gradient-to-br from-card to-card/80 shadow-md shadow-primary/5 overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between pb-4 border-b border-border/40 bg-muted/20">
+                <CardTitle className="text-base font-semibold">Invoices</CardTitle>
                 <div className="flex gap-2">
-                    <Button variant="ghost" size="icon" onClick={fetchInvoices}>
-                        <RefreshCcw className="w-4 h-4" />
+                    <Button variant="ghost" size="icon" onClick={fetchInvoices} className="h-8 w-8 hover:bg-muted transition-colors">
+                        <RefreshCcw className="w-3.5 h-3.5" />
                     </Button>
                     <CreateInvoiceDialog
                         jobId={jobId}
@@ -114,42 +114,44 @@ export function InvoiceList({ jobId, clientId, companyId, suggestedInvoiceData }
                     />
                 </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-0">
                 {invoices.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground">
+                    <div className="text-center py-10 text-muted-foreground/60 text-sm">
                         No invoices found for this job.
                     </div>
                 ) : (
                     <Table>
                         <TableHeader>
-                            <TableRow>
-                                <TableHead>Ticket #</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Amount</TableHead>
-                                <TableHead>Due Date</TableHead>
-                                <TableHead className="text-right">Actions</TableHead>
+                            <TableRow className="hover:bg-transparent border-border/40">
+                                <TableHead className="text-xs font-medium text-muted-foreground/60 uppercase tracking-wide">Ticket #</TableHead>
+                                <TableHead className="text-xs font-medium text-muted-foreground/60 uppercase tracking-wide">Status</TableHead>
+                                <TableHead className="text-xs font-medium text-muted-foreground/60 uppercase tracking-wide">Amount</TableHead>
+                                <TableHead className="text-xs font-medium text-muted-foreground/60 uppercase tracking-wide">Due Date</TableHead>
+                                <TableHead className="text-right text-xs font-medium text-muted-foreground/60 uppercase tracking-wide">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {invoices.map((inv) => (
-                                <TableRow key={inv.id}>
-                                    <TableCell className="font-medium">{inv.ticket_number || '---'}</TableCell>
-                                    <TableCell>
-                                        <Badge variant={getStatusColor(inv.status) as any}>
+                                <TableRow key={inv.id} className="hover:bg-muted/30 transition-colors border-border/30">
+                                    <TableCell className="font-medium text-sm py-3">{inv.ticket_number || '---'}</TableCell>
+                                    <TableCell className="py-3">
+                                        <Badge variant={getStatusColor(inv.status) as any} className="text-[10px] px-2 py-0.5 capitalize">
                                             {inv.status}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell>${inv.total_amount?.toFixed(2)}</TableCell>
-                                    <TableCell>{inv.due_date ? new Date(inv.due_date).toLocaleDateString() : '-'}</TableCell>
-                                    <TableCell className="text-right flex justify-end gap-2">
-                                        {inv.status !== 'paid' && (
-                                            <Button size="sm" variant="ghost" onClick={() => handleMarkPaid(inv.id)} title="Mark Paid">
-                                                <Check className="w-4 h-4 text-green-600" />
+                                    <TableCell className="py-3 text-sm font-medium">${inv.total_amount?.toFixed(2)}</TableCell>
+                                    <TableCell className="py-3 text-sm text-muted-foreground/70">{inv.due_date ? new Date(inv.due_date).toLocaleDateString() : '-'}</TableCell>
+                                    <TableCell className="py-3 text-right">
+                                        <div className="flex justify-end gap-1">
+                                            {inv.status !== 'paid' && (
+                                                <Button size="sm" variant="ghost" onClick={() => handleMarkPaid(inv.id)} title="Mark Paid" className="h-7 w-7 p-0 hover:bg-green-50 hover:text-green-600 transition-colors">
+                                                    <Check className="w-3.5 h-3.5" />
+                                                </Button>
+                                            )}
+                                            <Button size="sm" variant="ghost" onClick={() => handleResend(inv.id)} title="Resend" className="h-7 w-7 p-0 hover:bg-muted transition-colors">
+                                                <Mail className="w-3.5 h-3.5" />
                                             </Button>
-                                        )}
-                                        <Button size="sm" variant="ghost" onClick={() => handleResend(inv.id)} title="Resend">
-                                            <Mail className="w-4 h-4" />
-                                        </Button>
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ))}

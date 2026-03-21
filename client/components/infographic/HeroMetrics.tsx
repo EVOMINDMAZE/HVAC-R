@@ -70,13 +70,24 @@ function Sparkline({ data, color = "hsl(var(--primary))" }: { data: number[]; co
 
   return (
     <svg width={width} height={height} className="overflow-visible">
+      <defs>
+        <linearGradient id={`sparkline-gradient-${color.replace(/[^a-z0-9]/gi, '')}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.15" />
+          <stop offset="100%" stopColor={color} stopOpacity="0.02" />
+        </linearGradient>
+      </defs>
+      <polygon
+        fill={`url(#sparkline-gradient-${color.replace(/[^a-z0-9]/gi, '')})`}
+        points={`0,${height} ${points} ${width},${height}`}
+      />
       <polyline
         fill="none"
         stroke={color}
-        strokeWidth="2"
+        strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
         points={points}
+        opacity="0.8"
       />
     </svg>
   );
@@ -86,9 +97,9 @@ function TrendBadge({ trend, value }: { trend: "up" | "down" | "neutral"; value?
   if (!value) return null;
 
   const colors = {
-    up: "text-emerald-600 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-950",
-    down: "text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-950",
-    neutral: "text-slate-600 bg-slate-50 dark:text-slate-400 dark:bg-slate-800",
+    up: "text-emerald-600/80 bg-emerald-50/80 dark:text-emerald-400/80 dark:bg-emerald-950/40",
+    down: "text-red-600/80 bg-red-50/80 dark:text-red-400/80 dark:bg-red-950/40",
+    neutral: "text-slate-600/80 bg-slate-50/80 dark:text-slate-400/80 dark:bg-slate-800/40",
   };
 
   const icons = {
@@ -109,10 +120,10 @@ function TrendBadge({ trend, value }: { trend: "up" | "down" | "neutral"; value?
 
 function HeroCard({ metric, size = "normal" }: { metric: HeroMetric; size?: "large" | "normal" }) {
   const statusColors = {
-    success: "hsl(160 84% 39%)",
-    warning: "hsl(38 92% 50%)",
-    danger: "hsl(0 84% 60%)",
-    neutral: "hsl(var(--primary))",
+    success: "hsl(160 80% 42% / 0.8)",
+    warning: "hsl(38 90% 52% / 0.8)",
+    danger: "hsl(0 80% 55% / 0.8)",
+    neutral: "hsl(var(--primary) / 0.7)",
   };
 
   const accentColor = metric.status ? statusColors[metric.status] : statusColors.neutral;

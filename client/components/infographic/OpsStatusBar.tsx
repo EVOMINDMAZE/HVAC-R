@@ -75,7 +75,7 @@ export function OpsStatusBar({
         <div className="ops-bar__divider" />
 
         <div className="ops-bar__techs">
-          <Users className="w-4 h-4 text-muted-foreground" />
+          <Users className="w-4 h-4 text-muted-foreground/60" />
           <span className="ops-bar__techs-count">
             <strong>{techs.active}</strong>/{techs.total}
           </span>

@@ -146,16 +146,6 @@ export function SignUp() {
         <PageContainer>
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] items-start">
             <div className="space-y-6">
-              <Link to="/" className="inline-flex">
-                <picture>
-                  <source srcSet="/logo-stacked.webp" type="image/webp" />
-                  <img
-                    src="/logo-stacked.png"
-                    alt="ThermoNeural"
-                    className="h-16 w-auto object-contain mix-blend-multiply dark:mix-blend-screen"
-                  />
-                </picture>
-              </Link>
               <div className="space-y-3">
                 <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
                   Get started

@@ -58,9 +58,10 @@ function GroupMenu({
           type="button"
           className={cn(
             navLinkIconClasses,
+            "transition-all duration-200 rounded-lg hover:bg-muted/50",
             active
-              ? "text-primary"
-              : "text-muted-foreground hover:text-foreground",
+              ? "text-foreground bg-muted/30"
+              : "text-muted-foreground/80 hover:text-foreground",
           )}
           aria-current={active ? "page" : undefined}
         >
@@ -68,7 +69,7 @@ function GroupMenu({
           <ChevronDown className="h-3.5 w-3.5" />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-72 p-1">
+      <DropdownMenuContent align="start" className="w-72 p-1.5 shadow-xl shadow-black/10 border-border/60 rounded-xl">
         <DropdownMenuLabel className="text-xs uppercase tracking-[0.08em] text-muted-foreground">
           {label}
         </DropdownMenuLabel>
@@ -96,16 +97,16 @@ export function Sidebar() {
 
   if (!isAuthenticated) {
     return (
-      <nav className="hidden md:block w-full border-b border-border bg-background/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-[1600px] items-center gap-2 px-4 py-2 sm:px-6 lg:px-8">
+      <nav className="hidden md:block w-full border-b border-border/40 bg-background/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-[1600px] items-center gap-1 px-4 py-2 sm:px-6 lg:px-8">
           {landingLinks.map((item) => (
             <Link
               key={`${item.to}${item.hash ?? ""}:${item.label}`}
               to={item.hash ? `${item.to}${item.hash}` : item.to}
               className={cn(
-                `${navLinkBaseClasses} text-muted-foreground hover:text-foreground`,
+                `${navLinkBaseClasses} text-muted-foreground/80 hover:text-foreground transition-all duration-200 rounded-lg hover:bg-muted/50`,
                 isLandingItemActive(location.pathname, location.hash, item) &&
-                  "text-primary",
+                  "text-foreground bg-muted/30",
               )}
               aria-current={
                 isLandingItemActive(location.pathname, location.hash, item) ? "page" : undefined
@@ -124,7 +125,7 @@ export function Sidebar() {
   const otherGroups = visibleGroups.filter((group) => group.id !== "work");
 
   return (
-    <nav className="hidden md:block w-full border-b border-border bg-background/95 backdrop-blur-md">
+    <nav className="hidden md:block w-full border-b border-border/40 bg-background/90 backdrop-blur-xl">
       <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-3 px-4 py-2 sm:px-6 lg:px-8">
         <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
           {workGroup?.items.map((item) => (
@@ -134,9 +135,10 @@ export function Sidebar() {
               className={({ isActive }) =>
                 cn(
                   navLinkIconClasses,
+                  "transition-all duration-200 rounded-lg hover:bg-muted/50",
                   isActive
-                    ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground",
+                    ? "text-foreground bg-muted/30"
+                    : "text-muted-foreground/80 hover:text-foreground",
                 )
               }
             >
@@ -160,12 +162,12 @@ export function Sidebar() {
           {resources.visible ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="text-muted-foreground">
+                <Button variant="ghost" size="sm" className="text-muted-foreground/80 hover:text-foreground transition-all duration-200 rounded-lg hover:bg-muted/50">
                   Resources
                   <ChevronDown className="ml-1 h-3.5 w-3.5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-72 p-1">
+              <DropdownMenuContent align="end" className="w-72 p-1.5 shadow-xl shadow-black/10 border-border/60 rounded-xl">
                 {resources.groups.map((group, idx) => (
                   <div key={group.label}>
                     {idx > 0 ? <DropdownMenuSeparator /> : null}
@@ -179,7 +181,7 @@ export function Sidebar() {
                             href={item.to}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-start gap-2 rounded-md p-2"
+                            className="flex items-start gap-2 rounded-md p-2 transition-all duration-200 hover:bg-muted/50"
                           >
                             <item.icon className="mt-0.5 h-4 w-4 text-muted-foreground" />
                             <div>
@@ -188,7 +190,7 @@ export function Sidebar() {
                             </div>
                           </a>
                         ) : (
-                          <Link to={item.to} className="flex items-start gap-2 rounded-md p-2">
+                          <Link to={item.to} className="flex items-start gap-2 rounded-md p-2 transition-all duration-200 hover:bg-muted/50">
                             <item.icon className="mt-0.5 h-4 w-4 text-muted-foreground" />
                             <div>
                               <p className="text-sm font-medium">{item.label}</p>

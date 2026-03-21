@@ -297,37 +297,35 @@ export function CreateJobDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>New Service Job</DialogTitle>
-          <DialogDescription>
+      <DialogContent className="sm:max-w-[480px] rounded-2xl border-border/60 bg-gradient-to-b from-card to-card/95 shadow-xl shadow-primary/5 backdrop-blur-md">
+        <DialogHeader className="pb-4 border-b border-border/40">
+          <DialogTitle className="text-xl font-semibold">New Service Job</DialogTitle>
+          <DialogDescription className="text-muted-foreground/70">
             Dispatch a technician to a client location.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid gap-4 py-4">
-          {/* Job Title */}
+        <div className="grid gap-5 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="title" className="text-right">
+            <Label htmlFor="title" className="text-right text-foreground/80">
               Title
             </Label>
             <input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="col-span-3 flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className="col-span-3 flex h-10 w-full rounded-[0.75rem] border border-input/60 bg-background px-4 py-2.5 text-sm shadow-[0_1px_3px_-1px_rgba(0,0,0,0.06)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/30 focus-visible:ring-offset-[2px] focus-visible:shadow-[0_2px_8px_-2px_rgba(0,0,0,0.08),inset_0_1px_2px_-1px_rgba(0,0,0,0.04)] placeholder:text-muted-foreground/70 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="e.g. AC Repair"
             />
           </div>
 
-          {/* Client Select */}
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="client" className="text-right">
+            <Label htmlFor="client" className="text-right text-foreground/80">
               Client
             </Label>
             <select
               id="client"
-              className="col-span-3 flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className="col-span-3 flex h-10 w-full rounded-[0.75rem] border border-input/60 bg-background px-4 py-2.5 text-sm shadow-[0_1px_3px_-1px_rgba(0,0,0,0.06)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/30 focus-visible:ring-offset-[2px] focus-visible:shadow-[0_2px_8px_-2px_rgba(0,0,0,0.08),inset_0_1px_2px_-1px_rgba(0,0,0,0.04)] disabled:cursor-not-allowed disabled:opacity-50"
               value={clientId}
               onChange={(e) => setClientId(e.target.value)}
             >
@@ -340,14 +338,13 @@ export function CreateJobDialog({
             </select>
           </div>
 
-          {/* Asset Select */}
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="asset" className="text-right">
+            <Label htmlFor="asset" className="text-right text-foreground/80">
               Asset
             </Label>
             <select
               id="asset"
-              className="col-span-3 flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className="col-span-3 flex h-10 w-full rounded-[0.75rem] border border-input/60 bg-background px-4 py-2.5 text-sm shadow-[0_1px_3px_-1px_rgba(0,0,0,0.06)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/30 focus-visible:ring-offset-[2px] focus-visible:shadow-[0_2px_8px_-2px_rgba(0,0,0,0.08),inset_0_1px_2px_-1px_rgba(0,0,0,0.04)] disabled:cursor-not-allowed disabled:opacity-50"
               value={assetId}
               onChange={(e) => setAssetId(e.target.value)}
               disabled={!clientId}
@@ -361,14 +358,13 @@ export function CreateJobDialog({
             </select>
           </div>
 
-          {/* Technician Select */}
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="tech" className="text-right">
+            <Label htmlFor="tech" className="text-right text-foreground/80">
               Tech
             </Label>
             <select
               id="tech"
-              className="col-span-3 flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className="col-span-3 flex h-10 w-full rounded-[0.75rem] border border-input/60 bg-background px-4 py-2.5 text-sm shadow-[0_1px_3px_-1px_rgba(0,0,0,0.06)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/30 focus-visible:ring-offset-[2px] focus-visible:shadow-[0_2px_8px_-2px_rgba(0,0,0,0.08),inset_0_1px_2px_-1px_rgba(0,0,0,0.04)] disabled:cursor-not-allowed disabled:opacity-50"
               value={techId}
               onChange={(e) => setTechId(e.target.value)}
             >
@@ -381,21 +377,20 @@ export function CreateJobDialog({
             </select>
           </div>
 
-          {/* Schedule */}
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="date" className="text-right">
+            <Label htmlFor="date" className="text-right text-foreground/80">
               Schedule
             </Label>
             <div className="col-span-3 flex gap-2">
               <input
                 type="date"
-                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
+                className="flex h-10 w-full rounded-[0.75rem] border border-input/60 bg-background px-4 py-2.5 text-sm shadow-[0_1px_3px_-1px_rgba(0,0,0,0.06)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/30 focus-visible:ring-offset-[2px] focus-visible:shadow-[0_2px_8px_-2px_rgba(0,0,0,0.08),inset_0_1px_2px_-1px_rgba(0,0,0,0.04)]"
                 value={scheduledDate}
                 onChange={(e) => setScheduledDate(e.target.value)}
               />
               <input
                 type="time"
-                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
+                className="flex h-10 w-full rounded-[0.75rem] border border-input/60 bg-background px-4 py-2.5 text-sm shadow-[0_1px_3px_-1px_rgba(0,0,0,0.06)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/30 focus-visible:ring-offset-[2px] focus-visible:shadow-[0_2px_8px_-2px_rgba(0,0,0,0.08),inset_0_1px_2px_-1px_rgba(0,0,0,0.04)]"
                 value={scheduledTime}
                 onChange={(e) => setScheduledTime(e.target.value)}
               />
@@ -403,14 +398,15 @@ export function CreateJobDialog({
           </div>
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+        <DialogFooter className="gap-3 pt-4 border-t border-border/40">
+          <Button variant="outline" onClick={() => onOpenChange(false)} className="h-10 px-5 rounded-xl">
             Cancel
           </Button>
           <Button
             type="submit"
             onClick={handleSubmit}
             disabled={submitting || !clientId}
+            className="h-10 px-5 rounded-xl bg-primary hover:bg-primary/90 shadow-md shadow-primary/20"
           >
             {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Dispatch Job

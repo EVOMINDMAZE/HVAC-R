@@ -27,6 +27,26 @@ const pricingTiers = [
     popular: false,
   },
   {
+    name: "Business in a Box",
+    description: "Complete operations & engineering suite",
+    priceMonthly: "$199",
+    priceAnnually: "$159",
+    features: [
+      "Skool Community Access",
+      "White-labeled Pro App",
+      "Automation Engine (Review Hunter, Invoice Chaser)",
+      "Team collaboration (up to 5 users)",
+      "Client portal for customer access",
+      "Unlimited advanced calculations",
+      "Priority dedicated support",
+    ],
+    cta: "Start Free Trial",
+    ctaLink: "/signup",
+    ctaVariant: "default" as const,
+    icon: Crown,
+    popular: true,
+  },
+  {
     name: "Pro",
     description: "For professional engineers and teams",
     priceMonthly: "$49",
@@ -35,37 +55,14 @@ const pricingTiers = [
       "Advanced cycle analysis",
       "Unlimited calculations",
       "AI‑powered optimization",
-      "Priority support",
+      "Priority email support",
       "Branded PDF reports",
-      "Team collaboration (up to 5 users)",
       "Custom refrigerant libraries",
-      "API access",
     ],
-    cta: "Start Free",
+    cta: "Get Pro",
     ctaLink: "/signup",
-    ctaVariant: "default" as const,
-    icon: Zap,
-    popular: true,
-  },
-  {
-    name: "Enterprise",
-    description: "For organizations with custom needs",
-    priceMonthly: "Custom",
-    priceAnnually: "Custom",
-    features: [
-      "Everything in Pro, plus:",
-      "Unlimited team members",
-      "SLA guarantee (99.9% uptime)",
-      "Dedicated account manager",
-      "On‑premise deployment options",
-      "Custom integrations",
-      "Security audit support",
-      "Training & onboarding",
-    ],
-    cta: "Contact Sales",
-    ctaLink: "/contact",
     ctaVariant: "outline" as const,
-    icon: Crown,
+    icon: Zap,
     popular: false,
   },
 ];
@@ -76,66 +73,66 @@ export function PricingSection() {
   const [isAnnual, setIsAnnual] = useState(true);
 
   return (
-    <section className="py-32 px-4 relative overflow-hidden" ref={ref}>
-      {/* Futuristic Background */}
-      <div className="absolute inset-0 bg-background -z-30" />
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px] -z-20" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-highlight/5 rounded-full blur-[120px] -z-20" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--foreground)/0.02)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground)/0.02)_1px,transparent_1px)] bg-[size:60px_60px] -z-10" />
-      
+    <section className="py-36 px-4 relative overflow-hidden" ref={ref}>
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/50 to-background -z-30" />
+      <div className="absolute top-[20%] left-[5%] w-[500px] h-[500px] bg-primary/[0.03] rounded-full blur-[150px] -z-20" />
+      <div className="absolute bottom-[20%] right-[5%] w-[500px] h-[400px] bg-highlight/[0.03] rounded-full blur-[130px] -z-20" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--foreground)/0.015)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground)/0.015)_1px,transparent_1px)] bg-[size:80px_80px] -z-10" />
+
       <div className="max-w-[1600px] mx-auto relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-          transition={{ duration: 0.8 }}
+          initial={{ opacity: 0, y: 50 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-16 max-w-3xl mx-auto"
         >
           <Badge
             variant="outline"
-            className="mb-4 px-4 py-1.5 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md text-xs"
+            className="mb-6 px-5 py-2 rounded-full border-primary/30 bg-primary/[0.05] text-primary backdrop-blur-md text-xs font-medium tracking-wide"
           >
-            <TrendingUp className="w-3 h-3 mr-2" />
+            <TrendingUp className="w-3.5 h-3.5 mr-2" />
             Transparent Pricing
           </Badge>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 tracking-tight">
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-8 tracking-tight leading-[1.1]">
             Plans that grow with
-            <span className="text-primary"> your needs</span>
+            <span className="text-primary relative">
+              <span className="relative z-10"> your needs</span>
+              <span className="absolute -bottom-2 left-0 right-0 h-2.5 bg-primary/10 blur-xl rounded-full" />
+            </span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-[1.7]">
             Start free, upgrade when you need more power. No hidden fees, no surprises.
           </p>
 
-          {/* Toggle */}
-          <div className="flex items-center justify-center mt-8 gap-4">
-            <span className={`text-sm font-medium ${!isAnnual ? "text-foreground" : "text-muted-foreground"}`}>
+          <div className="flex items-center justify-center mt-10 gap-5">
+            <span className={`text-sm font-medium transition-colors duration-300 ${!isAnnual ? "text-foreground" : "text-muted-foreground"}`}>
               Monthly
             </span>
             <button
               onClick={() => setIsAnnual(!isAnnual)}
-              className="relative w-14 h-7 rounded-full bg-primary/20 cursor-pointer"
+              className="relative w-14 h-7 rounded-full bg-primary/15 cursor-pointer hover:bg-primary/25 transition-colors duration-300"
               aria-label={isAnnual ? "Switch to monthly billing" : "Switch to annual billing"}
               aria-pressed={isAnnual}
             >
               <motion.div
-                className="absolute top-1 left-1 w-5 h-5 rounded-full bg-primary"
+                className="absolute top-1 left-1 w-5 h-5 rounded-full bg-primary shadow-sm"
                 animate={{ x: isAnnual ? 28 : 0 }}
-                transition={{ type: "spring", stiffness: 400 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
               />
             </button>
-            <span className={`text-sm font-medium ${isAnnual ? "text-foreground" : "text-muted-foreground"}`}>
-              Annually <span className="text-xs text-success">(Save 20%)</span> <Badge variant="outline" className="ml-2 text-xs border-success/30 text-success bg-success/10">Introductory</Badge>
+            <span className={`text-sm font-medium transition-colors duration-300 ${isAnnual ? "text-foreground" : "text-muted-foreground"}`}>
+              Annually <span className="text-xs text-success/80">(Save 20%)</span> <Badge variant="outline" className="ml-2.5 text-xs border-success/20 text-success/80 bg-success/[0.04]">Introductory</Badge>
             </span>
           </div>
         </motion.div>
 
-        {/* Pricing Cards */}
         <motion.div
           variants={{
             hidden: { opacity: 0 },
             visible: {
               opacity: 1,
               transition: {
-                staggerChildren: 0.2,
+                staggerChildren: 0.25,
               },
             },
           }}
@@ -146,88 +143,96 @@ export function PricingSection() {
           {pricingTiers.map((tier, index) => {
             const Icon = tier.icon;
             const price = isAnnual ? tier.priceAnnually : tier.priceMonthly;
-            
+
             return (
               <motion.div
                 key={index}
                 variants={{
-                  hidden: { opacity: 0, y: 40 },
+                  hidden: { opacity: 0, y: 50 },
                   visible: {
                     opacity: 1,
                     y: 0,
-                    transition: { duration: 0.6, ease: "easeOut" },
+                    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
                   },
                 }}
-                whileHover={{ y: -10 }}
-                className={`relative rounded-2xl border p-8 bg-card/50 backdrop-blur-sm transition-all duration-300 ${
+                whileHover={{ y: -12 }}
+                className={`relative rounded-3xl p-8 bg-card/70 backdrop-blur-sm transition-all duration-500 ${
                   tier.popular
-                    ? "border-primary/50 shadow-xl glow-primary"
-                    : "border-border/50 hover:border-primary/30"
+                    ? "border-2 border-primary/30 shadow-xl shadow-primary/[0.08]"
+                    : "border border-border/30 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/[0.04]"
                 }`}
               >
                 {tier.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <Badge className="bg-gradient-to-r from-primary to-primary/80 text-white px-4 py-1">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                    <Badge className="bg-gradient-to-r from-primary to-primary/80 text-white px-5 py-1.5 shadow-lg shadow-primary/20">
                       Most Popular
                     </Badge>
                   </div>
                 )}
 
-                {/* Tier Header */}
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-13 h-13 rounded-xl bg-primary/[0.06] flex items-center justify-center">
                     <Icon className="h-6 w-6 text-primary" />
                   </div>
                   <div className="text-left">
-                    <h3 className="text-2xl font-bold text-foreground">{tier.name}</h3>
-                    <p className="text-sm text-muted-foreground">{tier.description}</p>
+                    <h3 className="text-2xl font-bold text-foreground tracking-tight">{tier.name}</h3>
+                    <p className="text-sm text-muted-foreground/70">{tier.description}</p>
                   </div>
                 </div>
 
-                {/* Price */}
-                <div className="mb-6">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-5xl font-bold text-foreground">{price}</span>
+                <div className="mb-8">
+                  <div className="flex items-baseline gap-3">
+                    <span className="text-5xl font-bold text-foreground tracking-tight">{price}</span>
                     {price !== "Custom" && (
-                      <span className="text-muted-foreground">
-                        /month{isAnnual && ", billed annually"}
+                      <span className="text-muted-foreground/60">
+                        /month{isAnnual && <span className="text-xs">, billed annually</span>}
                       </span>
                     )}
                   </div>
                   {price !== "Custom" && isAnnual && price !== "$0" && (
-                    <p className="text-sm text-success mt-2">
+                    <p className="text-sm text-success/80 mt-3">
                       Save 20% compared to monthly billing
                     </p>
                   )}
                 </div>
 
-                {/* Features */}
-                <ul className="space-y-3 mb-8">
-                  {tier.features.map((feature, i) => (
-                    <li key={i} className="flex items-start text-sm">
-                      <Check className="h-4 w-4 text-primary mr-3 mt-0.5 flex-shrink-0" />
-                      <span className="text-muted-foreground">{feature}</span>
-                    </li>
-                  ))}
+                <ul className="space-y-4 mb-10">
+                  {tier.features.map((feature, i) => {
+                    const isHighlighted =
+                      feature.includes("Skool Community Access") ||
+                      feature.includes("White-labeled Pro App") ||
+                      feature.includes("Automation Engine");
+
+                    return (
+                      <li key={i} className="flex items-start text-sm">
+                        {isHighlighted ? (
+                          <Sparkles className="h-4 w-4 text-primary mr-3 mt-0.5 flex-shrink-0" />
+                        ) : (
+                          <Check className="h-4 w-4 text-primary/70 mr-3 mt-0.5 flex-shrink-0" />
+                        )}
+                        <span className={isHighlighted ? "text-foreground font-semibold" : "text-muted-foreground/80"}>
+                          {feature}
+                        </span>
+                      </li>
+                    );
+                  })}
                 </ul>
 
-                {/* CTA */}
                 <Link to={tier.ctaLink}>
                   <Button
                     variant={tier.ctaVariant}
-                    className={`w-full h-12 rounded-lg font-medium text-base ${
+                    className={`w-full h-12 rounded-xl font-medium text-base transition-all duration-300 ${
                       tier.popular
-                        ? "bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
-                        : ""
+                        ? "bg-gradient-to-r from-primary to-primary/85 hover:from-primary/95 hover:to-primary/75 shadow-[0_8px_30px_-8px_rgba(0,0,0,0.2)] hover:shadow-[0_12px_40px_-8px_rgba(0,0,0,0.25)]"
+                        : "hover:bg-secondary/50"
                     }`}
                   >
                     {tier.cta}
                   </Button>
                 </Link>
 
-                {/* Popular tier note */}
                 {tier.popular && (
-                  <p className="text-xs text-muted-foreground text-center mt-4">
+                  <p className="text-xs text-muted-foreground/50 text-center mt-5">
                     14-day free trial included
                   </p>
                 )}
@@ -236,15 +241,14 @@ export function PricingSection() {
           })}
         </motion.div>
 
-        {/* Bottom Note */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ delay: 0.6 }}
-          className="text-center mt-12 max-w-2xl mx-auto"
+          transition={{ delay: 0.7 }}
+          className="text-center mt-16 max-w-2xl mx-auto"
         >
-          <p className="text-sm text-muted-foreground">
-            All plans include a <strong>14‑day free trial</strong> of Pro features. No credit card required. 
+          <p className="text-sm text-muted-foreground/70">
+            All plans include a <strong className="text-foreground/80">14‑day free trial</strong> of Pro features. No credit card required.
             Need a custom plan?{" "}
             <a href="/contact" className="text-primary hover:underline">
               Contact our sales team

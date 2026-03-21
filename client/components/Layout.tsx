@@ -38,8 +38,8 @@ export function Layout({ children }: { children?: React.ReactNode }) {
         {children || <Outlet />}
       </main>
       <QuickSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
-      <ConsentBanner 
-        visible={showConsentBanner} 
+      <ConsentBanner
+        visible={showConsentBanner}
         onDismiss={() => setShowConsentBanner(false)}
         onConsentGranted={() => setShowConsentBanner(false)}
         onConsentDeclined={() => setShowConsentBanner(false)}

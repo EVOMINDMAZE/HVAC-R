@@ -95,7 +95,7 @@ function HeaderMobileBackdrop({ onDismiss }: { onDismiss: () => void }) {
   return (
     <button
       type="button"
-      className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm md:hidden"
+      className="fixed inset-0 z-40 bg-background/70 backdrop-blur-sm md:hidden"
       aria-label="Dismiss menu"
       onClick={onDismiss}
     />
@@ -114,7 +114,7 @@ function HeaderMobilePanel({
       id={id}
       role="dialog"
       aria-modal="true"
-      className="relative z-50 border-t border-border bg-background/95 backdrop-blur-md px-4 py-4 shadow-lg md:hidden"
+      className="relative z-50 border-t border-border/60 bg-background/98 backdrop-blur-xl px-4 py-4 shadow-2xl shadow-black/5 md:hidden"
     >
       {children}
     </div>
@@ -161,6 +161,17 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { landingLinks, groups, mainLinks } = useAppNavigation();
   const mobileMenuId = variant === "dashboard" ? "dashboard-mobile-menu" : "landing-mobile-menu";
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const checkDark = () => {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    };
+    checkDark();
+    const observer = new MutationObserver(checkDark);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -241,8 +252,8 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
     const mobileGroups = groups.filter((group) => group.visible);
 
     return (
-      <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
-        <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+      <header className="sticky top-0 z-50 border-b border-border/50 bg-background/95 backdrop-blur-xl shadow-sm shadow-black/5">
+        <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between gap-3 px-4 py-2.5 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2">
             {showBackButton ? (
               <Button
@@ -257,9 +268,9 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
 
             <Link to="/dashboard" className="flex items-center" aria-label="Go to dashboard home">
               <img
-                src="/logo-landscape.png"
+                src={isDark ? "/logo-landscape-dark.png?v=3" : "/logo-landscape.png?v=3"}
                 alt="ThermoNeural"
-                className="h-9 w-auto object-contain sm:h-10"
+                className="h-9 w-auto object-contain sm:h-10 transition-transform duration-200 hover:scale-[1.02]"
               />
             </Link>
           </div>
@@ -270,21 +281,26 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
           </div>
 
           <div className="hidden md:flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={onOpenSearch}>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={onOpenSearch}
+              className="text-muted-foreground hover:text-foreground transition-all duration-200 hover:shadow-md hover:shadow-black/5"
+            >
               <Search className="h-4 w-4" />
-              Quick Search
-              <span className="ml-1 text-xs text-muted-foreground">Ctrl/Cmd+K</span>
+              <span className="hidden lg:inline">Quick Search</span>
+              <span className="hidden xl:inline ml-1 text-xs text-muted-foreground/70">Ctrl/K</span>
             </Button>
             <ModeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary text-sm font-semibold">
+                <button className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-secondary to-secondary/80 text-sm font-semibold shadow-sm ring-1 ring-border/50 transition-all duration-200 hover:shadow-md hover:shadow-black/5 hover:ring-border/80">
                   {initials}
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end" className="w-48 shadow-xl shadow-black/10 border-border/60 rounded-xl">
                 <DropdownMenuItem asChild>
-                  <Link to="/profile" className="flex items-center gap-2">
+                  <Link to="/profile" className="flex items-center gap-2 transition-colors duration-200">
                     <User className="h-4 w-4" />
                     Profile
                   </Link>
@@ -294,7 +310,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  className="text-destructive"
+                  className="text-destructive transition-colors duration-200"
                   onClick={handleSignOut}
                 >
                   <LogOut className="mr-2 h-4 w-4" />
@@ -313,6 +329,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
               aria-label="Toggle menu"
               aria-expanded={mobileOpen}
               aria-controls={mobileMenuId}
+              className="text-muted-foreground/80 hover:text-foreground transition-all duration-200"
             >
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
@@ -369,8 +386,13 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
-      <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+    <header className={cn(
+      "sticky top-0 z-50 border-b transition-all duration-300",
+      variant === "landing" 
+          ? "border-border/30 bg-background backdrop-blur-2xl" 
+          : "border-border/50 bg-background dark:bg-background backdrop-blur-xl shadow-sm shadow-black/5"
+    )}>
+      <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between gap-3 px-4 py-2.5 sm:px-6 lg:px-8">
         <div className="flex items-center gap-2">
           {showBackButton ? (
             <Button
@@ -384,22 +406,23 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
           ) : null}
           <Link to="/" className="flex items-center" aria-label="Go to home">
             <img
-              src="/logo-landscape.png"
+              src={isDark ? "/logo-landscape-dark.png?v=3" : "/logo-landscape.png?v=3"}
               alt="ThermoNeural"
-              className="h-9 w-auto object-contain sm:h-10"
+              className="h-9 w-auto object-contain sm:h-10 transition-transform duration-200 hover:scale-[1.02]"
             />
           </Link>
         </div>
 
-        <nav className="hidden items-center gap-2 md:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
           {landingLinks.map((item) => (
             <Link
               key={`${item.to}${item.hash ?? ""}`}
               to={getLandingLinkTarget(item)}
               onClick={(event) => handleLandingLinkClick(item, event)}
               className={cn(
-                `${navLinkBaseClasses} text-muted-foreground hover:text-foreground`,
-                isLandingLinkActive(item) && "text-primary",
+                navLinkBaseClasses,
+                "text-muted-foreground/80 hover:text-foreground transition-all duration-200 rounded-lg hover:bg-muted/50",
+                isLandingLinkActive(item) && "text-foreground bg-muted/30",
               )}
               aria-current={isLandingLinkActive(item) ? "page" : undefined}
             >
@@ -411,10 +434,18 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
         <div className="hidden items-center gap-2 md:flex">
           <ModeToggle />
           <Link to="/signin">
-            <Button variant="ghost">Sign In</Button>
+            <Button variant="ghost" className="transition-all duration-200">Sign In</Button>
           </Link>
           <Link to="/signup">
-            <Button disabled={isRefreshing}>{isAuthenticated && companies.length ? "Go to Dashboard" : "Start Free"}</Button>
+            <Button 
+              disabled={isRefreshing}
+              className={cn(
+                "transition-all duration-200 shadow-lg shadow-primary/15",
+                variant === "landing" && !isAuthenticated && "bg-primary hover:bg-primary/90 text-primary-foreground border-none"
+              )}
+            >
+              {isAuthenticated && companies.length ? "Go to Dashboard" : "Start Free"}
+            </Button>
           </Link>
         </div>
 
@@ -427,6 +458,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
             aria-label="Toggle menu"
             aria-expanded={mobileOpen}
             aria-controls={mobileMenuId}
+            className="text-muted-foreground/80 hover:text-foreground transition-all duration-200"
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>

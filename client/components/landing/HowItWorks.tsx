@@ -36,17 +36,17 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.3,
+      staggerChildren: 0.35,
     },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 40 },
+  hidden: { opacity: 0, y: 50 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" as const },
+    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
   },
 };
 
@@ -55,32 +55,34 @@ export function HowItWorks() {
   const isInView = useInView(ref, { once: true, margin: "-50%" });
 
   return (
-    <section className="py-32 px-4 relative overflow-hidden" ref={ref}>
-      {/* Futuristic Background */}
-      <div className="absolute inset-0 bg-background -z-30" />
-      <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px] -z-20" />
-      <div className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-highlight/5 rounded-full blur-[120px] -z-20" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--foreground)/0.02)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground)/0.02)_1px,transparent_1px)] bg-[size:60px_60px] -z-10" />
-      
+    <section className="py-36 px-4 relative overflow-hidden" ref={ref}>
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/50 to-background -z-30" />
+      <div className="absolute top-[30%] left-[5%] w-[500px] h-[500px] bg-primary/[0.03] rounded-full blur-[150px] -z-20" />
+      <div className="absolute bottom-[30%] right-[5%] w-[500px] h-[400px] bg-highlight/[0.03] rounded-full blur-[130px] -z-20" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--foreground)/0.015)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground)/0.015)_1px,transparent_1px)] bg-[size:80px_80px] -z-10" />
+
       <div className="max-w-[1600px] mx-auto relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20 max-w-3xl mx-auto"
+          initial={{ opacity: 0, y: 50 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center mb-24 max-w-3xl mx-auto"
         >
           <Badge
             variant="outline"
-            className="mb-4 px-4 py-1.5 rounded-full border-primary/50 bg-primary/10 text-primary backdrop-blur-md text-xs"
+            className="mb-6 px-5 py-2 rounded-full border-primary/30 bg-primary/[0.05] text-primary backdrop-blur-md text-xs font-medium tracking-wide"
           >
-            <Sparkles className="w-3 h-3 mr-2" />
+            <Sparkles className="w-3.5 h-3.5 mr-2" />
             How It Works
           </Badge>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 tracking-tight">
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-8 tracking-tight leading-[1.1]">
             From input to insight in
-            <span className="text-primary"> three simple steps</span>
+            <span className="text-primary relative">
+              <span className="relative z-10"> three simple steps</span>
+              <span className="absolute -bottom-2 left-0 right-0 h-2.5 bg-primary/10 blur-xl rounded-full" />
+            </span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-[1.7]">
             ThermoNeural transforms complex thermodynamic calculations into a streamlined, professional workflow.
           </p>
         </motion.div>
@@ -91,70 +93,61 @@ export function HowItWorks() {
           animate={isInView ? "visible" : "hidden"}
           className="relative"
         >
-          {/* Connecting Line */}
-          <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-border/30 hidden md:block">
+          <div className="absolute top-[4.5rem] left-0 right-0 h-[2px] bg-border/20 hidden md:block">
             <motion.div
               initial={{ width: 0 }}
               animate={isInView ? { width: "100%" } : { width: 0 }}
-              transition={{ duration: 1.5, delay: 0.2 }}
-              className="h-full bg-gradient-to-r from-primary via-highlight to-success"
+              transition={{ duration: 1.8, delay: 0.3 }}
+              className="h-full bg-gradient-to-r from-primary/40 via-highlight/40 to-success/40"
             />
           </div>
 
-          {/* Steps */}
-          <div className="grid md:grid-cols-3 gap-12 md:gap-8 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-10 md:gap-12 max-w-6xl mx-auto">
             {steps.map((step, index) => {
               const Icon = step.icon;
               const colorClass = step.color === "highlight" ? "text-highlight" : step.color === "success" ? "text-success" : "text-primary";
-              const bgClass = step.color === "highlight" ? "bg-highlight/10" : step.color === "success" ? "bg-success/10" : "bg-primary/10";
-              const borderClass = step.color === "highlight" ? "border-highlight/20" : step.color === "success" ? "border-success/20" : "border-primary/20";
-              
+              const bgClass = step.color === "highlight" ? "bg-highlight/[0.06]" : step.color === "success" ? "bg-success/[0.06]" : "bg-primary/[0.06]";
+              const borderClass = step.color === "highlight" ? "border-highlight/15" : step.color === "success" ? "border-success/15" : "border-primary/15";
+
               return (
                 <motion.div
                   key={index}
                   variants={itemVariants}
-                  whileHover={{ y: -10 }}
+                  whileHover={{ y: -12 }}
                   className="relative"
                 >
-                  {/* Step Number */}
-                  <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-background border-4 border-background flex items-center justify-center z-10">
-                    <div className={`w-10 h-10 rounded-full ${bgClass} flex items-center justify-center`}>
-                      <span className="text-lg font-bold text-foreground">{index + 1}</span>
+                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-background border-4 border-background z-10">
+                    <div className={`w-12 h-12 rounded-full ${bgClass} flex items-center justify-center shadow-sm`}>
+                      <span className="text-lg font-bold text-foreground/80">{index + 1}</span>
                     </div>
                   </div>
 
-                  {/* Step Card */}
-                  <div className={`pt-12 pb-8 px-8 rounded-2xl border ${borderClass} bg-card/50 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:glow-primary`}>
-                    {/* Icon */}
-                    <div className={`w-16 h-16 rounded-2xl ${bgClass} flex items-center justify-center mb-6 mx-auto`}>
+                  <div className={`pt-14 pb-10 px-8 rounded-3xl border ${borderClass} bg-card/60 backdrop-blur-sm transition-all duration-500 hover:bg-card/80 hover:shadow-xl hover:shadow-primary/[0.05]`}>
+                    <div className={`w-18 h-18 rounded-2xl ${bgClass} flex items-center justify-center mb-6 mx-auto`}>
                       <Icon className={`h-8 w-8 ${colorClass}`} />
                     </div>
 
-                    {/* Title */}
-                    <h3 className="text-2xl font-bold text-foreground mb-4 text-center">
+                    <h3 className="text-2xl font-bold text-foreground mb-4 text-center tracking-tight">
                       {step.title}
                     </h3>
 
-                    {/* Description */}
-                    <p className="text-muted-foreground mb-6 leading-relaxed text-center">
+                    <p className="text-muted-foreground mb-8 leading-[1.7] text-center">
                       {step.description}
                     </p>
 
-                    {/* Details List */}
-                    <ul className="space-y-2">
+                    <ul className="space-y-3">
                       {step.details.map((detail, i) => (
-                        <li key={i} className="flex items-center text-sm text-muted-foreground">
-                          <div className={`w-1.5 h-1.5 rounded-full ${colorClass} mr-3`} />
+                        <li key={i} className="flex items-center text-sm text-muted-foreground/80">
+                          <div className={`w-2 h-2 rounded-full ${colorClass} mr-4 opacity-60`} />
                           {detail}
                         </li>
                       ))}
                     </ul>
                   </div>
 
-                  {/* Arrow Connector (Mobile) */}
                   {index < steps.length - 1 && (
-                    <div className="md:hidden flex justify-center mt-8 mb-4">
-                      <ArrowRight className="h-6 w-6 text-border" />
+                    <div className="md:hidden flex justify-center mt-10 mb-6">
+                      <ArrowRight className="h-6 w-6 text-border/50" />
                     </div>
                   )}
                 </motion.div>
@@ -163,26 +156,25 @@ export function HowItWorks() {
           </div>
         </motion.div>
 
-        {/* Bottom CTA */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ delay: 0.8 }}
-          className="text-center mt-16"
+          transition={{ delay: 1 }}
+          className="text-center mt-20"
         >
-          <p className="text-muted-foreground text-lg mb-6">
+          <p className="text-muted-foreground text-lg mb-8">
             Ready to experience the future of HVAC calculations?
           </p>
           <Link to="/signup">
             <Button
               size="lg"
-              className="px-8 py-3 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white font-medium rounded-lg shadow-lg"
+              className="px-10 py-3.5 bg-gradient-to-r from-primary to-primary/85 hover:from-primary/95 hover:to-primary/75 text-white font-medium rounded-xl shadow-[0_8px_30px_-8px_rgba(0,0,0,0.2)] hover:shadow-[0_12px_40px_-8px_rgba(0,0,0,0.25)] transition-all duration-300"
             >
               Start Your Free Trial
-              <ArrowRight className="ml-2 h-4 w-4" />
+              <ArrowRight className="ml-2.5 h-4.5 w-4.5" />
             </Button>
           </Link>
-          <p className="text-sm text-muted-foreground mt-4">
+          <p className="text-sm text-muted-foreground/60 mt-6">
             No credit card required • Get started in 2 minutes • Introductory offer available
           </p>
         </motion.div>

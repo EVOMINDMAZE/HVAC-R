@@ -12,192 +12,72 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-background border-t border-border py-16 px-4 relative overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--foreground)/0.02)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground)/0.02)_1px,transparent_1px)] bg-[size:40px_40px] -z-10" />
-
-      {!isAuthenticated && !isLandingPage && (
-        <div className="bg-gradient-to-r from-primary/10 via-background to-primary/10 py-12 border-b border-border">
-          <div className="max-w-[1600px] mx-auto px-4 text-center">
-            <h2 className="text-3xl font-semibold mb-4 text-foreground">
-              Ready to streamline HVAC operations?
-            </h2>
-            <p className="text-lg text-muted-foreground mb-6">
-              Unify dispatch, compliance, and engineering tools in one Business in a Box platform built for contractors.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/signup">
-                <Button size="lg">Start Free</Button>
-              </Link>
-              <Link to="/contact">
-                <Button variant="outline" size="lg">
-                  Book Ops Demo
-                </Button>
-              </Link>
-            </div>
-            <p className="text-muted-foreground text-sm mt-4">
-              Fast setup • Field-ready workflows • Cancel anytime
-            </p>
-          </div>
-        </div>
-      )}
-
-      <div className="max-w-[1600px] mx-auto px-4 pt-12 pb-0">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Calculator className="h-8 w-8 text-primary" />
-              <h3 className="text-2xl font-bold text-primary">ThermoNeural</h3>
-            </div>
-            <p className="text-muted-foreground">
-              Business-in-a-Box operations and engineering platform for HVAC contractors, refrigeration teams, and cryogenic facilities.
-            </p>
-            {!isAuthenticated && (
-              <div className="bg-primary/5 p-4 rounded-lg border border-primary/20">
-                <p className="text-primary/80 text-sm font-semibold mb-2">
-                  Why choose ThermoNeural?
-                </p>
-                <ul className="text-muted-foreground text-sm space-y-1">
-                  <li>✓ Dispatch + triage workflows</li>
-                  <li>✓ Compliance-ready logs</li>
-                  <li>✓ Report-ready exports</li>
-                  <li>✓ Automation workflows</li>
-                </ul>
+    <footer className="bg-background border-t border-border pt-24 pb-12 px-4 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-20">
+          <div className="col-span-2 lg:col-span-2 space-y-8">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground font-bold text-xl">
+                T
               </div>
-            )}
-
-            <div className="bg-background/70 p-4 rounded-lg border border-border/70">
-              <p className="text-foreground text-sm font-semibold mb-2">
-                Trust Anchors
-              </p>
-              <ul className="text-muted-foreground text-sm space-y-1">
-                <li>EPA-aligned workflow design</li>
-                <li>Secure cloud records + role-based access</li>
-                <li>Built for regulated HVAC&R environments</li>
-              </ul>
+              <span className="text-2xl font-bold text-foreground tracking-tight font-display">ThermoNeural</span>
+            </div>
+            <p className="text-muted-foreground max-w-sm leading-relaxed">
+              Engineering the future of HVAC&R operations. Our platform equips field technicians with AI-driven intelligence and automated compliance workflows.
+            </p>
+            <div className="flex items-center gap-4">
+              <a href="#" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+              </a>
+              <a href="#" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              </a>
             </div>
           </div>
 
           <div>
-            <h4 className="text-lg font-semibold mb-4 text-foreground">Tools & Workflows</h4>
-            <ul className="space-y-2 text-muted-foreground">
-              <li>
-                <Link
-                  to={isAuthenticated ? "/dashboard" : "/features"}
-                  className="hover:text-primary transition-colors"
-                >
-                  Dispatch & Jobs
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={
-                    isAuthenticated
-                      ? "/tools/refrigerant-inventory"
-                      : "/features"
-                  }
-                  className="hover:text-primary transition-colors"
-                >
-                  Refrigerant Compliance
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={isAuthenticated ? "/diy-calculators" : "/features"}
-                  className="hover:text-primary transition-colors"
-                >
-                  Engineering Tools
-                </Link>
-              </li>
+            <h4 className="font-bold text-foreground mb-6 font-display">Tools & Workflows</h4>
+            <ul className="space-y-4">
+              <li><Link to="/features" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">AI Supervisor</Link></li>
+              <li><Link to="/features" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">Profit Guard</Link></li>
+              <li><Link to="/features" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">Compliance Ledger</Link></li>
+              <li><Link to="/features" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">Intel Dispatch</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-lg font-semibold mb-4 text-foreground">Company</h4>
-            <ul className="space-y-2 text-muted-foreground">
-              <li>
-                <Link to="/about" className="hover:text-primary transition-colors">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link to="/pricing" className="hover:text-primary transition-colors">
-                  Pricing
-                </Link>
-              </li>
-              <li>
-                <Link to="/blog" className="hover:text-primary transition-colors">
-                  Industry Blog
-                </Link>
-              </li>
-              <li>
-                <Link to="/help" className="hover:text-primary transition-colors">
-                  Help Center
-                </Link>
-              </li>
+            <h4 className="font-bold text-foreground mb-6 font-display">Company</h4>
+            <ul className="space-y-4">
+              <li><Link to="/about" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">About</Link></li>
+              <li><Link to="/careers" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">Careers</Link></li>
+              <li><Link to="/pricing" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">Pricing</Link></li>
+              <li><Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">Contact</Link></li>
             </ul>
           </div>
 
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-foreground">Get in touch</h4>
-            <ul className="space-y-4 text-muted-foreground">
-              <li className="flex items-start space-x-3">
-                <Mail className="h-5 w-5 text-primary mt-0.5 shrink-0" />
-                <div>
-                  <span className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
-                    Support
-                  </span>
-                  <a
-                    href="mailto:support@thermoneural.com"
-                    className="hover:text-primary transition-colors text-sm block"
-                  >
-                    support@thermoneural.com
-                  </a>
-                </div>
+          <div>
+            <h4 className="font-bold text-foreground mb-6 font-display">Get in touch</h4>
+            <ul className="space-y-4">
+              <li>
+                <span className="block text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Support</span>
+                <a href="mailto:support@thermoneural.com" className="text-foreground hover:text-primary transition-colors text-sm font-bold">support@thermoneural.com</a>
               </li>
-              <li className="flex items-start space-x-3">
-                <Mail className="h-5 w-5 text-primary mt-0.5 shrink-0" />
-                <div>
-                  <span className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
-                    Partnerships
-                  </span>
-                  <a
-                    href="mailto:hello@thermoneural.com"
-                    className="hover:text-primary transition-colors text-sm block"
-                  >
-                    hello@thermoneural.com
-                  </a>
-                </div>
+              <li>
+                <span className="block text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Sales</span>
+                <a href="mailto:hello@thermoneural.com" className="text-foreground hover:text-primary transition-colors text-sm font-bold">hello@thermoneural.com</a>
               </li>
             </ul>
-
-            {!isAuthenticated && (
-              <div className="pt-4">
-                <p className="text-sm text-muted-foreground mb-3">
-                  Start with the Engineering Suite
-                </p>
-                <Link to="/signup">
-                  <Button size="lg" className="w-full">
-                    Start Free
-                  </Button>
-                </Link>
-              </div>
-            )}
           </div>
         </div>
 
-        <div className="border-t border-border mt-12 pt-8 pb-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-muted-foreground text-sm">© {year} ThermoNeural. All rights reserved.</p>
-          <div className="flex space-x-8 mt-4 md:mt-0">
-            <Link to="/privacy" className="text-muted-foreground hover:text-primary text-sm transition-colors">
-              Privacy Policy
-            </Link>
-            <Link to="/terms" className="text-muted-foreground hover:text-primary text-sm transition-colors">
-              Terms of Service
-            </Link>
-            <Link to="/contact" className="text-muted-foreground hover:text-primary text-sm transition-colors">
-              Contact
-            </Link>
+        <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-muted-foreground text-xs font-medium">
+            Copyright © {year} ThermoNeural. Engineering Operations at Scale.
+          </p>
+          <div className="flex gap-8">
+            <Link to="/privacy" className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors">Privacy</Link>
+            <Link to="/terms" className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors">Terms</Link>
+            <Link to="/cookies" className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors">Cookies</Link>
           </div>
         </div>
       </div>

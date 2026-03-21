@@ -40,7 +40,7 @@ export function MiniChart({
               height={barHeight}
               fill={color}
               rx={2}
-              opacity={0.7 + (v / max) * 0.3}
+              opacity={0.5 + (v / max) * 0.4}
             />
           );
         })}
@@ -60,19 +60,20 @@ export function MiniChart({
     return (
       <svg width={width} height={height} className={cn("mini-chart", className)}>
         <defs>
-          <linearGradient id={`gradient-${color}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={color} stopOpacity="0.3" />
-            <stop offset="100%" stopColor={color} stopOpacity="0.05" />
+          <linearGradient id={`gradient-${color.replace(/[^a-z0-9]/gi, '')}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color} stopOpacity="0.2" />
+            <stop offset="100%" stopColor={color} stopOpacity="0.04" />
           </linearGradient>
         </defs>
-        <polygon fill={`url(#gradient-${color})`} points={areaPoints} />
+        <polygon fill={`url(#gradient-${color.replace(/[^a-z0-9]/gi, '')})`} points={areaPoints} />
         <polyline
           fill="none"
           stroke={color}
-          strokeWidth="2"
+          strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           points={points}
+          opacity="0.8"
         />
       </svg>
     );
@@ -89,10 +90,11 @@ export function MiniChart({
       <polyline
         fill="none"
         stroke={color}
-        strokeWidth="2"
+        strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
         points={points}
+        opacity="0.75"
       />
     </svg>
   );
@@ -133,7 +135,7 @@ export function ProgressRing({
           fill="none"
           stroke="hsl(var(--muted))"
           strokeWidth={strokeWidth}
-          className="opacity-20"
+          className="opacity-15"
         />
         <circle
           cx={size / 2}
@@ -146,11 +148,12 @@ export function ProgressRing({
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           className="transition-all duration-700 ease-out"
+          opacity="0.85"
         />
       </svg>
       {showValue && (
         <div className="progress-ring__value">
-          <span className="text-sm font-bold" style={{ color }}>
+          <span className="text-sm font-semibold" style={{ color }}>
             {Math.round(percentage)}%
           </span>
         </div>

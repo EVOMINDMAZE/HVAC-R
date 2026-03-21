@@ -15,14 +15,22 @@ test('Landing page loads without errors', async ({ page }) => {
     pageErrors.push(error.message);
   });
 
-  await page.goto('http://localhost:8081');
+  await page.goto('http://localhost:3001');
   
   // Wait for page to settle
   await page.waitForLoadState('networkidle');
   
   // Check for hero text
-  await expect(page.locator('h1')).toContainText('Transform Your HVAC');
+  await expect(page.locator('h1')).toContainText('Engineering Operations');
   
+  // Take light mode screenshot
+  await page.emulateMedia({ colorScheme: 'light' });
+  await page.screenshot({ path: 'test-results/landing-light.png', fullPage: true });
+  
+  // Take dark mode screenshot
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.screenshot({ path: 'test-results/landing-dark.png', fullPage: true });
+
   // Log any errors
   if (consoleErrors.length > 0) {
     console.error('Console errors:', consoleErrors);

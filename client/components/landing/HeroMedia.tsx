@@ -70,15 +70,15 @@ export function HeroMedia({
   };
 
   return (
-    <aside className="landing-surface landing-pillars-card rounded-3xl p-4 md:p-5">
-      <div className="flex flex-wrap items-center justify-between gap-2">
+    <aside className="landing-surface landing-pillars-card rounded-3xl p-5 md:p-6 transition-all duration-400 hover:shadow-lg">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
           {totalTools} live tools
         </p>
         <span className="landing-capability-priority">Owner view</span>
       </div>
 
-      <div className="landing-snapshot-tabs mt-3">
+      <div className="landing-snapshot-tabs mt-4">
         {categories.map((category) => (
           <button
             key={category.id}
@@ -94,9 +94,9 @@ export function HeroMedia({
       </div>
 
       {activeCategory ? (
-        <div className="landing-pillar-row landing-snapshot-detail mt-3 rounded-2xl p-4">
+        <div className="landing-pillar-row landing-snapshot-detail mt-4 rounded-2xl p-4">
           <p className="landing-pillar-proofline">{snapshotOutcomes[activeCategory.id] ?? activeCategory.outcomeLine}</p>
-          <p className="landing-snapshot-tools mt-2.5">
+          <p className="landing-snapshot-tools mt-3">
             {activeHeroTools.map((tool) => tool.shortName).join(" • ")}
             {hiddenToolCount > 0 ? ` • +${hiddenToolCount} more` : ""}
           </p>
@@ -105,7 +105,7 @@ export function HeroMedia({
 
       <a
         href="#tool-inventory"
-        className="landing-tool-jump mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+        className="landing-tool-jump mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
         onClick={onViewAllTools}
       >
         View all tools

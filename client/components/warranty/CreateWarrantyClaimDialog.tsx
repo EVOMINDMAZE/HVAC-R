@@ -107,12 +107,12 @@ export function CreateWarrantyClaimDialog({ jobId, userId, initialData, onClaimC
             </DialogTrigger>
             <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
-                    <DialogTitle>New Warranty Claim</DialogTitle>
+                    <DialogTitle className="text-xl font-semibold">New Warranty Claim</DialogTitle>
                     <DialogDescription>
                         Create a new warranty claim draft for this job.
                         {initialData && (
-                            <div className="mt-2 flex items-center text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20 p-2 rounded-md text-xs">
-                                <Sparkles className="w-3 h-3 mr-1" />
+                            <div className="mt-3 flex items-center text-purple-600 dark:text-purple-400 bg-purple-50/80 dark:bg-purple-900/20 p-2.5 rounded-[0.75rem] text-xs border border-purple-100 dark:border-purple-800/30">
+                                <Sparkles className="w-3 h-3 mr-1.5 flex-shrink-0" />
                                 AI Auto-filled from job notes
                             </div>
                         )}
@@ -121,34 +121,32 @@ export function CreateWarrantyClaimDialog({ jobId, userId, initialData, onClaimC
 
                 <form onSubmit={handleSubmit} className="space-y-6">
 
-                    {/* Equipment Section */}
                     <div className="space-y-4">
-                        <h4 className="text-sm font-medium leading-none text-muted-foreground border-b pb-2">Equipment Information</h4>
+                        <h4 className="text-sm font-medium text-muted-foreground border-b border-border/40 pb-2">Equipment Information</h4>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label htmlFor="brand">Brand</Label>
+                                <Label htmlFor="brand" className="text-foreground/80">Brand</Label>
                                 <Input id="brand" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="e.g. Carrier" required />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="model">Model Number</Label>
+                                <Label htmlFor="model" className="text-foreground/80">Model Number</Label>
                                 <Input id="model" value={model} onChange={(e) => setModel(e.target.value)} placeholder="Model #" />
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="serial">Serial Number</Label>
+                            <Label htmlFor="serial" className="text-foreground/80">Serial Number</Label>
                             <Input id="serial" value={serial} onChange={(e) => setSerial(e.target.value)} placeholder="Serial #" required />
                         </div>
                     </div>
 
-                    {/* Fault Section */}
                     <div className="space-y-4">
-                        <h4 className="text-sm font-medium leading-none text-muted-foreground border-b pb-2">Fault Details</h4>
+                        <h4 className="text-sm font-medium text-muted-foreground border-b border-border/40 pb-2">Fault Details</h4>
                         <div className="space-y-2">
-                            <Label htmlFor="symptom">Symptom / Customer Complaint</Label>
+                            <Label htmlFor="symptom" className="text-foreground/80">Symptom / Customer Complaint</Label>
                             <Input id="symptom" value={symptom} onChange={(e) => setSymptom(e.target.value)} placeholder="e.g. Unit not cooling" required />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="diagnosis">Technician Diagnosis</Label>
+                            <Label htmlFor="diagnosis" className="text-foreground/80">Technician Diagnosis</Label>
                             <Textarea
                                 id="diagnosis"
                                 value={diagnosis}

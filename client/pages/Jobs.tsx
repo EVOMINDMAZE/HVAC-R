@@ -600,41 +600,42 @@ export default function Jobs() {
                     transition={{ duration: prefersReducedMotion ? 0 : 0.16 }}
                   >
                     <Card
-                      className="h-full bg-card/60 backdrop-blur-sm border-border hover:shadow-xl hover:bg-card/80 motion-interactive motion-card-feedback group cursor-pointer"
+                      className="h-full bg-gradient-to-br from-card to-card/80 backdrop-blur-sm border-border/60 hover:shadow-2xl hover:shadow-primary/5 hover:border-primary/20 hover:-translate-y-0.5 motion-interactive motion-card-feedback group cursor-pointer transition-all duration-300"
                       onClick={() => navigate(`/dashboard/jobs/${job.id}`)}
                     >
                       <CardHeader className="pb-3">
-                        <div className="flex justify-between items-start mb-2">
+                        <div className="flex justify-between items-start mb-3">
                           <Badge
                             variant="outline"
-                            className={`${getStatusColor(job.status)} border px-2.5 py-0.5 capitalize shadow-sm font-medium`}
+                            className={`${getStatusColor(job.status)} border px-2.5 py-0.5 capitalize shadow-sm font-medium text-[11px]`}
                           >
                             {job.status}
                           </Badge>
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 opacity-100 hover:bg-muted motion-interactive-micro"
-                            onClick={() =>
+                            className="h-8 w-8 opacity-100 hover:bg-muted/80 hover:scale-110 motion-interactive-micro transition-all"
+                            onClick={(e) => {
+                              e.stopPropagation();
                               navigate(`/dashboard/jobs/${job.id}`)
-                            }
+                            }}
                           >
                             <FileText className="w-4 h-4 text-muted-foreground" />
                           </Button>
                         </div>
-                        <CardTitle className="text-xl font-bold text-foreground line-clamp-1 group-hover:text-primary motion-interactive-micro">
+                        <CardTitle className="text-lg font-semibold text-foreground line-clamp-1 group-hover:text-primary motion-interactive-micro transition-colors">
                           {job.job_name}
                         </CardTitle>
-                        <div className="flex items-center mt-1 text-sm text-muted-foreground">
-                          <User className="w-3.5 h-3.5 mr-1.5" />
+                        <div className="flex items-center mt-1.5 text-sm text-muted-foreground/80">
+                          <User className="w-3.5 h-3.5 mr-1.5 text-primary/60" />
                           <span className="font-medium">{job.client_name}</span>
                         </div>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-4">
                           {job.address ? (
-                            <div className="flex items-start text-sm text-muted-foreground bg-muted/30 p-2.5 rounded-lg">
-                              <MapPin className="w-3.5 h-3.5 mr-2 mt-0.5 shrink-0 text-primary" />
+                            <div className="flex items-start text-sm text-muted-foreground/80 bg-muted/30 p-2.5 rounded-xl border border-transparent hover:border-muted/50 transition-colors">
+                              <MapPin className="w-3.5 h-3.5 mr-2 mt-0.5 shrink-0 text-primary/60" />
                               <span className="line-clamp-2">
                                 {job.address}
                               </span>
@@ -645,9 +646,9 @@ export default function Jobs() {
                             </div>
                           )}
 
-                          <div className="pt-4 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
+                          <div className="pt-4 border-t border-border/60 flex items-center justify-between text-xs text-muted-foreground/70">
                             <div className="flex items-center">
-                              <Calendar className="w-3.5 h-3.5 mr-1.5" />
+                              <Calendar className="w-3.5 h-3.5 mr-1.5 text-primary/50" />
                               {new Date(job.created_at).toLocaleDateString(
                                 undefined,
                                 {
@@ -658,7 +659,7 @@ export default function Jobs() {
                               )}
                             </div>
                             {job.photos && job.photos.length > 0 && (
-                              <Badge variant="secondary" className="text-xs">
+                              <Badge variant="secondary" className="text-[10px] px-2 py-0.5 bg-primary/10 text-primary/80 hover:bg-primary/15">
                                 {job.photos.length} photos
                               </Badge>
                             )}
@@ -680,45 +681,45 @@ export default function Jobs() {
                     exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -12 }}
                     transition={{ duration: prefersReducedMotion ? 0 : 0.16 }}
                   >
-                    <Card className="border-border bg-card/60">
+                    <Card className="border-border/60 bg-gradient-to-br from-card/90 to-card/70 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20 transition-all duration-300">
                       <CardContent className="p-4">
                         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                           <div className="min-w-0">
                             <div className="flex items-center gap-2">
-                              <Badge variant="outline" className={`${getStatusColor(job.status)} border px-2.5 py-0.5 capitalize font-medium`}>
+                              <Badge variant="outline" className={`${getStatusColor(job.status)} border px-2.5 py-0.5 capitalize font-medium text-[11px] shadow-sm`}>
                                 {job.status}
                               </Badge>
-                              <h3 className="truncate font-semibold text-foreground">{job.job_name}</h3>
+                              <h3 className="truncate font-semibold text-foreground text-sm">{job.job_name}</h3>
                             </div>
-                            <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                              <span className="inline-flex items-center"><User className="mr-1 h-3.5 w-3.5" />{job.client_name}</span>
-                              <span className="inline-flex items-center"><Calendar className="mr-1 h-3.5 w-3.5" />{new Date(job.created_at).toLocaleDateString()}</span>
-                              {job.photos && job.photos.length > 0 ? <span>{job.photos.length} photos</span> : null}
+                            <div className="mt-1.5 flex flex-wrap items-center gap-3 text-xs text-muted-foreground/70">
+                              <span className="inline-flex items-center"><User className="mr-1 h-3.5 w-3.5 text-primary/60" />{job.client_name}</span>
+                              <span className="inline-flex items-center"><Calendar className="mr-1 h-3.5 w-3.5 text-primary/50" />{new Date(job.created_at).toLocaleDateString()}</span>
+                              {job.photos && job.photos.length > 0 ? <span className="text-muted-foreground/50">{job.photos.length} photos</span> : null}
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
                             <Button
                               variant="outline"
                               size="sm"
-                              className="gap-2"
+                              className="gap-2 h-8 text-xs hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all"
                               onClick={() => navigate(`/dashboard/jobs/${job.id}`)}
                             >
-                              <Eye className="h-4 w-4" />
+                              <Eye className="h-3.5 w-3.5" />
                               Open
                             </Button>
                           </div>
                         </div>
-                        <Collapsible className="mt-3 border-t border-border pt-3">
+                        <Collapsible className="mt-3 border-t border-border/40 pt-3">
                           <CollapsibleTrigger asChild>
-                            <Button variant="ghost" size="sm" className="gap-2 px-0 text-muted-foreground">
+                            <Button variant="ghost" size="sm" className="gap-2 px-0 text-xs text-muted-foreground/70 hover:text-foreground transition-colors">
                               More details
-                              <ChevronDown className="h-4 w-4" />
+                              <ChevronDown className="h-3.5 w-3.5 transition-transform" />
                             </Button>
                           </CollapsibleTrigger>
                           <CollapsibleContent className="pt-2">
-                            <div className="space-y-2 text-sm text-muted-foreground">
+                            <div className="space-y-2 text-sm text-muted-foreground/70">
                               <div className="inline-flex items-start">
-                                <MapPin className="mr-2 mt-0.5 h-3.5 w-3.5 text-primary" />
+                                <MapPin className="mr-2 mt-0.5 h-3.5 w-3.5 text-primary/50" />
                                 {job.address || "No address provided"}
                               </div>
                               {job.notes ? (

@@ -18,7 +18,7 @@ export function AppPageHeader({
   return (
     <header
       className={cn(
-        "app-surface app-elev-1 flex flex-col gap-5 p-6 sm:p-7 lg:flex-row lg:items-end lg:justify-between lg:p-8",
+        "app-surface app-elev-1 flex flex-col gap-5 p-6 sm:p-7 lg:flex-row lg:items-end lg:justify-between lg:p-8 rounded-xl border border-border/40",
         className,
       )}
     >
@@ -28,7 +28,7 @@ export function AppPageHeader({
             {kicker}
           </p>
         ) : null}
-        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl lg:text-[2.15rem]">{title}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl lg:text-[2.15rem]">{title}</h1>
         {subtitle ? (
           <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-base">
             {subtitle}

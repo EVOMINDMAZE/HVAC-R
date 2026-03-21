@@ -53,7 +53,6 @@ const FALLBACK_PLANS = [
       "All analysis tools (cascade, advanced cycles)",
       "Advanced refrigerant comparison (unlimited)",
       "PDF export & advanced reporting",
-      "API access for integrations",
       "Priority email support",
       "10 saved projects",
       "Basic white-label (personal logo on reports)",

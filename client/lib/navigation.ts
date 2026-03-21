@@ -1,12 +1,12 @@
 /**
  * Shared navigation style constants for consistent navigation design.
- * Implements the "Borderless Color Shift" design pattern.
+ * Implements refined "Soft Elevation" design pattern.
  */
 
 export const navFocusRingClasses =
   "focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
-export const navTransitionClasses = "transition-colors";
+export const navTransitionClasses = "transition-all duration-200";
 
 export const navTypographyClasses = "text-sm font-medium";
 

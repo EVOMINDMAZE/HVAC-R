@@ -53,7 +53,7 @@ export function ActionQueue({ items, onViewAll, className }: ActionQueueProps) {
                 className={cn("action-item", `action-item--${item.priority}`)}
               >
                 <div className="action-item__icon">
-                  <Icon className="w-4 h-4 text-white" />
+                  <Icon className="w-4 h-4 text-white/90" />
                 </div>
                 <div className="action-item__content">
                   <div className="action-item__title">{item.jobNumber}</div>
@@ -69,7 +69,7 @@ export function ActionQueue({ items, onViewAll, className }: ActionQueueProps) {
       </div>
 
       {items.length > 3 && (
-        <Button variant="ghost" size="sm" onClick={onViewAll} className="w-full mt-2">
+        <Button variant="ghost" size="sm" onClick={onViewAll} className="w-full mt-2 text-xs">
           View All ({items.length})
         </Button>
       )}

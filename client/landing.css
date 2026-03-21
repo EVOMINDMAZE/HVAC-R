@@ -1,22 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap');
+
+html {
+  scroll-behavior: smooth;
+}
+
+.text-glow-underline {
+  @apply relative inline-block;
+}
+
+.text-glow-underline::after {
+  content: '';
+  @apply absolute bottom-0 left-0 w-full h-[6px] bg-primary/30 rounded-full;
+  z-index: -1;
+  filter: blur(3px);
+  opacity: 0.3;
+}
+
+.glass-button-dark {
+  @apply bg-slate-900/40 backdrop-blur-md text-white border border-white/15 hover:bg-slate-900/60 transition-all duration-300;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 0 20px -5px hsl(var(--primary) / 0.15);
+}
+
+
 .landing-page {
-  --landing-steel-900: hsl(222, 47%, 11%);
-  --landing-steel-700: hsl(215, 25%, 27%);
-  --landing-steel-500: hsl(215, 16%, 47%);
-  --landing-sky-500: hsl(217, 91%, 60%);
+  min-height: 100vh;
+
+  --landing-steel-900: hsl(var(--foreground) / 0.1);
+  --landing-steel-700: hsl(var(--muted-foreground));
+  --landing-steel-500: hsl(var(--muted-foreground) / 0.7);
+  --landing-sky-500: hsl(var(--primary));
   --landing-teal-500: hsl(174, 91%, 40%);
   --landing-orange-500: hsl(24, 94%, 50%);
-  --landing-panel-light: rgba(255, 255, 255, 0.98);
-  --landing-panel-dark: hsla(222, 47%, 6%, 0.95);
-  --landing-border-light: rgba(148, 163, 184, 0.35);
-  --landing-header-light: rgba(255, 255, 255, 0.85);
-  --landing-shadow-premium: 0 45px 90px -15px rgba(15, 23, 42, 0.18), 0 25px 45px -20px rgba(15, 23, 42, 0.15);
-  --landing-glass-border: hsla(0, 0%, 100%, 0.1);
-  --landing-card-glass: rgba(255, 255, 255, 0.9);
-  --landing-glass-border-light: hsla(215, 25%, 27%, 0.08);
-  font-family: "Manrope", sans-serif;
+  --landing-panel-light: hsl(var(--card) / 0.98);
+  --landing-panel-dark: hsl(var(--card) / 0.95);
+  --landing-border-light: hsl(var(--border) / 0.35);
+  --landing-header-light: hsl(var(--background) / 0.85);
+  --landing-shadow-premium: var(--monitor-glow);
+  --landing-glass-border: hsl(var(--border) / 0.1);
+  --landing-card-glass: hsl(var(--card) / 0.9);
+  --landing-glass-border-light: hsl(var(--border) / 0.08);
+  font-family: var(--font-sans);
   overflow-x: hidden !important;
   position: relative;
   width: 100%;
+}
+
+.font-display {
+  font-family: "Sora", "Inter", sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.bg-dot-pattern {
+  background-image: radial-gradient(circle, currentColor 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.bg-grid-pattern {
+  background-image: linear-gradient(to right, currentColor 1px, transparent 1px),
+    linear-gradient(to bottom, currentColor 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.hero-gradient {
+  background: radial-gradient(circle at 50% 50%, hsl(var(--primary) / 0.08) 0%, transparent 70%);
+}
+
+.text-glow {
+  text-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+}
+
+.glass-card {
+  background: hsl(var(--card) / 0.8);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid hsl(var(--border) / 0.5);
+  box-shadow: var(--monitor-glow);
+}
+
+.pricing-card-highlight {
+  @apply border-2 border-primary ring-4 ring-primary/10 shadow-2xl scale-[1.02];
+  position: relative;
+  z-index: 10;
 }
 
 .landing-page .shadow-premium {
@@ -38,8 +103,15 @@ body {
 .landing-page a:focus-visible,
 .landing-page button:focus-visible,
 .landing-page [role="button"]:focus-visible {
-  outline: 2px solid hsl(var(--ring));
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.5), 0 0 0 5px hsl(var(--ring));
+  border-radius: 0.375rem;
+  transition: box-shadow 0.15s ease;
+}
+
+.landing-page a:focus-visible:not(.shadow-xl):not(.shadow-2xl):not(button),
+.landing-page button:focus-visible:not(.shadow-xl):not(.shadow-2xl) {
+  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.5), 0 0 0 5px hsl(var(--ring));
 }
 
 .landing-page .landing-hero {
@@ -97,15 +169,28 @@ body {
 }
 
 .landing-page .landing-card {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(248, 250, 252, 0.98));
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  box-shadow: 0 35px 70px -15px rgba(15, 23, 42, 0.12), 0 20px 40px -20px rgba(15, 23, 42, 0.1);
+  background: linear-gradient(180deg, hsl(var(--card)), hsl(var(--card) / 0.96));
+  border: 1px solid hsl(var(--border) / 0.15);
+  box-shadow: 0 25px 50px -15px hsl(var(--foreground) / 0.08), 0 15px 30px -15px hsl(var(--foreground) / 0.06);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.landing-page .landing-card:hover {
+  box-shadow: 0 35px 70px -15px hsl(var(--foreground) / 0.1), 0 20px 40px -20px hsl(var(--foreground) / 0.08);
+  transform: translateY(-4px);
 }
 
 .landing-page .landing-surface {
   background: var(--landing-panel-light);
-  border: 1px solid rgba(71, 85, 105, 0.12);
-  box-shadow: 0 12px 30px -10px rgba(15, 23, 42, 0.08);
+  border: 1px solid hsl(var(--border) / 0.08);
+  box-shadow: 0 8px 24px -8px hsl(var(--foreground) / 0.04);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.landing-page .landing-surface:hover {
+  border-color: hsl(var(--border) / 0.15);
+  box-shadow: 0 12px 32px -8px hsl(var(--foreground) / 0.06);
+  transform: translateY(-2px);
 }
 
 .landing-page .landing-path-card {
@@ -113,6 +198,12 @@ body {
   flex-direction: column;
   justify-content: space-between;
   gap: 0.5rem;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.landing-page .landing-path-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -12px hsl(var(--foreground) / 0.1);
 }
 
 .landing-page .landing-emphasis {
@@ -120,23 +211,36 @@ body {
 }
 
 .landing-page .landing-chip {
-  border: 1px solid rgba(71, 85, 105, 0.2);
-  background: rgba(248, 250, 252, 0.93);
+  border: 1px solid hsl(var(--border) / 0.15);
+  background: hsl(var(--secondary) / 0.9);
   color: hsl(var(--foreground) / 0.84);
   box-shadow: none;
   font-weight: 600;
   font-size: 0.82rem;
+  transition: all 0.3s ease;
+}
+
+.landing-page .landing-chip:hover {
+  background: hsl(var(--secondary) / 0.7);
+  border-color: hsl(var(--border) / 0.25);
 }
 
 .landing-page .landing-pillars-card {
-  border-color: rgba(71, 85, 105, 0.28);
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  border-color: hsl(var(--border) / 0.2);
+  box-shadow: 0 4px 16px hsl(var(--foreground) / 0.04);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.landing-page .landing-pillars-card:hover {
+  border-color: hsl(var(--border) / 0.35);
+  box-shadow: 0 16px 48px hsl(var(--foreground) / 0.1), 0 8px 24px hsl(var(--foreground) / 0.06);
+  transform: translateY(-4px);
 }
 
 .landing-page .landing-capability-priority {
   border-radius: 999px;
-  border: 1px solid rgba(71, 85, 105, 0.3);
-  background: rgba(248, 250, 252, 0.9);
+  border: 1px solid hsl(var(--border) / 0.3);
+  background: hsl(var(--secondary) / 0.9);
   color: hsl(var(--foreground) / 0.86);
   padding: 0.25rem 0.62rem;
   font-size: 0.68rem;
@@ -193,14 +297,14 @@ body {
 }
 
 .landing-page .landing-command-center {
-  border-color: rgba(71, 85, 105, 0.34);
-  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.12);
+  border-color: hsl(var(--border) / 0.34);
+  box-shadow: 0 16px 34px hsl(var(--foreground) / 0.12);
 }
 
 .landing-page .landing-command-badge {
   border-radius: 999px;
-  border: 1px solid rgba(71, 85, 105, 0.3);
-  background: rgba(248, 250, 252, 0.92);
+  border: 1px solid hsl(var(--border) / 0.3);
+  background: hsl(var(--secondary) / 0.92);
   color: hsl(var(--foreground) / 0.86);
   padding: 0.24rem 0.62rem;
   font-size: 0.66rem;
@@ -212,8 +316,8 @@ body {
   position: relative;
   overflow: hidden;
   border-radius: 0.95rem;
-  border: 1px solid rgba(71, 85, 105, 0.28);
-  background: #0b1320;
+  border: 1px solid var(--landing-glass-border);
+  background: hsl(var(--card) / 0.5);
 }
 
 .landing-page .landing-command-video {
@@ -235,9 +339,9 @@ body {
 
 .landing-page .landing-command-overlay span {
   border-radius: 999px;
-  border: 1px solid rgba(148, 163, 184, 0.46);
-  background: rgba(2, 6, 23, 0.66);
-  color: #e2e8f0;
+  border: 1px solid var(--landing-glass-border);
+  background: hsl(var(--background) / 0.8);
+  color: hsl(var(--foreground));
   padding: 0.14rem 0.5rem;
   font-size: 0.62rem;
   font-weight: 600;
@@ -320,8 +424,8 @@ body {
 
 .landing-page .landing-snapshot-tab {
   border-radius: 0.7rem;
-  border: 1px solid rgba(71, 85, 105, 0.2);
-  background: hsl(var(--background) / 0.78);
+  border: 1px solid rgba(71, 85, 105, 0.15);
+  background: hsl(var(--background) / 0.75);
   padding: 0.4rem 0.38rem;
   display: flex;
   justify-content: space-between;
@@ -329,8 +433,13 @@ body {
   gap: 0.3rem;
   font-size: 0.63rem;
   font-weight: 700;
-  color: hsl(var(--foreground) / 0.82);
-  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  color: hsl(var(--foreground) / 0.75);
+  transition: all 0.3s ease;
+}
+
+.landing-page .landing-snapshot-tab:hover {
+  border-color: rgba(71, 85, 105, 0.25);
+  background: hsl(var(--background) / 0.85);
 }
 
 .landing-page .landing-snapshot-tab strong {
@@ -339,9 +448,10 @@ body {
 }
 
 .landing-page .landing-snapshot-tab.is-active {
-  border-color: hsl(var(--primary) / 0.45);
-  background: hsl(var(--primary) / 0.1);
+  border-color: hsl(var(--primary) / 0.4);
+  background: hsl(var(--primary) / 0.08);
   color: hsl(var(--primary));
+  box-shadow: 0 0 20px -5px hsl(var(--primary) / 0.15);
 }
 
 .landing-page .landing-snapshot-tab.is-active strong {
@@ -443,9 +553,9 @@ body {
 
 .landing-page .landing-hero-media-overlay span {
   border-radius: 999px;
-  background: rgba(11, 19, 32, 0.7);
-  border: 1px solid rgba(148, 163, 184, 0.45);
-  color: #dbeafe;
+  background: hsl(var(--background) / 0.7);
+  border: 1px solid var(--landing-glass-border);
+  color: hsl(var(--foreground));
   padding: 0.2rem 0.6rem;
   font-size: 0.68rem;
   font-weight: 600;
@@ -456,8 +566,8 @@ body {
   position: relative;
   overflow: hidden;
   border-radius: 0.9rem;
-  border: 1px solid rgba(148, 163, 184, 0.28);
-  background: #0f172a;
+  border: 1px solid var(--landing-glass-border);
+  background: hsl(var(--card) / 0.5);
 }
 
 .landing-page .landing-path-media-wrap {
@@ -485,7 +595,7 @@ body {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(180deg, rgba(248, 250, 252, 0.88), rgba(248, 250, 252, 0.88)),
+    linear-gradient(180deg, hsl(var(--background) / 0.88), hsl(var(--background) / 0.88)),
     url("/landing/pricing-texture.png");
   background-size: cover;
   background-position: center;
@@ -494,10 +604,16 @@ body {
 }
 
 .landing-page .landing-pricing-card {
-  border-radius: 1rem;
-  border: 1px solid rgba(148, 163, 184, 0.28);
-  background: hsl(var(--background) / 0.95);
-  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.07);
+  border-radius: 1.5rem;
+  border: 1px solid hsl(var(--border) / 0.12);
+  background: hsl(var(--card) / 0.95);
+  box-shadow: 0 15px 35px hsl(var(--foreground) / 0.05);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.landing-page .landing-pricing-card:hover {
+  box-shadow: 0 25px 50px hsl(var(--foreground) / 0.1), 0 0 30px hsl(var(--primary) / 0.08);
+  transform: translateY(-6px);
 }
 
 .landing-page .landing-select {
@@ -540,107 +656,97 @@ body {
   display: flex;
   align-items: center;
   gap: 0.55rem;
-  border: 1px solid hsl(var(--border) / 0.9);
-  background: hsl(var(--background) / 0.96);
-  border-radius: 0.95rem;
-  padding: 0.5rem;
-  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.16);
-  backdrop-filter: blur(8px);
+  border: 1px solid hsl(var(--border) / 0.6);
+  background: hsl(var(--background) / 0.98);
+  border-radius: 1rem;
+  padding: 0.75rem;
+  box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.25), 0 0 0 1px hsl(var(--primary) / 0.1);
+  backdrop-filter: blur(12px);
 }
 
 .dark .landing-page .landing-card {
-  background: linear-gradient(180deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9));
-  border-color: rgba(148, 163, 184, 0.3);
-  box-shadow: 0 22px 54px rgba(2, 6, 23, 0.5);
+  background: linear-gradient(180deg, hsl(var(--card) / 0.95), hsl(var(--card) / 0.9));
+  border-color: hsl(var(--border) / 0.3);
 }
 
 .dark .landing-page .landing-surface,
 .dark .landing-page .landing-pricing-card {
-  background: var(--landing-panel-dark);
-  border-color: rgba(148, 163, 184, 0.24);
-  box-shadow: 0 10px 26px rgba(2, 6, 23, 0.34);
+  background: hsl(var(--card));
+  border-color: hsl(var(--border) / 0.24);
 }
 
 .dark .landing-page .landing-chip {
-  border-color: rgba(148, 163, 184, 0.38);
-  background: rgba(15, 23, 42, 0.88);
-  color: hsl(var(--foreground) / 0.92);
+  border-color: hsl(var(--border) / 0.38);
+  background: hsl(var(--card) / 0.88);
 }
 
 .dark .landing-page .landing-pillars-card {
-  border-color: rgba(148, 163, 184, 0.26);
-  box-shadow: 0 12px 28px rgba(2, 6, 23, 0.33);
+  border-color: hsl(var(--border) / 0.26);
 }
 
 .dark .landing-page .landing-command-center {
-  border-color: rgba(148, 163, 184, 0.28);
-  box-shadow: 0 18px 40px rgba(2, 6, 23, 0.42);
+  border-color: hsl(var(--border) / 0.28);
 }
 
 .dark .landing-page .landing-command-badge {
-  border-color: rgba(148, 163, 184, 0.42);
-  background: rgba(30, 41, 59, 0.75);
-  color: hsl(var(--foreground) / 0.9);
+  border-color: hsl(var(--border) / 0.42);
+  background: hsl(var(--card) / 0.75);
 }
 
 .dark .landing-page .landing-command-video-wrap {
-  border-color: rgba(148, 163, 184, 0.34);
+  border-color: hsl(var(--border) / 0.34);
 }
 
 .dark .landing-page .landing-command-metric {
-  border-color: rgba(148, 163, 184, 0.26);
-  background: rgba(2, 6, 23, 0.56);
+  border-color: hsl(var(--border) / 0.26);
+  background: hsl(var(--background) / 0.56);
 }
 
 .dark .landing-page .landing-command-shot {
-  border-color: rgba(148, 163, 184, 0.26);
-  background: rgba(2, 6, 23, 0.62);
+  border-color: hsl(var(--border) / 0.26);
+  background: hsl(var(--background) / 0.62);
 }
 
 .dark .landing-page .landing-capability-priority {
-  border-color: rgba(148, 163, 184, 0.42);
-  background: rgba(30, 41, 59, 0.7);
+  border-color: hsl(var(--border) / 0.42);
+  background: hsl(var(--card) / 0.7);
 }
 
 .dark .landing-page .landing-pillar-row {
-  background: rgba(2, 6, 23, 0.62);
-  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.18);
+  background: hsl(var(--background) / 0.62);
+  box-shadow: inset 0 0 0 1px hsl(var(--border) / 0.18);
 }
 
 .dark .landing-page .landing-snapshot-tab {
-  border-color: rgba(148, 163, 184, 0.25);
-  background: rgba(2, 6, 23, 0.65);
-}
-
-.dark .landing-page .landing-snapshot-tab strong {
-  color: hsl(var(--muted-foreground));
+  border-color: hsl(var(--border) / 0.25);
+  background: hsl(var(--background) / 0.65);
 }
 
 .dark .landing-page .landing-snapshot-tab.is-active {
-  border-color: rgba(96, 165, 250, 0.62);
-  background: rgba(37, 99, 235, 0.2);
-  color: #bfdbfe;
+  border-color: hsl(var(--primary) / 0.62);
+  background: hsl(var(--primary) / 0.2);
+  color: hsl(var(--primary));
 }
 
 .dark .landing-page .landing-snapshot-tab.is-active strong {
-  color: #bfdbfe;
+  color: hsl(var(--primary));
 }
 
 .dark .landing-page .landing-capability-count {
-  border-color: rgba(96, 165, 250, 0.6);
-  background: rgba(37, 99, 235, 0.18);
-  color: #bfdbfe;
+  border-color: hsl(var(--primary) / 0.6);
+  background: hsl(var(--primary) / 0.18);
+  color: hsl(var(--primary));
 }
 
 .dark .landing-page .landing-pricing-texture {
   background-image:
-    linear-gradient(180deg, rgba(2, 6, 23, 0.84), rgba(2, 6, 23, 0.9)),
+    linear-gradient(180deg, hsl(var(--background) / 0.84), hsl(var(--background) / 0.9)),
     url("/landing/pricing-texture.png");
   opacity: 1;
 }
 
 .dark .landing-page .landing-select {
-  background: rgba(2, 6, 23, 0.58);
+  background: hsl(var(--background) / 0.58);
 }
 
 @media (min-width: 769px) {
@@ -729,6 +835,69 @@ body {
 
   .landing-page .landing-command-shots {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .landing-page .landing-heading {
+    font-size: 1.65rem;
+    line-height: 1.15;
+  }
+
+  .landing-page .landing-hero-media-frame {
+    border-radius: 1rem;
+  }
+
+  .landing-page .landing-hero-media-overlay {
+    left: 0.5rem;
+    right: 0.5rem;
+    bottom: 0.5rem;
+  }
+
+  .landing-page .landing-hero-media-overlay span {
+    font-size: 0.6rem;
+    padding: 0.15rem 0.45rem;
+  }
+
+  .landing-page .landing-pricing-card {
+    border-radius: 1rem;
+    padding: 1rem;
+  }
+
+  .landing-page .landing-command-center {
+    border-radius: 0.85rem;
+  }
+
+  .landing-page .landing-command-video-wrap {
+    border-radius: 0.75rem;
+  }
+
+  .landing-page .landing-pillars-card {
+    padding: 0.85rem;
+  }
+
+  .landing-page .landing-module-tag {
+    font-size: 0.62rem;
+    padding: 0.15rem 0.45rem;
+  }
+
+  .landing-page .landing-path-media-wrap,
+  .landing-page .landing-workflow-media-wrap {
+    border-radius: 0.7rem;
+  }
+
+  .landing-page .landing-surface {
+    border-radius: 0.85rem;
+  }
+
+  .landing-page .landing-card {
+    border-radius: 0.85rem;
+  }
+
+  .landing-page .landing-select {
+    font-size: 0.875rem;
+    min-height: 2.25rem;
+    padding: 0.4rem 0.65rem;
   }
 }
 
@@ -1052,3 +1221,4 @@ body {
   animation: float-delayed 7s ease-in-out infinite;
   animation-delay: 1s;
 }
+

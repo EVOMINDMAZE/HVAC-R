@@ -154,25 +154,25 @@ export function ClientDashboard() {
             <TabsContent value="overview" className="space-y-6">
             {/* Status Overview */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <Card className="border-l-4 border-l-primary">
+              <Card className="border-l-4 border-l-primary/70 bg-gradient-to-br from-card to-card/80 shadow-md shadow-primary/5 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                  <CardTitle className="text-xs font-medium text-muted-foreground/70 uppercase tracking-wide">
                     Total Assets
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{assets.length}</div>
-                  <p className="text-xs text-muted-foreground">
+                  <div className="text-3xl font-bold">{assets.length}</div>
+                  <p className="text-xs text-muted-foreground/60 mt-1">
                     Monitored Units
                   </p>
                 </CardContent>
               </Card>
 
               <Card
-                className={`border-l-4 ${alerts.length > 0 ? "border-l-destructive" : "border-l-success"}`}
+                className={`border-l-4 bg-gradient-to-br from-card to-card/80 shadow-md shadow-primary/5 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 ${alerts.length > 0 ? "border-l-destructive/70" : "border-l-success/70"}`}
               >
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                  <CardTitle className="text-xs font-medium text-muted-foreground/70 uppercase tracking-wide">
                     System Status
                   </CardTitle>
                 </CardHeader>
@@ -180,14 +180,14 @@ export function ClientDashboard() {
                   <div className="flex items-center gap-2">
                     {alerts.length > 0 ? (
                       <>
-                        <AlertTriangle className="h-6 w-6 text-destructive" />
+                        <AlertTriangle className="h-5 w-5 text-destructive" />
                         <div className="text-2xl font-bold text-destructive">
                           {alerts.length} Alerts
                         </div>
                       </>
                     ) : (
                       <>
-                        <CheckCircle className="h-6 w-6 text-success" />
+                        <CheckCircle className="h-5 w-5 text-success" />
                         <div className="text-2xl font-bold text-success">
                           Healthy
                         </div>
@@ -201,31 +201,31 @@ export function ClientDashboard() {
             {/* Continue with the rest of the Overview content */}
             {alerts.length > 0 && (
               <div>
-                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-foreground/80">
                   <AlertTriangle className="h-5 w-5 text-red-500" />
                   Active Alerts
                 </h2>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {alerts.map((alert) => (
                     <Card
                       key={alert.id}
-                      className="border-l-4 border-l-red-500"
+                      className="border-l-4 border-l-red-500/70 bg-gradient-to-br from-card to-card/80 shadow-sm hover:shadow-md transition-all"
                     >
                       <CardContent className="p-4">
                         <div className="flex justify-between items-start">
                           <div>
-                            <p className="font-medium text-red-600">
+                            <p className="font-medium text-red-600/90">
                               {alert.alert_msg}
                             </p>
-                            <p className="text-xs text-muted-foreground mt-1">
+                            <p className="text-xs text-muted-foreground/60 mt-1">
                               {format(new Date(alert.created_at), "PPpp")}
                             </p>
                           </div>
                           <span
-                            className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide ${
                               alert.severity === "critical"
-                                ? "bg-red-100 text-red-800"
-                                : "bg-yellow-100 text-yellow-800"
+                                ? "bg-red-100/80 text-red-700"
+                                : "bg-yellow-100/80 text-yellow-700"
                             }`}
                           >
                             {alert.severity}
@@ -240,44 +240,44 @@ export function ClientDashboard() {
 
             {/* Assets List */}
             <div>
-              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-foreground/80">
                 <Smartphone className="h-5 w-5 text-cyan-500" />
                 My Assets
               </h2>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {assets.map((asset) => {
                   const readings = telemetryMap[asset.id] || [];
-                  const latestReading = readings[readings.length - 1]?.value; // Changed to last element for latest
+                  const latestReading = readings[readings.length - 1]?.value;
 
                   return (
                     <Card
                       key={asset.id}
-                      className="hover:shadow-lg transition-shadow"
+                      className="hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 transition-all duration-300 bg-gradient-to-br from-card to-card/80"
                     >
                       <CardContent className="p-5">
-                        <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-start justify-between mb-4">
                           <div>
-                            <h3 className="font-semibold text-lg">
+                            <h3 className="font-semibold text-base text-foreground/90">
                               {asset.name}
                             </h3>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-xs text-muted-foreground/60 mt-0.5">
                               {asset.type}
                             </p>
                           </div>
                           {asset.type === "Chiller" ? (
-                            <Wind className="h-6 w-6 text-cyan-500" />
+                            <Wind className="h-5 w-5 text-cyan-500/70" />
                           ) : (
-                            <Thermometer className="h-6 w-6 text-cyan-500" />
+                            <Thermometer className="h-5 w-5 text-cyan-500/70" />
                           )}
                         </div>
 
                         <div className="flex items-end justify-between">
                           <div>
-                            <div className="text-xs text-slate-400 uppercase tracking-wide mb-1">
+                            <div className="text-[10px] text-slate-400/70 uppercase tracking-wide mb-1.5">
                               Real-Time
                             </div>
                             <span
-                              className={`text-3xl font-bold ${latestReading > 40 ? "text-red-500" : "text-cyan-600"}`}
+                              className={`text-3xl font-bold ${latestReading > 40 ? "text-red-500/80" : "text-cyan-600/80"}`}
                             >
                               {latestReading !== undefined
                                 ? `${latestReading}°`
@@ -285,7 +285,7 @@ export function ClientDashboard() {
                             </span>
                           </div>
 
-                          <div className="w-24 h-12">
+                          <div className="w-20 h-12">
                             {readings.length > 1 ? (
                               <ResponsiveContainer width="100%" height="100%">
                                 <LineChart data={readings}>
@@ -302,20 +302,20 @@ export function ClientDashboard() {
                                 </LineChart>
                               </ResponsiveContainer>
                             ) : (
-                              <div className="h-full w-full bg-slate-100 dark:bg-slate-800 rounded flex items-center justify-center text-[10px] text-muted-foreground">
-                                Waiting for data...
+                              <div className="h-full w-full bg-slate-100/70 dark:bg-slate-800/70 rounded-lg flex items-center justify-center text-[10px] text-muted-foreground/50">
+                                Waiting...
                               </div>
                             )}
                           </div>
                         </div>
 
-                        <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                        <div className="mt-5 pt-4 border-t border-slate-100/50 dark:border-slate-800/50 flex justify-between items-center">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-green-100/80 text-green-700/90">
                             Active
                           </span>
                           <Button
                             variant="ghost"
-                            className="h-6 text-xs"
+                            className="h-6 text-[10px] text-muted-foreground/60 hover:text-foreground"
                             onClick={() => navigate("/history")}
                           >
                             View History
@@ -327,8 +327,8 @@ export function ClientDashboard() {
                 })}
               </div>
               {assets.length === 0 && !loading && (
-                <div className="text-center py-12 bg-white dark:bg-slate-900 rounded-lg border border-dashed">
-                  <p className="text-muted-foreground">
+                <div className="text-center py-12 bg-gradient-to-br from-slate-50/50 to-white/50 dark:from-slate-900/50 dark:to-slate-950/50 rounded-2xl border border-dashed border-slate-200/60 dark:border-slate-700/60">
+                  <p className="text-muted-foreground/70 text-sm">
                     No assets found linked to your account.
                   </p>
                 </div>

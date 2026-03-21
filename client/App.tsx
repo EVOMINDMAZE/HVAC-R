@@ -18,6 +18,7 @@ import { JobProvider } from "@/context/JobContext";
 // Critical path - keep static
 import { MonitoringProvider } from "@/lib/monitoring-provider";
 import { Landing } from "@/pages/Landing";
+import { LandingPageFigma } from "@/pages/LandingPageFigma";
 import NotFound from "@/pages/NotFound";
 import { SignIn } from "@/pages/SignIn";
 import { SignUp } from "@/pages/SignUp";
@@ -311,6 +312,7 @@ function AppRoutes() {
           <Routes location={location} key={location.pathname}>
             {/* Public Routes */}
             <Route path="/" element={<Landing />} />
+            <Route path="/figma" element={<LandingPageFigma />} />
             <Route path="/triage" element={<Triage />} />
             <Route path="/a2l-resources" element={<A2LLandingPage />} />
             <Route path="/features" element={<Features />} />

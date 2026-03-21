@@ -597,46 +597,46 @@ export function Clients() {
                   transition={{ delay: prefersReducedMotion ? 0 : index * 0.04, duration: prefersReducedMotion ? 0 : 0.16 }}
                   className="group"
                 >
-                  <Card className="group relative h-full overflow-hidden rounded-[2rem] border-border bg-card shadow-sm motion-interactive motion-card-feedback hover:shadow-xl">
-                    <CardHeader className="pb-4">
-                      <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-primary to-primary/70 text-primary-foreground shadow-lg shadow-primary/20">
-                        <span className="text-2xl font-bold">
+                  <Card className="group relative h-full overflow-hidden rounded-3xl border-border/50 bg-gradient-to-br from-card to-card/90 shadow-md shadow-primary/5 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300 motion-interactive motion-card-feedback">
+                    <CardHeader className="pb-5">
+                      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/90 to-primary/70 text-primary-foreground shadow-lg shadow-primary/20">
+                        <span className="text-xl font-bold">
                           {client.name
                             .split(" ")
                             .map((n) => n[0])
                             .join("")}
                         </span>
                       </div>
-                      <CardTitle className="text-xl font-bold text-foreground motion-interactive-micro group-hover:text-primary">
+                      <CardTitle className="text-lg font-semibold text-foreground motion-interactive-micro group-hover:text-primary transition-colors">
                         {client.name}
                       </CardTitle>
-                      <CardDescription className="flex items-center gap-2">
-                        <Building className="w-4 h-4" />
-                        Residential Account
+                      <CardDescription className="flex items-center gap-2 text-muted-foreground/70">
+                        <Building className="w-3.5 h-3.5 text-primary/50" />
+                        <span className="text-xs">Residential Account</span>
                       </CardDescription>
                     </CardHeader>
 
-                    <CardContent className="space-y-6">
+                    <CardContent className="space-y-5">
                       <div className="space-y-3">
-                        <div className="flex items-center gap-3 rounded-2xl bg-muted/50 p-3 text-sm text-muted-foreground transition-colors group-hover:bg-muted">
-                          <Mail className="h-4 w-4 text-primary" />
-                          <span className="truncate">
+                        <div className="flex items-center gap-3 rounded-xl bg-muted/40 p-3 text-sm text-muted-foreground/80 transition-colors group-hover:bg-muted/60 group-hover:text-muted-foreground">
+                          <Mail className="h-4 w-4 text-primary/60" />
+                          <span className="truncate text-xs">
                             {client.contact_email || "No email"}
                           </span>
                         </div>
-                        <div className="flex items-center gap-3 rounded-2xl bg-muted/50 p-3 text-sm text-muted-foreground transition-colors group-hover:bg-muted">
-                          <Phone className="h-4 w-4 text-primary" />
-                          <span>{client.contact_phone || "No phone"}</span>
+                        <div className="flex items-center gap-3 rounded-xl bg-muted/40 p-3 text-sm text-muted-foreground/80 transition-colors group-hover:bg-muted/60 group-hover:text-muted-foreground">
+                          <Phone className="h-4 w-4 text-primary/60" />
+                          <span className="text-xs">{client.contact_phone || "No phone"}</span>
                         </div>
                       </div>
 
-                      <div className="border-t border-border pt-6">
+                      <div className="border-t border-border/40 pt-5">
                         <Link
                           to={`/dashboard/clients/${client.id}`}
-                          className="group/btn inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-primary font-medium text-primary-foreground motion-interactive hover:bg-primary/90"
+                          className="group/btn inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-primary/90 font-medium text-primary-foreground shadow-md shadow-primary/20 hover:shadow-lg hover:from-primary/95 hover:to-primary/85 motion-interactive transition-all"
                         >
                           View Profile
-                          <ArrowRight className="w-4 h-4 motion-interactive-micro group-hover/btn:translate-x-1" />
+                          <ArrowRight className="w-4 h-4 motion-interactive-micro group-hover/btn:translate-x-1 transition-transform" />
                         </Link>
                       </div>
                     </CardContent>
@@ -656,37 +656,37 @@ export function Clients() {
                   exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -12 }}
                   transition={{ delay: prefersReducedMotion ? 0 : index * 0.03, duration: prefersReducedMotion ? 0 : 0.16 }}
                 >
-                  <Card className="border-border bg-card/70">
+                  <Card className="border-border/50 bg-gradient-to-br from-card/95 to-card/80 backdrop-blur-sm hover:shadow-md hover:shadow-primary/5 hover:border-primary/20 transition-all duration-300">
                     <CardContent className="p-4">
                       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                         <div className="min-w-0">
-                          <h3 className="truncate text-base font-semibold text-foreground">{client.name}</h3>
-                          <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                          <h3 className="truncate text-sm font-semibold text-foreground">{client.name}</h3>
+                          <div className="mt-1.5 flex flex-wrap items-center gap-3 text-xs text-muted-foreground/70">
                             <span className="inline-flex items-center">
-                              <Mail className="mr-1 h-3.5 w-3.5 text-primary" />
+                              <Mail className="mr-1 h-3.5 w-3.5 text-primary/50" />
                               {client.contact_email || "No email"}
                             </span>
                             <span className="inline-flex items-center">
-                              <Phone className="mr-1 h-3.5 w-3.5 text-primary" />
+                              <Phone className="mr-1 h-3.5 w-3.5 text-primary/50" />
                               {client.contact_phone || "No phone"}
                             </span>
                           </div>
                         </div>
-                        <Button asChild variant="outline" size="sm" className="gap-2">
+                        <Button asChild variant="outline" size="sm" className="gap-2 h-8 text-xs hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all">
                           <Link to={`/dashboard/clients/${client.id}`}>
-                            <Eye className="h-4 w-4" />
+                            <Eye className="h-3.5 w-3.5" />
                             Open
                           </Link>
                         </Button>
                       </div>
-                      <Collapsible className="mt-3 border-t border-border pt-3">
+                      <Collapsible className="mt-3 border-t border-border/40 pt-3">
                         <CollapsibleTrigger asChild>
-                          <Button variant="ghost" size="sm" className="gap-2 px-0 text-muted-foreground">
+                          <Button variant="ghost" size="sm" className="gap-2 px-0 text-xs text-muted-foreground/70 hover:text-foreground transition-colors">
                             More details
-                            <ChevronDown className="h-4 w-4" />
+                            <ChevronDown className="h-3.5 w-3.5 transition-transform" />
                           </Button>
                         </CollapsibleTrigger>
-                        <CollapsibleContent className="pt-2 text-sm text-muted-foreground">
+                        <CollapsibleContent className="pt-2 text-xs text-muted-foreground/70">
                           {client.address ? client.address : "No address provided"}
                         </CollapsibleContent>
                       </Collapsible>

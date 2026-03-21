@@ -44,7 +44,7 @@ function NavItemButton({ item, onNavigate }: { item: NavItem; onNavigate?: (to: 
 export function NavigationRail({ items, onNavigate, className }: NavigationRailProps) {
   return (
     <nav className={cn("nav-rail", className)} data-testid="navigation-rail">
-      <h3 className="nav-rail__header">Navigation</h3>
+      <h3 className="nav-rail__header">Navigate</h3>
       <div className="nav-rail__list">
         {items.map((item) => (
           <NavItemButton key={item.id} item={item} onNavigate={onNavigate} />

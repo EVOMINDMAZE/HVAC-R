@@ -1,5 +1,5 @@
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { AlertTriangle, MapPin, Brain, BarChart3, FileText, Settings, ChevronRight, ChevronLeft, Zap, CheckCircle, Users, ArrowRight } from "lucide-react";
+import { AlertTriangle, MapPin, Brain, BarChart3, FileText, Settings, ChevronRight, ChevronLeft, Zap, CheckCircle, Users, ArrowRight, Star, DollarSign } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
@@ -890,39 +890,66 @@ function Act3_Professional({ onProgress, onNext: _onNext, prefersReducedMotion =
           </p>
         </StandardCard>
 
-        {/* Automation Builder */}
-        <StandardCard
-          act={3}
-          variant="success"
-          title="Automation Builder"
-          icon={<Settings className="h-5 w-5" />}
-        >
-          <div className="p-3 bg-background rounded-lg">
-            <div className="text-sm font-medium text-muted-foreground mb-2">Rule Configuration</div>
-            <div className="font-mono text-sm bg-green-50 p-3 rounded border border-green-200">
-              {professionalData.automation.rule}
-            </div>
-          </div>
-
-          <div className="p-3 bg-background rounded-lg">
-            <div className="text-sm font-medium text-muted-foreground mb-2">Test Result</div>
-            <div className="flex items-center gap-2 text-green-600">
-              <CheckCircle className="h-4 w-4" />
-              <span className="text-sm">{professionalData.automation.testResult}</span>
-            </div>
-          </div>
-
-          <Button 
-            onClick={handleBuildAutomation}
-            className="w-full bg-green-600 hover:bg-green-700"
+        {/* Automation Engine (Business in a Box) */}
+        <div className="relative">
+          <StandardCard
+            act={3}
+            variant="success"
+            title="Automation Engine"
+            icon={<Settings className="h-5 w-5" />}
           >
-            <Settings className="h-4 w-4 mr-2" />
-            Build & Test Automation
-          </Button>
-          <p className="text-xs text-muted-foreground text-center">
-            No-code automation • Real-time alerts • Prevent future emergencies
-          </p>
-        </StandardCard>
+            <div className="absolute -top-3 -right-3 z-10 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg transform rotate-3 border-2 border-white">
+              $199/mo Tier
+            </div>
+
+            <div className="space-y-4">
+              {/* Review Hunter */}
+              <div className="p-3 bg-background border border-amber-200/50 rounded-lg relative overflow-hidden group hover:border-amber-400 transition-colors">
+                <div className="absolute top-0 right-0 w-16 h-16 bg-amber-100 rounded-bl-full -z-10 opacity-50 group-hover:scale-110 transition-transform" />
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-6 h-6 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center">
+                    <Star className="h-3 w-3 fill-current" />
+                  </div>
+                  <div className="text-sm font-bold text-amber-700">Review Hunter</div>
+                </div>
+                <div className="text-xs text-muted-foreground mb-1">Trigger: Job Completed</div>
+                <div className="flex items-center gap-2 text-green-600 font-medium text-sm">
+                  <CheckCircle className="h-4 w-4" />
+                  <span>+4.8★ Google Rating</span>
+                </div>
+              </div>
+
+              {/* Invoice Chaser */}
+              <div className="p-3 bg-background border border-emerald-200/50 rounded-lg relative overflow-hidden group hover:border-emerald-400 transition-colors">
+                <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-100 rounded-bl-full -z-10 opacity-50 group-hover:scale-110 transition-transform" />
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                    <DollarSign className="h-3 w-3" />
+                  </div>
+                  <div className="text-sm font-bold text-emerald-700">Invoice Chaser</div>
+                </div>
+                <div className="text-xs text-muted-foreground mb-1">Trigger: 3 Days Past Due</div>
+                <div className="flex items-center gap-2 text-green-600 font-medium text-sm">
+                  <CheckCircle className="h-4 w-4" />
+                  <span>92% Paid on Time</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <Button 
+                onClick={handleBuildAutomation}
+                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 border-none text-white shadow-md hover:shadow-lg transition-all"
+              >
+                <Zap className="h-4 w-4 mr-2" />
+                Activate Business in a Box
+              </Button>
+              <p className="text-xs text-muted-foreground text-center mt-3">
+                Put your business on autopilot • Grow revenue effortlessly
+              </p>
+            </div>
+          </StandardCard>
+        </div>
       </div>
 
       {/* Completion Celebration */}
@@ -1055,23 +1082,23 @@ export function MiniAppPlayground() {
           </div>
 
           {/* Slide Card */}
-          <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-lg">
+          <div className="bg-card border border-border/40 rounded-3xl overflow-hidden shadow-xl shadow-primary/[0.05]">
             {/* Slide Header */}
-            <div className="px-8 py-6 border-b border-border bg-secondary/30">
+            <div className="px-8 py-6 border-b border-border/30 bg-secondary/20">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-xl font-bold">
+                  <h3 className="text-xl font-bold tracking-tight">
                     {currentAct === 1 && 'The Compliance Crisis'}
                     {currentAct === 2 && 'AI Pattern Detection'}
                     {currentAct === 3 && 'Professional Results'}
                   </h3>
-                  <p className="text-muted-foreground">
+                  <p className="text-muted-foreground mt-1">
                     {currentAct === 1 && 'Emergency leak detection and response'}
                     {currentAct === 2 && 'Predictive analytics and fleet insights'}
                     {currentAct === 3 && 'Reports, diagrams, and automation'}
                   </p>
                 </div>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-muted-foreground/60">
                   Slide {currentAct} of 3
                 </div>
               </div>
@@ -1129,27 +1156,27 @@ export function MiniAppPlayground() {
             </div>
 
             {/* Slide Navigation */}
-            <div className="px-8 py-6 border-t border-border bg-secondary/30 flex justify-between items-center">
+            <div className="px-8 py-5 border-t border-border/30 bg-secondary/20 flex justify-between items-center">
               <Button
                 variant="outline"
                 onClick={handlePrev}
                 disabled={currentAct === 1}
-                className="gap-2"
+                className="gap-2 rounded-xl"
               >
                 <ChevronLeft className="h-4 w-4" />
                 Previous
               </Button>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5">
                 {[1, 2, 3].map((act) => {
                   const actLabels = ["Emergency", "Intelligence", "Professional"];
                   return (
                     <button
                       key={act}
                       onClick={() => handleActSelect(act as 1 | 2 | 3)}
-                      className={`w-10 h-10 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-base sm:text-sm transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background ${
+                      className={`w-10 h-10 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-base sm:text-sm transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background ${
                         currentAct === act
-                          ? 'bg-primary text-primary-foreground'
+                          ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
                           : 'bg-secondary text-muted-foreground hover:bg-secondary/80'
                       }`}
                       aria-label={`Go to Slide ${act}: ${actLabels[act-1]}`}
@@ -1165,7 +1192,7 @@ export function MiniAppPlayground() {
                 variant="outline"
                 onClick={handleNext}
                 disabled={currentAct === 3}
-                className="gap-2"
+                className="gap-2 rounded-xl"
               >
                 Next
                 <ChevronRight className="h-4 w-4" />
@@ -1179,15 +1206,15 @@ export function MiniAppPlayground() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-center mt-12"
+          className="text-center mt-14"
         >
           <Link to="/signup">
-            <Button size="lg" className="px-8 py-6 text-lg">
+            <Button size="lg" className="px-10 py-6 text-lg rounded-xl shadow-lg shadow-primary/15 hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 gap-3">
               Get Full Access to ThermoNeural
-              <ArrowRight className="h-5 w-5 ml-3" />
+              <ArrowRight className="h-5 w-5" />
             </Button>
           </Link>
-          <p className="text-muted-foreground mt-4">
+          <p className="text-muted-foreground/60 mt-5">
             Complete all 3 slides • Unlimited calculations • Team collaboration • Professional reports
           </p>
         </motion.div>

@@ -88,12 +88,14 @@ export default function LiveMap({
 }: LiveMapProps) {
 
     return (
-        <div className={`relative z-0 ${className}`}>
+        <div className={`relative z-0 rounded-2xl overflow-hidden border border-border/40 shadow-lg ${className}`}>
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none z-10" />
             <MapContainer
                 center={center}
                 zoom={zoom}
                 style={{ height: '100%', width: '100%' }}
                 scrollWheelZoom={true}
+                className="relative z-0"
             >
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

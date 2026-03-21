@@ -54,15 +54,15 @@ export function QuickActionsPanel({
       {selectedJobId && (
         <>
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-foreground">Quick Dispatch</h3>
-            <span className="text-xs font-mono text-muted-foreground">#{selectedJobId}</span>
+            <h3 className="text-sm font-semibold text-foreground/90">Quick Dispatch</h3>
+            <span className="text-xs font-mono text-muted-foreground/70">#{selectedJobId}</span>
           </div>
 
           <div className="quick-actions-panel__form">
             <div className="space-y-2">
-              <Label htmlFor="technician">Technician</Label>
+              <Label htmlFor="technician" className="text-xs font-medium text-muted-foreground/80">Technician</Label>
               <Select value={selectedTech} onValueChange={setSelectedTech}>
-                <SelectTrigger id="technician">
+                <SelectTrigger id="technician" className="h-9">
                   <SelectValue placeholder="Select..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -76,9 +76,9 @@ export function QuickActionsPanel({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="priority">Priority</Label>
+              <Label htmlFor="priority" className="text-xs font-medium text-muted-foreground/80">Priority</Label>
               <Select value={priority} onValueChange={setPriority}>
-                <SelectTrigger id="priority">
+                <SelectTrigger id="priority" className="h-9">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -89,13 +89,13 @@ export function QuickActionsPanel({
               </Select>
             </div>
 
-            <Button onClick={handleDispatch} disabled={!selectedTech} className="w-full">
+            <Button onClick={handleDispatch} disabled={!selectedTech} className="w-full h-9">
               <Wrench className="w-4 h-4 mr-2" />
               Dispatch
             </Button>
           </div>
 
-          <div className="h-px bg-border" />
+          <div className="h-px bg-border/50" />
         </>
       )}
 
@@ -103,9 +103,9 @@ export function QuickActionsPanel({
         <h4 className="quick-actions-panel__section-title">Schedule New</h4>
         <div className="quick-actions-panel__form">
           <div className="space-y-2">
-            <Label htmlFor="client">Client</Label>
+            <Label htmlFor="client" className="text-xs font-medium text-muted-foreground/80">Client</Label>
             <Select value={clientId} onValueChange={setClientId}>
-              <SelectTrigger id="client">
+              <SelectTrigger id="client" className="h-9">
                 <SelectValue placeholder="Select..." />
               </SelectTrigger>
               <SelectContent>
@@ -116,9 +116,9 @@ export function QuickActionsPanel({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="jobType">Job Type</Label>
+            <Label htmlFor="jobType" className="text-xs font-medium text-muted-foreground/80">Job Type</Label>
             <Select value={jobType} onValueChange={setJobType}>
-              <SelectTrigger id="jobType">
+              <SelectTrigger id="jobType" className="h-9">
                 <SelectValue placeholder="Select..." />
               </SelectTrigger>
               <SelectContent>
@@ -130,12 +130,13 @@ export function QuickActionsPanel({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="datetime">Date & Time</Label>
+            <Label htmlFor="datetime" className="text-xs font-medium text-muted-foreground/80">Date & Time</Label>
             <Input
               id="datetime"
               type="datetime-local"
               value={datetime}
               onChange={(e) => setDatetime(e.target.value)}
+              className="h-9"
             />
           </div>
 
@@ -143,7 +144,7 @@ export function QuickActionsPanel({
             variant="outline"
             onClick={handleSchedule}
             disabled={!clientId || !jobType || !datetime}
-            className="w-full"
+            className="w-full h-9"
           >
             <Calendar className="w-4 h-4 mr-2" />
             Schedule

@@ -5,7 +5,7 @@ Welcome to Simulateon — this guide helps you create and configure your account
 ## Creating an account
 
 - Visit `/signup` and provide your name, email, and a secure password.
-- Verify your email address if email confirmation is enabled — this activates secured features like billing and API access.
+- Verify your email address if email confirmation is enabled — this activates secured features like billing.
 
 ## Profile
 
