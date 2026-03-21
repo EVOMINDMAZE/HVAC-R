@@ -1,5 +1,5 @@
 import { loadStripe } from "@stripe/stripe-js";
-import { Check, Loader2, ShieldCheck } from "lucide-react";
+import { Check, Loader2, ShieldCheck, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
@@ -126,29 +126,31 @@ export default function Pricing() {
       popular: false,
     },
     {
+      key: "BUSINESS",
+      title: "Business in a Box",
+      description: "Complete operations & engineering suite. Skool access, white-label app & automation.",
+      cta: "Start Free Trial",
+      action: () => handleSubscribe("business"),
+      popular: true,
+    },
+    {
       key: "PRO",
       title: "Engineering Pro",
       description: "For technicians and engineers who need advanced cycle and refrigerant tools.",
       cta: "Upgrade to Pro",
       action: () => handleSubscribe("pro"),
-      popular: true,
-    },
-    {
-      key: "BUSINESS",
-      title: "Business Ops",
-      description: "For contractors running dispatch, compliance, and multi-crew execution.",
-      cta: "Book Ops Demo",
-      action: () => navigate("/contact"),
       popular: false,
     },
   ] as const;
 
   return (
     <PublicPageShell mainClassName="pb-20">
-      <section className="px-4 py-16">
-        <div className="max-w-6xl mx-auto text-center">
+      {/* Hero Section */}
+      <section className="relative bg-slate-900 dark:bg-[#111827] pt-20 sm:pt-28 pb-16 sm:pb-20 lg:pt-40 lg:pb-32 overflow-hidden hero-gradient">
+        <div className="absolute inset-0 bg-grid-pattern opacity-[0.05] text-primary pointer-events-none" />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
             <p className="text-xs uppercase tracking-[0.2em] text-primary">Pricing</p>
-            <h1 className="mt-4 text-4xl md:text-5xl font-semibold">
+            <h1 className="mt-4 text-4xl md:text-5xl font-semibold font-display">
               Operations + engineering pricing built for HVAC&R growth stages.
             </h1>
             <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -200,10 +202,10 @@ export default function Pricing() {
               </div>
               <div className="rounded-xl border border-border/70 bg-card/70 px-4 py-3">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
-                  Business Ops Track
+                  Business in a Box Track
                 </p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Dispatch, client records, and compliance workflow for owner/manager operating control.
+                  Complete operations & engineering suite, white-labeled apps, and Skool community access.
                 </p>
               </div>
             </div>
@@ -243,11 +245,11 @@ export default function Pricing() {
                 <ShieldCheck className="h-4 w-4 text-success" />
                 <span>Cancel or upgrade anytime</span>
               </div>
-	            </div>
-	          </div>
-	      </section>
+	        </div>
+	      </div>
+      </section>
 
-        <section className="px-4">
+        <section className="px-4 py-16 bg-muted/30 relative">
           <div className="max-w-6xl mx-auto grid gap-6 md:grid-cols-3">
             {plans.map((plan) => {
               const planData = getPlan(plan.key as keyof typeof PLANS);
@@ -259,17 +261,19 @@ export default function Pricing() {
               return (
                 <Card
                   key={plan.key}
-                  className={`border-border/60 ${plan.popular ? "shadow-lg" : "shadow-sm"}`}
+                  className={`border-border/60 bg-card/50 backdrop-blur-sm hover:-translate-y-1 transition-all hover:shadow-lg ${
+                    plan.popular ? "shadow-lg border-primary/50" : ""
+                  }`}
                 >
                   <CardHeader>
-                    <CardTitle className="text-2xl font-semibold">
+                    <CardTitle className="text-2xl font-semibold font-display">
                       {plan.title}
                     </CardTitle>
                     <CardDescription>{plan.description}</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <div className="text-4xl font-semibold text-foreground">
+                      <div className="text-4xl font-semibold text-foreground font-display">
                         {price}
                       </div>
                       <div className="text-sm text-muted-foreground">
@@ -277,12 +281,25 @@ export default function Pricing() {
                       </div>
                     </div>
                     <ul className="space-y-2 text-sm text-muted-foreground">
-                      {planData.features.slice(0, 6).map((feature) => (
-                        <li key={feature} className="flex items-start gap-2">
-                          <Check className="h-4 w-4 text-success mt-0.5" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
+                      {planData.features.slice(0, 6).map((feature) => {
+                        const isHighlighted =
+                          feature.includes("Skool Community Access") ||
+                          feature.includes("White-labeled Pro App") ||
+                          feature.includes("Automation Engine");
+
+                        return (
+                          <li key={feature} className="flex items-start gap-2">
+                            {isHighlighted ? (
+                              <Sparkles className="h-4 w-4 text-primary mt-0.5" />
+                            ) : (
+                              <Check className="h-4 w-4 text-success mt-0.5" />
+                            )}
+                            <span className={isHighlighted ? "text-foreground font-medium" : ""}>
+                              {feature}
+                            </span>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </CardContent>
                   <CardFooter>
@@ -328,7 +345,7 @@ export default function Pricing() {
           </div>
         </section>
 
-        <section className="px-4 py-16">
+        <section className="px-4 py-16 bg-muted/30 relative">
           <div className="max-w-6xl mx-auto">
             <ROICalculator />
           </div>

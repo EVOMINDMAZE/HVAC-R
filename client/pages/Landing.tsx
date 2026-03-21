@@ -10,6 +10,10 @@ import {
   ImageOff,
   BadgeCheck,
   Clock,
+  Layout,
+  BarChart3,
+  FileCheck2,
+  Send,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -23,16 +27,8 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { landingConfig } from "@/config/metrics";
 import { trackMarketingEvent } from "@/lib/marketingAnalytics";
-
-const pricing = landingConfig.pricing;
-const strategicPillars = landingConfig.strategicPillars;
 
 function LandingImage({
   src,
@@ -87,14 +83,12 @@ function LandingImage({
 
 export function Landing() {
   const [isVisible, setIsVisible] = useState(false);
-  const [activeTab, setActiveTab] = useState(0);
   const [showMobileCta, setShowMobileCta] = useState(false);
-  const [expandedPillar, setExpandedPillar] = useState<number | null>(0);
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     setIsVisible(true);
-    trackMarketingEvent("landing_view", { section: "hero_b2b" });
+    trackMarketingEvent("landing_view", { section: "hero_redesign" });
   }, []);
 
   useEffect(() => {
@@ -108,435 +102,308 @@ export function Landing() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Scroll Spy Logic
-  const observerRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  useEffect(() => {
-    const options = {
-      root: null,
-      rootMargin: "-20% 0px -20% 0px",
-      threshold: 0.5,
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const index = observerRefs.current.indexOf(entry.target as HTMLDivElement);
-          if (index !== -1) {
-            setActiveTab(index);
-          }
-        }
-      });
-    }, options);
-
-    observerRefs.current.forEach((ref) => {
-      if (ref) observer.observe(ref);
-    });
-
-    return () => {
-      observerRefs.current.forEach((ref) => {
-        if (ref) observer.unobserve(ref);
-      });
-    };
-  }, []);
-
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: prefersReducedMotion ? 0 : 0.22 },
+      transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as any } 
     },
   };
 
   const stagger = {
     visible: {
-      transition: prefersReducedMotion ? undefined : { staggerChildren: 0.12 },
+      transition: prefersReducedMotion ? undefined : { staggerChildren: 0.1 },
     },
   };
 
+  const pillarIcons = [Layout, BarChart3, FileCheck2, Send];
+
   return (
-    <PublicPageShell className="landing-page" mainId="main-content" skipToMain>
+    <PublicPageShell className="landing-page bg-background" mainId="main-content" skipToMain>
       <SEO
-        title="ThermoNeural | Scale Your HVAC&R Operations"
-        description="The enterprise-grade operating system for HVAC owners. Automate compliance, standardize service, and protect your margins."
+        title="ThermoNeural | Engineering Operations at Scale"
+        description="Equip your HVAC&R technicians with AI-driven diagnostics, automated compliance, and profit-focused dispatching."
       />
       <StructuredData />
 
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-background/50 dark:bg-background">
-        {/* Background Asset */}
-        <div className="absolute inset-0 z-0">
-          <LandingImage
-            src="/assets/landing/hero_bg_premium.png"
-            alt="Background"
-            className="w-full h-full object-cover opacity-40 dark:opacity-30 mix-blend-overlay"
+      <section className="relative bg-slate-50 dark:bg-[#111827] pt-20 sm:pt-28 pb-16 sm:pb-20 lg:pt-40 lg:pb-32 overflow-hidden hero-gradient">
+        <div className="absolute inset-0 bg-grid-pattern opacity-[0.05] text-primary pointer-events-none" />
+
+        {/* Background Image - Full Width, Faded Center */}
+        <div className="absolute inset-0 z-0 hidden sm:block">
+          <img
+            src="/assets/landing/create_image_like_202603191616.png"
+            alt=""
+            className="w-full h-full object-cover opacity-20 blur-sm scale-110"
           />
-          <div className="absolute inset-0 bg-background/80 dark:bg-background/80 z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-transparent dark:bg-gradient-to-r dark:from-transparent dark:via-transparent dark:to-transparent" style={{
+            background: 'radial-gradient(ellipse 60% 100% at 50% 50%, transparent 0%, transparent 100%)',
+          }} />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-transparent hidden dark:block" style={{
+            background: 'radial-gradient(ellipse 60% 100% at 50% 50%, transparent 0%, #111827 100%)',
+          }} />
         </div>
 
-        <div className="container relative z-20 mx-auto px-4 pt-24 pb-24 md:pb-28">
-          <div className="grid lg:grid-cols-[1.2fr,0.8fr] gap-12 lg:gap-16 items-center">
-
-            {/* Hero Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Hero Text */}
             <motion.div
               initial="hidden"
               animate={isVisible ? "visible" : "hidden"}
               variants={stagger}
-              className="max-w-full lg:max-w-xl"
             >
-              <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-6 backdrop-blur-sm">
-                <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse" />
-                <span className="text-sm font-medium text-primary">Enterprise-Grade HVAC&R Management</span>
-              </motion.div>
               <motion.h1
                 variants={fadeInUp}
-                className="text-4xl sm:text-6xl lg:text-6xl xl:text-7xl font-black tracking-tighter leading-[1.05] mb-6 text-foreground dark:text-foreground excellence-header"
-              >Engineering <br /><span className="text-primary">Operations</span> <br />at Scale.
+                className="text-foreground dark:text-white text-4xl sm:text-5xl md:text-6xl lg:text-[56px] xl:text-[60px] font-display font-extrabold tracking-tight leading-[1.1] mb-4 sm:mb-6"
+              >
+                Engineering<br />
+                <span className="text-primary" style={{ position: "relative", display: "inline-block" }}>
+                  Operations
+                  <img
+                    src="/assets/landing-figma/mmxud1sh-eiwbik6.svg"
+                    alt=""
+                    className="absolute left-0 -bottom-1 w-full pointer-events-none"
+                    style={{ height: "8px" }}
+                  />
+                </span>{" "}
+                at Scale.
               </motion.h1>
-
-              <motion.p variants={fadeInUp} className="text-lg md:text-xl text-muted-foreground mb-6 leading-relaxed max-w-2xl">
+              <motion.p
+                variants={fadeInUp}
+                className="text-muted-foreground text-base sm:text-lg lg:text-xl max-w-lg mb-8 sm:mb-10 leading-relaxed"
+              >
                 Stop trading time for money. Equip your technicians with AI-driven diagnostics, automated compliance, and profit-focused dispatching.
               </motion.p>
-
-              <motion.div variants={fadeInUp} className="mb-8 flex flex-wrap gap-2 text-sm">
-                <span className="inline-flex items-center rounded-full border border-border bg-background/80 px-3 py-1 font-medium text-foreground/90 backdrop-blur-sm">
-                  <CheckCircle2 className="mr-1.5 h-3.5 w-3.5 text-success" />
-                  14-day full access
-                </span>
-                <span className="inline-flex items-center rounded-full border border-border bg-background/80 px-3 py-1 font-medium text-foreground/90 backdrop-blur-sm">
-                  <Shield className="mr-1.5 h-3.5 w-3.5 text-primary" />
-                  Compliance ledger included
-                </span>
-                <span className="inline-flex items-center rounded-full border border-border bg-background/80 px-3 py-1 font-medium text-foreground/90 backdrop-blur-sm">
-                  <Clock className="mr-1.5 h-3.5 w-3.5 text-primary" />
-                  Go live in under 1 week
-                </span>
-              </motion.div>
-
-              <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-3 sm:items-center">
-                <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground px-9 h-15 text-lg font-semibold shadow-[0_16px_40px_rgba(14,116,144,0.32)] ring-1 ring-primary/25">
-                  <Link to="/signup" onClick={() => trackMarketingEvent("landing_hero_primary_click")}>
-                    Start 14-Day Free Trial
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className="border-border dark:border-border text-foreground hover:bg-secondary dark:hover:bg-secondary h-14 text-base backdrop-blur-md shadow-sm motion-interactive motion-press"
-                ><Link to="/demo" onClick={() => trackMarketingEvent("landing_hero_secondary_click")}>
-                    <Play className="w-4 h-4 mr-2 fill-current" />
-                    Watch 3-Min Demo
-                  </Link>
-                </Button>
-              </motion.div>
-
-              <motion.p variants={fadeInUp} className="mt-4 text-sm text-muted-foreground">
-                No credit card required. Onboarding playbook and migration support included.
-              </motion.p>
-
-              <motion.div variants={fadeInUp} className="mt-8 flex items-center gap-4 text-sm text-muted-foreground">
-                <div className="flex -space-x-2">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="w-8 h-8 rounded-full bg-muted border-2 border-background flex items-center justify-center text-xs font-bold text-foreground">
-                      {String.fromCharCode(64 + i)}
-                    </div>
-                  ))}
-                </div>
-                <p>Trusted by {landingConfig.socialProof.contractorCount} <span className="text-xs opacity-70">{landingConfig.socialProof.disclaimer}</span></p>
-              </motion.div>
-            </motion.div>
-
-            {/* Hero Visual */}
-            <motion.div
-              initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, rotateY: 6 }}
-              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-              transition={{ duration: prefersReducedMotion ? 0 : 0.3, ease: "easeOut" }}
-              className="relative hidden lg:block pr-8 pb-8"
-            >
-              <div className={`relative z-10 ${prefersReducedMotion ? "" : "animate-float"}`}>
-                <LandingImage
-                  src="/assets/landing/hero_premium.png"
-                  alt="ThermoNeural Command Center"
-                  className="rounded-xl shadow-premium border border-border/50 dark:border-border w-full motion-interactive-emphasis hover:scale-[1.01]"
-                />
-
-                {/* Floating Elements (CSS Enhanced) */}
-                <div className={`absolute -top-10 -right-10 p-4 bg-background/95 dark:bg-card/90 backdrop-blur-xl rounded-lg border border-border/80 dark:border-border shadow-premium z-20 ${prefersReducedMotion ? "" : "animate-float-delayed"}`}>
-                  <div className="flex items-center gap-3 mb-2">
-                    <Zap className="w-5 h-5 text-success" />
-                    <span className="text-foreground font-medium">Revenue</span>
-                  </div>
-                  <div className="text-2xl font-bold text-foreground">$12,450</div>
-                  <div className="text-xs text-success font-medium">+18% this week</div>
-                </div>
-
-                {/* New Halo HUD Cards */}
-                <div className={`absolute top-1/2 -left-16 p-4 bg-background/95 dark:bg-card/90 backdrop-blur-xl rounded-lg border border-border/80 dark:border-border shadow-premium z-20 hidden md:block ${prefersReducedMotion ? "" : "animate-float"}`}>
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className={`w-2 h-2 rounded-full bg-primary ${prefersReducedMotion ? "" : "animate-pulse"}`}></div>
-                    <span className="text-foreground font-medium text-sm">Live Dispatch</span>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-blue-500 flex items-center justify-center text-[10px] font-bold text-white">T</div>
-                      <div className="text-xs text-muted-foreground">Tech #42 <span className="text-primary">→ En Route</span></div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className={`absolute -bottom-8 right-20 p-3 bg-background/95 dark:bg-card/90 backdrop-blur-xl rounded-lg border border-border/80 dark:border-border shadow-premium z-20 hidden md:block ${prefersReducedMotion ? "" : "animate-float-delayed"}`}>
-                  <div className="flex items-center gap-3">
-                    <Shield className="w-4 h-4 text-primary" />
-                    <div className="text-xs font-medium text-foreground">System Health: <span className="text-success">98%</span></div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Glow effect behind visual */}
-        {/* Background Glow Removed */}
-      </section>
-
-      {/* Problem / Agitation Section */}
-      <section className="py-16 md:py-20 bg-background relative border-y border-border/50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-              Your technicians are excellent. <br />
-              <span className="text-destructive">Your systems are the bottleneck.</span>
-            </h2>
-            <p className="text-xl text-muted-foreground">
-              Manual invoices, lost data, and callback loops are eating your margins.
-              It's time to run your business like an engineering firm.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Interactive Strategic Core */}
-      <section className="py-20 md:py-24 bg-secondary/20 relative overflow-hidden border-y border-border/60">
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center mb-20">
-            <span className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-primary mb-4">
-              Storyline
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Four Pillars of Operational Excellence
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              Click through each module to see how we solve your biggest operational challenges.
-            </p>
-          </div>
-
-          <div className="core-grid">
-            {/* Pillar Cards */}
-            <div className="core-module-nav">
-              {strategicPillars.map((pillar, idx) => (
-                <div
-                  key={idx}
-                  className={`core-module-item ${activeTab === idx ? 'active ring-2 ring-primary/40 shadow-lg' : 'opacity-90 hover:opacity-100'}`}
-                  onClick={() => {
-                    setActiveTab(idx);
-                    if (expandedPillar === null) {
-                      setExpandedPillar(idx);
-                    }
-                    trackMarketingEvent("landing_pillar_click", { section: pillar.title });
-                  }}
-                >
-                  <div className="painpoint-tag mb-4">{pillar.painpoint}</div>
-                  <h3 className="text-2xl font-bold text-foreground mb-2">{pillar.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                    {activeTab === idx ? pillar.description : pillar.subtitle}
-                  </p>
-
-                  {/* Integrated Media Preview */}
-                  <div className={`mt-6 mb-4 rounded-xl overflow-hidden border border-border bg-muted/30 aspect-video relative group/media ${activeTab === idx ? "" : "hidden md:block"}`}>
-                    <LandingImage
-                      src={pillar.icon}
-                      alt={pillar.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover motion-interactive-emphasis group-hover/media:scale-110"
-                    />
-                    {/* Technical HUD Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
-                    <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-                      <div className="text-xs font-medium text-white/90 drop-shadow-md">
-                        {pillar.subtitle}
-                      </div>
-                      <div className="text-[10px] font-mono text-primary/80 bg-primary/10 px-2 py-0.5 rounded border border-primary/20 backdrop-blur-md hidden md:block">
-                        SYS_READY
-                      </div>
-                    </div>
-                  </div>
-
-                  <Collapsible
-                    open={expandedPillar === idx}
-                    onOpenChange={(open) => setExpandedPillar(open ? idx : null)}
-                    className="mb-4"
-                  >
-                    <CollapsibleTrigger asChild>
-                      <button
-                        type="button"
-                        className={`text-xs font-semibold uppercase tracking-wider ${activeTab === idx ? "text-primary" : "text-muted-foreground"}`}
-                      >
-                        {expandedPillar === idx ? "Hide impact details" : "Show impact details"}
-                      </button>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent className="pt-2">
-                      <div className="rounded-lg border border-border/70 bg-background/70 px-3 py-2 text-xs text-muted-foreground">
-                        {pillar.subtitle}. This module is designed to remove {pillar.painpoint.toLowerCase()} bottlenecks from daily operations.
-                      </div>
-                    </CollapsibleContent>
-                  </Collapsible>
-
-                  <button className={`text-sm font-semibold uppercase tracking-wider flex items-center gap-2 ${activeTab === idx ? 'text-primary' : 'text-muted-foreground'}`}>
-                    Deploy Module <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            {/* Right Column: Holographic Viewport (Desktop Only) */}
-            <div className="core-viewport group hidden lg:block">
-              {strategicPillars.map((pillar, idx) => (
-                <LandingImage
-                  key={idx}
-                  src={pillar.icon}
-                  alt={pillar.title}
-                  loading="lazy"
-                  className={`core-viewport-image ${activeTab === idx ? 'active' : ''}`}
-                />
-              ))}
-
-              <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
-
-              <div className="core-overlay">
-                <div>
-                  <h4 className="text-muted-foreground text-sm font-mono mb-2">SYSTEM_STATUS: ONLINE</h4>
-                  <h2 className="text-3xl font-bold text-foreground">{strategicPillars[activeTab]?.subtitle}</h2>
-                </div>
-                <div className="hidden md:block">
-                  <div className="w-12 h-12 rounded-full border border-border flex items-center justify-center animate-pulse">
-                    <div className="w-2 h-2 bg-primary rounded-full" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ROI Stats Section */}
-      <section className="py-16 md:py-20 bg-background border-y border-border">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center divide-y md:divide-y-0 md:divide-x divide-border">
-            {landingConfig.roiStats.map((stat, idx) => (
-              <div key={idx} className="p-4">
-                <div className="text-4xl md:text-5xl font-bold text-foreground mb-2">{stat.value}</div>
-                <div className="text-primary font-medium">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-          <p className="text-center text-xs text-muted-foreground mt-6 opacity-70">
-            *{landingConfig.roiStats[0].disclaimer}. Individual results may vary.
-          </p>
-        </div>
-      </section>
-
-      {/* Trust Badges Section */}
-      <section className="py-16 md:py-20 bg-secondary/30 border-y border-border">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">Trusted standards, readable proof</h2>
-            <p className="text-muted-foreground">
-              We align operations with recognized HVAC and security references so your team can move faster with confidence.
-            </p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
-            {landingConfig.trustBadges.map((badge, idx) => (
-              <div
-                key={idx}
-                className="flex items-start gap-3 px-4 py-4 rounded-xl bg-background/70 border border-border shadow-sm"
+              <motion.div
+                variants={fadeInUp}
+                className="flex flex-col sm:flex-row gap-3 sm:gap-4"
               >
-                <div className="mt-0.5">
-                  {badge.status === 'active' ? (
-                    <BadgeCheck className="w-5 h-5 text-success" />
-                  ) : (
-                    <Clock className="w-5 h-5 text-warning" />
-                  )}
-                </div>
-                <div className="text-sm min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-foreground">{badge.name}</span>
-                    <span
-                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold ${
-                        badge.status === 'active'
-                          ? 'bg-success/15 text-success'
-                          : 'bg-warning/15 text-warning-foreground dark:text-warning'
-                      }`}
-                    >
-                      {badge.status === 'active' ? 'Active' : 'In progress'}
-                    </span>
-                  </div>
-                  <p className="text-muted-foreground mt-1 leading-relaxed">{badge.description}</p>
-                </div>
+                <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 sm:px-8 py-5 sm:py-7 rounded-xl text-base sm:text-lg font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-all group">
+                  <Link to="/signup" className="flex items-center gap-2">
+                    Start Your Free Trial
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="lg" className="border border-border bg-background/80 dark:border-white/20 dark:bg-white/10 backdrop-blur-md px-6 sm:px-8 py-5 sm:py-7 rounded-xl text-base sm:text-lg font-semibold text-foreground dark:text-white hover:bg-background/90 dark:hover:bg-white/20 transition-all">
+                  <Link to="/demo" className="flex items-center gap-2">
+                    <Play className="w-5 h-5 fill-current" />
+                    Watch Strategy Video
+                  </Link>
+                </Button>
+              </motion.div>
+            </motion.div>
+
+            {/* Hero Visual - Clear Image on Right Side */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="relative mt-8 lg:mt-0"
+            >
+              <div className="relative rounded-2xl overflow-hidden border border-border shadow-2xl bg-card/30 backdrop-blur-md">
+                <LandingImage
+                  src="/assets/landing/create_image_like_202603191616.png"
+                  alt="ThermoNeural Dashboard Interface"
+                  className="w-full h-auto object-cover"
+                />
               </div>
-            ))}
+
+              {/* Decorative HUD Elements */}
+              <div className="absolute -top-4 sm:-top-6 -right-4 sm:-right-6 w-24 sm:w-32 h-24 sm:h-32 bg-primary/20 blur-2xl sm:blur-3xl rounded-full animate-pulse" />
+              <div className="absolute -bottom-4 sm:-bottom-6 -left-4 sm:-left-6 w-32 sm:w-48 h-32 sm:h-48 bg-primary/10 blur-2xl sm:blur-3xl rounded-full" />
+
+              {/* Floating Value Card */}
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute top-1/2 -right-8 sm:-right-12 lg:-right-12 hidden md:block glass-card p-3 sm:p-4 rounded-xl z-20 bg-card border border-border shadow-xl backdrop-blur-md"
+              >
+                <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
+                  <Zap className="w-4 sm:w-5 h-4 sm:h-5 text-primary" />
+                  <span className="text-lg sm:text-xl font-bold font-display">2.4x</span>
+                </div>
+                <div className="text-[8px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                  Efficiency Gain
+                </div>
+                <div className="text-[8px] sm:text-[10px] text-muted-foreground uppercase tracking-widest mt-0 sm:mt-1">Direct Operational ROI</div>
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Problem / Pillars Section */}
+      <section className="py-24 bg-background relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] text-slate-500 pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4 font-display">Your technicians are excellent.</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground font-display">Your systems are the bottleneck.</h2>
+            <div className="w-24 h-1 bg-primary mx-auto mt-8" />
+            <p className="mt-8 text-muted-foreground font-semibold tracking-wide uppercase text-sm">Four Pillars of Operational Excellence</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {landingConfig.strategicPillars.map((pillar, idx) => {
+              const Icon = pillarIcons[idx] || Layout;
+              return (
+                <motion.div 
+                  key={idx}
+                  whileHover={{ y: -8 }}
+                  className="border border-border rounded-2xl p-6 flex flex-col h-full bg-card/50 backdrop-blur-sm landing-pillars-card group"
+                >
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-6 transition-all duration-300 ${
+                    idx === 0 ? 'bg-blue-100 dark:bg-[#eff6ff] text-blue-600 dark:text-[#2563eb] group-hover:bg-blue-600 dark:group-hover:bg-[#2563eb] group-hover:text-white' :
+                    idx === 1 ? 'bg-green-100 dark:bg-[#f0fdf4] text-green-600 dark:text-[#16a34a] group-hover:bg-green-600 dark:group-hover:bg-[#16a34a] group-hover:text-white' :
+                    idx === 2 ? 'bg-purple-100 dark:bg-[#faf5ff] text-purple-600 dark:text-[#9333ea] group-hover:bg-purple-600 dark:group-hover:bg-[#9333ea] group-hover:text-white' :
+                    'bg-orange-100 dark:bg-[#fff7ed] text-orange-600 dark:text-[#ea580c] group-hover:bg-orange-600 dark:group-hover:bg-[#ea580c] group-hover:text-white'
+                  }`}>
+                    <Icon className="w-6 h-6 transition-transform duration-300" />
+                  </div>
+                  <h3 className="font-bold text-foreground mb-2">{pillar.title}</h3>
+                  <p className="text-muted-foreground text-sm mb-6 flex-grow leading-relaxed">
+                    {pillar.description}
+                  </p>
+                  <Link to="/signup" className="text-[#2563eb] font-semibold text-sm hover:underline flex items-center gap-1">
+                    Deploy Module <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                  </Link>
+                  <div className="mt-6 pt-6 border-t border-border overflow-hidden rounded-lg">
+                    <div className="bg-muted rounded-lg h-32 w-full relative overflow-hidden">
+                      <LandingImage 
+                        src={pillar.icon} 
+                        alt={pillar.title} 
+                        className="w-full h-full object-cover opacity-80 mix-blend-multiply dark:mix-blend-overlay group-hover:scale-110 transition-transform duration-500 ease-out" 
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-primary/5" />
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Pillars of Operational Excellence Metrics Strip */}
+      <section className="py-12 border-y border-border bg-card/50 backdrop-blur-sm relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] text-primary pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
+            {/* Metrics Group */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-12 w-full lg:w-auto">
+              <div className="flex flex-col items-center lg:items-start group">
+                <span className="text-4xl md:text-5xl font-black text-primary font-display tracking-tight transition-transform group-hover:scale-110 duration-300">30%</span>
+                <span className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-[0.2em] mt-2 text-center lg:text-left">Increase in Ticket Value</span>
+              </div>
+              <div className="flex flex-col items-center lg:items-start group">
+                <span className="text-4xl md:text-5xl font-black text-primary font-display tracking-tight transition-transform group-hover:scale-110 duration-300">Zero</span>
+                <span className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-[0.2em] mt-2 text-center lg:text-left">Compliance Fines</span>
+              </div>
+              <div className="flex flex-col items-center lg:items-start group">
+                <span className="text-4xl md:text-5xl font-black text-primary font-display tracking-tight transition-transform group-hover:scale-110 duration-300">2hrs</span>
+                <span className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-[0.2em] mt-2 text-center lg:text-left">Saved Per Job</span>
+              </div>
+            </div>
+
+            {/* Vertical Divider (Desktop Only) */}
+            <div className="hidden lg:block w-px h-16 bg-border/40" />
+
+            {/* Badges Group */}
+            <div className="flex flex-wrap justify-center items-center gap-8 md:gap-10">
+              {/* ASHRAE */}
+              <div className="flex items-center gap-2 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-default">
+                <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-[#1a3a5c] flex items-center justify-center">
+                  <span className="text-slate-600 dark:text-white text-[5px] font-black leading-none text-center">ASHRAE</span>
+                </div>
+                <span className="font-black text-foreground text-sm tracking-tight">ASHRAE</span>
+              </div>
+              {/* NIST */}
+              <div className="flex items-center gap-2 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-default">
+                <span className="font-black text-foreground text-sm tracking-tight">NIST</span>
+                <Shield className="w-5 h-5 text-emerald-500 fill-emerald-500/20" />
+              </div>
+              {/* AES-256 */}
+              <div className="flex items-center gap-1 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-default">
+                <div className="w-7 h-7 rounded-full bg-teal-500/20 flex items-center justify-center">
+                  <CheckCircle2 className="w-4 h-4 text-teal-500" />
+                </div>
+                <span className="font-bold text-foreground text-xs">AES 256</span>
+              </div>
+              {/* GDPR */}
+              <div className="flex items-center gap-1 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-default">
+                <div className="w-7 h-7 rounded-full bg-blue-500/10 border-2 border-blue-400 flex items-center justify-center">
+                  <span className="text-blue-500 text-[7px] font-bold">EU</span>
+                </div>
+                <span className="font-bold text-foreground text-xs">GDPR</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Pricing Section */}
-      <section className="py-20 md:py-24 bg-background">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="text-center max-w-2xl mx-auto mb-16"
-          >
-            <h2 className="text-3xl font-bold text-foreground mb-4">Transparent Pricing for Every Stage</h2>
-            <p className="text-muted-foreground">Start free. Upgrade as you scale your fleet.</p>
-          </motion.div>
+      <section className="py-24 bg-muted/30 relative">
+        <div className="max-w-[1024px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-[30px] font-bold text-foreground font-display">Transparent Pricing for Every Stage</h2>
+          </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {pricing.map((plan) => (
+          <div className="flex items-center justify-center gap-6">
+            {landingConfig.pricing.map((plan, idx) => (
               <div
-                key={plan.name}
-                className={`relative p-8 rounded-2xl border ${plan.popular ? 'border-primary shadow-2xl scale-105 z-10 bg-card' : 'border-border bg-muted/30'}`}
+                key={idx}
+                className={`flex flex-col rounded-2xl border border-border bg-card ${
+                  plan.popular
+                    ? "w-[320px] lg:w-[352px] shadow-lg"
+                    : "w-[320px] lg:w-[352px] hover:shadow-lg"
+                }`}
               >
                 {plan.popular && (
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-bold uppercase tracking-wide">
-                    Most Popular
+                  <div className="bg-primary px-4 py-2 rounded-t-2xl text-center">
+                    <span className="text-primary-foreground text-[12px] font-bold tracking-wider uppercase">
+                      Most Popular
+                    </span>
                   </div>
                 )}
-                <h3 className="text-xl font-bold text-foreground mb-2">{plan.name}</h3>
-                <div className="flex items-baseline mb-2">
-                  <span className="text-4xl font-bold text-foreground">{plan.price}</span>
-                  <span className="text-muted-foreground ml-2">{plan.period}</span>
+
+                <div className="p-8 flex flex-col flex-grow">
+                  <div className="mb-6 text-center">
+                    <h3 className="text-[20px] font-bold text-foreground mb-2 font-display">
+                      {plan.name}
+                    </h3>
+                    <div className="flex items-baseline justify-center gap-1">
+                      <span className="text-[48px] font-bold text-foreground font-display leading-none">
+                        {plan.price}
+                      </span>
+                    </div>
+                    <p className="text-[14px] text-muted-foreground mt-2">{plan.period}</p>
+                    <p className="text-[14px] text-muted-foreground mt-2">{plan.description}</p>
+                  </div>
+
+                  <ul className="space-y-4 mb-8 flex-grow">
+                    {plan.features.map((feature, fIdx) => (
+                      <li key={fIdx} className="flex items-center gap-2 text-[14px] text-muted-foreground">
+                        <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none">
+                          <circle cx="12" cy="12" r="10" stroke={plan.popular ? "var(--primary)" : "currentColor"} strokeWidth="2"/>
+                          <path d="m9 12 2 2 4-4" stroke={plan.popular ? "var(--primary)" : "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {plan.popular && (
+                    <Link
+                      to={plan.link}
+                      className="block w-full py-3 px-4 bg-primary hover:bg-primary/90 text-primary-foreground text-[16px] font-bold rounded-lg text-center transition-all"
+                    >
+                      {plan.cta}
+                    </Link>
+                  )}
                 </div>
-                <p className="text-sm text-muted-foreground mb-6">{plan.description}</p>
-
-                <ul className="space-y-4 mb-8">
-                  {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-center text-foreground/80">
-                      <CheckCircle2 className={`w-5 h-5 mr-3 ${plan.popular ? 'text-primary' : 'text-muted-foreground'}`} />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-
-                <Button
-                  asChild
-                  className={`w-full h-12 ${plan.popular ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : 'bg-foreground hover:bg-foreground/90 text-background'}`}
-                >
-                  <Link to={plan.link}>{plan.cta}</Link>
-                </Button>
               </div>
             ))}
           </div>
@@ -544,129 +411,92 @@ export function Landing() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 md:py-24 bg-secondary/30">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="text-center max-w-2xl mx-auto mb-16"
-          >
-            <h2 className="text-3xl font-bold text-foreground mb-4">Frequently Asked Questions</h2>
-            <p className="text-muted-foreground">Everything you need to know about ThermoNeural.</p>
-          </motion.div>
-
-          <div className="max-w-3xl mx-auto">
-            <Accordion type="single" collapsible className="w-full">
-              {landingConfig.faq.map((item, idx) => (
-                <AccordionItem key={idx} value={`item-${idx}`}>
-                  <AccordionTrigger
-                    className="text-left text-foreground hover:text-primary"
-                    onClick={() => trackMarketingEvent("landing_faq_expand", { section: `faq_${idx}` })}
-                  >
-                    {item.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    {item.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
+      <section className="py-24 bg-muted/30">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-4xl font-bold text-foreground text-center mb-12 font-display">Frequently Asked Questions</h2>
+          <Accordion type="single" collapsible className="space-y-4">
+            {landingConfig.faq.map((item, idx) => (
+              <AccordionItem 
+                key={idx} 
+                value={`item-${idx}`}
+                className="bg-card rounded-xl border border-border overflow-hidden px-4 transition-all duration-200 hover:shadow-lg hover:border-primary/20"
+              >
+                <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline py-6 px-2">
+                  {item.question}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-6 px-2">
+                  {item.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
       </section>
 
-      {/* Final CTA - Premium Upgrade */}
-      <section className="py-20 md:py-32 bg-background relative overflow-hidden border-t border-border group/cta">
-        {/* Layered Background System */}
+      {/* Final CTA Section */}
+      <section className="relative py-24 md:py-32 overflow-hidden border-t border-border group">
         <div className="absolute inset-0 z-0">
-          <LandingImage
-            src="/assets/landing/hvac_office_team.jpg"
-            alt=""
-            loading="lazy"
-            className="w-full h-full object-cover scale-105 group-hover/cta:scale-100 transition-transform duration-[3s] opacity-30 dark:opacity-50 grayscale hover:grayscale-0 transition-all"
+          <LandingImage 
+            src="/assets/landing/hvac_office_team.jpg" 
+            alt="ThermoNeural Team" 
+            className="w-full h-full object-cover opacity-20 transition-transform duration-[5s] group-hover:scale-105"
           />
-          {/* Layer 1: Glassmorphism base */}
-          <div className="absolute inset-0 bg-background/90 backdrop-blur-[3px]" />
-
-          {/* Layer 2: Removed Radial Vignette */}
-          <div className="absolute inset-0 bg-background/10" />
-
-          {/* Layer 3: Removed Dynamic Glows */}
+          <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/85 to-background/95" />
         </div>
-
-        <div className="container relative z-10 mx-auto px-4 text-center">
+        
+        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.3, ease: "easeOut" }}
-            className="max-w-4xl mx-auto"
           >
-            <motion.div
-              initial={{ scale: prefersReducedMotion ? 1 : 0.96 }}
-              whileInView={{ scale: 1 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-8 backdrop-blur-md"
-            >
-              <Zap className={`w-4 h-4 text-primary ${prefersReducedMotion ? "" : "animate-pulse"}`} />
-              <span className="text-xs font-bold tracking-widest uppercase text-primary">Strategic Partnership</span>
-            </motion.div>
-
-            <h2 className="text-4xl sm:text-6xl md:text-7xl font-black text-foreground mb-10 tracking-tighter leading-[0.95] drop-shadow-2xl">
-              Build a business that <br />
-              <span className="text-primary italic relative">
-                runs without you
-                <svg className="absolute -bottom-2 left-0 w-full h-3 text-primary/30" viewBox="0 0 100 10" preserveAspectRatio="none">
-                  <path d="M0 5 Q 25 0, 50 5 T 100 5" fill="none" stroke="currentColor" strokeWidth="4" />
-                </svg>
-              </span>
+            <h2 className="text-4xl md:text-6xl font-black text-foreground mb-8 tracking-tight leading-[1.1] font-display">
+              Equip your fleet with <br className="hidden sm:block" />
+              <span className="text-primary">Decision Intelligence</span>
             </h2>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
-              <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 text-xl px-12 h-20 shadow-[0_20px_50px_rgba(var(--primary),0.3)] rounded-2xl group/btn overflow-hidden relative">
-                <Link to="/signup" onClick={() => trackMarketingEvent("landing_pricing_cta_click")}>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:translate-x-full motion-interactive-emphasis" />
-                  <span className="relative flex items-center gap-3">
-                    Systemize Your Business
-                    <ArrowRight className="w-6 h-6 group-hover/btn:translate-x-1 motion-interactive" />
-                  </span>
-                </Link>
+            <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
+              Join the growing number of HVAC&R contractors who are scaling their businesses with ThermoNeural's operational OS.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+              <Button 
+                size="lg" 
+                className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-7 rounded-full text-lg font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-all group"
+              >
+                Get Started Now
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="glass-button-dark px-8 py-7 rounded-full text-lg font-semibold shadow-xl shadow-foreground/10 hover:scale-105 transition-all group"
+              >
+                <Play className="mr-2 w-5 h-5 fill-current" />
+                Watch Strategy Video
               </Button>
             </div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ delay: prefersReducedMotion ? 0 : 0.18 }}
-              className="mt-12 flex flex-wrap items-center justify-center gap-8 text-sm text-muted-foreground/80 font-medium"
-            >
+            <div className="mt-12 flex flex-wrap items-center justify-center gap-8 text-xs font-bold text-muted-foreground uppercase tracking-widest">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-success" />
-                No credit card required
+                <BadgeCheck className="w-4 h-4 text-primary" />
+                No credit card
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-success" />
+                <BadgeCheck className="w-4 h-4 text-primary" />
                 14-day full access
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-success" />
-                Deploy in 5 minutes
+                <BadgeCheck className="w-4 h-4 text-primary" />
+                Live in 5 mins
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         </div>
       </section>
 
       {/* Mobile Sticky CTA */}
-      <div className={`landing-mobile-cta ${showMobileCta ? 'is-visible' : ''}`}>
-        <div className="landing-mobile-cta-inner">
-          <Button asChild className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground h-12">
-            <Link to="/signup" onClick={() => trackMarketingEvent("landing_mobile_cta_click")}>
-              Start Free Trial
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Link>
-          </Button>
-        </div>
+      <div className={`fixed bottom-6 left-4 right-4 z-40 md:hidden transition-all duration-300 transform ${showMobileCta ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'}`}>
+        <Button asChild className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-14 rounded-xl shadow-2xl text-lg font-bold">
+          <Link to="/signup">Start Free Trial</Link>
+        </Button>
       </div>
     </PublicPageShell>
   );

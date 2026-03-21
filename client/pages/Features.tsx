@@ -143,11 +143,12 @@ export function Features() {
         description="Explore ThermoNeural's operations + engineering workflows for HVAC&R contractors, owners, and field teams."
       />
 
-        <section className="px-4 pt-8 pb-10 md:pt-10 md:pb-12 lg:min-h-[calc(100svh-88px)] lg:flex lg:items-center">
-          <div className="max-w-6xl mx-auto w-full grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+        <section className="relative bg-slate-900 dark:bg-[#111827] px-4 pt-8 pb-10 md:pt-10 md:pb-12 lg:min-h-[calc(100svh-88px)] lg:flex lg:items-center hero-gradient">
+          <div className="absolute inset-0 bg-grid-pattern opacity-[0.05] text-primary pointer-events-none" />
+          <div className="max-w-6xl mx-auto w-full grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center relative z-10">
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-primary">Operations + Engineering</p>
-              <h1 className="mt-4 text-4xl md:text-[3.25rem] leading-[1.04] font-semibold">
+              <h1 className="mt-4 text-4xl md:text-[3.25rem] leading-[1.04] font-semibold font-display tracking-tight">
                 One operating system for dispatch, compliance, and engineering execution.
               </h1>
               <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
@@ -187,7 +188,7 @@ export function Features() {
             </div>
             <div className="grid gap-3">
               {coreFeatures.map((feature) => (
-                <Card key={feature.title} className="border-border/60 rounded-2xl">
+                <Card key={feature.title} className="border-border/60 rounded-2xl bg-card/50 backdrop-blur-sm hover:-translate-y-1 transition-all hover:shadow-lg">
                   <CardHeader className="pb-2 pt-5">
                     <CardTitle className="flex items-center gap-3 text-lg">
                       <feature.icon className="h-5 w-5 text-primary" />
@@ -203,11 +204,12 @@ export function Features() {
           </div>
         </section>
 
-        <section id="use-cases" className="scroll-mt-28 px-4 py-16 bg-secondary/30">
-          <div className="max-w-6xl mx-auto">
+        <section id="use-cases" className="scroll-mt-28 px-4 py-16 bg-secondary/30 relative">
+          <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] text-slate-500 pointer-events-none" />
+          <div className="max-w-6xl mx-auto relative z-10">
             <div className="max-w-2xl">
               <p className="text-xs uppercase tracking-[0.2em] text-primary">Use Cases</p>
-              <h2 className="mt-4 text-3xl md:text-4xl font-semibold">
+              <h2 className="mt-4 text-3xl md:text-4xl font-semibold font-display tracking-tight">
                 Built for owner/manager visibility and technician execution.
               </h2>
               <p className="mt-4 text-muted-foreground">
@@ -216,7 +218,7 @@ export function Features() {
             </div>
             <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {platformFeatures.map((feature) => (
-                <Card key={feature.title} className="border-border/60">
+                <Card key={feature.title} className="border-border/60 bg-card/50 backdrop-blur-sm hover:-translate-y-1 transition-all hover:shadow-lg">
                   <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-3 text-lg">
                       <feature.icon className="h-5 w-5 text-primary" />
@@ -235,8 +237,8 @@ export function Features() {
         <section className="px-4 py-16">
           <div className="max-w-6xl mx-auto grid gap-6 md:grid-cols-3">
             {technicalSpecs.map((spec) => (
-              <div key={spec.title} className="rounded-2xl border border-border/60 bg-background p-6">
-                <h3 className="text-lg font-semibold">{spec.title}</h3>
+              <div key={spec.title} className="rounded-2xl border border-border/60 bg-card/50 backdrop-blur-sm p-6 hover:-translate-y-1 transition-all hover:shadow-lg">
+                <h3 className="text-lg font-semibold font-display">{spec.title}</h3>
                 <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
                   {spec.items.map((item) => (
                     <li key={item}>{item}</li>
@@ -251,7 +253,7 @@ export function Features() {
           <div className="max-w-6xl mx-auto rounded-3xl border border-border/60 bg-gradient-to-br from-primary/5 via-background to-background p-10 md:p-14">
             <div className="max-w-2xl">
               <p className="text-xs uppercase tracking-[0.2em] text-primary">Ready to start</p>
-              <h2 className="mt-4 text-3xl md:text-4xl font-semibold">
+              <h2 className="mt-4 text-3xl md:text-4xl font-semibold font-display tracking-tight">
                 Start free for engineering now, then expand to Business Ops control.
               </h2>
               <p className="mt-4 text-muted-foreground">
