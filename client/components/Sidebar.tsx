@@ -15,8 +15,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAppNavigation, NavItem } from "@/hooks/useAppNavigation";
 import { useAuth } from "@/hooks/useSupabaseAuth";
-import { cn } from "@/lib/utils";
 import { navLinkBaseClasses, navLinkIconClasses } from "@/lib/navigation";
+import { cn } from "@/lib/utils";
 
 type ResourceItem = {
   to: string;

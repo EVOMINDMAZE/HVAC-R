@@ -1,8 +1,7 @@
 import { Loader2, Upload, Building2, Globe, Palette, Send } from "lucide-react";
-
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Check } from "lucide-react";
 import { useState, useEffect } from "react";
+
 import { GoogleSheetConnect } from "../components/shared/GoogleSheetConnect";
 import { Button } from "../components/ui/button";
 import {
@@ -17,9 +16,10 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { useToast } from "../components/ui/use-toast";
 import { supabase } from "../lib/supabase";
-import { PageContainer } from "@/components/PageContainer";
 
+import { PageContainer } from "@/components/PageContainer";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useWorkflowTrigger } from "@/hooks/useWorkflowTrigger";
 

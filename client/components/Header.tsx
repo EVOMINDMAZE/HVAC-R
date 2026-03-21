@@ -25,8 +25,8 @@ import {
 import { useAppNavigation } from "@/hooks/useAppNavigation";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
-import { cn } from "@/lib/utils";
 import { navLinkBaseClasses } from "@/lib/navigation";
+import { cn } from "@/lib/utils";
 
 interface HeaderProps {
   variant?: "landing" | "dashboard";
@@ -413,34 +413,25 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
           </Link>
         </div>
 
-        <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
-          {landingLinks.map((item) => (
-            <Link
-              key={`${item.to}${item.hash ?? ""}`}
-              to={getLandingLinkTarget(item)}
-              onClick={(event) => handleLandingLinkClick(item, event)}
-              className={cn(
-                navLinkBaseClasses,
-                "text-muted-foreground/80 hover:text-foreground transition-all duration-200 rounded-lg hover:bg-muted/50",
-                isLandingLinkActive(item) && "text-foreground bg-muted/30",
-              )}
-              aria-current={isLandingLinkActive(item) ? "page" : undefined}
-            >
-              {item.label}
-            </Link>
-          ))}
+        <nav className="hidden items-center gap-8 md:flex" aria-label="Primary">
+          <Link to="/features" className="landing-nav-link">Features</Link>
+          <Link to="/use-cases" className="landing-nav-link">Use Cases</Link>
+          <Link to="/pricing" className="landing-nav-link">Pricing</Link>
+          <Link to="/about" className="landing-nav-link">About</Link>
+          <Link to="/help" className="landing-nav-link">Help</Link>
+          <Link to="/support" className="landing-nav-link">Support</Link>
         </nav>
 
-        <div className="hidden items-center gap-2 md:flex">
+        <div className="hidden items-center gap-4 md:flex">
           <ModeToggle />
-          <Link to="/signin">
-            <Button variant="ghost" className="transition-all duration-200">Sign In</Button>
+          <Link to="/signin" className="landing-nav-link font-bold">
+            Sign In
           </Link>
           <Link to="/signup">
             <Button 
               disabled={isRefreshing}
               className={cn(
-                "transition-all duration-200 shadow-lg shadow-primary/15",
+                "landing-btn-primary px-6 py-2 shadow-primary/10",
                 variant === "landing" && !isAuthenticated && "bg-primary hover:bg-primary/90 text-primary-foreground border-none"
               )}
             >

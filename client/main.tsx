@@ -1,11 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-
-import App from './App.tsx'
-
-import './global.css'
 import { HelmetProvider } from 'react-helmet-async';
 
+import App from './App.tsx'
+import './global.css'
 import { setupGlobalErrorHandler } from './utils/errorHandler'
 
 

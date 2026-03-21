@@ -972,6 +972,33 @@ body {
 }
 
 /* Landing Animations */
+
+.landing-nav-link {
+  @apply text-sm font-medium text-muted-foreground hover:text-foreground transition-colors;
+}
+
+.landing-nav-link-active {
+  @apply text-foreground;
+}
+
+.landing-btn-primary {
+  @apply inline-flex items-center justify-center rounded-md bg-primary px-8 py-3 text-sm font-bold text-primary-foreground shadow-lg transition-all hover:bg-primary/90 hover:scale-[1.02] hover:shadow-primary/20;
+}
+
+.landing-btn-secondary {
+  @apply inline-flex items-center justify-center rounded-md border border-border bg-background/50 px-8 py-3 text-sm font-bold text-foreground shadow-sm backdrop-blur-sm transition-all hover:bg-muted hover:border-border/80;
+}
+
+.landing-heading-accent {
+  @apply text-primary relative inline-block;
+}
+
+.landing-heading-underline {
+  @apply absolute left-0 w-full pointer-events-none;
+  bottom: -0.1em;
+  height: 0.15em;
+}
+
 /* Interactive Engineering Core */
 @media (max-width: 1024px) {
   .core-grid {

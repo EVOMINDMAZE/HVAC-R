@@ -1,6 +1,4 @@
-import { useEffect, useState, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import "@/landing.css";
 import {
   ArrowRight,
   CheckCircle2,
@@ -15,7 +13,9 @@ import {
   FileCheck2,
   Send,
 } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
+import "@/landing.css";
 
 import { PublicPageShell } from "@/components/public/PublicPageShell";
 import { SEO } from "@/components/SEO";
@@ -146,143 +146,205 @@ export function Landing() {
           }} />
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            {/* Hero Text */}
-            <motion.div
-              initial="hidden"
-              animate={isVisible ? "visible" : "hidden"}
-              variants={stagger}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center justify-center text-center">
+          <motion.div
+            initial="hidden"
+            animate={isVisible ? "visible" : "hidden"}
+            variants={stagger}
+            className="max-w-4xl mx-auto flex flex-col items-center"
+          >
+            <motion.h1
+              variants={fadeInUp}
+              className="text-foreground dark:text-white text-5xl sm:text-6xl md:text-7xl lg:text-[72px] font-display font-extrabold tracking-tight leading-[1.05] mb-6"
             >
-              <motion.h1
-                variants={fadeInUp}
-                className="text-foreground dark:text-white text-4xl sm:text-5xl md:text-6xl lg:text-[56px] xl:text-[60px] font-display font-extrabold tracking-tight leading-[1.1] mb-4 sm:mb-6"
-              >
-                Engineering<br />
-                <span className="text-primary" style={{ position: "relative", display: "inline-block" }}>
-                  Operations
-                  <img
-                    src="/assets/landing-figma/mmxud1sh-eiwbik6.svg"
-                    alt=""
-                    className="absolute left-0 -bottom-1 w-full pointer-events-none"
-                    style={{ height: "8px" }}
-                  />
-                </span>{" "}
-                at Scale.
-              </motion.h1>
-              <motion.p
-                variants={fadeInUp}
-                className="text-muted-foreground text-base sm:text-lg lg:text-xl max-w-lg mb-8 sm:mb-10 leading-relaxed"
-              >
-                Stop trading time for money. Equip your technicians with AI-driven diagnostics, automated compliance, and profit-focused dispatching.
-              </motion.p>
-              <motion.div
-                variants={fadeInUp}
-                className="flex flex-col sm:flex-row gap-3 sm:gap-4"
-              >
-                <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 sm:px-8 py-5 sm:py-7 rounded-xl text-base sm:text-lg font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-all group">
-                  <Link to="/signup" className="flex items-center gap-2">
-                    Start Your Free Trial
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" size="lg" className="border border-border bg-background/80 dark:border-white/20 dark:bg-white/10 backdrop-blur-md px-6 sm:px-8 py-5 sm:py-7 rounded-xl text-base sm:text-lg font-semibold text-foreground dark:text-white hover:bg-background/90 dark:hover:bg-white/20 transition-all">
-                  <Link to="/demo" className="flex items-center gap-2">
-                    <Play className="w-5 h-5 fill-current" />
-                    Watch Strategy Video
-                  </Link>
-                </Button>
-              </motion.div>
-            </motion.div>
-
-            {/* Hero Visual - Clear Image on Right Side */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative mt-8 lg:mt-0"
-            >
-              <div className="relative rounded-2xl overflow-hidden border border-border shadow-2xl bg-card/30 backdrop-blur-md">
-                <LandingImage
-                  src="/assets/landing/create_image_like_202603191616.png"
-                  alt="ThermoNeural Dashboard Interface"
-                  className="w-full h-auto object-cover"
+              Engineering <br className="hidden sm:block" />
+              <span className="landing-heading-accent">
+                Operations
+                <img
+                  src="/assets/landing-figma/mmxud1sh-eiwbik6.svg"
+                  alt=""
+                  className="landing-heading-underline"
                 />
-              </div>
-
-              {/* Decorative HUD Elements */}
-              <div className="absolute -top-4 sm:-top-6 -right-4 sm:-right-6 w-24 sm:w-32 h-24 sm:h-32 bg-primary/20 blur-2xl sm:blur-3xl rounded-full animate-pulse" />
-              <div className="absolute -bottom-4 sm:-bottom-6 -left-4 sm:-left-6 w-32 sm:w-48 h-32 sm:h-48 bg-primary/10 blur-2xl sm:blur-3xl rounded-full" />
-
-              {/* Floating Value Card */}
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute top-1/2 -right-8 sm:-right-12 lg:-right-12 hidden md:block glass-card p-3 sm:p-4 rounded-xl z-20 bg-card border border-border shadow-xl backdrop-blur-md"
-              >
-                <div className="flex items-center gap-2 sm:gap-3 mb-1 sm:mb-2">
-                  <Zap className="w-4 sm:w-5 h-4 sm:h-5 text-primary" />
-                  <span className="text-lg sm:text-xl font-bold font-display">2.4x</span>
-                </div>
-                <div className="text-[8px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-                  Efficiency Gain
-                </div>
-                <div className="text-[8px] sm:text-[10px] text-muted-foreground uppercase tracking-widest mt-0 sm:mt-1">Direct Operational ROI</div>
-              </motion.div>
+              </span>{" "}
+              at Scale.
+            </motion.h1>
+            <motion.p
+              variants={fadeInUp}
+              className="text-muted-foreground text-lg sm:text-xl lg:text-2xl max-w-2xl mb-10 leading-relaxed"
+            >
+              Stop trading time for money. Equip your technicians with AI-driven diagnostics, automated compliance, and profit-focused dispatching.
+            </motion.p>
+            <motion.div
+              variants={fadeInUp}
+              className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
+            >
+              <Link to="/signup" className="landing-btn-primary w-full sm:w-auto h-14 text-lg">
+                Start Your Free Trial
+              </Link>
+              <Link to="/demo" className="landing-btn-secondary w-full sm:w-auto h-14 text-lg">
+                <Play className="w-5 h-5 mr-2 fill-current" />
+                Watch Strategy Video
+              </Link>
             </motion.div>
-          </div>
+          </motion.div>
+
+          {/* Hero Visual */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="w-full max-w-[1024px] mt-16 relative perspective-1000"
+          >
+            <div className="relative rounded-xl overflow-hidden border border-border/50 shadow-2xl bg-card transform rotate-x-2 translate-y-2 hover:rotate-x-0 hover:translate-y-0 transition-transform duration-500 ease-out">
+              <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent z-10 pointer-events-none" />
+              <LandingImage
+                src="/assets/landing-figma/mmxud1ss-7algalc.png"
+                alt="ThermoNeural Dashboard Interface"
+                className="w-full h-auto object-cover relative z-0"
+                loading="eager"
+              />
+            </div>
+
+            {/* Floating Elements */}
+            <motion.div
+              animate={{ y: [0, -12, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -right-6 top-1/4 hidden md:flex items-center gap-3 bg-card border border-border p-4 rounded-xl shadow-xl z-20 backdrop-blur-md"
+            >
+              <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                <Zap className="w-5 h-5 text-emerald-500" />
+              </div>
+              <div>
+                <div className="text-2xl font-black font-display text-foreground">2.4x</div>
+                <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Efficiency Gain</div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+              className="absolute -left-6 bottom-1/4 hidden md:flex items-center gap-3 bg-card border border-border p-4 rounded-xl shadow-xl z-20 backdrop-blur-md"
+            >
+              <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                <Shield className="w-5 h-5 text-blue-500" />
+              </div>
+              <div>
+                <div className="text-2xl font-black font-display text-foreground">Zero</div>
+                <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Callback Rate</div>
+              </div>
+            </motion.div>
+
+            {/* Glow Effects */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-primary/20 blur-[100px] -z-10 rounded-full" />
+          </motion.div>
         </div>
       </section>
 
-      {/* Problem / Pillars Section */}
-      <section className="py-24 bg-background relative overflow-hidden">
-        <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] text-slate-500 pointer-events-none" />
+      {/* Problem / Pillars Section - Redesigned */}
+      <section className="py-24 bg-muted/20 relative overflow-hidden border-t border-border/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4 font-display">Your technicians are excellent.</h2>
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground font-display">Your systems are the bottleneck.</h2>
-            <div className="w-24 h-1 bg-primary mx-auto mt-8" />
-            <p className="mt-8 text-muted-foreground font-semibold tracking-wide uppercase text-sm">Four Pillars of Operational Excellence</p>
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6 font-display leading-tight">
+              Your technicians are excellent.<br />
+              <span className="text-muted-foreground">Your systems are the bottleneck.</span>
+            </h2>
+            <p className="text-lg text-muted-foreground tracking-wide font-medium">
+              FOUR PILLARS OF OPERATIONAL EXCELLENCE
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {landingConfig.strategicPillars.map((pillar, idx) => {
-              const Icon = pillarIcons[idx] || Layout;
-              return (
-                <motion.div 
-                  key={idx}
-                  whileHover={{ y: -8 }}
-                  className="border border-border rounded-2xl p-6 flex flex-col h-full bg-card/50 backdrop-blur-sm landing-pillars-card group"
-                >
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-6 transition-all duration-300 ${
-                    idx === 0 ? 'bg-blue-100 dark:bg-[#eff6ff] text-blue-600 dark:text-[#2563eb] group-hover:bg-blue-600 dark:group-hover:bg-[#2563eb] group-hover:text-white' :
-                    idx === 1 ? 'bg-green-100 dark:bg-[#f0fdf4] text-green-600 dark:text-[#16a34a] group-hover:bg-green-600 dark:group-hover:bg-[#16a34a] group-hover:text-white' :
-                    idx === 2 ? 'bg-purple-100 dark:bg-[#faf5ff] text-purple-600 dark:text-[#9333ea] group-hover:bg-purple-600 dark:group-hover:bg-[#9333ea] group-hover:text-white' :
-                    'bg-orange-100 dark:bg-[#fff7ed] text-orange-600 dark:text-[#ea580c] group-hover:bg-orange-600 dark:group-hover:bg-[#ea580c] group-hover:text-white'
-                  }`}>
-                    <Icon className="w-6 h-6 transition-transform duration-300" />
-                  </div>
-                  <h3 className="font-bold text-foreground mb-2">{pillar.title}</h3>
-                  <p className="text-muted-foreground text-sm mb-6 flex-grow leading-relaxed">
-                    {pillar.description}
-                  </p>
-                  <Link to="/signup" className="text-[#2563eb] font-semibold text-sm hover:underline flex items-center gap-1">
-                    Deploy Module <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                  </Link>
-                  <div className="mt-6 pt-6 border-t border-border overflow-hidden rounded-lg">
-                    <div className="bg-muted rounded-lg h-32 w-full relative overflow-hidden">
-                      <LandingImage 
-                        src={pillar.icon} 
-                        alt={pillar.title} 
-                        className="w-full h-full object-cover opacity-80 mix-blend-multiply dark:mix-blend-overlay group-hover:scale-110 transition-transform duration-500 ease-out" 
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-primary/5" />
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
+          <div className="flex flex-col gap-24">
+            {/* Pillar 1: AI Supervisor */}
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="order-2 lg:order-1 relative rounded-xl border border-border/50 shadow-2xl overflow-hidden bg-card transform transition-transform hover:scale-[1.02] duration-500">
+                <LandingImage
+                  src="/assets/landing-figma/mmxud1ss-7algalc.png"
+                  alt="AI Supervisor Dashboard"
+                  className="w-full h-auto object-cover"
+                />
+              </div>
+              <div className="order-1 lg:order-2 flex flex-col items-start lg:pl-12">
+                <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-6 border border-blue-500/20">
+                  <img src="/assets/landing-figma/mmxud1sh-xxzt3zf.svg" alt="AI Supervisor" className="w-6 h-6" />
+                </div>
+                <h3 className="text-3xl font-bold text-foreground mb-4 font-display">AI Supervisor</h3>
+                <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+                  Real-time AI monitoring catches issues before they become callbacks. Pattern recognition analyzes equipment history to predict failures, so you can fix problems before the customer even notices.
+                </p>
+                <Link to="/ai-diagnostics" className="landing-btn-secondary h-12">
+                  Deploy Module <ArrowRight className="w-4 h-4 ml-2" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Pillar 2: Profit Guard */}
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="flex flex-col items-start lg:pr-12">
+                <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mb-6 border border-green-500/20">
+                  <img src="/assets/landing-figma/mmxud1sh-c7hjy0c.svg" alt="Profit Guard" className="w-6 h-6" />
+                </div>
+                <h3 className="text-3xl font-bold text-foreground mb-4 font-display">Profit Guard</h3>
+                <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+                  Automated pricing intelligence ensures every job is quoted at optimal margins. Real-time cost tracking prevents scope creep and protects your bottom line on every truck roll.
+                </p>
+                <Link to="/pricing-intelligence" className="landing-btn-secondary h-12">
+                  Deploy Module <ArrowRight className="w-4 h-4 ml-2" />
+                </Link>
+              </div>
+              <div className="relative rounded-xl border border-border/50 shadow-2xl overflow-hidden bg-card transform transition-transform hover:scale-[1.02] duration-500">
+                <LandingImage
+                  src="/assets/landing-figma/mmxud1ss-u3lvasl.png"
+                  alt="Profit Guard Dashboard"
+                  className="w-full h-auto object-cover"
+                />
+              </div>
+            </div>
+
+            {/* Pillar 3: Audit-Ready Ledger */}
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="order-2 lg:order-1 relative rounded-xl border border-border/50 shadow-2xl overflow-hidden bg-card transform transition-transform hover:scale-[1.02] duration-500">
+                <LandingImage
+                  src="/assets/landing-figma/mmxud1ss-aosmrt7.png"
+                  alt="Audit-Ready Ledger Dashboard"
+                  className="w-full h-auto object-cover"
+                />
+              </div>
+              <div className="order-1 lg:order-2 flex flex-col items-start lg:pl-12">
+                <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-6 border border-purple-500/20">
+                  <img src="/assets/landing-figma/mmxud1sh-2fjyt2y.svg" alt="Audit-Ready Ledger" className="w-6 h-6" />
+                </div>
+                <h3 className="text-3xl font-bold text-foreground mb-4 font-display">Audit-Ready Ledger</h3>
+                <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+                  Every invoice, every part, every labor hour documented and organized. Generate EPA compliance reports in seconds, completely eliminating administrative panic during audits.
+                </p>
+                <Link to="/compliance" className="landing-btn-secondary h-12">
+                  Deploy Module <ArrowRight className="w-4 h-4 ml-2" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Pillar 4: Intelligence Dispatch */}
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              <div className="flex flex-col items-start lg:pr-12">
+                <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center mb-6 border border-orange-500/20">
+                  <img src="/assets/landing-figma/mmxud1sh-7grxmjd.svg" alt="Intelligence Dispatch" className="w-6 h-6" />
+                </div>
+                <h3 className="text-3xl font-bold text-foreground mb-4 font-display">Intelligence Dispatch</h3>
+                <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+                  AI-powered routing considers traffic, technician skills, truck inventory, and customer preferences to build the most profitable schedule automatically.
+                </p>
+                <Link to="/dispatch" className="landing-btn-secondary h-12">
+                  Deploy Module <ArrowRight className="w-4 h-4 ml-2" />
+                </Link>
+              </div>
+              <div className="relative rounded-xl border border-border/50 shadow-2xl overflow-hidden bg-card transform transition-transform hover:scale-[1.02] duration-500">
+                <LandingImage
+                  src="/assets/landing-figma/mmxud1ss-8dx10dv.png"
+                  alt="Intelligence Dispatch Dashboard"
+                  className="w-full h-auto object-cover"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -345,64 +407,64 @@ export function Landing() {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-24 bg-muted/30 relative">
+      <section className="py-24 bg-background relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] text-primary pointer-events-none" />
         <div className="max-w-[1024px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-[30px] font-bold text-foreground font-display">Transparent Pricing for Every Stage</h2>
+          <div className="text-center mb-20">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground font-display mb-4">Transparent Pricing for Every Stage</h2>
+            <p className="text-lg text-muted-foreground">Start free, upgrade when you're ready to scale.</p>
           </div>
 
-          <div className="flex items-center justify-center gap-6">
+          <div className="flex flex-col lg:flex-row items-center lg:items-stretch justify-center gap-8 lg:gap-6">
             {landingConfig.pricing.map((plan, idx) => (
               <div
                 key={idx}
-                className={`flex flex-col rounded-2xl border border-border bg-card ${
+                className={`flex flex-col rounded-2xl border bg-card transition-all duration-300 relative ${
                   plan.popular
-                    ? "w-[320px] lg:w-[352px] shadow-lg"
-                    : "w-[320px] lg:w-[352px] hover:shadow-lg"
+                    ? "border-primary shadow-2xl scale-100 lg:scale-105 z-10 w-full max-w-[380px]"
+                    : "border-border/50 hover:shadow-xl hover:-translate-y-1 w-full max-w-[340px]"
                 }`}
               >
                 {plan.popular && (
-                  <div className="bg-primary px-4 py-2 rounded-t-2xl text-center">
-                    <span className="text-primary-foreground text-[12px] font-bold tracking-wider uppercase">
+                  <div className="absolute -top-4 left-0 right-0 flex justify-center">
+                    <span className="bg-primary text-primary-foreground text-[10px] font-bold tracking-widest uppercase py-1 px-4 rounded-full shadow-lg">
                       Most Popular
                     </span>
                   </div>
                 )}
 
                 <div className="p-8 flex flex-col flex-grow">
-                  <div className="mb-6 text-center">
-                    <h3 className="text-[20px] font-bold text-foreground mb-2 font-display">
+                  <div className="mb-8 text-center border-b border-border/50 pb-8">
+                    <h3 className="text-2xl font-bold text-foreground mb-4 font-display">
                       {plan.name}
                     </h3>
-                    <div className="flex items-baseline justify-center gap-1">
-                      <span className="text-[48px] font-bold text-foreground font-display leading-none">
+                    <div className="flex flex-col items-center justify-center">
+                      <span className="text-[48px] font-bold text-foreground font-display leading-none mb-2">
                         {plan.price}
                       </span>
+                      <span className="text-sm font-medium text-muted-foreground uppercase tracking-wider">{plan.period}</span>
                     </div>
-                    <p className="text-[14px] text-muted-foreground mt-2">{plan.period}</p>
-                    <p className="text-[14px] text-muted-foreground mt-2">{plan.description}</p>
                   </div>
 
-                  <ul className="space-y-4 mb-8 flex-grow">
+                  <ul className="space-y-5 mb-8 flex-grow">
                     {plan.features.map((feature, fIdx) => (
-                      <li key={fIdx} className="flex items-center gap-2 text-[14px] text-muted-foreground">
-                        <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="none">
-                          <circle cx="12" cy="12" r="10" stroke={plan.popular ? "var(--primary)" : "currentColor"} strokeWidth="2"/>
-                          <path d="m9 12 2 2 4-4" stroke={plan.popular ? "var(--primary)" : "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                        {feature}
+                      <li key={fIdx} className="flex items-start gap-3 text-sm text-muted-foreground">
+                        <CheckCircle2 className={`w-5 h-5 flex-shrink-0 mt-0.5 ${plan.popular ? 'text-primary' : 'text-muted-foreground/50'}`} />
+                        <span className="leading-relaxed">{feature}</span>
                       </li>
                     ))}
                   </ul>
 
-                  {plan.popular && (
-                    <Link
-                      to={plan.link}
-                      className="block w-full py-3 px-4 bg-primary hover:bg-primary/90 text-primary-foreground text-[16px] font-bold rounded-lg text-center transition-all"
-                    >
-                      {plan.cta}
-                    </Link>
-                  )}
+                  <Link
+                    to={plan.link || "/signup"}
+                    className={`block w-full py-4 px-6 text-[16px] font-bold rounded-xl text-center transition-all ${
+                      plan.popular
+                        ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20 hover:scale-[1.02]'
+                        : 'bg-muted hover:bg-muted/80 text-foreground border border-border/50'
+                    }`}
+                  >
+                    {plan.cta}
+                  </Link>
                 </div>
               </div>
             ))}
@@ -411,20 +473,23 @@ export function Landing() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-24 bg-muted/30">
+      <section className="py-24 bg-muted/20 border-t border-border/50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-foreground text-center mb-12 font-display">Frequently Asked Questions</h2>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground font-display mb-4">Frequently Asked Questions</h2>
+            <p className="text-lg text-muted-foreground">Everything you need to know about the product and billing.</p>
+          </div>
           <Accordion type="single" collapsible className="space-y-4">
             {landingConfig.faq.map((item, idx) => (
               <AccordionItem 
                 key={idx} 
                 value={`item-${idx}`}
-                className="bg-card rounded-xl border border-border overflow-hidden px-4 transition-all duration-200 hover:shadow-lg hover:border-primary/20"
+                className="bg-card rounded-2xl border border-border/50 overflow-hidden px-6 transition-all duration-200 hover:shadow-md data-[state=open]:border-primary/30 data-[state=open]:shadow-md"
               >
-                <AccordionTrigger className="text-left font-semibold text-foreground hover:no-underline py-6 px-2">
+                <AccordionTrigger className="text-left font-bold text-lg text-foreground hover:no-underline py-6">
                   {item.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-6 px-2">
+                <AccordionContent className="text-muted-foreground text-base leading-relaxed pb-6 pr-12">
                   {item.answer}
                 </AccordionContent>
               </AccordionItem>
