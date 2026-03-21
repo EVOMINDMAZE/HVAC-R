@@ -35,6 +35,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import { useProFeature } from "@/hooks/useFeatureAccess";
 import { computeDomain, resolveValue } from "@/lib/diagramDomain";
 
 interface ProfessionalFeaturesProps {
@@ -67,8 +68,6 @@ const UNIT_SYSTEMS: Record<string, UnitSystem> = {
     flow: "lb/hr",
   },
 };
-
-import { useProFeature } from "@/hooks/useFeatureAccess";
 
 export function ProfessionalFeatures({
   cycleData,

@@ -25,8 +25,8 @@ import {
 import { useAppNavigation } from "@/hooks/useAppNavigation";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
-import { cn } from "@/lib/utils";
 import { navLinkBaseClasses } from "@/lib/navigation";
+import { cn } from "@/lib/utils";
 
 interface HeaderProps {
   variant?: "landing" | "dashboard";

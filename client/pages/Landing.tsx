@@ -1,6 +1,4 @@
-import { useEffect, useState, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import "@/landing.css";
 import {
   ArrowRight,
   CheckCircle2,
@@ -15,7 +13,9 @@ import {
   FileCheck2,
   Send,
 } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
+import "@/landing.css";
 
 import { PublicPageShell } from "@/components/public/PublicPageShell";
 import { SEO } from "@/components/SEO";
