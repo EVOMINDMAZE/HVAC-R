@@ -24,11 +24,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useFileUpload } from "@/hooks/useFileUpload";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
-import { useToast } from "@/hooks/useToast";
-import { useSubscription, useCustomerPortal } from "@/hooks/useStripe";
 import {
   Select,
   SelectContent,
@@ -37,6 +32,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useFileUpload } from "@/hooks/useFileUpload";
+import { useSubscription, useCustomerPortal } from "@/hooks/useStripe";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
+import { useToast } from "@/hooks/useToast";
 
 
 

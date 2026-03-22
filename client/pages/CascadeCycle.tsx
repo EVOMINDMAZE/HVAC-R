@@ -599,7 +599,7 @@ export function CascadeCycleContent() {
 
 
   return (
-    <div className="min-h-screen bg-slate-950 text-foreground animate-in fade-in duration-500 pb-20 selection:bg-cyan-500/30">
+    <div className="text-foreground animate-in fade-in duration-500 pb-20 selection:bg-cyan-500/30">
       <div className="container mx-auto px-4 py-8 max-w-[1600px]">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
@@ -1171,7 +1171,7 @@ export function CascadeCycleContent() {
                               isAnimating={!loading}
                             />
                           ) : (
-                            <div className="h-64 flex items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-muted-foreground bg-slate-50 dark:bg-slate-900/50">
+                            <div className="h-64 flex items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-muted-foreground bg-muted/30 dark:bg-slate-900/50">
                               Low Temp Data Unavailable
                             </div>
                           );
@@ -1188,7 +1188,7 @@ export function CascadeCycleContent() {
                               isAnimating={!loading}
                             />
                           ) : (
-                            <div className="h-64 flex items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-muted-foreground bg-slate-50 dark:bg-slate-900/50">
+                            <div className="h-64 flex items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl text-muted-foreground bg-muted/30 dark:bg-slate-900/50">
                               High Temp Data Unavailable
                             </div>
                           );

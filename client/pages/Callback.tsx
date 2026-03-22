@@ -1,4 +1,5 @@
 import { Loader2, CheckCircle, XCircle } from "lucide-react";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 import { useEffect, useState } from 'react';
 import { useParams, useSearchParams, useNavigate, Link } from "react-router-dom";
 
@@ -100,9 +101,8 @@ error: ${data.error}
         : "border-l-4 border-l-destructive";
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-      <main className="py-16">
+    <PublicPageShell mainId="main-content">
+            <main className="py-16">
         <PageContainer>
           <div className="mx-auto max-w-xl">
             <Card className={statusBorder}>
@@ -148,7 +148,6 @@ error: ${data.error}
           </div>
         </PageContainer>
       </main>
-      <Footer />
-    </div>
+          </PublicPageShell>
   );
 }

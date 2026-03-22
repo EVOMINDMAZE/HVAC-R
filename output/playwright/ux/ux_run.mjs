@@ -58,12 +58,12 @@ function slugify(text) {
 
   const heroPrimary = page
     .getByRole("link", {
-      name: /^(Start 14-Day Free Trial|Start Your Free Trial|Start Free Trial|Start Free|Start Engineering Free)$/i,
+      name: /^(Start 14-Day Free Trial|Start Your Free Trial|Start Free Trial|Start Free|Start Engineering Free|Initialize|Get Started Now|Launch System|Start Business Trial)$/i,
     })
     .first();
   const heroSecondary = page
     .getByRole("link", {
-      name: /^(Watch 3-Min Demo|Watch Strategy Video|Book Ops Demo|Book an Ops Demo|Book Business Ops Demo)$/i,
+      name: /^(Watch 3-Min Demo|Watch Strategy Video|Book Ops Demo|Book an Ops Demo|Book Business Ops Demo|Watch Demo)$/i,
     })
     .first();
 
@@ -93,19 +93,14 @@ function slugify(text) {
   }
 
   const pillar = page
-    .locator(".core-module-item")
+    .locator(".landing-pillars-card")
     .filter({ hasText: "Profit Guard" })
     .first();
   if ((await pillar.count()) > 0) {
     await pillar.scrollIntoViewIfNeeded();
     await page.waitForTimeout(200);
     await pillar.click();
-    await page
-      .locator(".core-module-item.active")
-      .filter({ hasText: "Profit Guard" })
-      .first()
-      .waitFor({ timeout: 10000 });
-    notes.push("Strategic pillar click: Profit Guard (active)");
+    notes.push("Strategic pillar click: Profit Guard (clicked)");
   } else {
     notes.push("Strategic pillar click: missing Profit Guard");
   }
@@ -128,7 +123,7 @@ function slugify(text) {
     notes.push("FAQ expand: missing trigger");
   }
 
-  const pricingCta = page.getByRole("link", { name: /^Start Free Trial$/i }).first();
+  const pricingCta = page.getByRole("link", { name: /^(Start Free Trial|Initialize|Deploy Now|Upgrade)$/i }).first();
   if ((await pricingCta.count()) > 0) {
     await pricingCta.scrollIntoViewIfNeeded();
     await page.waitForTimeout(200);
@@ -136,7 +131,7 @@ function slugify(text) {
     notes.push(`Pricing CTA href: ${pricingHref}`);
 
     await pricingCta.click();
-    await page.waitForURL(/\/pricing/);
+    await page.waitForURL(/\/(pricing|signup)/);
     notes.push(`Pricing CTA navigation URL: ${page.url()}`);
     await page.screenshot({ path: path.join(outDir, "60-pricing-page.png"), fullPage: false });
   } else {

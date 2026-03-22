@@ -7,7 +7,6 @@ import {
   X,
 } from "lucide-react";
 import Papa from "papaparse";
-import { parseXLSXFile, isXLSXFile } from "@/lib/spreadsheet-utils";
 import { useState, useCallback } from 'react';
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -36,6 +35,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { parseXLSXFile, isXLSXFile } from "@/lib/spreadsheet-utils";
 import { cn } from "@/lib/utils";
 
 // Generic interface for column mapping

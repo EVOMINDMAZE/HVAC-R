@@ -14,11 +14,11 @@ import { ToastProvider } from "@/hooks/ToastProvider";
 import { useAuth } from "@/hooks/useSupabaseAuth";
 
 import "@/utils/authErrorHandler"; // Import to setup global error handling
+import "@/global.css";
 import { JobProvider } from "@/context/JobContext";
 // Critical path - keep static
 import { MonitoringProvider } from "@/lib/monitoring-provider";
 import { Landing } from "@/pages/Landing";
-import { LandingPageFigma } from "@/pages/LandingPageFigma";
 import NotFound from "@/pages/NotFound";
 import { SignIn } from "@/pages/SignIn";
 import { SignUp } from "@/pages/SignUp";
@@ -143,10 +143,21 @@ const SelectCompany = lazy(() => import("@/pages/SelectCompany"));
 const InviteLink = lazy(() => import("@/pages/InviteLink"));
 const CreateCompany = lazy(() => import("@/pages/CreateCompany"));
 const InviteTeam = lazy(() => import("@/pages/InviteTeam"));
+const LoadCalcPreview = lazy(() => import("@/pages/previews/LoadCalcPreview").then(m => ({ default: m.LoadCalcPreview })));
+const PsychrometricsPreview = lazy(() => import("@/pages/previews/PsychrometricsPreview").then(m => ({ default: m.PsychrometricsPreview })));
+const StandardCyclePreview = lazy(() => import("@/pages/previews/StandardCyclePreview").then(m => ({ default: m.StandardCyclePreview })));
+const RefrigerantComparisonPreview = lazy(() => import("@/pages/previews/RefrigerantComparisonPreview").then(m => ({ default: m.RefrigerantComparisonPreview })));
+const CascadeCyclePreview = lazy(() => import("@/pages/previews/CascadeCyclePreview").then(m => ({ default: m.CascadeCyclePreview })));
+const RefrigerantReportPreview = lazy(() => import("@/pages/previews/RefrigerantReportPreview").then(m => ({ default: m.RefrigerantReportPreview })));
+const RefrigerantInventoryPreview = lazy(() => import("@/pages/previews/RefrigerantInventoryPreview").then(m => ({ default: m.RefrigerantInventoryPreview })));
+const LeakRateCalculatorPreview = lazy(() => import("@/pages/previews/LeakRateCalculatorPreview").then(m => ({ default: m.LeakRateCalculatorPreview })));
+const WarrantyScannerPreview = lazy(() => import("@/pages/previews/WarrantyScannerPreview").then(m => ({ default: m.WarrantyScannerPreview })));
+const IAQWizardPreview = lazy(() => import("@/pages/previews/IAQWizardPreview").then(m => ({ default: m.IAQWizardPreview })));
 import { ErrorModal } from "@/components/ErrorModal";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SupportBar } from "@/components/SupportBar";
 import { Layout } from "@/components/Layout";
+import { PreviewableRoute } from "@/components/PreviewableRoute";
 import { Toaster } from "@/components/ui/toaster";
 import { SubscriptionGuard } from "@/components/SubscriptionGuard";
 import PageLoading from "@/components/ui/page-loading.tsx";
@@ -312,7 +323,6 @@ function AppRoutes() {
           <Routes location={location} key={location.pathname}>
             {/* Public Routes */}
             <Route path="/" element={<Landing />} />
-            <Route path="/figma" element={<LandingPageFigma />} />
             <Route path="/triage" element={<Triage />} />
             <Route path="/a2l-resources" element={<A2LLandingPage />} />
             <Route path="/features" element={<Features />} />
@@ -542,67 +552,93 @@ function AppRoutes() {
             }
           />
           <Route
+            path="/tools/load-calc"
+            element={
+              <PreviewableRoute 
+                toolComponent={<DIYCalculators />} 
+                previewComponent={<LoadCalcPreview />} 
+              />
+            }
+          />
+          <Route
+            path="/tools/psychrometrics"
+            element={
+              <PreviewableRoute 
+                toolComponent={<DIYCalculators />} 
+                previewComponent={<PsychrometricsPreview />} 
+              />
+            }
+          />
+          <Route
             path="/tools/standard-cycle"
             element={
-              <ProtectedRoute>
-                <StandardCycle />
-              </ProtectedRoute>
+              <PreviewableRoute 
+                toolComponent={<StandardCycle />} 
+                previewComponent={<StandardCyclePreview />} 
+              />
             }
           />
           <Route
             path="/tools/refrigerant-comparison"
             element={
-              <ProtectedRoute>
-                <RefrigerantComparison />
-              </ProtectedRoute>
+              <PreviewableRoute 
+                toolComponent={<RefrigerantComparison />} 
+                previewComponent={<RefrigerantComparisonPreview />} 
+              />
             }
           />
           <Route
             path="/tools/cascade-cycle"
             element={
-              <ProtectedRoute>
-                <CascadeCycle />
-              </ProtectedRoute>
+              <PreviewableRoute 
+                toolComponent={<CascadeCycle />} 
+                previewComponent={<CascadeCyclePreview />} 
+              />
             }
           />
           <Route
             path="/tools/refrigerant-report"
             element={
-              <ProtectedRoute>
-                <ComplianceReport />
-              </ProtectedRoute>
+              <PreviewableRoute 
+                toolComponent={<ComplianceReport />} 
+                previewComponent={<RefrigerantReportPreview />} 
+              />
             }
           />
           <Route
             path="/tools/refrigerant-inventory"
             element={
-              <ProtectedRoute>
-                <RefrigerantInventory />
-              </ProtectedRoute>
+              <PreviewableRoute 
+                toolComponent={<RefrigerantInventory />} 
+                previewComponent={<RefrigerantInventoryPreview />} 
+              />
             }
           />
           <Route
             path="/tools/leak-rate-calculator"
             element={
-              <ProtectedRoute>
-                <LeakRateCalculator />
-              </ProtectedRoute>
+              <PreviewableRoute 
+                toolComponent={<LeakRateCalculator />} 
+                previewComponent={<LeakRateCalculatorPreview />} 
+              />
             }
           />
           <Route
             path="/tools/warranty-scanner"
             element={
-              <ProtectedRoute>
-                <WarrantyScanner />
-              </ProtectedRoute>
+              <PreviewableRoute 
+                toolComponent={<WarrantyScanner />} 
+                previewComponent={<WarrantyScannerPreview />} 
+              />
             }
           />
           <Route
             path="/tools/iaq-wizard"
             element={
-              <ProtectedRoute>
-                <IAQWizard />
-              </ProtectedRoute>
+              <PreviewableRoute 
+                toolComponent={<IAQWizard />} 
+                previewComponent={<IAQWizardPreview />} 
+              />
             }
           />
           <Route

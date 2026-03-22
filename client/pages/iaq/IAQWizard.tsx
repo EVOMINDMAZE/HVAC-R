@@ -1,3 +1,4 @@
+import { PageContainer } from "@/components/PageContainer";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Wind,
@@ -40,7 +41,6 @@ import {
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
-
 import { useToast } from "@/hooks/use-toast";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { supabase } from "@/lib/supabase";
@@ -199,23 +199,23 @@ export default function IAQWizard() {
   const prevStep = () => setStep((s) => s - 1);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center p-4">
-      {/* Background elements */}
-      <div className="absolute top-0 inset-x-0 h-64 bg-gradient-to-b from-cyan-600/10 to-transparent pointer-events-none" />
+    <PageContainer variant="standard" className="py-8">
+      <div className="flex flex-col items-center justify-center p-4">
+          {/* Background elements */}
+          <div className="absolute top-0 inset-x-0 h-64 bg-gradient-to-b from-cyan-600/10 to-transparent pointer-events-none" />
 
-      <div className="w-full max-w-2xl z-10">
-        <div className="text-center mb-8">
-          <div className="inline-flex p-3 bg-cyan-100 dark:bg-cyan-900/30 rounded-2xl mb-4 text-cyan-600 dark:text-cyan-400">
-            <Wind className="h-8 w-8" />
-          </div>
-          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">
-            Indoor Health Wizard
-          </h1>
-          <p className="text-slate-500">
-            Calculate IAQ scores and generate "Unit Passports".
-          </p>
-        </div>
-
+          <div className="w-full max-w-2xl z-10">
+            <div className="text-center mb-8">
+              <div className="inline-flex p-3 bg-cyan-100 dark:bg-cyan-900/30 rounded-2xl mb-4 text-cyan-600 dark:text-cyan-400">
+                <Wind className="h-8 w-8" />
+              </div>
+              <h1 className="text-3xl font-extrabold font-display tracking-tight text-slate-900 dark:text-white">
+                Indoor Health Wizard
+              </h1>
+              <p className="text-slate-500">
+                Calculate IAQ scores and generate "Unit Passports".
+              </p>
+            </div>
         <AnimatePresence mode="wait">
           {step === 1 && (
             <motion.div
@@ -534,7 +534,7 @@ export default function IAQWizard() {
                     ].map((stat, i) => (
                       <div
                         key={i}
-                        className="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border text-center"
+                        className="bg-muted/30 dark:bg-slate-900 p-4 rounded-xl border text-center"
                       >
                         <span className="text-xs font-black text-slate-400 uppercase tracking-tighter">
                           {stat.label}
@@ -555,7 +555,7 @@ export default function IAQWizard() {
                     <Label>Technician Recommendations</Label>
                     <Textarea
                       placeholder="Suggested improvements (e.g. UV filter, Dehumidifier)..."
-                      className="min-h-[100px] bg-slate-50 dark:bg-slate-900 border-none ring-1 ring-slate-200"
+                      className="min-h-[100px] bg-muted/30 dark:bg-slate-900 border-none ring-1 ring-slate-200"
                       value={formData.notes}
                       onChange={(e) =>
                         setFormData({ ...formData, notes: e.target.value })
@@ -563,7 +563,7 @@ export default function IAQWizard() {
                     />
                   </div>
                 </CardContent>
-                <CardFooter className="p-6 bg-slate-50 border-t flex flex-col gap-4">
+                <CardFooter className="p-6 bg-muted/30 border-t flex flex-col gap-4">
                   <Button
                     className="w-full h-14 text-xl font-black bg-indigo-600 hover:bg-indigo-700 shadow-xl shadow-indigo-200"
                     onClick={handleSubmit}
@@ -624,5 +624,6 @@ export default function IAQWizard() {
         </AnimatePresence>
       </div>
     </div>
+    </PageContainer>
   );
 }

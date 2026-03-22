@@ -12,6 +12,7 @@ import {
   Share2,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -127,9 +128,8 @@ export function Podcasts() {
   };
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-
+    <PublicPageShell mainId="main-content">
+      
       <main className="pt-24 pb-20">
         <SEO
           title="Podcasts"
@@ -281,7 +281,6 @@ export function Podcasts() {
         </section>
       </main>
 
-      <Footer />
-    </div>
+          </PublicPageShell>
   );
 }

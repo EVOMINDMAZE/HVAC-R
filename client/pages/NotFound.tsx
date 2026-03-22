@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 import { useLocation, Link } from "react-router-dom";
 
 import { Footer } from "@/components/Footer";
@@ -17,9 +18,8 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-      <main className="py-16">
+    <PublicPageShell mainId="main-content">
+            <main className="py-16">
         <PageContainer>
           <div className="mx-auto max-w-2xl text-center space-y-4">
             <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
@@ -43,8 +43,7 @@ const NotFound = () => {
           </div>
         </PageContainer>
       </main>
-      <Footer />
-    </div>
+          </PublicPageShell>
   );
 };
 

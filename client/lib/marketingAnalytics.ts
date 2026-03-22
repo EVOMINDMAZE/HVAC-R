@@ -24,6 +24,9 @@ export type MarketingEventPayload = {
   segment?: string;
   destination?: string;
   plan?: string;
+  pillar?: string;
+  action?: string;
+  question?: string;
 };
 
 declare global {

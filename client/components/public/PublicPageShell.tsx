@@ -1,5 +1,6 @@
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { GlobalBackground } from "@/components/ui/GlobalBackground";
 import { cn } from "@/lib/utils";
 
 interface PublicPageShellProps {
@@ -20,7 +21,8 @@ export function PublicPageShell({
   skipToMain = false,
 }: PublicPageShellProps) {
   return (
-    <div className={cn("app-shell min-h-screen bg-background text-foreground", className)}>
+    <div className={cn("landing-page app-shell min-h-screen bg-slate-50 dark:bg-[#0a0f1a] text-foreground relative z-0", className)}>
+      <GlobalBackground />
       {skipToMain ? (
         <a
           href={`#${mainId}`}
@@ -29,9 +31,11 @@ export function PublicPageShell({
           Skip to main content
         </a>
       ) : null}
-      <Header variant="landing" />
-      <main id={mainId} className={mainClassName}>{children}</main>
-      {withFooter ? <Footer /> : null}
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <Header variant="landing" />
+        <main id={mainId} className={cn("flex-grow", mainClassName)}>{children}</main>
+        {withFooter ? <Footer /> : null}
+      </div>
     </div>
   );
 }

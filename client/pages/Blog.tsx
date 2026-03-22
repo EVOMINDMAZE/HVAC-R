@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { Calendar, User, ArrowRight, AlertTriangle } from "lucide-react";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 import { Link } from "react-router-dom";
 
 import { Footer } from "@/components/Footer";
@@ -29,9 +30,8 @@ export function Blog() {
   };
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-
+    <PublicPageShell mainId="main-content">
+      
       <main className="pt-24 pb-20">
         <SEO
           title="Blog"
@@ -150,7 +150,6 @@ export function Blog() {
         </section>
       </main>
 
-      <Footer />
-    </div>
+          </PublicPageShell>
   );
 }

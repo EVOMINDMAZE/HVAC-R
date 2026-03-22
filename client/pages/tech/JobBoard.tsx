@@ -97,7 +97,7 @@ export default function JobBoard() {
             <p className="text-sm font-medium">Loading your schedule...</p>
           </div>
         ) : sortedJobs.length === 0 ? (
-          <div className="text-center py-20 px-6 bg-slate-50 dark:bg-slate-900 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
+          <div className="text-center py-20 px-6 bg-muted/30 dark:bg-slate-900 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
             <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
               <Briefcase className="h-8 w-8 text-slate-400" />
             </div>

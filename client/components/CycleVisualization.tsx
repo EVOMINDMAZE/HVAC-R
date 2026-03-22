@@ -427,8 +427,8 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     plotWidth: number,
     plotHeight: number,
   ) => {
-    // Major grid lines
-    ctx.strokeStyle = isDarkMode ? "rgba(148, 163, 184, 0.1)" : "#e5e7eb";
+    // Major grid lines - Pivoted to light technical blue for HUD feel
+    ctx.strokeStyle = isDarkMode ? "rgba(148, 163, 184, 0.1)" : "rgba(59, 130, 246, 0.08)";
     ctx.lineWidth = 1;
     ctx.setLineDash([]);
 
@@ -452,9 +452,8 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
       ctx.stroke();
     }
 
-    // Minor grid lines
-    // Minor grid lines
-    ctx.strokeStyle = isDarkMode ? "rgba(148, 163, 184, 0.05)" : "#f3f4f6";
+    // Minor grid lines - Technical blue tones
+    ctx.strokeStyle = isDarkMode ? "rgba(148, 163, 184, 0.05)" : "rgba(59, 130, 246, 0.04)";
     ctx.lineWidth = 0.5;
 
     const minorGridLines = 50;
@@ -490,7 +489,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     drawGrid(ctx, margin, plotWidth, plotHeight);
 
     // Main axes with enhanced styling
-    ctx.strokeStyle = isDarkMode ? "#94a3b8" : "#1f2937";
+    ctx.strokeStyle = isDarkMode ? "#94a3b8" : "#3b82f6"; // Pivoted to primary blue in light mode for HUD
     ctx.lineWidth = 3;
     ctx.setLineDash([]);
 
@@ -538,9 +537,9 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     config: DiagramConfig,
     points: CyclePoint[],
   ) => {
-    ctx.strokeStyle = isDarkMode ? "#64748b" : "#374151";
+    ctx.strokeStyle = isDarkMode ? "#64748b" : "#3b82f6"; // Technical blue ticks
     ctx.lineWidth = 2;
-    ctx.fillStyle = isDarkMode ? "#94a3b8" : "#374151";
+    ctx.fillStyle = isDarkMode ? "#94a3b8" : "#1e40af"; // Darker blue for text in light mode
     ctx.font = "bold 14px 'Inter', sans-serif";
     ctx.textAlign = "center";
 
@@ -1304,10 +1303,10 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
     switch (cycleData?.cycleType) {
       case "cascade-low":
         return {
-          bg: "bg-cyan-100 dark:bg-cyan-900/30",
-          text: "text-cyan-600 dark:text-cyan-400",
-          border: "border-cyan-500",
-          ring: "ring-cyan-500/20",
+          bg: "bg-blue-50 dark:bg-cyan-900/30",
+          text: "text-light-accent dark:text-cyan-400",
+          border: "border-light-accent dark:border-cyan-500",
+          ring: "ring-light-accent/20 dark:ring-cyan-500/20",
           icon: <Zap className="h-5 w-5" />,
           label: "Low Temp Stage",
         };
@@ -1322,10 +1321,10 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
         };
       default:
         return {
-          bg: "bg-orange-100 dark:bg-orange-900/30",
-          text: "text-orange-600 dark:text-orange-400",
-          border: "border-orange-500",
-          ring: "ring-orange-500/20",
+          bg: "bg-blue-50 dark:bg-orange-900/30",
+          text: "text-light-accent dark:text-orange-400",
+          border: "border-light-accent dark:border-orange-500",
+          ring: "ring-light-accent/20 dark:ring-orange-500/20",
           icon: <Zap className="h-5 w-5" />,
           label: "Standard Cycle",
         };
@@ -1335,7 +1334,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
   return (
     <div className="w-full space-y-4">
       {/* Header Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-light-neutral dark:bg-slate-900/50 p-4 rounded-lg border border-light-neutral dark:border-slate-800">
         <div className="flex items-center gap-3">
           <div
             className={`p-2 rounded-md ${themeParams.bg} ${themeParams.text}`}
@@ -1361,7 +1360,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground bg-white dark:bg-slate-950 px-3 py-1.5 rounded-md border shadow-sm">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground bg-card dark:bg-slate-950 px-3 py-1.5 rounded-md border border-light-neutral dark:border-slate-800 shadow-sm">
             <BarChart3 className="h-4 w-4" />
             <span className="hidden sm:inline">Type:</span>
             <Select
@@ -1390,18 +1389,18 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
               ref={canvasRef}
               width={1600}
               height={1000}
-              className={`border rounded-xl cursor-crosshair w-full shadow-lg bg-white dark:bg-slate-950 dark:border-slate-800 transition-all duration-300 hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700`}
+              className={`border rounded-xl cursor-crosshair w-full shadow-lg bg-white dark:bg-slate-950 dark:border-slate-800 transition-all duration-300 hover:shadow-xl hover:border-light-accent/30 dark:hover:border-slate-700`}
               onClick={handleCanvasClick}
               style={{ maxWidth: "100%", height: "auto" }}
             />
             {!cycleData && (
-              <div className="absolute inset-0 flex items-center justify-center bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-sm rounded-xl">
+              <div className="absolute inset-0 flex items-center justify-center bg-light-neutral/50 dark:bg-slate-900/50 backdrop-blur-sm rounded-xl">
                 <div className="text-muted-foreground font-medium">
                   No Cycle Data Available
                 </div>
               </div>
             )}
-            <div className="absolute bottom-4 right-4 text-xs text-muted-foreground bg-white/80 dark:bg-black/50 backdrop-blur px-2 py-1 rounded border shadow-sm opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            <div className="absolute bottom-4 right-4 text-xs text-muted-foreground bg-card/80 dark:bg-black/50 backdrop-blur px-2 py-1 rounded border border-light-neutral dark:border-slate-800 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
               Click points for details
             </div>
           </div>
@@ -1410,7 +1409,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
         {/* Sidebar Panel - Unified Details */}
         <div className="space-y-6">
           {/* 1. Cycle Analysis (Always Visible) */}
-          <Card className={`border-l-4 ${themeParams.border} shadow-sm`}>
+          <Card className={`border-l-4 ${themeParams.border} shadow-sm bg-card`}>
             <CardHeader className="pb-2">
               <CardTitle className="text-base flex items-center gap-2">
                 <Gauge className="h-4 w-4 shrink-0" />
@@ -1436,7 +1435,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
                   return (
                     <div className="space-y-3 pt-1">
-                      <div className="flex justify-between items-center pb-2 border-b border-dashed">
+                      <div className="flex justify-between items-center pb-2 border-b border-light-neutral border-dashed">
                         <span className="text-sm text-muted-foreground">
                           Theoretical COP
                         </span>
@@ -1503,7 +1502,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
           {/* 2. Point Inspector (Always Visible, Dynamic Content) */}
           <Card
-            className={`shadow-sm ${selectedPointData ? "ring-1 " + themeParams.ring : "border-dashed"}`}
+            className={`shadow-sm bg-card ${selectedPointData ? "ring-1 " + themeParams.ring : "border-dashed border-light-neutral"}`}
           >
             <CardHeader className="pb-2">
               <CardTitle className="text-base flex items-center justify-between">
@@ -1515,7 +1514,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
                       {selectedPointData.id}
                     </div>
                   ) : (
-                    <div className="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs text-muted-foreground">
+                    <div className="w-6 h-6 rounded-full bg-light-neutral dark:bg-slate-800 flex items-center justify-center text-xs text-muted-foreground">
                       ?
                     </div>
                   )}
@@ -1538,7 +1537,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
               {selectedPointData ? (
                 <div className="space-y-4 animate-in fade-in slide-in-from-right-2 duration-200">
                   <div className="grid grid-cols-2 gap-x-2 gap-y-3 text-sm">
-                    <div className="bg-slate-50 dark:bg-slate-900/40 p-2 rounded">
+                    <div className="bg-light-neutral dark:bg-slate-900/40 p-2 rounded">
                       <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
                         Temperature
                       </div>
@@ -1549,7 +1548,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
                         </span>
                       </div>
                     </div>
-                    <div className="bg-slate-50 dark:bg-slate-900/40 p-2 rounded">
+                    <div className="bg-light-neutral dark:bg-slate-900/40 p-2 rounded">
                       <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
                         Pressure
                       </div>
@@ -1583,7 +1582,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
 
                   {selectedPointData.quality !== undefined &&
                     Number.isFinite(Number(selectedPointData.quality)) && (
-                      <div className="text-xs bg-orange-50 dark:bg-orange-900/20 p-2 rounded text-orange-700 dark:text-orange-300 border border-orange-100 dark:border-orange-800 flex items-center gap-2">
+                      <div className="text-xs bg-blue-50 dark:bg-blue-900/20 p-2 rounded text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-800 flex items-center gap-2">
                         <span className="text-base">💧</span>
                         <span>
                           <strong>Vapor Quality:</strong>{" "}
@@ -1594,7 +1593,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
                     )}
 
                   {/* Contextual Note */}
-                  <div className="text-xs text-muted-foreground border-t pt-2 mt-2">
+                  <div className="text-xs text-muted-foreground border-t border-light-neutral pt-2 mt-2">
                     <span className="font-medium text-foreground">Note: </span>
                     {selectedPointData.id === "1" &&
                       "Evaporator Outlet (Superheated Vapor)"}
@@ -1609,7 +1608,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
                   </div>
                 </div>
               ) : (
-                <div className="h-32 flex flex-col items-center justify-center text-center text-sm text-muted-foreground border-2 border-dashed rounded-lg bg-slate-50/50 dark:bg-slate-900/20">
+                <div className="h-32 flex flex-col items-center justify-center text-center text-sm text-muted-foreground border-2 border-dashed rounded-lg bg-light-neutral/50 dark:bg-slate-900/20 border-light-neutral">
                   <span className="text-2xl mb-2 opacity-50">👆</span>
                   <p>
                     Select a point on the chart
@@ -1622,7 +1621,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
           </Card>
 
           {/* 2. Legend */}
-          <div className="bg-slate-50 dark:bg-slate-900/50 rounded-lg p-4 border border-slate-200 dark:border-slate-800">
+          <div className="bg-light-neutral dark:bg-slate-900/50 rounded-lg p-4 border border-light-neutral dark:border-slate-800">
             <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
               Process Legend
             </h4>
@@ -1632,7 +1631,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
                 <span className="font-medium">1→2: Compression</span>
               </div>
               <div className="flex items-center gap-3 text-xs">
-                <span className="w-2 h-2 rounded-full bg-orange-400 shadow-[0_0_8px_rgba(96,165,250,0.5)]"></span>
+                <span className="w-2 h-2 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.5)]"></span>
                 <span className="font-medium">2→3: Condensation</span>
               </div>
               <div className="flex items-center gap-3 text-xs">
@@ -1651,7 +1650,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
             <Button
               variant="outline"
               size="sm"
-              className="w-full text-xs h-8"
+              className="w-full text-xs h-8 border-light-neutral hover:bg-light-neutral"
               onClick={() => {
                 const canvas = canvasRef.current;
                 if (canvas) {
@@ -1667,7 +1666,7 @@ export function CycleVisualization({ cycleData }: CycleVisualizationProps) {
             <Button
               variant="outline"
               size="sm"
-              className="w-full text-xs h-8"
+              className="w-full text-xs h-8 border-light-neutral hover:bg-light-neutral"
               onClick={() => {
                 if (cycleData) {
                   const csvData = cycleData.points

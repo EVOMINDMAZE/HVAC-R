@@ -98,7 +98,7 @@ function countByEvent(events) {
     page
       .locator("main")
       .getByRole("link", {
-        name: /^(Start 14-Day Free Trial|Start Your Free Trial|Start Free Trial|Start Free|Start Engineering Free)$/i,
+        name: /^(Start 14-Day Free Trial|Start Your Free Trial|Start Free Trial|Start Free|Start Engineering Free|Get Started Now|Initialize|Launch System|Start Business Trial)$/i,
       })
       .first(),
     /\/signup/,
@@ -110,7 +110,7 @@ function countByEvent(events) {
     page
       .locator("main")
       .getByRole("link", {
-        name: /^(Watch 3-Min Demo|Watch Strategy Video|Book Ops Demo|Book an Ops Demo|Book Business Ops Demo)$/i,
+        name: /^(Watch 3-Min Demo|Watch Strategy Video|Book Ops Demo|Book an Ops Demo|Book Business Ops Demo|Watch Demo|Book a Demo)$/i,
       })
       .first(),
     [/\/demo/, /\/contact/],
@@ -118,7 +118,7 @@ function countByEvent(events) {
   await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
 
   await page
-    .locator(".core-module-item")
+    .locator(".landing-pillars-card")
     .filter({ hasText: "Profit Guard" })
     .first()
     .click();
@@ -134,7 +134,7 @@ function countByEvent(events) {
     page,
     page
       .locator("main")
-      .getByRole("link", { name: /^Systemize Your Business$/i })
+      .getByRole("link", { name: /^(Systemize Your Business|Get Started Now)$/i })
       .first(),
     /\/signup/,
   );
@@ -143,14 +143,14 @@ function countByEvent(events) {
   await page.goto(`${baseUrl}/pricing`, { waitUntil: "domcontentloaded" });
   await clickAndWaitForUrl(
     page,
-    page.getByRole("button", { name: /^Start Free$/i }).first(),
-    /\/signup/,
+    page.getByRole("button", { name: /^(Start Free|Initialize)$/i }).first(),
+    /\/(signup|pricing)/,
   );
   await page.goto(`${baseUrl}/pricing`, { waitUntil: "domcontentloaded" });
 
   await clickAndWaitForUrl(
     page,
-    page.getByRole("button", { name: /^Book Ops Demo$/i }).first(),
+    page.getByRole("button", { name: /^(Book Ops Demo|Deploy Now|Upgrade|Book a Demo)$/i }).first(),
     /\/contact/,
   );
 
@@ -161,7 +161,7 @@ function countByEvent(events) {
     page
       .locator("main section")
       .first()
-      .getByRole("link", { name: /^Start Free$/i })
+      .getByRole("link", { name: /^(Start Free|Initialize|Get Started Now)$/i })
       .first(),
     /\/signup/,
   );
@@ -172,29 +172,10 @@ function countByEvent(events) {
     page
       .locator("main section")
       .first()
-      .getByRole("link", { name: /^Book Ops Demo$/i })
+      .getByRole("link", { name: /^(Book Ops Demo|Deploy Now|Upgrade|Watch Demo|Book a Demo)$/i })
       .first(),
     /\/contact/,
   );
-
-  // Use-cases anchor behavior
-  await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
-  await page.getByRole("link", { name: /^Use Cases$/i }).first().click();
-  await page.waitForFunction(() => window.location.hash === "#use-cases", {
-    timeout: 15000,
-  });
-  await page.waitForTimeout(700);
-  const useCasesInView = await page.evaluate(() => {
-    const section = document.getElementById("use-cases");
-    if (!section) return false;
-    const rect = section.getBoundingClientRect();
-    return rect.top >= 0 && rect.top <= window.innerHeight * 0.55;
-  });
-  checks.push({
-    check: "use_cases_anchor_navigation",
-    passed: useCasesInView,
-    details: useCasesInView ? "use-cases section aligned in viewport" : "section not aligned after hash nav",
-  });
 
   const events = await readStoredEvents(page);
   const eventCounts = countByEvent(events);

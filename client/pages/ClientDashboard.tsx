@@ -241,7 +241,7 @@ export function ClientDashboard() {
             {/* Assets List */}
             <div>
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-foreground/80">
-                <Smartphone className="h-5 w-5 text-cyan-500" />
+                <Smartphone className="h-5 w-5 text-light-accent dark:text-cyan-500" />
                 My Assets
               </h2>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -265,9 +265,9 @@ export function ClientDashboard() {
                             </p>
                           </div>
                           {asset.type === "Chiller" ? (
-                            <Wind className="h-5 w-5 text-cyan-500/70" />
+                            <Wind className="h-5 w-5 text-light-accent/70 dark:text-cyan-500/70" />
                           ) : (
-                            <Thermometer className="h-5 w-5 text-cyan-500/70" />
+                            <Thermometer className="h-5 w-5 text-light-accent/70 dark:text-cyan-500/70" />
                           )}
                         </div>
 
@@ -277,7 +277,7 @@ export function ClientDashboard() {
                               Real-Time
                             </div>
                             <span
-                              className={`text-3xl font-bold ${latestReading > 40 ? "text-red-500/80" : "text-cyan-600/80"}`}
+                              className={`text-3xl font-bold ${latestReading > 40 ? "text-red-500/80" : "text-light-accent dark:text-cyan-600/80"}`}
                             >
                               {latestReading !== undefined
                                 ? `${latestReading}°`
@@ -302,14 +302,14 @@ export function ClientDashboard() {
                                 </LineChart>
                               </ResponsiveContainer>
                             ) : (
-                              <div className="h-full w-full bg-slate-100/70 dark:bg-slate-800/70 rounded-lg flex items-center justify-center text-[10px] text-muted-foreground/50">
+                              <div className="h-full w-full bg-light-neutral dark:bg-slate-800/70 rounded-lg flex items-center justify-center text-[10px] text-muted-foreground/50">
                                 Waiting...
                               </div>
                             )}
                           </div>
                         </div>
 
-                        <div className="mt-5 pt-4 border-t border-slate-100/50 dark:border-slate-800/50 flex justify-between items-center">
+                        <div className="mt-5 pt-4 border-t border-light-neutral dark:border-slate-800/50 flex justify-between items-center">
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-green-100/80 text-green-700/90">
                             Active
                           </span>
@@ -327,7 +327,7 @@ export function ClientDashboard() {
                 })}
               </div>
               {assets.length === 0 && !loading && (
-                <div className="text-center py-12 bg-gradient-to-br from-slate-50/50 to-white/50 dark:from-slate-900/50 dark:to-slate-950/50 rounded-2xl border border-dashed border-slate-200/60 dark:border-slate-700/60">
+                <div className="text-center py-12 bg-gradient-to-br from-light-neutral/50 to-white/50 dark:from-slate-900/50 dark:to-slate-950/50 rounded-2xl border border-dashed border-light-neutral dark:border-slate-700/60">
                   <p className="text-muted-foreground/70 text-sm">
                     No assets found linked to your account.
                   </p>

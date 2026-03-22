@@ -3,10 +3,13 @@ import { useState } from "react";
 
 import { PublicPageShell } from "@/components/public/PublicPageShell";
 import { SEO } from "@/components/SEO";
+import { BlueprintGrid } from "@/components/ui/BlueprintGrid";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GlassCard, GlassCardContent, GlassCardHeader, GlassCardTitle } from "@/components/ui/glass-card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { MeasurementLabel } from "@/components/ui/MeasurementLabel";
+import { SectionNumber } from "@/components/ui/SectionNumber";
 import {
   Select,
   SelectContent,
@@ -44,45 +47,48 @@ export function Contact() {
 
       {/* Hero Section */}
       <section className="relative bg-slate-900 dark:bg-[#111827] pt-20 sm:pt-28 pb-16 sm:pb-20 lg:pt-40 lg:pb-32 overflow-hidden hero-gradient">
-        <div className="absolute inset-0 bg-grid-pattern opacity-[0.05] text-primary pointer-events-none" />
+        <BlueprintGrid opacity={0.05} />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
           <div className="absolute top-20 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
           <div className="absolute top-40 right-1/4 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
         </div>
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold">Contact</p>
-          <h1 className="mt-4 text-4xl md:text-5xl lg:text-[56px] font-display font-extrabold tracking-tight text-white">
-            Let's talk about your HVAC&R workflows.
-          </h1>
-          <p className="mt-6 text-lg text-muted-foreground max-w-3xl leading-relaxed">
-            Reach out for product questions, implementation guidance, or enterprise requirements.
-            We respond within one business day.
-          </p>
+          <SectionNumber number="01" className="absolute top-20 right-8 lg:right-16" />
+          <div className="max-w-3xl">
+            <MeasurementLabel className="text-primary mb-4">Contact</MeasurementLabel>
+            <h1 className="mt-4 text-4xl md:text-5xl lg:text-[56px] font-display font-extrabold tracking-tight text-white leading-[1.1]">
+              Let's talk about your HVAC&R workflows.
+            </h1>
+            <p className="mt-6 text-lg text-muted-foreground max-w-2xl leading-relaxed">
+              Reach out for product questions, implementation guidance, or enterprise requirements.
+              We respond within one business day.
+            </p>
+          </div>
         </div>
       </section>
 
       {/* Contact Form Section */}
-      <section className="px-4 py-16 -mt-8 relative z-20">
-        <div className="max-w-6xl mx-auto grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-          <Card className="bg-card/50 backdrop-blur-sm border-border/60 hover:-translate-y-1 transition-all hover:shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-xl font-display">
+      <section className="px-4 py-16 lg:py-20 -mt-8 relative z-20">
+        <div className="max-w-6xl mx-auto grid gap-12 lg:grid-cols-[3fr_2fr] lg:gap-16">
+          <Card className="bg-card/50 backdrop-blur-sm border-border/60 shadow-lg">
+            <CardHeader className="pb-8">
+              <div className="flex items-center gap-3">
                 <Send className="h-5 w-5 text-primary" />
-                Send a message
-              </CardTitle>
+                <CardTitle className="text-xl font-display">Send a message</CardTitle>
+              </div>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Full Name</Label>
+              <form onSubmit={handleSubmit} className="space-y-8">
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="space-y-3">
+                    <MeasurementLabel>Full Name</MeasurementLabel>
                     <div className="relative">
-                      <User className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="name"
                         placeholder="Jordan Smith"
-                        className="pl-10"
+                        className="pl-10 h-12"
                         value={formData.name}
                         onChange={(e) =>
                           handleInputChange("name", e.target.value)
@@ -91,15 +97,15 @@ export function Contact() {
                       />
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
+                  <div className="space-y-3">
+                    <MeasurementLabel>Email Address</MeasurementLabel>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="email"
                         type="email"
                         placeholder="jordan@example.com"
-                        className="pl-10"
+                        className="pl-10 h-12"
                         value={formData.email}
                         onChange={(e) =>
                           handleInputChange("email", e.target.value)
@@ -110,15 +116,15 @@ export function Contact() {
                   </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="company">Company</Label>
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div className="space-y-3">
+                    <MeasurementLabel>Company</MeasurementLabel>
                     <div className="relative">
-                      <Building2 className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="company"
                         placeholder="Acme Refrigeration"
-                        className="pl-10"
+                        className="pl-10 h-12"
                         value={formData.company}
                         onChange={(e) =>
                           handleInputChange("company", e.target.value)
@@ -126,15 +132,15 @@ export function Contact() {
                       />
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="category">Inquiry Type</Label>
+                  <div className="space-y-3">
+                    <MeasurementLabel>Inquiry Type</MeasurementLabel>
                     <Select
                       value={formData.category}
                       onValueChange={(value) =>
                         handleInputChange("category", value)
                       }
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="h-12">
                         <SelectValue placeholder="Select a topic" />
                       </SelectTrigger>
                       <SelectContent>
@@ -149,11 +155,12 @@ export function Contact() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="subject">Subject</Label>
+                <div className="space-y-3">
+                  <MeasurementLabel>Subject</MeasurementLabel>
                   <Input
                     id="subject"
                     placeholder="How can we help?"
+                    className="h-12"
                     value={formData.subject}
                     onChange={(e) =>
                       handleInputChange("subject", e.target.value)
@@ -161,8 +168,8 @@ export function Contact() {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="message">Message</Label>
+                <div className="space-y-3">
+                  <MeasurementLabel>Message</MeasurementLabel>
                   <Textarea
                     id="message"
                     placeholder="Share a few details about your project or question."
@@ -170,61 +177,70 @@ export function Contact() {
                     onChange={(e) =>
                       handleInputChange("message", e.target.value)
                     }
-                    rows={5}
+                    rows={6}
                     required
                   />
                 </div>
 
-                <Button type="submit" className="w-full sm:w-auto">
+                <Button type="submit" className="w-full sm:w-auto px-8">
                   Send message
                 </Button>
               </form>
             </CardContent>
           </Card>
 
-          <div className="space-y-6">
-            <Card className="bg-card/50 backdrop-blur-sm border-border/60 hover:-translate-y-1 transition-all hover:shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-lg font-display">Direct contact</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 text-sm text-muted-foreground">
-                <div className="flex items-start gap-3">
-                  <Mail className="h-4 w-4 text-primary mt-0.5" />
-                  <div>
-                    <p className="font-medium text-foreground">Support</p>
-                    <p>support@thermoneural.com</p>
+          <div className="space-y-8 lg:pt-24">
+            <SectionNumber number="02" standalone className="relative" />
+
+            <GlassCard variant="default" className="bg-card/40 backdrop-blur-sm">
+              <GlassCardHeader className="pb-6">
+                <div className="flex items-center gap-2">
+                  <Phone className="h-4 w-4 text-primary" />
+                  <GlassCardTitle className="text-lg">Direct contact</GlassCardTitle>
+                </div>
+              </GlassCardHeader>
+              <GlassCardContent className="space-y-6 text-sm">
+                <div className="space-y-1">
+                  <MeasurementLabel className="text-primary">Support</MeasurementLabel>
+                  <div className="flex items-start gap-3 pt-2">
+                    <Mail className="h-4 w-4 text-primary mt-0.5" />
+                    <p className="text-foreground">support@thermoneural.com</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3">
-                  <Mail className="h-4 w-4 text-primary mt-0.5" />
-                  <div>
-                    <p className="font-medium text-foreground">Sales</p>
-                    <p>hello@thermoneural.com</p>
+
+                <div className="space-y-1">
+                  <MeasurementLabel className="text-primary">Sales</MeasurementLabel>
+                  <div className="flex items-start gap-3 pt-2">
+                    <Mail className="h-4 w-4 text-primary mt-0.5" />
+                    <p className="text-foreground">hello@thermoneural.com</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3">
-                  <Phone className="h-4 w-4 text-primary mt-0.5" />
-                  <div>
-                    <p className="font-medium text-foreground">Phone</p>
-                    <p>+1 (555) 123-4567</p>
+
+                <div className="space-y-1">
+                  <MeasurementLabel className="text-primary">Phone</MeasurementLabel>
+                  <div className="flex items-start gap-3 pt-2">
+                    <Phone className="h-4 w-4 text-primary mt-0.5" />
+                    <p className="text-foreground">+1 (555) 123-4567</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3">
-                  <MapPin className="h-4 w-4 text-primary mt-0.5" />
-                  <div>
-                    <p className="font-medium text-foreground">Headquarters</p>
-                    <p>Boston, MA</p>
+
+                <div className="space-y-1">
+                  <MeasurementLabel className="text-primary">Headquarters</MeasurementLabel>
+                  <div className="flex items-start gap-3 pt-2">
+                    <MapPin className="h-4 w-4 text-primary mt-0.5" />
+                    <p className="text-foreground">Boston, MA</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3">
-                  <Clock className="h-4 w-4 text-primary mt-0.5" />
-                  <div>
-                    <p className="font-medium text-foreground">Response time</p>
-                    <p>Within 1 business day</p>
+
+                <div className="space-y-1">
+                  <MeasurementLabel className="text-primary">Response Time</MeasurementLabel>
+                  <div className="flex items-start gap-3 pt-2">
+                    <Clock className="h-4 w-4 text-primary mt-0.5" />
+                    <p className="text-foreground">Within 1 business day</p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </GlassCardContent>
+            </GlassCard>
           </div>
         </div>
       </section>

@@ -32,7 +32,7 @@ const viewports = [
       const root = document.documentElement;
       const main = document.querySelector("main");
       const hero = main?.querySelector("section") || null;
-      const primaryCta = hero?.querySelector("a[href='/signup']") || null;
+      const primaryCta = hero?.querySelector("a[href^='/signup']") || null;
       const secondaryCta =
         hero?.querySelector("a[href='/demo'], a[href='/contact']") || null;
 

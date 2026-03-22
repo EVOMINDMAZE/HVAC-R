@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+
 import { InvoiceList } from "@/components/invoices/InvoiceList";
 import { PageContainer } from "@/components/PageContainer";
 import { Badge } from "@/components/ui/badge";

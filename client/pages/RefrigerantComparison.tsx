@@ -19,7 +19,6 @@ import { SaveCalculation } from "@/components/SaveCalculation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { apiClient } from "@/lib/api";
 import {
   Card,
   CardContent,
@@ -27,13 +26,14 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSupabaseCalculations } from "@/hooks/useSupabaseCalculations";
 import { useToast } from "@/hooks/useToast";
+import { apiClient } from "@/lib/api";
 import { consumeCalculationPreset } from "@/lib/historyPresets";
 import {
   validateCycleConditions,
@@ -824,7 +824,7 @@ export function RefrigerantComparisonContent() {
   const hasSelections = selectedCount > 0;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-foreground animate-in fade-in duration-500 pb-20 selection:bg-cyan-500/30">
+    <div className="text-foreground animate-in fade-in duration-500 pb-20 selection:bg-cyan-500/30">
       <div className="container mx-auto px-4 py-8 max-w-[1600px]">
 
         {/* Header */}

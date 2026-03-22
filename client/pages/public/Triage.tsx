@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 import {
   CheckCircle,
   UploadCloud,
@@ -140,9 +141,8 @@ export default function Triage() {
   const stepLabel = step <= 3 ? `Step ${step} of 3` : "Complete";
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-      <main className="relative py-12 sm:py-16">
+    <PublicPageShell mainId="main-content">
+            <main className="relative py-12 sm:py-16">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.08),transparent_55%)]" />
         <PageContainer>
           <div className="mx-auto max-w-3xl space-y-8">
@@ -422,7 +422,6 @@ export default function Triage() {
           </div>
         </PageContainer>
       </main>
-      <Footer />
-    </div>
+          </PublicPageShell>
   );
 }

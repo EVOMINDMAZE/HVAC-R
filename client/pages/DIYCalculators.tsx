@@ -319,7 +319,7 @@ function AirflowCalculator() {
                           sensible_heat: Number(e.target.value),
                         })
                       }
-                      className="pl-9 h-11 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 group-hover:border-cyan-400 transition-colors"
+                      className="pl-9 h-11 bg-muted/30 dark:bg-slate-900 border-slate-200 dark:border-slate-700 group-hover:border-cyan-400 transition-colors"
                     />
                   </div>
                   <Select
@@ -328,7 +328,7 @@ function AirflowCalculator() {
                       setUnits({ ...units, sensible_heat: v })
                     }
                   >
-                    <SelectTrigger className="w-[120px] h-11 bg-slate-50 dark:bg-slate-900">
+                    <SelectTrigger className="w-[120px] h-11 bg-muted/30 dark:bg-slate-900">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -359,14 +359,14 @@ function AirflowCalculator() {
                           delta_t: Number(e.target.value),
                         })
                       }
-                      className="pl-9 h-11 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 group-hover:border-cyan-400 transition-colors"
+                      className="pl-9 h-11 bg-muted/30 dark:bg-slate-900 border-slate-200 dark:border-slate-700 group-hover:border-cyan-400 transition-colors"
                     />
                   </div>
                   <Select
                     value={units.delta_t}
                     onValueChange={(v) => setUnits({ ...units, delta_t: v })}
                   >
-                    <SelectTrigger className="w-[120px] h-11 bg-slate-50 dark:bg-slate-900">
+                    <SelectTrigger className="w-[120px] h-11 bg-muted/30 dark:bg-slate-900">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -395,7 +395,7 @@ function AirflowCalculator() {
           </div>
 
           {/* Result Section */}
-          <div className="bg-slate-50/80 dark:bg-slate-900/50 p-6 md:p-8 flex flex-col justify-center items-center relative min-h-[300px]">
+          <div className="bg-muted/30 dark:bg-slate-900/50 p-6 md:p-8 flex flex-col justify-center items-center relative min-h-[300px]">
             <div className="absolute top-4 right-4">
               <Select
                 value={units.result}
@@ -578,7 +578,7 @@ function DeltaTCalculator() {
                           return_temp: Number(e.target.value),
                         })
                       }
-                      className="pl-9 h-11 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 group-hover:border-emerald-400 transition-colors"
+                      className="pl-9 h-11 bg-muted/30 dark:bg-slate-900 border-slate-200 dark:border-slate-700 group-hover:border-emerald-400 transition-colors"
                     />
                   </div>
                   <Select
@@ -587,7 +587,7 @@ function DeltaTCalculator() {
                       setUnits({ ...units, return_temp: v })
                     }
                   >
-                    <SelectTrigger className="w-[80px] h-11 bg-slate-50 dark:bg-slate-900">
+                    <SelectTrigger className="w-[80px] h-11 bg-muted/30 dark:bg-slate-900">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -618,7 +618,7 @@ function DeltaTCalculator() {
                           supply_temp: Number(e.target.value),
                         })
                       }
-                      className="pl-9 h-11 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 group-hover:border-emerald-400 transition-colors"
+                      className="pl-9 h-11 bg-muted/30 dark:bg-slate-900 border-slate-200 dark:border-slate-700 group-hover:border-emerald-400 transition-colors"
                     />
                   </div>
                   <Select
@@ -627,7 +627,7 @@ function DeltaTCalculator() {
                       setUnits({ ...units, supply_temp: v })
                     }
                   >
-                    <SelectTrigger className="w-[80px] h-11 bg-slate-50 dark:bg-slate-900">
+                    <SelectTrigger className="w-[80px] h-11 bg-muted/30 dark:bg-slate-900">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -656,7 +656,7 @@ function DeltaTCalculator() {
           </div>
 
           {/* Results Section */}
-          <div className="bg-slate-50/80 dark:bg-slate-900/50 p-6 md:p-8 flex flex-col justify-center items-center relative min-h-[300px]">
+          <div className="bg-muted/30 dark:bg-slate-900/50 p-6 md:p-8 flex flex-col justify-center items-center relative min-h-[300px]">
             <div className="absolute top-4 right-4">
               <Select
                 value={units.result}

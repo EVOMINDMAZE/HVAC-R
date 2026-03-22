@@ -1,4 +1,5 @@
 import { ArrowRight, CheckCircle2, ShieldCheck } from "lucide-react";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 import { Link } from "react-router-dom";
 
 import A2LCalculator from "@/components/calculators/A2LCalculator";
@@ -9,9 +10,8 @@ import { Button } from "@/components/ui/button";
 
 export function A2LLandingPage() {
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-
+    <PublicPageShell mainId="main-content">
+      
       <main className="pt-24">
         <SEO
           title="A2L Refrigerant Charge Calculator"
@@ -33,7 +33,7 @@ export function A2LLandingPage() {
 
         <section className="px-4 pb-16">
           <div className="max-w-5xl mx-auto">
-            <div className="rounded-3xl border border-border/60 bg-background p-6 md:p-10 shadow-sm">
+            <div className="rounded-3xl border border-border/60 bg-card/50 backdrop-blur-sm p-6 md:p-10 shadow-sm">
               <A2LCalculator saveCalculation={() => {}} />
             </div>
           </div>
@@ -69,7 +69,7 @@ export function A2LLandingPage() {
                 </Link>
               </div>
             </div>
-            <div className="rounded-2xl border border-border/60 bg-background p-6">
+            <div className="rounded-2xl border border-border/60 bg-card/50 backdrop-blur-sm p-6">
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center">
                   <ShieldCheck className="h-5 w-5 text-primary" />
@@ -94,7 +94,6 @@ export function A2LLandingPage() {
         </section>
       </main>
 
-      <Footer />
-    </div>
+          </PublicPageShell>
   );
 }

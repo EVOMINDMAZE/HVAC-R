@@ -67,7 +67,7 @@ export const PLANS = {
   },
   BUSINESS: {
     id: 'business',
-    name: 'Business in a Box',
+    name: 'Precision Engineering Hub',
     price: 199,
     interval: 'month',
     calculations: -1,
@@ -88,7 +88,7 @@ export const PLANS = {
   },
   BUSINESS_YEARLY: {
     id: 'business_yearly',
-    name: 'Business in a Box (Yearly)',
+    name: 'Precision Engineering Hub (Yearly)',
     price: 1990,
     interval: 'year',
     calculations: -1,

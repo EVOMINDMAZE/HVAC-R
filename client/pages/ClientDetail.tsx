@@ -50,7 +50,11 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectTrigger,
@@ -58,13 +62,9 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { useToast } from "@/components/ui/use-toast";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { supabase } from "@/lib/supabase";
@@ -547,7 +547,7 @@ export function ClientDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-6 space-y-6">
+      <div className="min-h-screen bg-muted/30 dark:bg-slate-950 p-6 space-y-6">
         <Skeleton className="h-12 w-1/3" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Skeleton className="h-32 w-full" />
@@ -884,7 +884,7 @@ export function ClientDetail() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="border border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-12 flex flex-col items-center justify-center text-center bg-slate-50/50 dark:bg-slate-900/50"
+                  className="border border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-12 flex flex-col items-center justify-center text-center bg-muted/20 dark:bg-slate-900/50"
                 >
                   <div className="h-16 w-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
                     <Plus className="h-8 w-8 text-slate-400" />
@@ -1193,7 +1193,7 @@ export function ClientDetail() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="text-center p-12 border border-dashed border-slate-300 dark:border-slate-700 rounded-2xl bg-slate-50/50 dark:bg-slate-900/50"
+                className="text-center p-12 border border-dashed border-slate-300 dark:border-slate-700 rounded-2xl bg-muted/20 dark:bg-slate-900/50"
               >
                 <div className="h-12 w-12 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Zap className="h-6 w-6 text-slate-400" />
@@ -1302,7 +1302,7 @@ export function ClientDetail() {
               </p>
 
               <div className="mt-8 space-y-6 max-w-md">
-                <div className="flex items-center justify-between p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+                <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
                   <Label
                     htmlFor="email-notifications"
                     className="flex flex-col space-y-1 cursor-pointer"
@@ -1324,7 +1324,7 @@ export function ClientDetail() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+                <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
                   <Label
                     htmlFor="sms-notifications"
                     className="flex flex-col space-y-1 cursor-pointer"
@@ -1388,7 +1388,7 @@ export function ClientDetail() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="text-xs h-9 bg-white dark:bg-slate-900 hover:bg-slate-50 border-cyan-200"
+                    className="text-xs h-9 bg-white dark:bg-slate-900 hover:bg-muted/30 border-cyan-200"
                     onClick={() => handleManualSend("client_invite")}
                     disabled={isSendingManual}
                   >
@@ -1398,7 +1398,7 @@ export function ClientDetail() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="text-xs h-9 bg-white dark:bg-slate-900 hover:bg-slate-50 border-cyan-200"
+                    className="text-xs h-9 bg-white dark:bg-slate-900 hover:bg-muted/30 border-cyan-200"
                     onClick={() => handleManualSend("review_hunter")}
                     disabled={isSendingManual}
                   >
@@ -1450,7 +1450,7 @@ export function ClientDetail() {
                           setSmartProvider(brand);
                           setSmartStep(2);
                         }}
-                        className="cursor-pointer group relative flex flex-col items-center justify-center gap-3 p-6 rounded-xl border-2 border-slate-100 hover:border-slate-600 hover:bg-slate-50 dark:border-slate-800 dark:hover:border-slate-500 dark:hover:bg-slate-950/30 transition-all"
+                        className="cursor-pointer group relative flex flex-col items-center justify-center gap-3 p-6 rounded-xl border-2 border-slate-100 hover:border-slate-600 hover:bg-muted/30 dark:border-slate-800 dark:hover:border-slate-500 dark:hover:bg-slate-950/30 transition-all"
                       >
                         <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-slate-600 group-hover:scale-110 transition-transform">
                           <Globe className="w-6 h-6" />

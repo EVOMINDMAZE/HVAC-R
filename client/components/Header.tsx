@@ -5,6 +5,7 @@ import {
   User,
   LogOut,
   X,
+  ChevronDown,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -21,12 +22,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { useAppNavigation } from "@/hooks/useAppNavigation";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { useToast } from "@/hooks/useToast";
-import { cn } from "@/lib/utils";
 import { navLinkBaseClasses } from "@/lib/navigation";
+import { cn } from "@/lib/utils";
 
 interface HeaderProps {
   variant?: "landing" | "dashboard";
@@ -414,21 +416,92 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
         </div>
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
-          {landingLinks.map((item) => (
-            <Link
-              key={`${item.to}${item.hash ?? ""}`}
-              to={getLandingLinkTarget(item)}
-              onClick={(event) => handleLandingLinkClick(item, event)}
-              className={cn(
-                navLinkBaseClasses,
-                "text-muted-foreground/80 hover:text-foreground transition-all duration-200 rounded-lg hover:bg-muted/50",
-                isLandingLinkActive(item) && "text-foreground bg-muted/30",
-              )}
-              aria-current={isLandingLinkActive(item) ? "page" : undefined}
-            >
-              {item.label}
-            </Link>
-          ))}
+          <Link
+            to="/pricing"
+            className={cn(
+              navLinkBaseClasses,
+              "text-muted-foreground/80 hover:text-foreground transition-all duration-200 rounded-lg hover:bg-muted/50"
+            )}
+          >
+            The Box
+          </Link>
+          <a
+            href="https://www.skool.com/hvac-r-business-owner-1296"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              navLinkBaseClasses,
+              "text-muted-foreground/80 hover:text-foreground transition-all duration-200 rounded-lg hover:bg-muted/50"
+            )}
+          >
+            Community
+          </a>
+          <Link
+            to="/features#automations"
+            className={cn(
+              navLinkBaseClasses,
+              "text-muted-foreground/80 hover:text-foreground transition-all duration-200 rounded-lg hover:bg-muted/50"
+            )}
+          >
+            Automations
+          </Link>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className={cn(
+                  navLinkBaseClasses,
+                  "text-muted-foreground/80 hover:text-foreground transition-all duration-200 rounded-lg hover:bg-muted/50 flex items-center gap-1"
+                )}
+              >
+                Engineering Tools
+                <ChevronDown className="h-3.5 w-3.5" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-56 p-1.5 shadow-xl shadow-black/10 border-border/60 rounded-xl">
+              <DropdownMenuLabel className="text-xs uppercase tracking-[0.08em] text-muted-foreground">
+                Pro Tools
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link to="/tools/standard-cycle" className="flex flex-col items-start p-2">
+                  <span className="text-sm font-medium">Standard Cycle</span>
+                  <span className="text-xs text-muted-foreground">Model baseline performance</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/tools/refrigerant-comparison" className="flex flex-col items-start p-2">
+                  <span className="text-sm font-medium">Refrigerant Comparison</span>
+                  <span className="text-xs text-muted-foreground">Compare GWP & efficiency</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/tools/cascade-cycle" className="flex flex-col items-start p-2">
+                  <span className="text-sm font-medium">Cascade Cycle</span>
+                  <span className="text-xs text-muted-foreground">Low-temp optimization</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/diy-calculators" className="flex flex-col items-start p-2">
+                  <span className="text-sm font-medium">DIY Calculators</span>
+                  <span className="text-xs text-muted-foreground">Quick field calculations</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/tools/load-calc" className="flex flex-col items-start p-2">
+                  <span className="text-sm font-medium">Load Calc</span>
+                  <span className="text-xs text-muted-foreground">Commercial block loads</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/tools/psychrometrics" className="flex flex-col items-start p-2">
+                  <span className="text-sm font-medium">Psychrometrics</span>
+                  <span className="text-xs text-muted-foreground">Interactive state analysis</span>
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
@@ -444,7 +517,7 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
                 variant === "landing" && !isAuthenticated && "bg-primary hover:bg-primary/90 text-primary-foreground border-none"
               )}
             >
-              {isAuthenticated && companies.length ? "Go to Dashboard" : "Start Free"}
+              {isAuthenticated && companies.length ? "Go to Dashboard" : "Start Business Trial"}
             </Button>
           </Link>
         </div>
@@ -469,24 +542,74 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
       {mobileOpen ? (
         <HeaderMobilePanel id={mobileMenuId}>
           <div className="grid gap-2">
-            {landingLinks.map((item) => (
-              <LandingMobileLink
-                key={`${item.to}${item.hash ?? ""}`}
-                label={item.label}
-                to={getLandingLinkTarget(item)}
-                isActive={isLandingLinkActive(item)}
-                onClick={(event) => {
-                  handleLandingLinkClick(item, event);
-                  setMobileOpen(false);
-                }}
-              />
-            ))}
-            <div className="grid grid-cols-2 gap-2 pt-2">
+            <LandingMobileLink
+              label="The Box"
+              to="/pricing"
+              isActive={isRouteActive(location.pathname, "/pricing")}
+              onClick={() => setMobileOpen(false)}
+            />
+            <LandingMobileLink
+              label="Community"
+              to="https://www.skool.com/hvac-r-business-owner-1296"
+              isActive={false}
+              onClick={() => setMobileOpen(false)}
+            />
+            <LandingMobileLink
+              label="Automations"
+              to="/features#automations"
+              isActive={isRouteActive(location.pathname, "/features")}
+              onClick={(e) => {
+                handleLandingLinkClick({ to: "/features", hash: "#automations", label: "Automations", icon: Menu }, e);
+                setMobileOpen(false);
+              }}
+            />
+            
+            <div className="pt-4 pb-2 px-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Pro Tools
+            </div>
+            <LandingMobileLink
+              label="Standard Cycle"
+              to="/tools/standard-cycle"
+              isActive={isRouteActive(location.pathname, "/tools/standard-cycle")}
+              onClick={() => setMobileOpen(false)}
+            />
+            <LandingMobileLink
+              label="Refrigerant Comparison"
+              to="/tools/refrigerant-comparison"
+              isActive={isRouteActive(location.pathname, "/tools/refrigerant-comparison")}
+              onClick={() => setMobileOpen(false)}
+            />
+            <LandingMobileLink
+              label="Cascade Cycle"
+              to="/tools/cascade-cycle"
+              isActive={isRouteActive(location.pathname, "/tools/cascade-cycle")}
+              onClick={() => setMobileOpen(false)}
+            />
+            <LandingMobileLink
+              label="DIY Calculators"
+              to="/diy-calculators"
+              isActive={isRouteActive(location.pathname, "/diy-calculators")}
+              onClick={() => setMobileOpen(false)}
+            />
+            <LandingMobileLink
+              label="Commercial Load Calc"
+              to="/tools/load-calc"
+              isActive={isRouteActive(location.pathname, "/tools/load-calc")}
+              onClick={() => setMobileOpen(false)}
+            />
+            <LandingMobileLink
+              label="Psychrometric Analyzer"
+              to="/tools/psychrometrics"
+              isActive={isRouteActive(location.pathname, "/tools/psychrometrics")}
+              onClick={() => setMobileOpen(false)}
+            />
+
+            <div className="grid grid-cols-2 gap-2 pt-4 mt-2 border-t border-border/50">
               <Link to="/signin" onClick={() => setMobileOpen(false)}>
                 <Button variant="outline" className="w-full">Sign In</Button>
               </Link>
               <Link to="/signup" onClick={() => setMobileOpen(false)}>
-                <Button className="w-full">Start Free</Button>
+                <Button className="w-full">Start Business Trial</Button>
               </Link>
             </div>
           </div>

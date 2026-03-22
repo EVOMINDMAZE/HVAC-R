@@ -86,13 +86,57 @@ export const metrics = {
       description: "Credit for verified review",
       isLimitedTime: true,
     },
+    reviews: [
+      {
+        quote: "Finally, a tool that gets superheat and subcooling right the first time. I've used it on Carrier Infinity units and the accuracy compared to manual gauges is spot on. Saved me at least 45 minutes on a complex diagnostic today.",
+        author: "Senior Tech, FL",
+        rating: 5,
+        category: "Diagnostics"
+      },
+      {
+        quote: "EPA compliance used to be a nightmare of spreadsheets and lost paper. ThermoNeural's automated refrigerant tracking and leak rate calculations are a lifesaver. We passed our internal audit with zero flags.",
+        author: "Operations Manager, TX",
+        rating: 5,
+        category: "Compliance"
+      },
+      {
+        quote: "The cascade cycle analysis is incredible. We're doing more CO2 and ammonia industrial work now, and having NIST-validated data at our fingertips gives the engineering team total confidence.",
+        author: "Lead HVAC Engineer, WA",
+        rating: 5,
+        category: "Engineering"
+      },
+      {
+        quote: "The AI Supervisor caught a mis-wired low voltage terminal on a Trane XV20i that our junior tech missed. That one catch saved us a costly callback and a frustrated customer.",
+        author: "Service Director, OH",
+        rating: 5,
+        category: "AI Support"
+      },
+      {
+        quote: "Switching to ThermoNeural reduced our fuel costs by 12% in the first month just through better dispatch routing. The ROI was clear before the trial even ended.",
+        author: "Owner, Northeast Mechanical",
+        rating: 5,
+        category: "Operations"
+      },
+      {
+        quote: "As a small shop, I was worried about the tech curve. But the interface is intuitive and the reports I send to clients look like they came from a big firm. Professionalism is up, and so are our close rates.",
+        author: "Proprietor, Arctic Air Solutions",
+        rating: 5,
+        category: "Business Growth"
+      }
+    ]
   },
 
   // Urgency messaging
   urgency: {
     limitedTimeOffer: "Introductory offer available",
     limitedSpots: "Onboarding included",
-    countdown: null as string | null,
+    countdown: "2026-03-29T23:59:59Z",
+    recentSignups: [
+      { name: "John D.", location: "Miami, FL", timeAgo: "2 mins ago" },
+      { name: "Sarah W.", location: "Dallas, TX", timeAgo: "15 mins ago" },
+      { name: "Robert M.", location: "Seattle, WA", timeAgo: "45 mins ago" },
+      { name: "Mike K.", location: "Phoenix, AZ", timeAgo: "1 hour ago" }
+    ]
   },
 
   // Industry standards references
@@ -115,19 +159,19 @@ export const landingConfig = {
   // ROI Stats displayed on landing page
   roiStats: [
     {
-      value: "2.4x",
-      label: "Efficiency Gain",
-      disclaimer: "Based on technician workflow audit",
+      value: "2.4 hrs",
+      label: "Saved Per Ticket",
+      disclaimer: "Based on internal technician workflow audits",
     },
     {
-      value: "15%",
-      label: "Opex Reduction",
-      disclaimer: "Average fuel and labor savings",
+      value: "12%",
+      label: "Fuel Cost Reduction",
+      disclaimer: "Average reduction in fleet fuel consumption",
     },
     {
-      value: "99.9%",
-      label: "System Uptime",
-      disclaimer: "Historical platform reliability",
+      value: "99.8%",
+      label: "Calculation Accuracy",
+      disclaimer: "Validated against NIST Refprop reference data",
     },
   ] as const,
 

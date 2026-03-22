@@ -102,7 +102,7 @@ export default function Projects() {
                   {attachable.map((c) => (
                     <label
                       key={c.id}
-                      className="flex items-center gap-2 p-2 border-b dark:border-slate-700 last:border-b-0 hover:bg-slate-50 dark:hover:bg-slate-700/50"
+                      className="flex items-center gap-2 p-2 border-b dark:border-slate-700 last:border-b-0 hover:bg-muted/30 dark:hover:bg-slate-700/50"
                     >
                       <input
                         type="checkbox"

@@ -15,6 +15,8 @@ import { useState, useCallback, useEffect, useMemo } from 'react';
 import { CycleVisualization } from "../components/CycleVisualization";
 import { EnhancedRefrigerantSelector } from "../components/EnhancedRefrigerantSelector";
 import { EquipmentDiagrams } from "../components/EquipmentDiagrams";
+import { PageContainer } from "../components/PageContainer";
+import { ProfessionalFeatures } from "../components/ProfessionalFeatures";
 import { RenameCalculationDialog } from "../components/RenameCalculationDialog";
 import { SaveCalculation } from "../components/SaveCalculation";
 import { Badge } from "../components/ui/badge";
@@ -25,32 +27,28 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import { GlassCard } from "@/components/ui/glass-card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
+import { Separator } from "../components/ui/separator";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs";
-import { Separator } from "../components/ui/separator";
-
-
-import { useOllamaRecommendedRange } from "@/hooks/useOllamaRecommendedRange";
-import { apiClient } from "@/lib/api";
-
-import { ProfessionalFeatures } from "../components/ProfessionalFeatures";
 import { useSupabaseCalculations } from "../hooks/useSupabaseCalculations";
-
-import { consumeCalculationPreset } from "@/lib/historyPresets";
-
-import { PageContainer } from "../components/PageContainer";
 import {
   RefrigerantProperties,
   validateCycleConditions,
   getRefrigerantById,
 } from "../lib/refrigerants";
+
+import { GlassCard } from "@/components/ui/glass-card";
+import { useOllamaRecommendedRange } from "@/hooks/useOllamaRecommendedRange";
+import { apiClient } from "@/lib/api";
+import { consumeCalculationPreset } from "@/lib/historyPresets";
+
+
 
 
 // Animation Variants
@@ -1920,7 +1918,7 @@ export function EnhancedStandardCycleContent() {
                             <h3 className="font-semibold mb-4 text-lg">
                               Mass Flow Analysis
                             </h3>
-                            <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-lg space-y-3">
+                            <div className="p-4 bg-muted/30 dark:bg-slate-800 rounded-lg space-y-3">
                               <div className="flex justify-between items-center">
                                 <span>Mass Flow Rate</span>
                                 <span className="font-mono font-bold text-lg">

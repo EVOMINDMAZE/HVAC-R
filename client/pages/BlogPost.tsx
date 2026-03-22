@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { ArrowLeft, Calendar, User } from "lucide-react";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 import ReactMarkdown from "react-markdown";
 import { useParams, Link } from "react-router-dom";
 
@@ -41,9 +42,8 @@ export function BlogPost() {
   }
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-
+    <PublicPageShell mainId="main-content">
+      
       <main className="pt-24 pb-20">
         <SEO title={post.title} description={post.excerpt || post.title} />
 
@@ -112,7 +112,6 @@ export function BlogPost() {
         </section>
       </main>
 
-      <Footer />
-    </div>
+          </PublicPageShell>
   );
 }

@@ -10,18 +10,18 @@ const GlassCard = React.forwardRef<
   }
 >(({ className, variant = "default", glow = false, style, ...props }, ref) => {
   const variantClasses = {
-    default: "glass-card border-border/50",
-    elevated: "glass-card border-border/30 shadow-2xl",
-    command: "glass-command border-primary/20",
-    data: "glass-panel border-highlight/20",
+    default: "glass-card border-border/50 bg-card/60 backdrop-blur-xl",
+    elevated: "glass-card border-white/10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] bg-card/45 backdrop-blur-2xl",
+    command: "glass-command border-primary/30 bg-primary/5 backdrop-blur-xl",
+    data: "glass-panel border-highlight/30 bg-highlight/5 backdrop-blur-xl",
   };
 
   const glowClasses = glow
     ? {
-        default: "glow-primary",
-        elevated: "glow-primary",
-        command: "glow-highlight",
-        data: "glow-success",
+        default: "glow-primary shadow-primary/20",
+        elevated: "glow-primary shadow-primary/30",
+        command: "glow-highlight shadow-highlight/20",
+        data: "glow-success shadow-success/20",
       }
     : {};
 

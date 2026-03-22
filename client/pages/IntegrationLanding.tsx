@@ -90,7 +90,7 @@ export function IntegrationLanding() {
 
   if (isFetching) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center bg-transparent">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
@@ -98,7 +98,7 @@ export function IntegrationLanding() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="min-h-screen flex items-center justify-center bg-transparent p-4">
         <Card className="max-w-md w-full border-border/60">
           <CardHeader>
             <CardTitle>Access denied</CardTitle>

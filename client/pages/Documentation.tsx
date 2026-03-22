@@ -1,4 +1,5 @@
 import { Search, FileText } from "lucide-react";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 import { useState } from "react";
 
 import DocsViewer from "@/components/DocsViewer";
@@ -88,9 +89,8 @@ export function Documentation() {
     .filter((section) => section.articles.length > 0);
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-
+    <PublicPageShell mainId="main-content">
+      
       <main className="pt-24 pb-20">
         <SEO
           title="Documentation"
@@ -171,7 +171,6 @@ export function Documentation() {
         )}
       </main>
 
-      <Footer />
-    </div>
+          </PublicPageShell>
   );
 }

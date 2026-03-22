@@ -125,7 +125,7 @@ function AiAnalysisDisplay({
                   }
                   className={`
                     px-4 py-1.5 text-sm font-medium uppercase tracking-wide
-                    ${data.urgency.toLowerCase() !== "urgent" ? "bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-950 dark:text-slate-300 dark:border-slate-800" : ""}
+                    ${data.urgency.toLowerCase() !== "urgent" ? "bg-muted/30 text-slate-700 border-slate-200 dark:bg-slate-950 dark:text-slate-300 dark:border-slate-800" : ""}
                   `}
                 >
                   {data.urgency} Priority
@@ -246,7 +246,7 @@ function AiAnalysisDisplay({
 
       {/* 4. Technical Explanation */}
       {data.explanation && (
-        <Card className="bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800">
+        <Card className="bg-muted/30 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base text-slate-700 dark:text-slate-300">
               <Terminal className="h-4 w-4" /> Technical Explanation
@@ -1188,7 +1188,7 @@ export function TroubleshootingContent() {
                 )}
 
                 {!aiResponse && !aiLoading && !aiError && (
-                  <div className="text-center py-16 border-2 border-dashed border-slate-200 dark:border-slate-900 rounded-2xl bg-slate-50/50 dark:bg-slate-950/10">
+                  <div className="text-center py-16 border-2 border-dashed border-slate-200 dark:border-slate-900 rounded-2xl bg-muted/20 dark:bg-slate-950/10">
                     <div className="w-20 h-20 bg-slate-100 dark:bg-slate-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
                       <Bot className="h-10 w-10 text-slate-600 dark:text-slate-400" />
                     </div>

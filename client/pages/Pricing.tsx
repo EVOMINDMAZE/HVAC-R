@@ -6,6 +6,7 @@ import { useNavigate, Link } from "react-router-dom";
 
 import { PublicPageShell } from "@/components/public/PublicPageShell";
 import { Badge } from "@/components/ui/badge";
+import { BlueprintGrid } from "@/components/ui/BlueprintGrid";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,7 +16,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { GlassCard } from "@/components/ui/glass-card";
+import { MeasurementLabel } from "@/components/ui/MeasurementLabel";
 import { ROICalculator } from "@/components/ui/roi-calculator";
+import { SectionNumber } from "@/components/ui/SectionNumber";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { trackMarketingEvent } from "@/lib/marketingAnalytics";
@@ -127,7 +131,7 @@ export default function Pricing() {
     },
     {
       key: "BUSINESS",
-      title: "Business in a Box",
+      title: "Precision Engineering Hub",
       description: "Complete operations & engineering suite. Skool access, white-label app & automation.",
       cta: "Start Free Trial",
       action: () => handleSubscribe("business"),
@@ -145,112 +149,101 @@ export default function Pricing() {
 
   return (
     <PublicPageShell mainClassName="pb-20">
-      {/* Hero Section */}
-      <section className="relative bg-slate-900 dark:bg-[#111827] pt-20 sm:pt-28 pb-16 sm:pb-20 lg:pt-40 lg:pb-32 overflow-hidden hero-gradient">
-        <div className="absolute inset-0 bg-grid-pattern opacity-[0.05] text-primary pointer-events-none" />
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-            <p className="text-xs uppercase tracking-[0.2em] text-primary">Pricing</p>
-            <h1 className="mt-4 text-4xl md:text-5xl font-semibold font-display">
-              Operations + engineering pricing built for HVAC&R growth stages.
-            </h1>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Start free with engineering tools, then move into Business Ops when dispatch load and compliance requirements increase.
-            </p>
+      <section className="relative bg-slate-900 dark:bg-[#111827] pt-24 sm:pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
+        <BlueprintGrid opacity={0.04} />
+        <SectionNumber number="01" className="top-8 -left-4 lg:-left-16" />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <MeasurementLabel className="block mb-6 text-primary">
+            Pricing
+          </MeasurementLabel>
+          <h1 className="text-[clamp(2.5rem,6vw,4.5rem)] font-black tracking-tight leading-[0.95] text-foreground font-display mb-6">
+            Operations + engineering pricing built for HVAC&R growth stages.
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mb-8">
+            Start free with engineering tools, then move into Business Ops when dispatch load and compliance requirements increase.
+          </p>
 
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <Button
-                size="lg"
-                onClick={() => {
-                  trackMarketingEvent("pricing_plan_cta_click", {
-                    section: "hero",
-                    plan: "engineering_free",
-                    destination: "/signup",
-                  });
-                  navigate("/signup");
-                }}
-              >
-                Start Free
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => {
-                  trackMarketingEvent("pricing_plan_cta_click", {
-                    section: "hero",
-                    plan: "ops_demo",
-                    destination: "/contact",
-                  });
-                  navigate("/contact");
-                }}
-              >
-                Book Ops Demo
-              </Button>
-            </div>
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+            <Button
+              size="lg"
+              onClick={() => {
+                trackMarketingEvent("pricing_plan_cta_click", {
+                  section: "hero",
+                  plan: "engineering_free",
+                  destination: "/signup",
+                });
+                navigate("/signup");
+              }}
+            >
+              Start Free
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => {
+                trackMarketingEvent("pricing_plan_cta_click", {
+                  section: "hero",
+                  plan: "ops_demo",
+                  destination: "/contact",
+                });
+                navigate("/contact");
+              }}
+            >
+              Book Ops Demo
+            </Button>
+          </div>
 
-            <p className="mt-4 text-sm text-muted-foreground">
-              Same two next steps as the storefront: start free now or book an operations demo for rollout planning.
-            </p>
+          <div className="flex justify-center mb-8">
+            <Tabs
+              defaultValue="monthly"
+              value={billingInterval}
+              onValueChange={(value) => {
+                const interval = value as "monthly" | "yearly";
+                setBillingInterval(interval);
+                trackMarketingEvent("pricing_interval_toggle", {
+                  section: "billing_interval",
+                  segment: interval,
+                });
+              }}
+              className="w-full max-w-sm"
+            >
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="monthly">Monthly</TabsTrigger>
+                <TabsTrigger value="yearly">
+                  Yearly
+                  <Badge className="ml-2 bg-success text-success-foreground">
+                    Save 2 months
+                  </Badge>
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
 
-            <div className="mx-auto mt-7 grid max-w-4xl gap-3 text-left md:grid-cols-2">
-              <div className="rounded-xl border border-border/70 bg-card/70 px-4 py-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
-                  Engineering Track
-                </p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Free and Pro plans focused on cycle analysis, refrigerant comparison, and field diagnostics.
-                </p>
-              </div>
-              <div className="rounded-xl border border-border/70 bg-card/70 px-4 py-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
-                  Business in a Box Track
-                </p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Complete operations & engineering suite, white-labeled apps, and Skool community access.
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-8 flex justify-center">
-              <Tabs
-                defaultValue="monthly"
-                value={billingInterval}
-                onValueChange={(value) => {
-                  const interval = value as "monthly" | "yearly";
-                  setBillingInterval(interval);
-                  trackMarketingEvent("pricing_interval_toggle", {
-                    section: "billing_interval",
-                    segment: interval,
-                  });
-                }}
-                className="w-full max-w-sm"
-              >
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="monthly">Monthly</TabsTrigger>
-                  <TabsTrigger value="yearly">
-                    Yearly
-                    <Badge className="ml-2 bg-success text-success-foreground">
-                      Save 2 months
-                    </Badge>
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </div>
-
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4 text-success" />
-                <span>Onboarding support for production rollouts</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4 text-success" />
-                <span>Cancel or upgrade anytime</span>
-              </div>
-	        </div>
-	      </div>
+          <div className="mx-auto grid max-w-4xl gap-4 md:grid-cols-2">
+            <GlassCard variant="default" className="px-5 py-4">
+              <MeasurementLabel className="text-primary mb-2 block">
+                Engineering Track
+              </MeasurementLabel>
+              <p className="text-sm text-muted-foreground">
+                Free and Pro plans focused on cycle analysis, refrigerant comparison, and field diagnostics.
+              </p>
+            </GlassCard>
+            <GlassCard variant="default" className="px-5 py-4">
+              <MeasurementLabel className="text-primary mb-2 block">
+                Precision Engineering Hub Track
+              </MeasurementLabel>
+              <p className="text-sm text-muted-foreground">
+                Complete operations & engineering suite, white-labeled apps, and Skool community access.
+              </p>
+            </GlassCard>
+          </div>
+        </div>
       </section>
 
-        <section className="px-4 py-16 bg-muted/30 relative">
-          <div className="max-w-6xl mx-auto grid gap-6 md:grid-cols-3">
+      <section className="px-4 py-20 lg:py-28 bg-muted/30 relative">
+        <SectionNumber number="02" className="top-8 -left-4 lg:-left-16" />
+        <div className="max-w-6xl mx-auto">
+          <div className="grid gap-6 md:grid-cols-3">
             {plans.map((plan) => {
               const planData = getPlan(plan.key as keyof typeof PLANS);
               const price =
@@ -261,17 +254,24 @@ export default function Pricing() {
               return (
                 <Card
                   key={plan.key}
-                  className={`border-border/60 bg-card/50 backdrop-blur-sm hover:-translate-y-1 transition-all hover:shadow-lg ${
-                    plan.popular ? "shadow-lg border-primary/50" : ""
+                  className={`relative flex flex-col bg-gradient-to-b from-card to-card/95 border-border/60 hover:border-primary/30 transition-colors duration-300 ${
+                    plan.popular ? "border-primary/50" : ""
                   }`}
                 >
+                  {plan.popular && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                      <Badge className="bg-primary text-primary-foreground">
+                        Most Popular
+                      </Badge>
+                    </div>
+                  )}
                   <CardHeader>
                     <CardTitle className="text-2xl font-semibold font-display">
                       {plan.title}
                     </CardTitle>
                     <CardDescription>{plan.description}</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="flex-1 space-y-4">
                     <div>
                       <div className="text-4xl font-semibold text-foreground font-display">
                         {price}
@@ -336,20 +336,32 @@ export default function Pricing() {
             })}
           </div>
 
-          <div className="max-w-6xl mx-auto mt-8 text-sm text-muted-foreground">
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm">
+            <GlassCard variant="default" className="px-5 py-3 flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-success" />
+              <span className="text-muted-foreground">Onboarding support for production rollouts</span>
+            </GlassCard>
+            <GlassCard variant="default" className="px-5 py-3 flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-success" />
+              <span className="text-muted-foreground">Cancel or upgrade anytime</span>
+            </GlassCard>
+          </div>
+
+          <div className="mt-8 text-center text-sm text-muted-foreground">
             Need dispatch or compliance rollout guidance?{" "}
             <Link to="/contact" className="text-primary underline">
               Talk to the ops team
             </Link>
             .
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="px-4 py-16 bg-muted/30 relative">
-          <div className="max-w-6xl mx-auto">
-            <ROICalculator />
-          </div>
-        </section>
+      <section className="px-4 py-20 lg:py-28 bg-muted/30 relative">
+        <div className="max-w-6xl mx-auto">
+          <ROICalculator />
+        </div>
+      </section>
     </PublicPageShell>
   );
 }

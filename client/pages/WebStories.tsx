@@ -1,4 +1,5 @@
 import { Play, AlertTriangle } from "lucide-react";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 import { useState } from "react";
 
 import { Footer } from "@/components/Footer";
@@ -17,9 +18,8 @@ export function WebStories() {
   const [selectedStory, setSelectedStory] = useState<SanityWebStory | null>(null);
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-
+    <PublicPageShell mainId="main-content">
+      
       <main className="pt-24 pb-20">
         <SEO
           title="Stories"
@@ -100,7 +100,6 @@ export function WebStories() {
         )}
       </main>
 
-      <Footer />
-    </div>
+          </PublicPageShell>
   );
 }

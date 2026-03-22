@@ -249,7 +249,7 @@ export default function WarrantyScanner() {
   const portalInfo = MANUFACTURER_PORTALS[extractedData.manufacturer];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800">
+    <div className="border-l border-slate-200 dark:border-slate-800">
       <div className="container mx-auto p-4 max-w-5xl">
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -329,13 +329,13 @@ export default function WarrantyScanner() {
             </Card>
 
             <Card className="bg-white dark:bg-slate-950 border-none shadow-xl rounded-2xl overflow-hidden">
-              <CardHeader className="bg-slate-50 dark:bg-slate-900/50">
+              <CardHeader className="bg-muted/30 dark:bg-slate-900/50">
                 <CardTitle className="text-sm font-black text-slate-400 uppercase tracking-widest">
                   Raw OCR Stream
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-4">
-                <div className="h-24 overflow-y-auto font-mono text-[10px] text-slate-500 bg-slate-50 dark:bg-slate-900 p-3 rounded-lg border">
+                <div className="h-24 overflow-y-auto font-mono text-[10px] text-slate-500 bg-muted/30 dark:bg-slate-900 p-3 rounded-lg border">
                   {ocrText || "Awaiting scan input..."}
                 </div>
               </CardContent>
@@ -380,7 +380,7 @@ export default function WarrantyScanner() {
                           manufacturer: e.target.value,
                         })
                       }
-                      className="h-12 text-lg font-bold bg-slate-50 dark:bg-slate-900 border-none"
+                      className="h-12 text-lg font-bold bg-muted/30 dark:bg-slate-900 border-none"
                       placeholder="Brand Name"
                     />
                   </div>
@@ -398,7 +398,7 @@ export default function WarrantyScanner() {
                             serialNumber: e.target.value.toUpperCase(),
                           })
                         }
-                        className="h-12 text-2xl font-black bg-slate-50 dark:bg-slate-900 border-none tracking-widest text-cyan-600"
+                        className="h-12 text-2xl font-black bg-muted/30 dark:bg-slate-900 border-none tracking-widest text-cyan-600"
                         placeholder="XXXXXXXX"
                       />
                       <Button
@@ -427,7 +427,7 @@ export default function WarrantyScanner() {
                             modelNumber: e.target.value.toUpperCase(),
                           })
                         }
-                        className="h-12 text-lg font-bold bg-slate-50 dark:bg-slate-900 border-none"
+                        className="h-12 text-lg font-bold bg-muted/30 dark:bg-slate-900 border-none"
                         placeholder="MODEL-ID-2024"
                       />
                       <Button

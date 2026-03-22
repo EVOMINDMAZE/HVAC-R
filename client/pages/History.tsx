@@ -25,6 +25,7 @@ import { AppStatCard } from "@/components/app/AppStatCard";
 import { CalculationDetailsModal } from "@/components/CalculationDetailsModal";
 import { Footer } from "@/components/Footer";
 import { PageContainer } from "@/components/PageContainer";
+import { RenameCalculationDialog } from "@/components/RenameCalculationDialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,17 +39,27 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  useSupabaseCalculations,
-  Calculation,
-} from "@/hooks/useSupabaseCalculations";
-import { useToast } from "@/hooks/useToast";
-import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -58,21 +69,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { RenameCalculationDialog } from "@/components/RenameCalculationDialog";
+  useSupabaseCalculations,
+  Calculation,
+} from "@/hooks/useSupabaseCalculations";
+import { useToast } from "@/hooks/useToast";
 import { storeCalculationPreset } from "@/lib/historyPresets";
 
 export function History() {
@@ -488,7 +488,7 @@ export function History() {
                     {/* Footer Actions */}
                     <div className="mt-5 pt-4 border-t border-border/50 flex gap-2">
                       <Button
-                        className="flex-1 bg-white dark:bg-slate-800 text-foreground hover:bg-slate-50 dark:hover:bg-slate-700 border-border"
+                        className="flex-1 bg-white dark:bg-slate-800 text-foreground hover:bg-muted/30 dark:hover:bg-slate-700 border-border"
                         variant="outline"
                         onClick={() => handleRerunCalculation(calc)}
                       >

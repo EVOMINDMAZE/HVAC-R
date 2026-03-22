@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 import { AppPageHeader } from "@/components/app/AppPageHeader";
 import { AppSectionCard } from "@/components/app/AppSectionCard";
+import { PageContainer } from "@/components/PageContainer";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -35,12 +36,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-
 import { useToast } from "@/components/ui/use-toast";
-
-
-import { PageContainer } from "@/components/PageContainer";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 
 const TEAM_UI_COPY = {

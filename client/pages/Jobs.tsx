@@ -343,7 +343,7 @@ export default function Jobs() {
                       onChange={(e) =>
                         setNewJob({ ...newJob, client_name: e.target.value })
                       }
-                      className="bg-background"
+                      className="bg-card"
                     />
                   </div>
                   <div className="space-y-2">
@@ -355,7 +355,7 @@ export default function Jobs() {
                       onChange={(e) =>
                         setNewJob({ ...newJob, job_name: e.target.value })
                       }
-                      className="bg-background"
+                      className="bg-card"
                     />
                   </div>
                 </div>
@@ -369,7 +369,7 @@ export default function Jobs() {
                         setNewJob({ ...newJob, status: val })
                       }
                     >
-                      <SelectTrigger className="bg-background">
+                      <SelectTrigger className="bg-card">
                         <SelectValue placeholder="Select status" />
                       </SelectTrigger>
                       <SelectContent>
@@ -392,7 +392,7 @@ export default function Jobs() {
                         })
                       }
                     >
-                      <SelectTrigger className="bg-background">
+                      <SelectTrigger className="bg-card">
                         <div className="flex items-center gap-2">
                           <HardHat className="w-4 h-4 text-muted-foreground" />
                           <SelectValue placeholder="Select Technician" />
@@ -429,7 +429,7 @@ export default function Jobs() {
                       onChange={(e) =>
                         setNewJob({ ...newJob, address: e.target.value })
                       }
-                      className="pl-10 bg-background"
+                      className="pl-10 bg-card"
                     />
                   </div>
                 </div>
@@ -443,7 +443,7 @@ export default function Jobs() {
                     onChange={(e) =>
                       setNewJob({ ...newJob, notes: e.target.value })
                     }
-                    className="min-h-[100px] bg-background"
+                    className="min-h-[100px] bg-card"
                   />
                 </div>
               </div>
@@ -481,24 +481,24 @@ export default function Jobs() {
         <CardContent className="p-4">
           <div className="flex flex-col gap-4">
             <div className="flex flex-wrap items-center gap-2 text-xs">
-              <Badge variant="outline" className="bg-background">Total {jobs.length}</Badge>
-              <Badge variant="outline" className="bg-background text-cyan-700 dark:text-cyan-300">Active {activeJobs}</Badge>
-              <Badge variant="outline" className="bg-background text-amber-700 dark:text-amber-300">Pending {pendingJobs}</Badge>
-              <Badge variant="outline" className="bg-background text-emerald-700 dark:text-emerald-300">Completed {completedJobs}</Badge>
+              <Badge variant="outline" className="bg-card">Total {jobs.length}</Badge>
+              <Badge variant="outline" className="bg-card text-cyan-700 dark:text-cyan-300">Active {activeJobs}</Badge>
+              <Badge variant="outline" className="bg-card text-amber-700 dark:text-amber-300">Pending {pendingJobs}</Badge>
+              <Badge variant="outline" className="bg-card text-emerald-700 dark:text-emerald-300">Completed {completedJobs}</Badge>
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 placeholder="Search by job title, client name, or address..."
-                className="pl-10 bg-background border-input"
+                className="pl-10 bg-card border-input"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             <div className="w-full sm:w-[200px]">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="bg-background border-input">
+                <SelectTrigger className="bg-card border-input">
                   <div className="flex items-center">
                     <Filter className="w-4 h-4 mr-2 text-muted-foreground" />
                     <SelectValue placeholder="Filter by status" />
@@ -513,7 +513,7 @@ export default function Jobs() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="inline-flex w-full sm:w-auto rounded-md border border-input bg-background p-1">
+            <div className="inline-flex w-full sm:w-auto rounded-md border border-input bg-card p-1">
               <Button
                 type="button"
                 variant={viewMode === "compact" ? "default" : "ghost"}

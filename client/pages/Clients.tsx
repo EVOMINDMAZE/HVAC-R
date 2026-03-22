@@ -347,12 +347,6 @@ export function Clients() {
 
   return (
     <div className="app-bg min-h-screen transition-colors duration-300">
-      {/* Background patterns */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
-        <div className="absolute top-[10%] right-[5%] w-[500px] h-[500px] bg-slate-500/5 rounded-full blur-[100px]" />
-        <div className="absolute bottom-[10%] left-[5%] w-[400px] h-[400px] bg-cyan-500/5 rounded-full blur-[80px]" />
-      </div>
-
       <PageContainer variant="standard" className="app-stack-24">
         <AppPageHeader
           kicker="Work"

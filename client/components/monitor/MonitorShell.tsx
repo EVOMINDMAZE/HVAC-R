@@ -36,13 +36,8 @@ import { MonitorChartPanel } from "@/components/monitor/MonitorChartPanel";
 import { MonitorDiagramPanel } from "@/components/monitor/MonitorDiagramPanel";
 import { MonitorEmptyState } from "@/components/monitor/MonitorEmptyState";
 import { MonitorKpiStrip } from "@/components/monitor/MonitorKpiStrip";
-import { MonitorSkeleton } from "@/components/monitor/MonitorSkeleton";
-
 import { MonitorSignature } from "@/components/monitor/MonitorSignature";
-
-
-
-
+import { MonitorSkeleton } from "@/components/monitor/MonitorSkeleton";
 import { cn } from "@/lib/utils";
 
 interface MonitorShellProps {

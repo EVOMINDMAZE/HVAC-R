@@ -18,7 +18,7 @@ export function CalculationDetailsModal({
       case "Cascade Cycle":
         return "bg-purple-100 text-purple-800";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-slate-100 text-slate-800";
     }
   };
 
@@ -49,7 +49,7 @@ export function CalculationDetailsModal({
         return (
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <span className="font-medium text-gray-700">Refrigerant:</span>
+              <span className="font-medium text-light-neutral">Refrigerant:</span>
               <span className="ml-2">
                 {getInputValue(inputs, [
                   "refrigerant",
@@ -60,7 +60,7 @@ export function CalculationDetailsModal({
               </span>
             </div>
             <div>
-              <span className="font-medium text-gray-700">
+              <span className="font-medium text-light-neutral">
                 Evaporator Temp:
               </span>
               <span className="ml-2">
@@ -83,7 +83,7 @@ export function CalculationDetailsModal({
               </span>
             </div>
             <div>
-              <span className="font-medium text-gray-700">Condenser Temp:</span>
+              <span className="font-medium text-light-neutral">Condenser Temp:</span>
               <span className="ml-2">
                 {getInputValue(inputs, [
                   "condenserTemp",
@@ -104,7 +104,7 @@ export function CalculationDetailsModal({
               </span>
             </div>
             <div>
-              <span className="font-medium text-gray-700">Superheat:</span>
+              <span className="font-medium text-light-neutral">Superheat:</span>
               <span className="ml-2">
                 {getInputValue(inputs, [
                   "superheat",
@@ -121,7 +121,7 @@ export function CalculationDetailsModal({
               </span>
             </div>
             <div>
-              <span className="font-medium text-gray-700">Subcooling:</span>
+              <span className="font-medium text-light-neutral">Subcooling:</span>
               <span className="ml-2">
                 {getInputValue(inputs, [
                   "subcooling",
@@ -144,7 +144,7 @@ export function CalculationDetailsModal({
         return (
           <div className="space-y-4">
             <div>
-              <span className="font-medium text-gray-700">Refrigerants:</span>
+              <span className="font-medium text-light-neutral">Refrigerants:</span>
               <div className="mt-2 flex flex-wrap gap-2">
                 {inputs.refrigerants?.map((ref: string) => (
                   <Badge key={ref} variant="outline">
@@ -155,7 +155,7 @@ export function CalculationDetailsModal({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <span className="font-medium text-gray-700">
+                <span className="font-medium text-light-neutral">
                   Evaporator Temp:
                 </span>
                 <span className="ml-2">
@@ -176,7 +176,7 @@ export function CalculationDetailsModal({
                 </span>
               </div>
               <div>
-                <span className="font-medium text-gray-700">
+                <span className="font-medium text-light-neutral">
                   Condenser Temp:
                 </span>
                 <span className="ml-2">
@@ -197,7 +197,7 @@ export function CalculationDetailsModal({
                 </span>
               </div>
               <div>
-                <span className="font-medium text-gray-700">Superheat:</span>
+                <span className="font-medium text-light-neutral">Superheat:</span>
                 <span className="ml-2">
                   {getInputValue(inputs, ["superheat", "superheat_c"]) !== null
                     ? getInputValue(inputs, [
@@ -209,7 +209,7 @@ export function CalculationDetailsModal({
                 </span>
               </div>
               <div>
-                <span className="font-medium text-gray-700">Subcooling:</span>
+                <span className="font-medium text-light-neutral">Subcooling:</span>
                 <span className="ml-2">
                   {getInputValue(inputs, ["subcooling", "subcooling_c"]) !==
                   null
@@ -234,7 +234,7 @@ export function CalculationDetailsModal({
               </h5>
               <div className="grid grid-cols-2 gap-4 ml-4">
                 <div>
-                  <span className="font-medium text-gray-700">
+                  <span className="font-medium text-light-neutral">
                     Refrigerant:
                   </span>
                   <span className="ml-2">
@@ -246,7 +246,7 @@ export function CalculationDetailsModal({
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-700">
+                  <span className="font-medium text-light-neutral">
                     Evaporator Temp:
                   </span>
                   <span className="ml-2">
@@ -265,7 +265,7 @@ export function CalculationDetailsModal({
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-700">
+                  <span className="font-medium text-light-neutral">
                     Condenser Temp:
                   </span>
                   <span className="ml-2">
@@ -284,7 +284,7 @@ export function CalculationDetailsModal({
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-700">Superheat:</span>
+                  <span className="font-medium text-light-neutral">Superheat:</span>
                   <span className="ml-2">
                     {getInputValue(inputs.ltCycle || inputs, [
                       "superheat",
@@ -299,7 +299,7 @@ export function CalculationDetailsModal({
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-700">Subcooling:</span>
+                  <span className="font-medium text-light-neutral">Subcooling:</span>
                   <span className="ml-2">
                     {getInputValue(inputs.ltCycle || inputs, [
                       "subcooling",
@@ -322,7 +322,7 @@ export function CalculationDetailsModal({
               </h5>
               <div className="grid grid-cols-2 gap-4 ml-4">
                 <div>
-                  <span className="font-medium text-gray-700">
+                  <span className="font-medium text-light-neutral">
                     Refrigerant:
                   </span>
                   <span className="ml-2">
@@ -334,7 +334,7 @@ export function CalculationDetailsModal({
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-700">
+                  <span className="font-medium text-light-neutral">
                     Evaporator Temp:
                   </span>
                   <span className="ml-2">
@@ -353,7 +353,7 @@ export function CalculationDetailsModal({
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-700">
+                  <span className="font-medium text-light-neutral">
                     Condenser Temp:
                   </span>
                   <span className="ml-2">
@@ -372,7 +372,7 @@ export function CalculationDetailsModal({
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-700">Superheat:</span>
+                  <span className="font-medium text-light-neutral">Superheat:</span>
                   <span className="ml-2">
                     {getInputValue(inputs.htCycle || inputs, [
                       "superheat",
@@ -387,7 +387,7 @@ export function CalculationDetailsModal({
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-700">Subcooling:</span>
+                  <span className="font-medium text-light-neutral">Subcooling:</span>
                   <span className="ml-2">
                     {getInputValue(inputs.htCycle || inputs, [
                       "subcooling",
@@ -405,7 +405,7 @@ export function CalculationDetailsModal({
             </div>
 
             <div>
-              <span className="font-medium text-gray-700">
+              <span className="font-medium text-light-neutral">
                 Cascade Heat Exchanger ΔT:
               </span>
               <span className="ml-2">{inputs.cascadeHeatExchangerDT}°C</span>
@@ -418,17 +418,17 @@ export function CalculationDetailsModal({
         return (
           <div className="space-y-4">
             <div>
-              <div className="font-medium text-gray-700">Symptom</div>
+              <div className="font-medium text-light-neutral">Symptom</div>
               <div className="ml-2 text-sm">{inputs?.symptom || "N/A"}</div>
             </div>
             <div>
-              <div className="font-medium text-gray-700">Ambient</div>
+              <div className="font-medium text-light-neutral">Ambient</div>
               <div className="ml-2 text-sm">
                 {inputs?.ambient?.value ?? "N/A"} {inputs?.ambient?.unit || ""}
               </div>
             </div>
             <div>
-              <div className="font-medium text-gray-700">Measurements</div>
+              <div className="font-medium text-light-neutral">Measurements</div>
               <div className="ml-2 text-sm space-y-1">
                 <div>
                   Suction pressure:{" "}
@@ -443,7 +443,7 @@ export function CalculationDetailsModal({
               </div>
             </div>
             <div>
-              <div className="font-medium text-gray-700">Answers</div>
+              <div className="font-medium text-light-neutral">Answers</div>
               <div className="ml-2 text-sm space-y-1">
                 {inputs?.answers && Object.keys(inputs.answers).length > 0 ? (
                   Object.entries(inputs.answers).map(([k, v]) => (
@@ -452,17 +452,17 @@ export function CalculationDetailsModal({
                     </div>
                   ))
                 ) : (
-                  <div className="text-gray-500">No answers provided</div>
+                  <div className="text-slate-500">No answers provided</div>
                 )}
               </div>
             </div>
             <div>
-              <div className="font-medium text-gray-700">Notes</div>
+              <div className="font-medium text-light-neutral">Notes</div>
               <div className="ml-2 text-sm">{inputs?.notes || "N/A"}</div>
             </div>
             {inputs?.attachments && inputs.attachments.length > 0 && (
               <div>
-                <div className="font-medium text-gray-700">Attachments</div>
+                <div className="font-medium text-light-neutral">Attachments</div>
                 <div className="ml-2 flex gap-2 mt-2 flex-wrap">
                   {inputs.attachments.map((a: any, i: number) => (
                     <a
@@ -486,7 +486,7 @@ export function CalculationDetailsModal({
         );
 
       default:
-        return <div className="text-gray-500">No input details available</div>;
+        return <div className="text-slate-500">No input details available</div>;
     }
   };
 
@@ -827,7 +827,7 @@ export function CalculationDetailsModal({
           <div className="space-y-4">
             {summary && (
               <div>
-                <h5 className="font-semibold text-gray-900 mb-2">Summary</h5>
+                <h5 className="font-semibold text-slate-900 mb-2">Summary</h5>
                 <div className="text-sm text-muted-foreground">{summary}</div>
               </div>
             )}
@@ -844,13 +844,13 @@ export function CalculationDetailsModal({
                   ))}
                 </ul>
               ) : (
-                <div className="text-gray-500">
+                <div className="text-slate-500">
                   No recommendations available
                 </div>
               )}
             </div>
             <div>
-              <span className="font-medium text-gray-700">Severity</span>
+              <span className="font-medium text-light-neutral">Severity</span>
               <div className="mt-1 text-sm">{String(severity)}</div>
             </div>
           </div>

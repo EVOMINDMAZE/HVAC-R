@@ -23,9 +23,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast";
-import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
-import { supabase } from "@/lib/supabase";
 import {
   Select,
   SelectContent,
@@ -33,6 +30,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 
 interface AIAnalysis {

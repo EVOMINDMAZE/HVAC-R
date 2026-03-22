@@ -7,6 +7,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 import { Footer } from "@/components/Footer";
@@ -140,9 +141,8 @@ export function SignUp() {
   };
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header variant="landing" />
-      <main className="py-12 sm:py-16">
+    <PublicPageShell mainId="main-content">
+            <main className="py-12 sm:py-16">
         <PageContainer>
           <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] items-start">
             <div className="space-y-6">
@@ -321,7 +321,6 @@ export function SignUp() {
           </div>
         </PageContainer>
       </main>
-      <Footer />
-    </div>
+          </PublicPageShell>
   );
 }

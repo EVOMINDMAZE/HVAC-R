@@ -96,7 +96,7 @@ export default function EstimateBuilder() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 pb-12">
+    <div className="pb-12">
       <PageContainer variant="standard" className="space-y-6">
         <div className="max-w-4xl mx-auto space-y-6">
           <div className="flex flex-col gap-2">

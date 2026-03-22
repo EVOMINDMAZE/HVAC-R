@@ -1,25 +1,17 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Zap, Play, Clock, CheckCircle, BarChart, MapPin, Activity } from "lucide-react";
+import { useRef } from "react";
 import { Link } from "react-router-dom";
+
+import { CountdownTimer } from "./CountdownTimer";
+import { UrgencyNotification } from "./UrgencyNotification";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { metrics } from "@/config/metrics";
-
-const fadeInUp = {
-  initial: { opacity: 0, y: 24 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
-};
-
-const staggerContainer = {
-  animate: {
-    transition: {
-      staggerChildren: 0.12,
-    },
-  },
-};
+import { hudFadeIn, staggerChildren, technicalGlow, technicalPulse } from "@/lib/animations/landingVariants";
+import { trackMarketingEvent } from "@/lib/marketingAnalytics";
 
 const float: any = {
   animate: {
@@ -37,26 +29,35 @@ function DashboardCard() {
     <motion.div 
       variants={float}
       animate="animate"
-      className="absolute -top-4 -left-12 z-20 glass-card p-4 rounded-xl border border-white/20 shadow-2xl backdrop-blur-[20px] bg-white/5 w-56"
+      className="absolute -top-4 -left-12 z-20 glass-card hud-border hud-corner-accents p-4 rounded-xl shadow-2xl w-56 overflow-hidden"
     >
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest">Dashboard</span>
-        <Zap className="w-3 h-3 text-primary" />
+      <div className="corner-bottom-left" />
+      <div className="corner-bottom-right" />
+      <div className="flex items-center justify-between mb-3 border-b border-white/5 pb-2">
+        <span className="text-[10px] font-bold text-primary uppercase tracking-[0.2em] font-display">System.Metrics</span>
+        <motion.div variants={technicalPulse} animate="animate">
+          <Zap className="w-3 h-3 text-primary" />
+        </motion.div>
       </div>
-      <div className="h-20 flex items-end gap-1 px-1">
+      <div className="h-20 flex items-end gap-1.5 px-1">
         {[40, 70, 45, 90, 65, 80, 50].map((h, i) => (
           <motion.div
             key={i}
             initial={{ height: 0 }}
             animate={{ height: `${h}%` }}
-            transition={{ delay: 0.5 + i * 0.1, duration: 0.5 }}
-            className="flex-1 bg-gradient-to-t from-primary/20 to-primary/60 rounded-t-sm"
-          />
+            transition={{ delay: 0.5 + i * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="flex-1 bg-primary/40 rounded-t-[1px] relative group"
+          >
+            <div className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+          </motion.div>
         ))}
       </div>
-      <div className="mt-3 flex justify-between items-center">
-        <div className="text-xl font-bold text-white">2.4x</div>
-        <div className="text-[8px] text-white/40 text-right leading-tight">Efficiency<br/>Increase</div>
+      <div className="mt-4 flex justify-between items-end">
+        <div>
+          <div className="text-[8px] text-white/40 uppercase tracking-wider font-display mb-0.5">Efficiency</div>
+          <div className="text-xl font-bold text-white font-display tracking-tighter">2.4<span className="text-primary text-xs ml-0.5">X</span></div>
+        </div>
+        <div className="text-[8px] text-primary/60 font-mono text-right leading-tight">STABLE_FLOW<br/>NODE_04</div>
       </div>
     </motion.div>
   );
@@ -68,19 +69,27 @@ function LiveDispatchCard() {
       variants={float}
       animate="animate"
       transition={{ delay: 0.5 }}
-      className="absolute top-1/2 -left-20 z-20 glass-card p-4 rounded-xl border border-white/20 shadow-2xl backdrop-blur-[20px] bg-white/5 w-64"
+      className="absolute top-1/2 -left-20 z-20 glass-card hud-border hud-corner-accents p-4 rounded-xl shadow-2xl w-64 overflow-hidden"
     >
-      <div className="flex items-center justify-between mb-3">
+      <div className="corner-bottom-left" />
+      <div className="corner-bottom-right" />
+      <div className="flex items-center justify-between mb-3 border-b border-white/5 pb-2">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-          <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest">Live Dispatch</span>
+          <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+          <span className="text-[10px] font-bold text-white/50 uppercase tracking-[0.2em] font-display">Live.Dispatch</span>
         </div>
-        <span className="text-[8px] font-bold text-success">Tech 442 → On Route</span>
+        <span className="text-[8px] font-bold text-success font-mono">ID: 442</span>
       </div>
-      <div className="relative h-24 bg-white/5 rounded-lg overflow-hidden border border-white/10">
-        <div className="absolute inset-0 opacity-20 bg-[url('https://api.mapbox.com/styles/v1/mapbox/dark-v11/static/-74.006,40.7128,12/400x300?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.r_98_f99_f99_f99')] bg-cover" />
-        <div className="absolute top-1/2 left-1/4 w-12 h-1 bg-primary/40 rounded-full rotate-45" />
-        <MapPin className="absolute top-1/3 left-1/3 w-4 h-4 text-primary fill-primary/20" />
+      <div className="relative h-24 bg-black/40 rounded-lg overflow-hidden border border-white/10 group">
+        <div className="absolute inset-0 opacity-30 bg-[url('https://api.mapbox.com/styles/v1/mapbox/dark-v11/static/-74.006,40.7128,12/400x300?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.r_98_f99_f99_f99')] bg-cover grayscale" />
+        <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors" />
+        {/* HUD Crosshair */}
+        <div className="absolute top-1/2 left-1/4 w-8 h-[1px] bg-primary/20" />
+        <div className="absolute top-1/2 left-1/4 w-[1px] h-8 bg-primary/20 -translate-y-1/2" />
+        <MapPin className="absolute top-1/3 left-1/3 w-4 h-4 text-primary fill-primary/20 animate-bounce" />
+        <div className="absolute bottom-1 right-1 px-1.5 py-0.5 bg-black/60 rounded text-[7px] text-white/60 font-mono">
+          40.7128° N, 74.0060° W
+        </div>
       </div>
     </motion.div>
   );
@@ -92,60 +101,82 @@ function SystemHealthCard() {
       variants={float}
       animate="animate"
       transition={{ delay: 1 }}
-      className="absolute bottom-12 -right-8 z-20 glass-card p-4 rounded-xl border border-white/20 shadow-2xl backdrop-blur-[20px] bg-black/20 w-48"
+      className="absolute bottom-12 -right-8 z-20 glass-card hud-border hud-corner-accents p-4 rounded-xl shadow-2xl w-48 overflow-hidden"
     >
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest">System Health</span>
+      <div className="corner-bottom-left" />
+      <div className="corner-bottom-right" />
+      <div className="flex items-center justify-between mb-4 border-b border-white/5 pb-2">
+        <span className="text-[10px] font-bold text-white/50 uppercase tracking-[0.2em] font-display">Fleet.Status</span>
         <Activity className="w-3 h-3 text-success" />
       </div>
-      <div className="space-y-3">
-        <div className="flex justify-between items-end">
-          <span className="text-[10px] text-white/60">Fleet Uptime</span>
-          <span className="text-sm font-bold text-success">98.2%</span>
+      <div className="space-y-4">
+        <div className="space-y-1.5">
+          <div className="flex justify-between items-end">
+            <span className="text-[9px] text-white/40 uppercase tracking-wider font-display">Uptime</span>
+            <span className="text-sm font-bold text-success font-display">98.2<span className="text-[10px] ml-0.5">%</span></span>
+          </div>
+          <Progress value={98.2} className="h-1 bg-white/5" indicatorClassName="bg-success shadow-[0_0_8px_rgba(16,185,129,0.3)]" />
         </div>
-        <Progress value={98.2} className="h-1 bg-white/10" indicatorClassName="bg-success" />
+        <div className="flex justify-between items-center text-[8px] font-mono text-white/30">
+          <span>SECURE_LINK</span>
+          <span className="text-success/60">ACTIVE</span>
+        </div>
       </div>
     </motion.div>
   );
 }
 
 export function HeroSection() {
+  const containerRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+
+  const y1 = useTransform(scrollYProgress, [0, 1], [0, -50]);
+  const y2 = useTransform(scrollYProgress, [0, 1], [0, 100]);
+  const rotate = useTransform(scrollYProgress, [0, 1], [0, 5]);
+
   return (
-    <section className="relative pt-28 pb-24 lg:pt-36 lg:pb-32 overflow-hidden px-4">
+    <section ref={containerRef} className="relative pt-28 pb-24 lg:pt-36 lg:pb-32 overflow-hidden px-4">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-background/98 to-background -z-20" />
+      
+      {/* Ambient HUD Grid Background */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] text-primary -z-10" />
       
       {/* Dynamic Background Effects */}
       <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[1000px] h-[700px] bg-primary/[0.05] rounded-full blur-[140px] -z-10" />
       <div className="absolute top-[20%] left-[10%] w-[600px] h-[500px] bg-highlight/[0.02] rounded-full blur-[120px] -z-10" />
-      <div className="absolute bottom-[20%] right-[10%] w-[500px] h-[400px] bg-success/[0.02] rounded-full blur-[100px] -z-10" />
 
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left Content */}
           <motion.div
-            initial="initial"
-            animate="animate"
-            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+            variants={staggerChildren}
             className="flex flex-col items-start text-left"
           >
-            <motion.div variants={fadeInUp}>
+            <motion.div variants={hudFadeIn}>
               <Badge
                 variant="outline"
-                className="px-5 py-2 rounded-full border-primary/20 bg-primary/[0.04] text-primary mb-8 hover:bg-primary/[0.08] transition-colors duration-300"
+                className="px-5 py-2 rounded-full border-primary/20 bg-primary/[0.04] text-primary mb-8 hover:bg-primary/[0.08] transition-colors duration-300 font-display"
               >
-                <Zap className="w-3.5 h-3.5 mr-2" />
-                <span className="font-medium text-xs tracking-wide">
-                  The Complete HVAC Business Platform
+                <motion.div variants={technicalPulse} animate="animate">
+                  <Zap className="w-3.5 h-3.5 mr-2" />
+                </motion.div>
+                <span className="font-medium text-[10px] tracking-[0.15em] uppercase">
+                  Technical Excellence / 2024.v1
                 </span>
               </Badge>
             </motion.div>
 
             <motion.h1
-              variants={fadeInUp}
-              className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-8 leading-[1.1]"
+              variants={hudFadeIn}
+              className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground mb-8 leading-[1.05] font-display"
             >
               The Complete HVAC{" "}
-              <span className="text-primary relative inline-block">
+              <span className="text-primary relative inline-block text-glow">
                 <span className="relative z-10">Business</span>
                 <span className="absolute -bottom-2 left-0 right-0 h-3 bg-primary/10 blur-xl rounded-full" />
               </span>{" "}
@@ -153,39 +184,49 @@ export function HeroSection() {
             </motion.h1>
 
             <motion.p
-              variants={fadeInUp}
+              variants={hudFadeIn}
               className="text-lg sm:text-xl text-muted-foreground mb-10 max-w-2xl leading-[1.7]"
             >
               Stop patching together fragmented software. Launch, manage, and scale your operations with a unified business system built for HVAC&R growth.
             </motion.p>
 
+            <CountdownTimer targetDate={metrics.urgency.countdown} />
+
             <motion.div
-              variants={fadeInUp}
+              variants={hudFadeIn}
               className="flex flex-col sm:flex-row gap-5 w-full sm:w-auto mb-12"
             >
-              <Link to="/signup" className="w-full sm:w-auto">
+              <Link 
+                to="/signup?plan=business" 
+                className="w-full sm:w-auto"
+                onClick={() => trackMarketingEvent("landing_hero_primary_click", { section: "hero", destination: "/signup" })}
+              >
                 <Button
                   size="lg"
-                  className="w-full sm:w-auto h-14 px-10 rounded-xl font-bold text-base bg-primary text-primary-foreground hover:bg-primary/90 shadow-xl shadow-primary/20 transition-all duration-300"
+                  className="w-full sm:w-auto h-14 px-10 rounded-xl font-bold text-base bg-primary text-primary-foreground hover:bg-primary/90 shadow-xl shadow-primary/20 transition-all duration-300 font-display uppercase tracking-wider cyan-glow"
                 >
-                  Get Business in a Box
+                  Launch System
                   <ArrowRight className="ml-2.5 h-4.5 w-4.5" />
                 </Button>
               </Link>
-              <Link to="/demo" className="w-full sm:w-auto">
+              <Link 
+                to="/demo" 
+                className="w-full sm:w-auto"
+                onClick={() => trackMarketingEvent("landing_hero_secondary_click", { section: "hero", destination: "/demo" })}
+              >
                 <Button
                   size="lg"
                   variant="outline"
-                  className="w-full sm:w-auto h-14 px-10 rounded-xl font-semibold text-base border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all duration-300"
+                  className="w-full sm:w-auto h-14 px-10 rounded-xl font-semibold text-base border-white/10 bg-white/5 backdrop-blur-md hover:bg-white/10 transition-all duration-300 font-display uppercase tracking-wider"
                 >
                   <Play className="mr-2.5 h-4 w-4 fill-current" />
-                  See the System in Action
+                  Visual Demo
                 </Button>
               </Link>
             </motion.div>
 
             <motion.div
-              variants={fadeInUp}
+              variants={hudFadeIn}
               className="flex items-center gap-4"
             >
               <div className="flex -space-x-3">
@@ -197,37 +238,51 @@ export function HeroSection() {
                     <img
                       src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i + 10}`}
                       alt="User avatar"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover grayscale opacity-80"
                     />
                   </div>
                 ))}
               </div>
-              <div className="text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">500+</span> businesses already joined
+              <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-display">
+                <span className="font-bold text-foreground">500+</span> ACTIVE_OPERATIONS
               </div>
             </motion.div>
           </motion.div>
 
           {/* Right Visual (HUD) */}
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, x: 40, filter: "blur(10px)" }}
+            animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+            transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            style={{ y: y1, rotate }}
             className="relative hidden lg:block"
           >
-            <div className="relative z-10 rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl bg-slate-900 aspect-[4/3] group">
+            <div className="relative z-10 rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl bg-slate-950 aspect-[4/3] group hud-corner-accents">
+              <div className="corner-bottom-left" />
+              <div className="corner-bottom-right" />
+              
+              {/* Scanline Effect */}
+              <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] z-20 opacity-20" />
+              
               {/* Background Image */}
-              <img
+              <motion.img
+                style={{ y: y2 }}
                 src="/assets/landing/hvac_professional_consult.jpg"
                 alt="HVAC Professional"
-                className="w-full h-full object-cover opacity-60 grayscale-[0.2] transition-transform duration-700 group-hover:scale-105"
+                className="w-full h-full object-cover opacity-40 grayscale transition-transform duration-1000 group-hover:scale-110"
               />
-              <div className="absolute inset-0 bg-gradient-to-tr from-slate-950/80 via-transparent to-primary/10" />
+              <div className="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-950/40 to-primary/5" />
               
               {/* Glass HUD Cards */}
               <DashboardCard />
               <LiveDispatchCard />
               <SystemHealthCard />
+
+              {/* HUD Frame Corners */}
+              <div className="absolute top-8 left-8 w-12 h-12 border-t-2 border-l-2 border-primary/30 z-30" />
+              <div className="absolute top-8 right-8 w-12 h-12 border-t-2 border-r-2 border-primary/30 z-30" />
+              <div className="absolute bottom-8 left-8 w-12 h-12 border-b-2 border-l-2 border-primary/30 z-30" />
+              <div className="absolute bottom-8 right-8 w-12 h-12 border-b-2 border-r-2 border-primary/30 z-30" />
             </div>
 
             {/* Background Glows */}
@@ -236,6 +291,7 @@ export function HeroSection() {
           </motion.div>
         </div>
       </div>
+      <UrgencyNotification />
     </section>
   );
 }

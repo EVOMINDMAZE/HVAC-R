@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 import {
   Briefcase,
   Star,
@@ -98,19 +99,17 @@ export default function Career() {
 
   if (loading) {
     return (
-      <div className="app-shell min-h-screen bg-background text-foreground">
-        <Header />
+      <PublicPageShell mainId="main-content">
         <main className="flex items-center justify-center h-[calc(100vh-200px)]">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </main>
-      </div>
+      </PublicPageShell>
     );
   }
 
   if (!user) {
     return (
-      <div className="app-shell min-h-screen bg-background text-foreground">
-        <Header variant="landing" />
+      <PublicPageShell mainId="main-content">
         <main className="py-16">
           <PageContainer>
             <div className="mx-auto max-w-xl">
@@ -134,15 +133,13 @@ export default function Career() {
             </div>
           </PageContainer>
         </main>
-        <Footer />
-      </div>
+      </PublicPageShell>
     );
   }
 
   return (
-    <div className="app-shell min-h-screen bg-background text-foreground">
-      <Header />
-      <main className="py-10">
+    <PublicPageShell mainId="main-content">
+            <main className="py-10">
         <PageContainer>
           <div className="space-y-8">
             <div className="space-y-2">
@@ -316,7 +313,6 @@ export default function Career() {
           </div>
         </PageContainer>
       </main>
-      <Footer />
-    </div>
+          </PublicPageShell>
   );
 }

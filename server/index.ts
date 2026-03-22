@@ -4,20 +4,6 @@ import express from "express";
 
 // Database imports removed - using Supabase for all data storage
 
-import {
-  getTeam,
-  inviteTeamMember,
-  updateTeamMemberRole,
-  removeTeamMember,
-} from "./routes/team.ts";
-import {
-  recordConsent,
-  getUserConsents,
-  checkConsent,
-  submitDataSubjectRequest,
-  exportUserData,
-} from "./routes/privacy.ts";
-import { getFleetStatus } from "./routes/fleet.ts";
 import { dynamicRateLimiter } from "./middleware/rateLimit.ts";
 import {
   securityHeaders,
@@ -57,6 +43,14 @@ import {
   calculateCascadeCycleEndpoint,
   compareRefrigerantsEndpoint,
 } from "./routes/engineering.ts";
+import { getFleetStatus } from "./routes/fleet.ts";
+import {
+  recordConsent,
+  getUserConsents,
+  checkConsent,
+  submitDataSubjectRequest,
+  exportUserData,
+} from "./routes/privacy.ts";
 import { generateReportPdf } from "./routes/reports.ts";
 import { getUserCount } from "./routes/stats.ts";
 import { uploadAvatar } from "./routes/storage.ts";
@@ -67,6 +61,12 @@ import {
   cancelSubscription,
   createPaymentIntent,
 } from "./routes/subscriptions.ts";
+import {
+  getTeam,
+  inviteTeamMember,
+  updateTeamMemberRole,
+  removeTeamMember,
+} from "./routes/team.ts";
 import { authenticateSupabaseToken } from "./utils/supabaseAuth.ts";
 
 export function createServer() {
