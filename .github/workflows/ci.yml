@@ -120,15 +120,15 @@ jobs:
         env:
           # Use CI-friendly settings
           NODE_ENV: test
-          PORT: 3001
+          PORT: 8080
 
       - name: Wait for server ready
-        run: npx wait-on http://localhost:3001 --timeout 60000
+        run: npx wait-on http://localhost:8080 --timeout 60000
 
       - name: Run E2E smoke tests
         run: cp .env.template .env && npm run test:ux:regression -- --retries=2
         env:
-          PLAYWRIGHT_BASE_URL: http://localhost:3001
+          PLAYWRIGHT_BASE_URL: http://localhost:8080
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
