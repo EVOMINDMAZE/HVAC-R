@@ -176,7 +176,7 @@ export function Landing() {
                       <LandingImage 
                         src={pillar.icon} 
                         alt={pillar.title} 
-                        className="w-full h-full object-cover opacity-80 mix-blend-multiply dark:mix-blend-overlay group-hover:scale-110 transition-transform duration-500 ease-out" 
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
                         loading="lazy"
                       />
                       <div className="absolute inset-0 bg-primary/5" />
@@ -245,26 +245,26 @@ export function Landing() {
             {/* Badges Group */}
             <motion.div variants={hudFadeIn} className="flex flex-wrap justify-center items-center gap-8 md:gap-10">
               {/* ASHRAE */}
-              <div className="flex items-center gap-2 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-default">
+              <div className="flex items-center gap-2 transition-all duration-300 cursor-default">
                 <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-[#1a3a5c] flex items-center justify-center">
                   <span className="text-slate-600 dark:text-white text-[5px] font-black leading-none text-center">ASHRAE</span>
                 </div>
                 <span className="font-black text-foreground text-sm tracking-tight">ASHRAE</span>
               </div>
               {/* NIST */}
-              <div className="flex items-center gap-2 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-default">
+              <div className="flex items-center gap-2 transition-all duration-300 cursor-default">
                 <span className="font-black text-foreground text-sm tracking-tight">NIST</span>
                 <Shield className="w-5 h-5 text-emerald-500 fill-emerald-500/20" />
               </div>
               {/* AES-256 */}
-              <div className="flex items-center gap-1 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-default">
+              <div className="flex items-center gap-1 transition-all duration-300 cursor-default">
                 <div className="w-7 h-7 rounded-full bg-teal-500/20 flex items-center justify-center">
                   <CheckCircle2 className="w-4 h-4 text-teal-500" />
                 </div>
                 <span className="font-bold text-foreground text-xs">AES 256</span>
               </div>
               {/* GDPR */}
-              <div className="flex items-center gap-1 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-default">
+              <div className="flex items-center gap-1 transition-all duration-300 cursor-default">
                 <div className="w-7 h-7 rounded-full bg-blue-500/10 border-2 border-blue-400 flex items-center justify-center">
                   <span className="text-blue-500 text-[7px] font-bold">EU</span>
                 </div>

@@ -81,7 +81,7 @@ function LiveDispatchCard() {
         <span className="text-[8px] font-bold text-success font-mono">ID: 442</span>
       </div>
       <div className="relative h-24 bg-black/40 rounded-lg overflow-hidden border border-white/10 group">
-        <div className="absolute inset-0 opacity-30 bg-[url('https://api.mapbox.com/styles/v1/mapbox/dark-v11/static/-74.006,40.7128,12/400x300?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.r_98_f99_f99_f99')] bg-cover grayscale" />
+        <div className="absolute inset-0 opacity-30 bg-[url('https://api.mapbox.com/styles/v1/mapbox/dark-v11/static/-74.006,40.7128,12/400x300?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.r_98_f99_f99_f99')] bg-cover" />
         <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors" />
         {/* HUD Crosshair */}
         <div className="absolute top-1/2 left-1/4 w-8 h-[1px] bg-primary/20" />
@@ -238,7 +238,7 @@ export function HeroSection() {
                     <img
                       src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i + 10}`}
                       alt="User avatar"
-                      className="w-full h-full object-cover grayscale opacity-80"
+                      className="w-full h-full object-cover opacity-80"
                     />
                   </div>
                 ))}
@@ -269,7 +269,7 @@ export function HeroSection() {
                 style={{ y: y2 }}
                 src="/assets/landing/hvac_professional_consult.jpg"
                 alt="HVAC Professional"
-                className="w-full h-full object-cover opacity-40 grayscale transition-transform duration-1000 group-hover:scale-110"
+                className="w-full h-full object-cover opacity-80 transition-transform duration-1000 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-950/40 to-primary/5" />
               
