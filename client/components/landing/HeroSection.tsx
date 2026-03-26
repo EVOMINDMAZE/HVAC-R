@@ -1,17 +1,14 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Zap, Play, Clock, CheckCircle, BarChart, MapPin, Activity } from "lucide-react";
+import { ArrowRight, Zap, Play, CheckCircle, BarChart, MapPin, Activity } from "lucide-react";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
-
-import { CountdownTimer } from "./CountdownTimer";
-import { UrgencyNotification } from "./UrgencyNotification";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { metrics } from "@/config/metrics";
 import { hudFadeIn, staggerChildren, technicalGlow, technicalPulse } from "@/lib/animations/landingVariants";
 import { trackMarketingEvent } from "@/lib/marketingAnalytics";
+import { SectionNumber } from "@/components/ui/SectionNumber";
 
 const float: any = {
   animate: {
@@ -149,6 +146,7 @@ export function HeroSection() {
       <div className="absolute top-[20%] left-[10%] w-[600px] h-[500px] bg-highlight/[0.02] rounded-full blur-[120px] -z-10" />
 
       <div className="max-w-7xl mx-auto">
+        <SectionNumber number="01" className="absolute -top-8 -left-4 lg:-top-12 lg:-left-8" />
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left Content */}
           <motion.div
@@ -190,8 +188,6 @@ export function HeroSection() {
               Stop patching together fragmented software. Launch, manage, and scale your operations with a unified business system built for HVAC&R growth.
             </motion.p>
 
-            <CountdownTimer targetDate={metrics.urgency.countdown} />
-
             <motion.div
               variants={hudFadeIn}
               className="flex flex-col sm:flex-row gap-5 w-full sm:w-auto mb-12"
@@ -224,32 +220,9 @@ export function HeroSection() {
                 </Button>
               </Link>
             </motion.div>
-
-            <motion.div
-              variants={hudFadeIn}
-              className="flex items-center gap-4"
-            >
-              <div className="flex -space-x-3">
-                {[1, 2, 3, 4].map((i) => (
-                  <div
-                    key={i}
-                    className="w-10 h-10 rounded-full border-2 border-background bg-secondary flex items-center justify-center overflow-hidden"
-                  >
-                    <img
-                      src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i + 10}`}
-                      alt="User avatar"
-                      className="w-full h-full object-cover grayscale opacity-80"
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-display">
-                <span className="font-bold text-foreground">500+</span> ACTIVE_OPERATIONS
-              </div>
-            </motion.div>
           </motion.div>
 
-          {/* Right Visual (HUD) */}
+          {/* Right Visual (Dashboard Screenshot) */}
           <motion.div
             initial={{ opacity: 0, x: 40, filter: "blur(10px)" }}
             animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
@@ -257,33 +230,17 @@ export function HeroSection() {
             style={{ y: y1, rotate }}
             className="relative hidden lg:block"
           >
-            <div className="relative z-10 rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl bg-slate-950 aspect-[4/3] group hud-corner-accents">
-              <div className="corner-bottom-left" />
-              <div className="corner-bottom-right" />
-              
-              {/* Scanline Effect */}
-              <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,3px_100%] z-20 opacity-20" />
-              
-              {/* Background Image */}
+            <motion.div
+              style={{ y: y2 }}
+              className="relative z-10"
+            >
               <motion.img
-                style={{ y: y2 }}
-                src="/assets/landing/hvac_professional_consult.jpg"
-                alt="HVAC Professional"
-                className="w-full h-full object-cover opacity-40 grayscale transition-transform duration-1000 group-hover:scale-110"
+                src="/assets/landing/admin-dashboard-hero.png"
+                alt="Admin Dashboard Preview"
+                className="w-auto h-auto max-w-[600px] max-h-[450px] rounded-2xl shadow-2xl rotate-[-8deg] group-hover:rotate-[-5deg] transition-transform duration-500"
+                style={{ transformOrigin: 'center center' }}
               />
-              <div className="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-950/40 to-primary/5" />
-              
-              {/* Glass HUD Cards */}
-              <DashboardCard />
-              <LiveDispatchCard />
-              <SystemHealthCard />
-
-              {/* HUD Frame Corners */}
-              <div className="absolute top-8 left-8 w-12 h-12 border-t-2 border-l-2 border-primary/30 z-30" />
-              <div className="absolute top-8 right-8 w-12 h-12 border-t-2 border-r-2 border-primary/30 z-30" />
-              <div className="absolute bottom-8 left-8 w-12 h-12 border-b-2 border-l-2 border-primary/30 z-30" />
-              <div className="absolute bottom-8 right-8 w-12 h-12 border-b-2 border-r-2 border-primary/30 z-30" />
-            </div>
+            </motion.div>
 
             {/* Background Glows */}
             <div className="absolute -top-12 -right-12 w-64 h-64 bg-primary/15 rounded-full blur-[100px] -z-10 animate-pulse" />
@@ -291,7 +248,6 @@ export function HeroSection() {
           </motion.div>
         </div>
       </div>
-      <UrgencyNotification />
     </section>
   );
 }
