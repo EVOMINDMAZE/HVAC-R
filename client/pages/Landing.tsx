@@ -158,7 +158,7 @@ export function Landing() {
                   </p>
                   <Link 
                     to="/signup" 
-                    className="text-[#2563eb] font-semibold text-sm hover:underline flex items-center gap-1"
+                    className="text-primary font-semibold text-sm hover:underline flex items-center gap-1"
                     onClick={(e) => {
                       e.stopPropagation();
                       trackMarketingEvent("landing_pillar_click", { pillar: pillar.title, action: "deploy" });
