@@ -149,12 +149,7 @@ export function Landing() {
                   className="border border-border rounded-2xl p-6 flex flex-col h-full bg-card/50 backdrop-blur-sm landing-pillars-card group"
                   onClick={() => trackMarketingEvent("landing_pillar_click", { pillar: pillar.title })}
                 >
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-6 transition-all duration-300 ${
-                    idx === 0 ? 'bg-blue-100 dark:bg-[#eff6ff] text-blue-600 dark:text-[#2563eb] group-hover:bg-blue-600 dark:group-hover:bg-[#2563eb] group-hover:text-white' :
-                    idx === 1 ? 'bg-green-100 dark:bg-[#f0fdf4] text-green-600 dark:text-[#16a34a] group-hover:bg-green-600 dark:group-hover:bg-[#16a34a] group-hover:text-white' :
-                    idx === 2 ? 'bg-purple-100 dark:bg-[#faf5ff] text-purple-600 dark:text-[#9333ea] group-hover:bg-purple-600 dark:group-hover:bg-[#9333ea] group-hover:text-white' :
-                    'bg-orange-100 dark:bg-[#fff7ed] text-orange-600 dark:text-[#ea580c] group-hover:bg-orange-600 dark:group-hover:bg-[#ea580c] group-hover:text-white'
-                  }`}>
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-6 transition-all duration-300 bg-orange-100 dark:bg-[#fff7ed] text-orange-600 dark:text-[#ea580c] group-hover:bg-orange-600 dark:group-hover:bg-[#ea580c] group-hover:text-white`}>
                     <Icon className="w-6 h-6 transition-transform duration-300" />
                   </div>
                   <h3 className="font-bold text-foreground mb-2">{pillar.title}</h3>
@@ -265,8 +260,8 @@ export function Landing() {
               </div>
               {/* GDPR */}
               <div className="flex items-center gap-1 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-default">
-                <div className="w-7 h-7 rounded-full bg-blue-500/10 border-2 border-blue-400 flex items-center justify-center">
-                  <span className="text-blue-500 text-[7px] font-bold">EU</span>
+                <div className="w-7 h-7 rounded-full bg-orange-500/10 border-2 border-orange-400 flex items-center justify-center">
+                  <span className="text-orange-500 text-[7px] font-bold">EU</span>
                 </div>
                 <span className="font-bold text-foreground text-xs">GDPR</span>
               </div>
