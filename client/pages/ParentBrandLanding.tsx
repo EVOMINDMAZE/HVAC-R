@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Snowflake,
   GraduationCap,
@@ -8,6 +9,7 @@ import {
   Layers,
   Globe,
   Waves,
+  Building2,
 } from "lucide-react";
 
 // ── ThermoNeural — Parent Brand Landing ────────────────────────────────────
@@ -56,6 +58,16 @@ const PRODUCTS: Product[] = [
     status: "In development",
     icon: ShieldCheck,
   },
+  {
+    id: "platform",
+    name: "HVAC Business Platform",
+    tagline: "Dispatch, invoicing and AI, in one box",
+    description:
+      "The operations suite for the HVAC&R business — dispatch, invoicing, client relationships and live AI diagnostics in a single source of truth, built to scale a growing contracting company.",
+    url: "/platform",
+    status: "Live",
+    icon: Layers,
+  },
 ];
 
 const PILLARS = [
@@ -78,19 +90,9 @@ const PILLARS = [
 
 function ProductCard({ product }: { product: Product }) {
   const Icon = product.icon;
-  const statusColor =
-    product.status === "Live"
-      ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
-      : product.status === "Beta"
-        ? "bg-amber-500/15 text-amber-300 border-amber-500/30"
-        : "bg-sky-500/15 text-sky-300 border-sky-500/30";
-  return (
-    <a
-      href={product.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group relative flex flex-col rounded-2xl border border-white/10 bg-card/50 p-7 transition hover:border-indigo-500/50 hover:bg-card/80"
-    >
+  const isInternal = product.url.startsWith("/");
+  const inner = (
+    <>
       <div className="flex items-center justify-between">
         <div className="rounded-lg bg-indigo-600/15 p-3 text-indigo-300">
           <Icon className="h-6 w-6" />
@@ -104,6 +106,17 @@ function ProductCard({ product }: { product: Product }) {
         Learn more
         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
       </div>
+    </>
+  );
+  const cls =
+    "group relative flex flex-col rounded-2xl border border-white/10 bg-card/50 p-7 transition hover:border-indigo-500/50 hover:bg-card/80";
+  return isInternal ? (
+    <Link to={product.url} className={cls}>
+      {inner}
+    </Link>
+  ) : (
+    <a href={product.url} target="_blank" rel="noopener noreferrer" className={cls}>
+      {inner}
     </a>
   );
 }
@@ -218,7 +231,7 @@ export function ParentBrandLanding() {
             </p>
           </div>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
           {PRODUCTS.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
@@ -245,6 +258,61 @@ export function ParentBrandLanding() {
               </div>
             );
           })}
+        </div>
+      </section>
+
+      {/* For enterprises — BD / investor positioning */}
+      <section className="mx-auto max-w-6xl px-6 py-16">
+        <div className="grid items-center gap-10 lg:grid-cols-2">
+          <div>
+            <p className="mb-4 inline-block rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300">
+              For enterprises & partners
+            </p>
+            <h2 className="text-3xl font-bold text-white sm:text-4xl">
+              Compliance is not optional. <br className="hidden sm:block" />
+              Neither is the gap it leaves.
+            </h2>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-white/60">
+              With the EU F-gas quota tightening every year, a facility that can't show
+              its leak-rate and refrigerant obligations on demand is exposing itself to
+              fines, downtime and lost contracts. Cryovo turns that exposure into an
+              audit-ready record — and the platform that produces the calculation behind
+              it gives you the numbers to back it up.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a
+                href="https://github.com/EVOMINDMAZE/cryovo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500"
+              >
+                Explore Cryovo
+              </a>
+              <a
+                href="#contact"
+                className="rounded-lg border border-white/15 px-5 py-3 text-sm font-semibold text-white/80 transition hover:border-indigo-500/50 hover:text-white"
+              >
+                Talk to sales
+              </a>
+            </div>
+          </div>
+
+          <div className="grid gap-4">
+            {[
+              { k: "Regulatory risk", v: "F-gas quota, leak-rate and reporting obligations — on an audit-ready record" },
+              { k: "Downstream value", v: "The engineering engine behind the compliance number, so every figure is provable" },
+              { k: "Deployment", v: "Cloud, no-install; scoped to a facility, a fleet, or a whole enterprise" },
+              { k: "Built to scale", v: "From a single site to a national cold-chain network" },
+            ].map((item) => (
+              <div key={item.k} className="flex items-start gap-4 rounded-xl border border-white/10 bg-card/40 p-5">
+                <Building2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-300" />
+                <div>
+                  <div className="text-sm font-bold text-white">{item.k}</div>
+                  <div className="mt-1 text-sm text-white/60">{item.v}</div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
