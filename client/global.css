@@ -24,7 +24,7 @@
     --popover-foreground: 220 20% 10%;
 
     /* Brand & Primary (Cyan/Steel focus) */
-    --primary: 188 93% 44%; /* Cyan-500 #06b6d4 */
+    --primary: 25 95% 53%; /* Orange-500 #f97316 */
     --primary-foreground: 0 0% 100%;
     --secondary: 220 15% 94%;
     --secondary-foreground: 220 20% 10%;
@@ -48,7 +48,7 @@
     /* Borders & Interaction */
     --border: 220 13% 85%;
     --input: 220 13% 85%;
-    --ring: 188 93% 44%;
+    --ring: 25 95% 53%;
     --radius: 0.75rem;
 
     /* Extended Color Mapping for Tailwind */
@@ -168,7 +168,7 @@
     --popover-foreground: 210 40% 98%;
 
     /* Brand & Primary (Cyan/Steel focus) */
-    --primary: 188 93% 50%; /* Vibrant Cyan for dark mode #1adef9 */
+    --primary: 25 95% 53%; /* Orange-500 #f97316 */
     --primary-foreground: 230 30% 4%;
     --secondary: 220 20% 12%;
     --secondary-foreground: 210 40% 98%;
@@ -192,7 +192,7 @@
     /* Borders & Interaction */
     --border: 215 25% 24%;
     --input: 215 25% 24%;
-    --ring: 188 93% 50%;
+    --ring: 25 95% 53%;
     --radius: 0.75rem;
 
     /* Glassmorphism Effects (dark) */
