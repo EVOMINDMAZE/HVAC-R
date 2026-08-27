@@ -33,6 +33,7 @@ import { cn } from "@/lib/utils";
 interface HeaderProps {
   variant?: "landing" | "dashboard";
   onOpenSearch?: () => void;
+  brand?: "box";
 }
 
 function MobileGroup({
@@ -155,7 +156,7 @@ function MobileMenuSection({ children }: { children: React.ReactNode }) {
   return <div className="app-stack-16">{children}</div>;
 }
 
-export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
+export function Header({ variant = "landing", onOpenSearch, brand }: HeaderProps) {
   const { user, isAuthenticated, signOut, companies, isRefreshing } = useSupabaseAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
@@ -407,11 +408,17 @@ export function Header({ variant = "landing", onOpenSearch }: HeaderProps) {
             </Button>
           ) : null}
           <Link to="/" className="flex items-center" aria-label="Go to home">
-            <img
-              src={isDark ? "/logo-landscape-dark.png?v=3" : "/logo-landscape.png?v=3"}
-              alt="ThermoNeural"
-              className="h-9 w-auto object-contain sm:h-10 transition-transform duration-200 hover:scale-[1.02]"
-            />
+            {brand === "box" ? (
+              <span className="text-xl font-black tracking-tight text-foreground">
+                The <span className="text-primary">Box</span>
+              </span>
+            ) : (
+              <img
+                src={isDark ? "/logo-landscape-dark.png?v=3" : "/logo-landscape.png?v=3"}
+                alt="ThermoNeural"
+                className="h-9 w-auto object-contain sm:h-10 transition-transform duration-200 hover:scale-[1.02]"
+              />
+            )}
           </Link>
         </div>
 

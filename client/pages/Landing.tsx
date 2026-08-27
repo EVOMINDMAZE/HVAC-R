@@ -109,10 +109,10 @@ export function Landing() {
   const pillarIcons = [Layout, BarChart3, FileCheck2, Send];
 
   return (
-    <PublicPageShell mainId="main-content" skipToMain>
+    <PublicPageShell mainId="main-content" skipToMain brand="box">
       <SEO
-        title="ThermoNeural | Engineering Operations at Scale"
-        description="Equip your HVAC&R technicians with AI-driven diagnostics, automated compliance, and profit-focused dispatching."
+        title="The Box — HVAC Business in a Box | ThermoNeural"
+        description="The complete HVAC business system — dispatch, invoicing, AI diagnostics, automated compliance, and profit-focused dispatching for HVAC&R companies."
       />
       <StructuredData />
 

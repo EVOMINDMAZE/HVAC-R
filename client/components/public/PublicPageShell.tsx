@@ -10,6 +10,7 @@ interface PublicPageShellProps {
   mainClassName?: string;
   mainId?: string;
   skipToMain?: boolean;
+  brand?: "box";
 }
 
 export function PublicPageShell({
@@ -19,6 +20,7 @@ export function PublicPageShell({
   mainClassName,
   mainId = "main-content",
   skipToMain = false,
+  brand,
 }: PublicPageShellProps) {
   return (
     <div className={cn("landing-page app-shell min-h-screen bg-slate-50 dark:bg-[#0a0f1a] text-foreground relative z-0", className)}>
@@ -32,7 +34,7 @@ export function PublicPageShell({
         </a>
       ) : null}
       <div className="relative z-10 flex flex-col min-h-screen">
-        <Header variant="landing" />
+        <Header variant="landing" brand={brand} />
         <main id={mainId} className={cn("flex-grow", mainClassName)}>{children}</main>
         {withFooter ? <Footer /> : null}
       </div>
