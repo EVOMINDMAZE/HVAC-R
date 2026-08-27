@@ -54,8 +54,8 @@ const PRODUCTS: Product[] = [
     tagline: "Cold-chain compliance",
     description:
       "Enterprise cold-chain and F-gas compliance — leak-rate tracking, refrigerant obligations and audit-ready records for facilities that can't afford a compliance gap.",
-    url: "https://github.com/EVOMINDMAZE/cryovo",
-    status: "In development",
+    url: "https://cryovo.vercel.app",
+    status: "Beta",
     icon: ShieldCheck,
   },
   {
@@ -281,7 +281,7 @@ export function ParentBrandLanding() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a
-                href="https://github.com/EVOMINDMAZE/cryovo"
+                href="https://cryovo.vercel.app"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500"
