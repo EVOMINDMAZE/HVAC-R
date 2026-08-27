@@ -28,10 +28,38 @@ export function Contact() {
     category: "",
     message: "",
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [status, setStatus] = useState<null | "success" | "error">(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    setSubmitting(true);
+    setStatus(null);
+    try {
+      const res = await fetch("https://formsubmit.co/evomindmaze@gmail.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          _subject: `[ThermoNeural ${formData.category || "General"}] ${formData.subject || "Contact request"}`,
+          _template: "table",
+          _captcha: "false",
+          name: formData.name,
+          email: formData.email,
+          company: formData.company || "—",
+          message: formData.message,
+        }),
+      });
+      if (res.ok) {
+        setStatus("success");
+        setFormData({ name: "", email: "", company: "", subject: "", category: "", message: "" });
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -182,9 +210,15 @@ export function Contact() {
                   />
                 </div>
 
-                <Button type="submit" className="w-full sm:w-auto px-8">
-                  Send message
+                <Button type="submit" disabled={submitting} className="w-full sm:w-auto px-8">
+                  {submitting ? "Sending…" : "Send message"}
                 </Button>
+                {status === "success" && (
+                  <p className="text-sm text-emerald-500">Thanks — we'll be in touch within one business day.</p>
+                )}
+                {status === "error" && (
+                  <p className="text-sm text-red-500">Something went wrong. Please email us directly.</p>
+                )}
               </form>
             </CardContent>
           </Card>

@@ -324,6 +324,7 @@ function AppRoutes() {
           <Routes location={location} key={location.pathname}>
             {/* Public Routes */}
             <Route path="/" element={<ParentBrandLanding />} />
+            <Route path="/platform" element={<Landing />} />
             <Route path="/triage" element={<Triage />} />
             <Route path="/a2l-resources" element={<A2LLandingPage />} />
             <Route path="/features" element={<Features />} />

@@ -124,7 +124,33 @@ function Badge({ status }: { status: Product["status"] }) {
 
 export function ParentBrandLanding() {
   const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [status, setStatus] = useState<null | "success" | "error">(null);
+
+  const submitContact = async () => {
+    if (!email.includes("@") || submitting) return;
+    setSubmitting(true);
+    setStatus(null);
+    try {
+      const res = await fetch("https://formsubmit.co/evomindmaze@gmail.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          _subject: "[ThermoNeural] Contact from the parent landing page",
+          _template: "table",
+          _captcha: "false",
+          email,
+        }),
+      });
+      setStatus(res.ok ? "success" : "error");
+      if (res.ok) setSubmitted(true);
+    } catch {
+      setStatus("error");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#0f0f1a] text-white antialiased">
@@ -139,6 +165,7 @@ export function ParentBrandLanding() {
         <nav className="hidden items-center gap-8 text-sm text-white/70 md:flex">
           <a href="#products" className="hover:text-white">Products</a>
           <a href="#platform" className="hover:text-white">Platform</a>
+          <a href="/platform" className="hover:text-white">Business platform</a>
           <a href="#contact" className="hover:text-white">Contact</a>
         </nav>
         <a
@@ -232,7 +259,7 @@ export function ParentBrandLanding() {
             would love to hear from you.
           </p>
           <div className="mx-auto mt-6 flex max-w-md flex-col gap-3 sm:flex-row">
-            {subscribed ? (
+            {submitted ? (
               <div className="mx-auto rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-6 py-3 text-sm text-emerald-300">
                 Thanks — we'll be in touch.
               </div>
@@ -245,12 +272,16 @@ export function ParentBrandLanding() {
                   className="w-full rounded-lg border border-white/15 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/40 focus:border-indigo-500 focus:outline-none"
                 />
                 <button
-                  onClick={() => email.includes("@") && setSubscribed(true)}
-                  className="rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500"
+                  onClick={submitContact}
+                  disabled={submitting}
+                  className="rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:opacity-60"
                 >
-                  Contact us
+                  {submitting ? "Sending…" : "Contact us"}
                 </button>
               </>
+            )}
+            {status === "error" && (
+              <p className="text-xs text-red-400 sm:absolute sm:-bottom-5">Something went wrong — please email us directly.</p>
             )}
           </div>
         </div>
@@ -266,11 +297,18 @@ export function ParentBrandLanding() {
           </div>
           <div className="flex items-center gap-6">
             <a href="#products" className="hover:text-white/70">Products</a>
+            <a href="/platform" className="hover:text-white/70">Business platform</a>
             <a href="https://simulateon.vercel.app" target="_blank" rel="noopener noreferrer" className="hover:text-white/70">
               <ArrowUpRight className="inline h-3.5 w-3.5" /> PhasePoint
             </a>
             <a href="https://vanclass-app.vercel.app" target="_blank" rel="noopener noreferrer" className="hover:text-white/70">
               VanClass
+            </a>
+            <a href="https://www.linkedin.com/company/thermoneural" target="_blank" rel="noopener noreferrer" className="hover:text-white/70">
+              LinkedIn
+            </a>
+            <a href="https://twitter.com/thermoneural" target="_blank" rel="noopener noreferrer" className="hover:text-white/70">
+              X/Twitter
             </a>
           </div>
         </div>
