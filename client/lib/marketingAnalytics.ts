@@ -71,7 +71,10 @@ export function trackMarketingEvent(
     // Ignore storage errors (private mode, disabled storage, etc).
   }
 
-  if (typeof window.gtag === "function") {
+  // Only fire the analytics beacon (gtag) after the visitor has granted consent.
+  // Without consent we still record the event trail locally (dataLayer + sessionStorage)
+  // for QA, but we do NOT send it to any analytics service.
+  if (typeof window.gtag === "function" && localStorage.getItem("consent_given") === "true") {
     window.gtag("event", eventName, eventPayload);
   }
 }
