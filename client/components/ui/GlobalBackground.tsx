@@ -8,6 +8,7 @@ export function GlobalBackground() {
         <img
           src="/assets/landing/create_image_like_202603191616.png"
           alt=""
+          aria-hidden="true"
           className="w-full h-full object-cover opacity-[0.07] blur-[1px]"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-transparent to-transparent dark:from-[#0a0f1a] dark:via-transparent dark:to-transparent" />
