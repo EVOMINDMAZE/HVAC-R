@@ -261,6 +261,51 @@ export function ParentBrandLanding() {
         </div>
       </section>
 
+      {/* Cross-product flow — one unit, one lifecycle (backed by the shared registry) */}
+      <section className="mx-auto max-w-6xl px-6 pb-4">
+        <div className="rounded-3xl border border-white/10 bg-card/30 p-8 sm:p-10">
+          <div className="text-center">
+            <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/15">
+              <Layers className="h-5 w-5 text-indigo-300" />
+            </div>
+            <h2 className="text-2xl font-bold text-white sm:text-3xl">One unit, one lifecycle</h2>
+            <p className="mx-auto mt-2 max-w-2xl text-white/60">
+              A single piece of equipment is shared across the whole family through one registry —
+              so the unit you dispatch on is the unit we calculate on is the unit we prove compliance for.
+            </p>
+          </div>
+
+          <div className="mt-10 grid items-center gap-4 md:grid-cols-[1fr_auto_1fr_auto_1fr]">
+            {[
+              { icon: Waves, step: "1", title: "The Box", body: "Dispatch a job on the asset.", accent: "text-orange-300" },
+              { icon: Globe, step: "2", title: "PhasePoint", body: "Run the physics on the same asset.", accent: "text-sky-300" },
+              { icon: ShieldCheck, step: "3", title: "Cryovo", body: "Prove cold-chain & F-gas compliance.", accent: "text-teal-300" },
+            ].map(({ icon: Icon, step, title, body, accent }, i) => (
+              <div key={title} className="contents">
+                {i > 0 && (
+                  <div className="hidden items-center justify-center md:flex">
+                    <ArrowRight className="h-6 w-6 text-white/30" />
+                  </div>
+                )}
+                <div className="rounded-2xl border border-white/10 bg-background/50 p-6">
+                  <div className="flex items-center justify-between">
+                    <Icon className={`h-6 w-6 ${accent}`} />
+                    <span className="text-xs font-bold text-white/30">Step {step}</span>
+                  </div>
+                  <h3 className="mt-4 text-lg font-bold text-white">{title}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-white/60">{body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-8 text-center text-sm text-white/50">
+            Shared equipment identity across The Box, PhasePoint and Cryovo — one record, no re-entry, no silos.
+            <span className="block mt-1">ThermoNeural is a system, not three tools.</span>
+          </p>
+        </div>
+      </section>
+
       {/* For enterprises — BD / investor positioning */}
       <section className="mx-auto max-w-6xl px-6 py-16">
         <div className="grid items-center gap-10 lg:grid-cols-2">
