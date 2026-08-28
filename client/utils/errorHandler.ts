@@ -60,7 +60,7 @@ export function setupGlobalErrorHandler() {
       // Get stack trace to identify source
       const stack = error instanceof Error ? error.stack ?? "" : "";
       const isFromExternalAPI =
-        (stack as string).includes("simulateon-backend.onrender.com") ||
+        (stack as string).includes("148.116.87.10.sslip.io") ||
         (stack as string).includes("calculate-standard") ||
         (stack as string).includes("compare-refrigerants") ||
         (stack as string).includes("calculate-cascade");

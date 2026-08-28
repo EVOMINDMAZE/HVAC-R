@@ -61,3 +61,6 @@ screenshots/
 playwright/.auth/*.json
 *.pid
 archive/
+
+# Local Netlify folder
+.netlify
