@@ -432,17 +432,6 @@ export function Header({ variant = "landing", onOpenSearch, brand }: HeaderProps
           >
             The Box
           </Link>
-          <a
-            href="https://www.skool.com/hvac-r-business-owner-1296"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn(
-              navLinkBaseClasses,
-              "text-muted-foreground/80 hover:text-foreground transition-all duration-200 rounded-lg hover:bg-muted/50"
-            )}
-          >
-            Community
-          </a>
           <Link
             to="/features#automations"
             className={cn(
@@ -553,12 +542,6 @@ export function Header({ variant = "landing", onOpenSearch, brand }: HeaderProps
               label="The Box"
               to="/pricing"
               isActive={isRouteActive(location.pathname, "/pricing")}
-              onClick={() => setMobileOpen(false)}
-            />
-            <LandingMobileLink
-              label="Community"
-              to="https://www.skool.com/hvac-r-business-owner-1296"
-              isActive={false}
               onClick={() => setMobileOpen(false)}
             />
             <LandingMobileLink

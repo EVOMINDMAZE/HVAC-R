@@ -199,12 +199,6 @@ export function useAppNavigation() {
         label: "Support",
         items: [
           {
-            to: "https://www.skool.com/hvac-r-business-owner-1296",
-            label: "Community",
-            icon: Users,
-            desc: "Join business owners",
-          },
-          {
             to: "/documentation",
             label: "Documentation",
             icon: BookOpen,
