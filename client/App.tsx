@@ -90,6 +90,9 @@ const ComplianceReport = lazy(
 const LeakRateCalculator = lazy(
   () => import("@/pages/refrigerant/LeakRateCalculator"),
 );
+const Diagnose = lazy(() =>
+  import("@/pages/Diagnose").then((m) => ({ default: m.Diagnose }))
+);
 const WarrantyScanner = lazy(() => import("@/pages/warranty/WarrantyScanner"));
 const Triage = lazy(() => import("@/pages/public/Triage"));
 const IAQWizard = lazy(() => import("@/pages/iaq/IAQWizard"));
@@ -453,6 +456,16 @@ function AppRoutes() {
               <ProtectedRoute>
                 <SubscriptionGuard requiredTier="pro">
                   <AdvancedReporting />
+                </SubscriptionGuard>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tools/diagnose"
+            element={
+              <ProtectedRoute>
+                <SubscriptionGuard requiredTier="pro">
+                  <Diagnose />
                 </SubscriptionGuard>
               </ProtectedRoute>
             }
