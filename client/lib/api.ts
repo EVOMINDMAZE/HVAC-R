@@ -780,3 +780,4 @@ export const apiClient = new ApiClient();
 
 // Export types for external use
 export type { User, CalculationData, UserStats, SubscriptionPlan, ApiResponse };
+// auth: shared Supabase SSO baked via committed .env (VITE vars)
