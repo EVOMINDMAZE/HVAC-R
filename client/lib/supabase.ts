@@ -72,3 +72,4 @@ import type { Database } from "../../shared/types/database";
 
 export type { Database };
 // build: bake shared supabase SSO env
+// auth: The Box uses shared Supabase SSO (tbmizbqftczbsbwqgyjx)

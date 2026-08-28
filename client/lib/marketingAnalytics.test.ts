@@ -33,9 +33,11 @@ describe("trackMarketingEvent", () => {
     expect(persisted[0]?.event).toBe("landing_hero_primary_click");
   });
 
-  it("calls gtag with matching payload", () => {
+  it("calls gtag with matching payload after consent granted", () => {
     const gtagMock = window.gtag as ReturnType<typeof vi.fn>;
     vi.spyOn(window, "innerWidth", "get").mockReturnValue(390);
+    // gtag is consent-gated: only fires after the user grants optional consent.
+    localStorage.setItem("consent_given", "true");
 
     trackMarketingEvent("pricing_plan_cta_click", {
       section: "plan_card",
@@ -54,5 +56,12 @@ describe("trackMarketingEvent", () => {
         destination: "stripe_checkout",
       }),
     );
+  });
+
+  it("does NOT call gtag before consent granted (GDPR gate)", () => {
+    const gtagMock = window.gtag as ReturnType<typeof vi.fn>;
+    localStorage.removeItem("consent_given");
+    trackMarketingEvent("pricing_plan_cta_click", { section: "plan_card", plan: "pro", destination: "stripe_checkout" });
+    expect(gtagMock).toHaveBeenCalledTimes(0);
   });
 });
