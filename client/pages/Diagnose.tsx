@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { diagnose, Diagnosis } from "@/lib/diagnosis";
+import { supabase } from "@/lib/supabase";
 
 // The Box — physics-bridge diagnosis tool (Epic #4, P2–P4).
 // Runs the deterministic refrigeration diagnostic engine (real saturation math)
 // directly in the browser (no secrets, so an API proxy would only add a round-trip).
-// Pro-gated at the ROUTE by SubscriptionGuard; honest disclaimer. Never guesses.
+// Pro-gated at the ROUTE by SubscriptionGuard. Records a diagnosis onto a shared
+// bridge asset (the same one PhasePoint/Cryovo reference). Honest disclaimer.
+
+type Asset = { id: string; name: string; refrigerant?: string };
 
 export function Diagnose() {
   const [input, setInput] = useState({
@@ -16,6 +20,19 @@ export function Diagnose() {
     ambient_f: "",
   });
   const [result, setResult] = useState<Diagnosis | null>(null);
+  const [assets, setAssets] = useState<Asset[]>([]);
+  const [assetId, setAssetId] = useState("");
+  const [saved, setSaved] = useState(false);
+
+  // Load the caller's shared bridge assets so a diagnosis can be recorded to one.
+  useEffect(() => {
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase.from("equipment").select("id, name, refrigerant").eq("owner_id", user.id);
+      if (data?.length) { setAssets(data as Asset[]); setAssetId(data[0].id); }
+    })();
+  }, []);
 
   const set = (k: keyof typeof input) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setInput((s) => ({ ...s, [k]: e.target.value }));
@@ -29,6 +46,21 @@ export function Diagnose() {
       liquid_line_temp_f: input.liquid_line_temp_f ? Number(input.liquid_line_temp_f) : undefined,
       ambient_f: input.ambient_f ? Number(input.ambient_f) : undefined,
     }));
+    setSaved(false);
+  };
+
+  const record = async () => {
+    if (!result || !assetId || result.fault === "insufficient_data") return;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { error } = await supabase.from("equipment").update({
+      last_diagnosis: {
+        fault: result.fault, severity: result.severity, refrigerant: input.refrigerant,
+        diagnosed_at: new Date().toISOString(), recommended_action: result.recommended_action,
+        metrics: result.metrics,
+      },
+    }).eq("id", assetId).eq("owner_id", user.id);
+    setSaved(!error);
   };
 
   return (
@@ -67,6 +99,18 @@ export function Diagnose() {
           <input value={input.liquid_line_temp_f} onChange={set("liquid_line_temp_f")} placeholder="e.g. 77" className="mt-1 w-full rounded-lg border border-border bg-card px-3 py-2 text-sm" />
         </label>
       </div>
+
+      {assets.length > 0 && (
+        <div className="mt-6">
+          <span className="text-xs font-semibold text-muted-foreground">Record to asset</span>
+          <select value={assetId} onChange={(e) => setAssetId(e.target.value)} className="mt-1 ml-2 rounded-lg border border-border bg-card px-3 py-2 text-sm">
+            {assets.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
+          </select>
+          <button onClick={record} disabled={!result || result.fault === "insufficient_data" || !assetId} className="ml-2 rounded-lg border border-border px-3 py-2 text-sm hover:bg-secondary disabled:opacity-40">
+            {saved ? "✓ Recorded" : "Record diagnosis"}
+          </button>
+        </div>
+      )}
 
       <button onClick={run} className="mt-6 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90">
         Run diagnosis
