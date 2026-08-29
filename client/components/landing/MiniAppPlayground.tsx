@@ -64,7 +64,7 @@ const professionalData = {
   },
   automation: {
     rule: "If chiller temp > 45°F → Send SMS alert",
-    testResult: "✓ Alert sent to +1 (555) 123-4567",
+    testResult: "✓ Alert sent to on-call technician",
   },
 };
 
@@ -903,7 +903,7 @@ function Act3_Professional({ onProgress, onNext: _onNext, prefersReducedMotion =
             icon={<Zap className="h-4 w-4 text-primary" />}
           >
             <div className="absolute -top-3 -right-3 z-30 bg-primary text-primary-foreground text-[8px] font-bold px-3 py-1.5 rounded-full shadow-xl font-display uppercase tracking-widest border border-white/20">
-              ELITE_LEVEL
+              AUTOMATION_ENGINE
             </div>
 
             <div className="space-y-4">
@@ -921,7 +921,7 @@ function Act3_Professional({ onProgress, onNext: _onNext, prefersReducedMotion =
                 <div className="text-[9px] text-white/30 font-mono mb-2 uppercase">Trigger: JOB_STATUS == COMPLETE</div>
                 <div className="flex items-center gap-2 text-primary font-bold font-display text-xs">
                   <CheckCircle className="h-3.5 w-3.5" />
-                  <span>5.0 SCORE_OPTIMIZATION</span>
+                  <span>✓ Review request sent on completion</span>
                 </div>
               </div>
 
@@ -934,12 +934,12 @@ function Act3_Professional({ onProgress, onNext: _onNext, prefersReducedMotion =
                   <div className="w-8 h-8 rounded-lg bg-white/5 text-white/60 flex items-center justify-center border border-white/10">
                     <DollarSign className="h-4 w-4" />
                   </div>
-                  <div className="text-[11px] font-bold font-display uppercase tracking-wider">Revenue Guard</div>
+                  <div className="text-[11px] font-bold font-display uppercase tracking-wider">Invoice Chaser</div>
                 </div>
                 <div className="text-[9px] text-white/30 font-mono mb-2 uppercase">Trigger: T+72H_UNPAID</div>
                 <div className="flex items-center gap-2 text-white/40 font-bold font-display text-xs">
                   <CheckCircle className="h-3.5 w-3.5 opacity-40" />
-                  <span>CASH_FLOW_PROTECTED</span>
+                  <span>✓ Follow-up scheduled for unpaid invoice</span>
                 </div>
               </div>
             </div>

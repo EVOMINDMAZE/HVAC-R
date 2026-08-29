@@ -64,7 +64,7 @@ const automationsFeatures = [
     icon: Database,
     title: "Data Sync",
     description:
-      "Seamlessly push invoices, payments, and expenses to your accounting software without manual entry.",
+      "Keep client, job, and payment records synced across your team, with automated follow-ups on outstanding invoices — no re-entering data between the office and the field.",
   },
 ];
 
@@ -160,7 +160,7 @@ export function Features() {
               The complete operating system for modern HVAC&R businesses.
             </h1>
             <p className="mt-6 text-lg leading-relaxed text-muted-foreground max-w-xl">
-              Everything you need to run your operations, automate workflows, and connect with a community of professionals. Oh, and we included the best engineering calculators, too.
+              Everything you need to run your operations, automate workflows, and connect with a community of professionals. Oh, and we included professional engineering calculators, too.
             </p>
             <p className="mt-4 text-sm text-muted-foreground max-w-xl">
               Start free today and grow your business with tools built specifically for the trade.

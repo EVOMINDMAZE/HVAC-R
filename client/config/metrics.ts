@@ -250,7 +250,7 @@ export const landingConfig = {
     {
       title: "Audit-Ready Ledger",
       subtitle: "Invisible EPA Compliance",
-      description: "Eliminate the fear of a surprise audit. Our system generates audit-proof EPA & OSHA records automatically in the background, paperwork-free.",
+      description: "Eliminate the fear of a surprise audit. Our system generates audit-ready EPA & OSHA records automatically in the background, paperwork-free.",
       icon: "/assets/landing/hvac_legacy_bw.mp4",
       size: "small",
       painpoint: "Compliance & Legal Risk",

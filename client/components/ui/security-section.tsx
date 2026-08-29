@@ -72,7 +72,7 @@ export function SecuritySection() {
             Your data security is our top priority. We maintain the highest standards to protect your information.
           </p>
           <p className="text-sm text-muted-foreground mt-4">
-            We&apos;re continuously working to achieve industry-leading security certifications.
+            We&apos;re continuously working to achieve recognized security certifications.
           </p>
         </motion.div>
 

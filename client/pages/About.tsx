@@ -28,7 +28,7 @@ const values = [
     icon: Shield,
     title: "Professionalism",
     description:
-      "Elevate your brand. We provide the tools, templates, and operational standards to deliver world-class service that builds lasting trust.",
+      "Elevate your brand. We provide the tools, templates, and operational standards to deliver dependable, professional service that builds lasting trust.",
   },
 ];
 

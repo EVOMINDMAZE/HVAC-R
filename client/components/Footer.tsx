@@ -54,7 +54,6 @@ export function Footer() {
             <h4 className="font-bold text-foreground mb-6 font-display">Company</h4>
             <ul className="space-y-4">
               <li><Link to="/about" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">About</Link></li>
-              <li><Link to="/careers" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">Careers</Link></li>
               <li><Link to="/pricing" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">Pricing</Link></li>
               <li><Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">Contact</Link></li>
             </ul>
@@ -82,7 +81,6 @@ export function Footer() {
           <div className="flex gap-8">
             <Link to="/privacy" className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors">Privacy</Link>
             <Link to="/terms" className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors">Terms</Link>
-            <Link to="/cookies" className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors">Cookies</Link>
           </div>
         </div>
       </div>

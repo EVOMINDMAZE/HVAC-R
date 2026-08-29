@@ -5,7 +5,6 @@ import {
   ChevronUp,
   MessageCircle,
   Mail,
-  Phone,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -229,11 +228,6 @@ export function HelpCenter() {
                 icon: Mail,
                 title: "Email",
                 detail: "support@thermoneural.com",
-              },
-              {
-                icon: Phone,
-                title: "Phone",
-                detail: "+1 (555) 123-4567",
               },
             ].map((item) => (
               <Card

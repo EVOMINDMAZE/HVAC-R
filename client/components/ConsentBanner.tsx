@@ -87,108 +87,108 @@ export function ConsentBanner({
   };
 
   return (
-    <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-950/30 dark:border-blue-800 fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:bottom-4 md:max-w-md z-50 rounded-lg shadow-lg">
-      <div className="flex items-start justify-between">
-        <div className="flex items-start gap-3">
-          <Cookie className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
-          <div className="flex-1">
-            <AlertTitle className="text-blue-800 dark:text-blue-300 font-semibold">
-              <span className="inline-flex items-center gap-2">
-                <Shield className="h-4 w-4" />
-                Your Privacy Choices
-              </span>
-            </AlertTitle>
-            <AlertDescription className="text-blue-700 dark:text-blue-400 mt-1">
-              <p className="mb-3">
-                We use cookies and similar technologies to enhance your experience, analyze usage, and personalize content. By continuing to use our platform, you consent to our use of essential cookies. You can manage your preferences at any time.
-              </p>
+    <div className="fixed inset-x-0 bottom-0 z-50 flex justify-center md:inset-x-auto md:right-4 md:bottom-4 md:max-w-md">
+      <Alert className="w-full border-blue-200 bg-blue-50 dark:bg-blue-950/30 dark:border-blue-800 rounded-t-2xl md:rounded-2xl shadow-2xl max-h-[75dvh] flex flex-col overflow-hidden p-0">
+        {/* Header row: icon + title + close on its own line so nothing overlaps */}
+        <div className="flex items-start justify-between gap-3 px-5 pt-4 pb-1">
+          <AlertTitle className="text-blue-800 dark:text-blue-300 font-semibold flex items-center gap-2 min-w-0">
+            <Cookie className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+            <span className="inline-flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              Your Privacy Choices
+            </span>
+          </AlertTitle>
 
-              {showDetails && (
-                <div className="space-y-3 mb-4 p-3 bg-blue-100/50 dark:bg-blue-900/30 rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-blue-800 dark:text-blue-300">Essential Cookies</p>
-                      <p className="text-sm text-blue-600 dark:text-blue-400">Required for core functionality</p>
-                    </div>
-                    <div className="h-4 w-8 bg-blue-300 dark:bg-blue-700 rounded-full relative">
-                      <div className="absolute top-0 left-0 h-4 w-4 bg-blue-600 dark:bg-blue-400 rounded-full" />
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-blue-800 dark:text-blue-300">Analytics Cookies</p>
-                      <p className="text-sm text-blue-600 dark:text-blue-400">Help us improve our services</p>
-                    </div>
-                    <input
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-blue-300 text-blue-600 focus:ring-blue-500"
-                      defaultChecked
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-blue-800 dark:text-blue-300">Marketing Cookies</p>
-                      <p className="text-sm text-blue-600 dark:text-blue-400">Personalize ads and content</p>
-                    </div>
-                    <input
-                      type="checkbox"
-                      className="h-4 w-4 rounded border-blue-300 text-blue-600 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
-              )}
-
-              <div className="flex flex-wrap gap-2 mt-4">
-                <Button
-                  variant="default"
-                  size="sm"
-                  onClick={handleAccept}
-                  disabled={isLoading}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                  {isLoading ? 'Saving...' : 'Accept All'}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleDecline}
-                  className="border-blue-300 text-blue-700 hover:bg-blue-100 hover:text-blue-800"
-                >
-                  Decline Non‑Essential
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleCustomize}
-                  className="text-blue-600 hover:text-blue-800 hover:bg-blue-100"
-                >
-                  <Settings className="h-4 w-4 mr-1" />
-                  Customize
-                </Button>
-                <Link
-                  to="/privacy"
-                  className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 py-2 text-blue-600 hover:text-blue-800"
-                >
-                  Privacy Policy
-                </Link>
-              </div>
-            </AlertDescription>
-          </div>
+          {onDismiss && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onDismiss}
+              aria-label="Close"
+              className="h-8 w-8 p-0 flex-shrink-0 text-blue-500 hover:text-blue-700 hover:bg-blue-100"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
         </div>
 
-        {onDismiss && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onDismiss}
-            className="h-8 w-8 p-0 text-blue-500 hover:text-blue-700 hover:bg-blue-100"
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </Button>
-        )}
-      </div>
-    </Alert>
+        {/* Scrollable body so the banner never covers the full mobile viewport */}
+        <AlertDescription className="text-blue-700 dark:text-blue-400 px-5 pb-5 overflow-y-auto">
+          <p className="mb-3">
+            We use cookies and similar technologies to enhance your experience, analyze usage, and personalize content. By continuing to use our platform, you consent to our use of essential cookies. You can manage your preferences at any time.
+          </p>
+
+          {showDetails && (
+            <div className="space-y-3 mb-4 p-3 bg-blue-100/50 dark:bg-blue-900/30 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium text-blue-800 dark:text-blue-300">Essential Cookies</p>
+                  <p className="text-sm text-blue-600 dark:text-blue-400">Required for core functionality</p>
+                </div>
+                <div className="h-4 w-8 bg-blue-300 dark:bg-blue-700 rounded-full relative">
+                  <div className="absolute top-0 left-0 h-4 w-4 bg-blue-600 dark:bg-blue-400 rounded-full" />
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium text-blue-800 dark:text-blue-300">Analytics Cookies</p>
+                  <p className="text-sm text-blue-600 dark:text-blue-400">Help us improve our services</p>
+                </div>
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-blue-300 text-blue-600 focus:ring-blue-500"
+                  defaultChecked
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium text-blue-800 dark:text-blue-300">Marketing Cookies</p>
+                  <p className="text-sm text-blue-600 dark:text-blue-400">Personalize ads and content</p>
+                </div>
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-blue-300 text-blue-600 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+          )}
+
+          <div className="flex flex-wrap gap-2 mt-4">
+            <Button
+              variant="default"
+              size="sm"
+              onClick={handleAccept}
+              disabled={isLoading}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              {isLoading ? 'Saving...' : 'Accept All'}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDecline}
+              className="border-blue-300 text-blue-700 hover:bg-blue-100 hover:text-blue-800"
+            >
+              Decline Non‑Essential
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleCustomize}
+              className="text-blue-600 hover:text-blue-800 hover:bg-blue-100"
+            >
+              <Settings className="h-4 w-4 mr-1" />
+              Customize
+            </Button>
+            <Link
+              to="/privacy"
+              className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-3 py-2 text-blue-600 hover:text-blue-800"
+            >
+              Privacy Policy
+            </Link>
+          </div>
+        </AlertDescription>
+      </Alert>
+    </div>
   );
 }
-

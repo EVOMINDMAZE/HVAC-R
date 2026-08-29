@@ -741,7 +741,7 @@ export default function App() {
     <SupabaseAuthProvider>
       <ToastProvider>
         <JobProvider>
-          <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+          <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
             <BrowserRouter>
               <MonitoringProvider>
                 <AppContent />

@@ -232,14 +232,19 @@ export function HeroSection() {
           >
             <motion.div
               style={{ y: y2 }}
-              className="relative z-10"
+              className="relative z-10 w-[600px] max-w-full"
             >
-              <motion.img
-                src="/assets/landing/admin-dashboard-hero.png"
-                alt="Admin Dashboard Preview"
-                className="w-auto h-auto max-w-[600px] max-h-[450px] rounded-2xl shadow-2xl rotate-[-8deg] group-hover:rotate-[-5deg] transition-transform duration-500"
-                style={{ transformOrigin: 'center center' }}
-              />
+              {/* The source screenshot has wide empty margins plus a consent banner in
+                  the bottom-right corner. The overflow-hidden frame + object-cover
+                  crop tightens the framing and hides the banner without touching the
+                  real dashboard content. */}
+              <div className="relative aspect-[16/10] overflow-hidden rounded-2xl shadow-2xl border border-white/10 rotate-[-8deg] group-hover:rotate-[-5deg] transition-transform duration-500">
+                <motion.img
+                  src="/assets/landing/admin-dashboard-hero.png"
+                  alt="Admin Dashboard Preview"
+                  className="w-full h-full object-cover object-[30%_16%] scale-[1.3]"
+                />
+              </div>
             </motion.div>
 
             {/* Background Glows */}

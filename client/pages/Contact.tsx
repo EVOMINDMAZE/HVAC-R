@@ -251,10 +251,15 @@ export function Contact() {
                 </div>
 
                 <div className="space-y-1">
-                  <MeasurementLabel className="text-primary">Phone</MeasurementLabel>
+                  <MeasurementLabel className="text-primary">Email</MeasurementLabel>
                   <div className="flex items-start gap-3 pt-2">
-                    <Phone className="h-4 w-4 text-primary mt-0.5" />
-                    <p className="text-foreground">+1 (555) 123-4567</p>
+                    <Mail className="h-4 w-4 text-primary mt-0.5" />
+                    <a
+                      href="mailto:support@thermoneural.com"
+                      className="text-foreground hover:text-primary transition-colors"
+                    >
+                      support@thermoneural.com
+                    </a>
                   </div>
                 </div>
 

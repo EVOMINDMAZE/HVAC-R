@@ -6,6 +6,13 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    // Give jsdom a real origin so localStorage (used by consent + theme) works.
+    environmentOptions: {
+      jsdom: {
+        url: 'http://localhost:3000/',
+      },
+    },
+    setupFiles: ['./vitest.setup.ts'],
     exclude: [
       '**/node_modules/**',
       '**/dist/**',

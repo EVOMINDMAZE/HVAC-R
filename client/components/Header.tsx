@@ -205,7 +205,10 @@ export function Header({ variant = "landing", onOpenSearch, brand }: HeaderProps
     return user.email.slice(0, 2).toUpperCase();
   }, [user?.email]);
 
-  const showBackButton = location.pathname !== "/" && location.pathname !== "/dashboard";
+  // Back-chevron is an in-app navigation affordance: only render inside the
+  // authenticated dashboard shell, never on marketing/public pages.
+  const showBackButton =
+    variant === "dashboard" && location.pathname !== "/" && location.pathname !== "/dashboard";
 
   const getLandingLinkTarget = (item: (typeof landingLinks)[number]) =>
     item.hash ? `${item.to}${item.hash}` : item.to;
