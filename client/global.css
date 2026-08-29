@@ -241,7 +241,9 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     width: 100%;
-    overflow-x: hidden;
+    /* clip (not hidden): hidden on html+body turns both into scroll containers
+       and kills viewport scrolling entirely — anchors/CTAs become no-ops */
+    overflow-x: clip;
     @apply bg-background;
   }
 
@@ -250,7 +252,7 @@
     margin: 0;
     padding: 0;
     width: 100%;
-    overflow-x: hidden;
+    overflow-x: clip;
     @apply bg-background font-sans;
   }
 
