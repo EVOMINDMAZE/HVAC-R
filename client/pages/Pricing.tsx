@@ -1,4 +1,3 @@
-import { loadStripe } from "@stripe/stripe-js";
 import { Check, Loader2, ShieldCheck, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -25,10 +24,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { trackMarketingEvent } from "@/lib/marketingAnalytics";
 import { PLANS, STRIPE_PRICE_IDS } from "@/lib/stripe";
 import { supabase } from "@/lib/supabase";
-
-const stripePromise = loadStripe(
-  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "pk_test_placeholder",
-);
+import { stripePromise } from "@/lib/stripe";
 
 export default function Pricing() {
   const { toast } = useToast();
