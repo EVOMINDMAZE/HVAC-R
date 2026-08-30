@@ -270,16 +270,19 @@ export default function Jobs() {
 
   const filteredJobs = jobs.filter((job) => {
     const matchesSearch =
-      job.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.job_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (job.address &&
-        job.address.toLowerCase().includes(searchTerm.toLowerCase()));
+      (job.client_name ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (job.job_name ?? "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (job.address ?? "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
 
     const matchesStatus = statusFilter === "all" || job.status === statusFilter;
 
     return matchesSearch && matchesStatus;
   });
-  const activeJobs = jobs.filter((job) => job.status === "active").length;
+  const activeJobs = jobs.filter(
+    (job) => !["completed", "cancelled"].includes(job.status),
+  ).length;
   const pendingJobs = jobs.filter((job) => job.status === "pending").length;
   const completedJobs = jobs.filter((job) => job.status === "completed").length;
 
