@@ -286,16 +286,32 @@ export default function Jobs() {
   const pendingJobs = jobs.filter((job) => job.status === "pending").length;
   const completedJobs = jobs.filter((job) => job.status === "completed").length;
 
+  const STATUS_LABELS: Record<string, string> = {
+    pending: "Pending",
+    assigned: "Assigned",
+    en_route: "En Route",
+    on_site: "On Site",
+    in_progress: "In Progress",
+    completed: "Completed",
+    cancelled: "Cancelled",
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "active":
+      case "in_progress":
         return "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-200 border-cyan-200 dark:border-cyan-800";
+      case "en_route":
+        return "bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-200 border-sky-200 dark:border-sky-800";
+      case "on_site":
+        return "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-200 border-indigo-200 dark:border-indigo-800";
       case "completed":
         return "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200 border-emerald-200 dark:border-emerald-800";
       case "pending":
         return "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-200 border-amber-200 dark:border-amber-800";
       case "assigned":
         return "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-200 border-purple-200 dark:border-purple-800";
+      case "cancelled":
+        return "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-200 border-rose-200 dark:border-rose-800";
       default:
         return "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300";
     }
@@ -612,7 +628,7 @@ export default function Jobs() {
                             variant="outline"
                             className={`${getStatusColor(job.status)} border px-2.5 py-0.5 capitalize shadow-sm font-medium text-[11px]`}
                           >
-                            {job.status}
+                            {STATUS_LABELS[job.status] ?? job.status}
                           </Badge>
                           <Button
                             variant="ghost"
@@ -690,7 +706,7 @@ export default function Jobs() {
                           <div className="min-w-0">
                             <div className="flex items-center gap-2">
                               <Badge variant="outline" className={`${getStatusColor(job.status)} border px-2.5 py-0.5 capitalize font-medium text-[11px] shadow-sm`}>
-                                {job.status}
+                                {STATUS_LABELS[job.status] ?? job.status}
                               </Badge>
                               <h3 className="truncate font-semibold text-foreground text-sm">{job.job_name}</h3>
                             </div>
