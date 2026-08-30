@@ -193,29 +193,44 @@ async function callOllama(
   messages: Array<{ role: string; content: string }>,
   modelHint?: string | null,
 ) {
+  // z.ai GLM (OpenAI-compatible /chat/completions) replaced Ollama.
+  // Kept function name + { message: { content } } return shape so downstream
+  // parsing is untouched. Key: ZAI_API_KEY (secret set on the project).
   const base = (
-    Deno.env.get("OLLAMA_BASE_URL") ?? "http://localhost:11434"
+    Deno.env.get("ZAI_BASE_URL") ?? "https://api.z.ai/api/paas/v4"
   ).replace(/\/+$/, "");
-  const model = modelHint || Deno.env.get("OLLAMA_MODEL") || "DeepSeek-V3.2-Speciale";
-  const url = `${base}/api/chat`;
+  const model =
+    modelHint || Deno.env.get("ZAI_MODEL") || "glm-5.3-flash";
+  const url = `${base}/chat/completions`;
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
-  const apiKey = Deno.env.get("OLLAMA_API_KEY");
-  if (apiKey) {
-    headers.Authorization = `Bearer ${apiKey}`;
+  const apiKey = Deno.env.get("ZAI_API_KEY");
+  if (!apiKey) {
+    throw new Error(
+      "ZAI_API_KEY not configured (Supabase secrets) - AI recommendations unavailable",
+    );
   }
+  headers.Authorization = `Bearer ${apiKey}`;
 
   const controller = new AbortController();
-  const timeoutMs = Number(Deno.env.get("OLLAMA_TIMEOUT_MS") ?? 30000);
+  const timeoutMs = Number(Deno.env.get("ZAI_TIMEOUT_MS") ?? 60000);
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const response = await fetch(url, {
       method: "POST",
       headers,
-      body: JSON.stringify({ model, messages, stream: false }),
+      // glm-5.3-flash always reasons; reasoning_effort=low keeps hidden
+      // reasoning short (thinking param rejected, err 1210).
+      body: JSON.stringify({
+        model,
+        messages,
+        stream: false,
+        max_tokens: 4000,
+        reasoning_effort: "low",
+      }),
       signal: controller.signal,
     });
 
@@ -224,20 +239,28 @@ async function callOllama(
     const bodyText = await response.text();
 
     if (!response.ok) {
-      throw new Error(`Ollama API error ${response.status}: ${bodyText}`);
+      throw new Error(`z.ai API error ${response.status}: ${bodyText}`);
     }
 
     if (!bodyText || bodyText.trim().length === 0) {
       return { message: { content: "{}" } };
     }
 
+    let parsed: any;
     try {
-      return JSON.parse(bodyText);
+      parsed = JSON.parse(bodyText);
     } catch (error) {
-      const message = `Failed to parse Ollama response: ${error instanceof Error ? error.message : String(error)
+      const message = `Failed to parse z.ai response: ${error instanceof Error ? error.message : String(error)
         } | body: ${bodyText.slice(0, 500)}`;
       throw new Error(message, { cause: error });
     }
+
+    // Normalize OpenAI-compatible choice shape -> Ollama message shape
+    const content =
+      parsed?.choices?.[0]?.message?.content ??
+      parsed?.message?.content ??
+      "{}";
+    return { message: { content } };
   } catch (error) {
     clearTimeout(timeout);
     throw error;
