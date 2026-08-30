@@ -234,15 +234,12 @@ export function HeroSection() {
               style={{ y: y2 }}
               className="relative z-10 w-[600px] max-w-full"
             >
-              {/* The source screenshot has wide empty margins plus a consent banner in
-                  the bottom-right corner. The overflow-hidden frame + object-cover
-                  crop tightens the framing and hides the banner without touching the
-                  real dashboard content. */}
+              {/* Real signed-in dashboard capture (1920x1200 @2x, exact 16:10) — no crop hack needed. */}
               <div className="relative aspect-[16/10] overflow-hidden rounded-2xl shadow-2xl border border-white/10 rotate-[-8deg] group-hover:rotate-[-5deg] transition-transform duration-500">
                 <motion.img
                   src="/assets/landing/admin-dashboard-hero.png"
                   alt="Admin Dashboard Preview"
-                  className="w-full h-full object-cover object-[30%_16%] scale-[1.3]"
+                  className="w-full h-full object-cover"
                 />
               </div>
             </motion.div>
