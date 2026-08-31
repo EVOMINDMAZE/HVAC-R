@@ -126,20 +126,20 @@ export default function Pricing() {
       popular: false,
     },
     {
-      key: "BUSINESS",
-      title: "Precision Engineering Hub",
-      description: "Complete operations & engineering suite. Skool access, white-label app & automation.",
-      cta: "Deploy Business Ops",
-      action: () => handleSubscribe("business"),
-      popular: true,
-    },
-    {
       key: "PRO",
       title: "Engineering Pro",
       description: "For technicians and engineers who need advanced cycle and refrigerant tools.",
       cta: "Upgrade to Pro",
       action: () => handleSubscribe("pro"),
       popular: false,
+    },
+    {
+      key: "BUSINESS",
+      title: "Precision Engineering Hub",
+      description: "Complete operations & engineering suite. Skool access, white-label app & automation.",
+      cta: "Deploy Business Ops",
+      action: () => handleSubscribe("business"),
+      popular: true,
     },
   ] as const;
 
