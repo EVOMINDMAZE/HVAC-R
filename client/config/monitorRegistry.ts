@@ -187,7 +187,6 @@ const authKpiSurfaceOverrides: Record<string, string> = {
 };
 
 const debugKpiSurfaceOverrides: Record<string, string> = {
-  "/stripe-debug": "Stripe",
   "/agent-sandbox": "Agent",
 };
 
@@ -723,12 +722,6 @@ const authStoryboardProfiles: RouteStoryboardMap = {
 };
 
 const debugStoryboardProfiles: RouteStoryboardMap = {
-  "/stripe-debug": createDebugStory(
-    "Stripe Diagnostic Panel",
-    "Billing integration diagnostics and callback visibility",
-    "Stripe Diagnostic Trend",
-    "Stripe Diagnostic Context",
-  ),
   "/agent-sandbox": createDebugStory(
     "Agent Sandbox Telemetry",
     "Agent behavior testing and runtime instrumentation view",
@@ -2187,7 +2180,7 @@ export const monitorRouteRegistry: MonitorRouteEntry[] = [
   {
     id: "debug-system",
     label: "Debug and Sandbox",
-    pattern: /^\/(stripe-debug|agent-sandbox)$/i,
+    pattern: /^\/agent-sandbox$/i,
     build: buildDebugModel,
   },
   {

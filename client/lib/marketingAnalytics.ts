@@ -1,5 +1,6 @@
 export type MarketingEventName =
   | "landing_view"
+  | "startBusinessTrial"
   | "landing_capability_matrix_view"
   | "landing_hero_category_focus"
   | "landing_view_all_tools_click"

@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { trackMarketingEvent } from "@/lib/marketingAnalytics";
 
 import type { ComponentType } from "react";
 
@@ -508,7 +509,14 @@ export function Header({ variant = "landing", onOpenSearch, brand }: HeaderProps
           <Link to="/signin">
             <Button variant="ghost" className="transition-all duration-200">Sign In</Button>
           </Link>
-          <Link to="/signup">
+          <Link
+            to="/signup"
+            onClick={() => {
+              if (!isAuthenticated || !companies.length) {
+                trackMarketingEvent("startBusinessTrial", { section: "header_desktop" });
+              }
+            }}
+          >
             <Button 
               disabled={isRefreshing}
               className={cn(
@@ -601,7 +609,13 @@ export function Header({ variant = "landing", onOpenSearch, brand }: HeaderProps
               <Link to="/signin" onClick={() => setMobileOpen(false)}>
                 <Button variant="outline" className="w-full">Sign In</Button>
               </Link>
-              <Link to="/signup" onClick={() => setMobileOpen(false)}>
+              <Link
+                to="/signup"
+                onClick={() => {
+                  setMobileOpen(false);
+                  trackMarketingEvent("startBusinessTrial", { section: "header_mobile" });
+                }}
+              >
                 <Button className="w-full">Start Business Trial</Button>
               </Link>
             </div>

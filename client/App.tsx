@@ -114,9 +114,7 @@ const Documentation = lazy(() =>
 const HelpCenter = lazy(() =>
   import("@/pages/HelpCenter").then((m) => ({ default: m.HelpCenter })),
 );
-const StripeDebug = lazy(() =>
-  import("@/pages/StripeDebug").then((m) => ({ default: m.StripeDebug })),
-);
+
 const Privacy = lazy(() =>
   import("@/pages/Privacy").then((m) => ({ default: m.Privacy })),
 );
@@ -366,7 +364,6 @@ function AppRoutes() {
           />
 
           {/* Debug Routes */}
-          <Route path="/stripe-debug" element={<StripeDebug />} />
           <Route path="/agent-sandbox" element={<AgentSandbox />} />
 
           {/* Client Portal Route */}

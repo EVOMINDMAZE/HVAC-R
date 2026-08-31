@@ -338,7 +338,7 @@ export function Landing() {
                 className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-7 rounded-full text-lg font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-all group"
                 onClick={() => trackMarketingEvent("landing_pricing_cta_click", { section: "final_cta", destination: "/signup" })}
               >
-                <Link to="/signup?plan=business" className="flex items-center">
+                <Link to="/signup" className="flex items-center">
                   Get Started Now
                   <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
@@ -379,9 +379,12 @@ export function Landing() {
         <Button 
           asChild 
           className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-14 rounded-xl shadow-2xl text-lg font-bold"
-          onClick={() => trackMarketingEvent("landing_hero_primary_click", { section: "sticky_mobile", destination: "/signup" })}
+          onClick={() => {
+            trackMarketingEvent("landing_hero_primary_click", { section: "sticky_mobile", destination: "/signup" });
+            trackMarketingEvent("startBusinessTrial", { section: "sticky_mobile" });
+          }}
         >
-          <Link to="/signup?plan=business">Start Business Trial</Link>
+          <Link to="/signup">Start Business Trial</Link>
         </Button>
       </div>
     </PublicPageShell>

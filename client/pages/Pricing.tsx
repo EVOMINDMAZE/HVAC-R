@@ -129,7 +129,7 @@ export default function Pricing() {
       key: "BUSINESS",
       title: "Precision Engineering Hub",
       description: "Complete operations & engineering suite. Skool access, white-label app & automation.",
-      cta: "Start Free Trial",
+      cta: "Deploy Business Ops",
       action: () => handleSubscribe("business"),
       popular: true,
     },

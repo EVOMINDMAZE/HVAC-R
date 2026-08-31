@@ -6,11 +6,22 @@ const stripePromise = loadStripe(
 
 export { stripePromise };
 
+function requirePriceId(envKey: string): string {
+  const value = import.meta.env[envKey];
+  if (!value) {
+    throw new Error(
+      `[stripe] Missing required build-time env var ${envKey}. ` +
+        `Checkout would send an invalid price ID to Stripe. Set it in Netlify/Vercel build settings and rebuild.`,
+    );
+  }
+  return value;
+}
+
 export const STRIPE_PRICE_IDS = {
-  PROFESSIONAL_MONTHLY: import.meta.env.VITE_STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID || 'price_professional_monthly',
-  PROFESSIONAL_YEARLY: import.meta.env.VITE_STRIPE_PROFESSIONAL_YEARLY_PRICE_ID || 'price_professional_yearly',
-  ENTERPRISE_MONTHLY: import.meta.env.VITE_STRIPE_ENTERPRISE_MONTHLY_PRICE_ID || 'price_enterprise_monthly',
-  ENTERPRISE_YEARLY: import.meta.env.VITE_STRIPE_ENTERPRISE_YEARLY_PRICE_ID || 'price_enterprise_yearly',
+  get PROFESSIONAL_MONTHLY() { return requirePriceId('VITE_STRIPE_PROFESSIONAL_MONTHLY_PRICE_ID'); },
+  get PROFESSIONAL_YEARLY() { return requirePriceId('VITE_STRIPE_PROFESSIONAL_YEARLY_PRICE_ID'); },
+  get ENTERPRISE_MONTHLY() { return requirePriceId('VITE_STRIPE_ENTERPRISE_MONTHLY_PRICE_ID'); },
+  get ENTERPRISE_YEARLY() { return requirePriceId('VITE_STRIPE_ENTERPRISE_YEARLY_PRICE_ID'); },
 };
 
 export const PLANS = {
@@ -45,7 +56,6 @@ export const PLANS = {
       '10 saved projects',
       'Basic white-label (personal logo on reports)'
     ],
-    stripePriceId: STRIPE_PRICE_IDS.PROFESSIONAL_MONTHLY
   },
   PRO_YEARLY: {
     id: 'professional_yearly',
@@ -63,7 +73,6 @@ export const PLANS = {
       'Basic white-label (personal logo on reports)',
       '2 months free'
     ],
-    stripePriceId: STRIPE_PRICE_IDS.PROFESSIONAL_YEARLY
   },
   BUSINESS: {
     id: 'business',
@@ -84,7 +93,6 @@ export const PLANS = {
       'Unlimited projects',
       'Dedicated support'
     ],
-    stripePriceId: STRIPE_PRICE_IDS.ENTERPRISE_MONTHLY
   },
   BUSINESS_YEARLY: {
     id: 'business_yearly',
@@ -106,6 +114,5 @@ export const PLANS = {
       'Dedicated support',
       '2 months free'
     ],
-    stripePriceId: STRIPE_PRICE_IDS.ENTERPRISE_YEARLY
   }
 };

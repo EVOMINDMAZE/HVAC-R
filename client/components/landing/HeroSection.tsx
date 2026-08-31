@@ -193,7 +193,7 @@ export function HeroSection() {
               className="flex flex-col sm:flex-row gap-5 w-full sm:w-auto mb-12"
             >
               <Link 
-                to="/signup?plan=business" 
+                to="/signup"
                 className="w-full sm:w-auto"
                 onClick={() => trackMarketingEvent("landing_hero_primary_click", { section: "hero", destination: "/signup" })}
               >
