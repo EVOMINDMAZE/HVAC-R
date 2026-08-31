@@ -1,7 +1,7 @@
-import { Check, Loader2, ShieldCheck, Sparkles } from "lucide-react";
+import { AlertTriangle, Check, Loader2, ShieldCheck, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 
 import { PublicPageShell } from "@/components/public/PublicPageShell";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { GlassCard } from "@/components/ui/glass-card";
 import { MeasurementLabel } from "@/components/ui/MeasurementLabel";
 import { ROICalculator } from "@/components/ui/roi-calculator";
@@ -30,9 +31,15 @@ export default function Pricing() {
   const { toast } = useToast();
   const [loading, setLoading] = useState<string | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const [billingInterval, setBillingInterval] = useState<"monthly" | "yearly">(
     "monthly",
   );
+
+  // Set by SubscriptionGuard when it bounces an under-tiered user here.
+  const paywallState = location.state as
+    | { requiredTier?: string; userTier?: string; from?: string }
+    | null;
 
   useEffect(() => {
     trackMarketingEvent("pricing_view", { section: "hero" });
@@ -118,14 +125,6 @@ export default function Pricing() {
 
   const plans = [
     {
-      key: "FREE",
-      title: "Engineering Free",
-      description: "For entrepreneurs and teams starting with core HVAC&R analysis.",
-      cta: "Start Free",
-      action: () => navigate("/signup"),
-      popular: false,
-    },
-    {
       key: "PRO",
       title: "Engineering Pro",
       description: "For technicians and engineers who need advanced cycle and refrigerant tools.",
@@ -140,6 +139,14 @@ export default function Pricing() {
       cta: "Deploy Business Ops",
       action: () => handleSubscribe("business"),
       popular: true,
+    },
+    {
+      key: "FREE",
+      title: "Engineering Free",
+      description: "For entrepreneurs and teams starting with core HVAC&R analysis.",
+      cta: "Start Free",
+      action: () => navigate("/signup"),
+      popular: false,
     },
   ] as const;
 
@@ -235,6 +242,22 @@ export default function Pricing() {
           </div>
         </div>
       </section>
+
+      {paywallState?.requiredTier && (
+        <div className="px-4 pt-8">
+          <Alert className="mx-auto max-w-4xl border-primary/40">
+            <AlertTriangle className="h-4 w-4 text-primary" />
+            <AlertTitle>Upgrade required to access that page</AlertTitle>
+            <AlertDescription>
+              {paywallState.requiredTier === "business"
+                ? "That page is part of the Business (Precision Engineering Hub) plan."
+                : "That page requires the Engineering Pro plan or higher."}{" "}
+              Your current plan: {paywallState.userTier ?? "free"}. Pick a plan
+              below to continue.
+            </AlertDescription>
+          </Alert>
+        </div>
+      )}
 
       <section className="px-4 py-20 lg:py-28 bg-muted/30 relative">
         <SectionNumber number="02" className="top-8 -left-4 lg:-left-16" />

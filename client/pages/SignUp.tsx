@@ -161,7 +161,7 @@ export function SignUp() {
               <div className="grid gap-3 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-emerald-500" />
-                  14-day Pro trial with no credit card required.
+                  Free plan includes 10 calculations per month — no credit card required.
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-emerald-500" />

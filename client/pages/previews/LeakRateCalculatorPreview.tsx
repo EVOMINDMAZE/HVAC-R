@@ -25,6 +25,9 @@ export function LeakRateCalculatorPreview() {
               </Badge>
             </div>
             
+            <div className="mb-6 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-400 font-medium">
+              Illustrative preview — the numbers shown are sample values, not live results. Create a free account to run real calculations.
+            </div>
             <h1 className="text-4xl sm:text-5xl font-bold font-display tracking-tight text-foreground">
               Compliance Leak Tracking
             </h1>

@@ -25,6 +25,9 @@ export function StandardCyclePreview() {
               </Badge>
             </div>
             
+            <div className="mb-6 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-400 font-medium">
+              Illustrative preview — the numbers shown are sample values, not live results. Create a free account to run real calculations.
+            </div>
             <h1 className="text-4xl sm:text-5xl font-bold tracking-tight font-display">
               <span className="text-foreground text-balance">
                 Professional Cycle Simulator
@@ -39,7 +42,7 @@ export function StandardCyclePreview() {
           <div className="flex flex-col gap-3 bg-card/30 border border-border/50 p-5 rounded-2xl backdrop-blur-sm lg:max-w-xs w-full">
              <h4 className="text-xs font-bold text-foreground uppercase tracking-widest mb-1">Pro Capabilities</h4>
              {[
-               { icon: Database, text: "NIST REFPROP Integration" },
+               { icon: Database, text: "CoolProp Thermodynamic Engine" },
                { icon: BarChart3, text: "Multi-Point Analysis" },
                { icon: FileText, text: "One-Click PDF Reports" }
              ].map((item, i) => (

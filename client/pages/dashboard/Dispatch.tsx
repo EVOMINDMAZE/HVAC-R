@@ -103,7 +103,7 @@ export default function Dispatch() {
         const techs = data.map((t) => ({
           id: t.user_id,
           full_name: `${t.role === "technician" ? "Technician" : "Tech"} (${t.user_id.slice(0, 8)})`,
-          email: "technician@example.com",
+          email: "",
           role: t.role,
         }));
         setTechnicians(techs);

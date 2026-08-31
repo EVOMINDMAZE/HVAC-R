@@ -1,6 +1,6 @@
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 import { supabase } from "@/lib/supabase";
@@ -34,6 +34,7 @@ export function SubscriptionGuard({
   requiredTier,
 }: SubscriptionGuardProps) {
   const { user } = useSupabaseAuth();
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
   const [userTier, setUserTier] = useState<string | undefined>(undefined);
 
@@ -67,8 +68,8 @@ export function SubscriptionGuard({
           }
           // Default mapping
           if (normalized === "free") return "free";
-          // Assume any other plan is pro (conservative)
-          return "pro";
+          // Unrecognized plan: never grant a paid tier by default.
+          return "free";
         };
 
         if (!subscriptionError && subscriptionData) {
@@ -106,8 +107,14 @@ export function SubscriptionGuard({
   const hasRequiredTier = meetsTierRequirement(userTier, requiredTier);
 
   if (!hasRequiredTier) {
-    // Redirect to pricing page with upgrade suggestion
-    return <Navigate to="/pricing" replace />;
+    // Explain the paywall instead of silently bouncing the user.
+    return (
+      <Navigate
+        to="/pricing"
+        replace
+        state={{ requiredTier, userTier, from: location.pathname }}
+      />
+    );
   }
 
   // Support both Wrapper (children) and Outlet (Route) patterns

@@ -281,7 +281,7 @@ export default function Jobs() {
     return matchesSearch && matchesStatus;
   });
   const activeJobs = jobs.filter(
-    (job) => !["completed", "cancelled"].includes(job.status),
+    (job) => ["scheduled", "en_route", "on_site", "in_progress"].includes(job.status),
   ).length;
   const pendingJobs = jobs.filter((job) => job.status === "pending").length;
   const completedJobs = jobs.filter((job) => job.status === "completed").length;

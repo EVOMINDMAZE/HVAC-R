@@ -14,26 +14,11 @@ interface MapViewProps {
   jobs: Job[];
 }
 
-// Helper to generate deterministic random coordinates (Fallback)
-const generateCoords = (id: string) => {
-  // Simple hash function
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) {
-    hash = id.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  // Base coords (San Francisco for demo)
-  const baseLat = 37.7749;
-  const baseLng = -122.4194;
-
-  // Offset by +/- 0.05 degrees (approx 5km)
-  const latOffset = (hash % 1000) / 10000;
-  const lngOffset = ((hash >> 16) % 1000) / 10000;
-
-  return [baseLat + latOffset, baseLng + lngOffset] as [number, number];
-};
-
 export default function MapView({ jobs }: MapViewProps) {
+  // Only jobs with real geocoded coordinates appear on the map —
+  // no fabricated fallback positions.
+  const geocodedJobs = (jobs || []).filter((job) => job.geo_lat && job.geo_lng);
+
   if (!jobs || jobs.length === 0) {
     return (
       <div className="h-[500px] w-full rounded-2xl overflow-hidden shadow-sm border border-gray-100 bg-slate-50 flex items-center justify-center text-slate-400">
@@ -42,12 +27,19 @@ export default function MapView({ jobs }: MapViewProps) {
     );
   }
 
-  const markers: MapMarker[] = jobs.map((job) => {
-    // Use real coords if available, otherwise fallback
-    const hasRealCoords = job.geo_lat && job.geo_lng;
-    const position = hasRealCoords
-      ? ([job.geo_lat!, job.geo_lng!] as [number, number])
-      : generateCoords(job.id);
+  if (geocodedJobs.length === 0) {
+    return (
+      <div className="h-[500px] w-full rounded-2xl overflow-hidden shadow-sm border border-gray-100 bg-slate-50 flex flex-col items-center justify-center text-slate-400 p-6 text-center">
+        <p>No geocoded jobs to display on map yet.</p>
+        <p className="text-xs mt-2">
+          Job addresses need coordinates before they can be plotted.
+        </p>
+      </div>
+    );
+  }
+
+  const markers: MapMarker[] = geocodedJobs.map((job) => {
+    const position = [job.geo_lat!, job.geo_lng!] as [number, number];
 
     return {
       id: job.id,
@@ -60,11 +52,6 @@ export default function MapView({ jobs }: MapViewProps) {
           </h3>
           <p className="text-xs text-gray-500 mb-2">
             {job.address || "No address provided"}
-            {!hasRealCoords && (
-              <span className="block mt-1 italic text-[10px] text-orange-400">
-                (Simulated Location)
-              </span>
-            )}
           </p>
           <div
             className={`

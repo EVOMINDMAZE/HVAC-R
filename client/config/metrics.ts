@@ -25,7 +25,7 @@ export const metrics = {
     },
     accuracy: {
       value: "High",
-      qualifier: "Validated against NIST Refprop reference data",
+      qualifier: "Thermodynamics powered by the CoolProp engine",
       description: "Calculation accuracy",
       isVerified: false,
     },
@@ -171,7 +171,7 @@ export const landingConfig = {
     {
       value: "99.8%",
       label: "Calculation Accuracy",
-      disclaimer: "Validated against NIST Refprop reference data",
+      disclaimer: "Thermodynamics powered by the CoolProp engine",
     },
   ] as const,
 
@@ -283,15 +283,15 @@ export const landingConfig = {
     },
     {
       question: "Can I try before committing?",
-      answer: "Absolutely. Start with our free Solopreneur plan, or get full access to all pro features with a 14-day free trial. No credit card required to start.",
+      answer: "Yes. The Free plan includes 10 calculations per month with watermarked exports — no credit card and no trial timer. Upgrade to Engineering Pro ($49/mo) or Business Ops ($199/mo) whenever you're ready.",
     },
     {
       question: "How does pricing work for multiple technicians?",
-      answer: "Our Growth plan is priced per technician ($49/tech/month). Enterprise plans include unlimited technicians with volume discounts. Contact sales for custom pricing.",
+      answer: "Engineering Pro is $49/month per account ($39/mo billed annually). Business Ops is $199/month ($159/mo billed annually) and covers your whole company. For larger teams, contact us.",
     },
     {
       question: "What integrations do you support?",
-      answer: "We integrate with major field service management tools and accounting software (QuickBooks, Xero). Enterprise customers can discuss custom integration options with our team.",
+      answer: "ThermoNeural exports professional PDF and CSV reports that import cleanly into the tools you already use. Native integrations are on the roadmap — tell us your stack and we'll prioritize it.",
     },
   ] as const,
 
@@ -304,7 +304,7 @@ export const landingConfig = {
     },
     {
       name: "NIST",
-      description: "Validated against NIST Refprop reference data",
+      description: "Thermodynamics powered by the CoolProp engine",
       status: "active" as const,
     },
     {

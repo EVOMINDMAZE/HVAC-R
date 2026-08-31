@@ -96,6 +96,8 @@ export const getFleetStatus: RequestHandler = async (req, res) => {
         const currentJob = jobs.find(j => j.technician_id === tech.user_id && j.status === 'in_progress');
         const nextJob = jobs.find(j => j.technician_id === tech.user_id && j.status === 'scheduled');
 
+        // Honest status: only "working" is directly observable from job state.
+        // A scheduled job is NOT proof a technician is en-route, so no such status.
         let status = 'idle';
         let jobTitle = undefined;
 
@@ -103,17 +105,14 @@ export const getFleetStatus: RequestHandler = async (req, res) => {
             status = 'working';
             jobTitle = currentJob.title || currentJob.job_name;
         } else if (nextJob) {
-            // Simple heuristic
-            status = 'en-route'; 
-            jobTitle = nextJob.title || nextJob.job_name;
+            jobTitle = `Next: ${nextJob.title || nextJob.job_name}`;
         }
 
         return {
           id: tech.user_id,
           name,
           status,
-          current_job: jobTitle,
-          last_seen: new Date().toISOString() // Placeholder as we don't have presence yet
+          current_job: jobTitle
         };
       })
     );

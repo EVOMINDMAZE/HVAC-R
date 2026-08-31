@@ -25,7 +25,6 @@ import { AppFeedbackState } from "@/components/app/AppFeedbackState";
 import { AppPageHeader } from "@/components/app/AppPageHeader";
 import { AppSectionCard } from "@/components/app/AppSectionCard";
 import { AppStatCard } from "@/components/app/AppStatCard";
-import { Footer } from "@/components/Footer";
 import { PageContainer } from "@/components/PageContainer";
 import { SpreadsheetImporter } from "@/components/shared/SpreadsheetImporter";
 import { Button } from "@/components/ui/button";
@@ -498,22 +497,20 @@ export function Clients() {
               tone: "default",
             },
             {
-              label: "Active This Month",
-              value: "12",
+              label: "Added This Month",
+              value: clients.filter(
+                (c) =>
+                  new Date(c.created_at).getMonth() === new Date().getMonth() &&
+                  new Date(c.created_at).getFullYear() === new Date().getFullYear(),
+              ).length,
               icon: BarChart3,
               tone: "default",
             },
             {
-              label: "Pending Follow-ups",
-              value: "5",
+              label: "With Phone on File",
+              value: clients.filter((c) => c.contact_phone).length,
               icon: Clock,
               tone: "warning",
-            },
-            {
-              label: "Verified Profiles",
-              value: "98%",
-              icon: ShieldCheck,
-              tone: "success",
             },
           ].map((stat, i) => (
             <motion.div
@@ -714,7 +711,6 @@ export function Clients() {
           />
         )}
       </PageContainer>
-      <Footer />
 
       <SpreadsheetImporter
         isOpen={isImportOpen}
