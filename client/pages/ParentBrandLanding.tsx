@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PublicPageShell } from "@/components/public/PublicPageShell";
 import { Link } from "react-router-dom";
 import {
   Snowflake,
@@ -14,7 +15,7 @@ import {
 
 // ── ThermoNeural — Parent Brand Landing ────────────────────────────────────
 // The one professional face for the whole product family. Presents each product
-// with a real "Learn More" link to its live app. Dark-first, single indigo
+// with a real "Learn More" link to its live app. Dark-first, single orange accent
 // accent (matches the suite's design hard-bar), no mock/placeholder content.
 
 type Product = {
@@ -94,22 +95,22 @@ function ProductCard({ product }: { product: Product }) {
   const inner = (
     <>
       <div className="flex items-center justify-between">
-        <div className="rounded-lg bg-indigo-600/15 p-3 text-indigo-300">
+        <div className="rounded-lg bg-primary/15 p-3 text-primary">
           <Icon className="h-6 w-6" />
         </div>
         <Badge status={product.status} />
       </div>
       <h3 className="mt-5 text-xl font-bold text-white">{product.name}</h3>
-      <p className="mt-0.5 text-sm font-medium text-indigo-300">{product.tagline}</p>
+      <p className="mt-0.5 text-sm font-medium text-primary">{product.tagline}</p>
       <p className="mt-3 flex-1 text-sm leading-relaxed text-white/60">{product.description}</p>
-      <div className="mt-6 flex items-center gap-1.5 text-sm font-semibold text-white/80 group-hover:text-indigo-300">
+      <div className="mt-6 flex items-center gap-1.5 text-sm font-semibold text-white/80 group-hover:text-primary">
         Learn more
         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
       </div>
     </>
   );
   const cls =
-    "group relative flex flex-col rounded-2xl border border-white/10 bg-card/50 p-7 transition hover:border-indigo-500/50 hover:bg-card/80";
+    "group relative flex flex-col rounded-2xl border border-white/10 bg-card/50 p-7 transition hover:border-primary/50 hover:bg-card/80";
   return isInternal ? (
     <Link to={product.url} className={cls}>
       {inner}
@@ -166,37 +167,17 @@ export function ParentBrandLanding() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f0f1a] text-white antialiased">
-      {/* Nav */}
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-        <div className="flex items-center gap-2">
-          <div className="rounded-lg bg-indigo-600 p-1.5">
-            <Layers className="h-5 w-5 text-white" />
-          </div>
-          <span className="text-lg font-bold tracking-tight">ThermoNeural</span>
-        </div>
-        <nav className="hidden items-center gap-8 text-sm text-white/70 md:flex">
-          <a href="#products" className="hover:text-white">Products</a>
-          <a href="#platform" className="hover:text-white">Platform</a>
-          <a href="/platform" className="hover:text-white">Business platform</a>
-          <a href="#contact" className="hover:text-white">Contact</a>
-        </nav>
-        <a
-          href="#products"
-          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500"
-        >
-          Explore the suite
-        </a>
-      </header>
+    <PublicPageShell>
+      <div className="dark bg-[#0f0f1a] text-white antialiased">
 
       {/* Hero */}
-      <section className="mx-auto max-w-6xl px-6 pb-20 pt-16 text-center">
-        <p className="mx-auto mb-5 inline-block rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300">
+      <section className="mx-auto max-w-7xl px-6 pb-20 pt-16 text-center">
+        <p className="mx-auto mb-5 inline-block rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
           The ThermoNeural platform
         </p>
         <h1 className="mx-auto max-w-3xl text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl md:text-6xl">
           Thermal engineering,{" "}
-          <span className="bg-gradient-to-r from-indigo-400 to-indigo-600 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             as one platform.
           </span>
         </h1>
@@ -208,13 +189,13 @@ export function ParentBrandLanding() {
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <a
             href="#products"
-            className="rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500"
+            className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary/90"
           >
             See the products
           </a>
           <a
             href="#contact"
-            className="rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-white/80 transition hover:border-indigo-500/50 hover:text-white"
+            className="rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-white/80 transition hover:border-primary/50 hover:text-white"
           >
             Talk to the team
           </a>
@@ -222,7 +203,7 @@ export function ParentBrandLanding() {
       </section>
 
       {/* Products */}
-      <section id="products" className="mx-auto max-w-6xl px-6 py-16">
+      <section id="products" className="mx-auto max-w-7xl px-6 py-16">
         <div className="mb-10 flex items-end justify-between">
           <div>
             <h2 className="text-2xl font-bold text-white sm:text-3xl">The product family</h2>
@@ -239,7 +220,7 @@ export function ParentBrandLanding() {
       </section>
 
       {/* Platform pillars */}
-      <section id="platform" className="mx-auto max-w-6xl px-6 py-16">
+      <section id="platform" className="mx-auto max-w-7xl px-6 py-16">
         <div className="mb-10 text-center">
           <h2 className="text-2xl font-bold text-white sm:text-3xl">Why it holds together</h2>
           <p className="mx-auto mt-2 max-w-2xl text-white/60">
@@ -252,7 +233,7 @@ export function ParentBrandLanding() {
             const Icon = p.icon;
             return (
               <div key={p.title} className="rounded-2xl border border-white/10 bg-card/40 p-7">
-                <Icon className="h-6 w-6 text-indigo-300" />
+                <Icon className="h-6 w-6 text-primary" />
                 <h3 className="mt-4 text-lg font-bold text-white">{p.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-white/60">{p.body}</p>
               </div>
@@ -262,11 +243,11 @@ export function ParentBrandLanding() {
       </section>
 
       {/* Cross-product flow — one unit, one lifecycle (backed by the shared registry) */}
-      <section className="mx-auto max-w-6xl px-6 pb-4">
+      <section className="mx-auto max-w-7xl px-6 pb-4">
         <div className="rounded-3xl border border-white/10 bg-card/30 p-8 sm:p-10">
           <div className="text-center">
-            <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/15">
-              <Layers className="h-5 w-5 text-indigo-300" />
+            <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15">
+              <Layers className="h-5 w-5 text-primary" />
             </div>
             <h2 className="text-2xl font-bold text-white sm:text-3xl">One unit, one lifecycle</h2>
             <p className="mx-auto mt-2 max-w-2xl text-white/60">
@@ -307,10 +288,10 @@ export function ParentBrandLanding() {
       </section>
 
       {/* For enterprises — BD / investor positioning */}
-      <section className="mx-auto max-w-6xl px-6 py-16">
+      <section className="mx-auto max-w-7xl px-6 py-16">
         <div className="grid items-center gap-10 lg:grid-cols-2">
           <div>
-            <p className="mb-4 inline-block rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300">
+            <p className="mb-4 inline-block rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
               For enterprises & partners
             </p>
             <h2 className="text-3xl font-bold text-white sm:text-4xl">
@@ -329,13 +310,13 @@ export function ParentBrandLanding() {
                 href="https://cryovo.vercel.app"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500"
+                className="rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary/90"
               >
                 Explore Cryovo
               </a>
               <a
                 href="#contact"
-                className="rounded-lg border border-white/15 px-5 py-3 text-sm font-semibold text-white/80 transition hover:border-indigo-500/50 hover:text-white"
+                className="rounded-lg border border-white/15 px-5 py-3 text-sm font-semibold text-white/80 transition hover:border-primary/50 hover:text-white"
               >
                 Talk to sales
               </a>
@@ -350,7 +331,7 @@ export function ParentBrandLanding() {
               { k: "Built to scale", v: "From a single site to a national cold-chain network" },
             ].map((item) => (
               <div key={item.k} className="flex items-start gap-4 rounded-xl border border-white/10 bg-card/40 p-5">
-                <Building2 className="mt-0.5 h-5 w-5 shrink-0 text-indigo-300" />
+                <Building2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
                 <div>
                   <div className="text-sm font-bold text-white">{item.k}</div>
                   <div className="mt-1 text-sm text-white/60">{item.v}</div>
@@ -362,8 +343,8 @@ export function ParentBrandLanding() {
       </section>
 
       {/* Contact / CTA */}
-      <section id="contact" className="mx-auto max-w-6xl px-6 py-16">
-        <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-indigo-600/20 to-[#0f0f1a] p-10 text-center">
+      <section id="contact" className="mx-auto max-w-7xl px-6 py-16">
+        <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-primary/20 to-[#0f0f1a] p-10 text-center">
           <h2 className="text-2xl font-bold text-white sm:text-3xl">
             Building the future of thermal engineering
           </h2>
@@ -382,12 +363,12 @@ export function ParentBrandLanding() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@company.com"
-                  className="w-full rounded-lg border border-white/15 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/40 focus:border-indigo-500 focus:outline-none"
+                  className="w-full rounded-lg border border-white/15 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/40 focus:border-primary focus:outline-none"
                 />
                 <button
                   onClick={submitContact}
                   disabled={submitting}
-                  className="rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:opacity-60"
+                  className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary/90 disabled:opacity-60"
                 >
                   {submitting ? "Sending…" : "Contact us"}
                 </button>
@@ -400,32 +381,7 @@ export function ParentBrandLanding() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-white/10 px-6 py-8">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-sm text-white/40 md:flex-row">
-          <div className="flex items-center gap-2">
-            <span className="text-white/60">ThermoNeural</span>
-            <span>·</span>
-            <span>© {new Date().getFullYear()}</span>
-          </div>
-          <div className="flex items-center gap-6">
-            <a href="#products" className="hover:text-white/70">Products</a>
-            <a href="/platform" className="hover:text-white/70">Business platform</a>
-            <a href="https://simulateon.vercel.app" target="_blank" rel="noopener noreferrer" className="hover:text-white/70">
-              <ArrowUpRight className="inline h-3.5 w-3.5" /> PhasePoint
-            </a>
-            <a href="https://vanclass-app.vercel.app" target="_blank" rel="noopener noreferrer" className="hover:text-white/70">
-              VanClass
-            </a>
-            <a href="https://www.linkedin.com/company/thermoneural" target="_blank" rel="noopener noreferrer" className="hover:text-white/70">
-              LinkedIn
-            </a>
-            <a href="https://twitter.com/thermoneural" target="_blank" rel="noopener noreferrer" className="hover:text-white/70">
-              X/Twitter
-            </a>
-          </div>
-        </div>
-      </footer>
-    </div>
+      </div>
+    </PublicPageShell>
   );
 }

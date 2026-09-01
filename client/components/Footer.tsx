@@ -1,4 +1,4 @@
-import { Calculator, Mail } from "lucide-react";
+import { Calculator, Mail, ArrowUpRight } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 import { Button } from "./ui/button";
@@ -47,6 +47,25 @@ export function Footer() {
               <li><Link to="/diy-calculators" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">DIY Calculators</Link></li>
               <li><Link to={isAuthenticated ? "/tools/load-calc" : "/previews/load-calc"} className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">Load Calc</Link></li>
               <li><Link to={isAuthenticated ? "/tools/psychrometrics" : "/previews/psychrometrics"} className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">Psychrometrics</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-bold text-foreground mb-6 font-display">Product family</h4>
+            <ul className="space-y-4">
+              <li>
+                <a href="https://simulateon.vercel.app" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium inline-flex items-center gap-1">
+                  PhasePoint <ArrowUpRight className="h-3 w-3" />
+                </a>
+              </li>
+              <li>
+                <a href="https://vanclass-app.vercel.app" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium inline-flex items-center gap-1">
+                  VanClass <ArrowUpRight className="h-3 w-3" />
+                </a>
+              </li>
+              <li>
+                <Link to="/platform" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">The Box</Link>
+              </li>
             </ul>
           </div>
 
