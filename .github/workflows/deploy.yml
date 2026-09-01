@@ -19,6 +19,9 @@ on:
 env:
   SUPABASE_PROJECT_REF: rxqflxmzsqhqrzffcsej
   NODE_VERSION: "20"
+  # Placeholder for tests that construct a Stripe client at import time.
+  # Never a real key; no network calls occur in unit tests (all mocked).
+  STRIPE_SECRET_KEY: "sk_test_ci_placeholder_not_real"
 
 jobs:
   # ============================================
