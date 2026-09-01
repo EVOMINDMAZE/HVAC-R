@@ -1,9 +1,14 @@
 import https from 'https';
 
-const API_KEY = 'rnd_lsuXTYLEQm7HRMPweNkp1CWH3ADr';
+const API_KEY = process.env.RENDER_API_KEY;
 
 const serviceId = process.argv[2];
 const action = process.argv[3] || 'restart'; // 'restart' or 'deploy'
+
+if (!API_KEY) {
+    console.error('Error: RENDER_API_KEY environment variable is not set.');
+    process.exit(1);
+}
 
 if (!serviceId) {
     console.error('Usage: node scripts/manage-render.js <service_id> [restart|deploy]');
