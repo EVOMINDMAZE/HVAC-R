@@ -17,7 +17,7 @@ on:
           - functions-only
 
 env:
-  SUPABASE_PROJECT_REF: rxqflxmzsqhqrzffcsej
+  SUPABASE_PROJECT_REF: tbmizbqftczbsbwqgyjx
   NODE_VERSION: "20"
   # Placeholder for tests that construct a Stripe client at import time.
   # Never a real key; no network calls occur in unit tests (all mocked).
