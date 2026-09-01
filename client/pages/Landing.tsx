@@ -16,7 +16,6 @@ import {
 import { Link } from "react-router-dom";
 
 import { HeroSection } from "@/components/landing/HeroSection";
-import { MiniAppPlayground } from "@/components/landing/MiniAppPlayground";
 import { PricingSection } from "@/components/landing/PricingSection";
 import { ValuePropositionGrid } from "@/components/landing/ValuePropositionGrid";
 import { PublicPageShell } from "@/components/public/PublicPageShell";
@@ -121,7 +120,7 @@ export function Landing() {
       <ValuePropositionGrid />
 
       {/* Technical Tools Section */}
-      <section className="py-[var(--space-24)] bg-transparent relative overflow-hidden">
+      <section className="py-[var(--space-24)] bg-slate-50 dark:bg-transparent relative overflow-hidden">
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] text-slate-500 pointer-events-none" />
         <motion.div 
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
@@ -184,31 +183,8 @@ export function Landing() {
         </motion.div>
       </section>
 
-      {/* Interactive System Playground */}
-      <section className="py-[var(--space-24)] bg-transparent relative overflow-hidden border-y border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div 
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerChildren}
-          >
-            <motion.div variants={hudFadeIn} className="relative mb-[var(--space-16)] pt-8">
-              <SectionNumber number="04" className="absolute -top-8 -left-4 lg:-top-12 lg:-left-8" />
-              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4 font-display uppercase tracking-tight">Interactive Platform Experience</h2>
-              <div className="w-24 h-1 bg-primary mt-8" />
-              <p className="mt-8 text-muted-foreground font-semibold tracking-wide uppercase text-sm">Experience the ThermoNeural workflow</p>
-            </motion.div>
-
-            <motion.div variants={hudFadeIn}>
-              <MiniAppPlayground />
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
       {/* Pillars of Operational Excellence Metrics Strip */}
-      <section className="py-[var(--space-12)] border-y border-border bg-card/50 backdrop-blur-sm relative overflow-hidden">
+      <section className="py-[var(--space-12)] border-y border-border bg-slate-100/50 dark:bg-card/50 backdrop-blur-sm relative overflow-hidden">
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] text-primary pointer-events-none" />
         <motion.div 
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
@@ -273,7 +249,7 @@ export function Landing() {
       <PricingSection />
 
       {/* FAQ Section */}
-      <section className="py-[var(--space-24)] bg-muted/30">
+      <section className="py-[var(--space-24)] bg-slate-50 dark:bg-muted/30">
         <motion.div 
           className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8"
           initial="hidden"

@@ -76,7 +76,7 @@ export function PricingSection() {
   const [isAnnual, setIsAnnual] = useState(true);
 
   return (
-    <section className="py-24 px-4 relative overflow-hidden bg-background" ref={ref}>
+    <section className="py-24 px-4 relative overflow-hidden bg-slate-50 dark:bg-background" ref={ref}>
       <div className="absolute inset-0 bg-dot-pattern opacity-[0.03] text-primary" />
       
       <div className="max-w-7xl mx-auto relative z-10">
