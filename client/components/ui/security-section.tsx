@@ -1,17 +1,10 @@
 import { motion } from "framer-motion";
-import { Shield, Lock, CheckCircle, FileCheck, Globe, Server, Clock } from "lucide-react";
+import { Shield, Lock, CheckCircle, FileCheck, Globe, Server } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { metrics } from "@/config/metrics";
 
 const certifications = [
-  {
-    icon: Clock,
-    title: metrics.certifications.soc2.title,
-    description: metrics.certifications.soc2.description,
-    status: "In Progress",
-    statusColor: "bg-warning/10 text-warning",
-  },
   {
     icon: Lock,
     title: metrics.certifications.encryption.title,
@@ -39,13 +32,6 @@ const certifications = [
     description: metrics.certifications.nist.description,
     status: "Active",
     statusColor: "bg-success/10 text-success",
-  },
-  {
-    icon: Clock,
-    title: metrics.certifications.iso27001.title,
-    description: metrics.certifications.iso27001.description,
-    status: "In Progress",
-    statusColor: "bg-warning/10 text-warning",
   },
 ];
 

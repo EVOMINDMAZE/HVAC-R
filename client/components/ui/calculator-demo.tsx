@@ -126,7 +126,7 @@ export function CalculatorDemo() {
 
                 <div className="pt-4 border-t border-border">
                   <p className="text-sm text-muted-foreground">
-                    Adjust the temperatures to see real-time COP and capacity calculations using NIST-validated thermodynamic models.
+                    Adjust the temperatures to see real-time COP and capacity calculations using CoolProp thermodynamic models.
                   </p>
                 </div>
               </div>

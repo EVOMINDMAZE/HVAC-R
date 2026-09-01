@@ -4,53 +4,19 @@
 export const metrics = {
   // Meta information for transparency
   meta: {
-    asOfLabel: "Metrics as of Feb 10, 2026 (internal analytics)",
+    asOfLabel: "Product information as of August 31, 2026",
   },
 
   // User statistics
   users: {
-    totalEngineers: "Hundreds of",
-    description: "HVAC engineers worldwide",
-    lastUpdated: "2026-02-10",
-    source: "Internal user analytics" as const,
-  },
-
-  // Performance metrics
-  performance: {
-    timeSavings: {
-      value: "Up to 85%",
-      qualifier: "Based on internal testing",
-      description: "Calculation time reduction",
-      isVerified: false,
-    },
-    accuracy: {
-      value: "High",
-      qualifier: "Thermodynamics powered by the CoolProp engine",
-      description: "Calculation accuracy",
-      isVerified: false,
-    },
-    reportsGenerated: {
-      value: "Instant",
-      qualifier: "Generate reports on demand",
-      description: "Professional reports",
-      isVerified: false,
-    },
+    totalEngineers: "Growing",
+    description: "HVAC&R engineers and technicians",
+    lastUpdated: "2026-08-31",
+    source: "Product adoption" as const,
   },
 
   // Security certifications
   certifications: {
-    soc2: {
-      title: "SOC 2 Type II",
-      status: "in_progress" as const,
-      timeline: "",
-      description: "SOC 2 Type II audit preparation in progress",
-    },
-    iso27001: {
-      title: "ISO 27001",
-      status: "in_progress" as const,
-      timeline: "",
-      description: "Information security management system in progress",
-    },
     encryption: {
       title: "256-bit Encryption",
       status: "active" as const,
@@ -67,94 +33,17 @@ export const metrics = {
       title: "GDPR Ready",
       status: "active" as const,
       timeline: "",
-      description: "Full compliance with European data protection regulations",
+      description: "Consent management and data-rights controls in place",
     },
     nist: {
-      title: "NIST Reference Validation",
+      title: "CoolProp Thermodynamic Engine",
       status: "active" as const,
       timeline: "",
-      description: "Thermodynamic calculations validated against NIST Refprop reference data",
-    },
-  },
-
-  // Testimonials
-  testimonials: {
-    showPlaceholders: false,
-    placeholderDisclaimer: "",
-    reviewCredit: {
-      amount: "$50",
-      description: "Credit for verified review",
-      isLimitedTime: true,
-    },
-    reviews: [
-      {
-        quote: "Finally, a tool that gets superheat and subcooling right the first time. I've used it on Carrier Infinity units and the accuracy compared to manual gauges is spot on. Saved me at least 45 minutes on a complex diagnostic today.",
-        author: "Senior Tech, FL",
-        rating: 5,
-        category: "Diagnostics"
-      },
-      {
-        quote: "EPA compliance used to be a nightmare of spreadsheets and lost paper. ThermoNeural's automated refrigerant tracking and leak rate calculations are a lifesaver. We passed our internal audit with zero flags.",
-        author: "Operations Manager, TX",
-        rating: 5,
-        category: "Compliance"
-      },
-      {
-        quote: "The cascade cycle analysis is incredible. We're doing more CO2 and ammonia industrial work now, and having NIST-validated data at our fingertips gives the engineering team total confidence.",
-        author: "Lead HVAC Engineer, WA",
-        rating: 5,
-        category: "Engineering"
-      },
-      {
-        quote: "The AI Supervisor caught a mis-wired low voltage terminal on a Trane XV20i that our junior tech missed. That one catch saved us a costly callback and a frustrated customer.",
-        author: "Service Director, OH",
-        rating: 5,
-        category: "AI Support"
-      },
-      {
-        quote: "Switching to ThermoNeural reduced our fuel costs by 12% in the first month just through better dispatch routing. The ROI was clear before the trial even ended.",
-        author: "Owner, Northeast Mechanical",
-        rating: 5,
-        category: "Operations"
-      },
-      {
-        quote: "As a small shop, I was worried about the tech curve. But the interface is intuitive and the reports I send to clients look like they came from a big firm. Professionalism is up, and so are our close rates.",
-        author: "Proprietor, Arctic Air Solutions",
-        rating: 5,
-        category: "Business Growth"
-      }
-    ]
-  },
-
-  // Urgency messaging
-  urgency: {
-    limitedTimeOffer: "Introductory offer available",
-    limitedSpots: "Onboarding included",
-    countdown: "2026-03-29T23:59:59Z",
-    recentSignups: [
-      { name: "John D.", location: "Miami, FL", timeAgo: "2 mins ago" },
-      { name: "Sarah W.", location: "Dallas, TX", timeAgo: "15 mins ago" },
-      { name: "Robert M.", location: "Seattle, WA", timeAgo: "45 mins ago" },
-      { name: "Mike K.", location: "Phoenix, AZ", timeAgo: "1 hour ago" }
-    ]
-  },
-
-  // Industry standards references
-  industryStandards: {
-    ashrae: {
-      name: "ASHRAE",
-      description: "Following ASHRAE Standards",
-      relationship: "standards_body" as const,
-    },
-    nist: {
-      name: "NIST",
-      description: "Validated against NIST Reference Data",
-      relationship: "reference_validation" as const,
+      description: "Calculations powered by the open-source CoolProp fluid-property library",
     },
   },
 } as const;
 
-// Landing page specific configuration
 export const landingConfig = {
   // ROI Stats displayed on landing page
   roiStats: [
@@ -275,11 +164,11 @@ export const landingConfig = {
   faq: [
     {
       question: "How does the AI diagnostics system work?",
-      answer: "Our AI analyzes sensor data, job history, and industry standards to identify potential issues before they become problems. It cross-references with ASHRAE guidelines and NIST thermodynamic data to ensure accuracy.",
+      answer: "Calculations run on the CoolProp thermodynamic engine, the industry-standard open-source fluid-property library, so results are physically grounded and reproducible.",
     },
     {
       question: "Is my data secure?",
-      answer: "Yes. We use AES-256 encryption for all data at rest and in transit. We're pursuing SOC 2 Type II certification and follow GDPR requirements. Your data is never sold or shared with third parties.",
+      answer: "Yes. We use AES-256 encryption for all data at rest and in transit, and we follow GDPR requirements for privacy and consent. Your data is never sold or shared with third parties.",
     },
     {
       question: "Can I try before committing?",
@@ -314,22 +203,13 @@ export const landingConfig = {
     },
     {
       name: "GDPR",
-      description: "Full GDPR compliance",
+      description: "GDPR-aligned data handling and EU data-rights support",
       status: "active" as const,
-    },
-    {
-      name: "SOC 2",
-      description: "SOC 2 Type II audit in progress",
-      status: "in_progress" as const,
     },
   ] as const,
 } as const;
 
 // Helper functions
-export function getQualifiedMetric(metricKey: keyof typeof metrics.performance) {
-  const metric = metrics.performance[metricKey];
-  return `${metric.value} ${metric.qualifier}`;
-}
 
 export function getCertificationStatus(certKey: keyof typeof metrics.certifications) {
   const cert = metrics.certifications[certKey];

@@ -21,7 +21,7 @@ export function StandardCyclePreview() {
                 Standard Refrigeration Cycle
               </Badge>
               <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 text-[10px] uppercase tracking-widest font-bold">
-                NIST Verified
+                CoolProp Physics
               </Badge>
             </div>
             

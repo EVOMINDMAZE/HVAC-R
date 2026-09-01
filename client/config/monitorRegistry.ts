@@ -814,12 +814,6 @@ function resolveToolCalculationKey(pathname: string): string | null {
 function getCertDiagram(title: string, description: string): MonitorDiagramItem {
   const certs = Object.values(metrics.certifications);
   const activeCount = certs.filter((cert) => cert.status === "active").length;
-  const progressCount = certs.filter(
-    (cert) => cert.status === "in_progress",
-  ).length;
-  const plannedCount = certs.filter(
-    (cert) => cert.status !== "active" && cert.status !== "in_progress",
-  ).length;
 
   return {
     id: "trust-status",
@@ -831,18 +825,6 @@ function getCertDiagram(title: string, description: string): MonitorDiagramItem 
         label: "Active Controls",
         value: String(activeCount),
         tone: "success",
-      },
-      {
-        id: "progress",
-        label: "In Progress",
-        value: String(progressCount),
-        tone: "warning",
-      },
-      {
-        id: "planned",
-        label: "Planned",
-        value: String(plannedCount),
-        tone: "info",
       },
     ],
   };
