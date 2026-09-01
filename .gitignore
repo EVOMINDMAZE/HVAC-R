@@ -64,3 +64,4 @@ archive/
 
 # Local Netlify folder
 .netlify
+.vercel

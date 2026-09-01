@@ -12,10 +12,10 @@ export const API_BASE_URL =
 
 /**
  * URL for the calculation service (external physics engine)
- * @defaultValue "https://148.116.87.10.sslip.io:5000"
+ * @defaultValue "https://148.116.87.10.sslip.io/engine"
  * @remarks Can be overridden with VITE_CALCULATION_SERVICE_URL environment variable
  */
-export const CALCULATION_SERVICE_URL = import.meta.env.VITE_CALCULATION_SERVICE_URL || "https://148.116.87.10.sslip.io:5000";
+export const CALCULATION_SERVICE_URL = import.meta.env.VITE_CALCULATION_SERVICE_URL || "https://148.116.87.10.sslip.io/engine";
 
 /**
  * API response wrapper for all API calls
