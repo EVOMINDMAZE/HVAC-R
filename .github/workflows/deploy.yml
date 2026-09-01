@@ -71,7 +71,8 @@ jobs:
           fi
 
   # ============================================
-  # JOB 2: Deploy Supabase Migrations (skipped until SUPABASE_DB_PASSWORD set)
+  # JOB 2: Deploy Database Migrations (workflow_dispatch ONLY — never on push,
+  # because remote schema history is applied manually; repo holds forward-only migrations)
   # ============================================
   deploy-supabase-db:
     name: Deploy Database Migrations
@@ -79,9 +80,9 @@ jobs:
     needs: [test, check-secrets]
     if: |
       needs.check-secrets.outputs.has_db_password == 'true' &&
-      (github.event_name == 'push' ||
-      github.event.inputs.deploy_target == 'all' ||
-      github.event.inputs.deploy_target == 'supabase-only')
+      (github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.deploy_target == 'all' ||
+      github.event.inputs.deploy_target == 'supabase-only'))
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -113,7 +114,7 @@ jobs:
     needs: [check-secrets, deploy-supabase-db]
     if: |
       always() &&
-      (needs.check-secrets.outputs.has_db_password != 'true' || needs.deploy-supabase-db.result == 'success') &&
+      (needs.deploy-supabase-db.result == 'success' || needs.deploy-supabase-db.result == 'skipped') &&
       (github.event_name == 'push' ||
       github.event.inputs.deploy_target == 'all' ||
       github.event.inputs.deploy_target == 'supabase-only' ||
