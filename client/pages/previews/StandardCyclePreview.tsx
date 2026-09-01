@@ -34,7 +34,7 @@ export function StandardCyclePreview() {
               </span>
             </h1>
             <p className="text-muted-foreground mt-4 text-lg font-light tracking-wide max-w-2xl text-balance">
-              Model complex baseline performance with real-time P-h diagram synthesis and NIST-verified thermodynamic accuracy.
+              Model complex baseline performance with real-time P-h diagram synthesis and CoolProp thermodynamic accuracy.
             </p>
           </div>
 
@@ -154,7 +154,7 @@ export function StandardCyclePreview() {
           <AuthTeaserOverlay 
             redirectPath="/tools/standard-cycle"
             heading="Unlock the Full Workspace"
-            description="Sign up for free to access the NIST-verified simulator, customize inputs, and generate professional compliance reports."
+            description="Sign up for free to access the full simulator, customize inputs, and generate professional compliance reports."
           />
         </div>
       </div>
