@@ -9,6 +9,9 @@ on:
 
 env:
   NODE_VERSION: "20"
+  # Placeholder for tests that construct a Stripe client at import time.
+  # Never a real key; no network calls occur in unit tests (all mocked).
+  STRIPE_SECRET_KEY: "sk_test_ci_placeholder_not_real"
 
 jobs:
   quality:
@@ -116,11 +119,10 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Start frontend server
-        run: npm run dev &
+        run: npm run dev -- --port 3001 &
         env:
           # Use CI-friendly settings
           NODE_ENV: test
-          PORT: 3001
 
       - name: Wait for server ready
         run: npx wait-on http://localhost:3001 --timeout 60000
