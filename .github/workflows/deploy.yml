@@ -220,8 +220,13 @@ jobs:
       github.event.inputs.deploy_target == 'all'
     steps:
       - name: Trigger Render Deploy Hook
+        # Skip silently when the hook secret is unset (calc runtime is the
+        # Oracle VM engine, not Render) - prevents a red X annotation per push.
+        if: ${{ env.RENDER_HOOK != '' }}
+        env:
+          RENDER_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
-          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" \
+          curl -X POST "$RENDER_HOOK" \
             -H "Content-Type: application/json" \
             -d '{"clearCache": false}'
         continue-on-error: true
