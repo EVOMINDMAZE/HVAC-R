@@ -1,0 +1,4 @@
+## 2024-03-07 - [Stripe Webhook Signature Verification]
+**Vulnerability:** Stripe Webhook endpoint was failing signature verification because the global `express.json()` middleware was consuming the raw request body. `stripe.webhooks.constructEvent` requires the raw request buffer/string to accurately verify the signature against the `stripe-signature` header.
+**Learning:** In an Express app, if `express.json()` is applied globally before `express.raw()`, the body is parsed and the raw body is lost, breaking webhook signature checks.
+**Prevention:** Add a `verify` callback to the global `express.json()` middleware to check if the route is a webhook (e.g., `req.originalUrl.startsWith('/api/billing/webhook')`) and save the raw buffer to `req.rawBody`. The webhook handler can then use `req.rawBody` for signature verification.

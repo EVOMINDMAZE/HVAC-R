@@ -190,7 +190,8 @@ router.post(
 
     let event;
     try {
-      event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+      const payload = (req as any).rawBody || req.body;
+      event = stripe.webhooks.constructEvent(payload, sig, webhookSecret);
     } catch (err: any) {
       console.error("Webhook signature verification failed:", err.message);
       return res.status(400).send(`Webhook Error: ${err.message}`);
