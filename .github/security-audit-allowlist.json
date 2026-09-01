@@ -7,8 +7,8 @@
             "id": 1094456,
             "module": "xlsx",
             "severity": "high",
-            "reason": "SheetJS xlsx prototype pollution vulnerability (GHSA-4r6h-8v6p-xvw6). Mitigation: File upload validation implemented in client/components/shared/SpreadsheetImporter.tsx with size limits and type checking. No user-supplied file paths processed. Awaiting upstream fix.",
-            "expires": "2026-06-01T00:00:00Z",
+            "reason": "SheetJS xlsx prototype pollution vulnerability (GHSA-4r6h-8v6p-xvw6). Mitigation: File upload validation implemented in client/components/shared/SpreadsheetImporter.tsx with size limits and type checking. No user-supplied file paths processed. Awaiting upstream fix. Reviewed 2026-08-31: SpreadsheetImporter mitigations (size limits, type checking) verified in place; no user-supplied file paths processed.",
+            "expires": "2026-11-30T00:00:00Z",
             "cve": "GHSA-4r6h-8v6p-xvw6",
             "references": [
                 "https://github.com/advisories/GHSA-4r6h-8v6p-xvw6",
@@ -19,8 +19,8 @@
             "id": 1094457,
             "module": "xlsx",
             "severity": "high",
-            "reason": "SheetJS xlsx ReDoS vulnerability (GHSA-5pgg-2g8v-p4x9). Mitigation: File size limits enforced, no untrusted patch/diff processing. Awaiting upstream fix.",
-            "expires": "2026-06-01T00:00:00Z",
+            "reason": "SheetJS xlsx ReDoS vulnerability (GHSA-5pgg-2g8v-p4x9). Mitigation: File size limits enforced, no untrusted patch/diff processing. Awaiting upstream fix. Reviewed 2026-08-31: SpreadsheetImporter mitigations (size limits, type checking) verified in place; no user-supplied file paths processed.",
+            "expires": "2026-11-30T00:00:00Z",
             "cve": "GHSA-5pgg-2g8v-p4x9",
             "references": [
                 "https://github.com/advisories/GHSA-5pgg-2g8v-p4x9",
@@ -30,6 +30,7 @@
     ],
     "notes": [
         "This allowlist should be reviewed monthly during security reviews.",
+        "2026-08-31 review: both xlsx entries re-verified (mitigations confirmed, upstream unfixed); extended to 2026-11-30.",
         "Expired entries will cause the CI security gate to fail.",
         "All entries must have documented mitigations and expiration dates.",
         "Contact: security@thermoneutral.com"

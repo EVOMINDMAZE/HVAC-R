@@ -91,7 +91,7 @@ describe("evaluateAuditReport", () => {
                 {
                     id: 789,
                     reason: "Waiting for upstream fix - see VULNERABILITY_REPORT.md",
-                    expires: "2026-06-01T00:00:00Z",
+                    expires: "2026-11-30T00:00:00Z",
                     severity: "high",
                 },
             ]
