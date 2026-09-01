@@ -524,7 +524,7 @@ export function Header({ variant = "landing", onOpenSearch, brand }: HeaderProps
                 variant === "landing" && !isAuthenticated && "bg-primary hover:bg-primary/90 text-primary-foreground border-none"
               )}
             >
-              {isAuthenticated && companies.length ? "Go to Dashboard" : "Start Business Trial"}
+              {isAuthenticated && companies.length ? "Go to Dashboard" : "Start Free"}
             </Button>
           </Link>
         </div>
@@ -616,7 +616,7 @@ export function Header({ variant = "landing", onOpenSearch, brand }: HeaderProps
                   trackMarketingEvent("startBusinessTrial", { section: "header_mobile" });
                 }}
               >
-                <Button className="w-full">Start Business Trial</Button>
+                <Button className="w-full">Start Free</Button>
               </Link>
             </div>
           </div>

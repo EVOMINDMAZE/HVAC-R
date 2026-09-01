@@ -384,7 +384,7 @@ export function Landing() {
             trackMarketingEvent("startBusinessTrial", { section: "sticky_mobile" });
           }}
         >
-          <Link to="/signup">Start Business Trial</Link>
+          <Link to="/signup">Start Free</Link>
         </Button>
       </div>
     </PublicPageShell>
