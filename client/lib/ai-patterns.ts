@@ -100,20 +100,23 @@ class AIPatternsAPI {
 
   async analyzePatterns(request: PatternAnalysisRequest) {
     try {
-      const response = await fetch("/api/ai/patterns/analyze", {
-        method: "POST",
-        headers: await this.getAuthHeaders(),
-        body: JSON.stringify(request),
-      });
+      // Query ai_learning_patterns directly (legacy /api/ai/patterns routes were retired).
+      const { data, error } = await supabase
+        .from("ai_learning_patterns")
+        .select("*")
+        .eq("company_id", request.companyId)
+        .order("confidence_score", { ascending: false })
+        .limit(500);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (error) {
+        console.error("Error analyzing patterns:", error);
+        return { success: false, data: [] };
       }
 
-      return await response.json();
+      return { success: true, data: data || [] };
     } catch (error) {
       console.error("Error analyzing patterns:", error);
-      throw error;
+      return { success: false, data: [] };
     }
   }
 
@@ -203,27 +206,27 @@ class AIPatternsAPI {
 
   async getPatternsByType(
     companyId: string,
-    type: string,
+    patternType: string,
     limit = 50,
-    offset = 0,
   ) {
     try {
-      const response = await fetch(
-        `/api/ai/patterns/${companyId}/${type}?limit=${limit}&offset=${offset}`,
-        {
-          method: "GET",
-          headers: await this.getAuthHeaders(),
-        },
-      );
+      const { data, error } = await supabase
+        .from("ai_learning_patterns")
+        .select("*")
+        .eq("company_id", companyId)
+        .eq("pattern_type", patternType)
+        .order("confidence_score", { ascending: false })
+        .limit(limit);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (error) {
+        console.error("Error getting patterns by type:", error);
+        return { success: false, data: [] };
       }
 
-      return await response.json();
+      return { success: true, data: data || [] };
     } catch (error) {
       console.error("Error getting patterns by type:", error);
-      throw error;
+      return { success: false, data: [] };
     }
   }
 

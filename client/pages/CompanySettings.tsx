@@ -132,20 +132,20 @@ export default function CompanySettings() {
         return;
       }
       try {
-        const { data: subscriptionData, error: subError } = await supabase.rpc(
-          "get_company_subscription",
-          { company_uuid: activeCompany.company_id },
-        );
+        // RPC takes no arguments and returns { tier, status, seat_limit, seat_usage, ... }
+        const { data: subscriptionData, error: subError } =
+          await supabase.rpc("get_company_subscription");
 
         if (subError) throw subError;
 
         if (subscriptionData) {
-          setSubscriptionTier(subscriptionData.subscription_tier || "free");
-          setSeatLimit(subscriptionData.seat_limit || 1);
-          setSeatUsage(subscriptionData.seat_usage || 0);
-          setSubscriptionStatus(
-            subscriptionData.subscription_status || "active",
-          );
+          const sub = Array.isArray(subscriptionData)
+            ? subscriptionData[0]
+            : subscriptionData;
+          setSubscriptionTier(sub.tier || "free");
+          setSeatLimit(sub.seat_limit || 1);
+          setSeatUsage(sub.seat_usage || 0);
+          setSubscriptionStatus(sub.status || "active");
         }
 
         const { data: settingsData, error: settingsError } = await supabase.rpc(

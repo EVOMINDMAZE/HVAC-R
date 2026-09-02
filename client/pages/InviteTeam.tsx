@@ -97,11 +97,17 @@ export default function InviteTeam() {
   useEffect(() => {
     const fetchSubscription = async () => {
       if (!activeCompany) return;
-      const { data } = await supabase.rpc("get_company_subscription", {
-        p_company_id: activeCompany.company_id,
-      });
+      // RPC takes no arguments (operates on caller's active company)
+      const { data } = await supabase.rpc("get_company_subscription");
       if (data) {
-        setSubscriptionInfo(data);
+        const sub = Array.isArray(data) ? data[0] : data;
+        setSubscriptionInfo({
+          ...sub,
+          available: Math.max(
+            0,
+            (sub.seat_limit || 0) - (sub.seat_usage || 0),
+          ),
+        });
       }
     };
     fetchSubscription();

@@ -1,5 +1,4 @@
 import {
-  AlertTriangle,
   Calendar,
   Map,
   MapPin,
@@ -46,6 +45,7 @@ export default function FleetDashboard() {
   const navigate = useNavigate();
   const [techs, setTechs] = useState<TechLocation[]>([]);
   const [jobs, setJobs] = useState<ActiveJob[]>([]);
+  const [completedCount, setCompletedCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -61,25 +61,50 @@ export default function FleetDashboard() {
           return;
         }
 
-        const response = await fetch("/api/fleet/status", {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        // Fleet data lives in Supabase (legacy /api/fleet/status route was retired).
+        const { data: jobRows, error: jobsError } = await supabase
+          .from("jobs")
+          .select("id, title, client_name, status, technician_id")
+          .order("created_at", { ascending: false })
+          .limit(100);
 
-        if (!response.ok) {
-          console.error("Failed to fetch fleet data:", response.status);
+        if (jobsError) {
+          console.error("Failed to fetch jobs:", jobsError);
           setTechs([]);
           setJobs([]);
           return;
         }
 
-        const result = await response.json();
-        if (result?.success && result?.data) {
-          setTechs(result.data.techs || []);
-          setJobs(result.data.jobs || []);
-        }
+        const activeStatuses = ["pending", "en_route", "on_site"];
+        const mappedJobs: ActiveJob[] = (jobRows || []).map((j: any) => ({
+          id: j.id,
+          title: j.title,
+          client: j.client_name || "—",
+          status: j.status,
+          tech_assigned: j.technician_id,
+        }));
+        setJobs(mappedJobs.filter((j) => activeStatuses.includes(j.status)));
+        setCompletedCount(
+          mappedJobs.filter((j) => j.status === "completed").length,
+        );
+
+        const { data: teamRows } = await supabase.rpc("get_company_team");
+        const techRows = (teamRows || []).filter((m: any) => m.role === "tech");
+        setTechs(
+          techRows.map((m: any) => {
+            const activeJob = mappedJobs.find(
+              (j) =>
+                j.tech_assigned === m.user_id &&
+                activeStatuses.includes(j.status),
+            );
+            return {
+              id: m.user_id,
+              name: m.full_name || m.email || m.user_id.slice(0, 8),
+              status: activeJob ? "working" : "idle",
+              current_job: activeJob?.title,
+            } as TechLocation;
+          }),
+        );
       } catch (e) {
         console.error("Error fetching fleet data", e);
         setTechs([]);
@@ -136,18 +161,20 @@ export default function FleetDashboard() {
           icon={<Wrench className="h-5 w-5" />}
         />
         <AppStatCard
-          label="Critical Alerts"
-          value={1}
-          meta="Freezer temp high (sample)"
-          icon={<AlertTriangle className="h-5 w-5" />}
-          tone="warning"
+          label="Completed Jobs"
+          value={completedCount}
+          meta="All time from your account"
+          icon={<Wrench className="h-5 w-5" />}
         />
         <AppStatCard
-          label="Fleet Efficiency"
-          value="92%"
-          meta="On-time arrival rate"
+          label="Jobs In Field"
+          value={
+            jobs.filter(
+              (j) => j.status === "on_site" || j.status === "en_route",
+            ).length
+          }
+          meta="On site or en route right now"
           icon={<Map className="h-5 w-5" />}
-          tone="success"
         />
       </div>
 

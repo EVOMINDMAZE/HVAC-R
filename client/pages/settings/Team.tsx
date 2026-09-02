@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/use-toast";
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
+import { supabase } from "@/lib/supabase";
 
 const TEAM_UI_COPY = {
   loadErrorTitle: "Unable to load team members.",
@@ -119,30 +120,14 @@ export default function Team() {
     if (!session?.access_token) return;
     setLoadError(null);
     try {
-      const url = "/api/team";
-      console.log("Fetching team from:", url);
-      console.log("Authorization token present:", !!session?.access_token);
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${session?.access_token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      // Team roster lives in Supabase (legacy /api/team route was retired).
+      const { data, error } = await supabase.rpc("get_company_team");
 
-      console.log("Response status:", response.status, response.statusText);
-      console.log("Response headers:", Object.fromEntries(response.headers.entries()));
-      
-      const responseText = await response.text();
-      console.log("Response text (first 500 chars):", responseText.substring(0, 500));
-      
-      if (!response.ok) {
-        console.error("Response not OK, text:", responseText);
-        throw new Error("Failed to fetch team");
+      if (error) {
+        throw new Error(error.message || "Failed to fetch team");
       }
 
-      const result = JSON.parse(responseText);
-      console.log("Parsed result:", result);
-      setMembers(result.data || []);
+      setMembers(data || []);
     } catch (error: any) {
       console.error("Error fetching team", error);
       console.error("Error stack:", error.stack);
@@ -170,23 +155,19 @@ export default function Team() {
       if (!session?.access_token) {
         throw new Error("You are not authenticated. Please sign in again.");
       }
-      const response = await fetch("/api/team/invite", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${session?.access_token}`,
-          "Content-Type": "application/json",
+      const { error: inviteError } = await supabase.functions.invoke(
+        "invite-user",
+        {
+          body: {
+            email: inviteEmail,
+            role: inviteRole,
+            full_name: inviteName,
+          },
         },
-        body: JSON.stringify({
-          email: inviteEmail,
-          role: inviteRole,
-          full_name: inviteName,
-        }),
-      });
+      );
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || "Failed to send invitation");
+      if (inviteError) {
+        throw new Error(inviteError.message || "Failed to send invitation");
       }
 
       toast({
@@ -219,19 +200,15 @@ export default function Team() {
       if (!session?.access_token) {
         throw new Error("You are not authenticated. Please sign in again.");
       }
-      const response = await fetch("/api/team/role", {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${session?.access_token}`,
-          "Content-Type": "application/json",
+      const { error: roleError } = await supabase.functions.invoke(
+        "update-role",
+        {
+          body: { userId, newRole },
         },
-        body: JSON.stringify({ userId, newRole }),
-      });
+      );
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || "Failed to update role");
+      if (roleError) {
+        throw new Error(roleError.message || "Failed to update role");
       }
 
       toast({
@@ -259,19 +236,13 @@ export default function Team() {
       if (!session?.access_token) {
         throw new Error("You are not authenticated. Please sign in again.");
       }
-      const response = await fetch("/api/team/member", {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${session?.access_token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId }),
-      });
+      const { error: removeError } = await supabase
+        .from("user_roles")
+        .delete()
+        .eq("user_id", userId);
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || "Failed to remove member");
+      if (removeError) {
+        throw new Error(removeError.message || "Failed to remove member");
       }
 
       toast({

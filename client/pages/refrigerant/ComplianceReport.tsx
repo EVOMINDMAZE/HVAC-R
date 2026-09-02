@@ -47,21 +47,32 @@ export default function ComplianceReport() {
   const fetchLogs = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      // Two-step fetch: prod schema has no FK embed between refrigerant_logs and refrigerant_cylinders
+      const { data: logRows, error: logsError } = await supabase
         .from("refrigerant_logs")
-        .select(
-          `
-          *,
-          cylinder:cylinder_id (
-            cylinder_code,
-            refrigerant_type
-          )
-        `,
-        )
+        .select("*")
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
-      setLogs((data as any) || []);
+      if (logsError) throw logsError;
+      const rows = (logRows as any[]) || [];
+      const cylinderIds = Array.from(
+        new Set(rows.map((l) => l.cylinder_id).filter(Boolean)),
+      );
+      let cylindersById: Record<string, any> = {};
+      if (cylinderIds.length > 0) {
+        const { data: cylRows, error: cylError } = await supabase
+          .from("refrigerant_cylinders")
+          .select("id, cylinder_code, refrigerant_type")
+          .in("id", cylinderIds);
+        if (!cylError && cylRows) {
+          cylindersById = Object.fromEntries(cylRows.map((c) => [c.id, c]));
+        }
+      }
+      const merged = rows.map((l) => ({
+        ...l,
+        cylinder: l.cylinder_id ? cylindersById[l.cylinder_id] : undefined,
+      }));
+      setLogs(merged as any);
     } catch (error: any) {
       console.error("Error fetching logs:", error);
       toast({
