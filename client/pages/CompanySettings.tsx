@@ -150,7 +150,8 @@ export default function CompanySettings() {
 
         const { data: settingsData, error: settingsError } = await supabase.rpc(
           "get_company_settings",
-          { company_uuid: activeCompany.company_id },
+          // RPC signature: (p_company_id uuid) — verified live, returns 200
+          { p_company_id: activeCompany.company_id },
         );
 
         if (settingsError && settingsError.code !== "PGRST116")
@@ -261,10 +262,11 @@ export default function CompanySettings() {
         payment_received_alerts: paymentReceivedAlerts,
       };
 
-      const { error } = await supabase.rpc(
-        "update_company_settings",
-        settingsUpdates,
-      );
+      // RPC signature: (p_company_id uuid, p_settings jsonb) — verified live
+      const { error } = await supabase.rpc("update_company_settings", {
+        p_company_id: activeCompany.company_id,
+        p_settings: settingsUpdates,
+      });
 
       if (error) throw error;
 
