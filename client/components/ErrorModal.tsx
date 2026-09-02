@@ -73,7 +73,7 @@ export function ErrorModal() {
                 // allow user to report — open mailto with prefilled subject
                 const subject = encodeURIComponent(`${title} - Report`);
                 const body = encodeURIComponent(`Error details:\n\n${message}`);
-                window.location.href = `mailto:support@simulateon.io?subject=${subject}&body=${body}`;
+                window.location.href = `mailto:support@thermoneural.com?subject=${subject}&body=${body}`;
               }}
             >
               Report
