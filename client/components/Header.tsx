@@ -506,27 +506,31 @@ export function Header({ variant = "landing", onOpenSearch, brand }: HeaderProps
 
         <div className="hidden items-center gap-2 md:flex">
           <ModeToggle />
-          <Link to="/signin">
-            <Button variant="ghost" className="transition-all duration-200">Sign In</Button>
-          </Link>
-          <Link
-            to="/signup"
-            onClick={() => {
-              if (!isAuthenticated || !companies.length) {
-                trackMarketingEvent("startBusinessTrial", { section: "header_desktop" });
-              }
-            }}
-          >
-            <Button 
-              disabled={isRefreshing}
-              className={cn(
-                "transition-all duration-200 shadow-lg shadow-primary/15",
-                variant === "landing" && !isAuthenticated && "bg-primary hover:bg-primary/90 text-primary-foreground border-none"
-              )}
-            >
-              {isAuthenticated && companies.length ? "Go to Dashboard" : "Start Free"}
-            </Button>
-          </Link>
+          {brand !== "umbrella" ? (
+            <>
+              <Link to="/signin">
+                <Button variant="ghost" className="transition-all duration-200">Sign In</Button>
+              </Link>
+              <Link
+                to="/signup"
+                onClick={() => {
+                  if (!isAuthenticated || !companies.length) {
+                    trackMarketingEvent("startBusinessTrial", { section: "header_desktop" });
+                  }
+                }}
+              >
+                <Button
+                  disabled={isRefreshing}
+                  className={cn(
+                    "transition-all duration-200 shadow-lg shadow-primary/15",
+                    variant === "landing" && !isAuthenticated && "bg-primary hover:bg-primary/90 text-primary-foreground border-none"
+                  )}
+                >
+                  {isAuthenticated && companies.length ? "Go to Dashboard" : "Start Free"}
+                </Button>
+              </Link>
+            </>
+          ) : null}
         </div>
 
         <div className="flex items-center gap-2 md:hidden">
@@ -605,20 +609,22 @@ export function Header({ variant = "landing", onOpenSearch, brand }: HeaderProps
               onClick={() => setMobileOpen(false)}
             />
 
-            <div className="grid grid-cols-2 gap-2 pt-4 mt-2 border-t border-border/50">
-              <Link to="/signin" onClick={() => setMobileOpen(false)}>
-                <Button variant="outline" className="w-full">Sign In</Button>
-              </Link>
-              <Link
-                to="/signup"
-                onClick={() => {
-                  setMobileOpen(false);
-                  trackMarketingEvent("startBusinessTrial", { section: "header_mobile" });
-                }}
-              >
-                <Button className="w-full">Start Free</Button>
-              </Link>
-            </div>
+            {brand !== "umbrella" ? (
+              <div className="grid grid-cols-2 gap-2 pt-4 mt-2 border-t border-border/50">
+                <Link to="/signin" onClick={() => setMobileOpen(false)}>
+                  <Button variant="outline" className="w-full">Sign In</Button>
+                </Link>
+                <Link
+                  to="/signup"
+                  onClick={() => {
+                    setMobileOpen(false);
+                    trackMarketingEvent("startBusinessTrial", { section: "header_mobile" });
+                  }}
+                >
+                  <Button className="w-full">Start Free</Button>
+                </Link>
+              </div>
+            ) : null}
           </div>
         </HeaderMobilePanel>
       ) : null}
