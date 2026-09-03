@@ -130,6 +130,9 @@ async function createCheckoutSession(req: Request, user: any) {
       success_url: `${Deno.env.get("CLIENT_URL") || "https://thermoneural.com"}/profile?success=true`,
       cancel_url: `${Deno.env.get("CLIENT_URL") || "https://thermoneural.com"}/pricing`,
       customer_email: user.email,
+      // Cross-function contract: stripe-webhook provisions company + license
+      // from client_reference_id (falls back to metadata.userId).
+      client_reference_id: user.id,
       metadata: {
         userId: user.id,
       },

@@ -37,7 +37,7 @@ serve(async (req) => {
         switch (event.type) {
             case "checkout.session.completed": {
                 const session = event.data.object;
-                const userId = session.client_reference_id;
+                const userId = session.client_reference_id || session.metadata?.userId;
                 const customerEmail = session.customer_details?.email || session.customer_email;
                 const stripeCustomerId = session.customer;
                 const customerName = session.customer_details?.name || "Valued Customer";
