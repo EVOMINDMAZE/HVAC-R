@@ -167,7 +167,7 @@ export function ParentBrandLanding() {
   };
 
   return (
-    <PublicPageShell>
+    <PublicPageShell brand="umbrella">
       <div className="dark bg-[#0f0f1a] text-white antialiased">
 
       {/* Hero */}

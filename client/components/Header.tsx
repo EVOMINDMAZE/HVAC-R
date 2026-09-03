@@ -34,7 +34,7 @@ import { cn } from "@/lib/utils";
 interface HeaderProps {
   variant?: "landing" | "dashboard";
   onOpenSearch?: () => void;
-  brand?: "box";
+  brand?: "box" | "umbrella";
 }
 
 function MobileGroup({
@@ -428,7 +428,7 @@ export function Header({ variant = "landing", onOpenSearch, brand }: HeaderProps
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
           <Link
-            to="/pricing"
+            to="/platform"
             className={cn(
               navLinkBaseClasses,
               "text-muted-foreground/80 hover:text-foreground transition-all duration-200 rounded-lg hover:bg-muted/50"
@@ -551,8 +551,8 @@ export function Header({ variant = "landing", onOpenSearch, brand }: HeaderProps
           <div className="grid gap-2">
             <LandingMobileLink
               label="The Box"
-              to="/pricing"
-              isActive={isRouteActive(location.pathname, "/pricing")}
+              to="/platform"
+              isActive={isRouteActive(location.pathname, "/platform")}
               onClick={() => setMobileOpen(false)}
             />
             <LandingMobileLink

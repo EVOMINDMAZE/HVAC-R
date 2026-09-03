@@ -1,5 +1,6 @@
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { UmbrellaFooter } from "@/components/UmbrellaFooter";
 import { GlobalBackground } from "@/components/ui/GlobalBackground";
 import { ConsentBanner } from "@/components/ConsentBanner";
 import { cn } from "@/lib/utils";
@@ -12,7 +13,7 @@ interface PublicPageShellProps {
   mainClassName?: string;
   mainId?: string;
   skipToMain?: boolean;
-  brand?: "box";
+  brand?: "box" | "umbrella";
 }
 
 export function PublicPageShell({
@@ -47,7 +48,7 @@ export function PublicPageShell({
       <div className="relative z-10 flex flex-col min-h-screen">
         <Header variant="landing" brand={brand} />
         <main id={mainId} className={cn("flex-grow", mainClassName)}>{children}</main>
-        {withFooter ? <Footer /> : null}
+        {withFooter ? (brand === "umbrella" ? <UmbrellaFooter /> : <Footer />) : null}
         <ConsentBanner
           visible={showConsentBanner}
           onDismiss={() => setShowConsentBanner(false)}

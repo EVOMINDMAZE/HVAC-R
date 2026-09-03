@@ -64,6 +64,8 @@ serve(async (req) => {
       return await createPortalSession(req, user);
     } else if (path.endsWith("/subscription") && req.method === "GET") {
       return await getSubscription(req, user);
+    } else if (path.endsWith("/start-trial") && req.method === "POST") {
+      return await startTrial(req, user);
     } else if (path.endsWith("/webhook") && req.method === "POST") {
       return await handleWebhook(req);
     } else if (path.endsWith("/test") && req.method === "GET") {
@@ -219,8 +221,7 @@ async function getSubscription(req: Request, user: any) {
       return new Response(
         JSON.stringify({
           subscription: null,
-          plan: "free",
-          status: "active",
+          ...subscriptionFallback(user),
         }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
@@ -240,8 +241,7 @@ async function getSubscription(req: Request, user: any) {
       return new Response(
         JSON.stringify({
           subscription: null,
-          plan: "free",
-          status: "active",
+          ...subscriptionFallback(user),
         }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
@@ -260,8 +260,7 @@ async function getSubscription(req: Request, user: any) {
       return new Response(
         JSON.stringify({
           subscription: null,
-          plan: "free",
-          status: "active",
+          ...subscriptionFallback(user),
         }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } },
       );
@@ -314,6 +313,111 @@ async function getSubscription(req: Request, user: any) {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       },
     );
+  }
+}
+
+// === Week 2: 14-day no-card Business trial (app_metadata-based) =========
+// Trial state lives in the user's app_metadata.trial — writable ONLY via the
+// admin API (service_role), never by clients, so it cannot be spoofed.
+
+const TRIAL_DAYS = 14;
+const TRIAL_PLAN = "business";
+
+function computeTrialState(meta: any) {
+  const t = meta && meta.trial;
+  if (!t || !t.started_at || !t.expires_at) return null;
+  const start = new Date(String(t.started_at)).getTime();
+  const end = new Date(String(t.expires_at)).getTime();
+  if (!isFinite(start) || !isFinite(end) || end <= start) return null;
+  return {
+    startedAt: t.started_at as string,
+    expiresAt: t.expires_at as string,
+    days: TRIAL_DAYS,
+    plan: TRIAL_PLAN,
+  };
+}
+
+function hasActiveTrial(meta: any): boolean {
+  const t = computeTrialState(meta);
+  return !!t && new Date(t.expiresAt).getTime() > Date.now();
+}
+
+// Fallback /subscription payload: reports an active trial as
+// plan=business/status=trialing, else the plain free tier.
+function subscriptionFallback(user: any) {
+  if (hasActiveTrial(user.app_metadata)) {
+    const trial = computeTrialState(user.app_metadata);
+    return { plan: trial!.plan, status: "trialing", trial };
+  }
+  return { plan: "free", status: "active" };
+}
+
+async function startTrial(req: Request, user: any) {
+  try {
+    const admin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    );
+
+    // Re-read the authoritative user record (never trust request body).
+    const { data, error } = await admin.auth.admin.getUserById(user.id);
+    if (error || !data?.user) {
+      return new Response(JSON.stringify({ error: "User lookup failed" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const fresh = data.user;
+
+    // One trial per account — enforce at stamp time, report idempotently.
+    const existing = computeTrialState(fresh.app_metadata);
+    if (existing) {
+      const active = new Date(existing.expiresAt).getTime() > Date.now();
+      return new Response(
+        JSON.stringify({
+          started: false,
+          reason: active ? "trial-already-active" : "trial-already-used",
+          trial: existing,
+          plan: active ? TRIAL_PLAN : "free",
+          status: active ? "trialing" : "active",
+        }),
+        { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    const now = new Date();
+    const expires = new Date(now.getTime() + TRIAL_DAYS * 24 * 60 * 60 * 1000);
+    const trial = {
+      plan: TRIAL_PLAN,
+      started_at: now.toISOString(),
+      expires_at: expires.toISOString(),
+      days: TRIAL_DAYS,
+    };
+    // Merge (and self-heal even if GoTrue overwrites instead of merges).
+    const nextMeta = { ...(fresh.app_metadata || {}), trial };
+
+    const { error: upErr } = await admin.auth.admin.updateUserById(fresh.id, {
+      app_metadata: nextMeta,
+    });
+    if (upErr) {
+      console.error("startTrial: app_metadata update failed:", upErr.message);
+      return new Response(JSON.stringify({ error: "Failed to start trial" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    console.log(`Trial started for user ${fresh.id}: expires ${trial.expires_at}`);
+    return new Response(
+      JSON.stringify({ started: true, trial, plan: TRIAL_PLAN, status: "trialing" }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+    );
+  } catch (error) {
+    console.error("startTrial error:", error);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 }
 

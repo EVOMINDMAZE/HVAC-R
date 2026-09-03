@@ -117,9 +117,11 @@
 #    Set in Netlify Dashboard > Site Settings > Environment variables:
 #    - VITE_SUPABASE_URL
 #    - VITE_SUPABASE_ANON_KEY
-#    - VITE_STRIPE_PUBLISHABLE_KEY
+#    - VITE_STRIPE_PUBLISHABLE_KEY (publishable key is safe client-side)
 #    - VITE_STRIPE_PRICE_PRO
 #    - VITE_STRIPE_PRICE_ENTERPRISE
+#    - VITE_BILLING_ENABLED ("true" enables Stripe billing; absent/false =
+#      honest disabled state — never mock billing)
 #
 # 2. Custom Domain:
 #    Configure in Netlify Dashboard > Domain settings
