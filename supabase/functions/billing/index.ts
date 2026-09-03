@@ -127,8 +127,8 @@ async function createCheckoutSession(req: Request, user: any) {
           quantity: 1,
         },
       ],
-      success_url: `${Deno.env.get("CLIENT_URL") || "https://173ba54839db44079504686aa5642124-7d4f8c681adb406aa7578b14f.fly.dev"}/profile?success=true`,
-      cancel_url: `${Deno.env.get("CLIENT_URL") || "https://173ba54839db44079504686aa5642124-7d4f8c681adb406aa7578b14f.fly.dev"}/pricing`,
+      success_url: `${Deno.env.get("CLIENT_URL") || "https://thermoneural.com"}/profile?success=true`,
+      cancel_url: `${Deno.env.get("CLIENT_URL") || "https://thermoneural.com"}/pricing`,
       customer_email: user.email,
       metadata: {
         userId: user.id,
@@ -192,7 +192,7 @@ async function createPortalSession(req: Request, user: any) {
     }
 
     const customerId = customers.data[0].id;
-    const returnUrl = `${Deno.env.get("CLIENT_URL") || "https://173ba54839db44079504686aa5642124-7d4f8c681adb406aa7578b14f.fly.dev"}/profile`;
+    const returnUrl = `${Deno.env.get("CLIENT_URL") || "https://thermoneural.com"}/profile`;
 
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
