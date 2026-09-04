@@ -2,6 +2,7 @@ import { Calculator, Mail, ArrowUpRight } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 import { Button } from "./ui/button";
+import { GuaranteeStrip } from "./GuaranteeStrip";
 
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 
@@ -93,6 +94,7 @@ export function Footer() {
           </div>
         </div>
 
+        <GuaranteeStrip />
         <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-muted-foreground text-xs font-medium">
             Copyright © {year} ThermoNeural. Engineering Operations at Scale.
@@ -100,6 +102,7 @@ export function Footer() {
           <div className="flex gap-8">
             <Link to="/privacy" className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors">Privacy</Link>
             <Link to="/terms" className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors">Terms</Link>
+            <Link to="/terms#guarantee" className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors">Guarantee</Link>
           </div>
         </div>
       </div>

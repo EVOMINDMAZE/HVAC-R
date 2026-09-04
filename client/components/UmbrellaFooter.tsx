@@ -1,6 +1,8 @@
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import { GuaranteeStrip } from "./GuaranteeStrip";
+
 import { useSupabaseAuth } from "@/hooks/useSupabaseAuth";
 
 const PRODUCTS = [
@@ -150,6 +152,7 @@ export function UmbrellaFooter() {
           </div>
         </div>
 
+        <GuaranteeStrip />
         <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-muted-foreground text-xs font-medium">
             Copyright © {year} ThermoNeural. Engineering Operations at Scale.
@@ -160,6 +163,9 @@ export function UmbrellaFooter() {
             </Link>
             <Link to="/terms" className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors">
               Terms
+            </Link>
+            <Link to="/terms#guarantee" className="text-muted-foreground hover:text-foreground text-xs font-medium transition-colors">
+              Guarantee
             </Link>
           </div>
         </div>

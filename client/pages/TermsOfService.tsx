@@ -79,10 +79,45 @@ export function TermsOfService() {
                 </ul>
               </section>
 
+              <section id="guarantee" className="scroll-mt-24">
+                <h2 className="text-2xl font-bold mb-4 flex items-center">
+                  <span className="bg-primary/10 text-primary w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
+                    3
+                  </span>
+                  The ThermoNeural Guarantee
+                </h2>
+                <div className="space-y-4">
+                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                    <p className="text-foreground text-sm font-semibold mb-1">1. Your data is yours.</p>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Everything you build in a ThermoNeural product can be exported in open
+                      formats — CSV and PDF — with one click. If you cancel, your account
+                      continues on the Free plan and nothing you created is deleted.
+                    </p>
+                  </div>
+                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                    <p className="text-foreground text-sm font-semibold mb-1">2. Cancel anytime.</p>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      You can manage or cancel your subscription yourself, from your profile,
+                      in one place. No phone calls, no emails, no retention scripts.
+                      Cancellation takes effect at the end of your current billing period.
+                    </p>
+                  </div>
+                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                    <p className="text-foreground text-sm font-semibold mb-1">3. 30-day money-back.</p>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      If your first invoice on any paid plan doesn't earn its keep, email
+                      support@thermoneural.com within 30 days of payment for a full refund.
+                      No forms, no interrogation.
+                    </p>
+                  </div>
+                </div>
+              </section>
+
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">
                   <span className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
-                    3
+                    4
                   </span>
                   Disclaimer
                 </h2>
@@ -105,7 +140,7 @@ export function TermsOfService() {
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">
                   <span className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
-                    4
+                    5
                   </span>
                   Limitations
                 </h2>
@@ -123,7 +158,7 @@ export function TermsOfService() {
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">
                   <span className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
-                    5
+                    6
                   </span>
                   Accuracy of Materials
                 </h2>
@@ -140,7 +175,7 @@ export function TermsOfService() {
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">
                   <span className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
-                    6
+                    7
                   </span>
                   Links
                 </h2>
@@ -156,7 +191,7 @@ export function TermsOfService() {
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">
                   <span className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
-                    7
+                    8
                   </span>
                   Modifications
                 </h2>
@@ -171,7 +206,7 @@ export function TermsOfService() {
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">
                   <span className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
-                    8
+                    9
                   </span>
                   Governing Law
                 </h2>
@@ -186,7 +221,7 @@ export function TermsOfService() {
               <section>
                 <h2 className="text-2xl font-bold mb-4 flex items-center">
                   <span className="bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">
-                    9
+                    10
                   </span>
                   Contact Information
                 </h2>
