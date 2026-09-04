@@ -18,7 +18,8 @@ export type MarketingEventName =
   | "features_secondary_click"
   | "pricing_view"
   | "pricing_interval_toggle"
-  | "pricing_plan_cta_click";
+  | "pricing_plan_cta_click"
+  | "platform_id_handoff";
 
 export type MarketingEventPayload = {
   section?: string;
@@ -28,6 +29,8 @@ export type MarketingEventPayload = {
   pillar?: string;
   action?: string;
   question?: string;
+  target?: string;
+  method?: string;
 };
 
 declare global {

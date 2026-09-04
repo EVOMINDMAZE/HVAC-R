@@ -31,6 +31,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { SectionNumber } from "@/components/ui/SectionNumber";
 import { landingConfig } from "@/config/metrics";
+import { useAuth } from "@/hooks/useSupabaseAuth";
 import { hudFadeIn, staggerChildren } from "@/lib/animations/landingVariants";
 import { trackMarketingEvent } from "@/lib/marketingAnalytics";
 
@@ -85,6 +86,103 @@ function LandingImage({
   );
 }
 
+/**
+ * Phase 2 "The Handoff" — signed-in identity panel on /platform.
+ * SSO truth: all ThermoNeural shops share ONE Supabase project, but browser
+ * sessions are per-domain by design (proven 2026-09-04). So we never claim
+ * auto-SSO: PhasePoint gets a magic-link "continue as {email}" flow; VanClass
+ * and Cryovo are plain links where the user signs in with the same email.
+ */
+function PlatformIdPanel() {
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) return null;
+  if (!isAuthenticated || !user) return null;
+
+  const email = user.email ?? "";
+  const phasePointHref = email
+    ? `https://simulateon.vercel.app/signin?continue=${encodeURIComponent(email)}`
+    : "https://simulateon.vercel.app/signin";
+
+  return (
+    <section
+      aria-label="Your ThermoNeural ID"
+      className="border-b border-border bg-card/50 backdrop-blur-sm"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col lg:flex-row lg:items-center gap-5">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center shrink-0">
+            <BadgeCheck className="w-5 h-5 text-primary" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-sm font-bold text-foreground">
+              One ID. Every ThermoNeural shop.
+            </p>
+            <p className="text-xs text-muted-foreground break-all">
+              Signed in as {email || "your account"}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 lg:ml-auto">
+          <a
+            href={phasePointHref}
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2.5 text-sm font-bold shadow-sm transition-all hover:scale-[1.02]"
+            onClick={() =>
+              trackMarketingEvent("platform_id_handoff", {
+                target: "phasepoint",
+                method: "continue_link",
+              })
+            }
+          >
+            Continue into PhasePoint
+            <ArrowRight className="w-4 h-4" />
+          </a>
+          <a
+            href="https://vanclass-app.vercel.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex flex-col items-start justify-center rounded-lg border border-border bg-background px-4 py-2 text-left hover:border-primary/40 transition-colors"
+            onClick={() =>
+              trackMarketingEvent("platform_id_handoff", {
+                target: "vanclass",
+                method: "plain_link",
+              })
+            }
+          >
+            <span className="text-sm font-semibold text-foreground">Open VanClass</span>
+            <span className="text-[11px] text-muted-foreground">
+              sign in with the same email
+            </span>
+          </a>
+          <a
+            href="https://cryovo.vercel.app/login"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex flex-col items-start justify-center rounded-lg border border-border bg-background px-4 py-2 text-left hover:border-primary/40 transition-colors"
+            onClick={() =>
+              trackMarketingEvent("platform_id_handoff", {
+                target: "cryovo",
+                method: "plain_link",
+              })
+            }
+          >
+            <span className="text-sm font-semibold text-foreground">Open Cryovo</span>
+            <span className="text-[11px] text-muted-foreground">
+              sign in with the same email
+            </span>
+          </a>
+        </div>
+
+        <p className="text-[11px] leading-relaxed text-muted-foreground lg:max-w-[220px]">
+          For your security each shop verifies it&apos;s you — PhasePoint emails
+          you a one-tap sign-in link.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 export function Landing() {
   const [isVisible, setIsVisible] = useState(false);
   const [showMobileCta, setShowMobileCta] = useState(false);
@@ -117,6 +215,8 @@ export function Landing() {
       <StructuredData />
 
       <HeroSection />
+
+      <PlatformIdPanel />
 
       <ValuePropositionGrid />
 
