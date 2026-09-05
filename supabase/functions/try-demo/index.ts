@@ -1,11 +1,13 @@
 // try-demo — public "window display" AI troubleshooter demo for The Box.
 // Phase 3 (Window Display): walk in free, try before you buy.
-// Public: NO auth. Sliding-window cap of 3 runs per IP per 24h (in-memory).
+// Public: NO auth. Sliding-window cap of 3 runs per IP per 24h, enforced via
+// Supabase Storage (private bucket "try-demo-caps", one JSON object per
+// SHA-256-hashed IP) so the cap survives restarts and is shared across isolates.
 //
-// HONEST LIMITATION (documented in SPEC-try-window.md + docs/phase3-window-display.md):
-// the in-memory cap resets on function restart/redeploy and is per-isolate — it stops
-// casual abuse but is NOT a hard global quota. Cost is bounded by ai-gateway model
-// pricing. A dashboard/DB-backed hard cap is a follow-up (needs manual migration apply).
+// HONEST RESIDUAL LIMITATIONS (documented in SPEC-try-window.md + docs/phase3-window-display.md):
+// - a same-IP burst can race the read-then-write window (bounded overshoot, not unbounded);
+// - if Storage is unreachable the demo fails OPEN (no cap) rather than blocking
+//   legitimate visitors — availability over strict quota; errors are logged.
 
 import { serve } from "https://deno.land/std/http/server.ts";
 
@@ -49,26 +51,101 @@ const ROLE_INSTRUCTIONS: Record<string, string> = {
 
 const MAX_RUNS_PER_WINDOW = 3;
 const WINDOW_MS = 24 * 60 * 60 * 1000; // 24h sliding window
+const CAP_BUCKET = "try-demo-caps";
 
-// Module-scope rate cap: Map<ip, timestamp[]>.
-const runLog = new Map<string, number[]>();
+let bucketEnsured: Promise<void> | null = null;
 
-function pruneAndGetRuns(ip: string): number[] {
-  const now = Date.now();
-  const runs = (runLog.get(ip) ?? []).filter((ts) => now - ts < WINDOW_MS);
-  if (runs.length === 0) {
-    runLog.delete(ip);
-  } else {
-    runLog.set(ip, runs);
-  }
-  return runs;
+function storageContext() {
+  const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+  if (!supabaseUrl || !serviceKey) throw new Error("storage env missing");
+  return { supabaseUrl, serviceKey };
 }
 
-function recordRun(ip: string): number[] {
-  const runs = pruneAndGetRuns(ip);
-  runs.push(Date.now());
-  runLog.set(ip, runs);
-  return runs;
+async function hashIp(ip: string): Promise<string> {
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(`try-demo:${ip}`),
+  );
+  return Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+function capObjectUrl(ipHash: string): string {
+  const { supabaseUrl } = storageContext();
+  return `${supabaseUrl}/storage/v1/object/${CAP_BUCKET}/caps/${ipHash}.json`;
+}
+
+// Create the private bucket once per isolate; 4xx (already exists) is fine.
+async function ensureBucket(): Promise<void> {
+  if (!bucketEnsured) {
+    bucketEnsured = (async () => {
+      try {
+        const { supabaseUrl, serviceKey } = storageContext();
+        await fetch(`${supabaseUrl}/storage/v1/bucket`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${serviceKey}`,
+          },
+          body: JSON.stringify({ name: CAP_BUCKET, public: false }),
+        });
+      } catch (err) {
+        console.error("try-demo: bucket ensure failed", err);
+      }
+    })();
+  }
+  await bucketEnsured;
+}
+
+async function readRuns(ipHash: string): Promise<number[]> {
+  try {
+    await ensureBucket();
+    const { serviceKey } = storageContext();
+    const res = await fetch(capObjectUrl(ipHash), {
+      headers: { Authorization: `Bearer ${serviceKey}` },
+    });
+    if (!res.ok) return []; // 404 (first visit) or storage error → treat as empty
+    const body = await res.json();
+    const runs = Array.isArray(body?.runs) ? body.runs : [];
+    const now = Date.now();
+    return runs.filter(
+      (ts: unknown) => typeof ts === "number" && now - (ts as number) < WINDOW_MS,
+    );
+  } catch (err) {
+    console.error("try-demo: cap read failed (failing open)", err);
+    return [];
+  }
+}
+
+async function recordRun(ipHash: string, runs: number[]): Promise<void> {
+  try {
+    await ensureBucket();
+    const { serviceKey } = storageContext();
+    const pruned = runs
+      .filter((ts) => Date.now() - ts < WINDOW_MS)
+      .slice(-50);
+    pruned.push(Date.now());
+    const res = await fetch(capObjectUrl(ipHash), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${serviceKey}`,
+        "x-upsert": "true",
+      },
+      body: JSON.stringify({ runs: pruned }),
+    });
+    if (!res.ok) {
+      console.error(
+        "try-demo: cap write failed",
+        res.status,
+        await res.text().catch(() => ""),
+      );
+    }
+  } catch (err) {
+    console.error("try-demo: cap write failed (exception)", err);
+  }
 }
 
 function getClientIp(req: Request): string {
@@ -97,7 +174,8 @@ serve(async (req) => {
 
   // --- Rate cap (before any AI spend) ---
   const ip = getClientIp(req);
-  const priorRuns = pruneAndGetRuns(ip);
+  const ipHash = await hashIp(ip);
+  const priorRuns = await readRuns(ipHash);
   if (priorRuns.length >= MAX_RUNS_PER_WINDOW) {
     return new Response(
       JSON.stringify({
@@ -198,8 +276,8 @@ serve(async (req) => {
   }
 
   // Record the run only after a successful AI round-trip — failed calls don't burn quota.
-  recordRun(ip);
-  const runsLeft = Math.max(0, MAX_RUNS_PER_WINDOW - pruneAndGetRuns(ip).length);
+  await recordRun(ipHash, priorRuns);
+  const runsLeft = Math.max(0, MAX_RUNS_PER_WINDOW - (priorRuns.length + 1));
 
   const normalized = normalizeOllamaResponse(raw);
   return new Response(
