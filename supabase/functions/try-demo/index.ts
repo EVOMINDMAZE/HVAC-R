@@ -99,27 +99,33 @@ async function ensureBucket(): Promise<void> {
   await bucketEnsured;
 }
 
-async function readRuns(ipHash: string): Promise<number[]> {
+async function readRuns(ipHash: string): Promise<{ runs: number[]; status: number }> {
   try {
     await ensureBucket();
     const { serviceKey } = storageContext();
     const res = await fetch(capObjectUrl(ipHash), {
       headers: { Authorization: `Bearer ${serviceKey}` },
     });
-    if (!res.ok) return []; // 404 (first visit) or storage error → treat as empty
+    if (!res.ok) return { runs: [], status: res.status }; // 404 (first visit) or storage error
     const body = await res.json();
     const runs = Array.isArray(body?.runs) ? body.runs : [];
     const now = Date.now();
-    return runs.filter(
-      (ts: unknown) => typeof ts === "number" && now - (ts as number) < WINDOW_MS,
-    );
+    return {
+      runs: runs.filter(
+        (ts: unknown) => typeof ts === "number" && now - (ts as number) < WINDOW_MS,
+      ),
+      status: res.status,
+    };
   } catch (err) {
     console.error("try-demo: cap read failed (failing open)", err);
-    return [];
+    return { runs: [], status: -1 };
   }
 }
 
-async function recordRun(ipHash: string, runs: number[]): Promise<void> {
+async function recordRun(
+  ipHash: string,
+  runs: number[],
+): Promise<{ ok: boolean; status: number }> {
   try {
     await ensureBucket();
     const { serviceKey } = storageContext();
@@ -143,8 +149,10 @@ async function recordRun(ipHash: string, runs: number[]): Promise<void> {
         await res.text().catch(() => ""),
       );
     }
+    return { ok: res.ok, status: res.status };
   } catch (err) {
     console.error("try-demo: cap write failed (exception)", err);
+    return { ok: false, status: -1 };
   }
 }
 
@@ -175,7 +183,8 @@ serve(async (req) => {
   // --- Rate cap (before any AI spend) ---
   const ip = getClientIp(req);
   const ipHash = await hashIp(ip);
-  const priorRuns = await readRuns(ipHash);
+  const capRead = await readRuns(ipHash);
+  const priorRuns = capRead.runs;
   if (priorRuns.length >= MAX_RUNS_PER_WINDOW) {
     return new Response(
       JSON.stringify({
@@ -276,12 +285,17 @@ serve(async (req) => {
   }
 
   // Record the run only after a successful AI round-trip — failed calls don't burn quota.
-  await recordRun(ipHash, priorRuns);
+  const capWrite = await recordRun(ipHash, priorRuns);
   const runsLeft = Math.max(0, MAX_RUNS_PER_WINDOW - (priorRuns.length + 1));
 
   const normalized = normalizeOllamaResponse(raw);
   return new Response(
-    JSON.stringify({ demo: true, runs_left: runsLeft, ...normalized }),
+    JSON.stringify({
+      demo: true,
+      runs_left: runsLeft,
+      cap_debug: { read: capRead.status, write: capWrite },
+      ...normalized,
+    }),
     {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     },
