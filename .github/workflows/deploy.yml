@@ -124,6 +124,7 @@ jobs:
         function:
           - ai-gateway
           - catalog-track
+          - catalog-stats
           - ai-troubleshoot
           - analyze-selling-points
           - analyze-triage-media
