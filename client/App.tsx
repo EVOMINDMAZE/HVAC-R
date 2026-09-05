@@ -32,6 +32,7 @@ const Features = lazy(() =>
   import("@/pages/Features").then((m) => ({ default: m.Features })),
 );
 const Pricing = lazy(() => import("@/pages/Pricing"));
+const Catalog = lazy(() => import("@/pages/Catalog"));
 const Dashboard = lazy(() =>
   import("@/pages/Dashboard").then((m) => ({ default: m.Dashboard })),
 );
@@ -331,6 +332,7 @@ function AppRoutes() {
             <Route path="/try" element={<TryWindow />} />
             <Route path="/a2l-resources" element={<A2LLandingPage />} />
             <Route path="/features" element={<Features />} />
+            <Route path="/catalog" element={<Catalog />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/about" element={<About />} />
             <Route path="/blog" element={<Blog />} />

@@ -123,6 +123,7 @@ jobs:
       matrix:
         function:
           - ai-gateway
+          - catalog-track
           - ai-troubleshoot
           - analyze-selling-points
           - analyze-triage-media
