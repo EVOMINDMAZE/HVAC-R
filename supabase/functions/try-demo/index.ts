@@ -1,13 +1,21 @@
 // try-demo — public "window display" AI troubleshooter demo for The Box.
 // Phase 3 (Window Display): walk in free, try before you buy.
-// Public: NO auth. Sliding-window cap of 3 runs per IP per 24h, enforced via
-// Supabase Storage (private bucket "try-demo-caps", one JSON object per
-// SHA-256-hashed IP) so the cap survives restarts and is shared across isolates.
+// Public: NO auth. Two-tier sliding-window cap enforced via Supabase Storage
+// (private bucket "try-demo-caps", one JSON object per hashed key):
+//   1. VISITOR: 3 runs / 24h keyed by a random client-generated device ID
+//      (localStorage) — survives NAT/CGNAT sharing (home Wi-Fi, offices,
+//      cafés and mobile carriers put many visitors behind one public IP).
+//   2. NETWORK backstop: 30 runs / 24h keyed by SHA-256-hashed IP — bounds
+//      device-ID rotation and scripted abuse.
+// POST mode:"quota" reports remaining runs WITHOUT spending or recording.
 //
 // HONEST RESIDUAL LIMITATIONS (documented in SPEC-try-window.md + docs/phase3-window-display.md):
-// - a same-IP burst can race the read-then-write window (bounded overshoot, not unbounded);
+// - a same-key burst can race the read-then-write window (bounded overshoot, not unbounded);
 // - if Storage is unreachable the demo fails OPEN (no cap) rather than blocking
-//   legitimate visitors — availability over strict quota; errors are logged.
+//   legitimate visitors — availability over strict quota; errors are logged;
+// - device IDs are client-supplied (rotating them resets the visitor cap; the
+//   30/day IP backstop is the real ceiling); storage-blocked browsers fall
+//   back to the IP backstop only.
 
 import { serve } from "https://deno.land/std/http/server.ts";
 
@@ -32,6 +40,8 @@ interface DemoPayload {
   symptom?: string;
   role?: string;
   equipment?: string;
+  mode?: string;
+  device_id?: string;
 }
 
 const DEMO_SYSTEM_PROMPT =
@@ -49,7 +59,8 @@ const ROLE_INSTRUCTIONS: Record<string, string> = {
     "User role: engineer. Give root-cause hypotheses and system-level reasoning with expected numerical ranges where applicable.",
 };
 
-const MAX_RUNS_PER_WINDOW = 3;
+const MAX_RUNS_PER_WINDOW = 3; // per visitor (device)
+const MAX_IP_RUNS_PER_WINDOW = 30; // per network (backstop)
 const WINDOW_MS = 24 * 60 * 60 * 1000; // 24h sliding window
 const CAP_BUCKET = "try-demo-caps";
 
@@ -66,6 +77,16 @@ async function hashIp(ip: string): Promise<string> {
   const digest = await crypto.subtle.digest(
     "SHA-256",
     new TextEncoder().encode(`try-demo:${ip}`),
+  );
+  return Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+async function hashDevice(deviceId: string): Promise<string> {
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(`try-demo:device:${deviceId}`),
   );
   return Array.from(new Uint8Array(digest))
     .map((b) => b.toString(16).padStart(2, "0"))
@@ -191,26 +212,7 @@ serve(async (req) => {
     });
   }
 
-  // --- Rate cap (before any AI spend) ---
-  const ip = getClientIp(req);
-  const ipHash = await hashIp(ip);
-  const capRead = await readRuns(ipHash);
-  const priorRuns = capRead.runs;
-  if (priorRuns.length >= MAX_RUNS_PER_WINDOW) {
-    return new Response(
-      JSON.stringify({
-        error: "daily_limit_reached",
-        message:
-          "You've used all 3 free demos for today. The full troubleshooter is inside The Box.",
-      }),
-      {
-        status: 429,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      },
-    );
-  }
-
-  // --- Payload (lean: no auth, no attachments, no wizard answers) ---
+  // --- Payload (parsed before cap checks: quota mode + device id live in the body) ---
   let payload: DemoPayload;
   try {
     const rawBody = await req.text();
@@ -237,6 +239,68 @@ serve(async (req) => {
       },
     );
   }
+
+  // --- Identity: per-visitor device ID (primary) + IP (network backstop) ---
+  const ip = getClientIp(req);
+  const ipHash = await hashIp(ip);
+  const deviceId =
+    typeof payload.device_id === "string" &&
+    payload.device_id.length >= 8 &&
+    payload.device_id.length <= 128
+      ? payload.device_id
+      : null;
+  const deviceHash = deviceId ? await hashDevice(deviceId) : null;
+
+  // --- Quota probe: report remaining runs without spending or recording ---
+  if (payload.mode === "quota") {
+    const deviceRead = deviceHash ? await readRuns(deviceHash) : null;
+    const ipRead = await readRuns(ipHash);
+    const deviceLeft = deviceRead
+      ? Math.max(0, MAX_RUNS_PER_WINDOW - deviceRead.runs.length)
+      : MAX_RUNS_PER_WINDOW;
+    const ipLeft = Math.max(0, MAX_IP_RUNS_PER_WINDOW - ipRead.runs.length);
+    return new Response(
+      JSON.stringify({
+        runs_left: Math.min(deviceLeft, ipLeft),
+        scope: ipLeft === 0 ? "network" : "visitor",
+      }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } },
+    );
+  }
+
+  // --- Rate caps (before any AI spend): visitor 3/day, network backstop 30/day ---
+  const deviceRead = deviceHash ? await readRuns(deviceHash) : null;
+  const ipRead = await readRuns(ipHash);
+  if (deviceRead && deviceRead.runs.length >= MAX_RUNS_PER_WINDOW) {
+    return new Response(
+      JSON.stringify({
+        error: "daily_limit_reached",
+        scope: "visitor",
+        message:
+          "You've used all 3 free demos for today. The full troubleshooter is inside The Box.",
+      }),
+      {
+        status: 429,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
+    );
+  }
+  if (ipRead.runs.length >= MAX_IP_RUNS_PER_WINDOW) {
+    return new Response(
+      JSON.stringify({
+        error: "daily_limit_reached",
+        scope: "network",
+        message:
+          "This network has used a lot of demos today. The full troubleshooter is inside The Box.",
+      }),
+      {
+        status: 429,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
+    );
+  }
+
+  // (payload parsed above — request body already consumed)
 
   const symptom = typeof payload.symptom === "string" ? payload.symptom.trim() : "";
   if (symptom.length < 10) {
@@ -296,8 +360,15 @@ serve(async (req) => {
   }
 
   // Record the run only after a successful AI round-trip — failed calls don't burn quota.
-  await recordRun(ipHash, priorRuns);
-  const runsLeft = Math.max(0, MAX_RUNS_PER_WINDOW - (priorRuns.length + 1));
+  if (deviceHash && deviceRead) await recordRun(deviceHash, deviceRead.runs);
+  await recordRun(ipHash, ipRead.runs);
+  const deviceLeft = deviceRead
+    ? Math.max(0, MAX_RUNS_PER_WINDOW - (deviceRead.runs.length + 1))
+    : MAX_RUNS_PER_WINDOW;
+  const runsLeft = Math.min(
+    deviceLeft,
+    Math.max(0, MAX_IP_RUNS_PER_WINDOW - (ipRead.runs.length + 1)),
+  );
 
   const normalized = normalizeOllamaResponse(raw);
   return new Response(

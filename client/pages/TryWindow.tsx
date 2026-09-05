@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   AlertTriangle,
@@ -49,6 +49,22 @@ type DemoError =
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL ?? "";
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY ?? "";
+const TRY_ENDPOINT = `${SUPABASE_URL}/functions/v1/try-demo`;
+
+// Random per-visitor ID (localStorage). Not a fingerprint — random, visitor-
+// scoped, honestly documented; the server's IP backstop is the abuse ceiling.
+function getDeviceId(): string | null {
+  try {
+    const KEY = "try_demo_device_id";
+    const existing = window.localStorage.getItem(KEY);
+    if (existing) return existing;
+    const fresh = crypto.randomUUID();
+    window.localStorage.setItem(KEY, fresh);
+    return fresh;
+  } catch {
+    return null; // storage blocked (private mode): server falls back to IP backstop
+  }
+}
 
 function UrgencyChip({ urgency }: { urgency: string | null }) {
   if (!urgency) return null;
@@ -82,9 +98,46 @@ export default function TryWindow() {
   const [result, setResult] = useState<DemoResult | null>(null);
   const [error, setError] = useState<DemoError | null>(null);
   const [runsLeft, setRunsLeft] = useState<number | null>(null);
+  const [quotaScope, setQuotaScope] = useState<"visitor" | "network">(
+    "visitor",
+  );
 
-  const canRun =
-    runsLeft === null || runsLeft > 0 || runsLeft === MAX_FREE_RUNS;
+  const canRun = runsLeft === null || runsLeft > 0;
+
+  // Quota probe on load: show runs-left immediately and surface the limit card
+  // BEFORE a visitor fills the form (no wasted effort).
+  useEffect(() => {
+    const deviceId = getDeviceId();
+    if (!deviceId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(TRY_ENDPOINT, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: SUPABASE_ANON_KEY,
+          },
+          body: JSON.stringify({ mode: "quota", device_id: deviceId }),
+        });
+        if (!res.ok || cancelled) return;
+        const data = (await res.json()) as {
+          runs_left?: number;
+          scope?: string;
+        };
+        if (cancelled) return;
+        if (typeof data.runs_left === "number") {
+          setRunsLeft(data.runs_left);
+        }
+        if (data.scope === "network") setQuotaScope("network");
+      } catch {
+        // quota probe is best-effort; the run itself surfaces any real problem
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function runDemo() {
     const trimmed = symptom.trim();
@@ -103,7 +156,7 @@ export default function TryWindow() {
     trackMarketingEvent("try_demo_run", { method: "window" });
 
     try {
-      const response = await fetch(`${SUPABASE_URL}/functions/v1/try-demo`, {
+      const response = await fetch(TRY_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -113,10 +166,15 @@ export default function TryWindow() {
           symptom: trimmed,
           role,
           equipment: equipment.trim() || undefined,
+          device_id: getDeviceId() ?? undefined,
         }),
       });
 
       if (response.status === 429) {
+        const body = (await response.json().catch(() => null)) as {
+          scope?: string;
+        } | null;
+        if (body?.scope === "network") setQuotaScope("network");
         setError({ kind: "limit" });
         setRunsLeft(0);
         trackMarketingEvent("try_demo_result", { action: "limit" });
@@ -278,15 +336,18 @@ export default function TryWindow() {
           </CardContent>
         </Card>
 
-        {/* Limit block (429) — honest, with the way in */}
-        {error?.kind === "limit" ? (
+        {/* Limit block — shown upfront when quota is spent (no wasted form
+            fill), or after a 429; copy is scope-aware and honest. */}
+        {error?.kind === "limit" || (runsLeft === 0 && !result) ? (
           <Card className="mt-8 border-amber-300 bg-amber-50 dark:border-amber-800 dark:bg-amber-950">
             <CardContent className="flex flex-col items-start gap-4 pt-6 sm:flex-row sm:items-center">
               <div className="flex items-start gap-3">
                 <Lock className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
                 <div>
                   <p className="font-medium text-amber-900 dark:text-amber-200">
-                    You've used all 3 free demos for today.
+                    {quotaScope === "network"
+                      ? "This network has used a lot of demos today."
+                      : "You've used all 3 free demos for today."}
                   </p>
                   <p className="mt-1 text-sm text-amber-800 dark:text-amber-300">
                     The full troubleshooter — measurements, photos, and the

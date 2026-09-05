@@ -67,3 +67,27 @@ CTA: "full version inside The Box" → `/signup`. No auth anywhere on this surfa
   4th POST → 429 daily_limit_reached; `thermoneural.com/try` → 200 + screenshot
   (header link visible, form, CTA).
 - Honest caveat recorded in phase doc: in-memory cap (soft, per-isolate).
+
+## Addendum 2026-09-05 — shared-IP collision fix (post-ship, user-reported)
+
+**Report**: user's FIRST-ever visit (phone) hit "all 3 free demos used" — because
+phone and operator's Mac share one home NAT IP, and probe runs burned the IP quota.
+**Root cause**: cap identity = IP only (`try-demo/index.ts` `getClientIp` → `hashIp`).
+NAT/CGNAT (home Wi-Fi, offices, cafés, mobile carriers) maps many distinct visitors
+to one public IP — IP-only caps collide them. **Decisions**:
+1. Visitor cap = 3/24h keyed by a client-generated random `device_id`
+   (localStorage `try_demo_device_id`, `crypto.randomUUID()`), hashed server-side
+   (`try-demo:device:<id>`). Not a fingerprint — random, visitor-scoped, honest.
+2. Network backstop = 30/24h keyed by hashed IP (unchanged key) — bounds device-ID
+   rotation/scripted abuse. AI cost ceiling rises 3→30 per IP/day: accepted trade
+   for not breaking NAT'd visitors; documented honestly.
+3. `POST {mode:"quota", device_id}` returns `{runs_left, scope}` WITHOUT spending
+   or recording; UI calls it on mount → runs-left badge on load, limit card shown
+   upfront for capped visitors (no wasted form fill).
+4. 429 body gains `scope: "visitor"|"network"`; copy distinguishes honestly
+   (network ≠ "you" used 3).
+5. Storage-blocked browsers (private mode): no device_id → server falls back to
+   IP backstop only. Rotation evasion possible by design — backstop is the ceiling.
+**Verification**: probe device A → 200,200,200,429(visitor); device B SAME IP
+fresh → 200 (the fix); quota(A)=0/visitor, quota(fresh)=3; headful: badge on
+load + upfront limit card with localStorage preseeded to an exhausted device.
