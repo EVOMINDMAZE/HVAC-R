@@ -23,6 +23,8 @@ const EXPECT = {
 
 // Count reads go through the public catalog-stats fn (counts only, no creds).
 const STATS = 'https://tbmizbqftczbsbwqgyjx.supabase.co/functions/v1/catalog-stats';
+const fail = [];
+const ok = (c, m) => { if (!c) fail.push(m); };
 async function count(slug) {
   const r = await fetch(STATS);
   ok(r.status === 200, `catalog-stats: ${r.status}`);
@@ -30,8 +32,6 @@ async function count(slug) {
   return (j.by_slug && j.by_slug[slug]) || 0;
 }
 (async () => {
-  const fail = [];
-  const ok = (c, m) => { if (!c) fail.push(m); };
 
   // --- A) page + sheet links + presenting-only ---
   const browser = await chromium.launch();
