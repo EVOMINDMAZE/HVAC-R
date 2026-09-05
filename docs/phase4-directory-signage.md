@@ -72,18 +72,42 @@
 
 ## EXECUTING
 
-(Build notes appended during execution.)
+- Commit `16b4603` — `phase4: directory signage — department labels, mall tagline,
+  trust strip on /` (2 files: `ParentBrandLanding.tsx`, this doc).
+- Build: 4 sequential patches (type+4 labels → card overline → hero tagline →
+  trust strip); TS required-field errors on the 3 not-yet-labeled products appeared
+  transiently mid-wave and were cleared by the label patches (expected wave behavior).
+- No copy invented: every string verbatim from master plan F4 / GUARANTEE.md.
 
 ## MONITORING & CONTROL
 
-- Tripwire: any gate fail = no phase advance; recorded here.
-- Regression harness: `/tmp/p4-baseline.cjs` re-run post-deploy as `/tmp/p4-verify.cjs`
-  with signage assertions flipped to REQUIRED.
+- Tripwire never fired; CI run `33981163670` green on first watch.
 
-## TESTING — Gate evidence
+## TESTING — Gate evidence (live probe `/tmp/p4-verify.cjs`, 2026-09-05, cache-bust `?p4bust=`)
 
-(Appended post-deploy.)
+| Gate | Result |
+|---|---|
+| G1: 4 department labels live | ✅ Business Operations / Simulation & Engineering / Training & Certification / Cold Chain Compliance all present |
+| G1: mall tagline live | ✅ "Walk in free, try before you buy, leave with your data." |
+| G1: trust strip live | ✅ One ID · Honest prices · Your data is yours |
+| G2: no-auth-CTA regression (7 suspects) | ✅ 0/7 present |
+| G3: console errors | ✅ 0 |
+| G4: build green / secret-scan clean / phase commit | ✅ `16b4603`, scan CLEAN |
+| Visual (vision-checked `/tmp/p4-signage.png`) | ✅ labels uppercase orange over names, untruncated, single accent; cookie-consent popup = first-visit gate, not a defect |
 
 ## CLOSING
 
-(Appended at close: ACTUAL vs planned, lessons, Phase 5 handoff.)
+- **GO.** Planned vs ACTUAL: scope shipped exactly as chartered, same day, zero
+  scope creep; only surprise was the 600s foreground cap on `gh run watch`
+  (moved to background — process hygiene, not a project risk).
+- **Lessons:** (1) additive required fields make the compiler enforce the full
+  label wave — better than optional-and-maybe-forget; (2) probe-first baseline
+  (assertions absent) + verify probe (assertions required) is a cheap, strong
+  before/after pair; (3) cookie-consent popup will overlay screenshots on every
+  fresh profile — note it in evidence, don't chase it as a bug.
+- **KPI note:** signage is the mall map for Phase 5 — the department sheets must
+  reuse these exact 4 department names.
+- **Handoff:** Phase 4 close triggers **Phase 5 initiation — The Catalog
+  (department sheets)**: 4 printable A4 sheets (what it does, honest price,
+  guarantee, QR/link) via pdf-studio, offered from `/` cards + contact-form
+  autoresponder; gate = PDFs delivered in-chat, links live, no fabricated specs.
