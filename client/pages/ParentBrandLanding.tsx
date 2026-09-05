@@ -7,6 +7,7 @@ import {
   ShieldCheck,
   ArrowRight,
   ArrowUpRight,
+  FileText,
   Layers,
   Globe,
   Waves,
@@ -26,6 +27,7 @@ type Product = {
   description: string;
   url: string;
   status: "Live" | "Beta" | "In development";
+  sheet: string; // printable one-page department sheet (catalog PDF)
   icon: typeof Snowflake;
 };
 
@@ -39,6 +41,7 @@ const PRODUCTS: Product[] = [
       "The professional refrigeration-cycle analysis suite — standard, cascade, two-stage and cryogenic systems on real CoolProp physics, with P-h diagrams, refrigerant comparison, AHRI compressor-map import and client-ready PDF reports.",
     url: "https://simulateon.vercel.app",
     status: "Live",
+    sheet: "/catalog/phasepoint.pdf",
     icon: Snowflake,
   },
   {
@@ -50,6 +53,7 @@ const PRODUCTS: Product[] = [
       "Audio-first HVAC&R certification training built for the field — lessons you can learn on the drive to the job, with a complete curriculum that takes a technician from apprentice to certified.",
     url: "https://vanclass-app.vercel.app",
     status: "Beta",
+    sheet: "/catalog/vanclass.pdf",
     icon: GraduationCap,
   },
   {
@@ -61,6 +65,7 @@ const PRODUCTS: Product[] = [
       "Enterprise cold-chain and F-gas compliance — leak-rate tracking, refrigerant obligations and audit-ready records for facilities that can't afford a compliance gap.",
     url: "https://cryovo.vercel.app",
     status: "Beta",
+    sheet: "/catalog/cryovo.pdf",
     icon: ShieldCheck,
   },
   {
@@ -72,6 +77,7 @@ const PRODUCTS: Product[] = [
       "The operations suite for the HVAC&R business — dispatch, invoicing, client relationships and live AI diagnostics in a single source of truth, built to scale a growing contracting company.",
     url: "/platform",
     status: "Live",
+    sheet: "/catalog/hvac-business-platform.pdf",
     icon: Layers,
   },
 ];
@@ -97,6 +103,8 @@ const PILLARS = [
 function ProductCard({ product }: { product: Product }) {
   const Icon = product.icon;
   const isInternal = product.url.startsWith("/");
+  const sheetCls =
+    "mt-3 flex items-center gap-1.5 text-xs font-medium text-white/45 transition hover:text-primary";
   const inner = (
     <>
       <div className="flex items-center justify-between">
@@ -119,15 +127,33 @@ function ProductCard({ product }: { product: Product }) {
     </>
   );
   const cls =
-    "group relative flex flex-col rounded-2xl border border-white/10 bg-card/50 p-7 transition hover:border-primary/50 hover:bg-card/80";
-  return isInternal ? (
-    <Link to={product.url} className={cls}>
-      {inner}
-    </Link>
-  ) : (
-    <a href={product.url} target="_blank" rel="noopener noreferrer" className={cls}>
-      {inner}
+    "group relative flex flex-1 flex-col rounded-2xl border border-white/10 bg-card/50 p-7 transition hover:border-primary/50 hover:bg-card/80";
+  // Catalog sheet link sits OUTSIDE the card anchor (no nested <a> inside <a>)
+  const sheetLink = (
+    <a
+      href={product.sheet}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={sheetCls}
+    >
+      <FileText className="h-3.5 w-3.5" />
+      Catalog sheet (PDF)
     </a>
+  );
+  return isInternal ? (
+    <div className="flex flex-col">
+      <Link to={product.url} className={cls}>
+        {inner}
+      </Link>
+      {sheetLink}
+    </div>
+  ) : (
+    <div className="flex flex-col">
+      <a href={product.url} target="_blank" rel="noopener noreferrer" className={cls}>
+        {inner}
+      </a>
+      {sheetLink}
+    </div>
   );
 }
 
