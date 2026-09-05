@@ -36,4 +36,5 @@ jobs:
             -d "{\"query\": ${Q}}")
           echo "HTTP $HTTP"
           cat /tmp/resp.json
-          [ "$HTTP" = "200" ] || exit 1
+          # Management API returns 201 (Success Content) on a successful query.
+          case "$HTTP" in 200|201) exit 0;; *) exit 1;; esac
