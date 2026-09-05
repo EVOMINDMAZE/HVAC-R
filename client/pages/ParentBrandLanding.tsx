@@ -21,6 +21,7 @@ import {
 type Product = {
   id: string;
   name: string;
+  department: string;
   tagline: string;
   description: string;
   url: string;
@@ -32,6 +33,7 @@ const PRODUCTS: Product[] = [
   {
     id: "phasepoint",
     name: "PhasePoint",
+    department: "Simulation & Engineering",
     tagline: "Refrigeration engineering, proven",
     description:
       "The professional refrigeration-cycle analysis suite — standard, cascade, two-stage and cryogenic systems on real CoolProp physics, with P-h diagrams, refrigerant comparison, AHRI compressor-map import and client-ready PDF reports.",
@@ -42,6 +44,7 @@ const PRODUCTS: Product[] = [
   {
     id: "vanclass",
     name: "VanClass",
+    department: "Training & Certification",
     tagline: "HVAC&R certification, audio-first",
     description:
       "Audio-first HVAC&R certification training built for the field — lessons you can learn on the drive to the job, with a complete curriculum that takes a technician from apprentice to certified.",
@@ -52,6 +55,7 @@ const PRODUCTS: Product[] = [
   {
     id: "cryovo",
     name: "Cryovo",
+    department: "Cold Chain Compliance",
     tagline: "Cold-chain compliance",
     description:
       "Enterprise cold-chain and F-gas compliance — leak-rate tracking, refrigerant obligations and audit-ready records for facilities that can't afford a compliance gap.",
@@ -62,6 +66,7 @@ const PRODUCTS: Product[] = [
   {
     id: "platform",
     name: "HVAC Business Platform",
+    department: "Business Operations",
     tagline: "Dispatch, invoicing and AI, in one box",
     description:
       "The operations suite for the HVAC&R business — dispatch, invoicing, client relationships and live AI diagnostics in a single source of truth, built to scale a growing contracting company.",
@@ -100,7 +105,11 @@ function ProductCard({ product }: { product: Product }) {
         </div>
         <Badge status={product.status} />
       </div>
-      <h3 className="mt-5 text-xl font-bold text-white">{product.name}</h3>
+      {/* Directory signage — the department label (Boucicaut store map) */}
+      <p className="mt-5 text-[11px] font-bold uppercase tracking-[0.18em] text-primary">
+        {product.department}
+      </p>
+      <h3 className="mt-1 text-xl font-bold text-white">{product.name}</h3>
       <p className="mt-0.5 text-sm font-medium text-primary">{product.tagline}</p>
       <p className="mt-3 flex-1 text-sm leading-relaxed text-white/60">{product.description}</p>
       <div className="mt-6 flex items-center gap-1.5 text-sm font-semibold text-white/80 group-hover:text-primary">
@@ -186,6 +195,10 @@ export function ParentBrandLanding() {
           physics engine and the real work of refrigeration engineers. Explore the
           suite below.
         </p>
+        {/* Mall tagline — Boucicaut free entry */}
+        <p className="mx-auto mt-4 text-sm font-medium tracking-wide text-white/50">
+          Walk in free, try before you buy, leave with your data.
+        </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <a
             href="#products"
@@ -216,6 +229,15 @@ export function ParentBrandLanding() {
           {PRODUCTS.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
+        </div>
+
+        {/* Mall trust strip — the Boucicaut promise (copy: docs/GUARANTEE.md) */}
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 rounded-2xl border border-primary/20 bg-primary/5 px-6 py-4 text-center">
+          <span className="text-sm font-semibold text-white/80">One ID</span>
+          <span className="text-white/25">·</span>
+          <span className="text-sm font-semibold text-white/80">Honest prices</span>
+          <span className="text-white/25">·</span>
+          <span className="text-sm font-semibold text-white/80">Your data is yours</span>
         </div>
       </section>
 
