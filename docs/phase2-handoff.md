@@ -50,7 +50,14 @@ existing, valid Gmail address that password sign-in accepts. Source analysis
 **email validation layer at send time** — extended checks (format, denylist,
 **gmail local-part ≥ 6 chars**, DNS/MX reachability) and/or a configured validation
 service. Retests hit the built-in SMTP **hourly quota** (`429 over_email_send_rate_limit`),
-so the final verdict is pending the window reset.
+so the final verdict is **BLOCKED-CONFIG: validation layer rejects sends; dashboard
+check required**. Retest (~20:00 ET, window reset) probe pattern across three
+addresses: fresh gmail → `200 {}` (send itself works); QA gmail → **`400
+email_address_invalid`** (rejected by the per-address validation layer at send
+time); example.com probe → `429 over_email_send_rate_limit` (hourly quota,
+consumed by the fresh-gmail send). Conclusion: the send path is functional, but
+the validation layer selectively rejects the QA gmail address — this is
+configuration, not a transient failure.
 
 **Action (dashboard, ~2 min):** Supabase Dashboard → Authentication → Settings:
 check extended email validation / validation service toggles; verify Site URL +
