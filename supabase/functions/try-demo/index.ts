@@ -87,6 +87,7 @@ async function ensureBucket(): Promise<void> {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            apikey: serviceKey,
             Authorization: `Bearer ${serviceKey}`,
           },
           body: JSON.stringify({ name: CAP_BUCKET, public: false }),
@@ -106,7 +107,7 @@ async function readRuns(
     await ensureBucket();
     const { serviceKey } = storageContext();
     const res = await fetch(capObjectUrl(ipHash), {
-      headers: { Authorization: `Bearer ${serviceKey}` },
+      headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
     });
     if (!res.ok) {
       const detail = await res.text().catch(() => "");
@@ -148,6 +149,7 @@ async function recordRun(
     const res = await fetch(capObjectUrl(ipHash), {
       method: "POST",
       headers: {
+        apikey: serviceKey,
         Authorization: `Bearer ${serviceKey}`,
         "x-upsert": "true",
       },
