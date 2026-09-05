@@ -176,6 +176,41 @@ function getClientIp(req: Request): string {
   return req.headers.get("cf-connecting-ip") ?? "unknown";
 }
 
+// TEMP DEBUG (strip before close): key SHAPE + platform API statuses. Never logs values.
+let diagCache: Promise<Record<string, unknown>> | null = null;
+function capDiag(): Promise<Record<string, unknown>> {
+  if (!diagCache) {
+    diagCache = (async () => {
+      const { supabaseUrl, serviceKey } = storageContext();
+      const shape = serviceKey.startsWith("sb_")
+        ? "sb-new-format"
+        : serviceKey.startsWith("eyJ")
+          ? "jwt-legacy"
+          : `other(len=${serviceKey.length})`;
+      const out: Record<string, unknown> = { shape, len: serviceKey.length };
+      try {
+        const r = await fetch(`${supabaseUrl}/rest/v1/`, {
+          headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
+        });
+        out.rest_status = r.status;
+      } catch (e) {
+        out.rest_status = `ERR:${String(e).slice(0, 60)}`;
+      }
+      try {
+        const s = await fetch(`${supabaseUrl}/storage/v1/bucket/${CAP_BUCKET}`, {
+          headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
+        });
+        out.storage_status = s.status;
+        out.storage_err = (await s.text().catch(() => "")).slice(0, 80);
+      } catch (e) {
+        out.storage_status = `ERR:${String(e).slice(0, 60)}`;
+      }
+      return out;
+    })();
+  }
+  return diagCache;
+}
+
 serve(async (req) => {
   const origin = req.headers.get("origin");
   const corsHeaders = createCorsHeaders(origin);
@@ -304,7 +339,11 @@ serve(async (req) => {
     JSON.stringify({
       demo: true,
       runs_left: runsLeft,
-      cap_debug: { read: capRead.status, write: capWrite },
+      cap_debug: {
+        read: capRead.status,
+        write: capWrite,
+        diag: await capDiag(),
+      },
       ...normalized,
     }),
     {
