@@ -99,14 +99,19 @@ async function ensureBucket(): Promise<void> {
   await bucketEnsured;
 }
 
-async function readRuns(ipHash: string): Promise<{ runs: number[]; status: number }> {
+async function readRuns(
+  ipHash: string,
+): Promise<{ runs: number[]; status: number; detail?: string }> {
   try {
     await ensureBucket();
     const { serviceKey } = storageContext();
     const res = await fetch(capObjectUrl(ipHash), {
       headers: { Authorization: `Bearer ${serviceKey}` },
     });
-    if (!res.ok) return { runs: [], status: res.status }; // 404 (first visit) or storage error
+    if (!res.ok) {
+      const detail = await res.text().catch(() => "");
+      return { runs: [], status: res.status, detail: detail.slice(0, 140) };
+    }
     const body = await res.json();
     const runs = Array.isArray(body?.runs) ? body.runs : [];
     const now = Date.now();
@@ -125,7 +130,7 @@ async function readRuns(ipHash: string): Promise<{ runs: number[]; status: numbe
 async function recordRun(
   ipHash: string,
   runs: number[],
-): Promise<{ ok: boolean; status: number }> {
+): Promise<{ ok: boolean; status: number; detail?: string }> {
   try {
     await ensureBucket();
     const { serviceKey } = storageContext();
@@ -133,23 +138,27 @@ async function recordRun(
       .filter((ts) => Date.now() - ts < WINDOW_MS)
       .slice(-50);
     pruned.push(Date.now());
+    // Storage upload expects multipart/form-data (as the JS client sends), not a raw JSON body.
+    const form = new FormData();
+    form.append(
+      "file",
+      new Blob([JSON.stringify({ runs: pruned })], { type: "application/json" }),
+      `${ipHash}.json`,
+    );
     const res = await fetch(capObjectUrl(ipHash), {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${serviceKey}`,
         "x-upsert": "true",
       },
-      body: JSON.stringify({ runs: pruned }),
+      body: form,
     });
     if (!res.ok) {
-      console.error(
-        "try-demo: cap write failed",
-        res.status,
-        await res.text().catch(() => ""),
-      );
+      const detail = await res.text().catch(() => "");
+      console.error("try-demo: cap write failed", res.status, detail);
+      return { ok: false, status: res.status, detail: detail.slice(0, 140) };
     }
-    return { ok: res.ok, status: res.status };
+    return { ok: true, status: res.status };
   } catch (err) {
     console.error("try-demo: cap write failed (exception)", err);
     return { ok: false, status: -1 };
