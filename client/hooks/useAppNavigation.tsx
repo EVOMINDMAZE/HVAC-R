@@ -61,6 +61,7 @@ export function useAppNavigation() {
   const landingLinks: NavItem[] = [
     { to: "/features", label: "Features", icon: LayoutGrid },
     { to: "/features", hash: "#use-cases", label: "Use Cases", icon: Briefcase },
+    { to: "/try", label: "Try Free", icon: PlayCircle },
     { to: "/pricing", label: "Pricing", icon: FileText },
     { to: "/about", label: "About", icon: Info },
     { to: "/help", label: "Help", icon: BookOpen },

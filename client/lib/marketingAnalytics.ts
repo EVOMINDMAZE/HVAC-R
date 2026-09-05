@@ -19,7 +19,9 @@ export type MarketingEventName =
   | "pricing_view"
   | "pricing_interval_toggle"
   | "pricing_plan_cta_click"
-  | "platform_id_handoff";
+  | "platform_id_handoff"
+  | "try_demo_run"
+  | "try_demo_result";
 
 export type MarketingEventPayload = {
   section?: string;
@@ -57,6 +59,7 @@ export function trackMarketingEvent(
     segment: payload.segment,
     destination: payload.destination,
     plan: payload.plan,
+    action: payload.action,
     timestamp: new Date().toISOString(),
   };
 

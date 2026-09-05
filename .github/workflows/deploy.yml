@@ -138,6 +138,7 @@ jobs:
           - stripe-webhook
           - sync-spreadsheets
           - transcribe-audio
+          - try-demo
           - update-role
           - validate-import
           - verify-license

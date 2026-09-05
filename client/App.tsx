@@ -95,6 +95,7 @@ const Diagnose = lazy(() =>
 );
 const WarrantyScanner = lazy(() => import("@/pages/warranty/WarrantyScanner"));
 const Triage = lazy(() => import("@/pages/public/Triage"));
+const TryWindow = lazy(() => import("@/pages/TryWindow"));
 const IAQWizard = lazy(() => import("@/pages/iaq/IAQWizard"));
 const About = lazy(() =>
   import("@/pages/About").then((m) => ({ default: m.About })),
@@ -327,6 +328,7 @@ function AppRoutes() {
             <Route path="/" element={<ParentBrandLanding />} />
             <Route path="/platform" element={<Landing />} />
             <Route path="/triage" element={<Triage />} />
+            <Route path="/try" element={<TryWindow />} />
             <Route path="/a2l-resources" element={<A2LLandingPage />} />
             <Route path="/features" element={<Features />} />
             <Route path="/pricing" element={<Pricing />} />
