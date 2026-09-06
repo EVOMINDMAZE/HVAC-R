@@ -23,6 +23,7 @@ import { ParentBrandLanding } from "@/pages/ParentBrandLanding";
 import NotFound from "@/pages/NotFound";
 import { SignIn } from "@/pages/SignIn";
 import { SignUp } from "@/pages/SignUp";
+import { ResetPassword } from "@/pages/ResetPassword";
 
 // Lazy-loaded route components for code-splitting
 const A2LLandingPage = lazy(() =>
@@ -295,7 +296,14 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
     isLoading,
     role,
   } = useAuth();
+  const location = useLocation();
   const bypass = shouldBypassAuth();
+
+  // The reset-password flow consumes recovery tokens via setSession, which
+  // briefly authenticates the user mid-flow — they must stay on the page.
+  if (location.pathname === "/reset-password") {
+    return <>{children}</>;
+  }
 
   if (isLoading && !bypass) {
     return <PageLoading message="Checking authentication..." />;
@@ -363,6 +371,14 @@ function AppRoutes() {
             element={
               <PublicRoute>
                 <SignUp />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/reset-password"
+            element={
+              <PublicRoute>
+                <ResetPassword />
               </PublicRoute>
             }
           />

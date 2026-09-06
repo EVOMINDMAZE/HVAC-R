@@ -66,11 +66,12 @@ export function ROICalculator() {
             <div className="grid md:grid-cols-2 gap-8">
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2">
+                  <label htmlFor="roi-hours" className="block text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2">
                     <Clock className="h-4 w-4" />
                     Hours spent on calculations per week
                   </label>
                   <input
+                    id="roi-hours"
                     type="range"
                     min="1"
                     max="40"
@@ -86,11 +87,12 @@ export function ROICalculator() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2">
+                  <label htmlFor="roi-rate" className="block text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2">
                     <DollarSign className="h-4 w-4" />
                     Average hourly rate ($)
                   </label>
                   <input
+                    id="roi-rate"
                     type="range"
                     min="25"
                     max="200"
@@ -107,11 +109,12 @@ export function ROICalculator() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2">
+                  <label htmlFor="roi-team" className="block text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2">
                     <Users className="h-4 w-4" />
                     Team size
                   </label>
                   <input
+                    id="roi-team"
                     type="range"
                     min="1"
                     max="20"
@@ -128,11 +131,12 @@ export function ROICalculator() {
 
                 {/* Adjustable Time Savings */}
                 <div className="pt-4 border-t border-border">
-                  <label className="block text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2">
+                  <label htmlFor="roi-savings" className="block text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2">
                     <Calculator className="h-4 w-4" />
                     Expected time savings (%)
                   </label>
                   <input
+                    id="roi-savings"
                     type="range"
                     min="20"
                     max="60"

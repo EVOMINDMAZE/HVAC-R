@@ -296,7 +296,7 @@ export function SignIn() {
                     <div className="flex items-center justify-between">
                       <Label htmlFor="password">Password</Label>
                       <Link
-                        to="/forgot-password"
+                        to="/reset-password"
                         className="text-xs text-primary hover:underline"
                       >
                         Forgot password?
@@ -317,6 +317,7 @@ export function SignIn() {
                       />
                       <button
                         type="button"
+                        aria-label={showPassword ? "Hide password" : "Show password"}
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-3 top-3 text-muted-foreground hover:text-primary"
                       >
