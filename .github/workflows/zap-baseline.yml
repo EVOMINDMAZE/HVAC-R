@@ -1,0 +1,31 @@
+name: ZAP Baseline Scan
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Target URL to scan (no trailing slash)'
+        required: true
+        default: 'https://thermoneural.com'
+
+jobs:
+  zap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: ZAP Baseline Scan
+        # Official images + actions are free; runs on GitHub's runner (Java preinstalled, 0 local RAM)
+        uses: zaproxy/action-baseline@v0.12.0
+        with:
+          target: ${{ github.event.inputs.target }}
+          cmd_options: '-a -I -j'   # -a include alpha rules, -I don't fail on warnings, -j ajax spider
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-report-${{ github.run_id }}
+          path: report_html.html
+
+      - name: Fail gate on HIGH/MEDIUM alerts (commented out until tuned)
+        if: false
+        run: grep -q "Risk=High" report_json.json && exit 1 || exit 0
