@@ -125,6 +125,7 @@ jobs:
           - ai-gateway
           - catalog-track
           - catalog-stats
+          - kpi-stats
           - ai-troubleshoot
           - analyze-selling-points
           - analyze-triage-media
