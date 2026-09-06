@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import { useSupabaseAuth } from "./useSupabaseAuth";
 
-import { stripePromise } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 
 interface StripeSubscription {
   id?: string;
@@ -164,7 +164,7 @@ export function useStripeCheckout() {
         throw new Error("No session ID received from server");
       }
 
-      const stripe = await stripePromise;
+      const stripe = await getStripe();
       if (!stripe) {
         throw new Error("Stripe not loaded");
       }

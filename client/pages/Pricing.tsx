@@ -25,7 +25,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { trackMarketingEvent } from "@/lib/marketingAnalytics";
 import { PLANS, STRIPE_PRICE_IDS } from "@/lib/stripe";
 import { supabase } from "@/lib/supabase";
-import { stripePromise } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 
 export default function Pricing() {
   const { toast } = useToast();
@@ -48,7 +48,7 @@ export default function Pricing() {
   const handleSubscribe = async (planId: string) => {
     setLoading(planId);
     try {
-      const stripe = await stripePromise;
+      const stripe = await getStripe();
       if (!stripe) throw new Error("Stripe failed to load");
 
       let priceId = "";

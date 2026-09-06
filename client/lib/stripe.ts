@@ -1,10 +1,21 @@
-import { loadStripe } from '@stripe/stripe-js';
+// Stripe.js (~770 kB of script weight from js.stripe.com) is loaded LAZILY on
+// first checkout interaction, never at page load. It used to be initialised at
+// module top level, so any page importing this file (Pricing imports PLANS)
+// pulled all of js.stripe.com eagerly — 7.2 s mobile LCP on /pricing.
+import type { Stripe } from '@stripe/stripe-js';
 
-const stripePromise = loadStripe(
-  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || ''
-);
+let stripePromise: Promise<Stripe | null> | null = null;
 
-export { stripePromise };
+function getStripe(): Promise<Stripe | null> {
+  if (!stripePromise) {
+    stripePromise = import('@stripe/stripe-js').then(({ loadStripe }) =>
+      loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || ''),
+    );
+  }
+  return stripePromise;
+}
+
+export { getStripe };
 
 function requirePriceId(envKey: string): string {
   const value = import.meta.env[envKey];
