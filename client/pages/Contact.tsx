@@ -43,6 +43,7 @@ export function Contact() {
           _subject: `[ThermoNeural ${formData.category || "General"}] ${formData.subject || "Contact request"}`,
           _template: "table",
           _captcha: "false",
+          _autoresponse: "Thanks for reaching out to ThermoNeural! While you wait for our reply, feel free to browse the product sheets: https://thermoneural.com/catalog",
           name: formData.name,
           email: formData.email,
           company: formData.company || "—",
