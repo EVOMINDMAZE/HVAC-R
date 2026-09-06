@@ -135,12 +135,12 @@ export function ResetPassword() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-10">
+    <main className="min-h-screen flex items-center justify-center px-4 py-10">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <KeyRound className="h-5 w-5" />
-            Reset your password
+            <h1>Reset your password</h1>
           </CardTitle>
           <CardDescription>
             {done
@@ -279,6 +279,6 @@ export function ResetPassword() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </main>
   );
 }
