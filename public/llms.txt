@@ -1,0 +1,41 @@
+# ThermoNeural
+
+> ThermoNeural is the professional web platform for HVAC&R thermodynamics: simulate refrigeration cycles, analyze refrigerants, and run the business side of a contracting company — with NIST-verified accuracy via CoolProp.
+
+ThermoNeural (https://thermoneural.com) serves HVAC&R engineers, technicians, contractors, and students. Public calculators and simulators run free in the browser; Pro plans add unlimited calculations, PDF reports, and the full business suite (jobs, clients, invoicing, dispatch).
+
+## Main pages
+
+- [Home](https://thermoneural.com/): Platform overview — engineering tools plus the business suite
+- [Pricing](https://thermoneural.com/pricing): Free tier and Pro/Team/Enterprise plans
+- [Features](https://thermoneural.com/features): Detailed capability list
+- [About](https://thermoneural.com/about): Who builds ThermoNeural
+- [Blog](https://thermoneural.com/blog): Engineering articles and product updates
+- [Demo](https://thermoneural.com/demo): Guided product demo
+- [Documentation](https://thermoneural.com/documentation): Usage docs and API references
+- [Help center](https://thermoneural.com/help-center): Support articles
+- [Contact](https://thermoneural.com/contact): Sales and support contact
+
+## Free engineering tools
+
+- [Load calculator](https://thermoneural.com/tools/load-calc): HVAC heating/cooling load calculations
+- [Psychrometrics](https://thermoneural.com/tools/psychrometrics): Moisture-air property calculations
+- [Standard vapor-compression cycle](https://thermoneural.com/tools/standard-cycle): Cycle simulator with COP and capacity
+- [Cascade refrigeration cycle](https://thermoneural.com/tools/cascade-cycle): Two-stage cascade system simulation
+- [Refrigerant comparison](https://thermoneural.com/tools/refrigerant-comparison): Side-by-side refrigerant properties
+- [Refrigerant report](https://thermoneural.com/tools/refrigerant-report): Printable refrigerant property reports
+- [Refrigerant inventory](https://thermoneural.com/tools/refrigerant-inventory): Charge tracking and leak-rate compliance
+- [Leak-rate calculator](https://thermoneural.com/tools/leak-rate-calculator): EPA 608 leak-rate math
+- [IAQ wizard](https://thermoneural.com/tools/iaq-wizard): Indoor air quality assessment
+- [Diagnostic tool](https://thermoneural.com/tools/diagnose): Symptom-based fault diagnosis
+- [Warranty scanner](https://thermoneural.com/tools/warranty-scanner): Equipment warranty lookup
+
+## Policies
+
+- [Privacy Policy](https://thermoneural.com/privacy): What we collect and how we protect it
+- [Terms of Service](https://thermoneural.com/terms): Agreement for using ThermoNeural
+
+## Notes
+
+- Physics engine: CoolProp (NIST-verified refrigerant properties)
+- Contact: https://thermoneural.com/contact
