@@ -38,7 +38,7 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(self)"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-3fda304a8ff06e078f4e17b543ba7b9a8b662b4ce2a013974f9f5b24d45daa61' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://tbmizbqftczbsbwqgyjx.supabase.co https://148.116.87.10.sslip.io https://formsubmit.co https://api.sanity.io; frame-src https://js.stripe.com; worker-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self' https://formsubmit.co; frame-ancestors 'none'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-3fda304a8ff06e078f4e17b543ba7b9a8b662b4ce2a013974f9f5b24d45daa61' https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://tbmizbqftczbsbwqgyjx.supabase.co https://148.116.87.10.sslip.io https://formsubmit.co https://api.sanity.io https://api.stripe.com; frame-src https://js.stripe.com; worker-src 'self'; manifest-src 'self'; base-uri 'self'; form-action 'self' https://formsubmit.co; frame-ancestors 'none'"
 
 # Cache static assets aggressively
 [[headers]]
