@@ -12,6 +12,9 @@ jobs:
   zap:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    permissions:
+      contents: read
+      issues: write
     steps:
       - name: ZAP Baseline Scan
         # Official images + actions are free; runs on GitHub's runner (Java preinstalled, 0 local RAM)
