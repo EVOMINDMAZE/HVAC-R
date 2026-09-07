@@ -36,6 +36,12 @@ export async function createCheckoutSession(
     ],
     success_url: `${process.env.CLIENT_URL || 'http://localhost:3000'}/profile?success=true`,
     cancel_url: `${process.env.CLIENT_URL || 'http://localhost:3000'}/pricing`,
+    // Stripe Agreement requirement: show Terms of Service at checkout.
+    custom_text: {
+      terms_of_service_acceptance: {
+        message: `I agree to the ThermoNeural Terms of Service (https://thermoneural.com/terms) and Privacy Policy (https://thermoneural.com/privacy).`,
+      },
+    },
     metadata: {
       userId: userId || '',
     },
