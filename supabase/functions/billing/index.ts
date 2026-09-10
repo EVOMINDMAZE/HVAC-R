@@ -117,6 +117,11 @@ async function createCheckoutSession(req: Request, user: any) {
       apiVersion: "2024-06-20",
     });
 
+    // SIBLING20: auto 20% off (first 12 months) when the buyer holds an active
+    // subscription on a DIFFERENT ThermoNeural product. Computed server-side
+    // from the shared Stripe account — nothing client-supplied is trusted.
+    const discount = await siblingDiscountOrNull(stripe, user.email);
+
     // Create checkout session
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
@@ -136,6 +141,7 @@ async function createCheckoutSession(req: Request, user: any) {
       metadata: {
         userId: user.id,
       },
+      ...(discount ? { discounts: discount } : {}),
     });
 
     return new Response(
@@ -565,5 +571,69 @@ async function handleWebhook(req: Request) {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       },
     );
+  }
+}
+
+// ── Sibling discount (Tier 3) ──────────────────────────────────────────────
+// All ThermoNeural products live on ONE Stripe account. A buyer with an
+// active subscription on a DIFFERENT app's products gets SIBLING20
+// (20% off, repeating 12 months) auto-applied. Fails open to full price.
+const OWN_PRODUCT_IDS = [
+  "prod_V9tVXdJsMcqa02", // The Box — HVAC&R Operations (yearly)
+  "prod_V9tVgGX4mv2Vhu", // The Box — HVAC&R Operations (monthly)
+  "prod_V9tVV0XIperXbT", // The Box — HVAC&R Operations (legacy yearly)
+  "prod_V9tVVNYeOqGOEH", // The Box — HVAC&R Operations (legacy monthly)
+];
+
+const SIBLING_PRODUCT_IDS = [
+  // PhasePoint / Simulateon
+  "prod_V8e6iQEHQER0eY", // PhasePoint Platform
+  "prod_Uzgw3m3fi5CirA", // Simulateon Professional
+  "prod_Uzgw8YXNXzfaHC", // Simulateon Pro
+  "prod_UzgwcIOhUpxotu", // Simulateon Team
+  // VanClass
+  "prod_V3uV6DZyV8fTmg", // VanClass Crew (B2B)
+  "prod_V3tXBbmni8lBlA", // VanClass Study (yearly)
+  "prod_V3tXwA4UsyDwk0", // VanClass Study (monthly)
+  "prod_V3sXcR93Udaa4n", // VanClass Pro (yearly)
+  "prod_V3sXCBoUtkejZV", // VanClass Pro (monthly)
+  // Cryovo
+  "prod_V9P1I1KdDOL1m9", // Cryovo Pro
+];
+
+async function siblingDiscountOrNull(
+  stripe: any,
+  email: string,
+): Promise<Array<{ coupon: string }> | null> {
+  try {
+    if (!email) return null;
+    // Only REAL paying customers earn the sibling discount. "trialing" is
+    // deliberately excluded: a free trial must not unlock 20% off another
+    // product (discount farming). past_due = customer in grace, keep it.
+    const ELIGIBLE_STATUSES = ["active", "past_due"];
+    const customers = await stripe.customers.list({ email, limit: 10 });
+    for (const customer of customers.data) {
+      const subs = await stripe.subscriptions.list({
+        customer: customer.id,
+        status: "all",
+        limit: 100,
+      });
+      for (const sub of subs.data) {
+        if (!ELIGIBLE_STATUSES.includes(sub.status)) continue;
+        for (const item of sub.items.data) {
+          const productId =
+            typeof item.price.product === "string"
+              ? item.price.product
+              : item.price.product?.id;
+          if (productId && SIBLING_PRODUCT_IDS.includes(productId)) {
+            return [{ coupon: "SIBLING20" }];
+          }
+        }
+      }
+    }
+    return null;
+  } catch (err) {
+    console.error("siblingDiscountOrNull failed open to full price:", err);
+    return null;
   }
 }
