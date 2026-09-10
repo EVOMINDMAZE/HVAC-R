@@ -239,17 +239,23 @@ export function ParentBrandLanding() {
           Walk in free, try before you buy, leave with your data.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <a
-            href="#products"
+          <Link
+            to="/signup"
             className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary/90"
           >
-            See the products
-          </a>
-          <a
-            href="#contact"
+            Start free — no credit card
+          </Link>
+          <Link
+            to="/pricing"
             className="rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-white/80 transition hover:border-primary/50 hover:text-white"
           >
-            Talk to the team
+            See pricing
+          </Link>
+          <a
+            href="#products"
+            className="rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-white/80 transition hover:border-primary/50 hover:text-white"
+          >
+            See the products
           </a>
         </div>
       </section>

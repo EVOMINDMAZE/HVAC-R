@@ -134,8 +134,8 @@ export default function Pricing() {
     },
     {
       key: "BUSINESS",
-      title: "Precision Engineering Hub",
-      description: "Complete operations & engineering suite. Skool access, white-label app & automation.",
+      title: "Business Ops",
+      description: "Company operations suite: jobs, dispatch, clients, invoices, warranty, fleet — plus the full engineering toolkit.",
       cta: "Deploy Business Ops",
       action: () => handleSubscribe("business"),
       popular: true,
@@ -233,7 +233,7 @@ export default function Pricing() {
             </GlassCard>
             <GlassCard variant="default" className="px-5 py-4">
               <MeasurementLabel className="text-primary mb-2 block">
-                Precision Engineering Hub Track
+                Business Ops Track
               </MeasurementLabel>
               <p className="text-sm text-muted-foreground">
                 Complete operations & engineering suite, white-labeled apps, and Skool community access.
@@ -250,7 +250,7 @@ export default function Pricing() {
             <AlertTitle>Upgrade required to access that page</AlertTitle>
             <AlertDescription>
               {paywallState.requiredTier === "business"
-                ? "That page is part of the Business (Precision Engineering Hub) plan."
+                ? "That page is part of the Business Ops plan."
                 : "That page requires the Engineering Pro plan or higher."}{" "}
               Your current plan: {paywallState.userTier ?? "free"}. Pick a plan
               below to continue.

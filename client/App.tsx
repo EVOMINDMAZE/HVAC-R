@@ -7,7 +7,8 @@ import {
   useLocation,
 } from "react-router-dom";
 
-import { DevModeBanner } from "@/components/DevModeBanner";
+// DevModeBanner removed 2026-09-10 — its copy ("Authentication is currently
+// bypassed…") was reaching the production bundle.
 import { ThemeProvider } from "@/components/theme-provider";
 import { SupabaseAuthProvider } from "@/hooks/SupabaseAuthProvider";
 import { ToastProvider } from "@/hooks/ToastProvider";
@@ -169,27 +170,12 @@ import PageLoading from "@/components/ui/page-loading.tsx";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { KeyboardShortcutsHelp } from "@/hooks/KeyboardShortcuts";
 
+// Auth bypass removed 2026-09-10. The dev-mode banner and its ?bypassAuth=1 /
+// DEBUG_BYPASS=1 switches were shipping inside the PRODUCTION bundle, so anyone
+// reading the JS (or a scanner) saw "Authentication is currently bypassed" on a
+// site that sells subscriptions. The switches were already PROD-gated and never
+// exploitable — but nothing good comes from shipping them. Always false, for good.
 function shouldBypassAuth() {
-  // Disable authentication bypass in production for security
-  if (import.meta.env.PROD) {
-    return false;
-  }
-
-  try {
-    if (typeof window === "undefined") return false;
-    
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("bypassAuth") === "1") {
-      return true;
-    }
-    
-    if (localStorage && localStorage.getItem("DEBUG_BYPASS") === "1") {
-      return true;
-    }
-  } catch (e) {
-    // ignore errors in SSR or when localStorage is blocked
-  }
-  
   return false;
 }
 
@@ -328,7 +314,7 @@ function AppRoutes() {
 
   return (
     <>
-      {bypass && <DevModeBanner isActive={bypass} />}
+      {/* dev-mode banner removed 2026-09-10 (it shipped auth-bypass copy to production) */}
       <AnimatePresence mode="wait">
         <ErrorBoundary fallback={<PageLoading message="Application error. Please refresh." />}>
           <Suspense fallback={<PageLoading />}>
