@@ -30,6 +30,12 @@ const PRODUCTS = [
     status: "Beta",
     external: true,
   },
+  {
+    name: "The Cold Standard",
+    href: "https://cold-standard.vercel.app",
+    status: "Live",
+    external: true,
+  },
 ] as const;
 
 const TOOLS = [
@@ -58,7 +64,7 @@ export function UmbrellaFooter() {
             </div>
             <p className="text-muted-foreground max-w-sm leading-relaxed">
               The ThermoNeural platform builds engineering operations software for the thermal
-              economy — The Box, PhasePoint, VanClass and Cryovo.
+              economy — The Box, PhasePoint, VanClass, Cryovo and The Cold Standard.
             </p>
           </div>
 

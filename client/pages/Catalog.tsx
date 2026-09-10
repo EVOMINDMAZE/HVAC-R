@@ -57,6 +57,14 @@ const SHEETS: Sheet[] = [
     tagline: "Dispatch, invoicing and AI, in one box",
     sheet: "/catalog/hvac-business-platform.pdf",
   },
+  {
+    id: "cold-standard",
+    slug: "cold-standard",
+    name: "The Cold Standard",
+    department: "Industry Intelligence",
+    tagline: "Verified cold-economy intelligence, free weekly",
+    sheet: "/catalog/the-cold-standard.pdf",
+  },
 ];
 
 const STATS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/catalog-stats`;

@@ -14,6 +14,7 @@ const SLUGS = new Set([
   "vanclass",
   "cryovo",
   "hvac-business-platform",
+  "cold-standard",
 ]);
 
 // Where each slug's QR sends the visitor (product home / free-tier entry).
@@ -22,6 +23,7 @@ const PRODUCT_URLS: Record<string, string> = {
   vanclass: "https://vanclass-app.vercel.app",
   cryovo: "https://cryovo.vercel.app",
   "hvac-business-platform": "https://thermoneural.com/try",
+  "cold-standard": "https://cold-standard.vercel.app",
 };
 
 Deno.serve(async (req) => {

@@ -12,6 +12,7 @@ import {
   Globe,
   Waves,
   Building2,
+  Newspaper,
 } from "lucide-react";
 
 // ── ThermoNeural — Parent Brand Landing ────────────────────────────────────
@@ -79,6 +80,18 @@ const PRODUCTS: Product[] = [
     status: "Live",
     sheet: "/catalog/hvac-business-platform.pdf",
     icon: Layers,
+  },
+  {
+    id: "cold-standard",
+    name: "The Cold Standard",
+    department: "Industry Intelligence",
+    tagline: "Verified cold-economy intelligence, free weekly",
+    description:
+      "The weekly newsletter for the cold economy — refrigeration, HVAC, cold chain, cryogenics. Every story confirmed by two independent publishers before it runs. No recycled press releases, no market-report mills.",
+    url: "https://cold-standard.vercel.app",
+    status: "Live",
+    sheet: "/catalog/the-cold-standard.pdf",
+    icon: Newspaper,
   },
 ];
 
@@ -247,7 +260,7 @@ export function ParentBrandLanding() {
           <div>
             <h2 className="text-2xl font-bold text-white sm:text-3xl">The product family</h2>
             <p className="mt-2 text-white/60">
-              Four products. One engineering story, from the first calculation to the compliance record.
+              Five products. One engineering story, from the first calculation to the compliance record.
             </p>
             <p className="mt-3 text-sm text-white/50">
               Putting these on paper?{" "}
@@ -260,7 +273,7 @@ export function ParentBrandLanding() {
             </p>
           </div>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {PRODUCTS.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}

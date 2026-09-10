@@ -90,6 +90,21 @@ PRODUCTS = [
                    "White-label app and client portal (Hub)",
                    "Automation engine: Review Hunter & Invoice Chaser (Hub)"],
          qr_label="Scan — see The Box"),
+    dict(slug="cold-standard", name="The Cold Standard", dept="Industry Intelligence",
+         status="Live", url="https://cold-standard.vercel.app",
+         one="Verified weekly intelligence for the cold economy — every story confirmed by two independent publishers.",
+         table=dict(headers=["Plan", "Price", "What you get"], num_cols=[1], rows=[
+             ["Weekly edition", "$0", "The complete verified edition in your inbox — free forever"],
+             ["Full archive", "$0", "Every past edition, online and printable as PDF"],
+             ["Subscribe", "$0", "Email in, unsubscribe anytime — no card, no upsell"],
+         ]),
+         callout="Verification is the product: every story is confirmed by two independent publishers before it runs. If a claim can't be sourced, it doesn't ship.",
+         features=["Every story confirmed by ≥2 independent publishers",
+                   "Refrigeration, HVAC, cold chain and cryogenics coverage",
+                   "Sources linked and credited in every edition",
+                   "Public corrections policy — corrections@thecoldstandard.app",
+                   "Free forever — a ThermoNeural product"],
+         qr_label="Scan — read The Cold Standard"),
 ]
 
 def build_sheet(p):
