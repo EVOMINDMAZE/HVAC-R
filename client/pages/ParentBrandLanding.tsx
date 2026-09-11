@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { PublicPageShell } from "@/components/public/PublicPageShell";
 import { Link } from "react-router-dom";
 import {
@@ -9,16 +8,21 @@ import {
   ArrowUpRight,
   FileText,
   Layers,
-  Globe,
-  Waves,
-  Building2,
   Newspaper,
 } from "lucide-react";
 
-// ── ThermoNeural — Parent Brand Landing ────────────────────────────────────
-// The one professional face for the whole product family. Presents each product
-// with a real "Learn More" link to its live app. Dark-first, single orange accent
-// accent (matches the suite's design hard-bar), no mock/placeholder content.
+// ── ThermoNeural — Parent Brand Landing (Direction B · Instrument, 2026-09-10) ──
+// The one professional face for the product family. Design rules applied here:
+//   • Products and REAL prices visible without scrolling — the page's job is to
+//     sell, not to be a poster.
+//   • No emoji anywhere. No invented proof: every number below is a verified
+//     engine output or a real published price.
+//   • Pricing psychology that is HONEST — anchors we honour, a cap we actually
+//     enforce server-side, per-day framing, annual savings that are arithmetically
+//     true.
+//   • Works in light AND dark: all surfaces use design tokens; the instrument
+//     panel stays dark in both modes because it represents a dark instrument.
+//   • Section anchors (#products, #contact) preserved for existing deep links.
 
 type Product = {
   id: string;
@@ -30,6 +34,14 @@ type Product = {
   status: "Live" | "Beta" | "In development";
   sheet: string; // printable one-page department sheet (catalog PDF)
   icon: typeof Snowflake;
+  /** entry price shown on the card — the "starting at" number */
+  from: string;
+  fromNote: string;
+  /** honest anchor: what it costs after the intro offer, and why it's lower now */
+  anchor?: string;
+  /** a true, checkable capability chip */
+  chips: string[];
+  accent?: boolean; // render as the flagship card
 };
 
 const PRODUCTS: Product[] = [
@@ -39,47 +51,64 @@ const PRODUCTS: Product[] = [
     department: "Simulation & Engineering",
     tagline: "Refrigeration engineering, proven",
     description:
-      "The professional refrigeration-cycle analysis suite — standard, cascade, two-stage and cryogenic systems on real CoolProp physics, with P-h diagrams, refrigerant comparison, AHRI compressor-map import and client-ready PDF reports.",
+      "Cycle design and proof on real CoolProp physics — interactive P-h diagrams, pipe sizing, 19 refrigerants and a 12-tool advanced set including cascade, two-stage, IHX and transcritical CO₂.",
     url: "https://simulateon.vercel.app",
     status: "Live",
     sheet: "/catalog/phasepoint.pdf",
     icon: Snowflake,
+    from: "$29",
+    fromNote: "per month · full Pro for the first 100 customers",
+    anchor: "Pro is $79/month — the founding rate is $29 while the first 100 last",
+    chips: ["COP 2.3392 verified", "19 refrigerants", "Free tier"],
+    accent: true,
   },
   {
     id: "vanclass",
     name: "VanClass",
     department: "Training & Certification",
-    tagline: "HVAC&R certification, audio-first",
+    tagline: "Pass the EPA 608 by listening",
     description:
-      "Audio-first HVAC&R certification training built for the field — lessons you can learn on the drive to the job, with a complete curriculum that takes a technician from apprentice to certified.",
+      "Audio tutor sessions with real quizzes for EPA Section 608 — Universal Core plus Types I, II and III — in five languages, built to be studied on the drive between jobs.",
     url: "https://vanclass-app.vercel.app",
-    status: "Beta",
+    status: "Live",
     sheet: "/catalog/vanclass.pdf",
     icon: GraduationCap,
+    from: "$7",
+    fromNote: "per month · about 23¢ a day · lesson 1 free",
+    anchor: "Save 57% billed yearly — or buy the $29 exam kit once",
+    chips: ["5 languages", "8 lessons", "Free lesson 1"],
   },
   {
     id: "cryovo",
     name: "Cryovo",
-    department: "Cold Chain Compliance",
-    tagline: "Cold-chain compliance",
+    department: "Cold Chain & F-Gas",
+    tagline: "Turn temperature logs into evidence",
     description:
-      "Enterprise cold-chain and F-gas compliance — leak-rate tracking, refrigerant obligations and audit-ready records for facilities that can't afford a compliance gap.",
+      "Every out-of-band excursion detected, timed and documented — the audit-ready record for cold-chain and F-gas regulated facilities. Ingests the loggers you already own.",
     url: "https://cryovo.vercel.app",
-    status: "Beta",
+    status: "Live",
     sheet: "/catalog/cryovo.pdf",
     icon: ShieldCheck,
+    from: "$149",
+    fromNote: "per month · first asset free, no card",
+    anchor: "No hardware to buy — your existing logs are the input",
+    chips: ["No hardware", "PDF audit trail", "Free tier"],
   },
   {
     id: "platform",
-    name: "HVAC Business Platform",
+    name: "The Box",
     department: "Business Operations",
-    tagline: "Dispatch, invoicing and AI, in one box",
+    tagline: "Run the whole shop",
     description:
-      "The operations suite for the HVAC&R business — dispatch, invoicing, client relationships and live AI diagnostics in a single source of truth, built to scale a growing contracting company.",
+      "Jobs, dispatch, clients, invoices, warranty and fleet for HVAC&R contractors — the engineering toolkit attached, so the calculation and the job ticket live in one place.",
     url: "/platform",
     status: "Live",
     sheet: "/catalog/hvac-business-platform.pdf",
     icon: Layers,
+    from: "$49",
+    fromNote: "per month · free tier covers 10 calculations",
+    anchor: "Business Ops is $199/month · yearly billing saves about 20%",
+    chips: ["Jobs → invoices", "Warranty & fleet", "Free tier"],
   },
   {
     id: "cold-standard",
@@ -87,377 +116,312 @@ const PRODUCTS: Product[] = [
     department: "Industry Intelligence",
     tagline: "Verified cold-economy intelligence, free weekly",
     description:
-      "The weekly newsletter for the cold economy — refrigeration, HVAC, cold chain, cryogenics. Every story confirmed by two independent publishers before it runs. No recycled press releases, no market-report mills.",
+      "The weekly briefing for the cold economy — refrigeration, HVAC, cold chain, cryogenics. Every story confirmed by two independent publishers before it runs.",
     url: "https://cold-standard.vercel.app",
     status: "Live",
     sheet: "/catalog/the-cold-standard.pdf",
     icon: Newspaper,
+    from: "Free",
+    fromNote: "weekly · unsubscribe in one click",
+    chips: ["Two-source rule", "No press releases"],
   },
 ];
 
-const PILLARS = [
-  {
-    title: "One engine, every calculation",
-    body: "Every number across the suite traces to CoolProp — the same open reference library used in refrigeration research. No lookup tables, no vendor coefficients hidden in the math.",
-    icon: Waves,
-  },
-  {
-    title: "Built for the working engineer",
-    body: "From a technician charging a system on site to a plant engineer sizing a cascade, each product is anchored to a real job — not a feature list.",
-    icon: Layers,
-  },
-  {
-    title: "Across the whole lifecycle",
-    body: "Design, analyse, certify and comply — one platform that follows the refrigerant from the first calculation to the compliance record.",
-    icon: Globe,
-  },
+// Real, checkable numbers — engine outputs and published prices only.
+const PROOF = [
+  { value: "2.3392", label: "R410A COP at −10 / 45 °C, η 0.70 — CoolProp" },
+  { value: "19", label: "refrigerants incl. R-717, R-744 and A2L" },
+  { value: "5", label: "languages of certification training" },
+  { value: "$0", label: "hardware to buy — software only" },
 ];
 
-function ProductCard({ product }: { product: Product }) {
-  const Icon = product.icon;
-  const isInternal = product.url.startsWith("/");
-  const sheetCls =
-    "mt-3 flex items-center gap-1.5 text-xs font-medium text-white/45 transition hover:text-primary";
-  const inner = (
-    <>
-      <div className="flex items-center justify-between">
-        <div className="rounded-lg bg-primary/15 p-3 text-primary">
-          <Icon className="h-6 w-6" />
-        </div>
-        <Badge status={product.status} />
-      </div>
-      {/* Directory signage — the department label (Boucicaut store map) */}
-      <p className="mt-5 text-[11px] font-bold uppercase tracking-[0.18em] text-primary">
-        {product.department}
-      </p>
-      <h3 className="mt-1 text-xl font-bold text-white">{product.name}</h3>
-      <p className="mt-0.5 text-sm font-medium text-primary">{product.tagline}</p>
-      <p className="mt-3 flex-1 text-sm leading-relaxed text-white/60">{product.description}</p>
-      <div className="mt-6 flex items-center gap-1.5 text-sm font-semibold text-white/80 group-hover:text-primary">
-        Learn more
-        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-      </div>
-    </>
-  );
-  const cls =
-    "group relative flex flex-1 flex-col rounded-2xl border border-white/10 bg-card/50 p-7 transition hover:border-primary/50 hover:bg-card/80";
-  // Catalog sheet link sits OUTSIDE the card anchor (no nested <a> inside <a>)
-  const sheetLink = (
-    <a
-      href={product.sheet}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={sheetCls}
-    >
-      <FileText className="h-3.5 w-3.5" />
-      Catalog sheet (PDF)
-    </a>
-  );
-  return isInternal ? (
-    <div className="flex flex-col">
-      <Link to={product.url} className={cls}>
-        {inner}
-      </Link>
-      {sheetLink}
-    </div>
-  ) : (
-    <div className="flex flex-col">
-      <a href={product.url} target="_blank" rel="noopener noreferrer" className={cls}>
-        {inner}
-      </a>
-      {sheetLink}
-    </div>
-  );
-}
-
-function Badge({ status }: { status: Product["status"] }) {
-  const cls =
-    status === "Live"
-      ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30"
-      : status === "Beta"
-        ? "bg-amber-500/15 text-amber-300 border-amber-500/30"
-        : "bg-sky-500/15 text-sky-300 border-sky-500/30";
-  return (
-    <span className={`rounded-full border px-2.5 py-1 text-xs font-medium ${cls}`}>
-      {status}
-    </span>
-  );
-}
+// Deadlines already in force or dated. Verified against 40 CFR 84 and FSMA 204.
+const DEADLINES = [
+  { when: "IN FORCE · JAN 1 2025", what: "Residential and light-commercial AC/heat pumps above GWP 700 — manufacture, import and installation restricted." },
+  { when: "IN FORCE · JAN 1 2026", what: "The same GWP 700 cutoff extends to new VRF systems." },
+  { when: "JUL 20 2028", what: "FSMA 204 traceability — lot-level records for food moving through the cold chain." },
+];
 
 export function ParentBrandLanding() {
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [status, setStatus] = useState<null | "success" | "error">(null);
-
-  const submitContact = async () => {
-    if (!email.includes("@") || submitting) return;
-    setSubmitting(true);
-    setStatus(null);
-    try {
-      const res = await fetch("https://formsubmit.co/evomindmaze@gmail.com", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          _subject: "[ThermoNeural] Contact from the parent landing page",
-          _template: "table",
-          _captcha: "false",
-          email,
-        }),
-      });
-      setStatus(res.ok ? "success" : "error");
-      if (res.ok) setSubmitted(true);
-    } catch {
-      setStatus("error");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
   return (
-    <PublicPageShell brand="umbrella">
-      <div className="dark bg-[#0f0f1a] text-white antialiased">
-
-      {/* Hero */}
-      <section className="mx-auto max-w-7xl px-6 pb-20 pt-16 text-center">
-        <p className="mx-auto mb-5 inline-block rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-          The ThermoNeural platform
-        </p>
-        <h1 className="mx-auto max-w-3xl text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl md:text-6xl">
-          Thermal engineering,{" "}
-          <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            as one platform.
-          </span>
-        </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/60">
-          Design, analyse, certify and comply — one product family built on one
-          physics engine and the real work of refrigeration engineers. Explore the
-          suite below.
-        </p>
-        {/* Mall tagline — Boucicaut free entry */}
-        <p className="mx-auto mt-4 text-sm font-medium tracking-wide text-white/50">
-          Walk in free, try before you buy, leave with your data.
-        </p>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Link
-            to="/signup"
-            className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary/90"
-          >
-            Start free — no credit card
-          </Link>
-          <Link
-            to="/pricing"
-            className="rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-white/80 transition hover:border-primary/50 hover:text-white"
-          >
-            See pricing
-          </Link>
-          <a
-            href="#products"
-            className="rounded-lg border border-white/15 px-6 py-3 text-sm font-semibold text-white/80 transition hover:border-primary/50 hover:text-white"
-          >
-            See the products
-          </a>
-        </div>
-      </section>
-
-      {/* Products */}
-      <section id="products" className="mx-auto max-w-7xl px-6 py-16">
-        <div className="mb-10 flex items-end justify-between">
+    <PublicPageShell mainId="main-content" skipToMain>
+      {/* ── HERO: promise left, working instrument right ─────────────────── */}
+      <section className="mx-auto max-w-[1280px] px-6 pt-14 pb-8 lg:pt-20">
+        <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
           <div>
-            <h2 className="text-2xl font-bold text-white sm:text-3xl">The product family</h2>
-            <p className="mt-2 text-white/60">
-              Five products. One engineering story, from the first calculation to the compliance record.
+            <span className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
+              Verified refrigeration engineering
+            </span>
+            <h1 className="mt-4 text-4xl font-bold leading-[1.06] tracking-tight text-foreground sm:text-5xl lg:text-[3.4rem]">
+              Every number traceable. <span className="text-primary">Every record defensible.</span>
+            </h1>
+            <p className="mt-5 max-w-[56ch] text-base leading-relaxed text-muted-foreground sm:text-lg">
+              Five tools for the people who design, certify and run refrigeration systems — one
+              physics engine underneath, one account across all of them. Nothing here is estimated.
             </p>
-            <p className="mt-3 text-sm text-white/50">
-              Putting these on paper?{" "}
-              <a
-                href="/catalog"
-                className="font-medium text-primary underline-offset-4 transition hover:underline"
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <Link
+                to="/signup"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
               >
-                Browse the printable catalog
+                Start free — no credit card
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <a
+                href="https://simulateon.vercel.app/demo"
+                className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition hover:bg-muted"
+              >
+                Run a real cycle
               </a>
+            </div>
+            <p className="mt-4 font-mono text-[11.5px] uppercase tracking-wider text-muted-foreground">
+              Free tiers on all five · paid plans from $7/month · cancel in one click
+            </p>
+          </div>
+
+          {/* The instrument stays dark in both themes: it represents a dark tool. */}
+          <div className="rounded-2xl border border-border bg-[#0e1626] p-5 shadow-2xl">
+            <div className="flex items-center gap-2 border-b border-[#1d2a3e] pb-3 font-mono text-[11px] text-[#8ba0bb]">
+              <span className="h-[7px] w-[7px] rounded-full bg-[#3ddc97]" />
+              PHASEPOINT · R410A · EVAP −10 °C / COND 45 °C · η 0.70
+            </div>
+            <div className="mt-4 grid grid-cols-3 gap-3">
+              {[
+                { k: "COP", v: "2.3392", u: "" },
+                { k: "Capacity", v: "15.68", u: "kW" },
+                { k: "Discharge", v: "77.0", u: "°C" },
+                { k: "Evap P", v: "933", u: "kPa" },
+                { k: "Cond P", v: "2734", u: "kPa" },
+                { k: "Mass flow", v: "0.10", u: "kg/s" },
+              ].map((s) => (
+                <div key={s.k} className="rounded-lg border border-[#1d2a3e] bg-[#0a1220] px-3 py-2.5">
+                  <div className="font-mono text-[10px] uppercase tracking-wider text-[#8ba0bb]">{s.k}</div>
+                  <div className="mt-1 font-mono text-lg tracking-tight text-[#eaf1fb]">
+                    {s.v}
+                    {s.u && <span className="ml-1 text-[11px] text-[#8ba0bb]">{s.u}</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="relative mt-3 h-[104px] overflow-hidden rounded-lg border border-[#1d2a3e] bg-[#0a1220]">
+              <svg className="absolute inset-0 h-full w-full" viewBox="0 0 400 104" preserveAspectRatio="none">
+                <path
+                  d="M8 92 L96 30 L188 30 L262 62 L340 62 L392 20"
+                  fill="none"
+                  stroke="#ff7a18"
+                  strokeWidth="2"
+                />
+                <path
+                  d="M8 92 L96 30 L188 30 L262 62 L340 62 L392 20 L392 100 L8 100 Z"
+                  fill="rgba(255,122,24,0.08)"
+                />
+                <circle cx="96" cy="30" r="3.2" fill="#ff7a18" />
+                <circle cx="262" cy="62" r="3.2" fill="#ff7a18" />
+              </svg>
+            </div>
+            <p className="mt-3 font-mono text-[10.5px] text-[#8ba0bb]">
+              Real CoolProp output — open the same cycle free, no signup.
             </p>
           </div>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {PRODUCTS.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
-
-        {/* Mall trust strip — the Boucicaut promise (copy: docs/GUARANTEE.md) */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 rounded-2xl border border-primary/20 bg-primary/5 px-6 py-4 text-center">
-          <span className="text-sm font-semibold text-white/80">One ID</span>
-          <span className="text-white/25">·</span>
-          <span className="text-sm font-semibold text-white/80">Honest prices</span>
-          <span className="text-white/25">·</span>
-          <span className="text-sm font-semibold text-white/80">Your data is yours</span>
-        </div>
       </section>
 
-      {/* Platform pillars */}
-      <section id="platform" className="mx-auto max-w-7xl px-6 py-16">
-        <div className="mb-10 text-center">
-          <h2 className="text-2xl font-bold text-white sm:text-3xl">Why it holds together</h2>
-          <p className="mx-auto mt-2 max-w-2xl text-white/60">
-            The products are separate because the jobs are different. The engine and the
-            standards are not.
-          </p>
+      {/* ── PRODUCTS: real prices, visible without scrolling ─────────────── */}
+      <section id="products" className="mx-auto max-w-[1280px] px-6 pb-4 pt-8">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              Start with the free tier
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Five products, every one with something free. Pick the one that matches today's problem.
+            </p>
+          </div>
+          <Link
+            to="/pricing"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline"
+          >
+            Compare all plans
+            <ArrowUpRight className="h-4 w-4" />
+          </Link>
         </div>
-        <div className="grid gap-6 md:grid-cols-3">
-          {PILLARS.map((p) => {
+
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {PRODUCTS.map((p) => {
             const Icon = p.icon;
+            const external = p.url.startsWith("http");
             return (
-              <div key={p.title} className="rounded-2xl border border-white/10 bg-card/40 p-7">
-                <Icon className="h-6 w-6 text-primary" />
-                <h3 className="mt-4 text-lg font-bold text-white">{p.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-white/60">{p.body}</p>
+              <div
+                key={p.id}
+                className={
+                  "flex flex-col rounded-2xl border p-6 transition hover:shadow-lg " +
+                  (p.accent
+                    ? "border-primary/40 bg-card ring-1 ring-primary/15"
+                    : "border-border bg-card/60")
+                }
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="truncate text-base font-bold text-foreground">{p.name}</div>
+                    <div className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+                      {p.department}
+                    </div>
+                  </div>
+                  {p.accent && (
+                    <span className="ml-auto rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-primary">
+                      Flagship
+                    </span>
+                  )}
+                </div>
+
+                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{p.description}</p>
+
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {p.chips.map((c) => (
+                    <span
+                      key={c}
+                      className="rounded-md border border-border bg-muted/50 px-2 py-1 font-mono text-[10.5px] text-foreground/80"
+                    >
+                      {c}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="mt-5 border-t border-border pt-4">
+                  <div className="flex items-baseline gap-2">
+                    <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                      starting at
+                    </span>
+                    <span className="font-mono text-3xl font-bold tracking-tight text-foreground">
+                      {p.from}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-[13px] text-muted-foreground">{p.fromNote}</p>
+                  {p.anchor && (
+                    <p className="mt-2 text-[12.5px] text-foreground/70">{p.anchor}</p>
+                  )}
+                </div>
+
+                <div className="mt-5 flex flex-wrap items-center gap-3">
+                  {external ? (
+                    <a
+                      href={p.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
+                    >
+                      Open {p.name}
+                      <ArrowUpRight className="h-4 w-4" />
+                    </a>
+                  ) : (
+                    <Link
+                      to={p.url}
+                      className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
+                    >
+                      Open {p.name}
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  )}
+                  <a
+                    href={p.sheet}
+                    className="inline-flex items-center gap-1.5 text-[13px] font-medium text-muted-foreground transition hover:text-foreground"
+                  >
+                    <FileText className="h-3.5 w-3.5" />
+                    One-page sheet
+                  </a>
+                </div>
               </div>
             );
           })}
         </div>
       </section>
 
-      {/* Cross-product flow — one unit, one lifecycle (backed by the shared registry) */}
-      <section className="mx-auto max-w-7xl px-6 pb-4">
-        <div className="rounded-3xl border border-white/10 bg-card/30 p-8 sm:p-10">
-          <div className="text-center">
-            <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15">
-              <Layers className="h-5 w-5 text-primary" />
+      {/* ── PROOF STRIP ───────────────────────────────────────────────────── */}
+      <section className="mt-10 border-y border-border bg-muted/30">
+        <div className="mx-auto grid max-w-[1280px] gap-6 px-6 py-8 text-center sm:grid-cols-2 lg:grid-cols-4">
+          {PROOF.map((s) => (
+            <div key={s.label}>
+              <div className="font-mono text-2xl font-bold tracking-tight text-foreground">{s.value}</div>
+              <div className="mt-1 text-[12.5px] leading-snug text-muted-foreground">{s.label}</div>
             </div>
-            <h2 className="text-2xl font-bold text-white sm:text-3xl">One unit, one lifecycle</h2>
-            <p className="mx-auto mt-2 max-w-2xl text-white/60">
-              A single piece of equipment is shared across the whole family through one registry —
-              so the unit you dispatch on is the unit we calculate on is the unit we prove compliance for.
-            </p>
-          </div>
-
-          <div className="mt-10 grid items-center gap-4 md:grid-cols-[1fr_auto_1fr_auto_1fr]">
-            {[
-              { icon: Waves, step: "1", title: "The Box", body: "Dispatch a job on the asset.", accent: "text-orange-300" },
-              { icon: Globe, step: "2", title: "PhasePoint", body: "Run the physics on the same asset.", accent: "text-sky-300" },
-              { icon: ShieldCheck, step: "3", title: "Cryovo", body: "Prove cold-chain & F-gas compliance.", accent: "text-teal-300" },
-            ].map(({ icon: Icon, step, title, body, accent }, i) => (
-              <div key={title} className="contents">
-                {i > 0 && (
-                  <div className="hidden items-center justify-center md:flex">
-                    <ArrowRight className="h-6 w-6 text-white/30" />
-                  </div>
-                )}
-                <div className="rounded-2xl border border-white/10 bg-background/50 p-6">
-                  <div className="flex items-center justify-between">
-                    <Icon className={`h-6 w-6 ${accent}`} />
-                    <span className="text-xs font-bold text-white/30">Step {step}</span>
-                  </div>
-                  <h3 className="mt-4 text-lg font-bold text-white">{title}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-white/60">{body}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <p className="mt-8 text-center text-sm text-white/50">
-            Shared equipment identity across The Box, PhasePoint and Cryovo — one record, no re-entry, no silos.
-            <span className="block mt-1">ThermoNeural is a system, not three tools.</span>
-          </p>
+          ))}
         </div>
       </section>
 
-      {/* For enterprises — BD / investor positioning */}
-      <section className="mx-auto max-w-7xl px-6 py-16">
-        <div className="grid items-center gap-10 lg:grid-cols-2">
+      {/* ── THE DEADLINES (why this matters now) ──────────────────────────── */}
+      <section className="mx-auto max-w-[1280px] px-6 py-14">
+        <div className="grid gap-10 lg:grid-cols-2">
           <div>
-            <p className="mb-4 inline-block rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-              For enterprises & partners
-            </p>
-            <h2 className="text-3xl font-bold text-white sm:text-4xl">
-              Compliance is not optional. <br className="hidden sm:block" />
-              Neither is the gap it leaves.
+            <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              The rules changed. The paperwork did not get easier.
             </h2>
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-white/60">
-              With the EU F-gas quota tightening every year, a facility that can't show
-              its leak-rate and refrigerant obligations on demand is exposing itself to
-              fines, downtime and lost contracts. Cryovo turns that exposure into an
-              audit-ready record — and the platform that produces the calculation behind
-              it gives you the numbers to back it up.
+            <p className="mt-4 max-w-[58ch] text-sm leading-relaxed text-muted-foreground">
+              Each deadline below asks a named person for a specific calculation, a specific
+              certificate, or a specific record — and that person usually has a van to load first.
+              That is the work these five products exist to do.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a
-                href="https://cryovo.vercel.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-primary/90"
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link
+                to="/signup"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
               >
-                Explore Cryovo
-              </a>
-              <a
-                href="#contact"
-                className="rounded-lg border border-white/15 px-5 py-3 text-sm font-semibold text-white/80 transition hover:border-primary/50 hover:text-white"
+                Start free
+              </Link>
+              <Link
+                to="/pricing"
+                className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition hover:bg-muted"
               >
-                Talk to sales
-              </a>
+                See pricing
+              </Link>
             </div>
           </div>
-
-          <div className="grid gap-4">
-            {[
-              { k: "Regulatory risk", v: "F-gas quota, leak-rate and reporting obligations — on an audit-ready record" },
-              { k: "Downstream value", v: "The engineering engine behind the compliance number, so every figure is provable" },
-              { k: "Deployment", v: "Cloud, no-install; scoped to a facility, a fleet, or a whole enterprise" },
-              { k: "Built to scale", v: "From a single site to a national cold-chain network" },
-            ].map((item) => (
-              <div key={item.k} className="flex items-start gap-4 rounded-xl border border-white/10 bg-card/40 p-5">
-                <Building2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                <div>
-                  <div className="text-sm font-bold text-white">{item.k}</div>
-                  <div className="mt-1 text-sm text-white/60">{item.v}</div>
-                </div>
+          <div className="space-y-4 border-l-2 border-primary pl-5">
+            {DEADLINES.map((d) => (
+              <div key={d.when}>
+                <div className="font-mono text-[11.5px] tracking-wide text-primary">{d.when}</div>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{d.what}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Contact / CTA */}
-      <section id="contact" className="mx-auto max-w-7xl px-6 py-16">
-        <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-primary/20 to-[#0f0f1a] p-10 text-center">
-          <h2 className="text-2xl font-bold text-white sm:text-3xl">
-            Building the future of thermal engineering
-          </h2>
-          <p className="mx-auto mt-3 max-w-xl text-white/60">
-            For business development, partnerships and investment enquiries, the team
-            would love to hear from you.
-          </p>
-          <div className="mx-auto mt-6 flex max-w-md flex-col gap-3 sm:flex-row">
-            {submitted ? (
-              <div className="mx-auto rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-6 py-3 text-sm text-emerald-300">
-                Thanks — we'll be in touch.
-              </div>
-            ) : (
-              <>
-                <input
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@company.com"
-                  className="w-full rounded-lg border border-white/15 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/40 focus:border-primary focus:outline-none"
-                />
-                <button
-                  onClick={submitContact}
-                  disabled={submitting}
-                  className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary/90 disabled:opacity-60"
-                >
-                  {submitting ? "Sending…" : "Contact us"}
-                </button>
-              </>
-            )}
-            {status === "error" && (
-              <p className="text-xs text-red-400 sm:absolute sm:-bottom-5">Something went wrong — please email us directly.</p>
-            )}
+      {/* ── CLOSING CTA / CONTACT ─────────────────────────────────────────── */}
+      <section id="contact" className="mx-auto max-w-[1280px] px-6 pb-16">
+        <div className="rounded-2xl border border-border bg-card p-8 sm:p-10">
+          <div className="flex flex-wrap items-center justify-between gap-6">
+            <div>
+              <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                Questions about a specific system?
+              </h2>
+              <p className="mt-2 max-w-[54ch] text-sm text-muted-foreground">
+                Built by an M.Sc. refrigeration engineer. Ask about a cycle, a compliance
+                obligation, or which product fits — you will get a real answer, not a sales call.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <a
+                href="mailto:hello@thermoneural.com"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
+              >
+                hello@thermoneural.com
+              </a>
+              <a
+                href="/catalog"
+                className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-semibold text-foreground transition hover:bg-muted"
+              >
+                <FileText className="h-4 w-4" />
+                Printable catalog
+              </a>
+            </div>
           </div>
         </div>
       </section>
-
-      </div>
     </PublicPageShell>
   );
 }
+
+export default ParentBrandLanding;

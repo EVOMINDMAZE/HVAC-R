@@ -35,7 +35,7 @@ export function PublicPageShell({
     }
   }, []);
   return (
-    <div className={cn("landing-page app-shell min-h-screen bg-slate-50 dark:bg-[#0a0f1a] text-foreground relative z-0", className)}>
+    <div className={cn("landing-page app-shell min-h-screen bg-background text-foreground relative z-0", className)}>
       <GlobalBackground />
       {skipToMain ? (
         <a
