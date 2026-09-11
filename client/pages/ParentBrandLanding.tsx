@@ -75,8 +75,8 @@ const PRODUCTS: Product[] = [
     icon: GraduationCap,
     from: "$7",
     fromNote: "per month · about 23¢ a day · lesson 1 free",
-    anchor: "Save 57% billed yearly — or buy the $29 exam kit once",
-    chips: ["5 languages", "8 lessons", "Free lesson 1"],
+    anchor: "Save 57% billed yearly — $99/year for Pro — or start with lesson 1 free",
+    chips: ["5 languages", "9 courses", "Free lesson 1"],
   },
   {
     id: "cryovo",

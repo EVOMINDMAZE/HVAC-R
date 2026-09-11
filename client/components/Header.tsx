@@ -37,6 +37,54 @@ interface HeaderProps {
   brand?: "box" | "umbrella";
 }
 
+/**
+ * The product family, named in the nav.
+ *
+ * Before this the header read "The Box | Automations | Engineering Tools" — none
+ * of which is a product anyone can buy. A visitor could not tell from the nav
+ * what this company sells. Every entry below is a live, purchasable product with
+ * its real starting price; "The Box" is this app itself, so it stays internal.
+ * URLs and prices are kept in step with the umbrella front door
+ * (ParentBrandLanding) so the two can never disagree.
+ */
+const FAMILY = [
+  {
+    name: "PhasePoint",
+    from: "$29/mo",
+    what: "Refrigeration engineering on real CoolProp physics",
+    url: "https://simulateon.vercel.app",
+    internal: false,
+  },
+  {
+    name: "VanClass",
+    from: "$7/mo",
+    what: "EPA 608 certification you study by listening",
+    url: "https://vanclass-app.vercel.app",
+    internal: false,
+  },
+  {
+    name: "Cryovo",
+    from: "$149/mo",
+    what: "Cold-chain and F-gas excursion evidence",
+    url: "https://cryovo.vercel.app",
+    internal: false,
+  },
+  {
+    name: "The Box",
+    from: "$49/mo",
+    what: "This app — jobs, dispatch, invoices, fleet",
+    url: "/platform",
+    internal: true,
+  },
+  {
+    name: "The Cold Standard",
+    from: "Free",
+    what: "Two-source verified cold-economy briefing",
+    url: "https://cold-standard.vercel.app",
+    internal: false,
+  },
+] as const;
+
 function MobileGroup({
   label,
   items,
@@ -427,23 +475,68 @@ export function Header({ variant = "landing", onOpenSearch, brand }: HeaderProps
         </div>
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className={cn(
+                  navLinkBaseClasses,
+                  "text-muted-foreground/80 hover:text-foreground transition-all duration-200 rounded-lg hover:bg-muted/50 flex items-center gap-1"
+                )}
+              >
+                Products
+                <ChevronDown className="h-3.5 w-3.5" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-80 p-1.5 shadow-xl shadow-black/10 border-border/60 rounded-xl">
+              <DropdownMenuLabel className="text-xs uppercase tracking-[0.08em] text-muted-foreground">
+                ThermoNeural product family
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {FAMILY.map((product) => {
+                const itemClass = "flex flex-col items-start gap-0.5 p-2";
+                const itemBody = (
+                  <>
+                    <span className="flex w-full items-baseline justify-between gap-2">
+                      <span className="text-sm font-medium text-foreground">{product.name}</span>
+                      <span className="text-xs font-medium tabular-nums text-muted-foreground">{product.from}</span>
+                    </span>
+                    <span className="text-xs text-muted-foreground">{product.what}</span>
+                  </>
+                );
+                return (
+                  <DropdownMenuItem key={product.name} asChild>
+                    {product.internal ? (
+                      <Link to={product.url} className={itemClass}>
+                        {itemBody}
+                      </Link>
+                    ) : (
+                      <a href={product.url} className={itemClass} rel="noopener noreferrer">
+                        {itemBody}
+                      </a>
+                    )}
+                  </DropdownMenuItem>
+                );
+              })}
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Link
-            to="/platform"
+            to="/pricing"
             className={cn(
               navLinkBaseClasses,
               "text-muted-foreground/80 hover:text-foreground transition-all duration-200 rounded-lg hover:bg-muted/50"
             )}
           >
-            The Box
+            Pricing
           </Link>
           <Link
-            to="/features#automations"
+            to="/features"
             className={cn(
               navLinkBaseClasses,
               "text-muted-foreground/80 hover:text-foreground transition-all duration-200 rounded-lg hover:bg-muted/50"
             )}
           >
-            Automations
+            Features
           </Link>
 
           <DropdownMenu>
@@ -461,7 +554,7 @@ export function Header({ variant = "landing", onOpenSearch, brand }: HeaderProps
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56 p-1.5 shadow-xl shadow-black/10 border-border/60 rounded-xl">
               <DropdownMenuLabel className="text-xs uppercase tracking-[0.08em] text-muted-foreground">
-                Pro Tools
+                Included in The Box
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
@@ -553,22 +646,33 @@ export function Header({ variant = "landing", onOpenSearch, brand }: HeaderProps
       {mobileOpen ? (
         <HeaderMobilePanel id={mobileMenuId}>
           <div className="grid gap-2">
+            {FAMILY.map((product) => (
+              <a
+                key={product.name}
+                href={product.url}
+                onClick={() => setMobileOpen(false)}
+                className="flex min-h-12 items-center justify-between gap-3 rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <span>
+                  {product.name}
+                  <span className="block text-xs font-normal text-muted-foreground">{product.what}</span>
+                </span>
+                <span className="text-xs font-medium tabular-nums">{product.from}</span>
+              </a>
+            ))}
             <LandingMobileLink
-              label="The Box"
-              to="/platform"
-              isActive={isRouteActive(location.pathname, "/platform")}
+              label="Pricing"
+              to="/pricing"
+              isActive={isRouteActive(location.pathname, "/pricing")}
               onClick={() => setMobileOpen(false)}
             />
             <LandingMobileLink
-              label="Automations"
-              to="/features#automations"
+              label="Features"
+              to="/features"
               isActive={isRouteActive(location.pathname, "/features")}
-              onClick={(e) => {
-                handleLandingLinkClick({ to: "/features", hash: "#automations", label: "Automations", icon: Menu }, e);
-                setMobileOpen(false);
-              }}
+              onClick={() => setMobileOpen(false)}
             />
-            
+
             <div className="pt-4 pb-2 px-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Pro Tools
             </div>
