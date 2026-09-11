@@ -107,7 +107,7 @@ const PRODUCTS: Product[] = [
     icon: Layers,
     from: "$49",
     fromNote: "per month · free tier covers 10 calculations",
-    anchor: "Business Ops is $199/month · yearly billing saves about 20%",
+    anchor: "Business Ops is $199/month · yearly billing is two months free",
     chips: ["Jobs → invoices", "Warranty & fleet", "Free tier"],
   },
   {
