@@ -6,21 +6,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <script>
     // Apply theme before first paint to avoid a flash of the wrong theme and to
-    // persist the user's choice across reloads. Dark is the default.
+    // persist the user's choice across reloads. The VISITOR'S OS PREFERENCE is
+    // the default (industry practice: offer dark, don't force it); the header
+    // toggle writes an explicit choice that then wins.
     (function () {
       try {
         var stored = localStorage.getItem("vite-ui-theme");
+        var prefersDark =
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches;
         var theme =
           stored === "light" || stored === "dark"
             ? stored
-            : stored === "system"
-              ? window.matchMedia("(prefers-color-scheme: dark)").matches
-                ? "dark"
-                : "light"
-              : "dark";
+            : prefersDark
+              ? "dark"
+              : "light";
         document.documentElement.classList.add(theme);
       } catch (e) {
-        document.documentElement.classList.add("dark");
+        document.documentElement.classList.add("light");
       }
     })();
   </script>
