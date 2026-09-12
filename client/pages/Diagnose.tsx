@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase";
 // Runs the deterministic refrigeration diagnostic engine (real saturation math)
 // directly in the browser (no secrets, so an API proxy would only add a round-trip).
 // Pro-gated at the ROUTE by SubscriptionGuard. Records a diagnosis onto a shared
-// bridge asset (the same one PhasePoint/Cryovo reference). Honest disclaimer.
+// bridge asset (the same one Evodelta/Cryovo reference). Honest disclaimer.
 
 type Asset = { id: string; name: string; refrigerant?: string };
 

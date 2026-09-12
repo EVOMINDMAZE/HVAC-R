@@ -27,7 +27,7 @@
 ## DEEP SEARCH — findings (verified 2026-09-05, live + source)
 
 - **F1 — Cards source:** `client/pages/ParentBrandLanding.tsx` `PRODUCTS[4]` —
-  PhasePoint (simulateon.vercel.app, Live), VanClass (Beta), Cryovo (Beta),
+  Evodelta (simulateon.vercel.app, Live), VanClass (Beta), Cryovo (Beta),
   HVAC Business Platform (The Box, `/platform`, Live). `ProductCard` renders
   icon + status Badge + name + tagline + description. No department concept exists.
 - **F2 — Live baseline probe** (`/tmp/p4-baseline.cjs`, 2026-09-05): all 4 names
@@ -39,7 +39,7 @@
   across all 4 apps (plan F10); Phase 2 documented the honest cross-domain fallback —
   the strip is the mall's promise wording pre-approved in the master plan.
 - **F4 — Copy plan mapping (verbatim from master plan):** The Box = "Business Operations";
-  PhasePoint = "Simulation & Engineering"; VanClass = "Training & Certification";
+  Evodelta = "Simulation & Engineering"; VanClass = "Training & Certification";
   Cryovo = "Cold Chain Compliance". Mall tagline: "Walk in free, try before you buy,
   leave with your data." Strip: "One ID · Honest prices · Your data is yours".
 - **F5 — Design hard-bar:** dark first, SINGLE orange accent (no rainbow), no mock

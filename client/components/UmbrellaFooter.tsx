@@ -13,7 +13,7 @@ const PRODUCTS = [
     external: false,
   },
   {
-    name: "PhasePoint",
+    name: "Evodelta",
     href: "https://simulateon.vercel.app",
     status: "Live",
     external: true,
@@ -64,7 +64,7 @@ export function UmbrellaFooter() {
             </div>
             <p className="text-muted-foreground max-w-sm leading-relaxed">
               The ThermoNeural platform builds engineering operations software for the thermal
-              economy — The Box, PhasePoint, VanClass, Cryovo and The Cold Standard.
+              economy — The Box, Evodelta, VanClass, Cryovo and The Cold Standard.
             </p>
           </div>
 

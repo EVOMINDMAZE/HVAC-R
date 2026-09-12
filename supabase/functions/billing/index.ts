@@ -586,8 +586,8 @@ const OWN_PRODUCT_IDS = [
 ];
 
 const SIBLING_PRODUCT_IDS = [
-  // PhasePoint / Simulateon
-  "prod_V8e6iQEHQER0eY", // PhasePoint Platform
+  // Evodelta / Simulateon
+  "prod_V8e6iQEHQER0eY", // Evodelta Platform
   "prod_Uzgw3m3fi5CirA", // Simulateon Professional
   "prod_Uzgw8YXNXzfaHC", // Simulateon Pro
   "prod_UzgwcIOhUpxotu", // Simulateon Team

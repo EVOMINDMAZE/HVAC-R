@@ -47,7 +47,7 @@ const P = 'style="color:#93a4bd;line-height:1.6;margin:0 0 20px"';
 const FAMILY = `
       <h2 ${H2}>The product family</h2>
       <ul ${UL}>
-        <li><strong>PhasePoint</strong> — refrigeration engineering on real CoolProp physics, from $29/month. <a ${LINK} href="https://simulateon.vercel.app">simulateon.vercel.app</a></li>
+        <li><strong>Evodelta</strong> — refrigeration engineering on real CoolProp physics, from $29/month. <a ${LINK} href="https://simulateon.vercel.app">simulateon.vercel.app</a></li>
         <li><strong>VanClass</strong> — EPA Section 608 certification you study by listening, from $7/month, five languages. <a ${LINK} href="https://vanclass-app.vercel.app">vanclass-app.vercel.app</a></li>
         <li><strong>Cryovo</strong> — cold-chain and F-gas excursions turned into audit-ready evidence, $149/month. <a ${LINK} href="https://cryovo.vercel.app">cryovo.vercel.app</a></li>
         <li><strong>The Box</strong> — HVAC&amp;R business operations, from $49/month. <a ${LINK} href="/platform">/platform</a></li>
@@ -59,7 +59,7 @@ const PAGES = [
     path: "/pricing",
     title: "Pricing — ThermoNeural",
     description:
-      "ThermoNeural pricing: The Box is free to start, Pro $49/month, Business Ops $199/month (yearly is two months free). Family products start at $29/month for PhasePoint, $7/month for VanClass and $149/month for Cryovo.",
+      "ThermoNeural pricing: The Box is free to start, Pro $49/month, Business Ops $199/month (yearly is two months free). Family products start at $29/month for Evodelta, $7/month for VanClass and $149/month for Cryovo.",
     must: ["Pricing", "$49", "$199"],
     body: `
       <h1 style="font-size:28px;line-height:1.25;margin:0 0 12px">ThermoNeural pricing</h1>
@@ -75,7 +75,7 @@ const PAGES = [
       </ul>
       <h2 ${H2}>Starting prices across the family</h2>
       <ul ${UL}>
-        <li><strong>PhasePoint</strong> — from $29/month (Solo, one engineer, unlimited calculations). Pro is $79/month, or the $29/month founding rate while the first 100 customers last.</li>
+        <li><strong>Evodelta</strong> — from $29/month (Solo, one engineer, unlimited calculations). Pro is $79/month, or the $29/month founding rate while the first 100 customers last.</li>
         <li><strong>VanClass</strong> — Study $7/month or Pro $19/month; yearly billing takes 42% and 57% off respectively.</li>
         <li><strong>Cryovo</strong> — $149/month (about $4.90 a day), or $1,490/year, which is two months free. The free tier covers one asset.</li>
         <li><strong>The Cold Standard</strong> — free, weekly, unsubscribe in one click.</li>
@@ -104,7 +104,7 @@ const PAGES = [
         <li>Jobs and dispatch, with a technician view and job history</li>
         <li>Clients, estimates and invoices</li>
         <li>Warranty tracking and fleet records</li>
-        <li>Standard cycle, cascade, refrigerant comparison, psychrometrics and load calculations on the same CoolProp engine as PhasePoint</li>
+        <li>Standard cycle, cascade, refrigerant comparison, psychrometrics and load calculations on the same CoolProp engine as Evodelta</li>
         <li>PDF reports and a client portal</li>
       </ul>
       <p ${P}>Free to start — 10 calculations a month, no card. Pro is $49/month; Business Ops is $199/month.</p>
@@ -118,13 +118,13 @@ const PAGES = [
     path: "/catalog",
     title: "Product catalog & datasheets — ThermoNeural",
     description:
-      "Datasheets for every ThermoNeural product: PhasePoint (refrigeration engineering), VanClass (EPA 608 certification), Cryovo (cold-chain compliance), The Box (HVAC&R business operations) and The Cold Standard.",
+      "Datasheets for every ThermoNeural product: Evodelta (refrigeration engineering), VanClass (EPA 608 certification), Cryovo (cold-chain compliance), The Box (HVAC&R business operations) and The Cold Standard.",
     must: ["Product catalog", "datasheet (PDF)"],
     body: `
       <h1 style="font-size:28px;line-height:1.25;margin:0 0 12px">Product catalog</h1>
       <p ${P}>One page per product: what it does, what it costs, and the datasheet as a PDF.</p>
       <ul ${UL}>
-        <li><strong>PhasePoint</strong> — <a ${LINK} href="/catalog/phasepoint.pdf">datasheet (PDF)</a> · refrigeration cycle design on CoolProp physics</li>
+        <li><strong>Evodelta</strong> — <a ${LINK} href="/catalog/evodelta.pdf">datasheet (PDF)</a> · refrigeration cycle design on CoolProp physics</li>
         <li><strong>VanClass</strong> — <a ${LINK} href="/catalog/vanclass.pdf">datasheet (PDF)</a> · EPA 608 certification by listening, five languages</li>
         <li><strong>Cryovo</strong> — <a ${LINK} href="/catalog/cryovo.pdf">datasheet (PDF)</a> · cold-chain and F-gas excursion evidence</li>
         <li><strong>The Box</strong> — <a ${LINK} href="/catalog/hvac-business-platform.pdf">datasheet (PDF)</a> · HVAC&amp;R business operations</li>
@@ -170,7 +170,7 @@ const PAGES = [
     path: "/about",
     title: "About ThermoNeural — verified refrigeration engineering",
     description:
-      "ThermoNeural builds five products on one verified refrigeration physics engine: PhasePoint, VanClass, Cryovo, The Box and The Cold Standard. Every number traces to CoolProp; nothing is estimated.",
+      "ThermoNeural builds five products on one verified refrigeration physics engine: Evodelta, VanClass, Cryovo, The Box and The Cold Standard. Every number traces to CoolProp; nothing is estimated.",
     must: ["About ThermoNeural", "CoolProp"],
     body: `
       <h1 style="font-size:28px;line-height:1.25;margin:0 0 12px">About ThermoNeural</h1>
@@ -193,7 +193,7 @@ const PAGES = [
     path: "/contact",
     title: "Contact ThermoNeural",
     description:
-      "Talk to us about PhasePoint, VanClass, Cryovo, The Box or The Cold Standard — evaluation, crew plans, or a question about a calculation. hello@thermoneural.com.",
+      "Talk to us about Evodelta, VanClass, Cryovo, The Box or The Cold Standard — evaluation, crew plans, or a question about a calculation. hello@thermoneural.com.",
     must: ["Contact ThermoNeural", "hello@thermoneural.com"],
     body: `
       <h1 style="font-size:28px;line-height:1.25;margin:0 0 12px">Contact ThermoNeural</h1>

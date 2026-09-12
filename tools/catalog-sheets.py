@@ -27,7 +27,7 @@ MALL_STRIP = [["Walk in free", "try before you buy, leave with your data"],
               ["One ID", "Honest prices · Your data is yours"]]
 
 PRODUCTS = [
-    dict(slug="phasepoint", name="PhasePoint", dept="Simulation & Engineering",
+    dict(slug="phasepoint", file="evodelta", name="Evodelta", dept="Simulation & Engineering",
          status="Live", url="https://simulateon.vercel.app",
          one="The professional refrigeration-cycle analysis suite on real CoolProp physics.",
          table=dict(headers=["Plan", "Price", "What you get"], num_cols=[1], rows=[
@@ -36,14 +36,14 @@ PRODUCTS = [
              ["Pro (yearly)", "$654/yr", "Same as Pro, two months free"],
              ["Founding rate", "$29/mo", "Pro for $29/mo, locked 12 months — first 100 customers, then $79/mo"],
          ]),
-         callout="The founding rate is real and bounded: $29/mo locked for 12 months for the first 100 paying customers. Every number in PhasePoint traces to CoolProp — the same library the pros use.",
+         callout="The founding rate is real and bounded: $29/mo locked for 12 months for the first 100 paying customers. Every number in Evodelta traces to CoolProp — the same library the pros use.",
          features=["Standard, cascade, two-stage and cryogenic cycle analysis",
                    "Interactive pressure-enthalpy (P-h) diagrams",
                    "Refrigerant comparison across the full library",
                    "A2L charge limits, rack staging and pipe sizing",
                    "Client-ready PDF reports",
                    "Every calculation runs on real CoolProp physics — never canned values"],
-         qr_label="Scan — try PhasePoint free"),
+         qr_label="Scan — try Evodelta free"),
     dict(slug="vanclass", name="VanClass", dept="Training & Certification",
          status="Beta", url="https://vanclass-app.vercel.app",
          one="Audio-first HVAC&R certification training built for the drive to the job.",
@@ -182,8 +182,9 @@ const { chromium } = require('playwright');
 summary = []
 for p in PRODUCTS:
     zoom, h1 = fit_zoom(p)
-    html_path = Path(f"/tmp/p5-{p['slug']}.html")
-    out_path = OUT / f"{p['slug']}.pdf"
+    stem = p.get("file", p["slug"])
+    html_path = Path(f"/tmp/p5-{stem}.html")
+    out_path = OUT / f"{stem}.pdf"
     import pdfqa
     n, zoom_used, log = 99, zoom, ""
     for attempt in range(5):

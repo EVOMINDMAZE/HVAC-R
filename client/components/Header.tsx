@@ -49,7 +49,7 @@ interface HeaderProps {
  */
 const FAMILY = [
   {
-    name: "PhasePoint",
+    name: "Evodelta",
     from: "$29/mo",
     what: "Refrigeration engineering on real CoolProp physics",
     url: "https://simulateon.vercel.app",

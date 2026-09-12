@@ -56,7 +56,7 @@ export function Footer() {
             <ul className="space-y-4">
               <li>
                 <a href="https://simulateon.vercel.app" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium inline-flex items-center gap-1">
-                  PhasePoint <ArrowUpRight className="h-3 w-3" />
+                  Evodelta <ArrowUpRight className="h-3 w-3" />
                 </a>
               </li>
               <li>

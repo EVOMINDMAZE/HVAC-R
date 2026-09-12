@@ -90,7 +90,7 @@ function LandingImage({
  * Phase 2 "The Handoff" — signed-in identity panel on /platform.
  * SSO truth: all ThermoNeural shops share ONE Supabase project, but browser
  * sessions are per-domain by design (proven 2026-09-04). So we never claim
- * auto-SSO: PhasePoint gets a magic-link "continue as {email}" flow; VanClass
+ * auto-SSO: Evodelta gets a magic-link "continue as {email}" flow; VanClass
  * and Cryovo are plain links where the user signs in with the same email.
  */
 function PlatformIdPanel() {
@@ -135,7 +135,7 @@ function PlatformIdPanel() {
               })
             }
           >
-            Continue into PhasePoint
+            Continue into Evodelta
             <ArrowRight className="w-4 h-4" />
           </a>
           <a
@@ -175,7 +175,7 @@ function PlatformIdPanel() {
         </div>
 
         <p className="text-[11px] leading-relaxed text-muted-foreground lg:max-w-[220px]">
-          For your security each shop verifies it&apos;s you — PhasePoint emails
+          For your security each shop verifies it&apos;s you — Evodelta emails
           you a one-tap sign-in link.
         </p>
       </div>

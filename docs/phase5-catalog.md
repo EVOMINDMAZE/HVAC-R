@@ -19,7 +19,7 @@ free, take a leaflet, and hand it to a boss or a client.
 
 | Product | Prices on sheet | Source file |
 |---|---|---|
-| PhasePoint | Free $0 · Pro $79/mo · Pro yearly $654/yr · Founding $29/mo (locked 12 mo, first 100) | `simulateon/client/lib/tiers.ts` |
+| Evodelta | Free $0 · Pro $79/mo · Pro yearly $654/yr · Founding $29/mo (locked 12 mo, first 100) | `simulateon/client/lib/tiers.ts` |
 | VanClass | Free lesson $0 · Study $7/mo · Pro $19/mo · EPA 608 Pass Kit $29 once | `vanclass-app/app/pricing/page.tsx` |
 | Cryovo | Free $0 forever · Pro $149/mo · Enterprise Custom | `cryovo/app/pricing/page.tsx` |
 | Box | Free $0 · Pro $49/mo · Precision Engineering Hub $199/mo | `HVAC-R/client/lib/stripe.ts` PLANS |

@@ -12,7 +12,7 @@
 - Placement: every site footer, directly above the copyright bar.
 - Link target:
   - The Box (thermoneural.com): `/terms#guarantee` (internal).
-  - PhasePoint / VanClass / Cryovo: `https://thermoneural.com/terms#guarantee` (canonical source of truth).
+  - Evodelta / VanClass / Cryovo: `https://thermoneural.com/terms#guarantee` (canonical source of truth).
 - Visual: shield icon (lucide `ShieldCheck`), single accent color, NO rainbow, NO gradient.
 
 ## 2. Terms section `/terms#guarantee` (The Box) — verbatim
@@ -47,7 +47,7 @@ Add a third link next to Privacy / Terms: **Guarantee** → `/terms#guarantee`.
 ## 5. Rollout checklist
 
 - [ ] The Box (thermoneural.com): strip in `Footer` + `UmbrellaFooter`, Terms section, footer link.
-- [ ] PhasePoint (simulateon.vercel.app): strip in footer → canonical URL.
+- [ ] Evodelta (simulateon.vercel.app): strip in footer → canonical URL.
 - [ ] VanClass (vanclass-app.vercel.app): strip in footer → canonical URL.
 - [ ] Cryovo (cryovo.vercel.app): strip in footer → canonical URL.
 - [ ] Live probe all 4 domains (Playwright, screenshot evidence).

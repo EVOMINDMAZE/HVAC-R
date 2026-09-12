@@ -47,14 +47,14 @@ type Product = {
 const PRODUCTS: Product[] = [
   {
     id: "phasepoint",
-    name: "PhasePoint",
+    name: "Evodelta",
     department: "Simulation & Engineering",
     tagline: "Refrigeration engineering, proven",
     description:
       "Cycle design and proof on real CoolProp physics — interactive P-h diagrams, pipe sizing, 19 refrigerants and a 12-tool advanced set including cascade, two-stage, IHX and transcritical CO₂.",
     url: "https://simulateon.vercel.app",
     status: "Live",
-    sheet: "/catalog/phasepoint.pdf",
+    sheet: "/catalog/evodelta.pdf",
     icon: Snowflake,
     from: "$29",
     fromNote: "per month · full Pro for the first 100 customers",
@@ -183,7 +183,7 @@ export function ParentBrandLanding() {
           <div className="rounded-2xl border border-border bg-[#0e1626] p-5 shadow-2xl">
             <div className="flex items-center gap-2 border-b border-[#1d2a3e] pb-3 font-mono text-[11px] text-[#8ba0bb]">
               <span className="h-[7px] w-[7px] rounded-full bg-[#3ddc97]" />
-              PHASEPOINT · R410A · EVAP −10 °C / COND 45 °C · η 0.70
+              EVODELTA · R410A · EVAP −10 °C / COND 45 °C · η 0.70
             </div>
             <div className="mt-4 grid grid-cols-3 gap-3">
               {[

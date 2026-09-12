@@ -28,10 +28,10 @@ const SHEETS: Sheet[] = [
   {
     id: "phasepoint",
     slug: "phasepoint",
-    name: "PhasePoint",
+    name: "Evodelta",
     department: "Simulation & Engineering",
     tagline: "Refrigeration engineering, proven",
-    sheet: "/catalog/phasepoint.pdf",
+    sheet: "/catalog/evodelta.pdf",
   },
   {
     id: "vanclass",
