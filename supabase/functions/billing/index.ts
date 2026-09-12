@@ -10,6 +10,16 @@ const corsHeaders = {
   "Access-Control-Allow-Credentials": "true",
 };
 
+// Subscription statuses that must end access (verify-license only accepts
+// licenses.status = 'active'). past_due is deliberately NOT here: Stripe keeps
+// retrying the card for days, so access survives until the subscription is
+// actually unpaid or ended.
+const LICENSE_REVOKING_STATUSES: string[] = [
+  "canceled",
+  "unpaid",
+  "incomplete_expired",
+];
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
@@ -495,19 +505,9 @@ async function handleWebhook(req: Request) {
         const subscription = event.data.object;
         const status = subscription.status; // active, past_due, canceled, etc.
 
-        // We need to find the user associated with this subscription
-        // For now, looking up by customer email if we don't have userId in metadata
-        // A better approach would be storing stripe_customer_id in companies table, but for now we rely on email or metadata
-        // Assuming metadata might be lost or not present on renewal events depending on setup
-
-        // Attempt to find user by customer ID via Stripe API or rely on email from customer object?
-        // Let's try to get the customer email first provided we have the customer ID
-
-        // Simplification: If we can't easily link back to user without extra tables, we'll log for now.
-        // But wait, we MUST link it.
-        // Let's check session metadata again. Subscription events often inherit metadata from the subscription object.
-        // If checkout session created the subscription, the subscription might have the metadata.
-
+        // The account is resolved from the userId WE stamped on the subscription
+        // at checkout (subscription_data.metadata.userId) — subscription events
+        // carry no client_reference_id of their own.
         const subUserId = subscription.metadata?.userId;
         if (subUserId) {
           const supabaseAdmin = createClient(
@@ -519,8 +519,28 @@ async function handleWebhook(req: Request) {
             .from("companies")
             .update({ subscription_status: status })
             .eq("user_id", subUserId);
+
+          // ── Access revocation (added 2026-09-12) ─────────────────────────
+          // verify-license only honours licenses.status = 'active', so the
+          // company row alone never revoked anything: a cancelled subscriber
+          // kept a working license. Revoke here, and restore on recovery
+          // (past_due → active) so a fixed card re-enables access.
+          if (LICENSE_REVOKING_STATUSES.includes(status)) {
+            await supabaseAdmin
+              .from("licenses")
+              .update({ status: "canceled" })
+              .eq("user_id", subUserId);
+            console.log(`License revoked for user ${subUserId} (subscription ${status})`);
+          } else if (status === "active" || status === "trialing") {
+            await supabaseAdmin
+              .from("licenses")
+              .update({ status: "active" })
+              .eq("user_id", subUserId);
+            console.log(`License active for user ${subUserId} (subscription ${status})`);
+          }
+          // past_due: the license is deliberately left alone — Stripe retries
+          // the card for days and access is revoked only when it goes unpaid.
         } else {
-          // Fallback: This would require querying Stripe for customer email -> identifying user
           console.log("No userId in subscription metadata, skipping DB update");
         }
         break;
@@ -541,18 +561,59 @@ async function handleWebhook(req: Request) {
             .from("companies")
             .update({ subscription_status: "canceled" })
             .eq("user_id", delUserId);
+
+          // The subscription has ended — the license must stop verifying.
+          await supabaseAdmin
+            .from("licenses")
+            .update({ status: "canceled" })
+            .eq("user_id", delUserId);
+          console.log(`License canceled for user ${delUserId} (subscription deleted)`);
         }
         break;
       }
 
       case "invoice.payment_succeeded":
         console.log("Payment succeeded for invoice:", event.data.object.id);
-        // Usually handles renewal success
+        // Renewal recovery: a subscription that was past_due is paid up again,
+        // so re-activate the license (the updated event also covers this).
+        {
+          const paidSubMeta = (event.data.object as any).subscription_details?.metadata
+            ?? (event.data.object as any).metadata
+            ?? {};
+          const paidUserId = paidSubMeta.userId;
+          if (paidUserId) {
+            const supabaseAdmin = createClient(
+              Deno.env.get("SUPABASE_URL") ?? "",
+              Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+            );
+            await supabaseAdmin
+              .from("licenses")
+              .update({ status: "active" })
+              .eq("user_id", paidUserId);
+          }
+        }
         break;
 
       case "invoice.payment_failed":
         console.log("Payment failed for invoice:", event.data.object.id);
-        // Could update status to past_due
+        // Mark the account past_due (visible to support), keep access through
+        // Stripe's retry window; customer.subscription.updated/unpaid revokes.
+        {
+          const failedSubMeta = (event.data.object as any).subscription_details?.metadata
+            ?? (event.data.object as any).metadata
+            ?? {};
+          const failedUserId = failedSubMeta.userId;
+          if (failedUserId) {
+            const supabaseAdmin = createClient(
+              Deno.env.get("SUPABASE_URL") ?? "",
+              Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+            );
+            await supabaseAdmin
+              .from("companies")
+              .update({ subscription_status: "past_due" })
+              .eq("user_id", failedUserId);
+          }
+        }
         break;
 
       default:
