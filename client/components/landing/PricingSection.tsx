@@ -32,7 +32,8 @@ const pricingTiers = [
     name: "Pro",
     description: "Advanced engineering for teams",
     priceMonthly: "$49",
-    priceAnnually: "$39",
+    priceAnnually: "$40.83",
+    annualNote: "$490/yr — two months free",
     features: [
       "Advanced cycle analysis",
       "Unlimited calculations",
@@ -52,7 +53,8 @@ const pricingTiers = [
     name: "Enterprise",
     description: "Full industrial operations suite",
     priceMonthly: "$199",
-    priceAnnually: "$159",
+    priceAnnually: "$165.83",
+    annualNote: "$1,990/yr — two months free",
     features: [
       "Skool Community Access",
       "White-labeled Pro App",
@@ -117,7 +119,7 @@ export function PricingSection() {
               />
             </button>
             <span className={`text-[10px] font-mono uppercase tracking-widest transition-colors duration-300 ${isAnnual ? "text-primary" : "text-muted-foreground"}`}>
-              Annual_Cycle <span className="text-success text-[9px] ml-1">(-20%)</span>
+              Annual_Cycle <span className="text-success text-[9px] ml-1">(-17%)</span>
             </span>
           </div>
         </motion.div>
@@ -170,9 +172,9 @@ export function PricingSection() {
                         </span>
                       )}
                     </div>
-                    {price !== "Custom" && isAnnual && price !== "$0" && (
+                    {price !== "Custom" && isAnnual && tier.annualNote && (
                       <p className="text-[9px] font-mono text-success uppercase mt-2">
-                        // EFFICIENCY_GAINED: 20%_REDUCTION
+                        {tier.annualNote}
                       </p>
                     )}
                   </div>

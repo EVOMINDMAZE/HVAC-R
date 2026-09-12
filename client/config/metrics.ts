@@ -176,7 +176,7 @@ export const landingConfig = {
     },
     {
       question: "How does pricing work for multiple technicians?",
-      answer: "Engineering Pro is $49/month per account ($39/mo billed annually). Business Ops is $199/month ($159/mo billed annually) and covers your whole company. For larger teams, contact us.",
+      answer: "Engineering Pro is $49/month per account, or $490/year (that works out to $40.83/month, two months free). Business Ops is $199/month, or $1,990/year ($165.83/month), and covers your whole company. For larger teams, contact us.",
     },
     {
       question: "What integrations do you support?",
