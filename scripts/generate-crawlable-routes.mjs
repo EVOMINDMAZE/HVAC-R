@@ -49,7 +49,7 @@ const FAMILY = `
       <ul ${UL}>
         <li><strong>Evodelta</strong> — refrigeration engineering on real CoolProp physics, from $29/month. <a ${LINK} href="https://simulateon.vercel.app">simulateon.vercel.app</a></li>
         <li><strong>VanClass</strong> — EPA Section 608 certification you study by listening, from $7/month, five languages. <a ${LINK} href="https://vanclass-app.vercel.app">vanclass-app.vercel.app</a></li>
-        <li><strong>Cryovo</strong> — cold-chain and F-gas excursions turned into audit-ready evidence, $149/month. <a ${LINK} href="https://cryovo.vercel.app">cryovo.vercel.app</a></li>
+        <li><strong>Cryovo</strong> — cold-chain and F-gas excursions turned into audit-ready evidence, $149/month. <a ${LINK} href="https://cryovo-evo.netlify.app">cryovo-evo.netlify.app</a></li>
         <li><strong>The Box</strong> — HVAC&amp;R business operations, from $49/month. <a ${LINK} href="/platform">/platform</a></li>
         <li><strong>The Cold Standard</strong> — free weekly verified cold-economy intelligence. <a ${LINK} href="https://cold-standard.vercel.app">cold-standard.vercel.app</a></li>
       </ul>`;

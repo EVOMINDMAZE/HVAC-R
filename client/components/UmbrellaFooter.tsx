@@ -26,7 +26,7 @@ const PRODUCTS = [
   },
   {
     name: "Cryovo",
-    href: "https://cryovo.vercel.app",
+    href: "https://cryovo-evo.netlify.app",
     status: "Beta",
     external: true,
   },

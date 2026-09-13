@@ -85,7 +85,7 @@ const PRODUCTS: Product[] = [
     tagline: "Turn temperature logs into evidence",
     description:
       "Every out-of-band excursion detected, timed and documented — the audit-ready record for cold-chain and F-gas regulated facilities. Ingests the loggers you already own.",
-    url: "https://cryovo.vercel.app",
+    url: "https://cryovo-evo.netlify.app",
     status: "Live",
     sheet: "/catalog/cryovo.pdf",
     icon: ShieldCheck,

@@ -156,7 +156,7 @@ function PlatformIdPanel() {
             </span>
           </a>
           <a
-            href="https://cryovo.vercel.app/login"
+            href="https://cryovo-evo.netlify.app/login"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex flex-col items-start justify-center rounded-lg border border-border bg-background px-4 py-2 text-left hover:border-primary/40 transition-colors"

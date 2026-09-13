@@ -21,7 +21,7 @@ const SLUGS = new Set([
 const PRODUCT_URLS: Record<string, string> = {
   phasepoint: "https://simulateon.vercel.app",
   vanclass: "https://vanclass-app.vercel.app",
-  cryovo: "https://cryovo.vercel.app",
+  cryovo: "https://cryovo-evo.netlify.app",
   "hvac-business-platform": "https://thermoneural.com/try",
   "cold-standard": "https://cold-standard.vercel.app",
 };

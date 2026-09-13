@@ -66,7 +66,7 @@ const FAMILY = [
     name: "Cryovo",
     from: "$149/mo",
     what: "Cold-chain and F-gas excursion evidence",
-    url: "https://cryovo.vercel.app",
+    url: "https://cryovo-evo.netlify.app",
     internal: false,
   },
   {
